@@ -16,6 +16,11 @@
 		<connie.version>1.0-SNAPSHOT</connie.version>
 		<pamela.version>1.0-SNAPSHOT</pamela.version>
 		<diana.version>1.0-SNAPSHOT</diana.version>
+		<jiraclient.version>1.0-SNAPSHOT</jiraclient.version>
+		<flexohelp.version>1.0-SNAPSHOT</flexohelp.version>
+		<flexowysiwyg.version>1.0-SNAPSHOT</flexowysiwyg.version>
+		<flexodocresourcecenter.version>1.0-SNAPSHOT</flexodocresourcecenter.version>
+		<flexodocresourcemanager.version>1.0-SNAPSHOT</flexodocresourcemanager.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com:openflexo-team/openflexo-core.git</connection>
@@ -269,39 +274,39 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>jiraclient</artifactId>
-				<version>${project.version}</version>
+				<version>${jiraclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexohelp</artifactId>
-				<version>${project.version}</version>
+				<version>${flexohelp.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexowysiwyg</artifactId>
-				<version>${project.version}</version>
+				<version>${flexowysiwyg.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>${project.version}</version>
+				<version>${flexodocresourcecenter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>${project.version}</version>
+				<version>${flexodocresourcecenter.version}</version>
 				<classifier>resources</classifier>
 				<type>zip</type>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${project.version}</version>
+				<version>${flexodocresourcemanager.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${project.version}</version>
+				<version>${flexodocresourcemanager.version}</version>
 				<classifier>resources</classifier>
 				<type>zip</type>
 			</dependency>
