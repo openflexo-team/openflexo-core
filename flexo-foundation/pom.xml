@@ -9,7 +9,7 @@
 		<version>1.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexo-foundation</artifactId>
-	<name>Model :: FlexoFoundation</name>
+	<name>Openflexo-core : foundation layer</name>
 	<build>
 		<plugins>
 			<plugin>
