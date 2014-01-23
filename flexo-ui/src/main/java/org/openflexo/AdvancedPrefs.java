@@ -41,6 +41,12 @@ import org.openflexo.swing.converter.LookAndFeelConverter;
 import org.openflexo.toolbox.ProxyUtils;
 import org.openflexo.toolbox.ToolBox;
 
+/**
+ * Advanced preferences
+ * 
+ * @author sylvain
+ * 
+ */
 @ModelEntity
 @ImplementationClass(AdvancedPrefs.AdvancedPrefsImpl.class)
 @XMLElement(xmlTag = "AdvancedPrefs")

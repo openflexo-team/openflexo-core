@@ -21,6 +21,7 @@ package org.openflexo.foundation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
@@ -50,6 +51,8 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
  */
 public abstract class FlexoServiceManager /*extends FlexoObject*/{
 
+	protected static final Logger logger = Logger.getLogger(FlexoServiceManager.class.getPackage().getName());
+
 	private final ArrayList<FlexoService> registeredServices;
 
 	public FlexoServiceManager() {
@@ -68,12 +71,16 @@ public abstract class FlexoServiceManager /*extends FlexoObject*/{
 	 * @param service
 	 */
 	public void registerService(FlexoService service) {
-		registeredServices.add(service);
-		service.register(this);
+		if (service != null) {
+			registeredServices.add(service);
+			service.register(this);
 
-		notify(service, new ServiceRegistered());
+			notify(service, new ServiceRegistered());
 
-		service.initialize();
+			service.initialize();
+		} else {
+			logger.warning("Trying to register null FlexoService");
+		}
 	}
 
 	public void notify(FlexoService caller, ServiceNotification notification) {
