@@ -29,11 +29,15 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ActionContainer.ActionContainerImpl.class)
 public interface ActionContainer {
 
 	@PropertyIdentifier(type = Vector.class)

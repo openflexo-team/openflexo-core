@@ -39,6 +39,8 @@ import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
@@ -56,6 +58,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionScheme.EditionSchemeImpl.class)
+@Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class), @Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
 public interface EditionScheme extends EditionSchemeObject, ActionContainer, Function {
 
 	public static final String THIS = "this";

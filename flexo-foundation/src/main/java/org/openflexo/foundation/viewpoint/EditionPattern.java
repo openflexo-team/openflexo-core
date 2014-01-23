@@ -38,7 +38,6 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector.EditionPatternInspectorImpl;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DeserializationFinalizer;
@@ -56,15 +55,19 @@ import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An EditionPattern aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
- * GUI, etcâ¦). Each such element is associated with a {@link PatternRole}.
+ * An EditionPattern aggregates modelling elements from different modelling
+ * element resources (models, metamodels, graphical representation, GUI,
+ * etcâ¦). Each such element is associated with a {@link PatternRole}.
  * 
- * A PatternRole is an abstraction of the manipulation roles played in the {@link EditionPattern} by modelling element potentially in
- * different metamodels.
+ * A PatternRole is an abstraction of the manipulation roles played in the
+ * {@link EditionPattern} by modelling element potentially in different
+ * metamodels.
  * 
- * An {@link EditionPatternInstance} is an instance of an {@link EditionPattern}.
+ * An {@link EditionPatternInstance} is an instance of an {@link EditionPattern}
+ * .
  * 
- * Instances of modelling elements in an {@link EditionPatternInstance} are called Pattern Actors. They play given Pattern Roles.
+ * Instances of modelling elements in an {@link EditionPatternInstance} are
+ * called Pattern Actors. They play given Pattern Roles.
  * 
  * @author sylvain
  * 
@@ -164,46 +167,54 @@ public interface EditionPattern extends EditionPatternObject {
 	public List<EditionPattern> getParentEditionPatterns();
 
 	@Setter(PARENT_EDITION_PATTERNS_KEY)
-	public void setParentEditionPatterns(List<EditionPattern> parentEditionPatterns);
+	public void setParentEditionPatterns(
+			List<EditionPattern> parentEditionPatterns);
 
 	@Adder(PARENT_EDITION_PATTERNS_KEY)
 	public void addToParentEditionPatterns(EditionPattern parentEditionPattern);
 
 	@Remover(PARENT_EDITION_PATTERNS_KEY)
-	public void removeFromParentEditionPatterns(EditionPattern parentEditionPattern);
+	public void removeFromParentEditionPatterns(
+			EditionPattern parentEditionPattern);
 
 	@Getter(value = CHILD_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_EDITION_PATTERNS_KEY)
 	@XMLElement(context = "Child")
 	public List<EditionPattern> getChildEditionPatterns();
 
 	@Setter(CHILD_EDITION_PATTERNS_KEY)
-	public void setChildEditionPatterns(List<EditionPattern> childEditionPatterns);
+	public void setChildEditionPatterns(
+			List<EditionPattern> childEditionPatterns);
 
 	@Adder(CHILD_EDITION_PATTERNS_KEY)
 	public void addToChildEditionPatterns(EditionPattern childEditionPattern);
 
 	@Remover(CHILD_EDITION_PATTERNS_KEY)
-	public void removeFromChildEditionPatterns(EditionPattern childEditionPattern);
+	public void removeFromChildEditionPatterns(
+			EditionPattern childEditionPattern);
 
 	@Getter(value = EDITION_PATTERN_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = EditionPatternConstraint.EDITION_PATTERN_KEY)
 	@XMLElement
 	public List<EditionPatternConstraint> getEditionPatternConstraints();
 
 	@Setter(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void setEditionPatternConstraints(List<EditionPatternConstraint> editionPatternConstraints);
+	public void setEditionPatternConstraints(
+			List<EditionPatternConstraint> editionPatternConstraints);
 
 	@Adder(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void addToEditionPatternConstraints(EditionPatternConstraint aEditionPatternConstraint);
+	public void addToEditionPatternConstraints(
+			EditionPatternConstraint aEditionPatternConstraint);
 
 	@Remover(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void removeFromEditionPatternConstraints(EditionPatternConstraint aEditionPatternConstraint);
+	public void removeFromEditionPatternConstraints(
+			EditionPatternConstraint aEditionPatternConstraint);
 
 	@DeserializationFinalizer
 	public void finalizeEditionPatternDeserialization();
 
 	public boolean isRoot();
 
-	public <ES extends EditionScheme> List<ES> getEditionSchemes(Class<ES> editionSchemeClass);
+	public <ES extends EditionScheme> List<ES> getEditionSchemes(
+			Class<ES> editionSchemeClass);
 
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
@@ -246,8 +257,6 @@ public interface EditionPattern extends EditionPatternObject {
 
 	public DeletionScheme getDefaultDeletionScheme();
 
-	
-	
 	public DeletionScheme generateDefaultDeletionScheme();
 
 	public List<IndividualPatternRole> getIndividualPatternRoles();
@@ -273,9 +282,11 @@ public interface EditionPattern extends EditionPatternObject {
 	 */
 	public EditionPattern duplicate(String newName);
 
-	public static abstract class EditionPatternImpl extends EditionPatternObjectImpl implements EditionPattern {
+	public static abstract class EditionPatternImpl extends
+			EditionPatternObjectImpl implements EditionPattern {
 
-		protected static final Logger logger = FlexoLogger.getLogger(EditionPattern.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger
+				.getLogger(EditionPattern.class.getPackage().getName());
 
 		// private List<PatternRole<?>> patternRoles;
 		// private List<EditionScheme> editionSchemes;
@@ -288,29 +299,20 @@ public interface EditionPattern extends EditionPatternObject {
 		private VirtualModel virtualModel;
 
 		private final EditionPattern parentEditionPattern = null;
-		// private final Vector<EditionPattern> childEditionPatterns = new Vector<EditionPattern>();
+		// private final Vector<EditionPattern> childEditionPatterns = new
+		// Vector<EditionPattern>();
 
-		private final EditionPatternStructuralFacet structuralFacet;
-		private final EditionPatternBehaviouralFacet behaviouralFacet;
+		private EditionPatternStructuralFacet structuralFacet;
+		private EditionPatternBehaviouralFacet behaviouralFacet;
 
-		private final EditionPatternInstanceType instanceType = new EditionPatternInstanceType(this);
+		private final EditionPatternInstanceType instanceType = new EditionPatternInstanceType(
+				this);
 
 		/**
-		 * Stores a chained collections of objects which are involved in validation
+		 * Stores a chained collections of objects which are involved in
+		 * validation
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
-
-		public EditionPatternImpl() {
-			super();
-			/*if (builder != null) {
-				virtualModel = builder.getVirtualModel();
-			}*/
-			// patternRoles = new ArrayList<PatternRole<?>>();
-			// editionSchemes = new Vector<EditionScheme>();
-			// editionPatternConstraints = new Vector<EditionPatternConstraint>();
-			structuralFacet = getVirtualModelFactory().newEditionPatternStructuralFacet(this);
-			behaviouralFacet = getVirtualModelFactory().newEditionPatternBehaviouralFacet(this);
-		}
 
 		@Override
 		public EditionPatternInstanceType getInstanceType() {
@@ -319,11 +321,19 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public EditionPatternStructuralFacet getStructuralFacet() {
+			if (structuralFacet == null && getVirtualModelFactory() != null) {
+				structuralFacet = getVirtualModelFactory()
+						.newEditionPatternStructuralFacet(this);
+			}
 			return structuralFacet;
 		}
 
 		@Override
 		public EditionPatternBehaviouralFacet getBehaviouralFacet() {
+			if (behaviouralFacet == null && getVirtualModelFactory() != null) {
+				behaviouralFacet = getVirtualModelFactory()
+						.newEditionPatternBehaviouralFacet(this);
+			}
 			return behaviouralFacet;
 		}
 
@@ -344,14 +354,18 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public String getStringRepresentation() {
-			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#" + getName();
+			return (getVirtualModel() != null ? getVirtualModel()
+					.getStringRepresentation() : "null") + "#" + getName();
 		}
 
 		/**
 		 * Return the URI of the {@link EditionPattern}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<edition_pattern_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following:
+		 * <viewpoint_uri>/<virtual_model_name
+		 * >#<edition_pattern_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.
+		 * MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -368,76 +382,66 @@ public interface EditionPattern extends EditionPatternObject {
 			}
 		}
 
-		/*@Override
-		public EditionScheme getEditionScheme(String editionSchemeName) {
-			for (EditionScheme es : editionSchemes) {
-				if (es.getName().equals(editionSchemeName)) {
-					return es;
-				}
-			}
-			logger.warning("Not found EditionScheme:" + editionSchemeName);
-			return null;
-		}*/
+		/*
+		 * @Override public EditionScheme getEditionScheme(String
+		 * editionSchemeName) { for (EditionScheme es : editionSchemes) { if
+		 * (es.getName().equals(editionSchemeName)) { return es; } }
+		 * logger.warning("Not found EditionScheme:" + editionSchemeName);
+		 * return null; }
+		 */
 
-		/*@Override
-		public List<EditionScheme> getEditionSchemes() {
-			return editionSchemes;
-		}
+		/*
+		 * @Override public List<EditionScheme> getEditionSchemes() { return
+		 * editionSchemes; }
+		 * 
+		 * public void setEditionSchemes(Vector<EditionScheme>
+		 * someEditionScheme) { editionSchemes = someEditionScheme; }
+		 * 
+		 * @Override public void addToEditionSchemes(EditionScheme
+		 * anEditionScheme) { anEditionScheme.setEditionPattern(this);
+		 * editionSchemes.add(anEditionScheme); if (getVirtualModel() != null) {
+		 * getVirtualModel().notifyEditionSchemeModified(); } setChanged();
+		 * notifyObservers(new EditionSchemeInserted(anEditionScheme, this));
+		 * anEditionScheme.updateBindingModels(); }
+		 * 
+		 * @Override public void removeFromEditionSchemes(EditionScheme
+		 * anEditionScheme) { anEditionScheme.setEditionPattern(null);
+		 * editionSchemes.remove(anEditionScheme); if (getVirtualModel() !=
+		 * null) { getVirtualModel().notifyEditionSchemeModified(); }
+		 * setChanged(); notifyObservers(new
+		 * EditionSchemeRemoved(anEditionScheme, this)); }
+		 */
 
-		public void setEditionSchemes(Vector<EditionScheme> someEditionScheme) {
-			editionSchemes = someEditionScheme;
-		}
-
-		@Override
-		public void addToEditionSchemes(EditionScheme anEditionScheme) {
-			anEditionScheme.setEditionPattern(this);
-			editionSchemes.add(anEditionScheme);
-			if (getVirtualModel() != null) {
-				getVirtualModel().notifyEditionSchemeModified();
-			}
-			setChanged();
-			notifyObservers(new EditionSchemeInserted(anEditionScheme, this));
-			anEditionScheme.updateBindingModels();
-		}
-
-		@Override
-		public void removeFromEditionSchemes(EditionScheme anEditionScheme) {
-			anEditionScheme.setEditionPattern(null);
-			editionSchemes.remove(anEditionScheme);
-			if (getVirtualModel() != null) {
-				getVirtualModel().notifyEditionSchemeModified();
-			}
-			setChanged();
-			notifyObservers(new EditionSchemeRemoved(anEditionScheme, this));
-		}*/
-
-		/*@Override
-		public Vector<EditionPatternConstraint> getEditionPatternConstraints() {
-			return editionPatternConstraints;
-		}
-
-		public void setEditionPatternConstraints(Vector<EditionPatternConstraint> someEditionPatternConstraint) {
-			editionPatternConstraints = someEditionPatternConstraint;
-		}
-
-		@Override
-		public void addToEditionPatternConstraints(EditionPatternConstraint anEditionPatternConstraint) {
-			anEditionPatternConstraint.setEditionPattern(this);
-			editionPatternConstraints.add(anEditionPatternConstraint);
-			setChanged();
-			notifyObservers(new EditionPatternConstraintInserted(anEditionPatternConstraint, this));
-		}
-
-		@Override
-		public void removeFromEditionPatternConstraints(EditionPatternConstraint anEditionPatternConstraint) {
-			anEditionPatternConstraint.setEditionPattern(null);
-			editionPatternConstraints.remove(anEditionPatternConstraint);
-			setChanged();
-			notifyObservers(new EditionPatternConstraintRemoved(anEditionPatternConstraint, this));
-		}*/
+		/*
+		 * @Override public Vector<EditionPatternConstraint>
+		 * getEditionPatternConstraints() { return editionPatternConstraints; }
+		 * 
+		 * public void
+		 * setEditionPatternConstraints(Vector<EditionPatternConstraint>
+		 * someEditionPatternConstraint) { editionPatternConstraints =
+		 * someEditionPatternConstraint; }
+		 * 
+		 * @Override public void
+		 * addToEditionPatternConstraints(EditionPatternConstraint
+		 * anEditionPatternConstraint) {
+		 * anEditionPatternConstraint.setEditionPattern(this);
+		 * editionPatternConstraints.add(anEditionPatternConstraint);
+		 * setChanged(); notifyObservers(new
+		 * EditionPatternConstraintInserted(anEditionPatternConstraint, this));
+		 * }
+		 * 
+		 * @Override public void
+		 * removeFromEditionPatternConstraints(EditionPatternConstraint
+		 * anEditionPatternConstraint) {
+		 * anEditionPatternConstraint.setEditionPattern(null);
+		 * editionPatternConstraints.remove(anEditionPatternConstraint);
+		 * setChanged(); notifyObservers(new
+		 * EditionPatternConstraintRemoved(anEditionPatternConstraint, this)); }
+		 */
 
 		public void createConstraint() {
-			EditionPatternConstraint constraint = getVirtualModelFactory().newEditionPatternConstraint();
+			EditionPatternConstraint constraint = getVirtualModelFactory()
+					.newEditionPatternConstraint();
 			addToEditionPatternConstraints(constraint);
 		}
 
@@ -445,10 +449,10 @@ public interface EditionPattern extends EditionPatternObject {
 			removeFromEditionPatternConstraints(constraint);
 		}
 
-		/*@Override
-		public List<PatternRole<?>> getPatternRoles() {
-			return patternRoles;
-		}*/
+		/*
+		 * @Override public List<PatternRole<?>> getPatternRoles() { return
+		 * patternRoles; }
+		 */
 
 		@Override
 		public void setPatternRoles(List<PatternRole<?>> somePatternRole) {
@@ -496,33 +500,27 @@ public interface EditionPattern extends EditionPatternObject {
 			return getPatternRoles(ClassPatternRole.class);
 		}
 
-		/*public List<GraphicalElementPatternRole> getGraphicalElementPatternRoles() {
-			return getPatternRoles(GraphicalElementPatternRole.class);
-		}
+		/*
+		 * public List<GraphicalElementPatternRole>
+		 * getGraphicalElementPatternRoles() { return
+		 * getPatternRoles(GraphicalElementPatternRole.class); }
+		 * 
+		 * public List<ShapePatternRole> getShapePatternRoles() { return
+		 * getPatternRoles(ShapePatternRole.class); }
+		 * 
+		 * public List<ConnectorPatternRole> getConnectorPatternRoles() { return
+		 * getPatternRoles(ConnectorPatternRole.class); }
+		 */
 
-		public List<ShapePatternRole> getShapePatternRoles() {
-			return getPatternRoles(ShapePatternRole.class);
-		}
-
-		public List<ConnectorPatternRole> getConnectorPatternRoles() {
-			return getPatternRoles(ConnectorPatternRole.class);
-		}*/
-
-		/*public ShapePatternRole getDefaultShapePatternRole() {
-			List<ShapePatternRole> l = getShapePatternRoles();
-			if (l.size() > 0) {
-				return l.get(0);
-			}
-			return null;
-		}
-
-		public ConnectorPatternRole getDefaultConnectorPatternRole() {
-			List<ConnectorPatternRole> l = getConnectorPatternRoles();
-			if (l.size() > 0) {
-				return l.get(0);
-			}
-			return null;
-		}*/
+		/*
+		 * public ShapePatternRole getDefaultShapePatternRole() {
+		 * List<ShapePatternRole> l = getShapePatternRoles(); if (l.size() > 0)
+		 * { return l.get(0); } return null; }
+		 * 
+		 * public ConnectorPatternRole getDefaultConnectorPatternRole() {
+		 * List<ConnectorPatternRole> l = getConnectorPatternRoles(); if
+		 * (l.size() > 0) { return l.get(0); } return null; }
+		 */
 
 		private Vector<String> availablePatternRoleNames = null;
 
@@ -553,18 +551,17 @@ public interface EditionPattern extends EditionPatternObject {
 			return aPatternRole;
 		}
 
-		/*public PatternRole<?> getPatternRole(String patternRole) {
-			for (PatternRole pr : patternRoles) {
-				if (pr.getPatternRoleName() != null && pr.getPatternRoleName().equals(patternRole)) {
-					return pr;
-				}
-			}
-			return null;
-		}*/
+		/*
+		 * public PatternRole<?> getPatternRole(String patternRole) { for
+		 * (PatternRole pr : patternRoles) { if (pr.getPatternRoleName() != null
+		 * && pr.getPatternRoleName().equals(patternRole)) { return pr; } }
+		 * return null; }
+		 */
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <ES extends EditionScheme> List<ES> getEditionSchemes(Class<ES> editionSchemeClass) {
+		public <ES extends EditionScheme> List<ES> getEditionSchemes(
+				Class<ES> editionSchemeClass) {
 			List<ES> returned = new ArrayList<ES>();
 			for (EditionScheme es : getEditionSchemes()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
@@ -661,7 +658,8 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public CreationScheme createCreationScheme() {
-			CreationScheme newCreationScheme = getVirtualModelFactory().newCreationScheme();
+			CreationScheme newCreationScheme = getVirtualModelFactory()
+					.newCreationScheme();
 			newCreationScheme.setEditionPattern(this);
 			newCreationScheme.setName("creation");
 			addToEditionSchemes(newCreationScheme);
@@ -670,7 +668,8 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public CloningScheme createCloningScheme() {
-			CloningScheme newCloningScheme = getVirtualModelFactory().newCloningScheme();
+			CloningScheme newCloningScheme = getVirtualModelFactory()
+					.newCloningScheme();
 			newCloningScheme.setEditionPattern(this);
 			newCloningScheme.setName("clone");
 			addToEditionSchemes(newCloningScheme);
@@ -679,7 +678,8 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public ActionScheme createActionScheme() {
-			ActionScheme newActionScheme = getVirtualModelFactory().newActionScheme();
+			ActionScheme newActionScheme = getVirtualModelFactory()
+					.newActionScheme();
 			newActionScheme.setEditionPattern(this);
 			newActionScheme.setName("action");
 			addToEditionSchemes(newActionScheme);
@@ -688,7 +688,8 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public NavigationScheme createNavigationScheme() {
-			NavigationScheme newNavigationScheme = getVirtualModelFactory().newNavigationScheme();
+			NavigationScheme newNavigationScheme = getVirtualModelFactory()
+					.newNavigationScheme();
 			newNavigationScheme.setEditionPattern(this);
 			newNavigationScheme.setName("navigation");
 			addToEditionSchemes(newNavigationScheme);
@@ -718,34 +719,38 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public DeletionScheme generateDefaultDeletionScheme() {
-			DeletionScheme newDeletionScheme = getVirtualModelFactory().newDeletionScheme();
+			DeletionScheme newDeletionScheme = getVirtualModelFactory()
+					.newDeletionScheme();
 			newDeletionScheme.setName("deletion");
 			Vector<PatternRole> rolesToDelete = new Vector<PatternRole>();
 			for (PatternRole pr : getPatternRoles()) {
-				if (/*pr instanceof GraphicalElementPatternRole ||*/pr instanceof IndividualPatternRole /*|| pr instanceof StatementPatternRole*/) {
+				if (/* pr instanceof GraphicalElementPatternRole || */pr instanceof IndividualPatternRole /*
+																										 * ||
+																										 * pr
+																										 * instanceof
+																										 * StatementPatternRole
+																										 */) {
 					rolesToDelete.add(pr);
 				}
 			}
 			Collections.sort(rolesToDelete, new Comparator<PatternRole>() {
 				@Override
 				public int compare(PatternRole o1, PatternRole o2) {
-					/*if (o1 instanceof ShapePatternRole && o2 instanceof ConnectorPatternRole) {
-						return 1;
-					} else if (o1 instanceof ConnectorPatternRole && o2 instanceof ShapePatternRole) {
-						return -1;
-					}*/
+					/*
+					 * if (o1 instanceof ShapePatternRole && o2 instanceof
+					 * ConnectorPatternRole) { return 1; } else if (o1
+					 * instanceof ConnectorPatternRole && o2 instanceof
+					 * ShapePatternRole) { return -1; }
+					 */
 
-					/*if (o1 instanceof ShapePatternRole) {
-						if (o2 instanceof ShapePatternRole) {
-							if (((ShapePatternRole) o1).isEmbeddedIn((ShapePatternRole) o2)) {
-								return -1;
-							}
-							if (((ShapePatternRole) o2).isEmbeddedIn((ShapePatternRole) o1)) {
-								return 1;
-							}
-							return 0;
-						}
-					}*/
+					/*
+					 * if (o1 instanceof ShapePatternRole) { if (o2 instanceof
+					 * ShapePatternRole) { if (((ShapePatternRole)
+					 * o1).isEmbeddedIn((ShapePatternRole) o2)) { return -1; }
+					 * if (((ShapePatternRole)
+					 * o2).isEmbeddedIn((ShapePatternRole) o1)) { return 1; }
+					 * return 0; } }
+					 */
 					return 0;
 				}
 
@@ -761,8 +766,10 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public EditionPatternInspector getInspector() {
-			if (inspector == null) {
-				inspector = EditionPatternInspectorImpl.makeEditionPatternInspector(this);
+			if (inspector == null && getVirtualModelFactory() != null) {
+				inspector = getVirtualModelFactory()
+						.newEditionPatternInspector(this);
+				inspector.setInspectorTitle(getName());
 			}
 			return inspector;
 		}
@@ -800,11 +807,11 @@ public interface EditionPattern extends EditionPatternObject {
 			updateBindingModel();
 		}
 
-		/*public void finalizeParentEditionPatternDeserialization() {
-			if (StringUtils.isNotEmpty(parentEditionPatternURI)) {
-				setParentEditionPattern(getParentEditionPattern());
-			}
-		}*/
+		/*
+		 * public void finalizeParentEditionPatternDeserialization() { if
+		 * (StringUtils.isNotEmpty(parentEditionPatternURI)) {
+		 * setParentEditionPattern(getParentEditionPattern()); } }
+		 */
 
 		public void debug() {
 			System.out.println(getStringRepresentation());
@@ -842,7 +849,9 @@ public interface EditionPattern extends EditionPatternObject {
 		private void createBindingModel() {
 			_bindingModel = new BindingModel();
 			for (PatternRole role : getPatternRoles()) {
-				_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
+				_bindingModel
+						.addToBindingVariables(new PatternRoleBindingVariable(
+								role));
 			}
 			notifyBindingModelChanged();
 		}
@@ -850,7 +859,8 @@ public interface EditionPattern extends EditionPatternObject {
 		@Override
 		public void notifyBindingModelChanged() {
 			super.notifyBindingModelChanged();
-			// SGU: as all pattern roles share the edition pattern binding model, they should
+			// SGU: as all pattern roles share the edition pattern binding
+			// model, they should
 			// all notify change of their binding models
 			for (PatternRole pr : getPatternRoles()) {
 				pr.notifyBindingModelChanged();
@@ -858,66 +868,55 @@ public interface EditionPattern extends EditionPatternObject {
 			getInspector().notifyBindingModelChanged();
 		}
 
-		/*public OntologicObjectPatternRole getDefaultPrimaryConceptRole() {
-			List<OntologicObjectPatternRole> roles = getPatternRoles(OntologicObjectPatternRole.class);
-			if (roles.size() > 0) {
-				return roles.get(0);
-			}
-			return null;
-		}*/
+		/*
+		 * public OntologicObjectPatternRole getDefaultPrimaryConceptRole() {
+		 * List<OntologicObjectPatternRole> roles =
+		 * getPatternRoles(OntologicObjectPatternRole.class); if (roles.size() >
+		 * 0) { return roles.get(0); } return null; }
+		 */
 
-		/*public GraphicalElementPatternRole getDefaultPrimaryRepresentationRole() {
-			List<GraphicalElementPatternRole> roles = getPatternRoles(GraphicalElementPatternRole.class);
-			if (roles.size() > 0) {
-				return roles.get(0);
-			}
-			return null;
-		}*/
+		/*
+		 * public GraphicalElementPatternRole
+		 * getDefaultPrimaryRepresentationRole() {
+		 * List<GraphicalElementPatternRole> roles =
+		 * getPatternRoles(GraphicalElementPatternRole.class); if (roles.size()
+		 * > 0) { return roles.get(0); } return null; }
+		 */
 
-		/*public OntologicObjectPatternRole getPrimaryConceptRole() {
-			if (primaryConceptRole == null) {
-				return getDefaultPrimaryConceptRole();
-			}
-			return primaryConceptRole;
-		}
+		/*
+		 * public OntologicObjectPatternRole getPrimaryConceptRole() { if
+		 * (primaryConceptRole == null) { return getDefaultPrimaryConceptRole();
+		 * } return primaryConceptRole; }
+		 * 
+		 * public void setPrimaryConceptRole(OntologicObjectPatternRole
+		 * primaryConceptRole) { this.primaryConceptRole = primaryConceptRole; }
+		 * 
+		 * public GraphicalElementPatternRole getPrimaryRepresentationRole() {
+		 * if (primaryRepresentationRole == null) { return
+		 * getDefaultPrimaryRepresentationRole(); } return
+		 * primaryRepresentationRole; }
+		 * 
+		 * public void setPrimaryRepresentationRole(GraphicalElementPatternRole
+		 * primaryRepresentationRole) { this.primaryRepresentationRole =
+		 * primaryRepresentationRole; }
+		 */
 
-		public void setPrimaryConceptRole(OntologicObjectPatternRole primaryConceptRole) {
-			this.primaryConceptRole = primaryConceptRole;
-		}
-
-		public GraphicalElementPatternRole getPrimaryRepresentationRole() {
-			if (primaryRepresentationRole == null) {
-				return getDefaultPrimaryRepresentationRole();
-			}
-			return primaryRepresentationRole;
-		}
-
-		public void setPrimaryRepresentationRole(GraphicalElementPatternRole primaryRepresentationRole) {
-			this.primaryRepresentationRole = primaryRepresentationRole;
-		}*/
-
-		/*@Override
-		public String simpleRepresentation() {
-			return "EditionPattern:" + FlexoLocalization.localizedForKey(getLocalizedDictionary(), getName());
-		}
-
-		@Override
-		public String fullQualifiedRepresentation() {
-			return simpleRepresentation();
-		}
-
-		@Override
-		public Class getBaseClass() {
-			return EditionPattern.class;
-		}
-
-		@Override
-		public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-			if (aType instanceof EditionPattern) {
-				return isAssignableFrom((EditionPattern) aType);
-			}
-			return aType == this;
-		}*/
+		/*
+		 * @Override public String simpleRepresentation() { return
+		 * "EditionPattern:" +
+		 * FlexoLocalization.localizedForKey(getLocalizedDictionary(),
+		 * getName()); }
+		 * 
+		 * @Override public String fullQualifiedRepresentation() { return
+		 * simpleRepresentation(); }
+		 * 
+		 * @Override public Class getBaseClass() { return EditionPattern.class;
+		 * }
+		 * 
+		 * @Override public boolean isTypeAssignableFrom(Type aType, boolean
+		 * permissive) { if (aType instanceof EditionPattern) { return
+		 * isAssignableFrom((EditionPattern) aType); } return aType == this; }
+		 */
 
 		/**
 		 * Duplicates this EditionPattern, given a new name<br>
@@ -939,93 +938,99 @@ public interface EditionPattern extends EditionPatternObject {
 			return getParentEditionPatterns().size() == 0;
 		}
 
-		/*private String parentEditionPatternURI;
+		/*
+		 * private String parentEditionPatternURI;
+		 * 
+		 * @Override public String getParentEditionPatternURI() { if
+		 * (getParentEditionPattern() != null) { return
+		 * getParentEditionPattern().getURI(); } return parentEditionPatternURI;
+		 * }
+		 * 
+		 * @Override public void _setParentEditionPatternURI(String
+		 * aParentEditionPatternURI) { parentEditionPatternURI =
+		 * aParentEditionPatternURI; }
+		 * 
+		 * @Override public EditionPattern getParentEditionPattern() { if
+		 * (parentEditionPattern == null &&
+		 * StringUtils.isNotEmpty(parentEditionPatternURI)) { if
+		 * (getVirtualModel() != null) {
+		 * setParentEditionPattern(getVirtualModel(
+		 * ).getEditionPattern(parentEditionPatternURI)); } } return
+		 * parentEditionPattern; }
+		 * 
+		 * public void setParentEditionPattern(EditionPattern aParentEP) { if
+		 * (this.parentEditionPattern != aParentEP) { if (aParentEP == null) {
+		 * this.parentEditionPattern.childEditionPatterns.remove(this);
+		 * this.parentEditionPattern = aParentEP; if (this.parentEditionPattern
+		 * != null) { this.parentEditionPattern.setChanged();
+		 * this.parentEditionPattern.notifyObservers(new
+		 * EditionPatternHierarchyChanged(this));
+		 * this.parentEditionPattern.notifyChange("childEditionPatterns", null,
+		 * getChildEditionPatterns()); } } else {
+		 * aParentEP.childEditionPatterns.add(this); this.parentEditionPattern =
+		 * aParentEP; aParentEP.setChanged(); aParentEP.notifyObservers(new
+		 * EditionPatternHierarchyChanged(this));
+		 * aParentEP.notifyChange("childEditionPatterns", null,
+		 * getChildEditionPatterns()); } if (getVirtualModel() != null) {
+		 * getVirtualModel().setChanged(); getVirtualModel().notifyObservers(new
+		 * EditionPatternHierarchyChanged(this));
+		 * getVirtualModel().notifyChange("allRootEditionPatterns", null,
+		 * getVirtualModel().getAllRootEditionPatterns()); } } }
+		 */
 
 		@Override
-		public String getParentEditionPatternURI() {
-			if (getParentEditionPattern() != null) {
-				return getParentEditionPattern().getURI();
-			}
-			return parentEditionPatternURI;
+		public void setParentEditionPatterns(
+				List<EditionPattern> parentEditionPatterns) {
+			performSuperSetter(PARENT_EDITION_PATTERNS_KEY,
+					parentEditionPatterns);
+			/*
+			 * if (getVirtualModel() != null) { getVirtualModel().setChanged();
+			 * getVirtualModel().notifyObservers(new
+			 * EditionPatternHierarchyChanged(this));
+			 * getVirtualModel().notifyChange("allRootEditionPatterns", null,
+			 * getVirtualModel().getAllRootEditionPatterns()); }
+			 */
 		}
 
 		@Override
-		public void _setParentEditionPatternURI(String aParentEditionPatternURI) {
-			parentEditionPatternURI = aParentEditionPatternURI;
-		}
-
-		@Override
-		public EditionPattern getParentEditionPattern() {
-			if (parentEditionPattern == null && StringUtils.isNotEmpty(parentEditionPatternURI)) {
-				if (getVirtualModel() != null) {
-					setParentEditionPattern(getVirtualModel().getEditionPattern(parentEditionPatternURI));
-				}
-			}
-			return parentEditionPattern;
-		}
-
-		public void setParentEditionPattern(EditionPattern aParentEP) {
-			if (this.parentEditionPattern != aParentEP) {
-				if (aParentEP == null) {
-					this.parentEditionPattern.childEditionPatterns.remove(this);
-					this.parentEditionPattern = aParentEP;
-					if (this.parentEditionPattern != null) {
-						this.parentEditionPattern.setChanged();
-						this.parentEditionPattern.notifyObservers(new EditionPatternHierarchyChanged(this));
-						this.parentEditionPattern.notifyChange("childEditionPatterns", null, getChildEditionPatterns());
-					}
-				} else {
-					aParentEP.childEditionPatterns.add(this);
-					this.parentEditionPattern = aParentEP;
-					aParentEP.setChanged();
-					aParentEP.notifyObservers(new EditionPatternHierarchyChanged(this));
-					aParentEP.notifyChange("childEditionPatterns", null, getChildEditionPatterns());
-				}
-				if (getVirtualModel() != null) {
-					getVirtualModel().setChanged();
-					getVirtualModel().notifyObservers(new EditionPatternHierarchyChanged(this));
-					getVirtualModel().notifyChange("allRootEditionPatterns", null, getVirtualModel().getAllRootEditionPatterns());
-				}
-			}
-		}*/
-
-		@Override
-		public void setParentEditionPatterns(List<EditionPattern> parentEditionPatterns) {
-			performSuperSetter(PARENT_EDITION_PATTERNS_KEY, parentEditionPatterns);
-			/*if (getVirtualModel() != null) {
-				getVirtualModel().setChanged();
-				getVirtualModel().notifyObservers(new EditionPatternHierarchyChanged(this));
-				getVirtualModel().notifyChange("allRootEditionPatterns", null, getVirtualModel().getAllRootEditionPatterns());
-			}*/
-		}
-
-		@Override
-		public void addToParentEditionPatterns(EditionPattern parentEditionPattern) {
+		public void addToParentEditionPatterns(
+				EditionPattern parentEditionPattern) {
 			performSuperAdder(PARENT_EDITION_PATTERNS_KEY, parentEditionPattern);
-			/*parentEditionPattern.setChanged();
-			parentEditionPattern.notifyObservers(new EditionPatternHierarchyChanged(this));
-			parentEditionPattern.notifyChange("childEditionPatterns", null, getChildEditionPatterns());*/
+			/*
+			 * parentEditionPattern.setChanged();
+			 * parentEditionPattern.notifyObservers(new
+			 * EditionPatternHierarchyChanged(this));
+			 * parentEditionPattern.notifyChange("childEditionPatterns", null,
+			 * getChildEditionPatterns());
+			 */
 		}
 
 		@Override
-		public void removeFromParentEditionPatterns(EditionPattern parentEditionPattern) {
-			performSuperRemover(PARENT_EDITION_PATTERNS_KEY, parentEditionPattern);
-			/*parentEditionPattern.setChanged();
-			parentEditionPattern.notifyObservers(new EditionPatternHierarchyChanged(this));
-			parentEditionPattern.notifyChange("childEditionPatterns", null, getChildEditionPatterns());*/
+		public void removeFromParentEditionPatterns(
+				EditionPattern parentEditionPattern) {
+			performSuperRemover(PARENT_EDITION_PATTERNS_KEY,
+					parentEditionPattern);
+			/*
+			 * parentEditionPattern.setChanged();
+			 * parentEditionPattern.notifyObservers(new
+			 * EditionPatternHierarchyChanged(this));
+			 * parentEditionPattern.notifyChange("childEditionPatterns", null,
+			 * getChildEditionPatterns());
+			 */
 		}
 
-		/*@Override
-		public Vector<EditionPattern> getChildEditionPatterns() {
-			return childEditionPatterns;
-		}*/
+		/*
+		 * @Override public Vector<EditionPattern> getChildEditionPatterns() {
+		 * return childEditionPatterns; }
+		 */
 
 		@Override
 		public boolean isAssignableFrom(EditionPattern editionPattern) {
 			if (editionPattern == this) {
 				return true;
 			}
-			for (EditionPattern parent : editionPattern.getParentEditionPatterns()) {
+			for (EditionPattern parent : editionPattern
+					.getParentEditionPatterns()) {
 				if (isAssignableFrom(parent)) {
 					return true;
 				}
@@ -1070,54 +1075,69 @@ public interface EditionPattern extends EditionPatternObject {
 
 	}
 
-	public static class EditionPatternShouldHaveRoles extends ValidationRule<EditionPatternShouldHaveRoles, EditionPattern> {
+	public static class EditionPatternShouldHaveRoles extends
+			ValidationRule<EditionPatternShouldHaveRoles, EditionPattern> {
 		public EditionPatternShouldHaveRoles() {
 			super(EditionPattern.class, "edition_pattern_should_have_roles");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveRoles, EditionPattern> applyValidation(EditionPattern editionPattern) {
-			if (!(editionPattern instanceof VirtualModel) && editionPattern.getPatternRoles().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveRoles, EditionPattern>(this, editionPattern,
+		public ValidationIssue<EditionPatternShouldHaveRoles, EditionPattern> applyValidation(
+				EditionPattern editionPattern) {
+			if (!(editionPattern instanceof VirtualModel)
+					&& editionPattern.getPatternRoles().size() == 0) {
+				return new ValidationWarning<EditionPatternShouldHaveRoles, EditionPattern>(
+						this, editionPattern,
 						"edition_pattern_role_has_no_role");
 			}
 			return null;
 		}
 	}
 
-	public static class EditionPatternShouldHaveEditionSchemes extends
+	public static class EditionPatternShouldHaveEditionSchemes
+			extends
 			ValidationRule<EditionPatternShouldHaveEditionSchemes, EditionPattern> {
 		public EditionPatternShouldHaveEditionSchemes() {
-			super(EditionPattern.class, "edition_pattern_should_have_edition_scheme");
+			super(EditionPattern.class,
+					"edition_pattern_should_have_edition_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveEditionSchemes, EditionPattern> applyValidation(EditionPattern editionPattern) {
+		public ValidationIssue<EditionPatternShouldHaveEditionSchemes, EditionPattern> applyValidation(
+				EditionPattern editionPattern) {
 			if (editionPattern.getEditionSchemes().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveEditionSchemes, EditionPattern>(this, editionPattern,
+				return new ValidationWarning<EditionPatternShouldHaveEditionSchemes, EditionPattern>(
+						this, editionPattern,
 						"edition_pattern_has_no_edition_scheme");
 			}
 			return null;
 		}
 	}
 
-	public static class EditionPatternShouldHaveDeletionScheme extends
+	public static class EditionPatternShouldHaveDeletionScheme
+			extends
 			ValidationRule<EditionPatternShouldHaveDeletionScheme, EditionPattern> {
 		public EditionPatternShouldHaveDeletionScheme() {
-			super(EditionPattern.class, "edition_pattern_should_have_deletion_scheme");
+			super(EditionPattern.class,
+					"edition_pattern_should_have_deletion_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveDeletionScheme, EditionPattern> applyValidation(EditionPattern editionPattern) {
+		public ValidationIssue<EditionPatternShouldHaveDeletionScheme, EditionPattern> applyValidation(
+				EditionPattern editionPattern) {
 			if (editionPattern.getDeletionSchemes().size() == 0) {
-				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(editionPattern);
-				return new ValidationWarning<EditionPatternShouldHaveDeletionScheme, EditionPattern>(this, editionPattern,
+				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(
+						editionPattern);
+				return new ValidationWarning<EditionPatternShouldHaveDeletionScheme, EditionPattern>(
+						this, editionPattern,
 						"edition_pattern_has_no_deletion_scheme", fixProposal);
 			}
 			return null;
 		}
 
-		protected static class CreateDefaultDeletionScheme extends FixProposal<EditionPatternShouldHaveDeletionScheme, EditionPattern> {
+		protected static class CreateDefaultDeletionScheme
+				extends
+				FixProposal<EditionPatternShouldHaveDeletionScheme, EditionPattern> {
 
 			private final EditionPattern editionPattern;
 			private DeletionScheme newDefaultDeletionScheme;
@@ -1137,9 +1157,11 @@ public interface EditionPattern extends EditionPatternObject {
 
 			@Override
 			protected void fixAction() {
-				newDefaultDeletionScheme = editionPattern.createDeletionScheme();
+				newDefaultDeletionScheme = editionPattern
+						.createDeletionScheme();
 				// AddIndividual action = getObject();
-				// action.setAssignation(new ViewPointDataBinding(patternRole.getPatternRoleName()));
+				// action.setAssignation(new
+				// ViewPointDataBinding(patternRole.getPatternRoleName()));
 			}
 
 		}

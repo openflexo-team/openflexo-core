@@ -31,6 +31,8 @@ import org.openflexo.foundation.viewpoint.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.converter.DataBindingConverter;
+import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -44,9 +46,17 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public class VirtualModelModelFactory extends ModelFactory {
 
+	public VirtualModelModelFactory() throws ModelDefinitionException {
+		super(ModelContextLibrary.getModelContext(VirtualModel.class));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+	}
+
 	public VirtualModelModelFactory(VirtualModelResource virtualModelResource) throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModel.class));
 		addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
 	}
 
 	public VirtualModel newVirtualModel() {

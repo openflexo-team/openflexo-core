@@ -37,15 +37,24 @@ import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.ActionScheme;
+import org.openflexo.foundation.viewpoint.CloningScheme;
+import org.openflexo.foundation.viewpoint.CreationScheme;
+import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FetchRequest;
 import org.openflexo.foundation.viewpoint.NamedViewPointObject;
+import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
+import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -69,6 +78,7 @@ import org.openflexo.model.annotations.XMLAttribute;
  * */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
+@Imports({ @Import(VirtualModelModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
 public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)

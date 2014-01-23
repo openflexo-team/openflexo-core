@@ -21,6 +21,8 @@ package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.converter.DataBindingConverter;
+import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -34,8 +36,16 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public class ViewPointModelFactory extends ModelFactory {
 
+	public ViewPointModelFactory() throws ModelDefinitionException {
+		super(ModelContextLibrary.getModelContext(ViewPoint.class));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+	}
+
 	public ViewPointModelFactory(ViewPointResource viewPointResource) throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(ViewPoint.class));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
 		addConverter(new RelativePathFileConverter(viewPointResource.getDirectory()));
 	}
 }

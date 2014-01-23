@@ -103,9 +103,12 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
 
-	public static abstract class EditionPatternInspectorImpl extends EditionPatternObjectImpl implements EditionPatternInspector {
+	public static abstract class EditionPatternInspectorImpl extends
+			EditionPatternObjectImpl implements EditionPatternInspector {
 
-		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInspector.class.getPackage().toString());
+		private static final Logger logger = FlexoLogger
+				.getLogger(EditionPatternInspector.class.getPackage()
+						.toString());
 
 		private String inspectorTitle;
 		private EditionPattern _editionPattern;
@@ -114,12 +117,14 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 		private final EditionPatternFormatter formatter;
 
-		public static EditionPatternInspector makeEditionPatternInspector(EditionPattern ep) {
-			EditionPatternInspector returned = ep.getVirtualModelFactory().newEditionPatternInspector(ep);
-			returned.setInspectorTitle(ep.getName());
-			ep.setInspector(returned);
-			return returned;
-		}
+		/*
+		 * public static EditionPatternInspector
+		 * makeEditionPatternInspector(EditionPattern ep) {
+		 * EditionPatternInspector returned =
+		 * ep.getVirtualModelFactory().newEditionPatternInspector(ep);
+		 * returned.setInspectorTitle(ep.getName()); ep.setInspector(returned);
+		 * return returned; }
+		 */
 
 		public EditionPatternInspectorImpl() {
 			super();
@@ -195,7 +200,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public TextFieldInspectorEntry createNewTextField() {
-			TextFieldInspectorEntry newEntry = getVirtualModelFactory().newTextFieldInspectorEntry();
+			TextFieldInspectorEntry newEntry = getVirtualModelFactory()
+					.newTextFieldInspectorEntry();
 			newEntry.setName("textfield");
 			// newEntry.setLabel("textfield");
 			addToEntries(newEntry);
@@ -203,7 +209,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public TextAreaInspectorEntry createNewTextArea() {
-			TextAreaInspectorEntry newEntry = getVirtualModelFactory().newTextAreaInspectorEntry();
+			TextAreaInspectorEntry newEntry = getVirtualModelFactory()
+					.newTextAreaInspectorEntry();
 			newEntry.setName("textarea");
 			// newEntry.setLabel("textarea");
 			addToEntries(newEntry);
@@ -211,7 +218,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public IntegerInspectorEntry createNewInteger() {
-			IntegerInspectorEntry newEntry = getVirtualModelFactory().newIntegerInspectorEntry();
+			IntegerInspectorEntry newEntry = getVirtualModelFactory()
+					.newIntegerInspectorEntry();
 			newEntry.setName("integer");
 			// newEntry.setLabel("integer");
 			addToEntries(newEntry);
@@ -219,7 +227,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public CheckboxInspectorEntry createNewCheckbox() {
-			CheckboxInspectorEntry newEntry = getVirtualModelFactory().newCheckboxInspectorEntry();
+			CheckboxInspectorEntry newEntry = getVirtualModelFactory()
+					.newCheckboxInspectorEntry();
 			newEntry.setName("checkbox");
 			// newEntry.setLabel("checkbox");
 			addToEntries(newEntry);
@@ -227,7 +236,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public IndividualInspectorEntry createNewIndividual() {
-			IndividualInspectorEntry newEntry = getVirtualModelFactory().newIndividualInspectorEntry();
+			IndividualInspectorEntry newEntry = getVirtualModelFactory()
+					.newIndividualInspectorEntry();
 			newEntry.setName("individual");
 			// newEntry.setLabel("individual");
 			addToEntries(newEntry);
@@ -235,7 +245,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public ClassInspectorEntry createNewClass() {
-			ClassInspectorEntry newEntry = getVirtualModelFactory().newClassInspectorEntry();
+			ClassInspectorEntry newEntry = getVirtualModelFactory()
+					.newClassInspectorEntry();
 			newEntry.setName("class");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -243,7 +254,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public PropertyInspectorEntry createNewProperty() {
-			PropertyInspectorEntry newEntry = getVirtualModelFactory().newPropertyInspectorEntry();
+			PropertyInspectorEntry newEntry = getVirtualModelFactory()
+					.newPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -251,7 +263,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public ObjectPropertyInspectorEntry createNewObjectProperty() {
-			ObjectPropertyInspectorEntry newEntry = getVirtualModelFactory().newObjectPropertyInspectorEntry();
+			ObjectPropertyInspectorEntry newEntry = getVirtualModelFactory()
+					.newObjectPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -259,20 +272,20 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		public DataPropertyInspectorEntry createNewDataProperty() {
-			DataPropertyInspectorEntry newEntry = getVirtualModelFactory().newDataPropertyInspectorEntry();
+			DataPropertyInspectorEntry newEntry = getVirtualModelFactory()
+					.newDataPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
-		/*public FlexoObjectInspectorEntry createNewFlexoObject() {
-			FlexoObjectInspectorEntry newEntry = new FlexoObjectInspectorEntry();
-			newEntry.setName("flexoObject");
-			// newEntry.setLabel("flexoObject");
-			addToEntries(newEntry);
-			return newEntry;
-		}*/
+		/*
+		 * public FlexoObjectInspectorEntry createNewFlexoObject() {
+		 * FlexoObjectInspectorEntry newEntry = new FlexoObjectInspectorEntry();
+		 * newEntry.setName("flexoObject"); // newEntry.setLabel("flexoObject");
+		 * addToEntries(newEntry); return newEntry; }
+		 */
 
 		public InspectorEntry deleteEntry(InspectorEntry entry) {
 			removeFromEntries(entry);
@@ -283,7 +296,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		@Override
 		public void notifyBindingModelChanged() {
 			super.notifyBindingModelChanged();
-			// SGU: as all entries share the edition pattern binding model, they should
+			// SGU: as all entries share the edition pattern binding model, they
+			// should
 			// all notify change of their binding models
 			for (InspectorEntry entry : getEntries()) {
 				entry.notifyBindingModelChanged();
@@ -293,24 +307,24 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		@Override
 		public final BindingModel getBindingModel() {
 			return getEditionPattern().getBindingModel();
-			/*if (_bindingModel == null) {
-				createBindingModel();
-			}
-			return _bindingModel;*/
+			/*
+			 * if (_bindingModel == null) { createBindingModel(); } return
+			 * _bindingModel;
+			 */
 		}
 
-		/*public void updateBindingModel() {
-			logger.fine("updateBindingModel()");
-			_bindingModel = null;
-			createBindingModel();
-		}
-
-		private void createBindingModel() {
-			_bindingModel = new BindingModel();
-			for (PatternRole role : getEditionPattern().getPatternRoles()) {
-				_bindingModel.addToBindingVariables(PatternRolePathElement.makePatternRolePathElement(role, (EditionPatternInstance) null));
-			}
-		}*/
+		/*
+		 * public void updateBindingModel() {
+		 * logger.fine("updateBindingModel()"); _bindingModel = null;
+		 * createBindingModel(); }
+		 * 
+		 * private void createBindingModel() { _bindingModel = new
+		 * BindingModel(); for (PatternRole role :
+		 * getEditionPattern().getPatternRoles()) {
+		 * _bindingModel.addToBindingVariables
+		 * (PatternRolePathElement.makePatternRolePathElement(role,
+		 * (EditionPatternInstance) null)); } }
+		 */
 
 		public void entryFirst(InspectorEntry p) {
 			entries.remove(p);
@@ -353,7 +367,8 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<String>(formatter, String.class, BindingDefinitionType.GET);
+				renderer = new DataBinding<String>(formatter, String.class,
+						BindingDefinitionType.GET);
 				renderer.setBindingName("renderer");
 			}
 			return renderer;
@@ -393,26 +408,32 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 			private void createFormatterBindingModel() {
 				formatterBindingModel = new BindingModel();
-				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", EditionPatternInstanceType
-						.getEditionPatternInstanceType(getEditionPattern())) {
-					@Override
-					public Type getType() {
-						return EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPattern());
-					}
-				});
+				formatterBindingModel
+						.addToBindingVariables(new BindingVariable(
+								"instance",
+								EditionPatternInstanceType
+										.getEditionPatternInstanceType(getEditionPattern())) {
+							@Override
+							public Type getType() {
+								return EditionPatternInstanceType
+										.getEditionPatternInstanceType(getEditionPattern());
+							}
+						});
 			}
 
 			@Override
 			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this.notifiedBindingChanged(dataBinding);
+					EditionPatternInspectorImpl.this
+							.notifiedBindingChanged(dataBinding);
 				}
 			}
 
 			@Override
 			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this.notifiedBindingDecoded(dataBinding);
+					EditionPatternInspectorImpl.this
+							.notifiedBindingDecoded(dataBinding);
 				}
 			}
 

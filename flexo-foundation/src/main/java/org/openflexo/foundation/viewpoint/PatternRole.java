@@ -22,6 +22,31 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.fib.model.FIBBrowser;
+import org.openflexo.fib.model.FIBButton;
+import org.openflexo.fib.model.FIBCheckBox;
+import org.openflexo.fib.model.FIBCheckboxList;
+import org.openflexo.fib.model.FIBColor;
+import org.openflexo.fib.model.FIBCustom;
+import org.openflexo.fib.model.FIBDropDown;
+import org.openflexo.fib.model.FIBEditor;
+import org.openflexo.fib.model.FIBEditorPane;
+import org.openflexo.fib.model.FIBFile;
+import org.openflexo.fib.model.FIBFont;
+import org.openflexo.fib.model.FIBHtmlEditor;
+import org.openflexo.fib.model.FIBImage;
+import org.openflexo.fib.model.FIBLabel;
+import org.openflexo.fib.model.FIBList;
+import org.openflexo.fib.model.FIBNumber;
+import org.openflexo.fib.model.FIBPanel;
+import org.openflexo.fib.model.FIBRadioButtonList;
+import org.openflexo.fib.model.FIBReferencedComponent;
+import org.openflexo.fib.model.FIBSplitPanel;
+import org.openflexo.fib.model.FIBTab;
+import org.openflexo.fib.model.FIBTabPanel;
+import org.openflexo.fib.model.FIBTable;
+import org.openflexo.fib.model.FIBTextArea;
+import org.openflexo.fib.model.FIBTextField;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.validation.ValidationError;
@@ -32,6 +57,8 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -49,6 +76,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(PatternRole.PatternRoleImpl.class)
+@Imports({ @Import(EditionPatternInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
 public abstract interface PatternRole<T> extends EditionPatternObject {
 
 	@PropertyIdentifier(type = EditionPattern.class)

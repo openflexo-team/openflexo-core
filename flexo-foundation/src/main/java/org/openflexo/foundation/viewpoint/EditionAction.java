@@ -42,6 +42,8 @@ import org.openflexo.foundation.view.action.NavigationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -58,6 +60,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
+@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddEditionPatternInstance.class), @Import(DeclarePatternRole.class), @Import(ExecutionAction.class), @Import(SelectEditionPatternInstance.class), @Import(SelectIndividual.class), @Import(MatchEditionPatternInstance.class), @Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(FetchRequestIterationAction.class)  })
 public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends EditionSchemeObject {
 
 	@PropertyIdentifier(type = ActionContainer.class)

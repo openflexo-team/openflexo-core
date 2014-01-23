@@ -3495,4 +3495,10 @@ public class FlexoProject extends ResourceRepository<FlexoResource<?>> implement
 		}
 		return false;
 	}
+	
+	public File getExpectedViewPointDirectory() {
+		return new File(getProjectDirectory(),VIEWPOINT_EXPECTED_DIRECTORY);
+	}
+	
+	public static final String VIEWPOINT_EXPECTED_DIRECTORY = "Viewpoints";
 }

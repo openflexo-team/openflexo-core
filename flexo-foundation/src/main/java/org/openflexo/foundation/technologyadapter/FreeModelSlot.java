@@ -19,7 +19,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.toolbox.JavaUtils;
 
 /**
- * Implementation of a ModelSlot in a given technology implementing model conformance.<br>
+ * Implementation of a ModelSlot in a given technology allowing to plug any data source<br>
  * 
  */
 @ModelEntity(isAbstract = true)
