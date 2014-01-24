@@ -35,7 +35,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
 
-	private String name;
+	private final String name;
 
 	public static final String HEADER = "header";
 	public static final String FOOTER = "footer";
@@ -220,6 +220,10 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	public void objectWasDoubleClicked(Object object) {
 		// logger.info("FlexoPerspective: object was double-clicked: " + object);
+	}
+
+	public void focusOnObject(FlexoObject object) {
+		logger.info("NOT IMPLEMENTED: focusOnObject " + object);
 	}
 
 }
