@@ -54,9 +54,11 @@ public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<D
 	@Override
 	public DocResourceCenter loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
-		DocResourceCenter returned = super.loadResourceData(progress);
+		// TODO
+		/*DocResourceCenter returned = super.loadResourceData(progress);
 		returned.clearIsModified();
-		return returned;
+		return returned;*/
+		return null;
 	}
 
 }

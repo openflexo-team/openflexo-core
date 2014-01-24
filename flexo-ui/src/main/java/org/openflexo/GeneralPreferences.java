@@ -117,7 +117,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 		return new FileResource("Config/Preferences/GeneralPrefs.inspector");
 	}*/
 
-	@Getter(LANGUAGE_KEY)
+	@Getter(value = LANGUAGE_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public Language getLanguage();
 
@@ -138,7 +138,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Setter(FAVORITE_MODULE_KEY)
 	public void setFavoriteModuleName(String value);
 
-	@Getter(SYNCHRONIZED_BROWSER)
+	@Getter(value = SYNCHRONIZED_BROWSER, defaultValue = "true")
 	@XMLAttribute
 	public boolean getSynchronizedBrowser();
 
@@ -152,7 +152,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Setter(INSPECTOR_VISIBLE)
 	public void setInspectorVisible(boolean inspectorVisible);
 
-	@Getter(INSPECTOR_ON_TOP)
+	@Getter(value = INSPECTOR_ON_TOP, defaultValue = "true")
 	@XMLAttribute
 	public boolean getInspectorAlwaysOnTop();
 
@@ -332,6 +332,15 @@ public interface GeneralPreferences extends PreferencesContainer {
 		private final AWTRectangleConverter RECTANGLE_CONVERTER = new AWTRectangleConverter();
 
 		@Override
+		public Language getLanguage() {
+			Language returned = (Language) performSuperGetter(LANGUAGE_KEY);
+			if (returned == null) {
+				return Language.get(Locale.getDefault());
+			}
+			return returned;
+		}
+
+		@Override
 		public void setLanguage(Language language) {
 			performSuperSetter(LANGUAGE_KEY, language);
 			if (language != null && language.equals(Language.FRENCH)) {
@@ -452,7 +461,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 				} else {
 					returned = "FLX";
 				}
-				setUserIdentifier(returned);
+				// setUserIdentifier(returned);
 			}
 			return returned;
 		}

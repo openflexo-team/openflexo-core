@@ -31,6 +31,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.utils.OperationCancelledException;
+import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
@@ -40,7 +41,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sguerin
  */
-public abstract class FlexoModule implements DataFlexoObserver {
+public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexoObserver {
 
 	static final Logger logger = Logger.getLogger(FlexoModule.class.getPackage().getName());
 
@@ -59,7 +60,11 @@ public abstract class FlexoModule implements DataFlexoObserver {
 		controller = createControllerForModule();
 	}
 
-	public abstract Module getModule();
+	public abstract Module<M> getModule();
+
+	public ModulePreferences<M> getPreferences() {
+		return getApplicationContext().getPreferencesService().getPreferences(getModule().getPreferencesClass());
+	}
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;

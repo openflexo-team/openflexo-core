@@ -157,7 +157,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@Setter(SYNCHRONIZED_BROWSER)
 	public void setSynchronizedBrowser(boolean synchronizedBrowser);
 
-	@Getter(value = BROWSERFONT_KEY, defaultValue = "Sans Serif,PLAIN,11")
+	@Getter(value = BROWSERFONT_KEY, defaultValue = "Sans Serif,0,11", isStringConvertable = true)
 	@XMLAttribute
 	public FlexoFont getBrowserFont();
 
@@ -192,7 +192,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@Setter(UNDO_LEVELS)
 	public void setUndoLevels(Integer undoLevels);
 
-	@Getter(LOOK_AND_FEEL)
+	@Getter(value = LOOK_AND_FEEL, isStringConvertable = true)
 	@XMLAttribute
 	public LookAndFeel getLookAndFeel();
 
@@ -270,7 +270,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@XMLAttribute
 	public String getSProxyHost();
 
-	@Getter(HTTPS_PROXY_HOST)
+	@Setter(HTTPS_PROXY_HOST)
 	public void setSProxyHost(String proxyHost);
 
 	@Getter(HTTPS_PROXY_PORT)
@@ -391,7 +391,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 			if (returned == null) {
 				returned = UIManager.getSystemLookAndFeelClassName();
 			}
-			setLookAndFeel(LAF_CONVERTER.convertFromString(returned, null));
+			// setLookAndFeel(LAF_CONVERTER.convertFromString(returned, null));
 			return LAF_CONVERTER.convertFromString(returned, null);
 		}
 
@@ -484,8 +484,8 @@ public interface AdvancedPrefs extends PreferencesContainer {
 						}
 					}
 				}
-				setNoProxy(noProxy);
-				return getNoProxy();
+				// setNoProxy(noProxy);
+				return noProxy;
 			}
 			return b;
 		}
@@ -520,7 +520,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 						}
 					}
 				}
-				setProxyHost(proxyHost);
+				// setProxyHost(proxyHost);
 			}
 			return proxyHost;
 		}
@@ -555,7 +555,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 						}
 					}
 				}
-				setProxyPort(proxyPort);
+				// setProxyPort(proxyPort);
 			}
 			return proxyPort;
 		}
@@ -590,7 +590,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 						}
 					}
 				}
-				setSProxyHost(proxyHost);
+				// setSProxyHost(proxyHost);
 			}
 			return proxyHost;
 		}
@@ -625,7 +625,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 						}
 					}
 				}
-				setSProxyPort(proxyPort);
+				// setSProxyPort(proxyPort);
 			}
 			return proxyPort;
 		}

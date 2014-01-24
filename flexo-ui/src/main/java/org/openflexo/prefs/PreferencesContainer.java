@@ -31,7 +31,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.prefs.PreferencesService.FlexoPreferencesFactory;
+import org.openflexo.model.annotations.XMLElement;
 
 /**
  * This class represents a logical container of some preferences regarding a particular functional aspect (eg a module)
@@ -43,28 +43,45 @@ import org.openflexo.prefs.PreferencesService.FlexoPreferencesFactory;
 public interface PreferencesContainer extends FlexoObject {
 
 	@PropertyIdentifier(type = PreferencesContainer.class, cardinality = Cardinality.LIST)
-	public static final String CONTAINERS = "containers";
+	public static final String CONTENTS = "contents";
+	@PropertyIdentifier(type = PreferencesContainer.class)
+	public static final String CONTAINER = "container";
 
-	@Getter(value = CONTAINERS, cardinality = Cardinality.LIST, inverse = FlexoProperty.OWNER_KEY)
-	public List<PreferencesContainer> getContainers();
+	@Getter(value = CONTAINER, inverse = CONTENTS)
+	public PreferencesContainer getContainer();
 
-	@Setter(CONTAINERS)
-	public void setContainers(List<PreferencesContainer> someContainers);
+	@Setter(CONTAINER)
+	public void setContainer(PreferencesContainer aContainer);
 
-	@Adder(CONTAINERS)
-	public void addToContainers(PreferencesContainer aContainer);
+	@Getter(value = CONTENTS, cardinality = Cardinality.LIST, inverse = CONTAINER)
+	@XMLElement
+	public List<PreferencesContainer> getContents();
 
-	@Remover(CONTAINERS)
-	public void removeFromContainers(PreferencesContainer aContainer);
+	@Setter(CONTENTS)
+	public void setContents(List<PreferencesContainer> someContents);
+
+	@Adder(CONTENTS)
+	public void addToContents(PreferencesContainer aContent);
+
+	@Remover(CONTENTS)
+	public void removeFromContents(PreferencesContainer aContent);
 
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType);
 
+	public FlexoPreferencesFactory getFlexoPreferencesFactory();
+
+	public void setFlexoPreferencesFactory(FlexoPreferencesFactory factory);
+
+	public FlexoProperty assertProperty(String propertyName);
+
 	public static abstract class PreferencesContainerImpl extends FlexoObjectImpl implements PreferencesContainer {
 
-		protected FlexoProperty assertProperty(String propertyName) {
+		private FlexoPreferencesFactory factory;
+
+		@Override
+		public FlexoProperty assertProperty(String propertyName) {
 			FlexoProperty p = getPropertyNamed(propertyName);
 			if (p == null) {
-				// TODO create new
 				p = getFlexoPreferencesFactory().newInstance(FlexoProperty.class);
 				p.setName(propertyName);
 				addToCustomProperties(p);
@@ -73,14 +90,19 @@ public interface PreferencesContainer extends FlexoObject {
 			return p;
 		}
 
-		private FlexoPreferencesFactory getFlexoPreferencesFactory() {
-			// TODO: retrieve it from PreferencesService
-			return null;
+		@Override
+		public FlexoPreferencesFactory getFlexoPreferencesFactory() {
+			return factory;
+		}
+
+		@Override
+		public void setFlexoPreferencesFactory(FlexoPreferencesFactory factory) {
+			this.factory = factory;
 		}
 
 		@Override
 		public <P extends PreferencesContainer> P getPreferences(Class<P> containerType) {
-			for (PreferencesContainer c : getContainers()) {
+			for (PreferencesContainer c : getContents()) {
 				if (containerType.isAssignableFrom(c.getClass())) {
 					return (P) c;
 				}

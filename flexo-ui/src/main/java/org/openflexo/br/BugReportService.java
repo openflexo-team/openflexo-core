@@ -28,7 +28,7 @@ public class BugReportService extends FlexoServiceImpl {
 	private static final File PROJECT_FILE = new FileResource("Config/jira_openflexo_project.json");
 	private static final String OPENFLEXO_KEY = "OPENFLEXO";
 
-	private final File userProjectFile;
+	private File userProjectFile;
 	private JIRAProject project;
 
 	@Override
@@ -37,36 +37,6 @@ public class BugReportService extends FlexoServiceImpl {
 	}
 
 	public BugReportService() {
-		userProjectFile = new File(FileUtils.getApplicationDataDirectory(), PROJECT_FILE.getName());
-		if (!userProjectFile.exists()) {
-			copyOriginalToUserFile();
-		}
-		try {
-			Map<String, String> headers = new HashMap<String, String>();
-			if (getServiceManager().getAdvancedPrefs().getBugReportUser() != null
-					&& getServiceManager().getAdvancedPrefs().getBugReportUser().trim().length() > 0
-					&& getServiceManager().getAdvancedPrefs().getBugReportPassword() != null
-					&& getServiceManager().getAdvancedPrefs().getBugReportPassword().trim().length() > 0) {
-				try {
-					headers.put(
-							"Authorization",
-							"Basic "
-									+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
-											.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
-				} catch (UnsupportedEncodingException e) {
-				}
-				FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
-						+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKey=" + OPENFLEXO_KEY), userProjectFile,
-						headers);
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		project = loadProjectsFromFile(userProjectFile);
-		if (project == null) {
-			copyOriginalToUserFile();
-			project = loadProjectsFromFile(PROJECT_FILE);
-		}
 	}
 
 	public JIRAProject getOpenFlexoProject() {
@@ -103,6 +73,36 @@ public class BugReportService extends FlexoServiceImpl {
 	@Override
 	public void initialize() {
 		logger.info("Initialized BugReportService");
+		userProjectFile = new File(FileUtils.getApplicationDataDirectory(), PROJECT_FILE.getName());
+		if (!userProjectFile.exists()) {
+			copyOriginalToUserFile();
+		}
+		try {
+			Map<String, String> headers = new HashMap<String, String>();
+			if (getServiceManager().getAdvancedPrefs().getBugReportUser() != null
+					&& getServiceManager().getAdvancedPrefs().getBugReportUser().trim().length() > 0
+					&& getServiceManager().getAdvancedPrefs().getBugReportPassword() != null
+					&& getServiceManager().getAdvancedPrefs().getBugReportPassword().trim().length() > 0) {
+				try {
+					headers.put(
+							"Authorization",
+							"Basic "
+									+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
+											.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
+				} catch (UnsupportedEncodingException e) {
+				}
+				FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
+						+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKey=" + OPENFLEXO_KEY), userProjectFile,
+						headers);
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		project = loadProjectsFromFile(userProjectFile);
+		if (project == null) {
+			copyOriginalToUserFile();
+			project = loadProjectsFromFile(PROJECT_FILE);
+		}
 	}
 
 }

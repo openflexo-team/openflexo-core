@@ -43,7 +43,7 @@ import org.openflexo.swing.FlexoSwingUtils;
  * @author sguerin
  * 
  */
-public abstract class Module<M extends FlexoModule> {
+public abstract class Module<M extends FlexoModule<M>> {
 
 	private static final Logger logger = Logger.getLogger(Module.class.getPackage().getName());
 
@@ -68,7 +68,7 @@ public abstract class Module<M extends FlexoModule> {
 
 	private M loadedModuleInstance;
 
-	protected Module(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
+	public Module(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
 			String relativeDirectory, String jiraComponentID, String helpTopic, ImageIcon smallIcon, ImageIcon mediumIcon,
 			ImageIcon mediumIconWithHover, ImageIcon bigIcon, boolean requiresProject) {
 		super();

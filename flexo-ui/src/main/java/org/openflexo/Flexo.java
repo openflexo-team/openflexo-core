@@ -576,7 +576,13 @@ public class Flexo {
 	public static FlexoLoggingManager initializeLoggingManager(final ApplicationContext applicationContext) {
 		try {
 			// FlexoProperties properties = FlexoProperties.instance();
-			logger.info("Default logging config file " + System.getProperty("java.util.logging.config.file"));
+			String loggingFileName = System.getProperty("java.util.logging.config.file");
+			if (loggingFileName == null) {
+				File loggingFile = new FileResource("Config/logging_INFO.properties");
+				loggingFileName = loggingFile.getAbsolutePath();
+				System.setProperty("java.util.logging.config.file", loggingFileName);
+			}
+			logger.info("Default logging config file " + loggingFileName);
 			return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(), applicationContext
 					.getAdvancedPrefs().getIsLoggingTrace(),
 					applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null ? applicationContext.getAdvancedPrefs()
@@ -613,7 +619,9 @@ public class Flexo {
 							if (lev == Level.FINEST) {
 								fileName = "FINEST";
 							}
-							reloadLoggingFile(new FileResource("Config/logging_" + fileName + ".properties").getAbsolutePath());
+							File loggingFile = new FileResource("Config/logging_" + fileName + ".properties");
+							System.out.println("Found file " + loggingFile + " exists=" + loggingFile.exists());
+							reloadLoggingFile(loggingFile.getAbsolutePath());
 							applicationContext.getAdvancedPrefs().setLoggingFileName(null);
 						}
 

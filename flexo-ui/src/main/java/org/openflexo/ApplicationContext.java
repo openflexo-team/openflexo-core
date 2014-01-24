@@ -50,6 +50,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public ApplicationContext() {
 		super();
+
+		registerModuleLoaderService();
+		registerPreferencesService();
+
 		applicationEditor = createApplicationEditor();
 		try {
 			ProjectLoader projectLoader = new ProjectLoader();
@@ -58,18 +62,30 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		ModuleLoader moduleLoader = new ModuleLoader(this);
-		registerService(moduleLoader);
+
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
-		PreferencesService preferencesService = createPreferencesService();
-		registerService(preferencesService);
 		BugReportService bugReportService = createBugReportService();
 		registerService(bugReportService);
 		DocResourceManager docResourceManager = createDocResourceManager();
 		registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
 		registerService(flexoServerInstanceManager);
+	}
+
+	private void registerPreferencesService() {
+		registerModuleLoaderService();
+		if (getPreferencesService() == null) {
+			PreferencesService preferencesService = createPreferencesService();
+			registerService(preferencesService);
+		}
+	}
+
+	private void registerModuleLoaderService() {
+		if (getModuleLoader() == null) {
+			ModuleLoader moduleLoader = new ModuleLoader(this);
+			registerService(moduleLoader);
+		}
 	}
 
 	public PreferencesService getPreferencesService() {
@@ -132,6 +148,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
+		registerPreferencesService();
 		return DefaultResourceCenterService.getNewInstance(getGeneralPreferences().getDirectoryResourceCenterList());
 	}
 
@@ -162,6 +179,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	public GeneralPreferences getGeneralPreferences() {
+		System.out.println("getPreferencesService()=" + getPreferencesService());
 		return getPreferencesService().getPreferences(GeneralPreferences.class);
 	}
 

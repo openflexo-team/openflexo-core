@@ -27,18 +27,18 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
 
 /**
- * Please comment this class
+ * Preferences relative to a module
  * 
  * @author sguerin
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface ModulePreferences<M extends FlexoModule> extends PreferencesContainer {
+public interface ModulePreferences<M extends FlexoModule<M>> extends PreferencesContainer {
 
 	@PropertyIdentifier(type = Module.class)
 	public static final String MODULE_KEY = "module";
 
-	@Getter(value = MODULE_KEY)
+	@Getter(value = MODULE_KEY, ignoreType = true)
 	public Module<M> getModule();
 
 	@Setter(MODULE_KEY)

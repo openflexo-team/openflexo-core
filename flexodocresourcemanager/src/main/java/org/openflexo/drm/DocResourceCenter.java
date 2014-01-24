@@ -29,7 +29,10 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.localization.Language;
+import org.openflexo.model.annotations.ModelEntity;
 
+// TODO: this model should be migrated to PAMELA
+@ModelEntity
 public class DocResourceCenter extends DocItemFolder implements ResourceData<DocResourceCenter> {
 
 	// Vector of Language objects

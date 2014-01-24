@@ -30,10 +30,8 @@ import org.openflexo.GeneralPreferences;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -69,7 +67,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		if (returned == null) {
 			returned = getPreferencesFactory().newInstance(prefClass);
 			initPreferences(returned);
-			container.addToContainers(returned);
+			container.addToContents(returned);
 		}
 		return returned;
 	}
@@ -153,13 +151,6 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		}
 		preferencesFactory = new FlexoPreferencesFactory(ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes
 				.size()])));
-	}
-
-	public static class FlexoPreferencesFactory extends ModelFactory {
-
-		public FlexoPreferencesFactory(ModelContext context) throws ModelDefinitionException {
-			super(context);
-		}
 	}
 
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType) {
