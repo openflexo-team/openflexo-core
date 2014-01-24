@@ -37,16 +37,10 @@ import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ActionScheme;
-import org.openflexo.foundation.viewpoint.CloningScheme;
-import org.openflexo.foundation.viewpoint.CreationScheme;
-import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FetchRequest;
 import org.openflexo.foundation.viewpoint.NamedViewPointObject;
-import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
-import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
@@ -61,8 +55,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * A model slot is a named object providing access to a particular data encoded in a given technology A model slot should be seen as a
- * connector.<br>
+ * A model slot is a named object providing access to a particular data encoded
+ * in a given technology A model slot should be seen as a connector.<br>
  * A model slot formalize a contract for accessing to a data
  * 
  * It is defined at viewpoint level. <br>
@@ -78,8 +72,10 @@ import org.openflexo.model.annotations.XMLAttribute;
  * */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
-@Imports({ @Import(VirtualModelModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointObject {
+@Imports({ @Import(VirtualModelModelSlot.class),
+		@Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
+public interface ModelSlot<RD extends ResourceData<RD>> extends
+		NamedViewPointObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -134,33 +130,39 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 	/**
 	 * Creates and return a new {@link PatternRole} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsability is delegated to the technology-specific
+	 * {@link ModelSlot} which manages with introspection its own
 	 * {@link PatternRole} types
 	 * 
 	 * @param patternRoleClass
 	 * @return
 	 */
-	public abstract <PR extends PatternRole<?>> PR makePatternRole(Class<PR> patternRoleClass);
+	public abstract <PR extends PatternRole<?>> PR makePatternRole(
+			Class<PR> patternRoleClass);
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsability is delegated to the technology-specific
+	 * {@link ModelSlot} which manages with introspection its own
 	 * {@link EditionAction} types
 	 * 
 	 * @param editionActionClass
 	 * @return
 	 */
-	public abstract <EA extends EditionAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
+	public abstract <EA extends EditionAction<?, ?>> EA makeEditionAction(
+			Class<EA> editionActionClass);
 
 	/**
 	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsability is delegated to the technology-specific
+	 * {@link ModelSlot} which manages with introspection its own
 	 * {@link FetchRequest} types
 	 * 
 	 * @param fetchRequestClass
 	 * @return
 	 */
-	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
+	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(
+			Class<FR> fetchRequestClass);
 
 	/**
 	 * Return default name for supplied pattern role class
@@ -168,7 +170,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 	 * @param patternRoleClass
 	 * @return
 	 */
-	public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass);
+	public <PR extends PatternRole<?>> String defaultPatternRoleName(
+			Class<PR> patternRoleClass);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
@@ -178,7 +181,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 	 * @return URI as String
 	 */
 
-	public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+	public abstract String getURIForObject(
+			ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
@@ -188,13 +192,18 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 	 * @return the Object
 	 */
 
-	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
+	public abstract Object retrieveObjectWithURI(
+			ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance,
+			String objectURI);
 
-	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance<?> action);
+	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+			CreateVirtualModelInstance<?> action);
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends NamedViewPointObjectImpl implements ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>>
+			extends NamedViewPointObjectImpl implements ModelSlot<RD> {
 
-		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(ModelSlot.class
+				.getPackage().getName());
 
 		private boolean isRequired;
 		private boolean isReadOnly;
@@ -205,45 +214,6 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		private List<Class<? extends PatternRole<?>>> availablePatternRoleTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableFetchRequestActionTypes;
-
-		/*protected ModelSlot(ViewPoint viewPoint, TechnologyAdapter technologyAdapter) {
-		super((VirtualModel.VirtualModelBuilder) null);
-		this.viewPoint = viewPoint;
-		this.technologyAdapter = technologyAdapter;
-		}*/
-
-		protected ModelSlotImpl(VirtualModel virtualModel, TechnologyAdapter technologyAdapter) {
-			super();
-			this.virtualModel = virtualModel;
-			this.viewPoint = virtualModel.getViewPoint();
-			this.technologyAdapter = technologyAdapter;
-		}
-
-		protected ModelSlotImpl() {
-			super();
-
-			/*if (builder != null) {
-			this.viewPoint = builder.getViewPoint();
-			if (builder.getViewPointLibrary() != null && builder.getViewPointLibrary().getServiceManager() != null
-					&& builder.getViewPointLibrary().getServiceManager().getTechnologyAdapterService() != null) {
-				this.technologyAdapter = builder.getViewPointLibrary().getServiceManager().getTechnologyAdapterService()
-						.getTechnologyAdapter(getTechnologyAdapterClass());
-			}
-			}*/
-		}
-
-		/*public ModelSlotImpl(ViewPointBuilder builder) {
-		super(builder);
-
-		if (builder != null) {
-			this.viewPoint = builder.getViewPoint();
-			if (builder.getViewPointLibrary() != null && builder.getViewPointLibrary().getServiceManager() != null
-					&& builder.getViewPointLibrary().getServiceManager().getTechnologyAdapterService() != null) {
-				this.technologyAdapter = builder.getViewPointLibrary().getServiceManager().getTechnologyAdapterService()
-						.getTechnologyAdapter(getTechnologyAdapterClass());
-			}
-		}
-		}*/
 
 		@Override
 		public VirtualModelModelFactory getVirtualModelFactory() {
@@ -260,14 +230,16 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 		/**
 		 * Creates and return a new {@link PatternRole} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsability is delegated to the technology-specific
+		 * {@link ModelSlot} which manages with introspection its own
 		 * {@link PatternRole} types
 		 * 
 		 * @param patternRoleClass
 		 * @return
 		 */
 		@Override
-		public final <PR extends PatternRole<?>> PR makePatternRole(Class<PR> patternRoleClass) {
+		public final <PR extends PatternRole<?>> PR makePatternRole(
+				Class<PR> patternRoleClass) {
 			VirtualModelModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(patternRoleClass);
 		}
@@ -279,13 +251,17 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		 * @return
 		 */
 		@Override
-		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
-			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+		public <PR extends PatternRole<?>> String defaultPatternRoleName(
+				Class<PR> patternRoleClass) {
+			if (EditionPatternInstancePatternRole.class
+					.isAssignableFrom(patternRoleClass)) {
 				return "editionPattern";
-			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			} else if (PrimitivePatternRole.class
+					.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
-			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
+			logger.warning("Unexpected pattern role: "
+					+ patternRoleClass.getName());
 			return "???";
 		}
 
@@ -322,11 +298,13 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		 * @return
 		 */
 		@Override
-		public <A extends EditionAction<?, ?>> A createAction(Class<A> actionClass) {
+		public <A extends EditionAction<?, ?>> A createAction(
+				Class<A> actionClass) {
 			Class[] constructorParams = new Class[0];
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
-				Constructor<A> c = actionClass.getConstructor(constructorParams);
+				Constructor<A> c = actionClass
+						.getConstructor(constructorParams);
 				return c.newInstance(null);
 			} catch (SecurityException e) {
 				logger.warning("Unexpected SecurityException " + e);
@@ -383,8 +361,10 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + "\"" + " required=" + getIsRequired()
-					+ " readOnly=" + getIsReadOnly() + ";", context);
+			out.append("ModelSlot " + getName() + " type="
+					+ getClass().getSimpleName() + "\"" + " required="
+					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";",
+					context);
 			return out.toString();
 		}
 
@@ -412,9 +392,12 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 			availablePatternRoleTypes = new ArrayList<Class<? extends PatternRole<?>>>();
 			Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
-				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
-				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
-					availablePatternRoleTypes.add(patternRoleDeclaration.patternRoleClass());
+				DeclarePatternRoles allPatternRoles = cl
+						.getAnnotation(DeclarePatternRoles.class);
+				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles
+						.value()) {
+					availablePatternRoleTypes.add(patternRoleDeclaration
+							.patternRoleClass());
 				}
 			}
 			// availablePatternRoleTypes.add(EditionPatternPatternRole.class);
@@ -435,9 +418,12 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 			availableEditionActionTypes = new ArrayList<Class<? extends EditionAction<?, ?>>>();
 			Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
-				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-				for (DeclareEditionAction patternRoleDeclaration : allEditionActions.value()) {
-					availableEditionActionTypes.add(patternRoleDeclaration.editionActionClass());
+				DeclareEditionActions allEditionActions = cl
+						.getAnnotation(DeclareEditionActions.class);
+				for (DeclareEditionAction patternRoleDeclaration : allEditionActions
+						.value()) {
+					availableEditionActionTypes.add(patternRoleDeclaration
+							.editionActionClass());
 				}
 			}
 			return availableEditionActionTypes;
@@ -455,9 +441,12 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 			availableFetchRequestActionTypes = new ArrayList<Class<? extends EditionAction<?, ?>>>();
 			Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
-				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
-				for (DeclareFetchRequest fetchRequestDeclaration : allFetchRequestActions.value()) {
-					availableFetchRequestActionTypes.add(fetchRequestDeclaration.fetchRequestClass());
+				DeclareFetchRequests allFetchRequestActions = cl
+						.getAnnotation(DeclareFetchRequests.class);
+				for (DeclareFetchRequest fetchRequestDeclaration : allFetchRequestActions
+						.value()) {
+					availableFetchRequestActionTypes
+							.add(fetchRequestDeclaration.fetchRequestClass());
 				}
 			}
 			return availableFetchRequestActionTypes;
@@ -465,34 +454,39 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 		/**
 		 * Creates and return a new {@link EditionAction} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsability is delegated to the technology-specific
+		 * {@link ModelSlot} which manages with introspection its own
 		 * {@link EditionAction} types
 		 * 
 		 * @param editionActionClass
 		 * @return
 		 */
 		@Override
-		public final <EA extends EditionAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
+		public final <EA extends EditionAction<?, ?>> EA makeEditionAction(
+				Class<EA> editionActionClass) {
 			VirtualModelModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(editionActionClass);
 		}
 
 		/**
 		 * Creates and return a new {@link FetchRequest} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsability is delegated to the technology-specific
+		 * {@link ModelSlot} which manages with introspection its own
 		 * {@link FetchRequest} types
 		 * 
 		 * @param fetchRequestClass
 		 * @return
 		 */
 		@Override
-		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
+		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(
+				Class<FR> fetchRequestClass) {
 			VirtualModelModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
 
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance<?> action);
+		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+				CreateVirtualModelInstance<?> action);
 
 		/**
 		 * A Model Slot is responsible for URI mapping
@@ -503,7 +497,9 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		 */
 
 		@Override
-		public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+		public abstract String getURIForObject(
+				ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance,
+				Object o);
 
 		/**
 		 * A Model Slot is responsible for URI mapping
@@ -514,16 +510,20 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		 */
 
 		@Override
-		public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
+		public abstract Object retrieveObjectWithURI(
+				ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance,
+				String objectURI);
 
 		/**
 		 * Return first found class matching supplied class.<br>
-		 * Returned class is generally the specialized class related to a particular technology
+		 * Returned class is generally the specialized class related to a
+		 * particular technology
 		 * 
 		 * @param patternRoleClass
 		 * @return
 		 */
-		public <PR extends PatternRole<?>> Class<? extends PR> getPatternRoleClass(Class<PR> patternRoleClass) {
+		public <PR extends PatternRole<?>> Class<? extends PR> getPatternRoleClass(
+				Class<PR> patternRoleClass) {
 			for (Class<?> patternRoleType : getAvailablePatternRoleTypes()) {
 				if (patternRoleClass.isAssignableFrom(patternRoleType)) {
 					return (Class<? extends PR>) patternRoleType;
@@ -534,12 +534,14 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 		/**
 		 * Return first found class matching supplied class.<br>
-		 * Returned class is generally the specialized class related to a particular technology
+		 * Returned class is generally the specialized class related to a
+		 * particular technology
 		 * 
 		 * @param patternRoleClass
 		 * @return
 		 */
-		public <EA extends EditionAction> Class<? extends EA> getEditionActionClass(Class<EA> editionActionClass) {
+		public <EA extends EditionAction> Class<? extends EA> getEditionActionClass(
+				Class<EA> editionActionClass) {
 			for (Class editionActionType : getAvailableEditionActionTypes()) {
 				if (editionActionClass.isAssignableFrom(editionActionType)) {
 					return editionActionType;
@@ -582,25 +584,29 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		}
 
 		@Override
-		public Object performSuperGetter(String propertyIdentifier, Class<?> modelEntityInterface) {
+		public Object performSuperGetter(String propertyIdentifier,
+				Class<?> modelEntityInterface) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public void performSuperSetter(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
+		public void performSuperSetter(String propertyIdentifier, Object value,
+				Class<?> modelEntityInterface) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void performSuperAdder(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
+		public void performSuperAdder(String propertyIdentifier, Object value,
+				Class<?> modelEntityInterface) {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void performSuperRemover(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
+		public void performSuperRemover(String propertyIdentifier,
+				Object value, Class<?> modelEntityInterface) {
 			// TODO Auto-generated method stub
 
 		}
@@ -618,7 +624,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		}
 
 		@Override
-		public Object performSuperFinder(String finderIdentifier, Object value, Class<?> modelEntityInterface) {
+		public Object performSuperFinder(String finderIdentifier, Object value,
+				Class<?> modelEntityInterface) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -672,7 +679,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		}
 
 		@Override
-		public void performSuperDelete(Class<?> modelEntityInterface, Object... context) {
+		public void performSuperDelete(Class<?> modelEntityInterface,
+				Object... context) {
 			// TODO Auto-generated method stub
 
 		}
