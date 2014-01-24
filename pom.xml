@@ -19,8 +19,6 @@
 		<jiraclient.version>1.0-SNAPSHOT</jiraclient.version>
 		<flexohelp.version>1.0-SNAPSHOT</flexohelp.version>
 		<flexowysiwyg.version>1.0-SNAPSHOT</flexowysiwyg.version>
-		<flexodocresourcecenter.version>1.0-SNAPSHOT</flexodocresourcecenter.version>
-		<flexodocresourcemanager.version>1.0-SNAPSHOT</flexodocresourcemanager.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com:openflexo-team/openflexo-core.git</connection>
@@ -29,6 +27,8 @@
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
+		<module>flexodocresourcecenter</module>
+		<module>flexodocresourcemanager</module>
     </modules>
 	<dependencyManagement>
 		<dependencies>
@@ -66,6 +66,38 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
+				<version>${project.version}</version>
+				<classifier>resources</classifier>
+				<type>zip</type>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcecenter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcecenter</artifactId>
+				<version>${project.version}</version>
+				<classifier>resources</classifier>
+				<type>zip</type>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcemanager</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcemanager</artifactId>
+				<version>${project.version}</version>
+				<classifier>tests</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcemanager</artifactId>
 				<version>${project.version}</version>
 				<classifier>resources</classifier>
 				<type>zip</type>
@@ -286,30 +318,6 @@
 				<artifactId>flexowysiwyg</artifactId>
 				<version>${flexowysiwyg.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>flexodocresourcecenter</artifactId>
-				<version>${flexodocresourcecenter.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>flexodocresourcecenter</artifactId>
-				<version>${flexodocresourcecenter.version}</version>
-				<classifier>resources</classifier>
-				<type>zip</type>
-			</dependency>
-			<dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${flexodocresourcemanager.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${flexodocresourcemanager.version}</version>
-				<classifier>resources</classifier>
-				<type>zip</type>
-			</dependency>
 			
 			<!-- 3rd party -->
 			
@@ -402,6 +410,11 @@
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-all</artifactId>
 				<version>1.9.0</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.help</groupId>
+				<artifactId>javahelp</artifactId>
+				<version>2.0.05</version>
 			</dependency>
 			
 			<dependency>
