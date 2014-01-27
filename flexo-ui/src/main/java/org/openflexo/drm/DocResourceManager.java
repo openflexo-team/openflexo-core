@@ -337,7 +337,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public Language getLanguage(org.openflexo.localization.Language language) {
-		return getDocResourceCenter().getLanguageNamed(language.getName());
+		return Language.ENGLISH;
+		// TODO repair this when DocResourceCenter will be set up again
+		// return getDocResourceCenter().getLanguageNamed(language.getName());
 	}
 
 	public void editVersion(DocItemVersion version) {
@@ -354,18 +356,30 @@ public class DocResourceManager extends FlexoServiceImpl {
 	// ================================================
 
 	public DocItem getDocResourceCenterItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(DocResourceCenter.DOC_RESOURCE_CENTER);
 	}
 
 	public DocItem getFlexoModelItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(DocResourceCenter.FLEXO_MODEL);
 	}
 
 	public DocItem getFlexoToolSetItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(DocResourceCenter.FLEXO_TOOL_SET);
 	}
 
 	public DocItem getAbstractModuleItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		DocItemFolder f = getDocResourceCenter().getFTSFolder().getItemFolderNamed(DocResourceCenter.ABSTRACT_MODULE);
 		if (f == null) {
 			f = DocItemFolder.createDocItemFolder(DocResourceCenter.ABSTRACT_MODULE, "Description of what is a module",
@@ -379,6 +393,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public DocItem getAbstractMainPaneItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		DocItem item = getDocResourceCenter().getItemNamed(DocResourceCenter.ABSTRACT_MAIN_PANE);
 		if (item == null) {
 			item = DocItem.createDocItem(DocResourceCenter.ABSTRACT_MAIN_PANE, "Description of what is the main pane",
@@ -389,6 +406,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public DocItem getAbstractControlPanelItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		DocItem item = getDocResourceCenter().getItemNamed(DocResourceCenter.ABSTRACT_CONTROL_PANEL);
 		if (item == null) {
 			item = DocItem.createDocItem(DocResourceCenter.ABSTRACT_CONTROL_PANEL, "Description of what is the control panel",
@@ -399,6 +419,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public DocItem getAbstractLeftViewItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		DocItem item = getDocResourceCenter().getItemNamed(DocResourceCenter.ABSTRACT_LEFT_VIEW);
 		if (item == null) {
 			item = DocItem.createDocItem(DocResourceCenter.ABSTRACT_LEFT_VIEW, "Description of what is the left view",
@@ -409,6 +432,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public DocItem getAbstractRightViewItem() {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		DocItem item = getDocResourceCenter().getItemNamed(DocResourceCenter.ABSTRACT_RIGHT_VIEW);
 		if (item == null) {
 			item = DocItem.createDocItem(DocResourceCenter.ABSTRACT_RIGHT_VIEW, "Description of what is the right view",
@@ -419,10 +445,16 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public DocItem getDocItemFor(FlexoObject object) {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(object.getClass().getSimpleName());
 	}
 
 	public DocItem getDocItemFor(Class<? extends FlexoObject> objectClass) {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(objectClass.getSimpleName());
 	}
 
@@ -449,6 +481,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}*/
 
 	public DocItem getDocItemWithId(String itemIdentifier) {
+		if (getDocResourceCenter() == null) {
+			return null;
+		}
 		return getDocResourceCenter().getItemNamed(itemIdentifier);
 	}
 

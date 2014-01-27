@@ -49,7 +49,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 
 	private final boolean notFoundNotified = false;
 
-	private Constructor<M> constructor;
+	private final Constructor<M> constructor;
 
 	private final String name;
 	private final String shortName;
@@ -84,6 +84,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 		this.mediumIconWithHover = mediumIconWithHover;
 		this.bigIcon = bigIcon;
 		this.requiresProject = requiresProject;
+		constructor = lookupConstructor();
 	}
 
 	public ModuleLoader getModuleLoader() {
@@ -162,11 +163,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 		return FlexoLocalization.localizedForKey(getDescription());
 	}
 
-	public boolean register() {
-		constructor = lookupConstructor();
-		return constructor != null;
-	}
-
 	/**
 	 * Internally used to lookup constructor
 	 * 
@@ -241,6 +237,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName(), 8);
 		}
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName());
+		System.out.println("Constructor=" + getConstructor());
 		loadedModuleInstance = getConstructor().newInstance(new Object[] { getModuleLoader().getServiceManager() });
 		doInternalLoadModule();
 		if (createProgress) {

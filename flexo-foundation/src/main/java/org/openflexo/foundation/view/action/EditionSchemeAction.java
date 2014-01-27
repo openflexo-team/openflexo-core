@@ -42,13 +42,13 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.AssignableAction;
 import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
+import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.toolbox.StringUtils;
 
 /**

@@ -26,23 +26,22 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.AddToListAction;
-import org.openflexo.foundation.viewpoint.ConditionalAction;
-import org.openflexo.foundation.viewpoint.DeleteAction;
 import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.FetchRequestIterationAction;
-import org.openflexo.foundation.viewpoint.IterationAction;
-import org.openflexo.foundation.viewpoint.MatchEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.PatternRole;
-import org.openflexo.foundation.viewpoint.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.SelectEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
+import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
@@ -160,11 +159,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
-		if (org.openflexo.foundation.viewpoint.DeclarePatternRole.class.isAssignableFrom(editionActionClass)) {
+		if (org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.DECLARE_PATTERN_ROLE_ICON;
-		} else if (org.openflexo.foundation.viewpoint.AssignationAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.DECLARE_PATTERN_ROLE_ICON;
-		} else if (org.openflexo.foundation.viewpoint.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.ACTION_SCHEME_ICON;
 		} else if (AddEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.DUPLICATE);
@@ -199,11 +198,24 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	public abstract boolean hasModuleViewForObject(TechnologyObject object);
+	public abstract String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller);
 
-	public abstract String getWindowTitleforObject(TechnologyObject object);
+	/**
+	 * Return boolean indicating if this TechnologyAdapter controller service support ModuleView rendering for supplied technology object
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
 
-	public abstract <T extends FlexoObject> ModuleView<T> createModuleViewForObject(T object, FlexoController controller,
+	/**
+	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
+	 * rendering
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
 			FlexoPerspective perspective);
 
 	public File getFIBPanelForObject(Object anObject) {

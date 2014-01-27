@@ -21,6 +21,15 @@ package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
+import org.openflexo.foundation.viewpoint.editionaction.AddClass;
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
+import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
+import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 
 /**

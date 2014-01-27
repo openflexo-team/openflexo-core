@@ -19,6 +19,25 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
+import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
+import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
+import org.openflexo.foundation.viewpoint.editionaction.CreateEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
+import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequestCondition;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
+import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
+import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry;

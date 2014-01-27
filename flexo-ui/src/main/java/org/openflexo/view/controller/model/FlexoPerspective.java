@@ -102,9 +102,9 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	@Deprecated
 	public abstract ModuleView<?> createModuleViewForObject(FlexoObject object, FlexoController controller);
 
-	public abstract boolean hasModuleViewForObject(FlexoObject object);
+	public abstract boolean hasModuleViewForObject(FlexoObject object, FlexoController controller);
 
-	public abstract FlexoObject getDefaultObject(FlexoObject proposedObject);
+	public abstract FlexoObject getDefaultObject(FlexoObject proposedObject, FlexoController controller);
 
 	public JComponent getHeader() {
 		return header;
@@ -210,15 +210,15 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		getPropertyChangeSupport().firePropertyChange(MIDDLE_RIGHT_VIEW, old, middleRightView);
 	}
 
-	public void objectWasClicked(Object object) {
+	public void objectWasClicked(Object object, FlexoController controller) {
 		// logger.info("FlexoPerspective: object was clicked: " + object);
 	}
 
-	public void objectWasRightClicked(Object object) {
+	public void objectWasRightClicked(Object object, FlexoController controller) {
 		// logger.info("FlexoPerspective: object was right-clicked: " + object);
 	}
 
-	public void objectWasDoubleClicked(Object object) {
+	public void objectWasDoubleClicked(Object object, FlexoController controller) {
 		// logger.info("FlexoPerspective: object was double-clicked: " + object);
 	}
 

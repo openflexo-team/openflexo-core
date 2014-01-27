@@ -34,7 +34,6 @@ import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.viewpoint.AddEditionPatternInstance.AddEditionPatternInstanceImpl;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -182,8 +181,8 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		public ValidationIssue<BindingMustBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				if (!getBinding(object).isValid()) {
-					AddEditionPatternInstanceImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for "
-							+ object.getStringRepresentation() + ". Reason: " + getBinding(object).invalidBindingReason());
+					ViewPointObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
+							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
 					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getNameKey(), deleteBinding);
 				}

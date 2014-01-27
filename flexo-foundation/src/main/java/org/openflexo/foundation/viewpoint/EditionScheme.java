@@ -32,6 +32,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DeserializationFinalizer;

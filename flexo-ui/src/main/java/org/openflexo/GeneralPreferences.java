@@ -232,12 +232,12 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 	public void setShowRightView(String id, boolean status);
 
-	public int getFrameStateForFrameWithID(String id);
+	public Integer getFrameStateForFrameWithID(String id);
 
 	/**
 	 * @param extendedState
 	 */
-	public void setFrameStateForFrameWithID(String id, int extendedState);
+	public void setFrameStateForFrameWithID(String id, Integer extendedState);
 
 	public String getLayoutFor(String id);
 
@@ -503,15 +503,15 @@ public interface GeneralPreferences extends PreferencesContainer {
 		}
 
 		@Override
-		public int getFrameStateForFrameWithID(String id) {
-			return assertProperty(SHOW_RIGHT_VIEW + id).integerValue();
+		public Integer getFrameStateForFrameWithID(String id) {
+			return assertProperty(SHOW_RIGHT_VIEW + id).getIntegerValue();
 		}
 
 		/**
 		 * @param extendedState
 		 */
 		@Override
-		public void setFrameStateForFrameWithID(String id, int extendedState) {
+		public void setFrameStateForFrameWithID(String id, Integer extendedState) {
 			assertProperty(STATE_FOR_FRAME + id).setIntegerValue(extendedState);
 		}
 

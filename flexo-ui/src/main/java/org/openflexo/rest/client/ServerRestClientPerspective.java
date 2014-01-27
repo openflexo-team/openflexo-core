@@ -7,9 +7,8 @@ import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.DefaultModuleView;
@@ -56,12 +55,12 @@ public class ServerRestClientPerspective extends FlexoPerspective {
 	}
 
 	@Override
-	public boolean hasModuleViewForObject(FlexoObject object) {
+	public boolean hasModuleViewForObject(FlexoObject object, FlexoController controller) {
 		return object instanceof FlexoProject;
 	}
 
 	@Override
-	public FlexoObject getDefaultObject(FlexoObject proposedObject) {
+	public FlexoObject getDefaultObject(FlexoObject proposedObject, FlexoController controller) {
 		if (proposedObject instanceof FlexoProjectObject) {
 			return ((FlexoProjectObject) proposedObject).getProject();
 		} else {

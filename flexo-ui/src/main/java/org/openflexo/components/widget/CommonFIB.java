@@ -19,4 +19,9 @@ public class CommonFIB {
 			"Fib/Widget/DeclareConnectorInEditionPatternDialog.fib");
 	public static File PUSH_TO_PALETTE_DIALOG_FIB = new FileResource("Fib/Dialog/PushToPaletteDialog.fib");
 
+	// General components
+	public static File VIEWPOINT_VIEW_FIB = new FileResource("Fib/VPM/ViewPointView.fib");
+	public static File STANDARD_EDITION_PATTERN_VIEW_FIB = new FileResource("Fib/VPM/StandardEditionPatternView.fib");
+	public static File VIRTUAL_MODEL_VIEW_FIB = new FileResource("Fib/VPM/VirtualModelView.fib");
+
 }

@@ -37,6 +37,7 @@ import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;

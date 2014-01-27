@@ -24,7 +24,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -179,8 +178,8 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * 
 	 * @return
 	 */
-	public Collection<Module<?>> getKnownModules() {
-		return knownModules.values();
+	public List<Module<?>> getKnownModules() {
+		return new ArrayList<Module<?>>(knownModules.values());
 	}
 
 	/**

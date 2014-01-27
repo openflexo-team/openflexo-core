@@ -20,7 +20,6 @@
 package org.openflexo;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -47,7 +46,7 @@ public class ApplicationData {
 		return applicationContext;
 	}
 
-	public Collection<Module<?>> getAvailableModules() {
+	public List<Module<?>> getAvailableModules() {
 		return applicationContext.getModuleLoader().getKnownModules();
 	}
 

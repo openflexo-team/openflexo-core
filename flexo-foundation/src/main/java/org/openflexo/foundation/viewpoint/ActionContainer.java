@@ -25,6 +25,7 @@ import java.util.Vector;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
+import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;

@@ -340,6 +340,12 @@ public class Flexo {
 	}
 
 	public static void showWelcomDialog(final ApplicationContext applicationContext, final SplashWindow splashWindow) {
+		System.out.println("Now we show WelcomeDialog");
+		System.out.println("Found modules=");
+		for (Module<?> module : applicationContext.getModuleLoader().getKnownModules()) {
+			System.out.println("> Module: " + module);
+		}
+
 		WelcomeDialog welcomeDialog = new WelcomeDialog(applicationContext);
 		welcomeDialog.pack();
 		welcomeDialog.center();

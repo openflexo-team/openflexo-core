@@ -30,6 +30,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import org.openflexo.components.AboutDialog;
+import org.openflexo.drm.DocItem;
 import org.openflexo.drm.TrackComponentCHForHelpSubmission;
 import org.openflexo.drm.TrackComponentCHForHelpView;
 import org.openflexo.help.FlexoHelp;
@@ -45,19 +46,19 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class HelpMenu extends FlexoMenu implements Observer {
 
-	private final JMenuItem generalHelp;
+	private JMenuItem generalHelp;
 
-	private final JMenuItem flexoHelp;
+	private JMenuItem flexoHelp;
 
-	private final JMenuItem modelingHelp;
+	private JMenuItem modelingHelp;
 
-	private final JMenuItem helpOn;
+	private JMenuItem helpOn;
 
 	private JMenuItem submitHelpFor;
 
 	private JMenuItem aboutFlexo;
 
-	private final JMenuItem[] modulesHelp;
+	private JMenuItem[] modulesHelp;
 
 	private ActionListener helpActionListener;
 
@@ -66,64 +67,69 @@ public class HelpMenu extends FlexoMenu implements Observer {
 
 		helpActionListener = new CSH.DisplayHelpFromSource(FlexoHelp.getHelpBroker());
 
-		generalHelp = new JMenuItem();
-		generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0) : KeyStroke
-				.getKeyStroke(KeyEvent.VK_F1, 0));
-		generalHelp.setText(FlexoLocalization.localizedForKey("general_help", generalHelp));
-		CSH.setHelpIDString(generalHelp, getController().getApplicationContext().getDocResourceManager().getDocResourceCenterItem()
-				.getIdentifier());
-		generalHelp.addActionListener(helpActionListener);
-		add(generalHelp);
+		if (getController().getApplicationContext().getDocResourceManager().getDocResourceCenter() != null) {
 
-		flexoHelp = new JMenuItem();
-		flexoHelp.setText(FlexoLocalization.localizedForKey("flexo_help", flexoHelp));
-		CSH.setHelpIDString(flexoHelp, getController().getApplicationContext().getDocResourceManager().getFlexoToolSetItem()
-				.getIdentifier());
-		flexoHelp.addActionListener(helpActionListener);
-		add(flexoHelp);
-
-		modelingHelp = new JMenuItem();
-		modelingHelp.setText(FlexoLocalization.localizedForKey("modeling_help", modelingHelp));
-		CSH.setHelpIDString(modelingHelp, getController().getApplicationContext().getDocResourceManager().getFlexoModelItem()
-				.getIdentifier());
-		modelingHelp.addActionListener(helpActionListener);
-		add(modelingHelp);
-
-		addSeparator();
-		modulesHelp = new JMenuItem[controller.getApplicationContext().getModuleLoader().getKnownModules().size()];
-		int i = 0;
-		for (Module<?> module : controller.getApplicationContext().getModuleLoader().getKnownModules()) {
-			modulesHelp[i] = new JMenuItem();
-			modulesHelp[i].setText(FlexoLocalization.localizedForKey(module.getName(), modulesHelp[i]));
-			CSH.setHelpIDString(modulesHelp[i], module.getHelpTopic());
-			modulesHelp[i].addActionListener(helpActionListener);
-			add(modulesHelp[i]);
-			i++;
-		}
-
-		addSeparator();
-		helpOn = new JMenuItem();
-		helpOn.setText(FlexoLocalization.localizedForKey("help_on", helpOn));
-		// helpOn.addActionListener(new CSH.DisplayHelpAfterTracking(FlexoHelp.getHelpBroker()));
-		helpOn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new TrackComponentCHForHelpView(controller.getFlexoFrame(), controller.getApplicationContext());
+			generalHelp = new JMenuItem();
+			generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0) : KeyStroke
+					.getKeyStroke(KeyEvent.VK_F1, 0));
+			generalHelp.setText(FlexoLocalization.localizedForKey("general_help", generalHelp));
+			DocItem drcItem = getController().getApplicationContext().getDocResourceManager().getDocResourceCenterItem();
+			if (drcItem != null) {
+				CSH.setHelpIDString(generalHelp, drcItem.getIdentifier());
 			}
-		});
-		add(helpOn);
+			generalHelp.addActionListener(helpActionListener);
+			add(generalHelp);
 
-		if (getModuleLoader().allowsDocSubmission()) {
-			submitHelpFor = new JMenuItem();
-			submitHelpFor.setText(FlexoLocalization.localizedForKey("submit_help_for", submitHelpFor));
+			flexoHelp = new JMenuItem();
+			flexoHelp.setText(FlexoLocalization.localizedForKey("flexo_help", flexoHelp));
+			CSH.setHelpIDString(flexoHelp, getController().getApplicationContext().getDocResourceManager().getFlexoToolSetItem()
+					.getIdentifier());
+			flexoHelp.addActionListener(helpActionListener);
+			add(flexoHelp);
+
+			modelingHelp = new JMenuItem();
+			modelingHelp.setText(FlexoLocalization.localizedForKey("modeling_help", modelingHelp));
+			CSH.setHelpIDString(modelingHelp, getController().getApplicationContext().getDocResourceManager().getFlexoModelItem()
+					.getIdentifier());
+			modelingHelp.addActionListener(helpActionListener);
+			add(modelingHelp);
+
+			addSeparator();
+			modulesHelp = new JMenuItem[controller.getApplicationContext().getModuleLoader().getKnownModules().size()];
+			int i = 0;
+			for (Module<?> module : controller.getApplicationContext().getModuleLoader().getKnownModules()) {
+				modulesHelp[i] = new JMenuItem();
+				modulesHelp[i].setText(FlexoLocalization.localizedForKey(module.getName(), modulesHelp[i]));
+				CSH.setHelpIDString(modulesHelp[i], module.getHelpTopic());
+				modulesHelp[i].addActionListener(helpActionListener);
+				add(modulesHelp[i]);
+				i++;
+			}
+
+			addSeparator();
+			helpOn = new JMenuItem();
+			helpOn.setText(FlexoLocalization.localizedForKey("help_on", helpOn));
 			// helpOn.addActionListener(new CSH.DisplayHelpAfterTracking(FlexoHelp.getHelpBroker()));
-			submitHelpFor.addActionListener(new ActionListener() {
+			helpOn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					new TrackComponentCHForHelpSubmission(controller.getFlexoFrame(), controller.getApplicationContext());
+					new TrackComponentCHForHelpView(controller.getFlexoFrame(), controller.getApplicationContext());
 				}
 			});
-			add(submitHelpFor);
+			add(helpOn);
+
+			if (getModuleLoader().allowsDocSubmission()) {
+				submitHelpFor = new JMenuItem();
+				submitHelpFor.setText(FlexoLocalization.localizedForKey("submit_help_for", submitHelpFor));
+				// helpOn.addActionListener(new CSH.DisplayHelpAfterTracking(FlexoHelp.getHelpBroker()));
+				submitHelpFor.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						new TrackComponentCHForHelpSubmission(controller.getFlexoFrame(), controller.getApplicationContext());
+					}
+				});
+				add(submitHelpFor);
+			}
 		}
 
 		if (ToolBox.getPLATFORM() != ToolBox.MACOS) {

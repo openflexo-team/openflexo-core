@@ -179,7 +179,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	public GeneralPreferences getGeneralPreferences() {
-		System.out.println("getPreferencesService()=" + getPreferencesService());
 		return getPreferencesService().getPreferences(GeneralPreferences.class);
 	}
 

@@ -37,7 +37,7 @@ import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.FetchRequest;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
 import org.openflexo.foundation.viewpoint.NamedViewPointObject;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;

@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.viewpoint.FetchRequest;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

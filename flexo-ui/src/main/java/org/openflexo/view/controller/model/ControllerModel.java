@@ -22,6 +22,7 @@ import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.swing.layout.MultiSplitLayoutTypeAdapterFactory;
 import org.openflexo.toolbox.ExtendedSet;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
+import org.openflexo.view.controller.FlexoController;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -127,6 +128,10 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		currentLocation = NO_LOCATION;
 	}
 
+	public FlexoController getController() {
+		return module.getController();
+	}
+
 	/***************
 	 * PERSPECTIVE *
 	 ***************/
@@ -147,8 +152,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public void setCurrentPerspective(FlexoPerspective currentPerspective) {
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
-			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
-				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
+			if (object == null || !currentPerspective.hasModuleViewForObject(object, getController())) {
+				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject(), getController());
 			}
 		}
 		setCurrentLocation(getCurrentEditor(), object, currentPerspective);
@@ -200,7 +205,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 					FlexoObject object = null;
 					if (getCurrentEditor() == null && currentEditor != null && currentEditor.getProject() != null
 							&& getCurrentPerspective() != null) {
-						object = getCurrentPerspective().getDefaultObject(currentEditor.getProject());
+						object = getCurrentPerspective().getDefaultObject(currentEditor.getProject(), getController());
 					}
 					setCurrentLocation(currentEditor, object, getCurrentPerspective());
 				}
@@ -232,12 +237,12 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// Little block to change the currentPerspective if the
 		// current perspective can't handle this object
 		FlexoPerspective perspective = getCurrentPerspective();
-		if (object != null && !perspective.hasModuleViewForObject(object)) {
+		if (object != null && !perspective.hasModuleViewForObject(object, getController())) {
 			for (FlexoPerspective p : getPerspectives()) {
 				if (p == null) {
 					continue;
 				}
-				if (p.hasModuleViewForObject(object)) {
+				if (p.hasModuleViewForObject(object, getController())) {
 					perspective = p;
 					break;
 				}
@@ -435,7 +440,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			if (evt.getPropertyName().equals(ProjectLoader.PROJECT_OPENED)) {
 				FlexoProject project = (FlexoProject) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
-					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
+					FlexoObject object = getCurrentPerspective().getDefaultObject(project, getController());
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
 				} else {
 					setCurrentProject(project);

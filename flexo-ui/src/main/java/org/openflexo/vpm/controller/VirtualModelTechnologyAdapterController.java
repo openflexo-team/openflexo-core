@@ -2,15 +2,17 @@ package org.openflexo.vpm.controller;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.DeleteAction;
 import org.openflexo.foundation.viewpoint.EditionAction;
+import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
-import org.openflexo.foundation.viewpoint.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
@@ -20,6 +22,9 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
+import org.openflexo.vpm.view.StandardEditionPatternView;
+import org.openflexo.vpm.view.ViewPointView;
+import org.openflexo.vpm.view.VirtualModelView;
 
 public class VirtualModelTechnologyAdapterController extends TechnologyAdapterController<VirtualModelTechnologyAdapter> {
 
@@ -106,21 +111,72 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	}
 
 	@Override
-	public boolean hasModuleViewForObject(TechnologyObject object) {
+	public boolean hasModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
+		if (object instanceof ViewPoint || object instanceof EditionPattern) {
+			return true;
+		}
 		// TODO not applicable
 		return false;
 	}
 
 	@Override
-	public String getWindowTitleforObject(TechnologyObject object) {
+	public String getWindowTitleforObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
 		return object.toString();
 	}
 
+	/**
+	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
+	 * rendering
+	 * 
+	 * @param object
+	 * @return
+	 */
 	@Override
-	public <T extends FlexoObject> ModuleView<T> createModuleViewForObject(T object, FlexoController controller,
+	public ModuleView<?> createModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
-		// TODO not applicable
-		return new EmptyPanel<T>(controller, perspective, object);
+		if (object instanceof ViewPoint) {
+			return new ViewPointView((ViewPoint) object, controller, perspective);
+		}
+		if (object instanceof EditionPattern) {
+			EditionPattern ep = (EditionPattern) object;
+			if (ep instanceof VirtualModel) {
+				// if (ep instanceof DiagramSpecification) {
+				// return new DiagramSpecificationView(ep, (VPMController) controller);
+				// } else {
+				return new VirtualModelView(ep, controller, perspective);
+				// }
+			} else {
+				// if (ep.getVirtualModel() instanceof DiagramSpecification) {
+				// return new DiagramEditionPatternView(ep, (VPMController) controller);
+				// } else {
+				return new StandardEditionPatternView(ep, controller, perspective);
+				// }
+			}
+
+		}
+
+		/*if (object instanceof ViewPoint) {
+		return new ViewPointView((ViewPoint) object, controller);
+		}
+		if (object instanceof EditionPattern) {
+		EditionPattern ep = (EditionPattern) object;
+		if (ep instanceof VirtualModel) {
+			//if (ep instanceof DiagramSpecification) {
+			//	return new DiagramSpecificationView(ep, (VPMController) controller);
+			//} else {
+			return new VirtualModelView(ep, (VPMController) controller);
+			// }
+		} else {
+			// if (ep.getVirtualModel() instanceof DiagramSpecification) {
+			//	return new DiagramEditionPatternView(ep, (VPMController) controller);
+			// } else {
+			return new StandardEditionPatternView(ep, (VPMController) controller);
+			// }
+		}
+
+		}*/
+
+		return new EmptyPanel<TechnologyObject<VirtualModelTechnologyAdapter>>(controller, perspective, object);
 	}
 
 }

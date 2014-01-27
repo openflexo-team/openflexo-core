@@ -65,6 +65,8 @@ public interface FlexoProperty extends FlexoObject {
 
 	public void setIntegerValue(int value);
 
+	public Integer getIntegerValue();
+
 	public static abstract class FlexoPropertyImpl extends FlexoObservable implements FlexoProperty {
 
 		private FlexoObject owner;
@@ -135,6 +137,14 @@ public interface FlexoProperty extends FlexoObject {
 		@Override
 		public int integerValue() {
 			return Integer.parseInt(getValue());
+		}
+
+		@Override
+		public Integer getIntegerValue() {
+			if (getValue() == null) {
+				return null;
+			}
+			return integerValue();
 		}
 
 		@Override

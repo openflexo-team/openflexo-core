@@ -11,9 +11,12 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;
+import org.openflexo.view.ModuleView;
+import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
  * Default implementation for {@link TechnologyAdapterService}
@@ -128,6 +131,33 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		for (TechnologyAdapterController<?> ta : getLoadedAdapterControllers()) {
 			ta.initialize();
 		}
+	}
+
+	/**
+	 * Return boolean indicating if this TechnologyAdapter controller service support ModuleView rendering for supplied technology object
+	 * 
+	 * @param object
+	 * @return
+	 */
+	@Override
+	public <TA extends TechnologyAdapter> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller) {
+		TA technologyAdapter = object.getTechnologyAdapter();
+		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
+		return taController.hasModuleViewForObject(object, controller);
+	}
+
+	@Override
+	public <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
+			FlexoPerspective perspective) {
+		TA technologyAdapter = object.getTechnologyAdapter();
+		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
+		return taController.createModuleViewForObject(object, controller, perspective);
+	}
+
+	public <TA extends TechnologyAdapter> String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller) {
+		TA technologyAdapter = object.getTechnologyAdapter();
+		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
+		return taController.getWindowTitleforObject(object, controller);
 	}
 
 }

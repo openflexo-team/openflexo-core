@@ -32,19 +32,19 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.ConditionalAction;
-import org.openflexo.foundation.viewpoint.DeleteAction;
 import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
-import org.openflexo.foundation.viewpoint.FetchRequest;
-import org.openflexo.foundation.viewpoint.FetchRequestIterationAction;
-import org.openflexo.foundation.viewpoint.IterationAction;
-import org.openflexo.foundation.viewpoint.MatchEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.SelectEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
+import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.localization.FlexoLocalization;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, EditionSchemeObject, ViewPointObject> {
@@ -106,14 +106,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, Editio
 		super(actionType, focusedObject, globalSelection, editor);
 
 		builtInActions = new ArrayList<Class<? extends EditionAction>>();
-		builtInActions.add(org.openflexo.foundation.viewpoint.AssignationAction.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.AddToListAction.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.RemoveFromListAction.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.ExecutionAction.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.DeclarePatternRole.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.AddEditionPatternInstance.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.MatchEditionPatternInstance.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.SelectEditionPatternInstance.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance.class);
 		builtInActions.add(DeleteAction.class);
 
 		controlActions = new ArrayList<Class<? extends EditionAction>>();
@@ -235,15 +235,15 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, Editio
 				logger.warning("Unexpected " + builtInActionClass);
 				return null;
 			}
-			if (org.openflexo.foundation.viewpoint.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
+			if (org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAssignationAction();
-			} else if (org.openflexo.foundation.viewpoint.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
+			} else if (org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddToListAction();
-			} else if (org.openflexo.foundation.viewpoint.RemoveFromListAction.class.isAssignableFrom(builtInActionClass)) {
+			} else if (org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newRemoveFromListAction();
-			} else if (org.openflexo.foundation.viewpoint.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
+			} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newExecutionAction();
-			} else if (org.openflexo.foundation.viewpoint.DeclarePatternRole.class.isAssignableFrom(builtInActionClass)) {
+			} else if (org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newDeclarePatternRole();
 			} else if (AddEditionPatternInstance.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddEditionPatternInstance();

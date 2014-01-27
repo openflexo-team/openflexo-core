@@ -906,7 +906,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		ModuleView<?> moduleView = viewsForLocation.get(location);
 		if (moduleView == null) {
 			moduleView = lookupViewForLocation(location);
-			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
+			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject(), this)) {
 				moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(), location.isEditable());
 				if (moduleView != null) {
 					FlexoObject representedObject = moduleView.getRepresentedObject();
@@ -1427,9 +1427,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 		// logger.info("Current selection=" + getSelectionManager().getSelection());
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
-				getCurrentPerspective().objectWasClicked(getRelevantObject((FlexoObject) object));
+				getCurrentPerspective().objectWasClicked(getRelevantObject((FlexoObject) object), this);
 			} else {
-				getCurrentPerspective().objectWasClicked(object);
+				getCurrentPerspective().objectWasClicked(object, this);
 			}
 		}
 	}
@@ -1443,9 +1443,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 		}
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
-				getCurrentPerspective().objectWasRightClicked(getRelevantObject((FlexoObject) object));
+				getCurrentPerspective().objectWasRightClicked(getRelevantObject((FlexoObject) object), this);
 			} else {
-				getCurrentPerspective().objectWasRightClicked(object);
+				getCurrentPerspective().objectWasRightClicked(object, this);
 			}
 		}
 	}
@@ -1487,15 +1487,15 @@ public abstract class FlexoController implements PropertyChangeListener {
 				selectAndFocusObject(resourceData);
 			}
 		}
-		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
+		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object, this)) {
 			// Try to display object in view
 			selectAndFocusObject((FlexoObject) object);
 		}
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
-				getCurrentPerspective().objectWasDoubleClicked(getRelevantObject((FlexoObject) object));
+				getCurrentPerspective().objectWasDoubleClicked(getRelevantObject((FlexoObject) object), this);
 			} else {
-				getCurrentPerspective().objectWasDoubleClicked(object);
+				getCurrentPerspective().objectWasDoubleClicked(object, this);
 			}
 		}
 	}
