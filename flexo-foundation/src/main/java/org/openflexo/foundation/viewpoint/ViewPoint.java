@@ -113,14 +113,14 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	@Setter(VIEW_POINT_URI_KEY)
 	public void setViewPointURI(String viewPointURI);
 
-	@Getter(value = VERSION_KEY, isStringConvertable=true)
+	@Getter(value = VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public FlexoVersion getVersion();
 
 	@Setter(VERSION_KEY)
 	public void setVersion(FlexoVersion version);
 
-	@Getter(value = MODEL_VERSION_KEY, isStringConvertable=true)
+	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public FlexoVersion getModelVersion();
 
@@ -153,7 +153,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	 * 
 	 * @return
 	 */
-	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType=true)
+	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType = true)
 	public List<VirtualModel> getVirtualModels();
 
 	@Setter(VIRTUAL_MODELS_KEY)
@@ -196,7 +196,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
-			File viewpointDir = new File(containerDir,baseName+".viewpoint");
+			File viewpointDir = new File(containerDir, baseName + ".viewpoint");
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir, library);
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
@@ -220,7 +220,10 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public FlexoVersion getModelVersion() {
-			return getResource().getModelVersion();
+			if (getResource() != null) {
+				return getResource().getModelVersion();
+			}
+			return null;
 		}
 
 		@Override

@@ -1,11 +1,11 @@
 package org.openflexo.foundation.resource;
 
-import java.io.File;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
+import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -38,18 +38,23 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	}
 
 	/**
-	 * Instantiate a new DefaultResourceCenterService with the UserResourceCenter and with some instances of DirectoryResourceCenter
-	 * matching all supplied directories
+	 * Instantiate a new DefaultResourceCenterService by instantiating all {@link FlexoResourceCenter} as it is declared in supplied
+	 * {@link ResourceCenterEntry} list
 	 * 
 	 * @return
 	 */
-	public static FlexoResourceCenterService getNewInstance(List<File> resourceCenterDirectories) {
+	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries) {
 		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance();
-		for (File directory : resourceCenterDirectories) {
+		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
+			FlexoResourceCenter rc = entry.makeResourceCenter();
+			returned.addToResourceCenters(rc);
+		}
+
+		/*for (File directory : resourceCenterDirectories) {
 			if (directory != null && directory.isDirectory() && directory.exists()) {
 				returned.addToDirectoryResourceCenter(directory);
 			}
-		}
+		}*/
 		/*if (resourceCenterDirectory != null && resourceCenterDirectory.isDirectory() && resourceCenterDirectory.exists()) {
 			returned.addToDirectoryResourceCenter(resourceCenterDirectory);
 		} else {
@@ -96,17 +101,19 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public DefaultResourceCenterService() {
 	}
 
-	public DirectoryResourceCenter addToDirectoryResourceCenter(File aDirectory) {
+	/*public DirectoryResourceCenter addToDirectoryResourceCenter(File aDirectory) {
 		DirectoryResourceCenter returned = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(aDirectory);
 		addToResourceCenters(returned);
 		return returned;
-	}
+	}*/
 
 	@Override
 	public void addToResourceCenters(FlexoResourceCenter resourceCenter) {
 		performSuperAdder(RESOURCE_CENTERS, resourceCenter);
 		if (getServiceManager() != null) {
-			getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
+			if (getServiceManager() != null) {
+				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
+			}
 		}
 	}
 
@@ -176,7 +183,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void initialize() {
-		if (getResourceCenters().size() <= 1) {
+		if (getResourceCenters().size() < 1) {
 			if (getServiceManager() != null) {
 				System.out.println("Trying to install default packaged resource center");
 				getServiceManager().notify(this, new DefaultPackageResourceCenterIsNotInstalled());

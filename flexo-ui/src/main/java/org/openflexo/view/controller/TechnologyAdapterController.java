@@ -29,7 +29,6 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -37,6 +36,7 @@ import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstanc
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;

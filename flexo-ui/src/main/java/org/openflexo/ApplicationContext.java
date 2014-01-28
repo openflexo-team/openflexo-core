@@ -149,7 +149,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
 		registerPreferencesService();
-		return DefaultResourceCenterService.getNewInstance(getGeneralPreferences().getDirectoryResourceCenterList());
+		return DefaultResourceCenterService.getNewInstance(getPreferencesService().getResourceCenterPreferences()
+				.getResourceCenterEntries());
 	}
 
 	@Deprecated
@@ -172,7 +173,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		}
 	}
 
-	private boolean defaultPackagedResourceCenterIsNotInstalled;
+	private boolean defaultPackagedResourceCenterIsNotInstalled = false;
 
 	public boolean defaultPackagedResourceCenterIsToBeInstalled() {
 		return defaultPackagedResourceCenterIsNotInstalled;

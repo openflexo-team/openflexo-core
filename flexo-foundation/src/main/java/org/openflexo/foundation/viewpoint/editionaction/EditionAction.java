@@ -18,7 +18,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
@@ -40,20 +40,17 @@ import org.openflexo.foundation.view.action.DeletionSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.view.action.NavigationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
-import org.openflexo.foundation.viewpoint.editionaction.AddClass;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
-import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
-import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
-import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.SelectIndividual;
+import org.openflexo.foundation.viewpoint.ActionContainer;
+import org.openflexo.foundation.viewpoint.AddIndividual;
+import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.ProcedureAction;
+import org.openflexo.foundation.viewpoint.ViewPointObject;
+import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
+import org.openflexo.foundation.viewpoint.ViewPointObject.BindingMustBeValid;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;

@@ -232,12 +232,12 @@ public abstract class Module<M extends FlexoModule<M>> {
 	 * @throws Exception
 	 */
 	public M load() throws Exception {
+
 		boolean createProgress = !ProgressWindow.hasInstance();
 		if (createProgress) {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName(), 8);
 		}
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName());
-		System.out.println("Constructor=" + getConstructor());
 		loadedModuleInstance = getConstructor().newInstance(new Object[] { getModuleLoader().getServiceManager() });
 		doInternalLoadModule();
 		if (createProgress) {
@@ -251,6 +251,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 	 */
 	public void unload() {
 		// TODO
+		loadedModuleInstance = null;
 	}
 
 	public boolean isLoaded() {

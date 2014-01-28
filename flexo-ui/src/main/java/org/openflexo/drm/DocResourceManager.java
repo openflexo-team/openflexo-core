@@ -746,6 +746,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getDocItemFor(FlexoModule module) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		String identifier = module.getModule().getHelpTopic();
 		if (getDocItem(identifier) == null) {
 			DocItemFolder newModuleFolder = DocItemFolder.createDocItemFolder(identifier, "", getFlexoToolSetItem().getFolder(), drc);
@@ -756,6 +759,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getMainPaneItemFor(FlexoModule module) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		String identifier = module.getModule().getHelpTopic();
 		String mainPaneId = identifier + "-" + DocResourceCenter.MAIN_PANE_ID;
 		DocItem newModuleItem = getDocItemFor(module);
@@ -770,6 +776,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getModuleViewItemFor(FlexoModule module, ModuleView view) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		DocItem mainPaneItem = getMainPaneItemFor(module);
 		DocItemFolder folder;
 		if (view.getPerspective() != null) {
@@ -801,6 +810,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getControlPanelItemFor(FlexoModule module) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		String identifier = module.getModule().getHelpTopic();
 		String controlPanelId = identifier + "-" + DocResourceCenter.CONTROL_PANEL_ID;
 		DocItem newModuleItem = getDocItemFor(module);
@@ -814,6 +826,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getLeftViewItemFor(FlexoModule module) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		String identifier = module.getModule().getHelpTopic();
 		String leftViewId = identifier + "-" + DocResourceCenter.LEFT_VIEW_ID;
 		DocItem newModuleItem = getDocItemFor(module);
@@ -827,6 +842,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public DocItem getRightViewItemFor(FlexoModule module) {
 		DocResourceCenter drc = getDocResourceCenter();
+		if (drc == null) {
+			return null;
+		}
 		String identifier = module.getModule().getHelpTopic();
 		String rightViewId = identifier + "-" + DocResourceCenter.RIGHT_VIEW_ID;
 		DocItem newModuleItem = getDocItemFor(module);

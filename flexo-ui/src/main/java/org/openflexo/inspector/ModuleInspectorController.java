@@ -34,7 +34,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.TypeUtils;
-import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBModelFactory;
@@ -122,7 +121,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			}
 		})) {
 			logger.fine("Loading: " + f.getAbsolutePath());
-			FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
+			/*FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
 			if (inspector != null) {
 				appendVisibleFor(inspector);
 				appendEditableCondition(inspector);
@@ -132,15 +131,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 					if (logger.isLoggable(Level.FINE)) {
 						logger.fine("Loaded inspector: " + f.getName() + " for " + inspector.getDataClass());
 					}
-					/*
-					 * } catch (ClassNotFoundException e) {
-					 * logger.warning("Not found: " +
-					 * inspector.getDataClassName()); }
-					 */
 				}
 			} else {
 				logger.warning("Not found: " + f.getAbsolutePath());
-			}
+			}*/
 		}
 
 		for (FIBInspector inspector : inspectors.values()) {

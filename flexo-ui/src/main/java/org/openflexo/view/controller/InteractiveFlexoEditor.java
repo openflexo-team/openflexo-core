@@ -532,7 +532,10 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	}
 
 	private ControllerActionInitializer getCurrentControllerActionInitializer() {
-		return actionInitializers.get(getModuleLoader().getActiveModule());
+		if (getModuleLoader().getActiveModule() != null) {
+			return actionInitializers.get(getModuleLoader().getActiveModule());
+		}
+		return null;
 	}
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(

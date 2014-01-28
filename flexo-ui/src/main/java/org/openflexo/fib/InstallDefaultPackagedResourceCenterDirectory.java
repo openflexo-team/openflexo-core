@@ -43,7 +43,6 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 			int id = 2;
 			while (attempt.exists()) {
 				attempt = new File(FileUtils.getApplicationDataDirectory(), "FlexoResourceCenter" + id);
-				System.out.println("id=" + id);
 				id++;
 			}
 			resourceCenterDirectory = attempt;

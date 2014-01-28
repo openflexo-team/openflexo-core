@@ -1642,12 +1642,14 @@ public abstract class FlexoController implements PropertyChangeListener {
 
 	public static ImageIcon statelessIconForObject(Object object) {
 
+		if (object == null) {
+			return null;
+		}
+
 		// If object is a TechnologyObject, we delegate this to the right TechnologyAdapterController
 		if (object instanceof TechnologyObject<?>) {
 
-			System.out.println("Mon object est bien un TechnologyObject " + object);
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologyObject<?>) object).getTechnologyAdapter());
-			System.out.println("tac= " + tac);
 			if (tac != null) {
 				return tac.getIconForTechnologyObject(((TechnologyObject<?>) object).getClass());
 			}

@@ -27,8 +27,12 @@ import java.util.logging.Logger;
 import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
 import org.openflexo.GeneralPreferences;
+import org.openflexo.ResourceCenterPreferences;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -95,6 +99,17 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
+		if (caller instanceof FlexoResourceCenterService) {
+			if (notification instanceof ResourceCenterAdded) {
+				getResourceCenterPreferences().addToResourceCenterEntries(
+						((ResourceCenterAdded) notification).getAddedResourceCenter().getResourceCenterEntry());
+				savePreferences();
+			} else if (notification instanceof ResourceCenterRemoved) {
+				getResourceCenterPreferences().removeFromResourceCenterEntries(
+						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
+				savePreferences();
+			}
+		}
 	}
 
 	public void savePreferences() {
@@ -146,6 +161,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		classes.add(FlexoPreferences.class);
 		classes.add(GeneralPreferences.class);
 		classes.add(AdvancedPrefs.class);
+		classes.add(ResourceCenterPreferences.class);
 		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
 			classes.add(m.getPreferencesClass());
 		}
@@ -166,11 +182,15 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	}
 
 	public GeneralPreferences getGeneralPreferences() {
-		return getPreferences(GeneralPreferences.class);
+		return managePreferences(GeneralPreferences.class, getFlexoPreferences());
 	}
 
 	public AdvancedPrefs getAdvancedPrefs() {
-		return getPreferences(AdvancedPrefs.class);
+		return managePreferences(AdvancedPrefs.class, getFlexoPreferences());
+	}
+
+	public ResourceCenterPreferences getResourceCenterPreferences() {
+		return managePreferences(ResourceCenterPreferences.class, getFlexoPreferences());
 	}
 
 }

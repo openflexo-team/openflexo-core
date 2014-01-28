@@ -60,9 +60,9 @@ public class SplashWindow extends JDialog {
 		getContentPane().add(flexoLabel);
 		flexoLabel.setBounds(319, 142, 231, 59);
 
-		JLabel businessLabel = new JLabel("TODO: Openflexo distribution", SwingConstants.RIGHT);
+		JLabel businessLabel = new JLabel("Openflexo Diatomée distribution", SwingConstants.RIGHT);
 		businessLabel.setForeground(FlexoCst.WELCOME_FLEXO_COLOR);
-		businessLabel.setFont(new Font("SansSerif", Font.ITALIC, 18));
+		businessLabel.setFont(new Font("SansSerif", Font.ITALIC, 15));
 		getContentPane().add(businessLabel);
 		businessLabel.setBounds(260, 195, 280, 15);
 

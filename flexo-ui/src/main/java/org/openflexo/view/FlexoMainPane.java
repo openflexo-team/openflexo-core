@@ -117,6 +117,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 	public FlexoMainPane(FlexoController controller) {
 		super(new BorderLayout());
+
 		this.controller = controller;
 		this.centerLayout = new MultiSplitLayout(false, MSL_FACTORY);
 		this.centerLayout.setLayoutMode(MultiSplitLayout.NO_MIN_SIZE_LAYOUT);
@@ -407,6 +408,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	private void updateComponent(JComponent next, LayoutPosition position) {
 		JComponent previous = getComponentForPosition(position);
 		JComponent toAdd = next != null ? next : new EmptyPanel();
+
 		if (previous != toAdd) {
 			if (previous != null) {
 				centerPanel.remove(previous);
@@ -615,6 +617,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 					}
 				}
 			} else if (evt.getPropertyName().equals(ControllerModel.CURRENT_EDITOR)) {
+				System.out.println("On est notifie par ici aussi");
 				tabbedPane.refreshTabHeaders();
 			}
 		} else if (evt.getSource() == controller.getCurrentPerspective()) {
@@ -647,6 +650,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	}
 
 	private void updateLayoutForPerspective() {
+
 		if (perspective == null) {
 			return;
 		}

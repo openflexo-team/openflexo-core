@@ -27,8 +27,7 @@ import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.EditionAction;
-import org.openflexo.foundation.viewpoint.EditionAction.EditionActionImpl;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction.EditionActionImpl;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 

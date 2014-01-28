@@ -24,7 +24,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,12 +35,16 @@ import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 
@@ -147,9 +152,16 @@ public abstract class OpenflexoRunTimeTestCase extends OpenflexoTestCase {
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
-			return DefaultResourceCenterService.getNewInstance(Collections.singletonList(FileUtils.createTempDirectory(name,
-					"ResourceCenter")));
+			ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
+			DirectoryResourceCenterEntry entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
+			List<ResourceCenterEntry<?>> rcList = new ArrayList<ResourceCenterEntry<?>>();
+			rcList.add(entry);
+			return DefaultResourceCenterService.getNewInstance(rcList);
 		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 			fail();
 		}

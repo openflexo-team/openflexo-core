@@ -36,7 +36,7 @@ import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Abstract class defining a Flexo Module. A Flexo Module is an application component part of the Flexo Application Suite and dedicated to a
+ * Abstract class defining a Flexo Module. A Flexo Module is an application component part of the Openflexo Diatomee and dedicated to a
  * particular purpose.
  * 
  * @author sguerin
@@ -114,9 +114,13 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	void setAsInactive() {
 		isActive = false;
-		getFlexoFrame().setRelativeVisible(false);
-		if (controller.getConsistencyCheckWindow(false) != null) {
-			controller.getConsistencyCheckWindow(false).setVisible(false);
+		if (getFlexoFrame() != null) {
+			getFlexoFrame().setRelativeVisible(false);
+		}
+		if (controller != null) {
+			if (controller.getConsistencyCheckWindow(false) != null) {
+				controller.getConsistencyCheckWindow(false).setVisible(false);
+			}
 		}
 	}
 
@@ -214,6 +218,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		}
 		// Is there some modules loaded ?
 		Collection<Module<?>> leftModules = getModuleLoader().getLoadedModules();
+		Module<?> moiMeme = getModule();
+		leftModules.remove(getModule());
 		if (leftModules.size() > 0) {
 			try {
 				getModuleLoader().switchToModule(leftModules.iterator().next());

@@ -21,7 +21,6 @@ package org.openflexo.foundation.viewpoint.editionaction;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.viewpoint.EditionAction;
 
 /**
  * Interface implemented by all {@link EditionAction} setting a data property value to an object (interface used to share GUI)

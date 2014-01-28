@@ -55,6 +55,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.CloneableProxyObject;
 import org.openflexo.model.factory.DeletableProxyObject;
@@ -138,6 +139,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 	public void removeSpecificDescriptionsWithKey(String key);
 
 	@Getter(value = CUSTOM_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.OWNER_KEY)
+	@XMLElement
 	public List<FlexoProperty> getCustomProperties();
 
 	@Setter(CUSTOM_PROPERTIES_KEY)

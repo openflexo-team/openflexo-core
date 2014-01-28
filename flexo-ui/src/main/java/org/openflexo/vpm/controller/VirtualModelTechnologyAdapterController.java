@@ -3,7 +3,6 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.EditionAction;
 import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -12,6 +11,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;

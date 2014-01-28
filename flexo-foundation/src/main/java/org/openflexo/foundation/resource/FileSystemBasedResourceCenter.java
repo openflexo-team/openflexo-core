@@ -33,6 +33,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -41,6 +42,8 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -330,6 +333,22 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
 		return getResource(uri);
+	}
+
+	private DirectoryResourceCenterEntry entry;
+
+	@Override
+	public ResourceCenterEntry<?> getResourceCenterEntry() {
+		if (entry == null) {
+			try {
+				ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
+				entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+				entry.setDirectory(getDirectory());
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		return entry;
 	}
 
 }

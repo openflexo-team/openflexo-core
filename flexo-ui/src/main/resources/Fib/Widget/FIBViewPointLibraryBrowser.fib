@@ -8,25 +8,24 @@
       <Children data="viewPointFolder.children" visible="" cast="" name="subFolders" />
       <Children data="viewPointFolder.resources" visible="" cast="" name="viewPoints" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.rm.ViewPointResource" label="viewPoint.name" icon="controller.iconForObject(viewPoint)" tooltip="" enabled="viewPoint.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPoint">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.rm.ViewPointResource" label="viewPoint.name" icon="controller.iconForObject(viewPoint)" tooltip="" enabled="viewPoint.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPoint">
       <Children data="viewPoint.contents" visible="viewPoint.isLoaded" cast="" name="subResources" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.rm.ExampleDiagramResource" label="exampleDiagram.name" icon="controller.iconForObject(exampleDiagram)" tooltip="" enabled="exampleDiagram.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="exampleDiagram">
+    <!--  <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.rm.ExampleDiagramResource" label="exampleDiagram.name" icon="controller.iconForObject(exampleDiagram)" tooltip="" enabled="exampleDiagram.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="exampleDiagram">
       <Children data="exampleDiagram.loadedExampleDiagram.childs" visible="exampleDiagram.isLoaded" cast="" name="childs" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.rm.DiagramPaletteResource" label="diagramPalette.name" icon="controller.iconForObject(diagramPalette)" tooltip="" enabled="diagramPalette.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="diagramPalette">
       <Children data="diagramPalette.loadedDiagramPalette.elements" visible="diagramPalette.isLoaded" name="childs" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.rm.VirtualModelResource" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
+    </BrowserElement>-->
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.rm.VirtualModelResource" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
       <Children data="virtualModel.contents" visible="virtualModel.isLoaded" cast="" name="subresources" />
       <!--  <Children data="virtualModel.loadedVirtualModel.modelSlots" visible="virtualModel.isLoaded" cast="" name="modelSlots" />-->
       <Children data="virtualModel.loadedVirtualModel.allRootEditionPatterns" visible="virtualModel.isLoaded" cast="" name="rootEditionPatterns" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.rm.DiagramSpecificationResource" label="diagramSpecification.name" icon="controller.iconForObject(diagramSpecification)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="diagramSpecification">
+    <!--  <BrowserElement dataClassName="org.openflexo.foundation.rm.DiagramSpecificationResource" label="diagramSpecification.name" icon="controller.iconForObject(diagramSpecification)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="diagramSpecification">
       <Children data="diagramSpecification.contents" visible="diagramSpecification.isLoaded" cast="" name="subresources" />
-     <!--  <Children data="diagramSpecification.loadedDiagramSpecification.modelSlots" visible="diagramSpecification.isLoaded" cast="" name="modelSlots" />-->
       <Children data="diagramSpecification.loadedDiagramSpecification.allRootEditionPatterns" visible="diagramSpecification.isLoaded" cast="" name="rootEditionPatterns" />
-    </BrowserElement>
+    </BrowserElement>-->
     <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot" label="(((modelSlot.name + &quot; - [&quot;) + modelSlot.technologyAdapter.name) + &quot;]&quot;)" icon="controller.iconForObject(modelSlot)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="modelSlot" />
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPattern" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPattern">
       <Children data="editionPattern.childEditionPatterns" visible="" cast="" name="children" />
@@ -44,8 +43,8 @@
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry" label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameter" label="" icon="controller.iconForObject(editionSchemeParameter)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionSchemeParameter" />
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionAction" label="" icon="controller.iconForObject(editionAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionAction" />
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.ControlStructureAction" label="" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.EditionAction" label="" icon="controller.iconForObject(editionAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionAction" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction" label="" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
       <Children data="controlStructureAction.actions" visible="" cast="" name="children" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPatternStructuralFacet" label="&quot;Structural&quot;" icon="controller.iconForObject(editionPatternStructuralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPatternStructuralFacet">
@@ -57,16 +56,16 @@
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameters" label="&quot;Parameters&quot;" icon="controller.iconForObject(editionSchemeParameters)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionSchemeParameters">
       <Children data="editionSchemeParameters.editionScheme.parameters" visible="" cast="" name="children" />
     </BrowserElement>
-     <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.viewpoint.ExampleDiagramShape" label="shape.name" icon="controller.iconForObject(shape)" isEditable="false" filtered="false" defaultVisible="true" name="shape">
+     <!--  <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.ExampleDiagramShape" label="shape.name" icon="controller.iconForObject(shape)" isEditable="false" filtered="false" defaultVisible="true" name="shape">
       <Children data="shape.childs" name="childs" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.viewpoint.ExampleDiagramConnector" label="connector.name" icon="controller.iconForObject(connector)" isEditable="false" filtered="false" defaultVisible="true" name="connector">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.ExampleDiagramConnector" label="connector.name" icon="controller.iconForObject(connector)" isEditable="false" filtered="false" defaultVisible="true" name="connector">
       <Children data="connector.childs" name="childs" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.viewpoint.DiagramPaletteElement" label="element.name" icon="controller.iconForObject(element)" isEditable="false" filtered="false" defaultVisible="true" name="element">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.DiagramPaletteElement" label="element.name" icon="controller.iconForObject(element)" isEditable="false" filtered="false" defaultVisible="true" name="element">
       <Children data="element.overridingGraphicalRepresentations" name="overridingGR" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.view.diagram.viewpoint.DiagramPaletteElement$OverridingGraphicalRepresentation" icon="controller.iconForObject(overridingGraphicalRepresentation)" isEditable="false" filtered="false" defaultVisible="true" name="overridingGraphicalRepresentation" />
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.DiagramPaletteElement$OverridingGraphicalRepresentation" icon="controller.iconForObject(overridingGraphicalRepresentation)" isEditable="false" filtered="false" defaultVisible="true" name="overridingGraphicalRepresentation" /> -->
   </Browser>
   <LocalizedDictionary />
 </Panel>

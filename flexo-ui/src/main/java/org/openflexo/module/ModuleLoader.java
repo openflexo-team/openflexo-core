@@ -205,6 +205,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		List<Module<?>> returned = new ArrayList<Module<?>>();
 		for (Module<?> module : getKnownModules()) {
 			if (module.isLoaded()) {
+				System.out.println("Le module " + module + " est charge");
 				returned.add(module);
 			}
 		}
@@ -308,6 +309,10 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			return null;
 		}
 
+		if (module.isLoaded()) {
+			return module.getLoadedModuleInstance();
+		}
+
 		try {
 			module.load();
 			return module.getLoadedModuleInstance();
@@ -344,6 +349,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				logger.info("Switch to module " + module.getName());
 			}
 			FlexoModule moduleInstance = getModuleInstance(module);
+			System.out.println("ModuleInstance = " + moduleInstance);
 			if (moduleInstance != null) {
 				FlexoModule old = activeModule;
 				if (activeModule != null) {
@@ -436,7 +442,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		}
 
 		for (Module<?> m : getLoadedModules()) {
-			m.getLoadedModuleInstance().closeWithoutConfirmation(false);
+			m.getLoadedModuleInstance().closeWithoutConfirmation(true);
 		}
 
 		/*if (allowsDocSubmission() && !isAvailable(Module.DRE_MODULE) && DocResourceManager.instance().getSessionSubmissions().size() > 0) {

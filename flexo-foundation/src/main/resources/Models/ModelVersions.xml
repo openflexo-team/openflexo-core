@@ -158,11 +158,11 @@
     <version id="1.0" modelFile="ViewPointModel/VirtualModel/virtual_model_1.0.xml"/>
   </class>
   
-  <class name="org.openflexo.foundation.view.diagram.viewpoint.DiagramPalette" latestVersion="0.1"> 
+  <class name="org.openflexo.technologyadapter.diagram.fmlDiagramPalette" latestVersion="0.1"> 
     <version id="0.1" modelFile="ViewPointModel/VirtualModel/DiagramSpecification/DiagramPalette/diagram_palette_model_0.1.xml"/>
   </class>
   
-  <class name="org.openflexo.foundation.view.diagram.viewpoint.ExampleDiagram" latestVersion="0.1"> 
+  <class name="org.openflexo.technologyadapter.diagram.fmlExampleDiagram" latestVersion="0.1"> 
     <version id="0.1" modelFile="ViewPointModel/VirtualModel/DiagramSpecification/ExampleDiagram/example_diagram_model_0.1.xml"/>
   </class>
   

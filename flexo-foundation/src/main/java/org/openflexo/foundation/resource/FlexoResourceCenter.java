@@ -28,11 +28,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
+import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -47,6 +52,20 @@ import org.openflexo.toolbox.IProgress;
  */
 @ModelEntity
 public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
+
+	/**
+	 * Provides a persistent entry allowing to instantiate a FlexoResourceCenter
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	@ModelEntity
+	@XMLElement
+	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class) })
+	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
+
+		public RC makeResourceCenter();
+	}
 
 	/**
 	 * Return a user-friendly named identifier for this resource center
@@ -190,4 +209,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
+
+	public ResourceCenterEntry<?> getResourceCenterEntry();
 }

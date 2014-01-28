@@ -7,6 +7,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -17,6 +18,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  */
 @ModelEntity
 @ImplementationClass(FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl.class)
+@XMLElement
 public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrowserAction {
 
 	public Object performAction(T selected);

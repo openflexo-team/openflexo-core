@@ -61,7 +61,7 @@ public class AboutDialog extends JDialog {
 		getContentPane().add(flexoLabel);
 		flexoLabel.setBounds(319, 142, 231, 59);
 
-		JLabel businessLabel = new JLabel("TODO: Openflexo distribution"/*UserType.getCurrentUserType().getBusinessName2()*/,
+		JLabel businessLabel = new JLabel("Openflexo Diatomée distribution"/*UserType.getCurrentUserType().getBusinessName2()*/,
 				SwingConstants.RIGHT);
 		businessLabel.setForeground(FlexoCst.WELCOME_FLEXO_COLOR);
 		businessLabel.setFont(new Font("SansSerif", Font.ITALIC, 18));
