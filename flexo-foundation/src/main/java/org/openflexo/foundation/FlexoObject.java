@@ -122,6 +122,8 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 	@Setter(HAS_SPECIFIC_DESCRIPTIONS_KEY)
 	public void setHasSpecificDescriptions(boolean hasSpecificDescriptions);
 
+	public List<String> getSpecificDescriptionKeys();
+
 	@Getter(value = SPECIFIC_DESCRIPTIONS_KEY, ignoreType = true)
 	public Map<String, String> getSpecificDescriptions();
 
@@ -746,6 +748,14 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			this.hasSpecificDescriptions = hasSpecificDescription;
 			setChanged();
 			notifyObservers(new DataModification("hasSpecificDescriptions", old, hasSpecificDescription));
+		}
+
+		@Override
+		public List<String> getSpecificDescriptionKeys() {
+			if (!getHasSpecificDescriptions()) {
+				return null;
+			}
+			return new ArrayList<String>(getSpecificDescriptions().keySet());
 		}
 
 		@Override

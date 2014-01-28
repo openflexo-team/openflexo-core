@@ -64,6 +64,7 @@ import org.openflexo.foundation.viewpoint.inspector.TextFieldInspectorEntry;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -74,6 +75,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity
 @ImplementationClass(FIBInspector.FIBInspectorImpl.class)
+@XMLElement
 public interface FIBInspector extends FIBPanel {
 
 	public FIBInspector getSuperInspector();

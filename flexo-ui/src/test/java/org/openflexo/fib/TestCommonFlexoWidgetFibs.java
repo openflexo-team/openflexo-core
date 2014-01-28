@@ -1,38 +1,36 @@
 package org.openflexo.fib;
 
-import org.openflexo.fib.utils.FIBTestCase;
+import org.junit.Test;
+import org.openflexo.fib.utils.GenericFIBTestCase;
 import org.openflexo.toolbox.FileResource;
 
-public class TestCommonFlexoWidgetFibs extends FIBTestCase {
+public class TestCommonFlexoWidgetFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
 		System.out.println(generateFIBTestCaseClass(new FileResource("Fib/Widget"), "Fib/Widget/"));
 	}
 
+	@Test
 	public void testDeclareConnectorInEditionPatternDialog() {
 		validateFIB("Fib/Widget/DeclareConnectorInEditionPatternDialog.fib");
 	}
 
+	@Test
 	public void testDeclareShapeInEditionPatternDialog() {
 		validateFIB("Fib/Widget/DeclareShapeInEditionPatternDialog.fib");
 	}
 
-	public void testFIBDiagramPaletteBrowser() {
-		validateFIB("Fib/Widget/FIBDiagramPaletteBrowser.fib");
-	}
-
-	public void testFIBExampleDiagramBrowser() {
-		validateFIB("Fib/Widget/FIBExampleDiagramBrowser.fib");
-	}
-
+	@Test
 	public void testFIBViewPointBrowser() {
 		validateFIB("Fib/Widget/FIBViewPointBrowser.fib");
 	}
 
+	@Test
 	public void testFIBViewPointLibraryBrowser() {
 		validateFIB("Fib/Widget/FIBViewPointLibraryBrowser.fib");
 	}
 
+	@Test
 	public void testFIBVirtualModelBrowser() {
 		validateFIB("Fib/Widget/FIBVirtualModelBrowser.fib");
 	}

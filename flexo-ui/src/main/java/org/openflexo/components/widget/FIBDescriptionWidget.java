@@ -19,6 +19,7 @@
  */
 package org.openflexo.components.widget;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.controller.FIBController;
@@ -64,34 +65,38 @@ public class FIBDescriptionWidget extends DefaultFIBCustomComponent<FlexoObject>
 
 	public class DescriptionWidgetFIBController extends FIBController {
 
-		private String currentDocType;
+		private String specificDescriptionKey;
 
 		public DescriptionWidgetFIBController(FIBComponent c) {
 			super(c);
 		}
 
 		public String getSpecificDescription() {
-			if (currentDocType != null && getEditedObject() != null) {
-				return getEditedObject().getSpecificDescriptionForKey(currentDocType);
+			if (specificDescriptionKey != null && getEditedObject() != null) {
+				return getEditedObject().getSpecificDescriptionForKey(specificDescriptionKey);
 			}
 			return null;
 		}
 
 		public void setSpecificDescription(String specificDescription) {
-			System.out.println("Sets " + specificDescription + " currentDocType=" + currentDocType);
-			if (currentDocType != null && getEditedObject() != null) {
-				System.out.println("For key " + currentDocType + " description=" + specificDescription);
-				getEditedObject().setSpecificDescriptionsForKey(specificDescription, currentDocType);
+			System.out.println("Sets " + specificDescription + " specificDescriptionKey=" + specificDescriptionKey);
+			if (specificDescriptionKey != null && getEditedObject() != null) {
+				System.out.println("For key " + specificDescriptionKey + " description=" + specificDescription);
+				getEditedObject().setSpecificDescriptionsForKey(specificDescription, specificDescriptionKey);
 			}
 		}
 
-		public String getCurrentDocType() {
-			return currentDocType;
+		public String getSpecificDescriptionKey() {
+			return specificDescriptionKey;
 		}
 
-		public void setCurrentDocType(String currentDocType) {
-			System.out.println("setCurrentDocType " + currentDocType);
-			this.currentDocType = currentDocType;
+		public void setSpecificDescriptionKey(String key) {
+			System.out.println("setSpecificDescriptionKey " + key);
+			this.specificDescriptionKey = key;
+		}
+
+		public List<String> getSpecificDescriptionKeys() {
+			return getEditedObject().getSpecificDescriptionKeys();
 		}
 	}
 }
