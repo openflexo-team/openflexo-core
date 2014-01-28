@@ -70,14 +70,11 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
 
 /**
- * A {@link VirtualModel} is the specification of a model which will be
- * instantied in a {@link View} as a set of federated models.
+ * A {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models.
  * 
- * The base modelling element of a {@link VirtualModel} is provided by
- * {@link EditionPattern} concept.
+ * The base modelling element of a {@link VirtualModel} is provided by {@link EditionPattern} concept.
  * 
- * A {@link VirtualModel} instance contains a set of
- * {@link EditionPatternInstance}.
+ * A {@link VirtualModel} instance contains a set of {@link EditionPatternInstance}.
  * 
  * A {@link VirtualModel} is itself an {@link EditionPattern}
  * 
@@ -87,8 +84,7 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @XMLElement
-public interface VirtualModel extends EditionPattern,
-		FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
+public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
 
 	public static final String REFLEXIVE_MODEL_SLOT_NAME = "this";
 
@@ -166,8 +162,7 @@ public interface VirtualModel extends EditionPattern,
 	public void removeFromEditionPatterns(EditionPattern aEditionPattern);
 
 	/**
-	 * Return EditionPattern matching supplied id represented as a string, which
-	 * could be either the name of EditionPattern, or its URI
+	 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
 	 * 
 	 * @param editionPatternId
 	 * @return
@@ -250,8 +245,7 @@ public interface VirtualModel extends EditionPattern,
 	public IFlexoOntologyDataProperty getOntologyDataProperty(String uri);
 
 	/**
-	 * Return true if URI is well formed and valid regarding its unicity (no one
-	 * other object has same URI)
+	 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
 	 * 
 	 * @param uri
 	 * @return
@@ -277,9 +271,8 @@ public interface VirtualModel extends EditionPattern,
 
 	/**
 	 * Return reflexive model slot<br>
-	 * The reflexive model slot is an abstraction which allow to consider the
-	 * virtual model as a model which can be accessed from itself (Reentrance
-	 * implementation)
+	 * The reflexive model slot is an abstraction which allow to consider the virtual model as a model which can be accessed from itself
+	 * (Reentrance implementation)
 	 * 
 	 * @return
 	 */
@@ -294,11 +287,16 @@ public interface VirtualModel extends EditionPattern,
 	 */
 	public boolean handleVariable(BindingVariable variable);
 
-	public static abstract class VirtualModelImpl extends EditionPatternImpl
-			implements VirtualModel {
+	/**
+	 * Return all {@link EditionPattern} defined in this {@link VirtualModel} which have no parent
+	 * 
+	 * @return
+	 */
+	public List<EditionPattern> getAllRootEditionPatterns();
 
-		private static final Logger logger = Logger
-				.getLogger(VirtualModel.class.getPackage().getName());
+	public static abstract class VirtualModelImpl extends EditionPatternImpl implements VirtualModel {
+
+		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
 		private ViewPoint viewPoint;
 		// private Vector<EditionPattern> editionPatterns;
@@ -310,8 +308,7 @@ public interface VirtualModel extends EditionPattern,
 		private boolean readOnly = false;
 
 		/**
-		 * Stores a chained collections of objects which are involved in
-		 * validation
+		 * Stores a chained collections of objects which are involved in validation
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
@@ -325,20 +322,12 @@ public interface VirtualModel extends EditionPattern,
 		 * @return
 		 * @throws SaveResourceException
 		 */
-		public static VirtualModel newVirtualModel(String baseName,
-				ViewPoint viewPoint) throws SaveResourceException {
-			File diagramSpecificationDirectory = new File(
-					((ViewPointResource) viewPoint.getResource())
-							.getDirectory(),
-					baseName);
-			File diagramSpecificationXMLFile = new File(
-					diagramSpecificationDirectory, baseName + ".xml");
+		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
+			File diagramSpecificationDirectory = new File(((ViewPointResource) viewPoint.getResource()).getDirectory(), baseName);
+			File diagramSpecificationXMLFile = new File(diagramSpecificationDirectory, baseName + ".xml");
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
-			VirtualModelResource vmRes = VirtualModelResourceImpl
-					.makeVirtualModelResource(diagramSpecificationDirectory,
-							diagramSpecificationXMLFile,
-							(ViewPointResource) viewPoint.getResource(),
-							viewPointLibrary);
+			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(diagramSpecificationDirectory,
+					diagramSpecificationXMLFile, (ViewPointResource) viewPoint.getResource(), viewPointLibrary);
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);
 			vmRes.setResourceData(virtualModel);
@@ -386,8 +375,7 @@ public interface VirtualModel extends EditionPattern,
 
 		/**
 		 * Return reflexive model slot<br>
-		 * The reflexive model slot is an abstraction which allow to consider
-		 * the virtual model as a model which can be accessed from itself
+		 * The reflexive model slot is an abstraction which allow to consider the virtual model as a model which can be accessed from itself
 		 * 
 		 * @return
 		 */
@@ -404,20 +392,14 @@ public interface VirtualModel extends EditionPattern,
 
 		protected VirtualModelModelSlot makeReflexiveModelSlot() {
 			if (getViewPoint().getViewPointLibrary().getServiceManager() != null
-					&& getViewPoint().getViewPointLibrary().getServiceManager()
-							.getService(TechnologyAdapterService.class) != null) {
-				VirtualModelTechnologyAdapter builtInTA = getViewPoint()
-						.getViewPointLibrary()
-						.getServiceManager()
-						.getService(TechnologyAdapterService.class)
-						.getTechnologyAdapter(
-								VirtualModelTechnologyAdapter.class);
+					&& getViewPoint().getViewPointLibrary().getServiceManager().getService(TechnologyAdapterService.class) != null) {
+				VirtualModelTechnologyAdapter builtInTA = getViewPoint().getViewPointLibrary().getServiceManager()
+						.getService(TechnologyAdapterService.class).getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 				if (builtInTA == null) {
 					logger.severe("VirtualModelTechnologyAdapter not found: this should not happen");
 					return null;
 				} else {
-					VirtualModelModelSlot returned = builtInTA
-							.makeVirtualModelModelSlot(this, this);
+					VirtualModelModelSlot returned = builtInTA.makeVirtualModelModelSlot(this, this);
 					returned.setVirtualModelResource(getResource());
 					returned.setName(REFLEXIVE_MODEL_SLOT_NAME);
 					addToModelSlots(returned);
@@ -430,12 +412,9 @@ public interface VirtualModel extends EditionPattern,
 
 		/**
 		 * Return the URI of the {@link VirtualModel}<br>
-		 * The convention for URI are following:
-		 * <viewpoint_uri>/<virtual_model_name
-		 * >#<edition_pattern_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<edition_pattern_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.
-		 * MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern. MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -500,12 +479,12 @@ public interface VirtualModel extends EditionPattern,
 		 */
 
 		/**
-		 * Return all {@link EditionPattern} defined in this
-		 * {@link VirtualModel} which have no parent
+		 * Return all {@link EditionPattern} defined in this {@link VirtualModel} which have no parent
 		 * 
 		 * @return
 		 */
-		public Vector<EditionPattern> getAllRootEditionPatterns() {
+		@Override
+		public List<EditionPattern> getAllRootEditionPatterns() {
 			Vector<EditionPattern> returned = new Vector<EditionPattern>();
 			for (EditionPattern ep : getEditionPatterns()) {
 				if (ep.isRoot()) {
@@ -516,8 +495,7 @@ public interface VirtualModel extends EditionPattern,
 		}
 
 		/**
-		 * Return all {@link EditionPattern} defined in this
-		 * {@link VirtualModel}
+		 * Return all {@link EditionPattern} defined in this {@link VirtualModel}
 		 * 
 		 * @return
 		 */
@@ -539,8 +517,7 @@ public interface VirtualModel extends EditionPattern,
 		 */
 
 		/**
-		 * Return EditionPattern matching supplied id represented as a string,
-		 * which could be either the name of EditionPattern, or its URI
+		 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
 		 * 
 		 * @param editionPatternId
 		 * @return
@@ -556,8 +533,7 @@ public interface VirtualModel extends EditionPattern,
 				}
 				// Special case to handle conversion from old VP version
 				// TODO: to be removed when all VP are up-to-date
-				if ((getViewPoint().getURI() + "#" + editionPattern.getName())
-						.equals(editionPatternId)) {
+				if ((getViewPoint().getURI() + "#" + editionPattern.getName()).equals(editionPatternId)) {
 					return editionPattern;
 				}
 			}
@@ -566,8 +542,7 @@ public interface VirtualModel extends EditionPattern,
 		}
 
 		public SynchronizationScheme createSynchronizationScheme() {
-			SynchronizationScheme newSynchronizationScheme = getVirtualModelFactory()
-					.newSynchronizationScheme();
+			SynchronizationScheme newSynchronizationScheme = getVirtualModelFactory().newSynchronizationScheme();
 			newSynchronizationScheme.setSynchronizedVirtualModel(this);
 			newSynchronizationScheme.setName("synchronization");
 			addToEditionSchemes(newSynchronizationScheme);
@@ -595,8 +570,7 @@ public interface VirtualModel extends EditionPattern,
 			for (EditionPattern ep : getEditionPatterns()) {
 				// bindingModel.addToBindingVariables(new
 				// EditionPatternPathElement<ViewPoint>(ep, this));
-				bindingModel.addToBindingVariables(new BindingVariable(ep
-						.getName(), EditionPatternInstanceType
+				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), EditionPatternInstanceType
 						.getEditionPatternInstanceType(ep)));
 			}
 		}
@@ -782,8 +756,7 @@ public interface VirtualModel extends EditionPattern,
 		}
 
 		/**
-		 * Return true if URI is well formed and valid regarding its unicity (no
-		 * one other object has same URI)
+		 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
 		 * 
 		 * @param uri
 		 * @return
@@ -796,8 +769,7 @@ public interface VirtualModel extends EditionPattern,
 			if (StringUtils.isEmpty(conceptURI.trim())) {
 				return false;
 			}
-			return conceptURI.equals(ToolBox.getJavaName(conceptURI, true,
-					false)) && !isDuplicatedURI(ontologyURI, conceptURI);
+			return conceptURI.equals(ToolBox.getJavaName(conceptURI, true, false)) && !isDuplicatedURI(ontologyURI, conceptURI);
 		}
 
 		/**
@@ -833,8 +805,7 @@ public interface VirtualModel extends EditionPattern,
 		}
 
 		/**
-		 * Return the list of all metamodels used in the scope of this virtual
-		 * model
+		 * Return the list of all metamodels used in the scope of this virtual model
 		 * 
 		 * @return
 		 */
@@ -845,8 +816,7 @@ public interface VirtualModel extends EditionPattern,
 				if (modelSlot instanceof TypeAwareModelSlot) {
 					TypeAwareModelSlot tsModelSlot = (TypeAwareModelSlot) modelSlot;
 					if (tsModelSlot.getMetaModelResource() != null) {
-						returned.add(tsModelSlot.getMetaModelResource()
-								.getMetaModelData());
+						returned.add(tsModelSlot.getMetaModelResource().getMetaModelData());
 					}
 				}
 			}
@@ -886,8 +856,7 @@ public interface VirtualModel extends EditionPattern,
 
 		@Override
 		public void save() {
-			logger.info("Saving ViewPoint to "
-					+ getResource().getFile().getAbsolutePath() + "...");
+			logger.info("Saving ViewPoint to " + getResource().getFile().getAbsolutePath() + "...");
 
 			try {
 				getResource().save(null);
@@ -944,17 +913,14 @@ public interface VirtualModel extends EditionPattern,
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("VirtualModel " + getName() + " type="
-					+ getClass().getSimpleName() + " uri=\"" + getURI() + "\"",
-					context);
+			out.append("VirtualModel " + getName() + " type=" + getClass().getSimpleName() + " uri=\"" + getURI() + "\"", context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
 			if (getModelSlots().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
 				for (ModelSlot modelSlot : getModelSlots()) {
 					// if (modelSlot.getMetaModelResource() != null) {
-					out.append(modelSlot.getFMLRepresentation(context),
-							context, 1);
+					out.append(modelSlot.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 					// }
 				}

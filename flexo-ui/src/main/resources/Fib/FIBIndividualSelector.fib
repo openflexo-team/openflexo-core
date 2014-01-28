@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="twocols" darkLevel="0" dataClassName="org.openflexo.components.widget.FIBIndividualSelector" controllerClassName="org.openflexo.components.widget.FIBModelObjectSelector$SelectorFIBController"  width="270" height="300" opaque="false">
+<Panel layout="twocols" darkLevel="0" dataClassName="org.openflexo.components.widget.FIBIndividualSelector" controllerClassName="org.openflexo.components.widget.FIBFlexoObjectSelector$SelectorFIBController"  width="270" height="300" opaque="false">
   <Panel layout="gridbag" borderTitle="Panel" darkLevel="0" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" name="Matches" opaque="false">
     <Label label="dsffdsmksdfmkfdsmkfdsmkdfskmsdf" align="right" localize="true" name="MatchesLabel" data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="((data.matchingValues.size != 1) &amp; (data.isFiltered))"/>
   </Panel>
@@ -7,7 +7,7 @@
     <BrowserElement dataClassName="org.openflexo.components.widget.OntologyBrowserModel" isEditable="false" filtered="false" defaultVisible="true" name="model">
       <Children data="model.roots" name="children" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl" label="data.renderObject(element)" icon="controller.iconForObject(element)" tooltip="element.hTMLDescription" isEditable="false" filtered="false" defaultVisible="true" dynamicFont="data.model.getFont(element,data.fIBBrowser.retrieveValidFont)" name="element">
+    <BrowserElement dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl" label="data.renderObject(element)" icon="controller.iconForObject(element)" tooltip="element.displayableDescription" isEditable="false" filtered="false" defaultVisible="true" name="element">
       <Children data="data.model.getChildren(element)" name="children" />
     </BrowserElement>
   </Browser>
