@@ -108,6 +108,9 @@ public class OntologyUtils {
 	}
 
 	private static <O extends IFlexoOntology> void appendImportedOntologies(O ontology, Set<O> s) {
+		if (ontology == null) {
+			return;
+		}
 		if (!s.contains(ontology)) {
 			s.add(ontology);
 			if (ontology.getImportedOntologies() != null) {
