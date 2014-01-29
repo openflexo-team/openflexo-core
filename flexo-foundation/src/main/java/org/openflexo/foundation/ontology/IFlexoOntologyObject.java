@@ -65,7 +65,15 @@ public interface IFlexoOntologyObject extends TechnologyObject {
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getDescription();
+
+	/**
+	 * Description of Object.
+	 * 
+	 * @return
+	 */
+	public String getDisplayableDescription();
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where related FlexoOntology exists

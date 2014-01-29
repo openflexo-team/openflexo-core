@@ -474,4 +474,30 @@ public class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBro
 		getController().objectAddedToSelection(selectedValue);
 	}
 
+	// TODO
+	@Deprecated
+	public boolean showOWLAndRDFConcepts() {
+		return false;
+	}
+
+	public ImageIcon getOntologyClassIcon() {
+		return null;
+	}
+
+	public ImageIcon getOntologyIndividualIcon() {
+		return null;
+	}
+
+	public ImageIcon getOntologyObjectPropertyIcon() {
+		return null;
+	}
+
+	public ImageIcon getOntologyDataPropertyIcon() {
+		return null;
+	}
+
+	public ImageIcon getOntologyAnnotationPropertyIcon() {
+		return null;
+	}
+
 }
