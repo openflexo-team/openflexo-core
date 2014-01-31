@@ -173,7 +173,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		}
 	}
 
-	private boolean defaultPackagedResourceCenterIsNotInstalled = false;
+	private boolean defaultPackagedResourceCenterIsNotInstalled;
 
 	public boolean defaultPackagedResourceCenterIsToBeInstalled() {
 		return defaultPackagedResourceCenterIsNotInstalled;
