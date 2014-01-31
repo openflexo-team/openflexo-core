@@ -50,6 +50,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
@@ -103,6 +104,10 @@ public abstract class OpenflexoTestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
+		return instanciateTestServiceManager(false);
+	}
+
+	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new DefaultFlexoServiceManager() {
 
 			@Override
@@ -112,14 +117,32 @@ public abstract class OpenflexoTestCase {
 
 			@Override
 			protected FlexoResourceCenterService createResourceCenterService() {
-				File tempFile;
 				try {
-					tempFile = File.createTempFile("TestResourceCenter", "");
-					File testResourceCenterDirectory = new File(tempFile.getParentFile(), "TestResourceCenter");
+					File tempFile = File.createTempFile("Temp", "");
+					File testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 					testResourceCenterDirectory.mkdirs();
-					FileUtils.copyContentDirToDir(new FileResource("src/test/resources/TestResourceCenter"), testResourceCenterDirectory);
+
+					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
+
+					if (generateCompoundTestResourceCenter) {
+						System.out.println("Generating CompoundTestResourceCenter");
+						List<File> testRCList = ResourceLocator.locateAllFiles("TestResourceCenter");
+						for (File f : testRCList) {
+							System.out.println("Found TestResourceCenter " + f);
+							FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
+						}
+					} else {
+						File sourceTestResourceCenter = new FileResource("TestResourceCenter");
+						System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
+						FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
+					}
+
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
+					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
+
+					// ici il y a des truc a voir
+
 					return rcService;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -128,6 +151,7 @@ public abstract class OpenflexoTestCase {
 				}
 
 			}
+
 		};
 		return serviceManager;
 	}

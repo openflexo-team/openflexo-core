@@ -24,7 +24,7 @@ public class TestResourceCenterEditor extends OpenflexoTestCase {
 	@Test
 	@TestOrder(1)
 	public void testInstanciateTestServiceManager() {
-		instanciateTestServiceManager();
+		instanciateTestServiceManager(true);
 	}
 
 	@Test
