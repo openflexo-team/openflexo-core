@@ -37,6 +37,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ProgressWindow;
+import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.validation.ConsistencyCheckDialog;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.fib.utils.FlexoLoggingViewer;
@@ -56,7 +57,6 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.module.AutoSaveService;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.ResourceCenterEditor;
 import org.openflexo.view.controller.model.ControllerModel;
 
 /**
@@ -131,8 +131,8 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			ResourceCenterEditor.showResourceCenterEditor(getController().getApplicationContext().getResourceCenterService(),
-					getController().getFlexoFrame());
+			ResourceCenterEditorDialog.showResourceCenterEditorDialog(getController().getApplicationContext(), getController()
+					.getFlexoFrame());
 		}
 	}
 

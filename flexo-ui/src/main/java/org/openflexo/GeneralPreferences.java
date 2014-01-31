@@ -484,7 +484,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 		@Override
 		public boolean getShowLeftView(String id) {
-			return assertProperty(SHOW_LEFT_VIEW + id).booleanValue();
+			return assertProperty(SHOW_LEFT_VIEW + id).booleanValue(true);
 		}
 
 		@Override
@@ -494,7 +494,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 		@Override
 		public boolean getShowRightView(String id) {
-			return assertProperty(SHOW_RIGHT_VIEW + id).booleanValue();
+			return assertProperty(SHOW_RIGHT_VIEW + id).booleanValue(true);
 		}
 
 		@Override
