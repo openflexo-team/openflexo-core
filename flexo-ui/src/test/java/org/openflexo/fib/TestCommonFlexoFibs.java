@@ -156,6 +156,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testPreferences() {
+		validateFIB("Fib/Preferences.fib");
+	}
+
+	@Test
 	public void testResourceSelector() {
 		validateFIB("Fib/ResourceSelector.fib");
 	}

@@ -57,7 +57,11 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
-		serviceManager = new TestApplicationContext();
+		return instanciateTestServiceManager(false);
+	}
+
+	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
 		return serviceManager;
 	}

@@ -28,16 +28,6 @@ public class TestReviewUnsavedDialog extends OpenflexoRunTimeTestCase {
 	private static FlexoEditor editor;
 	private static FlexoProject project;
 
-	/*
-	 * private static FIBPanel component; private static FIBLabel
-	 * firstNameLabel; private static FIBTextField firstNameTF; private static
-	 * FIBLabel lastNameLabel; private static FIBTextField lastNameTF; private
-	 * static FIBLabel fullNameLabel; private static FIBTextField fullNameTF;
-	 * 
-	 * private static FIBController controller; private static Family family1;
-	 * private static Family family2;
-	 */
-
 	@Test
 	@TestOrder(1)
 	public void testCreateProject() {
@@ -51,12 +41,10 @@ public class TestReviewUnsavedDialog extends OpenflexoRunTimeTestCase {
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
-		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(
-				"TestReviewUnsaved", editor, editor.getServiceManager()
-						.getResourceManager().getRegisteredResources());
+		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog("TestReviewUnsaved", editor, editor.getServiceManager().getResourceManager()
+				.getRegisteredResources());
 		log("instanciated " + dialog);
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog,
-				ReviewUnsavedDialog.FIB_FILE);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ReviewUnsavedDialog.FIB_FILE);
 	}
 
 	/*

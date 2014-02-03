@@ -74,6 +74,8 @@ public interface PreferencesContainer extends FlexoObject {
 
 	public FlexoProperty assertProperty(String propertyName);
 
+	public String getName();
+
 	public static abstract class PreferencesContainerImpl extends FlexoObjectImpl implements PreferencesContainer {
 
 		private FlexoPreferencesFactory factory;
@@ -113,5 +115,12 @@ public interface PreferencesContainer extends FlexoObject {
 			}
 			return null;
 		}
+
+		@Override
+		public String getName() {
+			org.openflexo.model.ModelEntity e = getFlexoPreferencesFactory().getModelEntityForInstance(this);
+			return e.getImplementedInterface().getSimpleName();
+		}
+
 	}
 }

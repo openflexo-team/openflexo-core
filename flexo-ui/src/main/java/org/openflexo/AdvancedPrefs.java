@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.UIManager;
 
 import org.openflexo.foundation.FlexoProperty;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -50,6 +51,7 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(AdvancedPrefs.AdvancedPrefsImpl.class)
 @XMLElement(xmlTag = "AdvancedPrefs")
+@FIBPanel("Fib/Prefs/AdvancedPrefs.fib")
 public interface AdvancedPrefs extends PreferencesContainer {
 
 	// private static final Class<AdvancedPrefs> ADVANCED_PREFERENCES = AdvancedPrefs.class;
@@ -379,6 +381,11 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		private static final Logger logger = Logger.getLogger(GeneralPreferences.class.getPackage().getName());
 
 		private final LookAndFeelConverter LAF_CONVERTER = new LookAndFeelConverter();
+
+		@Override
+		public String toString() {
+			return "AdvancedPrefs: " + super.toString();
+		}
 
 		@Override
 		public LookAndFeel getLookAndFeel() {

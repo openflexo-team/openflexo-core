@@ -184,17 +184,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void initialize() {
 		if (getResourceCenters().size() < 1) {
-			System.out.println("Hop, apa de RC, mais SM=" + getServiceManager());
 			if (getServiceManager() != null) {
 				System.out.println("Trying to install default packaged resource center");
 				getServiceManager().notify(this, new DefaultPackageResourceCenterIsNotInstalled());
 			}
 		}
-
-		Thread.dumpStack();
-		System.out.println("Initialized ResourceCenters");
-		System.out.println("RCs=" + getResourceCenters());
-		// System.exit(-1);
 
 	}
 

@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -53,6 +54,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(GeneralPreferences.GeneralPreferencesImpl.class)
 @XMLElement(xmlTag = "GeneralPreferences")
+@FIBPanel("Fib/Prefs/GeneralPreferences.fib")
 public interface GeneralPreferences extends PreferencesContainer {
 
 	public static final String LANGUAGE_KEY = "language";
@@ -123,6 +125,8 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 	@Setter(LANGUAGE_KEY)
 	public void setLanguage(Language language);
+
+	public List<Language> getAvailableLanguages();
 
 	@Getter(SMTP_SERVER_KEY)
 	@XMLAttribute
@@ -332,6 +336,11 @@ public interface GeneralPreferences extends PreferencesContainer {
 		private final AWTRectangleConverter RECTANGLE_CONVERTER = new AWTRectangleConverter();
 
 		@Override
+		public String toString() {
+			return "GeneralPreferences: " + super.toString();
+		}
+
+		@Override
 		public Language getLanguage() {
 			Language returned = (Language) performSuperGetter(LANGUAGE_KEY);
 			if (returned == null) {
@@ -354,6 +363,11 @@ public interface GeneralPreferences extends PreferencesContainer {
 				FlexoHelp.configure(language.getIdentifier(), null/*UserType.getCurrentUserType().getIdentifier()*/);
 				FlexoHelp.reloadHelpSet();
 			}
+		}
+
+		@Override
+		public List<Language> getAvailableLanguages() {
+			return Language.availableValues();
 		}
 
 		@Override
@@ -449,7 +463,9 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 		@Override
 		public String getUserIdentifier() {
+
 			String returned = (String) performSuperGetter(GeneralPreferences.USER_IDENTIFIER_KEY);
+
 			if (returned == null) {
 				String userName = System.getProperty("user.name");
 				if (userName.length() > 3) {
