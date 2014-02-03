@@ -479,6 +479,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 				}
 				// setUserIdentifier(returned);
 			}
+
 			return returned;
 		}
 

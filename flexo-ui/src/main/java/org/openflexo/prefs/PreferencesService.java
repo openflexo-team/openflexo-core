@@ -28,6 +28,7 @@ import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
 import org.openflexo.GeneralPreferences;
 import org.openflexo.ResourceCenterPreferences;
+import org.openflexo.components.PreferencesDialog;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
@@ -40,6 +41,7 @@ import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.ToolBox;
+import org.openflexo.view.FlexoFrame;
 
 /**
  * This service manages preferences<br>
@@ -55,7 +57,6 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	private FlexoPreferencesFactory preferencesFactory;
 	private FlexoPreferencesResource resource;
-	private PreferencesWindow preferencesWindow;
 
 	@Override
 	public ApplicationContext getServiceManager() {
@@ -93,7 +94,6 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
 			managePreferences(m.getPreferencesClass(), getFlexoPreferences());
 		}
-		preferencesWindow = new PreferencesWindow(this);
 	}
 
 	@Override
@@ -174,11 +174,11 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	}
 
 	public void showPreferences() {
-		getPreferencesWindow().setVisible(true);
+		getPreferencesDialog().setVisible(true);
 	}
 
-	public PreferencesWindow getPreferencesWindow() {
-		return preferencesWindow;
+	public PreferencesDialog getPreferencesDialog() {
+		return PreferencesDialog.getPreferencesDialog(getServiceManager(), FlexoFrame.getActiveFrame());
 	}
 
 	public GeneralPreferences getGeneralPreferences() {
