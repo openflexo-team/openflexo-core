@@ -32,7 +32,7 @@ import org.openflexo.toolbox.FileResource;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewSelector extends FIBFlexoObjectSelector<ViewResource> {
+public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
 
 	static final Logger logger = Logger.getLogger(FIBViewSelector.class.getPackage().getName());
 

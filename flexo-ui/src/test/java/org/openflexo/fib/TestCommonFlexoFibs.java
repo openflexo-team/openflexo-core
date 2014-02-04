@@ -86,11 +86,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBViewPointLibraryBrowser() {
-		validateFIB("Fib/FIBViewPointLibraryBrowser.fib");
-	}
-
-	@Test
 	public void testInstallDefaultPackagedResourceCenterDirectory() {
 		validateFIB("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
 	}
