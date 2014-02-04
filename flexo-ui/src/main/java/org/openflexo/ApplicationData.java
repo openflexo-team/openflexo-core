@@ -50,6 +50,11 @@ public class ApplicationData {
 		return applicationContext.getModuleLoader().getKnownModules();
 	}
 
+	// TODO: handle this
+	public String getBusinessName() {
+		return "Diatomée infrastructure";
+	}
+
 	public String getVersion() {
 		return "Version " + FlexoCst.BUSINESS_APPLICATION_VERSION + " (build " + ApplicationVersion.BUILD_ID + ")";
 	}

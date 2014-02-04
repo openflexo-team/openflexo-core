@@ -20,13 +20,15 @@
 package org.openflexo.components.widget;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Widget allowing to select a ViewPoint
+ * Widget allowing to select a View folder
  * 
  * @author sguerin
  * 
@@ -39,6 +41,8 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 	static final Logger logger = Logger.getLogger(FIBViewFolderSelector.class.getPackage().getName());
 
 	public static FileResource FIB_FILE = new FileResource("Fib/ViewFolderSelector.fib");
+
+	private FlexoProject project;
 
 	public FIBViewFolderSelector(RepositoryFolder editedObject) {
 		super(editedObject);
@@ -60,6 +64,25 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 			return editedObject.getName();
 		}
 		return "";
+	}
+
+	public FlexoProject getProject() {
+		return project;
+	}
+
+	@CustomComponentParameter(name = "project", type = CustomComponentParameter.Type.MANDATORY)
+	public void setProject(FlexoProject project) {
+		if (this.project != project) {
+			FlexoProject oldProject = this.project;
+			if (project == null) {
+				if (logger.isLoggable(Level.WARNING)) {
+					logger.warning("Passing null project. If you rely on project this is unlikely to work");
+				}
+			}
+			System.out.println(">>>>>>>>> Sets project with " + project);
+			this.project = project;
+			getPropertyChangeSupport().firePropertyChange("project", oldProject, project);
+		}
 	}
 
 	// Please uncomment this for a live test
