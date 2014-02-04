@@ -58,7 +58,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBOntologyEditor extends SelectionSynchronizedFIBView {
+public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	static final Logger logger = Logger.getLogger(FIBOntologyEditor.class.getPackage().getName());
 
 	public static final FileResource FIB_FILE = new FileResource("Fib/FIBOntologyEditor.fib");
@@ -101,12 +101,11 @@ public class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	@CustomComponentParameter(name = "ontology", type = CustomComponentParameter.Type.MANDATORY)
 	public void setOntology(IFlexoOntology context) {
 		if (this.ontology instanceof HasPropertyChangeSupport && ((HasPropertyChangeSupport) ontology).getDeletedProperty() != null) {
-			manager.removeListener(((HasPropertyChangeSupport) ontology).getDeletedProperty(), this,
-					(HasPropertyChangeSupport) this.ontology);
+			manager.removeListener(((HasPropertyChangeSupport) ontology).getDeletedProperty(), this, this.ontology);
 		}
 		this.ontology = context;
 		if (this.ontology instanceof HasPropertyChangeSupport && ((HasPropertyChangeSupport) ontology).getDeletedProperty() != null) {
-			manager.addListener(((HasPropertyChangeSupport) ontology).getDeletedProperty(), this, (HasPropertyChangeSupport) this.ontology);
+			manager.addListener(((HasPropertyChangeSupport) ontology).getDeletedProperty(), this, this.ontology);
 		}
 		// ontology.loadWhenUnloaded();
 		update();
@@ -435,4 +434,32 @@ public class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 		}
 		super.propertyChange(evt);
 	}
+
+	public abstract ImageIcon getOntologyClassIcon();
+
+	public abstract ImageIcon getOntologyIndividualIcon();
+
+	public abstract ImageIcon getOntologyDataPropertyIcon();
+
+	public abstract ImageIcon getOntologyObjectPropertyIcon();
+
+	public abstract ImageIcon getOntologyAnnotationIcon();
+
+	public abstract boolean supportTechnologySpecificHiddenConcepts();
+
+	public abstract String technologySpecificHiddenConceptsLabel();
+
+	private boolean showTechnologySpecificConcepts;
+
+	public boolean showTechnologySpecificConcepts() {
+		return showTechnologySpecificConcepts;
+	}
+
+	public void setShowTechnologySpecificConcepts(boolean flag) {
+		if (this.showTechnologySpecificConcepts != flag) {
+			this.showTechnologySpecificConcepts = flag;
+			getPropertyChangeSupport().firePropertyChange("showTechnologySpecificConcepts", !flag, flag);
+		}
+	}
+
 }

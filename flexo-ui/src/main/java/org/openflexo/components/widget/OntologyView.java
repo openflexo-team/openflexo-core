@@ -37,9 +37,10 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * 
  */
 @SuppressWarnings("serial")
-public class OntologyView<T extends FlexoObject & IFlexoOntology> extends FIBOntologyEditor implements SelectionSynchronizedModuleView<T> {
+public abstract class OntologyView<T extends FlexoObject & IFlexoOntology> extends FIBOntologyEditor implements
+		SelectionSynchronizedModuleView<T> {
 
-	private FlexoPerspective declaredPerspective;
+	private final FlexoPerspective declaredPerspective;
 
 	public OntologyView(T object, FlexoController controller, FlexoPerspective perspective) {
 		super(object, controller);

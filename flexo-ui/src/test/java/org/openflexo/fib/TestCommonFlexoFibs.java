@@ -81,11 +81,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBOntologySelector() {
-		validateFIB("Fib/FIBOntologySelector.fib");
-	}
-
-	@Test
 	public void testFIBPropertySelector() {
 		validateFIB("Fib/FIBPropertySelector.fib");
 	}

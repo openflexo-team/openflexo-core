@@ -65,7 +65,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBrowser> {
+public abstract class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBrowser> {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
 
@@ -474,30 +474,31 @@ public class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBro
 		getController().objectAddedToSelection(selectedValue);
 	}
 
-	// TODO
-	@Deprecated
-	public boolean showOWLAndRDFConcepts() {
-		return false;
+	public abstract ImageIcon getOntologyClassIcon();
+
+	public abstract ImageIcon getOntologyIndividualIcon();
+
+	public abstract ImageIcon getOntologyDataPropertyIcon();
+
+	public abstract ImageIcon getOntologyObjectPropertyIcon();
+
+	public abstract ImageIcon getOntologyAnnotationIcon();
+
+	public abstract boolean supportTechnologySpecificHiddenConcepts();
+
+	public abstract String technologySpecificHiddenConceptsLabel();
+
+	private boolean showTechnologySpecificConcepts;
+
+	public boolean showTechnologySpecificConcepts() {
+		return showTechnologySpecificConcepts;
 	}
 
-	public ImageIcon getOntologyClassIcon() {
-		return null;
-	}
-
-	public ImageIcon getOntologyIndividualIcon() {
-		return null;
-	}
-
-	public ImageIcon getOntologyObjectPropertyIcon() {
-		return null;
-	}
-
-	public ImageIcon getOntologyDataPropertyIcon() {
-		return null;
-	}
-
-	public ImageIcon getOntologyAnnotationPropertyIcon() {
-		return null;
+	public void setShowTechnologySpecificConcepts(boolean flag) {
+		if (this.showTechnologySpecificConcepts != flag) {
+			this.showTechnologySpecificConcepts = flag;
+			getPropertyChangeSupport().firePropertyChange("showTechnologySpecificConcepts", !flag, flag);
+		}
 	}
 
 }
