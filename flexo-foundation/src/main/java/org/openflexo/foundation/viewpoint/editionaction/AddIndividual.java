@@ -18,7 +18,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -34,11 +34,11 @@ import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.IndividualPatternRole;
+import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AddConcept;
-import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -120,6 +120,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	@Override
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
+
+	public ObjectPropertyAssertion createObjectPropertyAssertion();
+
+	public ObjectPropertyAssertion deleteObjectPropertyAssertion(ObjectPropertyAssertion assertion);
+
+	public DataPropertyAssertion createDataPropertyAssertion();
+
+	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
 	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
 			AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
@@ -271,12 +279,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			dataAssertions.remove(assertion);
 		}
 
+		@Override
 		public DataPropertyAssertion createDataPropertyAssertion() {
 			DataPropertyAssertion newDataPropertyAssertion = getVirtualModelFactory().newDataPropertyAssertion();
 			addToDataAssertions(newDataPropertyAssertion);
 			return newDataPropertyAssertion;
 		}
 
+		@Override
 		public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion) {
 			removeFromDataAssertions(assertion);
 			assertion.delete();
@@ -304,12 +314,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			objectAssertions.remove(assertion);
 		}
 
+		@Override
 		public ObjectPropertyAssertion createObjectPropertyAssertion() {
 			ObjectPropertyAssertion newObjectPropertyAssertion = getVirtualModelFactory().newObjectPropertyAssertion();
 			addToObjectAssertions(newObjectPropertyAssertion);
 			return newObjectPropertyAssertion;
 		}
 
+		@Override
 		public ObjectPropertyAssertion deleteObjectPropertyAssertion(ObjectPropertyAssertion assertion) {
 			removeFromObjectAssertions(assertion);
 			assertion.delete();

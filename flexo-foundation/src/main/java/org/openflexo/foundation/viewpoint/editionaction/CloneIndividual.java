@@ -21,9 +21,8 @@ package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.viewpoint.AddIndividual;
-import org.openflexo.foundation.viewpoint.AddIndividual.AddIndividualImpl;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.viewpoint.editionaction.AddIndividual.AddIndividualImpl;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
