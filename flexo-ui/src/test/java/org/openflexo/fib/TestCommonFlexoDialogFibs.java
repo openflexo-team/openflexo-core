@@ -11,11 +11,6 @@ public class TestCommonFlexoDialogFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testPushToPaletteDialog() {
-		validateFIB("Fib/Dialog/PushToPaletteDialog.fib");
-	}
-
-	@Test
 	public void testReviewUnsavedDialog() {
 		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}

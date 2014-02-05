@@ -11,11 +11,6 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testConditionalSectionInspector() {
-		validateFIB("Inspectors/COMMON/ConditionalSection.inspector");
-	}
-
-	@Test
 	public void testDocForModelObjectInspector() {
 		validateFIB("Inspectors/COMMON/DocForModelObject.inspector");
 	}
@@ -23,21 +18,6 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testEditionPatternInstanceInspector() {
 		validateFIB("Inspectors/COMMON/EditionPatternInstance.inspector");
-	}
-
-	@Test
-	public void testEntitySectionInspector() {
-		validateFIB("Inspectors/COMMON/EntitySection.inspector");
-	}
-
-	@Test
-	public void testERDiagramSectionInspector() {
-		validateFIB("Inspectors/COMMON/ERDiagramSection.inspector");
-	}
-
-	@Test
-	public void testFlexoModelObjectInspector() {
-		validateFIB("Inspectors/COMMON/FlexoModelObject.inspector");
 	}
 
 	@Test
@@ -51,36 +31,6 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testIterationSectionInspector() {
-		validateFIB("Inspectors/COMMON/IterationSection.inspector");
-	}
-
-	@Test
-	public void testModelObjectSectionInspector() {
-		validateFIB("Inspectors/COMMON/ModelObjectSection.inspector");
-	}
-
-	@Test
-	public void testNormalSectionInspector() {
-		validateFIB("Inspectors/COMMON/NormalSection.inspector");
-	}
-
-	@Test
-	public void testOperationScreenSectionInspector() {
-		validateFIB("Inspectors/COMMON/OperationScreenSection.inspector");
-	}
-
-	@Test
-	public void testPredefinedSectionInspector() {
-		validateFIB("Inspectors/COMMON/PredefinedSection.inspector");
-	}
-
-	@Test
-	public void testProcessSectionInspector() {
-		validateFIB("Inspectors/COMMON/ProcessSection.inspector");
-	}
-
-	@Test
 	public void testProjectInspector() {
 		validateFIB("Inspectors/COMMON/Project.inspector");
 	}
@@ -88,26 +38,6 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testRepositoryFolderInspector() {
 		validateFIB("Inspectors/COMMON/RepositoryFolder.inspector");
-	}
-
-	@Test
-	public void testRoleSectionInspector() {
-		validateFIB("Inspectors/COMMON/RoleSection.inspector");
-	}
-
-	@Test
-	public void testTOCEntryInspector() {
-		validateFIB("Inspectors/COMMON/TOCEntry.inspector");
-	}
-
-	@Test
-	public void testTOCRepositoryInspector() {
-		validateFIB("Inspectors/COMMON/TOCRepository.inspector");
-	}
-
-	@Test
-	public void testViewSectionInspector() {
-		validateFIB("Inspectors/COMMON/ViewSection.inspector");
 	}
 
 }

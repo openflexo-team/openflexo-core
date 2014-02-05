@@ -11,16 +11,6 @@ public class TestCommonFlexoWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDeclareConnectorInEditionPatternDialog() {
-		validateFIB("Fib/Widget/DeclareConnectorInEditionPatternDialog.fib");
-	}
-
-	@Test
-	public void testDeclareShapeInEditionPatternDialog() {
-		validateFIB("Fib/Widget/DeclareShapeInEditionPatternDialog.fib");
-	}
-
-	@Test
 	public void testFIBViewPointBrowser() {
 		validateFIB("Fib/Widget/FIBViewPointBrowser.fib");
 	}

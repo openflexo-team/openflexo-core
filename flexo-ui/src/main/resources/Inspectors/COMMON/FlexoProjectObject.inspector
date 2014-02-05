@@ -30,8 +30,8 @@
       <Table iteratorClassName="org.openflexo.foundation.FlexoProperty" visibleRowCount="3" rowHeight="20" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="true" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" name="CustomProperties" index="5" data="data.customProperties" constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
         <TextFieldColumn data="iterator.name" title="name" columnWidth="50" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
         <TextFieldColumn data="iterator.value" title="value" columnWidth="65" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
-        <AddAction method="data.addProperty" name="new" />
-        <RemoveAction method="data.deleteProperty(selected)" name="delete" />
+        <AddAction method="controller.addCustomProperty(data)" name="new" />
+        <RemoveAction method="controller.removeCustomProperty(selected)" name="delete" />
         <CustomAction name="sort" />
         <Parameter name="visibleFor" value="ANALYST,DEVELOPER,MAINTAINER" />
       </Table>
