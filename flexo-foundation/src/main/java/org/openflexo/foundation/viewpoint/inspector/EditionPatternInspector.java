@@ -103,12 +103,37 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
 
-	public static abstract class EditionPatternInspectorImpl extends
-			EditionPatternObjectImpl implements EditionPatternInspector {
+	public TextFieldInspectorEntry createNewTextField();
 
-		private static final Logger logger = FlexoLogger
-				.getLogger(EditionPatternInspector.class.getPackage()
-						.toString());
+	public TextAreaInspectorEntry createNewTextArea();
+
+	public IntegerInspectorEntry createNewInteger();
+
+	public CheckboxInspectorEntry createNewCheckbox();
+
+	public IndividualInspectorEntry createNewIndividual();
+
+	public ClassInspectorEntry createNewClass();
+
+	public PropertyInspectorEntry createNewProperty();
+
+	public ObjectPropertyInspectorEntry createNewObjectProperty();
+
+	public DataPropertyInspectorEntry createNewDataProperty();
+
+	public InspectorEntry deleteEntry(InspectorEntry entry);
+
+	public void entryFirst(InspectorEntry p);
+
+	public void entryUp(InspectorEntry p);
+
+	public void entryDown(InspectorEntry p);
+
+	public void entryLast(InspectorEntry p);
+
+	public static abstract class EditionPatternInspectorImpl extends EditionPatternObjectImpl implements EditionPatternInspector {
+
+		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInspector.class.getPackage().toString());
 
 		private String inspectorTitle;
 		private EditionPattern _editionPattern;
@@ -199,81 +224,81 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 			notifyObservers(new InspectorEntryRemoved(anEntry, this));
 		}
 
+		@Override
 		public TextFieldInspectorEntry createNewTextField() {
-			TextFieldInspectorEntry newEntry = getVirtualModelFactory()
-					.newTextFieldInspectorEntry();
+			TextFieldInspectorEntry newEntry = getVirtualModelFactory().newTextFieldInspectorEntry();
 			newEntry.setName("textfield");
 			// newEntry.setLabel("textfield");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public TextAreaInspectorEntry createNewTextArea() {
-			TextAreaInspectorEntry newEntry = getVirtualModelFactory()
-					.newTextAreaInspectorEntry();
+			TextAreaInspectorEntry newEntry = getVirtualModelFactory().newTextAreaInspectorEntry();
 			newEntry.setName("textarea");
 			// newEntry.setLabel("textarea");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public IntegerInspectorEntry createNewInteger() {
-			IntegerInspectorEntry newEntry = getVirtualModelFactory()
-					.newIntegerInspectorEntry();
+			IntegerInspectorEntry newEntry = getVirtualModelFactory().newIntegerInspectorEntry();
 			newEntry.setName("integer");
 			// newEntry.setLabel("integer");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public CheckboxInspectorEntry createNewCheckbox() {
-			CheckboxInspectorEntry newEntry = getVirtualModelFactory()
-					.newCheckboxInspectorEntry();
+			CheckboxInspectorEntry newEntry = getVirtualModelFactory().newCheckboxInspectorEntry();
 			newEntry.setName("checkbox");
 			// newEntry.setLabel("checkbox");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public IndividualInspectorEntry createNewIndividual() {
-			IndividualInspectorEntry newEntry = getVirtualModelFactory()
-					.newIndividualInspectorEntry();
+			IndividualInspectorEntry newEntry = getVirtualModelFactory().newIndividualInspectorEntry();
 			newEntry.setName("individual");
 			// newEntry.setLabel("individual");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public ClassInspectorEntry createNewClass() {
-			ClassInspectorEntry newEntry = getVirtualModelFactory()
-					.newClassInspectorEntry();
+			ClassInspectorEntry newEntry = getVirtualModelFactory().newClassInspectorEntry();
 			newEntry.setName("class");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public PropertyInspectorEntry createNewProperty() {
-			PropertyInspectorEntry newEntry = getVirtualModelFactory()
-					.newPropertyInspectorEntry();
+			PropertyInspectorEntry newEntry = getVirtualModelFactory().newPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public ObjectPropertyInspectorEntry createNewObjectProperty() {
-			ObjectPropertyInspectorEntry newEntry = getVirtualModelFactory()
-					.newObjectPropertyInspectorEntry();
+			ObjectPropertyInspectorEntry newEntry = getVirtualModelFactory().newObjectPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
 		}
 
+		@Override
 		public DataPropertyInspectorEntry createNewDataProperty() {
-			DataPropertyInspectorEntry newEntry = getVirtualModelFactory()
-					.newDataPropertyInspectorEntry();
+			DataPropertyInspectorEntry newEntry = getVirtualModelFactory().newDataPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -287,6 +312,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		 * addToEntries(newEntry); return newEntry; }
 		 */
 
+		@Override
 		public InspectorEntry deleteEntry(InspectorEntry entry) {
 			removeFromEntries(entry);
 			entry.delete();
@@ -326,6 +352,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		 * (EditionPatternInstance) null)); } }
 		 */
 
+		@Override
 		public void entryFirst(InspectorEntry p) {
 			entries.remove(p);
 			entries.insertElementAt(p, 0);
@@ -334,6 +361,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 			notifyChange("entries", null, entries);
 		}
 
+		@Override
 		public void entryUp(InspectorEntry p) {
 			int index = entries.indexOf(p);
 			if (index > 0) {
@@ -345,6 +373,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 			}
 		}
 
+		@Override
 		public void entryDown(InspectorEntry p) {
 			int index = entries.indexOf(p);
 			if (index > -1) {
@@ -356,6 +385,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 			}
 		}
 
+		@Override
 		public void entryLast(InspectorEntry p) {
 			entries.remove(p);
 			entries.add(p);
@@ -367,8 +397,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<String>(formatter, String.class,
-						BindingDefinitionType.GET);
+				renderer = new DataBinding<String>(formatter, String.class, BindingDefinitionType.GET);
 				renderer.setBindingName("renderer");
 			}
 			return renderer;
@@ -408,32 +437,26 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 			private void createFormatterBindingModel() {
 				formatterBindingModel = new BindingModel();
-				formatterBindingModel
-						.addToBindingVariables(new BindingVariable(
-								"instance",
-								EditionPatternInstanceType
-										.getEditionPatternInstanceType(getEditionPattern())) {
-							@Override
-							public Type getType() {
-								return EditionPatternInstanceType
-										.getEditionPatternInstanceType(getEditionPattern());
-							}
-						});
+				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", EditionPatternInstanceType
+						.getEditionPatternInstanceType(getEditionPattern())) {
+					@Override
+					public Type getType() {
+						return EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPattern());
+					}
+				});
 			}
 
 			@Override
 			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this
-							.notifiedBindingChanged(dataBinding);
+					EditionPatternInspectorImpl.this.notifiedBindingChanged(dataBinding);
 				}
 			}
 
 			@Override
 			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this
-							.notifiedBindingDecoded(dataBinding);
+					EditionPatternInspectorImpl.this.notifiedBindingDecoded(dataBinding);
 				}
 			}
 

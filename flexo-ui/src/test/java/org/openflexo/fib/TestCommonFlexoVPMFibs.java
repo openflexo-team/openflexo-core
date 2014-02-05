@@ -76,11 +76,6 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDropSchemePanel() {
-		validateFIB("Fib/VPM/DropSchemePanel.fib");
-	}
-
-	@Test
 	public void testEditionPatternInspectorPanel() {
 		validateFIB("Fib/VPM/EditionPatternInspectorPanel.fib");
 	}
@@ -108,11 +103,6 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	@Test
 	public void testIterationActionPanel() {
 		validateFIB("Fib/VPM/IterationActionPanel.fib");
-	}
-
-	@Test
-	public void testLinkSchemePanel() {
-		validateFIB("Fib/VPM/LinkSchemePanel.fib");
 	}
 
 	@Test

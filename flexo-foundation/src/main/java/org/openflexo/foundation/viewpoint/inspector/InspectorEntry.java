@@ -105,6 +105,10 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
+	public String getWidgetName();
+
+	public int getIndex();
+
 	public static abstract class InspectorEntryImpl extends EditionPatternObjectImpl implements InspectorEntry {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
@@ -130,8 +134,6 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 		}
 
 		public abstract Class getDefaultDataClass();
-
-		public abstract String getWidgetName();
 
 		@Override
 		public VirtualModel getVirtualModel() {
@@ -179,6 +181,7 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 			return true;
 		}
 
+		@Override
 		public int getIndex() {
 			return getInspector().getEntries().indexOf(this);
 		}
