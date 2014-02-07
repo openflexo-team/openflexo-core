@@ -698,7 +698,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 	}
 
 	public synchronized void setHelpItem(JComponent component, DocItem item) {
-		setHelpItem(component, item.getIdentifier());
+		if (item != null) {
+			setHelpItem(component, item.getIdentifier());
+		}
 	}
 
 	private synchronized JComponent getClosestDocumentedAncestorComponent(JComponent component) {

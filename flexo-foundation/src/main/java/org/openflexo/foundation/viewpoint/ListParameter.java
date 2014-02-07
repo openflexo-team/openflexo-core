@@ -32,7 +32,6 @@ import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
-import org.openflexo.foundation.viewpoint.ListParameter.ListParameterImpl.ListType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -45,6 +44,10 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(ListParameter.ListParameterImpl.class)
 @XMLElement
 public interface ListParameter extends EditionSchemeParameter {
+
+	public enum ListType {
+		String, Property, ObjectProperty, DataProperty
+	}
 
 	@PropertyIdentifier(type = ListType.class)
 	public static final String LIST_TYPE_KEY = "listType";
@@ -68,10 +71,6 @@ public interface ListParameter extends EditionSchemeParameter {
 	public Object getList(EditionSchemeAction<?, ?, ?> action);
 
 	public static abstract class ListParameterImpl extends EditionSchemeParameterImpl implements ListParameter {
-
-		public enum ListType {
-			String, Property, ObjectProperty, DataProperty
-		}
 
 		private ListType listType;
 		private DataBinding<List<?>> list;

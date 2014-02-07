@@ -221,18 +221,8 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
 
-	/*@Test
-	@TestOrder(5)
-	public void testInstanciateWidgetForDeletionScheme() {
-
-		DefaultFIBCustomComponent<EditionScheme> widget = instanciateFIB(fibFile, flexoConceptA.getDefaultDeletionScheme(),
-				EditionScheme.class);
-
-		gcDelegate.addTab("DeletionScheme", widget.getController());
-	}*/
-
 	@Test
-	@TestOrder(10)
+	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
 		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(new FileResource("FIB/VPM/DeclarePatternRolePanel.fib"),
