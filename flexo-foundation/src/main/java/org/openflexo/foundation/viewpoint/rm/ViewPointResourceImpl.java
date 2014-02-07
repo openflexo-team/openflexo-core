@@ -52,6 +52,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			returned.setName(name);
 			returned.setURI(uri);
 			returned.setVersion(new FlexoVersion("0.1"));
+			returned.setModelVersion(new FlexoVersion("1.0"));
 			returned.setFile(xmlFile);
 			returned.setDirectory(viewPointDirectory);
 			returned.setViewPointLibrary(viewPointLibrary);
@@ -147,6 +148,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	@Override
 	public ViewPoint getViewPoint() {
+
+		System.out.println("loadable=" + isLoadable());
+
 		try {
 			return getResourceData(null);
 		} catch (FileNotFoundException e) {

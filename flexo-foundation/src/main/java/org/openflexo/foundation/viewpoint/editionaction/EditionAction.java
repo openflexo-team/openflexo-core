@@ -45,11 +45,8 @@ import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.ProcedureAction;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingMustBeValid;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -70,7 +67,11 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddEditionPatternInstance.class), @Import(DeclarePatternRole.class), @Import(ExecutionAction.class), @Import(SelectEditionPatternInstance.class), @Import(SelectIndividual.class), @Import(MatchEditionPatternInstance.class), @Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class), @Import(FetchRequestIterationAction.class)  })
+@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddEditionPatternInstance.class),
+		@Import(DeclarePatternRole.class), @Import(AssignationAction.class), @Import(ExecutionAction.class),
+		@Import(SelectEditionPatternInstance.class), @Import(SelectIndividual.class), @Import(MatchEditionPatternInstance.class),
+		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
+		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
 public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends EditionSchemeObject {
 
 	@PropertyIdentifier(type = ActionContainer.class)
@@ -122,7 +123,6 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 	 */
 	public T performAction(EditionSchemeAction<?, ?, ?> action);
 
-
 	/**
 	 * Provides hooks after executing edition action in the context provided by supplied {@link EditionSchemeAction}
 	 * 
@@ -136,6 +136,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 	public BindingModel getInferedBindingModel();
 
 	public void rebuildInferedBindingModel();
+
+	public int getIndex();
 
 	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends EditionSchemeObjectImpl implements
 			EditionAction<MS, T> {
@@ -324,6 +326,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 			return getClass();
 		}
 
+		@Override
 		public int getIndex() {
 			if (getEditionScheme() != null && getEditionScheme().getActions() != null) {
 				return getEditionScheme().getActions().indexOf(this);
@@ -550,6 +553,5 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 	}
-	
-	
+
 }

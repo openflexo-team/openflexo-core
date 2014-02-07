@@ -20,7 +20,10 @@
 package org.openflexo.view.controller;
 
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
@@ -28,6 +31,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.Flexo;
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
@@ -42,10 +46,12 @@ import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.action.RemoveImportedProject;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.selection.SelectionManager;
+import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
 /**
@@ -253,6 +259,49 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			removeProject.setProjectToRemoveURI(ref.getURI());
 			removeProject.doAction();
 		}
+	}
+
+	public File getFIBPanelForObject(Object anObject) {
+		if (anObject != null) {
+			return getFIBPanelForClass(anObject.getClass());
+		}
+		return null;
+	}
+
+	private final Map<Class<?>, File> fibPanelsForClasses = new HashMap<Class<?>, File>() {
+		@Override
+		public File get(Object key) {
+			if (containsKey(key)) {
+				return super.get(key);
+			}
+			if (key instanceof Class) {
+				Class<?> aClass = (Class<?>) key;
+				// System.out.println("Searching FIBPanel for " + aClass);
+				if (aClass.getAnnotation(FIBPanel.class) != null) {
+					// System.out.println("Found annotation " + aClass.getAnnotation(FIBPanel.class));
+					File fibPanel = new FileResource(aClass.getAnnotation(FIBPanel.class).value());
+					// System.out.println("fibPanelFile=" + fibPanel);
+					if (fibPanel.exists()) {
+						// logger.info("Found " + fibPanel);
+						put(aClass, fibPanel);
+						return fibPanel;
+					}
+				}
+				put(aClass, null);
+				return null;
+			}
+			return null;
+		}
+	};
+
+	/*public static void main(String[] args) {
+		FlexoFIBController newController = new FlexoFIBController(null);
+		System.out.println("Result: " + newController.getFIBPanelForClass(DeclarePatternRole.class));
+	}*/
+
+	public File getFIBPanelForClass(Class<?> aClass) {
+
+		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}
 
 }

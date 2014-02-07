@@ -236,6 +236,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, Editio
 				return null;
 			}
 			if (org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
+
+				System.out.println("Hop, mon assignation");
 				return factory.newAssignationAction();
 			} else if (org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddToListAction();

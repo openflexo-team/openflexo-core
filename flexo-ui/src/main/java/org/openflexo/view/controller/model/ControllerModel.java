@@ -94,8 +94,10 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		this.context = context;
 		this.module = module;
 		registrationManager = new PropertyChangeListenerRegistrationManager();
-		leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
-		rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
+		if (context.getGeneralPreferences() != null) {
+			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
+			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
+		}
 		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_OPENED, this, context.getProjectLoader());
 		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_CLOSED, this, context.getProjectLoader());
 		objects = new ArrayList<FlexoObject>();

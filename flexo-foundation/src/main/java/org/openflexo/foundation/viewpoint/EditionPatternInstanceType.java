@@ -79,7 +79,7 @@ public class EditionPatternInstanceType implements CustomType {
 	}
 
 	public static Type getEditionPatternInstanceType(EditionPattern anEditionPattern) {
-		if (anEditionPattern != null) {
+		if (anEditionPattern != null && anEditionPattern.getViewPoint() != null) {
 			return anEditionPattern.getViewPoint().getInstanceType(anEditionPattern);
 		} else {
 			return null;

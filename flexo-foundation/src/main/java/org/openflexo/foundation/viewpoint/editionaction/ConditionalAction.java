@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/ConditionalActionPanel.fib")
+@FIBPanel("Fib/VPM/ConditionalActionPanel.fib")
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
 @XMLElement

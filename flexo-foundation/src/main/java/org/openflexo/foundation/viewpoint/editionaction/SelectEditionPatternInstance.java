@@ -54,7 +54,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <MM>
  * @param <T>
  */
-@FIBPanel("Fib/SelectEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/SelectEditionPatternInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(SelectEditionPatternInstance.SelectEditionPatternInstanceImpl.class)
 @XMLElement

@@ -66,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <MM>
  */
 
-@FIBPanel("Fib/DeleteEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/DeleteEditionPatternInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(DeleteEditionPatternInstance.DeleteEditionPatternInstanceImpl.class)
 @XMLElement

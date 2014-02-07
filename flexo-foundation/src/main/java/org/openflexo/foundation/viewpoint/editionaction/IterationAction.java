@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/IterationActionPanel.fib")
+@FIBPanel("Fib/VPM/IterationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
 @XMLElement

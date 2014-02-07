@@ -60,7 +60,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionScheme.EditionSchemeImpl.class)
-@Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class), @Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
+@Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
+		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
 public interface EditionScheme extends EditionSchemeObject, ActionContainer, Function {
 
 	public static final String THIS = "this";
@@ -197,7 +198,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		// private EditionPattern _editionPattern;
 
-		private final EditionSchemeParameters editionSchemeParameters;
+		private EditionSchemeParameters editionSchemeParameters;
 
 		private boolean definePopupDefaultSize = false;
 		private int width = 800;
@@ -212,13 +213,6 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		 * Stores a chained collections of objects which are involved in validation
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
-
-		public EditionSchemeImpl() {
-			super();
-			// actions = new Vector<EditionAction<?, ?>>();
-			// parameters = new Vector<EditionSchemeParameter>();
-			editionSchemeParameters = getVirtualModelFactory().newEditionSchemeParameters(this);
-		}
 
 		@Override
 		public EditionSchemeType getEditionSchemeType() {
@@ -242,6 +236,9 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		@Override
 		public EditionSchemeParameters getEditionSchemeParameters() {
+			if (editionSchemeParameters == null && getVirtualModelFactory() != null) {
+				editionSchemeParameters = getVirtualModelFactory().newEditionSchemeParameters(this);
+			}
 			return editionSchemeParameters;
 		}
 

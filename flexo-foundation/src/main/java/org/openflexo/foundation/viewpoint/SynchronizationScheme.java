@@ -33,7 +33,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/SynchronizationSchemePanel.fib")
+@FIBPanel("Fib/VPM/SynchronizationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(SynchronizationScheme.SynchronizationSchemeImpl.class)
 @XMLElement

@@ -203,8 +203,11 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 		_controller = controller;
 		_relativeWindows = new Vector<FlexoRelativeWindow>();
 		_displayedRelativeWindows = new Vector<FlexoRelativeWindow>();
-		Rectangle bounds = getController().getApplicationContext().getGeneralPreferences()
-				.getBoundForFrameWithID(getController().getModule().getShortName() + "Frame");
+		Rectangle bounds = null;
+		if (getController().getApplicationContext().getGeneralPreferences() != null) {
+			bounds = getController().getApplicationContext().getGeneralPreferences()
+					.getBoundForFrameWithID(getController().getModule().getShortName() + "Frame");
+		}
 		if (bounds != null) {
 			// In case we remove a screen (if you go from 3 to 2 screen, go to
 			// hell, that's all you deserve ;-))

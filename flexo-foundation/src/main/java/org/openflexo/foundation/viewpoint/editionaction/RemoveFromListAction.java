@@ -46,7 +46,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/RemoveFromListActionPanel.fib")
+@FIBPanel("Fib/VPM/RemoveFromListActionPanel.fib")
 @ModelEntity
 @ImplementationClass(RemoveFromListAction.RemoveFromListActionImpl.class)
 @XMLElement

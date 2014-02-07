@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/FetchRequestIterationActionPanel.fib")
+@FIBPanel("Fib/VPM/FetchRequestIterationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(FetchRequestIterationAction.FetchRequestIterationActionImpl.class)
 @XMLElement

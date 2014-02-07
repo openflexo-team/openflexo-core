@@ -39,8 +39,11 @@ import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionPatternStructuralFacet;
 import org.openflexo.foundation.viewpoint.IndividualPatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
+import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
@@ -84,6 +87,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 	public Class<? extends PatternRole> patternRoleClass;
 	public IFlexoOntologyClass individualType;
 	public EditionPattern editionPatternInstanceType;
+	public PrimitiveType primitiveType = PrimitiveType.String;
 
 	private PatternRole newPatternRole;
 
@@ -121,18 +125,28 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add pattern role");
 
-		if (modelSlot != null && patternRoleClass != null) {
-			newPatternRole = modelSlot.makePatternRole(patternRoleClass);
-			newPatternRole.setPatternRoleName(getPatternRoleName());
-			newPatternRole.setModelSlot(modelSlot);
-			newPatternRole.setDescription(description);
-			if (isIndividual()) {
-				((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
+		if (patternRoleClass != null) {
+			if (modelSlot != null) {
+				newPatternRole = modelSlot.makePatternRole(patternRoleClass);
+				newPatternRole.setModelSlot(modelSlot);
+				if (isIndividual()) {
+					((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
+				}
+				if (isEditionPatternInstance()) {
+					((EditionPatternInstancePatternRole) newPatternRole).setEditionPatternType(editionPatternInstanceType);
+				}
+			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
+				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+				newPatternRole = factory.newInstance(patternRoleClass);
+				newPatternRole.setModelSlot(getFocusedObject().getVirtualModel().getReflexiveModelSlot());
+				((PrimitivePatternRole) newPatternRole).setPrimitiveType(primitiveType);
 			}
-			if (isEditionPatternInstance()) {
-				((EditionPatternInstancePatternRole) newPatternRole).setEditionPatternType(editionPatternInstanceType);
+
+			if (newPatternRole != null) {
+				newPatternRole.setPatternRoleName(getPatternRoleName());
+				newPatternRole.setDescription(description);
+				getEditionPattern().addToPatternRoles(newPatternRole);
 			}
-			getEditionPattern().addToPatternRoles(newPatternRole);
 		}
 
 	}

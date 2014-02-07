@@ -180,10 +180,16 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	public GeneralPreferences getGeneralPreferences() {
-		return getPreferencesService().getPreferences(GeneralPreferences.class);
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getPreferences(GeneralPreferences.class);
+		}
+		return null;
 	}
 
 	public AdvancedPrefs getAdvancedPrefs() {
-		return getPreferencesService().getPreferences(AdvancedPrefs.class);
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getPreferences(AdvancedPrefs.class);
+		}
+		return null;
 	}
 }

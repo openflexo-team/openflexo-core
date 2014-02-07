@@ -24,7 +24,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/DeletionSchemePanel.fib")
+@FIBPanel("Fib/VPM/DeletionSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(DeletionScheme.DeletionSchemeImpl.class)
 @XMLElement

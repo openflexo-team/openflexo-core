@@ -69,7 +69,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <MM>
  */
 
-@FIBPanel("Fib/AddEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/AddEditionPatternInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(AddEditionPatternInstance.AddEditionPatternInstanceImpl.class)
 @XMLElement

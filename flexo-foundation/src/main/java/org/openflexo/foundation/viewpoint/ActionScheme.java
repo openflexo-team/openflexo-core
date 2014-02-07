@@ -24,7 +24,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/ActionSchemePanel.fib")
+@FIBPanel("Fib/VPM/ActionSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(ActionScheme.ActionSchemeImpl.class)
 @XMLElement

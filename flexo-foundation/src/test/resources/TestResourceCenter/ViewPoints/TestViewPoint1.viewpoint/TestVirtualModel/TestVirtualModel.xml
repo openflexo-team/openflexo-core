@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" useSpecificDescriptions="false" userID="FLX" flexoID="4" name="TestVirtualModel">
+  <Inspector id="1" flexoID="2" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TestVirtualModel" />
+  <VirtualModelModelSlot id="2" flexoID="3" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="this" isReadOnly="false" virtualModelURI="http://openflexo.org/test/TestViewPoint1/TestVirtualModel" />
+  <EditionPattern id="3" useSpecificDescriptions="false" userID="FLX" flexoID="6" name="FlexoConceptA">
+    <Inspector id="4" flexoID="5" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptA" />
+  </EditionPattern>
+  <EditionPattern id="5" useSpecificDescriptions="false" userID="FLX" flexoID="8" name="FlexoConceptB">
+    <Inspector id="6" flexoID="7" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptB" />
+  </EditionPattern>
+  <EditionPattern id="7" useSpecificDescriptions="false" userID="FLX" flexoID="10" name="FlexoConceptC">
+    <Inspector id="8" flexoID="9" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptC" />
+    <ParentEditionPattern idref="5" />
+  </EditionPattern>
+  <EditionPattern id="9" useSpecificDescriptions="false" userID="FLX" flexoID="12" name="FlexoConceptD">
+    <Inspector id="10" flexoID="11" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptD" />
+    <ParentEditionPattern idref="5" />
+  </EditionPattern>
+  <EditionPattern id="11" useSpecificDescriptions="false" userID="FLX" flexoID="14" name="FlexoConceptE">
+    <Inspector id="12" flexoID="13" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptE" />
+    <ParentEditionPattern idref="3" />
+    <ParentEditionPattern idref="5" />
+    <ParentEditionPattern idref="7" />
+  </EditionPattern>
+</VirtualModel>

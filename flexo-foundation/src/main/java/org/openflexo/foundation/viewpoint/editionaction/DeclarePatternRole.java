@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/DeclarePatternRolePanel.fib")
+@FIBPanel("Fib/VPM/DeclarePatternRolePanel.fib")
 @ModelEntity
 @ImplementationClass(DeclarePatternRole.DeclarePatternRoleImpl.class)
 @XMLElement

@@ -20,6 +20,8 @@
 package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -64,8 +66,9 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 		FlexoObjectImpl.addActionForClass(AddEditionPattern.actionType, VirtualModel.class);
 	}
 
-	private String _newEditionPatternName;
-	private EditionPattern _newEditionPattern;
+	private String newFlexoConceptName;
+	private EditionPattern newFlexoConcept;
+	private final List<EditionPattern> parentConcepts = new ArrayList<EditionPattern>();
 
 	public boolean switchNewlyCreatedEditionPattern = true;
 
@@ -79,21 +82,36 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 
 		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 
-		_newEditionPattern = factory.newEditionPattern();
-		_newEditionPattern.setName(getNewEditionPatternName());
-		getFocusedObject().addToEditionPatterns(_newEditionPattern);
+		newFlexoConcept = factory.newEditionPattern();
+		newFlexoConcept.setName(getNewFlexoConceptName());
+		for (EditionPattern parentConcept : getParentConcepts()) {
+			newFlexoConcept.addToParentEditionPatterns(parentConcept);
+		}
+		getFocusedObject().addToEditionPatterns(newFlexoConcept);
 	}
 
-	public EditionPattern getNewEditionPattern() {
-		return _newEditionPattern;
+	public EditionPattern getNewFlexoConcept() {
+		return newFlexoConcept;
 	}
 
-	public String getNewEditionPatternName() {
-		return _newEditionPatternName;
+	public String getNewFlexoConceptName() {
+		return newFlexoConceptName;
 	}
 
-	public void setNewEditionPatternName(String newEditionPatternName) {
-		_newEditionPatternName = newEditionPatternName;
+	public void setNewFlexoConceptName(String newEditionPatternName) {
+		this.newFlexoConceptName = newEditionPatternName;
+	}
+
+	public List<EditionPattern> getParentConcepts() {
+		return parentConcepts;
+	}
+
+	public void addToParentConcepts(EditionPattern parentConcept) {
+		parentConcepts.add(parentConcept);
+	}
+
+	public void removeFromParentConcepts(EditionPattern parentConcept) {
+		parentConcepts.remove(parentConcept);
 	}
 
 }

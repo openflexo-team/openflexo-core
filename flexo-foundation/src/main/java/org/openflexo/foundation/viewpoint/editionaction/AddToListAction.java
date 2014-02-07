@@ -45,7 +45,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/AddToListActionPanel.fib")
+@FIBPanel("Fib/VPM/AddToListActionPanel.fib")
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
 @XMLElement

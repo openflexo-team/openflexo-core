@@ -36,6 +36,7 @@ import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
@@ -172,8 +173,8 @@ public interface EditionPattern extends EditionPatternObject {
 	@Remover(PARENT_EDITION_PATTERNS_KEY)
 	public void removeFromParentEditionPatterns(EditionPattern parentEditionPattern);
 
-	@Getter(value = CHILD_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_EDITION_PATTERNS_KEY)
-	@XMLElement(context = "Child")
+	@Getter(value = CHILD_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = PARENT_EDITION_PATTERNS_KEY)
+	// @XMLElement(context = "Child")
 	public List<EditionPattern> getChildEditionPatterns();
 
 	@Setter(CHILD_EDITION_PATTERNS_KEY)
@@ -232,7 +233,7 @@ public interface EditionPattern extends EditionPatternObject {
 
 	public boolean hasNavigationScheme();
 
-	public CreationScheme createCreationScheme();
+	/*public CreationScheme createCreationScheme();
 
 	public CloningScheme createCloningScheme();
 
@@ -240,7 +241,7 @@ public interface EditionPattern extends EditionPatternObject {
 
 	public NavigationScheme createNavigationScheme();
 
-	public DeletionScheme createDeletionScheme();
+	public DeletionScheme createDeletionScheme();*/
 
 	public EditionScheme deleteEditionScheme(EditionScheme editionScheme);
 
@@ -261,6 +262,8 @@ public interface EditionPattern extends EditionPatternObject {
 	public boolean isAssignableFrom(EditionPattern editionPattern);
 
 	public String getAvailableRoleName(String baseName);
+
+	public String getAvailableEditionSchemeName(String baseName);
 
 	/**
 	 * Duplicates this EditionPattern, given a new name<br>
@@ -532,6 +535,17 @@ public interface EditionPattern extends EditionPatternObject {
 		}
 
 		@Override
+		public String getAvailableEditionSchemeName(String baseName) {
+			String testName = baseName;
+			int index = 2;
+			while (getEditionScheme(testName) != null) {
+				testName = baseName + index;
+				index++;
+			}
+			return testName;
+		}
+
+		@Override
 		public PatternRole<?> deletePatternRole(PatternRole<?> aPatternRole) {
 			removeFromPatternRoles(aPatternRole);
 			aPatternRole.delete();
@@ -642,7 +656,7 @@ public interface EditionPattern extends EditionPatternObject {
 			return false;
 		}
 
-		@Override
+		/*@Override
 		public CreationScheme createCreationScheme() {
 			CreationScheme newCreationScheme = getVirtualModelFactory().newCreationScheme();
 			newCreationScheme.setEditionPattern(this);
@@ -682,7 +696,7 @@ public interface EditionPattern extends EditionPatternObject {
 		public DeletionScheme createDeletionScheme() {
 			DeletionScheme newDeletionScheme = generateDefaultDeletionScheme();
 			return newDeletionScheme;
-		}
+		}*/
 
 		@Override
 		public EditionScheme deleteEditionScheme(EditionScheme editionScheme) {
@@ -1114,7 +1128,10 @@ public interface EditionPattern extends EditionPatternObject {
 
 			@Override
 			protected void fixAction() {
-				newDefaultDeletionScheme = editionPattern.createDeletionScheme();
+				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(editionPattern, null);
+				action.editionSchemeClass = DeletionScheme.class;
+				action.doAction();
+				// newDefaultDeletionScheme = editionPattern.createDeletionScheme();
 				// AddIndividual action = getObject();
 				// action.setAssignation(new
 				// ViewPointDataBinding(patternRole.getPatternRoleName()));

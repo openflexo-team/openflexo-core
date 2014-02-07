@@ -84,6 +84,20 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 * @return
 	 */
 	public ViewPoint getViewPoint(String viewpointURI) {
+		System.out.println("viewpointURI=" + viewpointURI);
+		System.out.println("res=" + getViewPointResource(viewpointURI));
+		/*try {
+			getViewPointResource(viewpointURI).loadResourceData(null);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResourceLoadingCancelledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FlexoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		if (getViewPointResource(viewpointURI) != null) {
 			return getViewPointResource(viewpointURI).getViewPoint();
 		}

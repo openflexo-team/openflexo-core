@@ -36,7 +36,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/NavigationSchemePanel.fib")
+@FIBPanel("Fib/VPM/NavigationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
 @XMLElement
