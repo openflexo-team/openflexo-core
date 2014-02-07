@@ -29,9 +29,6 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.PatternRole;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingMustBeValid;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction.EditionActionImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -183,15 +180,18 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 		@Override
 		public void setIsVariableDeclaration(boolean flag) {
-			if (flag) {
-				if (StringUtils.isEmpty(getVariableName())) {
-					setVariableName("newVariable");
+			if (flag != getIsVariableDeclaration()) {
+				if (flag) {
+					if (StringUtils.isEmpty(getVariableName())) {
+						setVariableName("newVariable");
+					}
+				} else {
+					if (StringUtils.isNotEmpty(getVariableName())) {
+						setVariableName(null);
+						getAssignation().reset();
+					}
 				}
-			} else {
-				if (StringUtils.isNotEmpty(getVariableName())) {
-					setVariableName(null);
-					getAssignation().reset();
-				}
+				getPropertyChangeSupport().firePropertyChange("isVariableDeclaration", !flag, flag);
 			}
 		}
 

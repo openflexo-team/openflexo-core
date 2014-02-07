@@ -165,6 +165,16 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("DeletionScheme", widget.getController());
 	}*/
 
+	@Test
+	@TestOrder(10)
+	public void testInstanciateWidgetForDeclarePatternRole() {
+
+		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(new FileResource("FIB/VPM/DeclarePatternRolePanel.fib"),
+				(DeclarePatternRole) creationScheme.getActions().get(0), DeclarePatternRole.class);
+
+		gcDelegate.addTab("DeclarePatternRole", widget.getController());
+	}
+
 	public static void initGUI() {
 		gcDelegate = new GraphicalContextDelegate(TestEditionSchemePanel.class.getSimpleName());
 	}
