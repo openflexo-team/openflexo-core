@@ -1,5 +1,6 @@
 package org.openflexo.fib.widget;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -16,10 +17,12 @@ import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.viewpoint.ActionScheme;
+import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
@@ -29,8 +32,10 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
+import org.openflexo.foundation.viewpoint.action.CreateEditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.action.CreatePatternRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
+import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -144,6 +149,58 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		action3.setAssignation(new DataBinding<Object>("anInteger"));
 		action3.setValue(new DataBinding<Object>("8"));
 
+		CreateEditionScheme createActionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
+		createActionScheme.editionSchemeClass = ActionScheme.class;
+		createActionScheme.doAction();
+		actionScheme = (ActionScheme) createActionScheme.getNewEditionScheme();
+		assertNotNull(actionScheme);
+
+		CreateEditionSchemeParameter createParameter = CreateEditionSchemeParameter.actionType.makeNewAction(actionScheme, null, editor);
+		createParameter.editionSchemeParameterClass = CheckboxParameter.class;
+		createParameter.setParameterName("aFlag");
+		createParameter.doAction();
+		EditionSchemeParameter param = createParameter.getNewParameter();
+		assertNotNull(param);
+		assertTrue(actionScheme.getParameters().contains(param));
+
+		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction1.controlActionClass = ConditionalAction.class;
+		createConditionAction1.doAction();
+		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
+		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
+
+		assertNotNull(conditional1);
+		assertTrue(conditional1.getCondition().isValid());
+
+		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(conditional1, null, editor);
+		createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclarePatternRoleInCondition1.builtInActionClass = DeclarePatternRole.class;
+		createDeclarePatternRoleInCondition1.doAction();
+		DeclarePatternRole declarePatternRoleInCondition1 = (DeclarePatternRole) createDeclarePatternRoleInCondition1.getNewEditionAction();
+		declarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
+		declarePatternRoleInCondition1.setObject(new DataBinding<Object>("8"));
+
+		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction2.controlActionClass = ConditionalAction.class;
+		createConditionAction2.doAction();
+		ConditionalAction conditional2 = (ConditionalAction) createConditionAction2.getNewEditionAction();
+		conditional2.setCondition(new DataBinding<Boolean>("parameters.aFlag = false"));
+
+		assertNotNull(conditional2);
+		assertTrue(conditional2.getCondition().isValid());
+
+		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
+		createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclarePatternRoleInCondition2.builtInActionClass = DeclarePatternRole.class;
+		createDeclarePatternRoleInCondition2.doAction();
+		DeclarePatternRole declarePatternRoleInCondition2 = (DeclarePatternRole) createDeclarePatternRoleInCondition2.getNewEditionAction();
+		declarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
+		declarePatternRoleInCondition2.setObject(new DataBinding<Object>("12"));
+
+		assertEquals(2, actionScheme.getActions().size());
+
 	}
 
 	@Test
@@ -153,6 +210,15 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		DefaultFIBCustomComponent<EditionScheme> widget = instanciateFIB(fibFile, creationScheme, EditionScheme.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());
+	}
+
+	@Test
+	@TestOrder(5)
+	public void testInstanciateWidgetForActionScheme() {
+
+		DefaultFIBCustomComponent<EditionScheme> widget = instanciateFIB(fibFile, actionScheme, EditionScheme.class);
+
+		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
 
 	/*@Test

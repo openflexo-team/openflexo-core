@@ -28,93 +28,91 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
-import org.openflexo.foundation.viewpoint.EditionPatternBehaviouralFacet;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, EditionPatternObject, ViewPointObject> {
+public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateEditionScheme.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateEditionSchemeParameter.class.getPackage().getName());
 
-	public static FlexoActionType<CreateEditionScheme, EditionPatternObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionScheme, EditionPatternObject, ViewPointObject>(
-			"create_edition_scheme", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionType<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject>(
+			"create_edition_scheme_parameter", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateEditionScheme makeNewAction(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateEditionSchemeParameter makeNewAction(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
-			return new CreateEditionScheme(focusedObject, globalSelection, editor);
+			return new CreateEditionSchemeParameter(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, EditionPattern.class);
-		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, EditionPatternBehaviouralFacet.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionSchemeParameter.actionType, EditionScheme.class);
 	}
 
-	private String editionSchemeName;
+	private String parameterName;
 	public String description;
-	public Class<? extends EditionScheme> editionSchemeClass;
+	public Class<? extends EditionSchemeParameter> editionSchemeParameterClass;
 
-	private EditionScheme newEditionScheme;
+	private EditionSchemeParameter newParameter;
 
-	CreateEditionScheme(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateEditionSchemeParameter(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}
 
-	public EditionPattern getEditionPattern() {
+	public EditionScheme getEditionScheme() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getEditionPattern();
+			return getFocusedObject().getEditionScheme();
 		}
 		return null;
 	}
 
-	public String getEditionSchemeName() {
-		if (StringUtils.isEmpty(editionSchemeName) && editionSchemeClass != null) {
-			return getEditionPattern().getAvailableEditionSchemeName(editionSchemeClass.getSimpleName());
+	public String getParameterName() {
+		if (StringUtils.isEmpty(parameterName) && editionSchemeParameterClass != null) {
+			return getEditionScheme().getAvailableParameterName(editionSchemeParameterClass.getSimpleName());
 		}
-		return editionSchemeName;
+		return parameterName;
 	}
 
-	public void setEditionSchemeName(String editionSchemeName) {
-		this.editionSchemeName = editionSchemeName;
+	public void setParameterName(String parameterName) {
+		this.parameterName = parameterName;
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add edition scheme, name=" + getEditionSchemeName() + " type=" + editionSchemeClass);
+		logger.info("Add edition scheme, name=" + getParameterName() + " type=" + editionSchemeParameterClass);
 
-		if (editionSchemeClass != null) {
+		if (editionSchemeParameterClass != null) {
 
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
-			newEditionScheme = factory.newInstance(editionSchemeClass);
-			newEditionScheme.setName(getEditionSchemeName());
-			getEditionPattern().addToEditionSchemes(newEditionScheme);
+			newParameter = factory.newInstance(editionSchemeParameterClass);
+			newParameter.setName(getParameterName());
+			getEditionScheme().addToParameters(newParameter);
 		}
 
 	}
 
-	public EditionScheme getNewEditionScheme() {
-		return newEditionScheme;
+	public EditionSchemeParameter getNewParameter() {
+		return newParameter;
 	}
 
 	private String validityMessage = EMPTY_NAME;
@@ -128,10 +126,10 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(getEditionSchemeName())) {
+		if (StringUtils.isEmpty(getParameterName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getEditionPattern().getPatternRole(getEditionSchemeName()) != null) {
+		} else if (getEditionScheme().getParameter(getParameterName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else {

@@ -182,6 +182,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 	@Override
 	public List<EditionSchemeParameter> getArguments();
 
+	public String getAvailableParameterName(String baseName);
+
 	public static abstract class EditionSchemeImpl extends EditionSchemeObjectImpl implements EditionScheme {
 
 		protected BindingModel _bindingModel;
@@ -976,6 +978,17 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 				isFirst = false;
 			}
 			return returned.toString();
+		}
+
+		@Override
+		public String getAvailableParameterName(String baseName) {
+			String testName = baseName;
+			int index = 2;
+			while (getParameter(testName) != null) {
+				testName = baseName + index;
+				index++;
+			}
+			return testName;
 		}
 
 	}
