@@ -24,4 +24,21 @@ public class CommonFIB {
 	public static File STANDARD_EDITION_PATTERN_VIEW_FIB = new FileResource("Fib/VPM/StandardEditionPatternView.fib");
 	public static File VIRTUAL_MODEL_VIEW_FIB = new FileResource("Fib/VPM/VirtualModelView.fib");
 
+	public static File CHOOSE_AND_CONFIGURE_CREATION_SCHEME_DIALOG_FIB = new FileResource(
+			"Fib/Dialog/ChooseAndConfigureCreationSchemeDialog.fib");
+
+	// General
+	public static File ONTOLOGY_VIEW_FIB = new FileResource("Fib/OntologyView.fib");
+	public static File VIRTUAL_MODEL_INSTANCE_VIEW_FIB = new FileResource("Fib/VirtualModelInstanceView.fib");
+
+	// View/VirtualModelInstance edition
+	public static File CREATE_VIEW_DIALOG_FIB = new FileResource("Fib/Dialog/CreateViewDialog.fib");
+	public static File CREATE_VIRTUAL_MODEL_INSTANCE_DIALOG_FIB = new FileResource("Fib/Dialog/CreateVirtualModelInstanceDialog.fib");
+	public static File CONFIGURE_FREE_MODEL_SLOT_INSTANCE_DIALOG_FIB = new FileResource(
+			"Fib/Dialog/ConfigureFreeModelSlotInstanceDialog.fib");
+	public static File CONFIGURE_TYPE_AWARE_MODEL_SLOT_INSTANCE_DIALOG_FIB = new FileResource(
+			"Fib/Dialog/ConfigureTypeAwareModelSlotInstanceDialog.fib");
+	public static File CONFIGURE_VIRTUAL_MODEL_SLOT_INSTANCE_DIALOG_FIB = new FileResource(
+			"Fib/Dialog/ConfigureVirtualModelSlotInstanceDialog.fib");
+
 }

@@ -71,6 +71,16 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 	@Setter(DOMAIN_VALUE_KEY)
 	public void setDomainValue(DataBinding<IFlexoOntologyClass> domainValue);
 
+	public IFlexoOntologyClass getDomain();
+
+	public void setDomain(IFlexoOntologyClass c);
+
+	public boolean getIsDynamicDomainValue();
+
+	public void setIsDynamicDomainValue(boolean isDynamic);
+
+	public IFlexoOntologyClass evaluateDomainValue(BindingEvaluationContext parameterRetriever);
+
 	public static abstract class PropertyParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
 			PropertyParameter {
 
@@ -104,10 +114,12 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			this.domainURI = domainURI;
 		}
 
+		@Override
 		public IFlexoOntologyClass getDomain() {
 			return getVirtualModel().getOntologyClass(_getDomainURI());
 		}
 
+		@Override
 		public void setDomain(IFlexoOntologyClass c) {
 			_setDomainURI(c != null ? c.getURI() : null);
 		}
@@ -132,10 +144,12 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			this.domainValue = domainValue;
 		}
 
+		@Override
 		public boolean getIsDynamicDomainValue() {
 			return getDomainValue().isSet() || isDynamicDomainValueSet;
 		}
 
+		@Override
 		public void setIsDynamicDomainValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicDomainValueSet = true;
@@ -145,6 +159,7 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			}
 		}
 
+		@Override
 		public IFlexoOntologyClass evaluateDomainValue(BindingEvaluationContext parameterRetriever) {
 			if (getDomainValue().isValid()) {
 				try {

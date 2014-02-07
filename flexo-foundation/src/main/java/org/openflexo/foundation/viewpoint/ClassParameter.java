@@ -61,6 +61,16 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 	@Setter(CONCEPT_VALUE_KEY)
 	public void setConceptValue(DataBinding<IFlexoOntologyClass> conceptValue);
 
+	public IFlexoOntologyClass getConcept();
+
+	public void setConcept(IFlexoOntologyClass c);
+
+	public boolean getIsDynamicConceptValue();
+
+	public void setIsDynamicConceptValue(boolean isDynamic);
+
+	public IFlexoOntologyClass evaluateConceptValue(BindingEvaluationContext evaluationContext);
+
 	public static abstract class ClassParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements ClassParameter {
 
 		private String conceptURI;
@@ -91,10 +101,12 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 			this.conceptURI = conceptURI;
 		}
 
+		@Override
 		public IFlexoOntologyClass getConcept() {
 			return getVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
+		@Override
 		public void setConcept(IFlexoOntologyClass c) {
 			_setConceptURI(c != null ? c.getURI() : null);
 		}
@@ -119,10 +131,12 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 			this.conceptValue = conceptValue;
 		}
 
+		@Override
 		public boolean getIsDynamicConceptValue() {
 			return getConceptValue().isSet() || isDynamicConceptValueSet;
 		}
 
+		@Override
 		public void setIsDynamicConceptValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicConceptValueSet = true;
@@ -132,6 +146,7 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 			}
 		}
 
+		@Override
 		public IFlexoOntologyClass evaluateConceptValue(BindingEvaluationContext parameterRetriever) {
 			if (getConceptValue().isValid()) {
 				try {

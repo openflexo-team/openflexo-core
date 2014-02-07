@@ -21,7 +21,8 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
@@ -54,6 +55,8 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 
 	@Setter(BASE_URI_KEY)
 	public void setBaseURI(DataBinding<String> baseURI);
+
+	public List<EditionSchemeParameter> getDependancies();
 
 	public static abstract class URIParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements URIParameter {
 
@@ -185,9 +188,10 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			return null;
 		}
 
-		public Vector<EditionSchemeParameter> getDependancies() {
+		@Override
+		public List<EditionSchemeParameter> getDependancies() {
 			if (getBaseURI().isSet() && getBaseURI().isValid()) {
-				Vector<EditionSchemeParameter> returned = new Vector<EditionSchemeParameter>();
+				List<EditionSchemeParameter> returned = new ArrayList<EditionSchemeParameter>();
 				for (BindingValue bv : getBaseURI().getExpression().getAllBindingValues()) {
 					EditionSchemeParameter p = getScheme().getParameter(bv.getVariableName());
 					if (p != null) {
