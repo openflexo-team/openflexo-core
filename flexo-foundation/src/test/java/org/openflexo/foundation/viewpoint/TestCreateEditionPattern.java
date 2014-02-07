@@ -119,7 +119,7 @@ public class TestCreateEditionPattern extends ViewPointTestCase {
 	 * Test the EditionPattern creation
 	 */
 	@Test
-	@TestOrder(5)
+	@TestOrder(6)
 	public void testCreateFlexoConceptC() throws SaveResourceException {
 
 		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
@@ -147,7 +147,7 @@ public class TestCreateEditionPattern extends ViewPointTestCase {
 	 * Test the EditionPattern creation
 	 */
 	@Test
-	@TestOrder(5)
+	@TestOrder(7)
 	public void testCreateFlexoConceptD() throws SaveResourceException {
 
 		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
@@ -176,7 +176,7 @@ public class TestCreateEditionPattern extends ViewPointTestCase {
 	 * Test the EditionPattern creation
 	 */
 	@Test
-	@TestOrder(6)
+	@TestOrder(8)
 	public void testCreateFlexoConceptE() throws SaveResourceException {
 
 		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
