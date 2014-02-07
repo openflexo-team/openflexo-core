@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter.EditionSchemeParameterImpl.WidgetType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;

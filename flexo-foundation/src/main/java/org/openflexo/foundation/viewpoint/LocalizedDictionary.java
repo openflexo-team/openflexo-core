@@ -70,13 +70,21 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 	@Setter(OWNER_KEY)
 	public void setOwner(ViewPoint owner);
 
+	public List<DynamicEntry> getDynamicEntries();
+
+	public void searchNewEntries();
+
+	public DynamicEntry addEntry();
+
+	public void deleteEntry(DynamicEntry entry);
+
 	public static abstract class LocalizedDictionaryImpl extends ViewPointObjectImpl implements LocalizedDictionary {
 
 		private static final Logger logger = Logger.getLogger(LocalizedDictionary.class.getPackage().getName());
 
 		private Vector<LocalizedEntry> _entries;
 		private final Hashtable<Language, Hashtable<String, String>> _values;
-		private Vector<DynamicEntry> dynamicEntries = null;
+		private List<DynamicEntry> dynamicEntries = null;
 
 		public LocalizedDictionaryImpl() {
 			super();
@@ -199,64 +207,6 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			return handleNewEntry;
 		}
 
-		public class DynamicEntry {
-			private String key;
-
-			public DynamicEntry(String aKey) {
-				key = aKey;
-			}
-
-			public String getKey() {
-				return key;
-			}
-
-			public void setKey(String aNewKey) {
-				String oldKey = key;
-				for (Language l : Language.availableValues()) {
-					String oldValue = _values.get(l).get(oldKey);
-					_values.get(l).remove(oldKey);
-					if (oldValue != null) {
-						_values.get(l).put(aNewKey, oldValue);
-					}
-					LocalizedEntry e = getEntry(l, oldKey);
-					if (e != null) {
-						e.setKey(aNewKey);
-					}
-				}
-				key = aNewKey;
-			}
-
-			public String getEnglish() {
-				return getLocalizedForKeyAndLanguage(key, Language.ENGLISH);
-			}
-
-			public void setEnglish(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
-			}
-
-			public String getFrench() {
-				return getLocalizedForKeyAndLanguage(key, Language.FRENCH);
-			}
-
-			public void setFrench(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
-			}
-
-			public String getDutch() {
-				return getLocalizedForKeyAndLanguage(key, Language.DUTCH);
-			}
-
-			public void setDutch(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
-			}
-
-			@Override
-			public String toString() {
-				return "(key=" + key + "{en=" + getEnglish() + ";fr=" + getFrench() + ";du=" + getDutch() + "})";
-			}
-
-		}
-
 		// This method is really not efficient, but only called in the context of locales editor
 		// This issue is not really severe.
 		private Vector<String> buildAllKeys() {
@@ -273,16 +223,17 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 
 		// This method is really not efficient, but only called in the context of locales editor
 		// Impact of this issue is not really severe.
-		public Vector<DynamicEntry> getDynamicEntries() {
+		@Override
+		public List<DynamicEntry> getDynamicEntries() {
 			if (dynamicEntries == null) {
 				dynamicEntries = new Vector<DynamicEntry>();
 				for (String key : buildAllKeys()) {
-					dynamicEntries.add(new DynamicEntry(key));
+					dynamicEntries.add(new DynamicEntryImpl(key));
 				}
 				Collections.sort(dynamicEntries, new Comparator<DynamicEntry>() {
 					@Override
 					public int compare(DynamicEntry o1, DynamicEntry o2) {
-						return Collator.getInstance().compare(o1.key, o2.key);
+						return Collator.getInstance().compare(o1.getKey(), o2.getKey());
 					}
 				});
 			}
@@ -294,7 +245,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 				return null;
 			}
 			for (DynamicEntry entry : getDynamicEntries()) {
-				if (key.equals(entry.key)) {
+				if (key.equals(entry.getKey())) {
 					return entry;
 				}
 			}
@@ -308,6 +259,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			notifyObservers();
 		}
 
+		@Override
 		public DynamicEntry addEntry() {
 			String newKey = "key";
 			Vector<String> allKeys = buildAllKeys();
@@ -328,6 +280,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			return getDynamicEntry(newKey);
 		}
 
+		@Override
 		public void deleteEntry(DynamicEntry entry) {
 			for (Language l : Language.availableValues()) {
 				_values.get(l).remove(entry.getKey());
@@ -339,6 +292,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			refresh();
 		}
 
+		@Override
 		public void searchNewEntries() {
 			logger.info("Search new entries");
 			for (VirtualModel vm : getViewPoint().getVirtualModels()) {
@@ -390,5 +344,92 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			return "<not_implemented:" + getStringRepresentation() + ">";
 		}
 
+		public class DynamicEntryImpl implements DynamicEntry {
+			private String key;
+
+			public DynamicEntryImpl(String aKey) {
+				key = aKey;
+			}
+
+			@Override
+			public String getKey() {
+				return key;
+			}
+
+			@Override
+			public void setKey(String aNewKey) {
+				String oldKey = key;
+				for (Language l : Language.availableValues()) {
+					String oldValue = _values.get(l).get(oldKey);
+					_values.get(l).remove(oldKey);
+					if (oldValue != null) {
+						_values.get(l).put(aNewKey, oldValue);
+					}
+					LocalizedEntry e = getEntry(l, oldKey);
+					if (e != null) {
+						e.setKey(aNewKey);
+					}
+				}
+				key = aNewKey;
+			}
+
+			@Override
+			public String getEnglish() {
+				return getLocalizedForKeyAndLanguage(key, Language.ENGLISH);
+			}
+
+			@Override
+			public void setEnglish(String value) {
+				setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
+			}
+
+			@Override
+			public String getFrench() {
+				return getLocalizedForKeyAndLanguage(key, Language.FRENCH);
+			}
+
+			@Override
+			public void setFrench(String value) {
+				setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
+			}
+
+			@Override
+			public String getDutch() {
+				return getLocalizedForKeyAndLanguage(key, Language.DUTCH);
+			}
+
+			@Override
+			public void setDutch(String value) {
+				setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
+			}
+
+			@Override
+			public String toString() {
+				return "(key=" + key + "{en=" + getEnglish() + ";fr=" + getFrench() + ";du=" + getDutch() + "})";
+			}
+
+		}
+
 	}
+
+	public interface DynamicEntry {
+
+		public String getKey();
+
+		public void setKey(String aNewKey);
+
+		public String getEnglish();
+
+		public void setEnglish(String value);
+
+		public String getFrench();
+
+		public void setFrench(String value);
+
+		public String getDutch();
+
+		public void setDutch(String value);
+
+	}
+
 }

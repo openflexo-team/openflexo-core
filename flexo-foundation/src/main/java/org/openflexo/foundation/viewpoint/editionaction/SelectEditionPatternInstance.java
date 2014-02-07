@@ -30,9 +30,9 @@ import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
+import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -70,6 +70,10 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
 	public void _setEditionPatternTypeURI(String editionPatternTypeURI);
 
+	public EditionPattern getEditionPatternType();
+
+	public void setEditionPatternType(EditionPattern editionPatternType);
+
 	public static abstract class SelectEditionPatternInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, EditionPatternInstance>
 			implements SelectEditionPatternInstance {
 
@@ -97,10 +101,10 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 			return out.toString();
 		}
 
-	@Override
-	public EditionPatternInstanceType getFetchedType() {
-		return (EditionPatternInstanceType) EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPatternType());
-	}
+		@Override
+		public EditionPatternInstanceType getFetchedType() {
+			return (EditionPatternInstanceType) EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPatternType());
+		}
 
 		@Override
 		public String _getEditionPatternTypeURI() {
@@ -117,6 +121,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 
 		// private boolean isUpdatingBindingModels = false;
 
+		@Override
 		public EditionPattern getEditionPatternType() {
 			// System.out.println("getEditionPatternType() for " + editionPatternTypeURI);
 			// System.out.println("vm=" + getVirtualModel());
@@ -147,6 +152,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 			return editionPatternType;
 		}
 
+		@Override
 		public void setEditionPatternType(EditionPattern editionPatternType) {
 			if (editionPatternType != this.editionPatternType) {
 				this.editionPatternType = editionPatternType;
@@ -169,7 +175,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
-					vmi = (VirtualModelInstance) modelSlotInstance.getResourceData();
+					vmi = modelSlotInstance.getResourceData();
 				} else {
 					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
 				}

@@ -184,6 +184,14 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 	public String getAvailableParameterName(String baseName);
 
+	public void parameterFirst(EditionSchemeParameter p);
+
+	public void parameterUp(EditionSchemeParameter p);
+
+	public void parameterDown(EditionSchemeParameter p);
+
+	public void parameterLast(EditionSchemeParameter p);
+
 	public static abstract class EditionSchemeImpl extends EditionSchemeObjectImpl implements EditionScheme {
 
 		protected BindingModel _bindingModel;
@@ -431,6 +439,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			updateBindingModels();
 		}
 
+		@Override
 		public void parameterFirst(EditionSchemeParameter p) {
 			System.out.println("parameterFirst()");
 			getParameters().remove(p);
@@ -439,6 +448,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			notifyObservers(new DataModification("parameters", null, getParameters()));
 		}
 
+		@Override
 		public void parameterUp(EditionSchemeParameter p) {
 			System.out.println("parameterUp()");
 			int index = getParameters().indexOf(p);
@@ -450,6 +460,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			}
 		}
 
+		@Override
 		public void parameterDown(EditionSchemeParameter p) {
 			System.out.println("parameterDown()");
 			int index = getParameters().indexOf(p);
@@ -461,6 +472,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			}
 		}
 
+		@Override
 		public void parameterLast(EditionSchemeParameter p) {
 			System.out.println("parameterLast()");
 			getParameters().remove(p);
@@ -648,132 +660,6 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			return anAction;
 		}
 
-		public EditionSchemeParameter createURIParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newURIParameter();
-			newParameter.setName("uri");
-			// newParameter.setLabel("uri");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createTextFieldParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newTextFieldParameter();
-			newParameter.setName("textField");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createTextAreaParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newTextAreaParameter();
-			newParameter.setName("textArea");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createIntegerParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newIntegerParameter();
-			newParameter.setName("integer");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createCheckBoxParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newCheckboxParameter();
-			newParameter.setName("checkbox");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createDropDownParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newDropDownParameter();
-			newParameter.setName("dropdown");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createIndividualParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newIndividualParameter();
-			newParameter.setName("individual");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createClassParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newClassParameter();
-			newParameter.setName("class");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createPropertyParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newPropertyParameter();
-			newParameter.setName("property");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createObjectPropertyParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newObjectPropertyParameter();
-			newParameter.setName("property");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createDataPropertyParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newDataPropertyParameter();
-			newParameter.setName("property");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		/*public EditionSchemeImplParameter createFlexoObjectParameter() {
-			EditionSchemeParameter newParameter = new FlexoObjectParameter(null);
-			newParameter.setName("flexoObject");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}*/
-
-		public EditionSchemeParameter createTechnologyObjectParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newTechnologyObjectParameter();
-			newParameter.setName("technologyObject");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createListParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newListParameter();
-			newParameter.setName("list");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter createEditionPatternInstanceParameter() {
-			EditionSchemeParameter newParameter = getVirtualModelFactory().newEditionPatternInstanceParameter();
-			newParameter.setName("editionPatternInstance");
-			// newParameter.setLabel("label");
-			addToParameters(newParameter);
-			return newParameter;
-		}
-
-		public EditionSchemeParameter deleteParameter(EditionSchemeParameter aParameter) {
-			removeFromParameters(aParameter);
-			aParameter.delete();
-			return aParameter;
-		}
-
 		@Override
 		public void finalizeEditionSchemeDeserialization() {
 			updateBindingModels();
@@ -897,20 +783,6 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		@Override
 		public void variableAdded(AssignableAction action) {
 			updateBindingModels();
-		}
-
-		/**
-		 * Duplicates this EditionScheme, given a new name<br>
-		 * Newly created EditionScheme is added to parent EditionPattern
-		 * 
-		 * @param newName
-		 * @return
-		 */
-		public EditionScheme duplicate(String newName) {
-			EditionScheme newEditionScheme = (EditionScheme) cloneObject();
-			newEditionScheme.setName(newName);
-			getEditionPattern().addToEditionSchemes(newEditionScheme);
-			return newEditionScheme;
 		}
 
 		@Override

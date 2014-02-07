@@ -44,7 +44,6 @@ import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.EditionPattern;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
-import org.openflexo.foundation.viewpoint.ProcedureAction;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -139,6 +138,12 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 	public int getIndex();
 
+	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
+
+	public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots();
+
+	public ModelSlotInstance<MS, ?> getModelSlotInstance(EditionSchemeAction action);
+
 	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends EditionSchemeObjectImpl implements
 			EditionAction<MS, T> {
 
@@ -189,6 +194,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 			this.modelSlot = modelSlot;
 		}
 
+		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
 			if (getEditionPattern() != null && getEditionPattern().getVirtualModel() != null) {
 				return getEditionPattern().getVirtualModel().getModelSlots(msType);
@@ -198,10 +204,12 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 			return null;
 		}
 
+		@Override
 		public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots() {
 			return getAvailableModelSlots(VirtualModelModelSlot.class);
 		}
 
+		@Override
 		public ModelSlotInstance<MS, ?> getModelSlotInstance(EditionSchemeAction action) {
 			if (action.getVirtualModelInstance() != null) {
 				return action.getVirtualModelInstance().getModelSlotInstance((ModelSlot) getModelSlot());

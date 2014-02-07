@@ -243,7 +243,7 @@ public interface EditionPattern extends EditionPatternObject {
 
 	public DeletionScheme createDeletionScheme();*/
 
-	public EditionScheme deleteEditionScheme(EditionScheme editionScheme);
+	// public EditionScheme deleteEditionScheme(EditionScheme editionScheme);
 
 	public DeletionScheme getDefaultDeletionScheme();
 
@@ -264,21 +264,6 @@ public interface EditionPattern extends EditionPatternObject {
 	public String getAvailableRoleName(String baseName);
 
 	public String getAvailableEditionSchemeName(String baseName);
-
-	/**
-	 * Duplicates this EditionPattern, given a new name<br>
-	 * Newly created EditionPattern is added to ViewPoint
-	 * 
-	 * @param newName
-	 * @return
-	 */
-	public EditionPattern duplicate(String newName);
-
-	public void createConstraint();
-
-	public void deleteConstraint(EditionPatternConstraint constraint);
-
-	public PatternRole<?> deletePatternRole(PatternRole<?> aPatternRole);
 
 	public static abstract class EditionPatternImpl extends EditionPatternObjectImpl implements EditionPattern {
 
@@ -369,79 +354,6 @@ public interface EditionPattern extends EditionPatternObject {
 				super.setName(name.replace(",", ""));
 			}
 		}
-
-		/*
-		 * @Override public EditionScheme getEditionScheme(String
-		 * editionSchemeName) { for (EditionScheme es : editionSchemes) { if
-		 * (es.getName().equals(editionSchemeName)) { return es; } }
-		 * logger.warning("Not found EditionScheme:" + editionSchemeName);
-		 * return null; }
-		 */
-
-		/*
-		 * @Override public List<EditionScheme> getEditionSchemes() { return
-		 * editionSchemes; }
-		 * 
-		 * public void setEditionSchemes(Vector<EditionScheme>
-		 * someEditionScheme) { editionSchemes = someEditionScheme; }
-		 * 
-		 * @Override public void addToEditionSchemes(EditionScheme
-		 * anEditionScheme) { anEditionScheme.setEditionPattern(this);
-		 * editionSchemes.add(anEditionScheme); if (getVirtualModel() != null) {
-		 * getVirtualModel().notifyEditionSchemeModified(); } setChanged();
-		 * notifyObservers(new EditionSchemeInserted(anEditionScheme, this));
-		 * anEditionScheme.updateBindingModels(); }
-		 * 
-		 * @Override public void removeFromEditionSchemes(EditionScheme
-		 * anEditionScheme) { anEditionScheme.setEditionPattern(null);
-		 * editionSchemes.remove(anEditionScheme); if (getVirtualModel() !=
-		 * null) { getVirtualModel().notifyEditionSchemeModified(); }
-		 * setChanged(); notifyObservers(new
-		 * EditionSchemeRemoved(anEditionScheme, this)); }
-		 */
-
-		/*
-		 * @Override public Vector<EditionPatternConstraint>
-		 * getEditionPatternConstraints() { return editionPatternConstraints; }
-		 * 
-		 * public void
-		 * setEditionPatternConstraints(Vector<EditionPatternConstraint>
-		 * someEditionPatternConstraint) { editionPatternConstraints =
-		 * someEditionPatternConstraint; }
-		 * 
-		 * @Override public void
-		 * addToEditionPatternConstraints(EditionPatternConstraint
-		 * anEditionPatternConstraint) {
-		 * anEditionPatternConstraint.setEditionPattern(this);
-		 * editionPatternConstraints.add(anEditionPatternConstraint);
-		 * setChanged(); notifyObservers(new
-		 * EditionPatternConstraintInserted(anEditionPatternConstraint, this));
-		 * }
-		 * 
-		 * @Override public void
-		 * removeFromEditionPatternConstraints(EditionPatternConstraint
-		 * anEditionPatternConstraint) {
-		 * anEditionPatternConstraint.setEditionPattern(null);
-		 * editionPatternConstraints.remove(anEditionPatternConstraint);
-		 * setChanged(); notifyObservers(new
-		 * EditionPatternConstraintRemoved(anEditionPatternConstraint, this)); }
-		 */
-
-		@Override
-		public void createConstraint() {
-			EditionPatternConstraint constraint = getVirtualModelFactory().newEditionPatternConstraint();
-			addToEditionPatternConstraints(constraint);
-		}
-
-		@Override
-		public void deleteConstraint(EditionPatternConstraint constraint) {
-			removeFromEditionPatternConstraints(constraint);
-		}
-
-		/*
-		 * @Override public List<PatternRole<?>> getPatternRoles() { return
-		 * patternRoles; }
-		 */
 
 		@Override
 		public void setPatternRoles(List<PatternRole<?>> somePatternRole) {
@@ -546,20 +458,6 @@ public interface EditionPattern extends EditionPatternObject {
 		}
 
 		@Override
-		public PatternRole<?> deletePatternRole(PatternRole<?> aPatternRole) {
-			removeFromPatternRoles(aPatternRole);
-			aPatternRole.delete();
-			return aPatternRole;
-		}
-
-		/*
-		 * public PatternRole<?> getPatternRole(String patternRole) { for
-		 * (PatternRole pr : patternRoles) { if (pr.getPatternRoleName() != null
-		 * && pr.getPatternRoleName().equals(patternRole)) { return pr; } }
-		 * return null; }
-		 */
-
-		@Override
 		@SuppressWarnings("unchecked")
 		public <ES extends EditionScheme> List<ES> getEditionSchemes(Class<ES> editionSchemeClass) {
 			List<ES> returned = new ArrayList<ES>();
@@ -654,55 +552,6 @@ public interface EditionPattern extends EditionPatternObject {
 				}
 			}
 			return false;
-		}
-
-		/*@Override
-		public CreationScheme createCreationScheme() {
-			CreationScheme newCreationScheme = getVirtualModelFactory().newCreationScheme();
-			newCreationScheme.setEditionPattern(this);
-			newCreationScheme.setName("creation");
-			addToEditionSchemes(newCreationScheme);
-			return newCreationScheme;
-		}
-
-		@Override
-		public CloningScheme createCloningScheme() {
-			CloningScheme newCloningScheme = getVirtualModelFactory().newCloningScheme();
-			newCloningScheme.setEditionPattern(this);
-			newCloningScheme.setName("clone");
-			addToEditionSchemes(newCloningScheme);
-			return newCloningScheme;
-		}
-
-		@Override
-		public ActionScheme createActionScheme() {
-			ActionScheme newActionScheme = getVirtualModelFactory().newActionScheme();
-			newActionScheme.setEditionPattern(this);
-			newActionScheme.setName("action");
-			addToEditionSchemes(newActionScheme);
-			return newActionScheme;
-		}
-
-		@Override
-		public NavigationScheme createNavigationScheme() {
-			NavigationScheme newNavigationScheme = getVirtualModelFactory().newNavigationScheme();
-			newNavigationScheme.setEditionPattern(this);
-			newNavigationScheme.setName("navigation");
-			addToEditionSchemes(newNavigationScheme);
-			return newNavigationScheme;
-		}
-
-		@Override
-		public DeletionScheme createDeletionScheme() {
-			DeletionScheme newDeletionScheme = generateDefaultDeletionScheme();
-			return newDeletionScheme;
-		}*/
-
-		@Override
-		public EditionScheme deleteEditionScheme(EditionScheme editionScheme) {
-			removeFromEditionSchemes(editionScheme);
-			editionScheme.delete();
-			return editionScheme;
 		}
 
 		@Override
@@ -909,21 +758,6 @@ public interface EditionPattern extends EditionPatternObject {
 		 * permissive) { if (aType instanceof EditionPattern) { return
 		 * isAssignableFrom((EditionPattern) aType); } return aType == this; }
 		 */
-
-		/**
-		 * Duplicates this EditionPattern, given a new name<br>
-		 * Newly created EditionPattern is added to ViewPoint
-		 * 
-		 * @param newName
-		 * @return
-		 */
-		@Override
-		public EditionPattern duplicate(String newName) {
-			EditionPattern newEditionPattern = (EditionPattern) cloneObject();
-			newEditionPattern.setName(newName);
-			getVirtualModel().addToEditionPatterns(newEditionPattern);
-			return newEditionPattern;
-		}
 
 		@Override
 		public boolean isRoot() {

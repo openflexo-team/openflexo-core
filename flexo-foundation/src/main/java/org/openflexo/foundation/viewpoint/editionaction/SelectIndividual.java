@@ -64,6 +64,10 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 	@Setter(ONTOLOGY_CLASS_URI_KEY)
 	public void _setOntologyClassURI(String ontologyClassURI);
 
+	public IFlexoOntologyClass getType();
+
+	public void setType(IFlexoOntologyClass ontologyClass);
+
 	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
 			FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
 
@@ -95,6 +99,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			return IndividualOfClass.getIndividualOfClass(getType());
 		}
 
+		@Override
 		public IFlexoOntologyClass getType() {
 			if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
@@ -103,6 +108,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			return null;
 		}
 
+		@Override
 		public void setType(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
 				typeURI = ontologyClass.getURI();

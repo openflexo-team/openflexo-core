@@ -69,13 +69,20 @@ public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern
 	}
 
 	public String newName;
-	public EditionPattern newEditionPattern;
+	private EditionPattern newEditionPattern;
+
+	public EditionPattern getNewEditionPattern() {
+		return newEditionPattern;
+	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Duplicate edition pattern");
 
-		newEditionPattern = getFocusedObject().duplicate(newName);
+		newEditionPattern = (EditionPattern) getFocusedObject().cloneObject();
+		newEditionPattern.setName(newName);
+		getFocusedObject().getVirtualModel().addToEditionPatterns(newEditionPattern);
+
 	}
 
 }

@@ -19,7 +19,7 @@
     <TextFieldColumn isEditable="" data="iterator.patternRoleName" format="" title="pattern_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction=""/>
     <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label"/>
     <LabelColumn data="iterator.preciseType" format="" title="type" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label"/>
-    <RemoveAction method="data.deletePatternRole(selected)" isAvailable="" name="delete"/>
+    <RemoveAction method="controller.deletePatternRole(data,selected)" isAvailable="" name="delete"/>
     <AddAction method="controller.createPatternRole(data)" isAvailable="" name="createPatternRole"/>
   </Table>
   <Label label="constraints" index="6" data="" constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator=""/>
@@ -28,8 +28,8 @@
     <CustomColumn componentClassName="org.openflexo.fib.utils.BindingSelector" customRendering="false" disableTerminateEditOnFocusLost="false" data="iterator.constraint" format="" title="constraint" columnWidth="80" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="value">
       <ColumnAssignment variable="component.bindable" value="data"/>
     </CustomColumn>
-    <AddAction method="data.createConstraint" isAvailable="" name="add_constraint"/>
-    <RemoveAction method="data.deleteConstraint(selected)" isAvailable="" name="delete_constraint"/>
+    <AddAction method="controller.createConstraint(data)" isAvailable="" name="add_constraint"/>
+    <RemoveAction method="controller.deleteConstraint(data,selected)" isAvailable="" name="delete_constraint"/>
   </Table>
   <LocalizedDictionary>
     <Localized key="constraint" lang="English">Constraints</Localized>

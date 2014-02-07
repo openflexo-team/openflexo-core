@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel opaque="false" layout="border" borderTitle="Panel" borderTop="10" titleFont="SansSerif,0,11" darkLevel="0" dataClassName="org.openflexo.foundation.viewpoint.EditionPattern" controllerClassName="org.openflexo.view.controller.FlexoController" font="SansSerif,0,12" name="main">
+<Panel opaque="false" layout="border" borderTitle="Panel" borderTop="10" titleFont="SansSerif,0,11" darkLevel="0" dataClassName="org.openflexo.foundation.viewpoint.EditionPattern" controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController" font="SansSerif,0,12" name="main">
   <SplitPanel index="0" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)">
     <ColSplit name="ColSplit" weight="1.0">
       <RowSplit name="RowSplit" weight="0.0">
@@ -15,7 +15,7 @@
       <TextFieldColumn data="iterator.patternRoleName" title="pattern_role" columnWidth="70" resizable="true" displayTitle="true" />
       <LabelColumn data="iterator.modelSlot.name" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" name="label" />
       <LabelColumn data="iterator.preciseType" title="type" columnWidth="70" resizable="true" displayTitle="true" name="label" />
-      <RemoveAction method="data.deletePatternRole(selected)" name="delete" />
+      <RemoveAction method="controller.deletePatternRole(data,selected)" name="delete" />
       <AddAction method="controller.createPatternRole(data)" name="createPatternRole" />
     </Table>
     <TabPanel name="MainTabPanel" index="1" constraints="split(index=1;location=center;splitIdentifier=details)">
@@ -37,12 +37,12 @@
                 <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
                 <TextFieldColumn data="iterator.name" title="edition_scheme" columnWidth="200" resizable="true" displayTitle="true" />
                 <LabelColumn data="iterator.editionSchemeType.name" title="type" columnWidth="100" resizable="true" displayTitle="true" name="label" />
-                <RemoveAction method="data.deleteEditionScheme(selected)" name="delete_scheme" />
-                <AddAction method="data.createActionScheme" name="new_action_scheme" />
-                <AddAction method="data.createCreationScheme" name="new_creation_scheme" />
-                <AddAction method="data.createDeletionScheme" name="new_deletion_scheme" />
-                <CustomAction method="selected.duplicate((selected.name + &quot;Copy&quot;))" name="duplicate" />
-                <AddAction method="data.createCloningScheme" name="new_cloning_scheme" />
+                <RemoveAction method="controller.deleteEditionScheme(data,selected)" name="delete_scheme" />
+                <AddAction method="controller.createActionScheme(data)" name="new_action_scheme" />
+                <AddAction method="controller.createCreationScheme(data)" name="new_creation_scheme" />
+                <AddAction method="controller.createDeletionScheme(data)" name="new_deletion_scheme" />
+                <CustomAction method="controller.duplicateEditionPattern(selected,(selected.name + &quot;Copy&quot;))" name="duplicate" />
+                <AddAction method="controller.createCloningScheme(data)" name="new_cloning_scheme" />
               </Table>
               <Panel layout="border" border="rounded3d" borderTitle="Parameters for EditionScheme" borderTop="2" borderBottom="2" borderRight="2" titleFont="SansSerif,0,11" darkLevel="1" index="0" constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=west;padX=0;padY=0;splitIdentifier=right;weightX=0.5;weightY=1.0;x=0;y=0)" opaque="false">
                 <Table iteratorClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameter" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" enable="(EditionSchemeTable.selected != null)" manageDynamicModel="true" name="ParametersTable" index="0" data="EditionSchemeTable.selected.parameters" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.5;weightY=1.0;x=0;y=0)" font="SansSerif.plain,0,12">
@@ -50,22 +50,21 @@
                   <TextFieldColumn data="iterator.name" title="name" columnWidth="100" resizable="true" displayTitle="true" />
                   <TextFieldColumn data="iterator.label" title="label" columnWidth="100" resizable="true" displayTitle="true" />
                   <DropDownColumn data="iterator.widget" title="widget" columnWidth="80" resizable="true" displayTitle="true" name="dropdown" />
-                  <AddAction method="EditionSchemeTable.selected.createTextFieldParameter" name="add_textfield_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createTextAreaParameter" name="add_textarea_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createIntegerParameter" name="add_integer_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createCheckBoxParameter" name="add_checkbox_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createDropDownParameter" name="add_dropdown_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createIndividualParameter" name="add_individual_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createClassParameter" name="add_class_parameter" />
-                  <RemoveAction method="EditionSchemeTable.selected.deleteParameter(selected)" name="delete" />
-                  <AddAction method="EditionSchemeTable.selected.createFlexoObjectParameter" name="add_flexo_model_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createURIParameter" name="add_uri_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createObjectPropertyParameter" name="add_object_property_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createDataPropertyParameter" name="add_data_property_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createListParameter" name="add_list_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createEditionPatternInstanceParameter" name="add_edition_pattern_instance_parameter" />
-                  <AddAction method="EditionSchemeTable.selected.createPropertyParameter" name="add_property_parameter" />
-       		      <AddAction method="EditionSchemeTable.selected.createTechnologyObjectParameter" name="add_technology_object" />
+                  <AddAction method="controller.createTextFieldParameter(EditionSchemeTable.selected)" name="add_textfield_parameter" />
+                  <AddAction method="controller.createTextAreaParameter(EditionSchemeTable.selected)" name="add_textarea_parameter" />
+                  <AddAction method="controller.createIntegerParameter(EditionSchemeTable.selected)" name="add_integer_parameter" />
+                  <AddAction method="controller.createCheckBoxParameter(EditionSchemeTable.selected)" name="add_checkbox_parameter" />
+                  <AddAction method="controller.createDropDownParameter(EditionSchemeTable.selected)" name="add_dropdown_parameter" />
+                  <AddAction method="controller.createIndividualParameter(EditionSchemeTable.selected)" name="add_individual_parameter" />
+                  <AddAction method="controller.createClassParameter(EditionSchemeTable.selected)" name="add_class_parameter" />
+                  <AddAction method="controller.createURIParameter(EditionSchemeTable.selected)" name="add_uri_parameter" />
+                  <AddAction method="controller.createObjectPropertyParameter(EditionSchemeTable.selected)" name="add_object_property_parameter" />
+                  <AddAction method="controller.createDataPropertyParameter(EditionSchemeTable.selected)" name="add_data_property_parameter" />
+                  <AddAction method="controller.createListParameter(EditionSchemeTable.selected)" name="add_list_parameter" />
+                  <AddAction method="controller.createEditionPatternInstanceParameter(EditionSchemeTable.selected)" name="add_flexo_concept_instance_parameter" />
+                  <AddAction method="controller.createPropertyParameter(EditionSchemeTable.selected)" name="add_property_parameter" />
+        		  <AddAction method="controller.createTechnologyObjectParameter(EditionSchemeTable.selected)" name="add_technology_object" />
+                  <RemoveAction method="controller.deleteParameter(EditionSchemeTable.selected,selected)" name="delete" />
                 </Table>
                 <Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" constraints="border(location=east)" opaque="false" name="ParametersOrderingPanel">
                   <Button action="EditionSchemeTable.selected.parameterFirst(ParametersTable.selected)" buttonIcon="controller.arrowTop" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)">

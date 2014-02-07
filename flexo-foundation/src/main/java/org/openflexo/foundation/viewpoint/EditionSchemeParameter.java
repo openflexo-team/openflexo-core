@@ -52,6 +52,26 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(PropertyParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
 public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArgument {
 
+	public static enum WidgetType {
+		URI,
+		TEXT_FIELD,
+		LOCALIZED_TEXT_FIELD,
+		TEXT_AREA,
+		INTEGER,
+		FLOAT,
+		CHECKBOX,
+		DROPDOWN,
+		INDIVIDUAL,
+		CLASS,
+		PROPERTY,
+		OBJECT_PROPERTY,
+		DATA_PROPERTY,
+		FLEXO_OBJECT,
+		LIST,
+		EDITION_PATTERN,
+		TECHNOLOGY_OBJECT;
+	}
+
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
@@ -119,29 +139,13 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 
 	public boolean evaluateCondition(BindingEvaluationContext parameterRetriever);
 
+	public abstract WidgetType getWidget();
+
+	public int getIndex();
+
 	public static abstract class EditionSchemeParameterImpl extends EditionSchemeObjectImpl implements EditionSchemeParameter {
 
 		private static final Logger logger = Logger.getLogger(EditionSchemeParameter.class.getPackage().getName());
-
-		public static enum WidgetType {
-			URI,
-			TEXT_FIELD,
-			LOCALIZED_TEXT_FIELD,
-			TEXT_AREA,
-			INTEGER,
-			FLOAT,
-			CHECKBOX,
-			DROPDOWN,
-			INDIVIDUAL,
-			CLASS,
-			PROPERTY,
-			OBJECT_PROPERTY,
-			DATA_PROPERTY,
-			FLEXO_OBJECT,
-			LIST,
-			EDITION_PATTERN,
-			TECHNOLOGY_OBJECT;
-		}
 
 		private String label;
 		// private boolean usePaletteLabelAsDefaultValue;
@@ -169,8 +173,6 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 
 		@Override
 		public abstract Type getType();
-
-		public abstract WidgetType getWidget();
 
 		private final BindingDefinition CONDITIONAL = new BindingDefinition("conditional", Boolean.class,
 				DataBinding.BindingDefinitionType.GET, false);
@@ -253,6 +255,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 			return "EditionPatternParameter: " + getName();
 		}
 
+		@Override
 		public int getIndex() {
 			return getScheme().getParameters().indexOf(this);
 		}

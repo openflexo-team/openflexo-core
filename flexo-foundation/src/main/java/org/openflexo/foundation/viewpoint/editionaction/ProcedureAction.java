@@ -18,7 +18,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.util.logging.Logger;
 
@@ -26,7 +26,6 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -37,6 +36,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 @FIBPanel("Fib/VPM/ProcedureActionPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ProcedureAction.ProcedureActionImpl.class)
+@Deprecated
+// I think this class is not necessary ???
 public interface ProcedureAction<MS extends ModelSlot<?>, T> extends EditionAction<MS, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)

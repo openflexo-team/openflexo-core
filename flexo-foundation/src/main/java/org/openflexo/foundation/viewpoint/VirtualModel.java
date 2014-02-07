@@ -607,11 +607,6 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 		 * }
 		 */
 
-		public void deleteModelSlot(ModelSlot<?> modelSlot) {
-			removeFromModelSlots(modelSlot);
-			modelSlot.delete();
-		}
-
 		@Override
 		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
 			List<MS> returned = new ArrayList<MS>();
