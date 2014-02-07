@@ -51,7 +51,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	protected String relativePath;
 	protected String filename;
 
-	protected TypeAwareModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
+	protected TypeAwareModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 		FlexoResourceCenterService rcService = action.getFocusedObject().getViewPoint().getViewPointLibrary().getServiceManager()
 				.getResourceCenterService();

@@ -37,15 +37,14 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
  * @author sylvain
  * 
  */
-public class VirtualModelModelSlotInstanceConfiguration<MS extends VirtualModelModelSlot> extends
-		ModelSlotInstanceConfiguration<MS, VirtualModelInstance> {
+public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanceConfiguration<VirtualModelModelSlot, VirtualModelInstance> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstanceConfiguration.class.getPackage().getName());
 
 	private final List<ModelSlotInstanceConfigurationOption> options;
 	private VirtualModelInstanceResource addressedVirtualModelInstanceResource;
 
-	protected VirtualModelModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
+	protected VirtualModelModelSlotInstanceConfiguration(VirtualModelModelSlot ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		if (ms.isReflexiveModelSlot()) {
@@ -65,14 +64,14 @@ public class VirtualModelModelSlotInstanceConfiguration<MS extends VirtualModelM
 	}
 
 	@Override
-	public ModelSlotInstance<MS, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance) {
+	public ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance) {
 		VirtualModelModelSlotInstance returned = new VirtualModelModelSlotInstance(vmInstance, getModelSlot());
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
 		} else {
 			logger.warning("Addressed virtual model instance is null");
 		}
-		return (ModelSlotInstance<MS, VirtualModelInstance>) returned;
+		return returned;
 	}
 
 	public VirtualModelInstanceResource getAddressedVirtualModelInstanceResource() {

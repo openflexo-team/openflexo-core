@@ -55,7 +55,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD>, MS 
 	protected String relativePath;
 	protected String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
+	protected FreeModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 		FlexoResourceCenterService rcService = action.getFocusedObject().getViewPoint().getViewPointLibrary().getServiceManager()
 				.getResourceCenterService();

@@ -75,8 +75,8 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 	public String newViewName;
 	public String newViewTitle;
 	public ViewPointResource viewpointResource;
-	public boolean createVirtualModel = false;
-	public boolean createDiagram = false;
+	// public boolean createVirtualModel = false;
+	// public boolean createDiagram = false;
 
 	public boolean skipChoosePopup = false;
 
@@ -144,6 +144,7 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		return errorMessage;
 	}
 
+	@Override
 	public boolean isValid() {
 
 		// System.out.println("viewpointResource=" + viewpointResource);

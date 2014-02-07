@@ -49,8 +49,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot class for the Openflexo built-in diagram
- * technology adapter
+ * Implementation of the ModelSlot class for the Openflexo built-in diagram technology adapter
  * 
  * @author sylvain, christophe
  * 
@@ -81,8 +80,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public VirtualModelResource getVirtualModelResource();
 
-	public void setVirtualModelResource(
-			VirtualModelResource virtualModelResource);
+	public void setVirtualModelResource(VirtualModelResource virtualModelResource);
 
 	public VirtualModel getAddressedVirtualModel();
 
@@ -90,15 +88,11 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public boolean isReflexiveModelSlot();
 
-	public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(
-			EditionPattern editionPattern);
+	public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(EditionPattern editionPattern);
 
-	public static abstract class VirtualModelModelSlotImpl extends
-			ModelSlotImpl<VirtualModelInstance> implements
-			VirtualModelModelSlot {
+	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
 
-		private static final Logger logger = Logger
-				.getLogger(VirtualModelModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(VirtualModelModelSlot.class.getPackage().getName());
 
 		@Override
 		public String getStringRepresentation() {
@@ -111,8 +105,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(
-				EditionPattern editionPattern) {
+		public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(EditionPattern editionPattern) {
 			EditionPatternInstancePatternRole returned = makePatternRole(EditionPatternInstancePatternRole.class);
 			returned.setEditionPatternType(editionPattern);
 			returned.setModelSlot(this);
@@ -120,22 +113,18 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public <PR extends PatternRole<?>> String defaultPatternRoleName(
-				Class<PR> patternRoleClass) {
-			if (EditionPatternInstancePatternRole.class
-					.isAssignableFrom(patternRoleClass)) {
+		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
+			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "editionPatternInstance";
 			}
-			logger.warning("Unexpected pattern role: "
-					+ patternRoleClass.getName());
+			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
 			return null;
 		}
 
 		@Override
 		public ModelSlotInstanceConfiguration<? extends VirtualModelModelSlot, VirtualModelInstance> createConfiguration(
-				CreateVirtualModelInstance<?> action) {
-			return new VirtualModelModelSlotInstanceConfiguration<VirtualModelModelSlot>(
-					this, action);
+				CreateVirtualModelInstance action) {
+			return new VirtualModelModelSlotInstanceConfiguration(this, action);
 		}
 
 		private VirtualModelResource virtualModelResource;
@@ -143,13 +132,9 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public VirtualModelResource getVirtualModelResource() {
-			if (virtualModelResource == null
-					&& StringUtils.isNotEmpty(virtualModelURI)
-					&& getViewPoint() != null) {
+			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getViewPoint() != null) {
 				if (getViewPoint().getVirtualModelNamed(virtualModelURI) != null) {
-					virtualModelResource = (VirtualModelResource) getViewPoint()
-							.getVirtualModelNamed(virtualModelURI)
-							.getResource();
+					virtualModelResource = (VirtualModelResource) getViewPoint().getVirtualModelNamed(virtualModelURI).getResource();
 					logger.info("Looked-up " + virtualModelResource);
 				}
 			}
@@ -157,15 +142,13 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public void setVirtualModelResource(
-				VirtualModelResource virtualModelResource) {
+		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
 			this.virtualModelResource = virtualModelResource;
 		}
 
 		@Override
 		public Type getType() {
-			return EditionPatternInstanceType
-					.getEditionPatternInstanceType(getAddressedVirtualModel());
+			return EditionPatternInstanceType.getEditionPatternInstanceType(getAddressedVirtualModel());
 		}
 
 		@Override
@@ -182,17 +165,14 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		/**
-		 * Return adressed virtual model (the virtual model this model slot
-		 * specifically adresses, not the one in which it is defined)
+		 * Return adressed virtual model (the virtual model this model slot specifically adresses, not the one in which it is defined)
 		 * 
 		 * @return
 		 */
 		@Override
 		public VirtualModel getAddressedVirtualModel() {
-			if (getViewPoint() != null
-					&& StringUtils.isNotEmpty(getVirtualModelURI())) {
-				return getViewPoint()
-						.getVirtualModelNamed(getVirtualModelURI());
+			if (getViewPoint() != null && StringUtils.isNotEmpty(getVirtualModelURI())) {
+				return getViewPoint().getVirtualModelNamed(getVirtualModelURI());
 			}
 			return null;
 		}
@@ -203,17 +183,14 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		/**
-		 * Return flag indicating if this model slot is the reflexive model slot
-		 * for virtual model container
+		 * Return flag indicating if this model slot is the reflexive model slot for virtual model container
 		 * 
 		 * @return
 		 */
 		@Override
 		public boolean isReflexiveModelSlot() {
-			return getName() != null
-					&& getName().equals(VirtualModel.REFLEXIVE_MODEL_SLOT_NAME)
-					&& getVirtualModelResource() == getVirtualModel()
-							.getResource();
+			return getName() != null && getName().equals(VirtualModel.REFLEXIVE_MODEL_SLOT_NAME)
+					&& getVirtualModelResource() == getVirtualModel().getResource();
 		}
 
 		/**
@@ -234,16 +211,14 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * @return the Object
 		 */
 		@Override
-		public Object retrieveObjectWithURI(ModelSlotInstance msInstance,
-				String objectURI) {
+		public Object retrieveObjectWithURI(ModelSlotInstance msInstance, String objectURI) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
 
 		@Override
 		public String getModelSlotDescription() {
-			return "Virtual Model conform to " + getVirtualModelURI()
-					+ (isReflexiveModelSlot() ? " [reflexive]" : "");
+			return "Virtual Model conform to " + getVirtualModelURI() + (isReflexiveModelSlot() ? " [reflexive]" : "");
 		}
 
 	}
