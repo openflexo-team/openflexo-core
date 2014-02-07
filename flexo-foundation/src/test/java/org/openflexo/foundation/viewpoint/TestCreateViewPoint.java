@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.test.OrderedRunner;
@@ -17,7 +18,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateViewPoint extends ViewPointTestCase {
+public class TestCreateViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Test the creation
@@ -27,16 +28,12 @@ public class TestCreateViewPoint extends ViewPointTestCase {
 	public void testCreateViewPoint() {
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
-		ViewPoint newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
-				"http://openflexo.org/test/TestViewPoint",
-				resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+		ViewPoint newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
+				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		assertTrue(((ViewPointResource) newViewPoint.getResource())
-				.getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile()
-				.exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
 
 		assertNotNull(newViewPoint.getLocalizedDictionary());
 	}

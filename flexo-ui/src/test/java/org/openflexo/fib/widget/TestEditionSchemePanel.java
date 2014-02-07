@@ -225,7 +225,7 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(new FileResource("FIB/VPM/DeclarePatternRolePanel.fib"),
+		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(new FileResource("Fib/VPM/DeclarePatternRolePanel.fib"),
 				(DeclarePatternRole) creationScheme.getActions().get(0), DeclarePatternRole.class);
 
 		gcDelegate.addTab("DeclarePatternRole", widget.getController());

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
@@ -34,7 +35,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateEditionPattern extends ViewPointTestCase {
+public class TestCreateEditionPattern extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 	static ViewPoint newViewPoint;

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -15,7 +16,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestLoadViewPoint extends ViewPointTestCase {
+public class TestLoadViewPoint extends OpenflexoTestCase {
 
 	/**
 	 * Instanciate compound test resource center

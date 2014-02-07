@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
@@ -19,7 +20,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateVirtualModel extends ViewPointTestCase {
+public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 	static ViewPoint newViewPoint;
 
@@ -31,14 +32,10 @@ public class TestCreateVirtualModel extends ViewPointTestCase {
 	public void testCreateViewPoint() {
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
-		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
-				"http://openflexo.org/test/TestViewPoint",
-				resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
-		assertTrue(((ViewPointResource) newViewPoint.getResource())
-				.getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile()
-				.exists());
+		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
+				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
 	}
 
 	/**
@@ -47,12 +44,9 @@ public class TestCreateVirtualModel extends ViewPointTestCase {
 	@Test
 	@TestOrder(2)
 	public void testCreateVirtualModel() throws SaveResourceException {
-		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel(
-				"TestVirtualModel", newViewPoint);
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource())
-				.getDirectory().exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource())
-				.getFile().exists());
+		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getDirectory().exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFile().exists());
 	}
 
 }
