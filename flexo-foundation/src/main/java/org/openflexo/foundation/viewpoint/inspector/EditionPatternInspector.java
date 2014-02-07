@@ -30,7 +30,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
@@ -60,7 +60,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "Inspector")
 public interface EditionPatternInspector extends EditionPatternObject, Bindable {
 
-	@PropertyIdentifier(type = EditionPattern.class)
+	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String EDITION_PATTERN_KEY = "edition_pattern";
 	@PropertyIdentifier(type = String.class)
 	public static final String INSPECTOR_TITLE_KEY = "inspectorTitle";
@@ -70,11 +70,11 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 	public static final String ENTRIES_KEY = "entries";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = EditionPattern.INSPECTOR_KEY)
-	public EditionPattern getEditionPattern();
+	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.INSPECTOR_KEY)
+	public FlexoConcept getFlexoConcept();
 
 	@Setter(EDITION_PATTERN_KEY)
-	public void setEditionPattern(EditionPattern editionPattern);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = INSPECTOR_TITLE_KEY)
 	@XMLAttribute
@@ -136,7 +136,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInspector.class.getPackage().toString());
 
 		private String inspectorTitle;
-		private EditionPattern _editionPattern;
+		private FlexoConcept _flexoConcept;
 		private Vector<InspectorEntry> entries;
 		private DataBinding<String> renderer;
 
@@ -144,7 +144,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 		/*
 		 * public static EditionPatternInspector
-		 * makeEditionPatternInspector(EditionPattern ep) {
+		 * makeEditionPatternInspector(FlexoConcept ep) {
 		 * EditionPatternInspector returned =
 		 * ep.getVirtualModelFactory().newEditionPatternInspector(ep);
 		 * returned.setInspectorTitle(ep.getName()); ep.setInspector(returned);
@@ -167,20 +167,20 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return _editionPattern;
+		public FlexoConcept getFlexoConcept() {
+			return _flexoConcept;
 		}
 
 		@Override
-		public void setEditionPattern(EditionPattern editionPattern) {
-			_editionPattern = editionPattern;
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			_flexoConcept = flexoConcept;
 			formatter.notifiedBindingModelRecreated();
 		}
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionPattern() != null) {
-				return getEditionPattern().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}
@@ -332,7 +332,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 		@Override
 		public final BindingModel getBindingModel() {
-			return getEditionPattern().getBindingModel();
+			return getFlexoConcept().getBindingModel();
 			/*
 			 * if (_bindingModel == null) { createBindingModel(); } return
 			 * _bindingModel;
@@ -438,10 +438,10 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 			private void createFormatterBindingModel() {
 				formatterBindingModel = new BindingModel();
 				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", EditionPatternInstanceType
-						.getEditionPatternInstanceType(getEditionPattern())) {
+						.getFlexoConceptInstanceType(getFlexoConcept())) {
 					@Override
 					public Type getType() {
-						return EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPattern());
+						return EditionPatternInstanceType.getFlexoConceptInstanceType(getFlexoConcept());
 					}
 				});
 			}

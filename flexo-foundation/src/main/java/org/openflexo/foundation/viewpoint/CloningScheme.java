@@ -25,7 +25,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * A CloningScheme represents a behavioural feature encoding the cloning of an EditionPattern
+ * A CloningScheme represents a behavioural feature encoding the cloning of an FlexoConcept
  * 
  * @author sylvain
  * 

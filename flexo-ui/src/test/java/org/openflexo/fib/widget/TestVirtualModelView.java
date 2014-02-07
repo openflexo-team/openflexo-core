@@ -20,7 +20,7 @@ import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
@@ -56,7 +56,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	static ViewPoint viewPoint;
 	static VirtualModel virtualModel;
 
-	static EditionPattern flexoConceptA;
+	static FlexoConcept flexoConceptA;
 
 	static CreationScheme creationScheme;
 	static DeletionScheme deletionScheme;
@@ -97,7 +97,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);
 
-		flexoConceptA = virtualModel.getEditionPattern("FlexoConceptA");
+		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
 		System.out.println("flexoConceptA=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 

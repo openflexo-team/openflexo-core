@@ -28,7 +28,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
@@ -66,7 +66,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, EditionPattern.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, EditionPatternBehaviouralFacet.class);
 	}
 
@@ -81,16 +81,16 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 
 	}
 
-	public EditionPattern getEditionPattern() {
+	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getEditionPattern();
+			return getFocusedObject().getFlexoConcept();
 		}
 		return null;
 	}
 
 	public String getEditionSchemeName() {
 		if (StringUtils.isEmpty(editionSchemeName) && editionSchemeClass != null) {
-			return getEditionPattern().getAvailableEditionSchemeName(editionSchemeClass.getSimpleName());
+			return getFlexoConcept().getAvailableEditionSchemeName(editionSchemeClass.getSimpleName());
 		}
 		return editionSchemeName;
 	}
@@ -108,7 +108,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 			newEditionScheme = factory.newInstance(editionSchemeClass);
 			newEditionScheme.setName(getEditionSchemeName());
-			getEditionPattern().addToEditionSchemes(newEditionScheme);
+			getFlexoConcept().addToEditionSchemes(newEditionScheme);
 		}
 
 	}
@@ -131,7 +131,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 		if (StringUtils.isEmpty(getEditionSchemeName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getEditionPattern().getPatternRole(getEditionSchemeName()) != null) {
+		} else if (getFlexoConcept().getPatternRole(getEditionSchemeName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else {

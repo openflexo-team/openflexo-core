@@ -42,8 +42,8 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link PatternRole} is a structural element of an EditionPattern, which plays a role in this {@link EditionPattern}<br>
- * More formerly, a {@link PatternRole} is the specification of an object accessed at run-time (inside an {@link EditionPattern} instance)
+ * A {@link PatternRole} is a structural element of an FlexoConcept, which plays a role in this {@link FlexoConcept}<br>
+ * More formerly, a {@link PatternRole} is the specification of an object accessed at run-time (inside an {@link FlexoConcept} instance)
  * 
  * 
  * @author sylvain
@@ -54,8 +54,8 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(EditionPatternInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
 public abstract interface PatternRole<T> extends EditionPatternObject {
 
-	@PropertyIdentifier(type = EditionPattern.class)
-	public static final String EDITION_PATTERN_KEY = "editionPattern";
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String EDITION_PATTERN_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
 	@PropertyIdentifier(type = String.class)
@@ -64,11 +64,11 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = EditionPattern.PATTERN_ROLES_KEY)
-	public EditionPattern getEditionPattern();
+	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
+	public FlexoConcept getFlexoConcept();
 
 	@Setter(EDITION_PATTERN_KEY)
-	public void setEditionPattern(EditionPattern editionPattern);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = PATTERN_ROLE_NAME_KEY)
 	@XMLAttribute(xmlTag = "patternRole")
@@ -120,7 +120,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 
 		// private static final Logger logger = Logger.getLogger(PatternRole.class.getPackage().getName());
 
-		private EditionPattern _pattern;
+		private FlexoConcept _pattern;
 
 		private ModelSlot<?> modelSlot;
 
@@ -130,7 +130,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 
 		@Override
 		public String getURI() {
-			return getEditionPattern().getURI() + "." + getPatternRoleName();
+			return getFlexoConcept().getURI() + "." + getPatternRoleName();
 		}
 
 		@Override
@@ -146,19 +146,19 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 		}
 
 		@Override
-		public void setEditionPattern(EditionPattern pattern) {
+		public void setFlexoConcept(FlexoConcept pattern) {
 			_pattern = pattern;
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			return _pattern;
 		}
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionPattern() != null) {
-				return getEditionPattern().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}
@@ -179,8 +179,8 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 					+ ":"
 					+ getPatternRoleName()
 					+ "[container="
-					+ (getEditionPattern() != null ? getEditionPattern().getName() + "/"
-							+ (getEditionPattern().getVirtualModel() != null ? getEditionPattern().getVirtualModel().getName() : "null")
+					+ (getFlexoConcept() != null ? getFlexoConcept().getName() + "/"
+							+ (getFlexoConcept().getVirtualModel() != null ? getFlexoConcept().getVirtualModel().getName() : "null")
 							: "null") + "][" + Integer.toHexString(hashCode()) + "]";
 		}
 
@@ -196,7 +196,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 
 		@Override
 		public final BindingModel getBindingModel() {
-			return getEditionPattern().getBindingModel();
+			return getFlexoConcept().getBindingModel();
 		}
 
 		// public abstract boolean getIsPrimaryRole();

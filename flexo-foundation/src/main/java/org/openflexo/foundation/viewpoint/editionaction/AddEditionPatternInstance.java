@@ -39,7 +39,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
@@ -113,16 +113,16 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(AddEditionPatternInstanceParameter aParameter);
 
-	public EditionPattern getEditionPatternType();
+	public FlexoConcept getFlexoConceptType();
 
-	public void setEditionPatternType(EditionPattern editionPatternType);
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public static abstract class AddEditionPatternInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, EditionPatternInstance>
 			implements AddEditionPatternInstance {
 
 		static final Logger logger = Logger.getLogger(AddEditionPatternInstance.class.getPackage().getName());
 
-		private EditionPattern editionPatternType;
+		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 
@@ -171,17 +171,17 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 		}
 
 		@Override
-		public EditionPattern getEditionPatternType() {
+		public FlexoConcept getFlexoConceptType() {
 			if (getCreationScheme() != null) {
-				return getCreationScheme().getEditionPattern();
+				return getCreationScheme().getFlexoConcept();
 			}
-			return editionPatternType;
+			return flexoConceptType;
 		}
 
 		@Override
-		public void setEditionPatternType(EditionPattern editionPatternType) {
-			this.editionPatternType = editionPatternType;
-			if (getCreationScheme() != null && getCreationScheme().getEditionPattern() != editionPatternType) {
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			this.flexoConceptType = flexoConceptType;
+			if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 				setCreationScheme(null);
 			}
 		}
@@ -289,7 +289,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 			// NPE Protection
 			ViewPoint vp = this.getViewPoint();
 			if (vp != null) {
-				return vp.getInstanceType(getEditionPatternType());
+				return vp.getInstanceType(getFlexoConceptType());
 			} else {
 				logger.warning("Adding FlexoConcept Instance in a null ViewPoint !");
 				return null;
@@ -308,7 +308,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 		public ValidationIssue<AddEditionPatternInstanceMustAddressACreationScheme, AddEditionPatternInstance> applyValidation(
 				AddEditionPatternInstance action) {
 			if (action.getCreationScheme() == null) {
-				if (action.getEditionPatternType() == null) {
+				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<AddEditionPatternInstanceMustAddressACreationScheme, AddEditionPatternInstance>(this,
 							action, "add_edition_pattern_action_doesn't_define_any_edition_pattern");
 				} else {

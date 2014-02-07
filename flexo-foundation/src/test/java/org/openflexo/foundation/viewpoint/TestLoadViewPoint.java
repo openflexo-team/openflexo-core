@@ -61,39 +61,39 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 
 		assertNotNull(virtualModel);
 
-		EditionPattern flexoConceptA = virtualModel.getEditionPattern("FlexoConceptA");
+		FlexoConcept flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
 		System.out.println("flexoConceptA=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		EditionPattern flexoConceptB = virtualModel.getEditionPattern("FlexoConceptB");
+		FlexoConcept flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
 		System.out.println("flexoConceptB=" + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		EditionPattern flexoConceptC = virtualModel.getEditionPattern("FlexoConceptC");
+		FlexoConcept flexoConceptC = virtualModel.getFlexoConcept("FlexoConceptC");
 		System.out.println("flexoConceptC=" + flexoConceptC);
 		assertNotNull(flexoConceptC);
 
-		EditionPattern flexoConceptD = virtualModel.getEditionPattern("FlexoConceptD");
+		FlexoConcept flexoConceptD = virtualModel.getFlexoConcept("FlexoConceptD");
 		System.out.println("flexoConceptD=" + flexoConceptD);
 		assertNotNull(flexoConceptD);
 
-		EditionPattern flexoConceptE = virtualModel.getEditionPattern("FlexoConceptE");
+		FlexoConcept flexoConceptE = virtualModel.getFlexoConcept("FlexoConceptE");
 		System.out.println("flexoConceptE=" + flexoConceptE);
 		assertNotNull(flexoConceptE);
 
-		assertEquals(3, flexoConceptE.getParentEditionPatterns().size());
-		assertEquals(flexoConceptA, flexoConceptE.getParentEditionPatterns().get(0));
-		assertEquals(flexoConceptB, flexoConceptE.getParentEditionPatterns().get(1));
-		assertEquals(flexoConceptC, flexoConceptE.getParentEditionPatterns().get(2));
+		assertEquals(3, flexoConceptE.getParentFlexoConcepts().size());
+		assertEquals(flexoConceptA, flexoConceptE.getParentFlexoConcepts().get(0));
+		assertEquals(flexoConceptB, flexoConceptE.getParentFlexoConcepts().get(1));
+		assertEquals(flexoConceptC, flexoConceptE.getParentFlexoConcepts().get(2));
 
-		assertEquals(1, flexoConceptA.getChildEditionPatterns().size());
-		assertEquals(flexoConceptE, flexoConceptA.getChildEditionPatterns().get(0));
-		assertEquals(3, flexoConceptB.getChildEditionPatterns().size());
-		assertEquals(flexoConceptC, flexoConceptB.getChildEditionPatterns().get(0));
-		assertEquals(flexoConceptD, flexoConceptB.getChildEditionPatterns().get(1));
-		assertEquals(flexoConceptE, flexoConceptB.getChildEditionPatterns().get(2));
-		assertEquals(1, flexoConceptC.getChildEditionPatterns().size());
-		assertEquals(flexoConceptE, flexoConceptC.getChildEditionPatterns().get(0));
+		assertEquals(1, flexoConceptA.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptE, flexoConceptA.getChildFlexoConcepts().get(0));
+		assertEquals(3, flexoConceptB.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
+		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
+		assertEquals(flexoConceptE, flexoConceptB.getChildFlexoConcepts().get(2));
+		assertEquals(1, flexoConceptC.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
 
 	}
 

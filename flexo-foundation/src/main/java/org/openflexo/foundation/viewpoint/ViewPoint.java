@@ -135,18 +135,18 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public void setLocalizedDictionary(LocalizedDictionary localizedDictionary);
 
 	/**
-	 * Retrieves the right type given the EditionPattern
+	 * Retrieves the right type given the FlexoConcept
 	 */
 
-	public EditionPatternInstanceType getInstanceType(EditionPattern anEditionPattern);
+	public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept);
 
 	/**
-	 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
+	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
 	 * @param editionPatternId
 	 * @return
 	 */
-	public EditionPattern getEditionPattern(String editionPatternId);
+	public FlexoConcept getFlexoConcept(String editionPatternId);
 
 	/**
 	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
@@ -187,8 +187,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		// Maps to reference all the EditionPatternInstanceType, DiagramType, VirtualModelType used in this context
 
-		private final Map<EditionPattern, EditionPatternInstanceType> editionPatternTypesMap = new HashMap<EditionPattern, EditionPatternInstanceType>();
-		private final Map<EditionPattern, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<EditionPattern, VirtualModelInstanceType>();
+		private final Map<FlexoConcept, EditionPatternInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, EditionPatternInstanceType>();
+		private final Map<FlexoConcept, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<FlexoConcept, VirtualModelInstanceType>();
 
 		/**
 		 * Stores a chained collections of objects which are involved in validation
@@ -256,7 +256,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			loadViewpointMetaModels();
 
 			/*for (VirtualModel vm : getVirtualModels()) {
-				for (EditionPattern ep : vm.getEditionPatterns()) {
+				for (FlexoConcept ep : vm.getEditionPatterns()) {
 					for (PatternRole<?> pr : ep.getPatternRoles()) {
 						if (pr instanceof ShapePatternRole) {
 							((ShapePatternRole) pr).tryToFindAGR();
@@ -488,20 +488,20 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}*/
 
 		/**
-		 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
+		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
 		 * @param editionPatternId
 		 * @return
 		 */
 		@Override
-		public EditionPattern getEditionPattern(String editionPatternId) {
+		public FlexoConcept getFlexoConcept(String editionPatternId) {
 			for (VirtualModel vm : getVirtualModels()) {
-				EditionPattern returned = vm.getEditionPattern(editionPatternId);
+				FlexoConcept returned = vm.getFlexoConcept(editionPatternId);
 				if (returned != null) {
 					return returned;
 				}
 			}
-			// logger.warning("Not found EditionPattern:" + editionPatternId);
+			// logger.warning("Not found FlexoConcept:" + editionPatternId);
 			return null;
 		}
 
@@ -744,24 +744,24 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		/**
-		 * Retrieves the right type given the EditionPattern
+		 * Retrieves the right type given the FlexoConcept
 		 */
 		@Override
-		public EditionPatternInstanceType getInstanceType(EditionPattern anEditionPattern) {
+		public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
 			EditionPatternInstanceType instanceType = null;
 
-			if (anEditionPattern != null) {
-				if (anEditionPattern instanceof VirtualModel) {
-					instanceType = virtualModelTypesMap.get(anEditionPattern);
+			if (anFlexoConcept != null) {
+				if (anFlexoConcept instanceof VirtualModel) {
+					instanceType = virtualModelTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
-						instanceType = new VirtualModelInstanceType((VirtualModel) anEditionPattern);
-						virtualModelTypesMap.put(anEditionPattern, (VirtualModelInstanceType) instanceType);
+						instanceType = new VirtualModelInstanceType((VirtualModel) anFlexoConcept);
+						virtualModelTypesMap.put(anFlexoConcept, (VirtualModelInstanceType) instanceType);
 					}
 				} else {
-					instanceType = editionPatternTypesMap.get(anEditionPattern);
+					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
-						instanceType = new EditionPatternInstanceType(anEditionPattern);
-						editionPatternTypesMap.put(anEditionPattern, instanceType);
+						instanceType = new EditionPatternInstanceType(anFlexoConcept);
+						flexoConceptTypesMap.put(anFlexoConcept, instanceType);
 					}
 				}
 			}

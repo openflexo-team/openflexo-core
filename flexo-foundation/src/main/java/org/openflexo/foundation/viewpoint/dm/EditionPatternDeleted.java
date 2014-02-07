@@ -19,11 +19,11 @@
  */
 package org.openflexo.foundation.viewpoint.dm;
 
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 
 public class EditionPatternDeleted extends ViewPointDataModification {
 
-	public EditionPatternDeleted(EditionPattern ep) {
+	public EditionPatternDeleted(FlexoConcept ep) {
 		super("allRootEditionPatterns", ep, null);
 	}
 

@@ -31,7 +31,7 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionPatternObject.EditionPatternObjectImpl;
 import org.openflexo.logging.FlexoLogger;
@@ -44,7 +44,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * An EditionPatternConstraint represents a structural constraint attached to an EditionPattern
+ * An EditionPatternConstraint represents a structural constraint attached to an FlexoConcept
  * 
  * @author sylvain
  * 
@@ -89,9 +89,9 @@ public interface FetchRequestCondition extends EditionPatternObject {
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			if (getFetchRequest() != null) {
-				return getFetchRequest().getEditionPattern();
+				return getFetchRequest().getFlexoConcept();
 			}
 			return null;
 		}

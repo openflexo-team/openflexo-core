@@ -41,7 +41,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.view.ViewObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeActionType;
@@ -60,11 +60,11 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 	private Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
 	private ViewPoint viewPoint;
 
-	private Map<BindingPathElement, Map<EditionPattern, List<EditionSchemePathElement>>> editionSchemePathElements;
+	private Map<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>> editionSchemePathElements;
 
 	public EditionPatternBindingFactory(ViewPoint viewPoint) {
 		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
-		editionSchemePathElements = new HashMap<BindingPathElement, Map<EditionPattern, List<EditionSchemePathElement>>>();
+		editionSchemePathElements = new HashMap<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>>();
 		this.viewPoint = viewPoint;
 	}
 
@@ -158,9 +158,9 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
 			return returned;
-		}*//*else if (TypeUtils.isTypeAssignableFrom(EditionPattern.class, pType)) {
+		}*//*else if (TypeUtils.isTypeAssignableFrom(FlexoConcept.class, pType)) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-				EditionPattern ep = (EditionPattern) pType;
+				FlexoConcept ep = (FlexoConcept) pType;
 				for (PatternRole<?> pr : ep.getPatternRoles()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}
@@ -168,7 +168,7 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 			} */
 		else if (pType instanceof EditionPatternInstanceType) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionPattern ep = ((EditionPatternInstanceType) pType).getEditionPattern();
+			FlexoConcept ep = ((EditionPatternInstanceType) pType).getFlexoConcept();
 			
 			if (ep instanceof VirtualModel) {
 				VirtualModel vm = (VirtualModel) ep;
@@ -189,7 +189,7 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 			EditionScheme editionScheme = ((EditionSchemeType) pType).getEditionScheme();
 			returned.add(new EditionSchemeParametersValuesPathElement(parent, editionScheme));
 			returned.add(new EditionSchemeParametersDefinitionsPathElement(parent, editionScheme));
-			for (PatternRole<?> pr : editionScheme.getEditionPattern().getPatternRoles()) {
+			for (PatternRole<?> pr : editionScheme.getFlexoConcept().getPatternRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;
@@ -198,7 +198,7 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 			EditionScheme editionScheme = ((EditionSchemeActionType) pType).getEditionScheme();
 			returned.add(new EditionSchemeParametersValuesPathElement(parent, editionScheme));
 			returned.add(new EditionSchemeParametersDefinitionsPathElement(parent, editionScheme));
-			for (PatternRole<?> pr : editionScheme.getEditionPattern().getPatternRoles()) {
+			for (PatternRole<?> pr : editionScheme.getFlexoConcept().getPatternRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;
@@ -213,15 +213,15 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 
 		Type pType = parent.getType();
 		if (pType instanceof EditionPatternInstanceType) {
-			return getEditionSchemePathElements(parent, ((EditionPatternInstanceType) pType).getEditionPattern());
+			return getEditionSchemePathElements(parent, ((EditionPatternInstanceType) pType).getFlexoConcept());
 		}
 		return super.getAccessibleFunctionPathElements(parent);
 	}
 
-	public List<EditionSchemePathElement> getEditionSchemePathElements(BindingPathElement parent, EditionPattern ep) {
-		Map<EditionPattern, List<EditionSchemePathElement>> map = editionSchemePathElements.get(parent);
+	public List<EditionSchemePathElement> getEditionSchemePathElements(BindingPathElement parent, FlexoConcept ep) {
+		Map<FlexoConcept, List<EditionSchemePathElement>> map = editionSchemePathElements.get(parent);
 		if (map == null) {
-			map = new HashMap<EditionPattern, List<EditionSchemePathElement>>();
+			map = new HashMap<FlexoConcept, List<EditionSchemePathElement>>();
 			editionSchemePathElements.put(parent, map);
 		}
 		List<EditionSchemePathElement> returned = map.get(ep);
@@ -271,8 +271,8 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 		if (function.getName().equals("getEditionPatternInstance")) {
 			if (TypeUtils.isTypeAssignableFrom(ViewObject.class, parent.getType()) && args.size() == 1 && args.get(0).isStringConstant()) {
 				String editionPatternId = ((StringConstant) args.get(0).getExpression()).getValue();
-				EditionPattern ep = viewPoint.getEditionPattern(editionPatternId);
-				returned.setType(EditionPatternInstanceType.getEditionPatternInstanceType(ep));
+				FlexoConcept ep = viewPoint.getFlexoConcept(editionPatternId);
+				returned.setType(EditionPatternInstanceType.getFlexoConceptInstanceType(ep));
 			}
 		}
 		return returned;
@@ -281,7 +281,7 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 	@Override
 	public Function retrieveFunction(Type parentType, String functionName, List<DataBinding<?>> args) {
 		if (parentType instanceof EditionPatternInstanceType) {
-			return ((EditionPatternInstanceType) parentType).getEditionPattern().getEditionScheme(functionName);
+			return ((EditionPatternInstanceType) parentType).getFlexoConcept().getEditionScheme(functionName);
 		}
 		return super.retrieveFunction(parentType, functionName, args);
 	}

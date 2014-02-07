@@ -24,7 +24,7 @@ import org.openflexo.fib.model.listener.FIBMouseClickListener;
 import org.openflexo.fib.view.FIBView;
 import org.openflexo.fib.view.widget.FIBTableWidget;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
@@ -55,7 +55,7 @@ public class ViewPointView extends FIBModuleView<ViewPoint> implements FIBMouseC
 	public void mouseClicked(FIBView<?, ?, ?> view, int clickCount) {
 		if (view instanceof FIBTableWidget && ((FIBTableWidget<?>) view).getSelected() instanceof FlexoObject && clickCount == 2) {
 			FlexoObject o = (FlexoObject) ((FIBTableWidget<?>) view).getSelected();
-			if (o instanceof ViewPoint || o instanceof EditionPattern /*|| o instanceof ExampleDiagram || o instanceof DiagramPalette*/) {
+			if (o instanceof ViewPoint || o instanceof FlexoConcept /*|| o instanceof ExampleDiagram || o instanceof DiagramPalette*/) {
 				getFlexoController().selectAndFocusObject(o);
 			}
 		}

@@ -14,7 +14,7 @@ import org.openflexo.fib.utils.OpenflexoFIBTestCase;
 import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -40,11 +40,11 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 
 	static FlexoEditor editor;
 
-	static EditionPattern flexoConceptA;
-	static EditionPattern flexoConceptB;
-	static EditionPattern flexoConceptC;
-	static EditionPattern flexoConceptD;
-	static EditionPattern flexoConceptE;
+	static FlexoConcept flexoConceptA;
+	static FlexoConcept flexoConceptB;
+	static FlexoConcept flexoConceptC;
+	static FlexoConcept flexoConceptD;
+	static FlexoConcept flexoConceptE;
 
 	@BeforeClass
 	public static void setupClass() {
@@ -78,23 +78,23 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);
 
-		flexoConceptA = virtualModel.getEditionPattern("FlexoConceptA");
+		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
 		System.out.println("flexoConceptA=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		flexoConceptB = virtualModel.getEditionPattern("FlexoConceptB");
+		flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
 		System.out.println("flexoConceptB=" + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		flexoConceptC = virtualModel.getEditionPattern("FlexoConceptC");
+		flexoConceptC = virtualModel.getFlexoConcept("FlexoConceptC");
 		System.out.println("flexoConceptC=" + flexoConceptC);
 		assertNotNull(flexoConceptC);
 
-		flexoConceptD = virtualModel.getEditionPattern("FlexoConceptD");
+		flexoConceptD = virtualModel.getFlexoConcept("FlexoConceptD");
 		System.out.println("flexoConceptD=" + flexoConceptD);
 		assertNotNull(flexoConceptD);
 
-		flexoConceptE = virtualModel.getEditionPattern("FlexoConceptE");
+		flexoConceptE = virtualModel.getFlexoConcept("FlexoConceptE");
 		System.out.println("flexoConceptE=" + flexoConceptE);
 		assertNotNull(flexoConceptE);
 
@@ -125,7 +125,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForConceptA() {
 
-		DefaultFIBCustomComponent<EditionPattern> widget = instanciateFIB(fibFile, flexoConceptA, EditionPattern.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptA, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptA", widget.getController());
 	}
@@ -134,7 +134,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForConceptB() {
 
-		DefaultFIBCustomComponent<EditionPattern> widget = instanciateFIB(fibFile, flexoConceptB, EditionPattern.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptB, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptB", widget.getController());
 	}
@@ -143,7 +143,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForConceptC() {
 
-		DefaultFIBCustomComponent<EditionPattern> widget = instanciateFIB(fibFile, flexoConceptC, EditionPattern.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptC, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptC", widget.getController());
 	}
@@ -152,7 +152,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	@TestOrder(7)
 	public void testInstanciateWidgetForConceptD() {
 
-		DefaultFIBCustomComponent<EditionPattern> widget = instanciateFIB(fibFile, flexoConceptD, EditionPattern.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptD, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptD", widget.getController());
 	}
@@ -161,7 +161,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	@TestOrder(8)
 	public void testInstanciateWidgetForConceptE() {
 
-		DefaultFIBCustomComponent<EditionPattern> widget = instanciateFIB(fibFile, flexoConceptE, EditionPattern.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptE, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptE", widget.getController());
 	}

@@ -236,7 +236,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		@Override
 		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
 			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
-				return "editionPattern";
+				return "flexoConcept";
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}

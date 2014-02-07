@@ -19,19 +19,19 @@
  */
 package org.openflexo.foundation.viewpoint.dm;
 
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 
 public class EditionSchemeRemoved extends ViewPointDataModification {
 
-	private EditionPattern _parent;
+	private FlexoConcept _parent;
 
-	public EditionSchemeRemoved(EditionScheme editionScheme, EditionPattern parent) {
+	public EditionSchemeRemoved(EditionScheme editionScheme, FlexoConcept parent) {
 		super("editionSchemes", editionScheme, null);
 		_parent = parent;
 	}
 
-	public EditionPattern getParent() {
+	public FlexoConcept getParent() {
 		return _parent;
 	}
 

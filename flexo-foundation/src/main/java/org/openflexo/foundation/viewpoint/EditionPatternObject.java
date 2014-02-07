@@ -23,7 +23,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Represents an object which is part of the model of an EditionPattern
+ * Represents an object which is part of the model of an FlexoConcept
  * 
  * @author sylvain
  * 
@@ -34,7 +34,7 @@ public interface EditionPatternObject extends NamedViewPointObject {
 
 	public VirtualModelModelFactory getVirtualModelFactory();
 
-	public EditionPattern getEditionPattern();
+	public FlexoConcept getFlexoConcept();
 
 	@Override
 	public ViewPoint getViewPoint();
@@ -58,23 +58,23 @@ public interface EditionPatternObject extends NamedViewPointObject {
 		}
 
 		@Override
-		public abstract EditionPattern getEditionPattern();
+		public abstract FlexoConcept getFlexoConcept();
 
 		@Override
 		public ViewPoint getViewPoint() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getViewPoint();
 			}
-			if (getEditionPattern() != null && getEditionPattern() != this) {
-				return getEditionPattern().getViewPoint();
+			if (getFlexoConcept() != null && getFlexoConcept() != this) {
+				return getFlexoConcept().getViewPoint();
 			}
 			return null;
 		}
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionPattern() != null) {
-				return getEditionPattern().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}
@@ -82,7 +82,7 @@ public interface EditionPatternObject extends NamedViewPointObject {
 		@Override
 		public String getStringRepresentation() {
 			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#"
-					+ (getEditionPattern() != null ? getEditionPattern().getName() : "null") + "." + getClass().getSimpleName();
+					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "." + getClass().getSimpleName();
 		}
 
 		@Override

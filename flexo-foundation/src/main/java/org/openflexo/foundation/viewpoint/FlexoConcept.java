@@ -57,13 +57,13 @@ import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An EditionPattern aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
+ * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
  * GUI, etcâ¦). Each such element is associated with a {@link PatternRole}.
  * 
- * A PatternRole is an abstraction of the manipulation roles played in the {@link EditionPattern} by modelling element potentially in
+ * A PatternRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in
  * different metamodels.
  * 
- * An {@link EditionPatternInstance} is an instance of an {@link EditionPattern} .
+ * An {@link EditionPatternInstance} is an instance of an {@link FlexoConcept} .
  * 
  * Instances of modelling elements in an {@link EditionPatternInstance} are called Pattern Actors. They play given Pattern Roles.
  * 
@@ -71,9 +71,9 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @ModelEntity
-@ImplementationClass(EditionPattern.EditionPatternImpl.class)
+@ImplementationClass(FlexoConcept.EditionPatternImpl.class)
 @XMLElement
-public interface EditionPattern extends EditionPatternObject {
+public interface FlexoConcept extends EditionPatternObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -162,29 +162,29 @@ public interface EditionPattern extends EditionPatternObject {
 
 	@Getter(value = PARENT_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_EDITION_PATTERNS_KEY)
 	@XMLElement(context = "Parent")
-	public List<EditionPattern> getParentEditionPatterns();
+	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_EDITION_PATTERNS_KEY)
-	public void setParentEditionPatterns(List<EditionPattern> parentEditionPatterns);
+	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts);
 
 	@Adder(PARENT_EDITION_PATTERNS_KEY)
-	public void addToParentEditionPatterns(EditionPattern parentEditionPattern);
+	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
 	@Remover(PARENT_EDITION_PATTERNS_KEY)
-	public void removeFromParentEditionPatterns(EditionPattern parentEditionPattern);
+	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
 	@Getter(value = CHILD_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = PARENT_EDITION_PATTERNS_KEY)
 	// @XMLElement(context = "Child")
-	public List<EditionPattern> getChildEditionPatterns();
+	public List<FlexoConcept> getChildFlexoConcepts();
 
 	@Setter(CHILD_EDITION_PATTERNS_KEY)
-	public void setChildEditionPatterns(List<EditionPattern> childEditionPatterns);
+	public void setChildFlexoConcepts(List<FlexoConcept> childFlexoConcepts);
 
 	@Adder(CHILD_EDITION_PATTERNS_KEY)
-	public void addToChildEditionPatterns(EditionPattern childEditionPattern);
+	public void addToChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
 	@Remover(CHILD_EDITION_PATTERNS_KEY)
-	public void removeFromChildEditionPatterns(EditionPattern childEditionPattern);
+	public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
 	@Getter(value = EDITION_PATTERN_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = EditionPatternConstraint.EDITION_PATTERN_KEY)
 	@XMLElement
@@ -259,15 +259,15 @@ public interface EditionPattern extends EditionPatternObject {
 
 	public EditionPatternBehaviouralFacet getBehaviouralFacet();
 
-	public boolean isAssignableFrom(EditionPattern editionPattern);
+	public boolean isAssignableFrom(FlexoConcept flexoConcept);
 
 	public String getAvailableRoleName(String baseName);
 
 	public String getAvailableEditionSchemeName(String baseName);
 
-	public static abstract class EditionPatternImpl extends EditionPatternObjectImpl implements EditionPattern {
+	public static abstract class EditionPatternImpl extends EditionPatternObjectImpl implements FlexoConcept {
 
-		protected static final Logger logger = FlexoLogger.getLogger(EditionPattern.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
 		// private List<PatternRole<?>> patternRoles;
 		// private List<EditionScheme> editionSchemes;
@@ -279,9 +279,9 @@ public interface EditionPattern extends EditionPatternObject {
 
 		private VirtualModel virtualModel;
 
-		private final EditionPattern parentEditionPattern = null;
-		// private final Vector<EditionPattern> childEditionPatterns = new
-		// Vector<EditionPattern>();
+		private final FlexoConcept parentFlexoConcept = null;
+		// private final Vector<FlexoConcept> childEditionPatterns = new
+		// Vector<FlexoConcept>();
 
 		private EditionPatternStructuralFacet structuralFacet;
 		private EditionPatternBehaviouralFacet behaviouralFacet;
@@ -301,7 +301,7 @@ public interface EditionPattern extends EditionPatternObject {
 		@Override
 		public EditionPatternStructuralFacet getStructuralFacet() {
 			if (structuralFacet == null && getVirtualModelFactory() != null) {
-				structuralFacet = getVirtualModelFactory().newEditionPatternStructuralFacet(this);
+				structuralFacet = getVirtualModelFactory().newFlexoConceptStructuralFacet(this);
 			}
 			return structuralFacet;
 		}
@@ -309,20 +309,20 @@ public interface EditionPattern extends EditionPatternObject {
 		@Override
 		public EditionPatternBehaviouralFacet getBehaviouralFacet() {
 			if (behaviouralFacet == null && getVirtualModelFactory() != null) {
-				behaviouralFacet = getVirtualModelFactory().newEditionPatternBehaviouralFacet(this);
+				behaviouralFacet = getVirtualModelFactory().newFlexoConceptBehaviouralFacet(this);
 			}
 			return behaviouralFacet;
 		}
 
 		@Override
-		public EditionPatternImpl getEditionPattern() {
+		public EditionPatternImpl getFlexoConcept() {
 			return this;
 		}
 
 		@Override
 		public boolean delete() {
 			if (getVirtualModel() != null) {
-				getVirtualModel().removeFromEditionPatterns(this);
+				getVirtualModel().removeFromFlexoConcepts(this);
 			}
 			super.delete();
 			deleteObservers();
@@ -335,7 +335,7 @@ public interface EditionPattern extends EditionPatternObject {
 		}
 
 		/**
-		 * Return the URI of the {@link EditionPattern}<br>
+		 * Return the URI of the {@link FlexoConcept}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<edition_pattern_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern. MyEditionScheme
@@ -611,7 +611,7 @@ public interface EditionPattern extends EditionPatternObject {
 		@Override
 		public EditionPatternInspector getInspector() {
 			if (inspector == null && getVirtualModelFactory() != null) {
-				inspector = getVirtualModelFactory().newEditionPatternInspector(this);
+				inspector = getVirtualModelFactory().newFlexoConceptInspector(this);
 				inspector.setInspectorTitle(getName());
 			}
 			return inspector;
@@ -619,7 +619,7 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public void setInspector(EditionPatternInspector inspector) {
-			inspector.setEditionPattern(this);
+			inspector.setFlexoConcept(this);
 			this.inspector = inspector;
 		}
 
@@ -635,7 +635,7 @@ public interface EditionPattern extends EditionPatternObject {
 
 		@Override
 		public String toString() {
-			return "EditionPattern:" + getName();
+			return "FlexoConcept:" + getName();
 		}
 
 		@Override
@@ -744,24 +744,24 @@ public interface EditionPattern extends EditionPatternObject {
 
 		/*
 		 * @Override public String simpleRepresentation() { return
-		 * "EditionPattern:" +
+		 * "FlexoConcept:" +
 		 * FlexoLocalization.localizedForKey(getLocalizedDictionary(),
 		 * getName()); }
 		 * 
 		 * @Override public String fullQualifiedRepresentation() { return
 		 * simpleRepresentation(); }
 		 * 
-		 * @Override public Class getBaseClass() { return EditionPattern.class;
+		 * @Override public Class getBaseClass() { return FlexoConcept.class;
 		 * }
 		 * 
 		 * @Override public boolean isTypeAssignableFrom(Type aType, boolean
-		 * permissive) { if (aType instanceof EditionPattern) { return
-		 * isAssignableFrom((EditionPattern) aType); } return aType == this; }
+		 * permissive) { if (aType instanceof FlexoConcept) { return
+		 * isAssignableFrom((FlexoConcept) aType); } return aType == this; }
 		 */
 
 		@Override
 		public boolean isRoot() {
-			return getParentEditionPatterns().size() == 0;
+			return getParentFlexoConcepts().size() == 0;
 		}
 
 		/*
@@ -776,15 +776,15 @@ public interface EditionPattern extends EditionPatternObject {
 		 * aParentEditionPatternURI) { parentEditionPatternURI =
 		 * aParentEditionPatternURI; }
 		 * 
-		 * @Override public EditionPattern getParentEditionPattern() { if
-		 * (parentEditionPattern == null &&
+		 * @Override public FlexoConcept getParentEditionPattern() { if
+		 * (parentFlexoConcept == null &&
 		 * StringUtils.isNotEmpty(parentEditionPatternURI)) { if
 		 * (getVirtualModel() != null) {
 		 * setParentEditionPattern(getVirtualModel(
 		 * ).getEditionPattern(parentEditionPatternURI)); } } return
-		 * parentEditionPattern; }
+		 * parentFlexoConcept; }
 		 * 
-		 * public void setParentEditionPattern(EditionPattern aParentEP) { if
+		 * public void setParentEditionPattern(FlexoConcept aParentEP) { if
 		 * (this.parentEditionPattern != aParentEP) { if (aParentEP == null) {
 		 * this.parentEditionPattern.childEditionPatterns.remove(this);
 		 * this.parentEditionPattern = aParentEP; if (this.parentEditionPattern
@@ -805,8 +805,8 @@ public interface EditionPattern extends EditionPatternObject {
 		 */
 
 		@Override
-		public void setParentEditionPatterns(List<EditionPattern> parentEditionPatterns) {
-			performSuperSetter(PARENT_EDITION_PATTERNS_KEY, parentEditionPatterns);
+		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) {
+			performSuperSetter(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcepts);
 			/*
 			 * if (getVirtualModel() != null) { getVirtualModel().setChanged();
 			 * getVirtualModel().notifyObservers(new
@@ -817,40 +817,40 @@ public interface EditionPattern extends EditionPatternObject {
 		}
 
 		@Override
-		public void addToParentEditionPatterns(EditionPattern parentEditionPattern) {
-			performSuperAdder(PARENT_EDITION_PATTERNS_KEY, parentEditionPattern);
+		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+			performSuperAdder(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcept);
 			/*
-			 * parentEditionPattern.setChanged();
-			 * parentEditionPattern.notifyObservers(new
+			 * parentFlexoConcept.setChanged();
+			 * parentFlexoConcept.notifyObservers(new
 			 * EditionPatternHierarchyChanged(this));
-			 * parentEditionPattern.notifyChange("childEditionPatterns", null,
+			 * parentFlexoConcept.notifyChange("childEditionPatterns", null,
 			 * getChildEditionPatterns());
 			 */
 		}
 
 		@Override
-		public void removeFromParentEditionPatterns(EditionPattern parentEditionPattern) {
-			performSuperRemover(PARENT_EDITION_PATTERNS_KEY, parentEditionPattern);
+		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+			performSuperRemover(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcept);
 			/*
-			 * parentEditionPattern.setChanged();
-			 * parentEditionPattern.notifyObservers(new
+			 * parentFlexoConcept.setChanged();
+			 * parentFlexoConcept.notifyObservers(new
 			 * EditionPatternHierarchyChanged(this));
-			 * parentEditionPattern.notifyChange("childEditionPatterns", null,
+			 * parentFlexoConcept.notifyChange("childEditionPatterns", null,
 			 * getChildEditionPatterns());
 			 */
 		}
 
 		/*
-		 * @Override public Vector<EditionPattern> getChildEditionPatterns() {
+		 * @Override public Vector<FlexoConcept> getChildEditionPatterns() {
 		 * return childEditionPatterns; }
 		 */
 
 		@Override
-		public boolean isAssignableFrom(EditionPattern editionPattern) {
-			if (editionPattern == this) {
+		public boolean isAssignableFrom(FlexoConcept flexoConcept) {
+			if (flexoConcept == this) {
 				return true;
 			}
-			for (EditionPattern parent : editionPattern.getParentEditionPatterns()) {
+			for (FlexoConcept parent : flexoConcept.getParentFlexoConcepts()) {
 				if (isAssignableFrom(parent)) {
 					return true;
 				}
@@ -863,10 +863,10 @@ public interface EditionPattern extends EditionPatternObject {
 			// Voir du cote de GeneratorFormatter pour formatter tout ca
 
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("EditionPattern " + getName(), context);
-			if (getParentEditionPatterns().size() > 0) {
+			out.append("FlexoConcept " + getName(), context);
+			if (getParentFlexoConcepts().size() > 0) {
 				out.append(" extends ", context);
-				for (EditionPattern parent : getParentEditionPatterns()) {
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
 					out.append(parent.getName() + ",", context);
 				}
 
@@ -895,15 +895,15 @@ public interface EditionPattern extends EditionPatternObject {
 
 	}
 
-	public static class EditionPatternShouldHaveRoles extends ValidationRule<EditionPatternShouldHaveRoles, EditionPattern> {
+	public static class EditionPatternShouldHaveRoles extends ValidationRule<EditionPatternShouldHaveRoles, FlexoConcept> {
 		public EditionPatternShouldHaveRoles() {
-			super(EditionPattern.class, "edition_pattern_should_have_roles");
+			super(FlexoConcept.class, "edition_pattern_should_have_roles");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveRoles, EditionPattern> applyValidation(EditionPattern editionPattern) {
-			if (!(editionPattern instanceof VirtualModel) && editionPattern.getPatternRoles().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveRoles, EditionPattern>(this, editionPattern,
+		public ValidationIssue<EditionPatternShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getPatternRoles().size() == 0) {
+				return new ValidationWarning<EditionPatternShouldHaveRoles, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_role_has_no_role");
 			}
 			return null;
@@ -911,15 +911,15 @@ public interface EditionPattern extends EditionPatternObject {
 	}
 
 	public static class EditionPatternShouldHaveEditionSchemes extends
-			ValidationRule<EditionPatternShouldHaveEditionSchemes, EditionPattern> {
+			ValidationRule<EditionPatternShouldHaveEditionSchemes, FlexoConcept> {
 		public EditionPatternShouldHaveEditionSchemes() {
-			super(EditionPattern.class, "edition_pattern_should_have_edition_scheme");
+			super(FlexoConcept.class, "edition_pattern_should_have_edition_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveEditionSchemes, EditionPattern> applyValidation(EditionPattern editionPattern) {
-			if (editionPattern.getEditionSchemes().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveEditionSchemes, EditionPattern>(this, editionPattern,
+		public ValidationIssue<EditionPatternShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (flexoConcept.getEditionSchemes().size() == 0) {
+				return new ValidationWarning<EditionPatternShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_has_no_edition_scheme");
 			}
 			return null;
@@ -927,33 +927,33 @@ public interface EditionPattern extends EditionPatternObject {
 	}
 
 	public static class EditionPatternShouldHaveDeletionScheme extends
-			ValidationRule<EditionPatternShouldHaveDeletionScheme, EditionPattern> {
+			ValidationRule<EditionPatternShouldHaveDeletionScheme, FlexoConcept> {
 		public EditionPatternShouldHaveDeletionScheme() {
-			super(EditionPattern.class, "edition_pattern_should_have_deletion_scheme");
+			super(FlexoConcept.class, "edition_pattern_should_have_deletion_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveDeletionScheme, EditionPattern> applyValidation(EditionPattern editionPattern) {
-			if (editionPattern.getDeletionSchemes().size() == 0) {
-				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(editionPattern);
-				return new ValidationWarning<EditionPatternShouldHaveDeletionScheme, EditionPattern>(this, editionPattern,
+		public ValidationIssue<EditionPatternShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (flexoConcept.getDeletionSchemes().size() == 0) {
+				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
+				return new ValidationWarning<EditionPatternShouldHaveDeletionScheme, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_has_no_deletion_scheme", fixProposal);
 			}
 			return null;
 		}
 
-		protected static class CreateDefaultDeletionScheme extends FixProposal<EditionPatternShouldHaveDeletionScheme, EditionPattern> {
+		protected static class CreateDefaultDeletionScheme extends FixProposal<EditionPatternShouldHaveDeletionScheme, FlexoConcept> {
 
-			private final EditionPattern editionPattern;
+			private final FlexoConcept flexoConcept;
 			private DeletionScheme newDefaultDeletionScheme;
 
-			public CreateDefaultDeletionScheme(EditionPattern anEditionPattern) {
+			public CreateDefaultDeletionScheme(FlexoConcept anFlexoConcept) {
 				super("create_default_deletion_scheme");
-				this.editionPattern = anEditionPattern;
+				this.flexoConcept = anFlexoConcept;
 			}
 
-			public EditionPattern getEditionPattern() {
-				return editionPattern;
+			public FlexoConcept getFlexoConcept() {
+				return flexoConcept;
 			}
 
 			public DeletionScheme getDeletionScheme() {
@@ -962,10 +962,10 @@ public interface EditionPattern extends EditionPatternObject {
 
 			@Override
 			protected void fixAction() {
-				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(editionPattern, null);
+				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null);
 				action.editionSchemeClass = DeletionScheme.class;
 				action.doAction();
-				// newDefaultDeletionScheme = editionPattern.createDeletionScheme();
+				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();
 				// AddIndividual action = getObject();
 				// action.setAssignation(new
 				// ViewPointDataBinding(patternRole.getPatternRoleName()));

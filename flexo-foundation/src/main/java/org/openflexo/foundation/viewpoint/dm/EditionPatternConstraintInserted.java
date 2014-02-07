@@ -19,19 +19,19 @@
  */
 package org.openflexo.foundation.viewpoint.dm;
 
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
 
 public class EditionPatternConstraintInserted extends ViewPointDataModification {
 
-	private EditionPattern _parent;
+	private FlexoConcept _parent;
 
-	public EditionPatternConstraintInserted(EditionPatternConstraint editionPatternConstraint, EditionPattern parent) {
+	public EditionPatternConstraintInserted(EditionPatternConstraint editionPatternConstraint, FlexoConcept parent) {
 		super("editionPatternConstraints", null, editionPatternConstraint);
 		_parent = parent;
 	}
 
-	public EditionPattern getParent() {
+	public FlexoConcept getParent() {
 		return _parent;
 	}
 

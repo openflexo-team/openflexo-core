@@ -20,7 +20,7 @@
 package org.openflexo.vpm.view;
 
 import org.openflexo.components.widget.CommonFIB;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -31,10 +31,10 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class VirtualModelView extends EditionPatternView<EditionPattern> {
+public class VirtualModelView extends EditionPatternView<FlexoConcept> {
 
-	public VirtualModelView(EditionPattern editionPattern, FlexoController controller, FlexoPerspective perspective) {
-		super(editionPattern, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	public VirtualModelView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
+		super(flexoConcept, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
 	}
 
 }

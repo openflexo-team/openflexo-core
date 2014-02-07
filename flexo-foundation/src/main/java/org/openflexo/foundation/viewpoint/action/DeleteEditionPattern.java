@@ -28,41 +28,41 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 
-public class DeleteEditionPattern extends FlexoAction<DeleteEditionPattern, EditionPattern, ViewPointObject> {
+public class DeleteEditionPattern extends FlexoAction<DeleteEditionPattern, FlexoConcept, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteEditionPattern.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteEditionPattern, EditionPattern, ViewPointObject> actionType = new FlexoActionType<DeleteEditionPattern, EditionPattern, ViewPointObject>(
+	public static FlexoActionType<DeleteEditionPattern, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DeleteEditionPattern, FlexoConcept, ViewPointObject>(
 			"delete_edition_pattern", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeleteEditionPattern makeNewAction(EditionPattern focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public DeleteEditionPattern makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 			return new DeleteEditionPattern(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionPattern object, Vector<ViewPointObject> globalSelection) {
-			return object != null && object.getClass().equals(EditionPattern.class);
+		public boolean isVisibleForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+			return object != null && object.getClass().equals(FlexoConcept.class);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionPattern object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DeleteEditionPattern.actionType, EditionPattern.class);
+		FlexoObjectImpl.addActionForClass(DeleteEditionPattern.actionType, FlexoConcept.class);
 	}
 
-	DeleteEditionPattern(EditionPattern focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DeleteEditionPattern(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

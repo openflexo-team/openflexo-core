@@ -4,33 +4,33 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 
 public class EditionPatternInstanceBindingVariable extends BindingVariable {
 	static final Logger logger = Logger.getLogger(EditionPatternInstanceBindingVariable.class.getPackage().getName());
 
-	private EditionPattern editionPattern;
+	private FlexoConcept flexoConcept;
 	private int index;
 
-	public EditionPatternInstanceBindingVariable(EditionPattern anEditionPattern, int index) {
-		super(anEditionPattern.getVirtualModel().getName() + "_" + anEditionPattern.getName() + "_" + index, EditionPatternInstanceType
-				.getEditionPatternInstanceType(anEditionPattern));
-		this.editionPattern = anEditionPattern;
+	public EditionPatternInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
+		super(anFlexoConcept.getVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, EditionPatternInstanceType
+				.getFlexoConceptInstanceType(anFlexoConcept));
+		this.flexoConcept = anFlexoConcept;
 	}
 
 	@Override
 	public Type getType() {
-		return EditionPatternInstanceType.getEditionPatternInstanceType(editionPattern);
+		return EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept);
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return editionPattern.getDescription();
+		return flexoConcept.getDescription();
 	}
 
-	public EditionPattern getEditionPattern() {
-		return editionPattern;
+	public FlexoConcept getFlexoConcept() {
+		return flexoConcept;
 	}
 
 	public int getIndex() {

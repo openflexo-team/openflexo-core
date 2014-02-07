@@ -88,7 +88,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public boolean isReflexiveModelSlot();
 
-	public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(EditionPattern editionPattern);
+	public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
 
 	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
 
@@ -105,9 +105,9 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public EditionPatternInstancePatternRole makeEditionPatternInstancePatternRole(EditionPattern editionPattern) {
+		public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
 			EditionPatternInstancePatternRole returned = makePatternRole(EditionPatternInstancePatternRole.class);
-			returned.setEditionPatternType(editionPattern);
+			returned.setFlexoConceptType(flexoConcept);
 			returned.setModelSlot(this);
 			return returned;
 		}
@@ -148,7 +148,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public Type getType() {
-			return EditionPatternInstanceType.getEditionPatternInstanceType(getAddressedVirtualModel());
+			return EditionPatternInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
 		}
 
 		@Override

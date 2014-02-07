@@ -34,7 +34,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * An EditionPatternConstraint represents a structural constraint attached to an EditionPattern
+ * An EditionPatternConstraint represents a structural constraint attached to an FlexoConcept
  * 
  * @author sylvain
  * 
@@ -44,18 +44,18 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "Constraint")
 public interface EditionPatternConstraint extends EditionPatternObject {
 
-	@PropertyIdentifier(type = EditionPattern.class)
-	public static final String EDITION_PATTERN_KEY = "editionPattern";
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String EDITION_PATTERN_KEY = "flexoConcept";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONSTRAINT_KEY = "constraint";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = EditionPattern.EDITION_PATTERN_CONSTRAINTS_KEY)
-	public EditionPattern getEditionPattern();
+	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.EDITION_PATTERN_CONSTRAINTS_KEY)
+	public FlexoConcept getFlexoConcept();
 
 	@Setter(EDITION_PATTERN_KEY)
-	public void setEditionPattern(EditionPattern editionPattern);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = CONSTRAINT_KEY)
 	@XMLAttribute
@@ -68,7 +68,7 @@ public interface EditionPatternConstraint extends EditionPatternObject {
 
 		protected static final Logger logger = FlexoLogger.getLogger(EditionPatternConstraint.class.getPackage().getName());
 
-		private EditionPattern editionPattern;
+		private FlexoConcept flexoConcept;
 		private DataBinding<Boolean> constraint;
 
 		public EditionPatternConstraintImpl() {
@@ -77,26 +77,26 @@ public interface EditionPatternConstraint extends EditionPatternObject {
 
 		@Override
 		public BindingModel getBindingModel() {
-			if (getEditionPattern() != null) {
-				return getEditionPattern().getBindingModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getBindingModel();
 			} else {
 				return null;
 			}
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return editionPattern;
+		public FlexoConcept getFlexoConcept() {
+			return flexoConcept;
 		}
 
 		@Override
-		public void setEditionPattern(EditionPattern editionPattern) {
-			this.editionPattern = editionPattern;
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			this.flexoConcept = flexoConcept;
 		}
 
 		@Override
 		public String getURI() {
-			return getEditionPattern().getURI() + "/Constraints_" + Integer.toHexString(hashCode());
+			return getFlexoConcept().getURI() + "/Constraints_" + Integer.toHexString(hashCode());
 		}
 
 		@Override

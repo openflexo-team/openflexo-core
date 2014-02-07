@@ -130,15 +130,15 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ObjectPropertyAssertion.class);
 	}
 
-	public EditionPatternBehaviouralFacet newEditionPatternBehaviouralFacet(EditionPattern editionPattern) {
+	public EditionPatternBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
 		EditionPatternBehaviouralFacet returned = newInstance(EditionPatternBehaviouralFacet.class);
-		returned.setEditionPattern(editionPattern);
+		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}
 
-	public EditionPatternStructuralFacet newEditionPatternStructuralFacet(EditionPattern editionPattern) {
+	public EditionPatternStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
 		EditionPatternStructuralFacet returned = newInstance(EditionPatternStructuralFacet.class);
-		returned.setEditionPattern(editionPattern);
+		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}
 
@@ -208,9 +208,9 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(FetchRequestCondition.class);
 	}
 
-	public EditionPatternInspector newEditionPatternInspector(EditionPattern ep) {
+	public EditionPatternInspector newFlexoConceptInspector(FlexoConcept ep) {
 		EditionPatternInspector returned = newInstance(EditionPatternInspector.class);
-		returned.setEditionPattern(ep);
+		returned.setFlexoConcept(ep);
 		return returned;
 	}
 
@@ -274,8 +274,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(SelectEditionPatternInstance.class);
 	}
 
-	public EditionPattern newEditionPattern() {
-		return newInstance(EditionPattern.class);
+	public FlexoConcept newFlexoConcept() {
+		return newInstance(FlexoConcept.class);
 	}
 
 	public DeleteAction newDeleteAction() {

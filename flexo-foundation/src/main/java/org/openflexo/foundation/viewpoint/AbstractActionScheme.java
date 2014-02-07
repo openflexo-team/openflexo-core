@@ -102,8 +102,8 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 		}
 
 		@Override
-		public void setEditionPattern(EditionPattern editionPattern) {
-			super.setEditionPattern(editionPattern);
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			super.setFlexoConcept(flexoConcept);
 			updateBindingModels();
 		}
 

@@ -53,7 +53,7 @@ import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An EditionScheme represents a behavioural feature attached to an EditionPattern
+ * An EditionScheme represents a behavioural feature attached to an FlexoConcept
  * 
  * @author sylvain
  * 
@@ -67,8 +67,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 	public static final String THIS = "this";
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
-	@PropertyIdentifier(type = EditionPattern.class)
-	public static final String EDITION_PATTERN_KEY = "editionPattern";
+	@PropertyIdentifier(type = FlexoConcept.class)
+	public static final String EDITION_PATTERN_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
@@ -87,11 +87,11 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 	public static final String PARAMETERS_KEY = "parameters";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = EditionPattern.EDITION_SCHEMES_KEY)
-	public EditionPattern getEditionPattern();
+	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.EDITION_SCHEMES_KEY)
+	public FlexoConcept getFlexoConcept();
 
 	@Setter(EDITION_PATTERN_KEY)
-	public void setEditionPattern(EditionPattern editionPattern);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -206,7 +206,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		// private Vector<EditionSchemeParameter> parameters;
 		private boolean skipConfirmationPanel = false;
 
-		// private EditionPattern _editionPattern;
+		// private FlexoConcept _editionPattern;
 
 		private EditionSchemeParameters editionSchemeParameters;
 
@@ -254,7 +254,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		@Override
 		public String getStringRepresentation() {
-			return (getEditionPattern() != null ? getEditionPattern().getStringRepresentation() : "null") + "." + getName();
+			return (getFlexoConcept() != null ? getFlexoConcept().getStringRepresentation() : "null") + "." + getName();
 		}
 
 		@Override
@@ -294,7 +294,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		 */
 		@Override
 		public String getURI() {
-			return getEditionPattern().getURI() + "." + getName();
+			return getFlexoConcept().getURI() + "." + getName();
 		}
 
 		@Override
@@ -316,14 +316,14 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		/*@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getEditionPattern() {
 			return _editionPattern;
 		}*/
 
 		@Override
-		public void setEditionPattern(EditionPattern editionPattern) {
-			performSuperSetter(EDITION_PATTERN_KEY, editionPattern);
-			// _editionPattern = editionPattern;
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			performSuperSetter(EDITION_PATTERN_KEY, flexoConcept);
+			// _editionPattern = flexoConcept;
 			updateBindingModels();
 		}
 
@@ -495,11 +495,11 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionPattern() != null && getEditionPattern().getVirtualModel() != null) {
-				return getEditionPattern().getVirtualModel();
+			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
-			if (getEditionPattern() instanceof VirtualModel) {
-				return (VirtualModel) getEditionPattern();
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
 			}
 			return null;
 		}
@@ -734,8 +734,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			// _bindingModel.addToBindingVariables(new EditionSchemeParametersBindingVariable(this));
 			// _bindingModel.addToBindingVariables(new EditionSchemeParameterListPathElement(this, null));
 			appendContextualBindingVariables(_bindingModel);
-			if (getEditionPattern() != null) {
-				for (final PatternRole role : getEditionPattern().getPatternRoles()) {
+			if (getFlexoConcept() != null) {
+				for (final PatternRole role : getFlexoConcept().getPatternRoles()) {
 					_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
 				}
 			}
@@ -757,9 +757,9 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			// Si edition pattern est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
-			if (getEditionPattern() != null) {
+			if (getFlexoConcept() != null) {
 				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, EditionPatternInstanceType
-						.getEditionPatternInstanceType(getEditionPattern())));
+						.getFlexoConceptInstanceType(getFlexoConcept())));
 				/*if (getEditionPattern().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, EditionPatternInstanceType
 							.getEditionPatternInstanceType(getEditionPattern().getVirtualModel())));

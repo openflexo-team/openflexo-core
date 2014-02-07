@@ -42,7 +42,7 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
@@ -134,9 +134,9 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 		return null;
 	}
 
-	public EditionPattern getEditionPattern() {
+	public FlexoConcept getFlexoConcept() {
 		if (getEditionScheme() != null) {
-			return getEditionScheme().getEditionPattern();
+			return getEditionScheme().getFlexoConcept();
 		}
 		return null;
 	}

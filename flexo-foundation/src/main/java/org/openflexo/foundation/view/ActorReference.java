@@ -50,7 +50,7 @@ public abstract class ActorReference<T> extends VirtualModelInstanceObject {
 
 	public PatternRole<T> getPatternRole() {
 		if (patternRole == null && epi != null && StringUtils.isNotEmpty(patternRoleName)) {
-			patternRole = (PatternRole<T>) epi.getEditionPattern().getPatternRole(patternRoleName);
+			patternRole = (PatternRole<T>) epi.getFlexoConcept().getPatternRole(patternRoleName);
 		}
 		return patternRole;
 	}

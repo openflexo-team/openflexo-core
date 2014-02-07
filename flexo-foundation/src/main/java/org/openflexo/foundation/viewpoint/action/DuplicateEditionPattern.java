@@ -28,60 +28,60 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 
 @SuppressWarnings("serial")
-public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern, EditionPattern, ViewPointObject> {
+public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern, FlexoConcept, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(DuplicateEditionPattern.class.getPackage().getName());
 
-	public static FlexoActionType<DuplicateEditionPattern, EditionPattern, ViewPointObject> actionType = new FlexoActionType<DuplicateEditionPattern, EditionPattern, ViewPointObject>(
+	public static FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject>(
 			"duplicate_edition_pattern", FlexoActionType.editGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DuplicateEditionPattern makeNewAction(EditionPattern focusedObject, Vector<ViewPointObject> globalSelection,
+		public DuplicateEditionPattern makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
 			return new DuplicateEditionPattern(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionPattern object, Vector<ViewPointObject> globalSelection) {
-			return object != null && object.getClass().equals(EditionPattern.class);
+		public boolean isVisibleForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+			return object != null && object.getClass().equals(FlexoConcept.class);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionPattern object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DuplicateEditionPattern.actionType, EditionPattern.class);
+		FlexoObjectImpl.addActionForClass(DuplicateEditionPattern.actionType, FlexoConcept.class);
 	}
 
-	DuplicateEditionPattern(EditionPattern focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DuplicateEditionPattern(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	public String newName;
-	private EditionPattern newEditionPattern;
+	private FlexoConcept newFlexoConcept;
 
-	public EditionPattern getNewEditionPattern() {
-		return newEditionPattern;
+	public FlexoConcept getNewFlexoConcept() {
+		return newFlexoConcept;
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Duplicate edition pattern");
 
-		newEditionPattern = (EditionPattern) getFocusedObject().cloneObject();
-		newEditionPattern.setName(newName);
-		getFocusedObject().getVirtualModel().addToEditionPatterns(newEditionPattern);
+		newFlexoConcept = (FlexoConcept) getFocusedObject().cloneObject();
+		newFlexoConcept.setName(newName);
+		getFocusedObject().getVirtualModel().addToFlexoConcepts(newFlexoConcept);
 
 	}
 

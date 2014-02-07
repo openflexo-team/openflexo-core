@@ -33,7 +33,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionPatternStructuralFacet;
@@ -77,7 +77,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, EditionPattern.class);
+		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, EditionPatternStructuralFacet.class);
 	}
 
@@ -86,7 +86,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 	public ModelSlot<?> modelSlot;
 	public Class<? extends PatternRole> patternRoleClass;
 	public IFlexoOntologyClass individualType;
-	public EditionPattern editionPatternInstanceType;
+	public FlexoConcept flexoConceptInstanceType;
 	public PrimitiveType primitiveType = PrimitiveType.String;
 
 	private PatternRole newPatternRole;
@@ -96,16 +96,16 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 
 	}
 
-	public EditionPattern getEditionPattern() {
+	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getEditionPattern();
+			return getFocusedObject().getFlexoConcept();
 		}
 		return null;
 	}
 
 	public String getPatternRoleName() {
 		if (StringUtils.isEmpty(patternRoleName) && modelSlot != null && patternRoleClass != null) {
-			return getEditionPattern().getAvailableRoleName(modelSlot.defaultPatternRoleName(patternRoleClass));
+			return getFlexoConcept().getAvailableRoleName(modelSlot.defaultPatternRoleName(patternRoleClass));
 		}
 		return patternRoleName;
 	}
@@ -133,7 +133,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 					((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
 				}
 				if (isEditionPatternInstance()) {
-					((EditionPatternInstancePatternRole) newPatternRole).setEditionPatternType(editionPatternInstanceType);
+					((EditionPatternInstancePatternRole) newPatternRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
@@ -145,7 +145,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 			if (newPatternRole != null) {
 				newPatternRole.setPatternRoleName(getPatternRoleName());
 				newPatternRole.setDescription(description);
-				getEditionPattern().addToPatternRoles(newPatternRole);
+				getFlexoConcept().addToPatternRoles(newPatternRole);
 			}
 		}
 
@@ -170,7 +170,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 		if (StringUtils.isEmpty(getPatternRoleName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getEditionPattern().getPatternRole(getPatternRoleName()) != null) {
+		} else if (getFlexoConcept().getPatternRole(getPatternRoleName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else if (modelSlot == null) {

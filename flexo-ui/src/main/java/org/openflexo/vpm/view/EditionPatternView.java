@@ -25,7 +25,7 @@ import org.openflexo.fib.view.container.FIBPanelView;
 import org.openflexo.fib.view.container.FIBTabPanelView;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBTableWidget;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -38,13 +38,13 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing an EditionPattern<br>
- * Because an EditionPattern can be of multiple forms, this class is abstract and must be subclassed with a specific FIB
+ * This is the module view representing an FlexoConcept<br>
+ * Because an FlexoConcept can be of multiple forms, this class is abstract and must be subclassed with a specific FIB
  * 
  * @author sguerin
  * 
  */
-public abstract class EditionPatternView<EP extends EditionPattern> extends FIBModuleView<EP> {
+public abstract class EditionPatternView<EP extends FlexoConcept> extends FIBModuleView<EP> {
 
 	private final FlexoPerspective perspective;
 

@@ -40,16 +40,16 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 
 	public CreationScheme getCreationScheme();
 
-	public EditionPattern getEditionPatternType();
+	public FlexoConcept getFlexoConceptType();
 
-	public void setEditionPatternType(EditionPattern editionPatternType);
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public static abstract class EditionPatternInstancePatternRoleImpl extends PatternRoleImpl<EditionPatternInstance> implements
 			EditionPatternInstancePatternRole {
 
 		private static final Logger logger = Logger.getLogger(EditionPatternInstancePatternRole.class.getPackage().getName());
 
-		private EditionPattern editionPatternType;
+		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private String _editionPatternTypeURI;
@@ -76,15 +76,15 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 
 	@Override
 	public Type getType() {
-		return this.getViewPoint().getInstanceType(getEditionPatternType());
+		return this.getViewPoint().getInstanceType(getFlexoConceptType());
 		}
 
 		@Override
 		public String getPreciseType() {
-			if (getEditionPatternType() != null) {
-				return getEditionPatternType().getName();
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getName();
 			}
-			return "EditionPattern";
+			return "FlexoConcept";
 		}
 
 		/*@Override
@@ -98,25 +98,25 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		}*/
 
 		@Override
-		public EditionPattern getEditionPatternType() {
+		public FlexoConcept getFlexoConceptType() {
 			if (getCreationScheme() != null) {
-				return getCreationScheme().getEditionPattern();
+				return getCreationScheme().getFlexoConcept();
 			}
-			if (editionPatternType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
-				editionPatternType = getViewPoint().getEditionPattern(_editionPatternTypeURI);
+			if (flexoConceptType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
+				flexoConceptType = getViewPoint().getFlexoConcept(_editionPatternTypeURI);
 			}
-			return editionPatternType;
+			return flexoConceptType;
 		}
 
 		@Override
-		public void setEditionPatternType(EditionPattern editionPatternType) {
-			if (editionPatternType != this.editionPatternType) {
-				this.editionPatternType = editionPatternType;
-				if (getCreationScheme() != null && getCreationScheme().getEditionPattern() != editionPatternType) {
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			if (flexoConceptType != this.flexoConceptType) {
+				this.flexoConceptType = flexoConceptType;
+				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					setCreationScheme(null);
 				}
-				if (getEditionPattern() != null) {
-					for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
+				if (getFlexoConcept() != null) {
+					for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 						s.updateBindingModels();
 					}
 				}
@@ -126,8 +126,8 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		@Override
 		public void finalizePatternRoleDeserialization() {
 			super.finalizePatternRoleDeserialization();
-			if (editionPatternType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
-				editionPatternType = getViewPoint().getEditionPattern(_editionPatternTypeURI);
+			if (flexoConceptType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
+				flexoConceptType = getViewPoint().getFlexoConcept(_editionPatternTypeURI);
 			}
 		}
 
@@ -143,7 +143,7 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(uri);
-				for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
+				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 					s.updateBindingModels();
 				}
 			}
@@ -152,8 +152,8 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 
 		@Override
 		public String _getEditionPatternTypeURI() {
-			if (getEditionPatternType() != null) {
-				return getEditionPatternType().getURI();
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getURI();
 			}
 			return _editionPatternTypeURI;
 		}
@@ -161,7 +161,7 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		@Override
 		public void _setEditionPatternTypeURI(String uri) {
 			if (getViewPoint() != null) {
-				editionPatternType = getViewPoint().getEditionPattern(uri);
+				flexoConceptType = getViewPoint().getFlexoConcept(uri);
 			}
 			_editionPatternTypeURI = uri;
 		}

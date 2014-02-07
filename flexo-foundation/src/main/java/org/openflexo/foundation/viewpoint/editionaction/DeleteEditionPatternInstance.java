@@ -37,7 +37,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
@@ -110,16 +110,16 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(DeleteEditionPatternInstanceParameter aParameter);
 
-	public EditionPattern getEditionPatternType();
+	public FlexoConcept getFlexoConceptType();
 
-	public void setEditionPatternType(EditionPattern editionPatternType);
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public abstract static class DeleteEditionPatternInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, EditionPatternInstance>
 			implements DeleteEditionPatternInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteEditionPatternInstance.class.getPackage().getName());
 
-		private EditionPattern editionPatternType;
+		private FlexoConcept flexoConceptType;
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
 
@@ -159,17 +159,17 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 		}
 
 		@Override
-		public EditionPattern getEditionPatternType() {
+		public FlexoConcept getFlexoConceptType() {
 			if (getDeletionScheme() != null) {
-				return getDeletionScheme().getEditionPattern();
+				return getDeletionScheme().getFlexoConcept();
 			}
-			return editionPatternType;
+			return flexoConceptType;
 		}
 
 		@Override
-		public void setEditionPatternType(EditionPattern editionPatternType) {
-			this.editionPatternType = editionPatternType;
-			if (getDeletionScheme() != null && getDeletionScheme().getEditionPattern() != editionPatternType) {
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			this.flexoConceptType = flexoConceptType;
+			if (getDeletionScheme() != null && getDeletionScheme().getFlexoConcept() != flexoConceptType) {
 				setDeletionScheme(null);
 			}
 		}
@@ -196,7 +196,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 				deletionScheme = (DeletionScheme) getViewPointLibrary().getEditionScheme(_deletionSchemeURI);
 			}
 			if (deletionScheme == null && getPatternRole() instanceof EditionPatternInstancePatternRole) {
-				deletionScheme = ((EditionPatternInstancePatternRole) getPatternRole()).getEditionPattern().getDefaultDeletionScheme();
+				deletionScheme = ((EditionPatternInstancePatternRole) getPatternRole()).getFlexoConcept().getDefaultDeletionScheme();
 			}
 			return deletionScheme;
 		}
@@ -301,7 +301,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 		public ValidationIssue<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance> applyValidation(
 				DeleteEditionPatternInstance action) {
 			if (action.getDeletionScheme() == null) {
-				if (action.getEditionPatternType() == null) {
+				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance>(this,
 							action, "delete_edition_pattern_action_doesn't_define_any_edition_pattern");
 				} else {

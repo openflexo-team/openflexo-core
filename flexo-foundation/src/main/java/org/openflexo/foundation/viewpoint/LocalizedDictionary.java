@@ -296,7 +296,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 		public void searchNewEntries() {
 			logger.info("Search new entries");
 			for (VirtualModel vm : getViewPoint().getVirtualModels()) {
-				for (EditionPattern ep : vm.getEditionPatterns()) {
+				for (FlexoConcept ep : vm.getFlexoConcepts()) {
 					checkAndRegisterLocalized(ep.getName());
 					for (EditionScheme es : ep.getEditionSchemes()) {
 						checkAndRegisterLocalized(es.getLabel());

@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.view.EditionPatternInstance;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
@@ -101,9 +101,9 @@ public interface FIBInspector extends FIBPanel {
 
 		private FIBInspector superInspector;
 
-		private final Vector<EditionPattern> currentEditionPatterns = new Vector<EditionPattern>();
-		private final Hashtable<EditionPattern, FIBTab> tabsForEPIReference = new Hashtable<EditionPattern, FIBTab>();
-		private final Hashtable<EditionPattern, FIBTab> tabsForEPI = new Hashtable<EditionPattern, FIBTab>();
+		private final Vector<FlexoConcept> currentFlexoConcepts = new Vector<FlexoConcept>();
+		private final Hashtable<FlexoConcept, FIBTab> tabsForEPIReference = new Hashtable<FlexoConcept, FIBTab>();
+		private final Hashtable<FlexoConcept, FIBTab> tabsForEPI = new Hashtable<FlexoConcept, FIBTab>();
 
 		@Override
 		public FIBModelFactory getFactory() {
@@ -156,11 +156,11 @@ public interface FIBInspector extends FIBPanel {
 			return getFactory().stringRepresentation(this);
 		}
 
-		private boolean ensureCreationOfTabForEPIReference(EditionPattern ep) {
+		private boolean ensureCreationOfTabForEPIReference(FlexoConcept ep) {
 			FIBTab returned = tabsForEPIReference.get(ep);
 			if (returned == null) {
 				// System.out.println("Creating FIBTab for " + ep);
-				String epIdentifier = getEditionPatternIdentifierForEPIReference(ep);
+				String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
 				returned = makeFIBTab(ep, epIdentifier);
 				tabsForEPIReference.put(ep, returned);
 				getTabPanel().addToSubComponents(returned, null, 0);
@@ -169,11 +169,11 @@ public interface FIBInspector extends FIBPanel {
 			return false;
 		}
 
-		private boolean ensureCreationOfTabForEPI(EditionPattern ep) {
+		private boolean ensureCreationOfTabForEPI(FlexoConcept ep) {
 			FIBTab returned = tabsForEPI.get(ep);
 			if (returned == null) {
 				// System.out.println("Creating FIBTab for " + ep);
-				String epIdentifier = getEditionPatternIdentifierForEPI(ep);
+				String epIdentifier = getFlexoConceptIdentifierForEPI(ep);
 				returned = makeFIBTab(ep, epIdentifier);
 				tabsForEPI.put(ep, returned);
 				getTabPanel().addToSubComponents(returned, null, 0);
@@ -183,8 +183,8 @@ public interface FIBInspector extends FIBPanel {
 		}
 
 		/**
-		 * This method looks after object's EditionPattern references to know if we need to structurally change inspector by adding or
-		 * removing tabs, which all correspond to one and only one EditionPattern
+		 * This method looks after object's FlexoConcept references to know if we need to structurally change inspector by adding or
+		 * removing tabs, which all correspond to one and only one FlexoConcept
 		 * 
 		 * Note: only object providing support as primary role are handled here
 		 * 
@@ -196,12 +196,12 @@ public interface FIBInspector extends FIBPanel {
 
 			boolean returned = false;
 
-			currentEditionPatterns.clear();
+			currentFlexoConcepts.clear();
 
-			Set<EditionPattern> editionPatternsToDisplay = new HashSet<EditionPattern>();
+			Set<FlexoConcept> flexoConceptsToDisplay = new HashSet<FlexoConcept>();
 
-			for (EditionPattern ep : tabsForEPIReference.keySet()) {
-				if (object.getEditionPatternInstance(ep) == null) {
+			for (FlexoConcept ep : tabsForEPIReference.keySet()) {
+				if (object.getFlexoConceptInstance(ep) == null) {
 					tabsForEPIReference.get(ep).setVisible(DataBinding.makeFalseBinding());
 				}
 			}
@@ -209,13 +209,13 @@ public interface FIBInspector extends FIBPanel {
 			if (object.getEditionPatternReferences() != null) {
 				for (FlexoObjectReference<EditionPatternInstance> ref : object.getEditionPatternReferences()) {
 					EditionPatternInstance epi = ref.getObject();
-					editionPatternsToDisplay.add(epi.getEditionPattern());
-					if (ensureCreationOfTabForEPIReference(epi.getEditionPattern())) {
+					flexoConceptsToDisplay.add(epi.getFlexoConcept());
+					if (ensureCreationOfTabForEPIReference(epi.getFlexoConcept())) {
 						returned = true;
 					}
-					FIBTab tab = tabsForEPIReference.get(epi.getEditionPattern());
+					FIBTab tab = tabsForEPIReference.get(epi.getFlexoConcept());
 					tab.setVisible(DataBinding.makeTrueBinding());
-					currentEditionPatterns.add(epi.getEditionPattern());
+					currentFlexoConcepts.add(epi.getFlexoConcept());
 				}
 				// updateBindingModel();
 			}
@@ -252,8 +252,8 @@ public interface FIBInspector extends FIBPanel {
 		}
 
 		/**
-		 * This method looks after object's EditionPattern references to know if we need to structurally change inspector by adding or
-		 * removing tabs, which all correspond to one and only one EditionPattern
+		 * This method looks after object's FlexoConcept references to know if we need to structurally change inspector by adding or
+		 * removing tabs, which all correspond to one and only one FlexoConcept
 		 * 
 		 * Note: only object providing support as primary role are handled here
 		 * 
@@ -265,26 +265,26 @@ public interface FIBInspector extends FIBPanel {
 
 			boolean returned = false;
 
-			currentEditionPatterns.clear();
+			currentFlexoConcepts.clear();
 
-			for (EditionPattern ep : tabsForEPI.keySet()) {
-				if (object.getEditionPattern() == ep) {
+			for (FlexoConcept ep : tabsForEPI.keySet()) {
+				if (object.getFlexoConcept() == ep) {
 					tabsForEPI.get(ep).setVisible(DataBinding.makeFalseBinding());
 				}
 			}
 
-			if (ensureCreationOfTabForEPI(object.getEditionPattern())) {
+			if (ensureCreationOfTabForEPI(object.getFlexoConcept())) {
 				returned = true;
 			}
-			FIBTab tab = tabsForEPI.get(object.getEditionPattern());
+			FIBTab tab = tabsForEPI.get(object.getFlexoConcept());
 			tab.setVisible(DataBinding.makeTrueBinding());
-			currentEditionPatterns.add(object.getEditionPattern());
+			currentFlexoConcepts.add(object.getFlexoConcept());
 
 			// VERY IMPORTANT
 			// We MUST here redefine the type of inspected data
 			BindingVariable bv = getBindingModel().bindingVariableNamed("data");
 			if (bv != null && object != null) {
-				bv.setType(EditionPatternInstanceType.getEditionPatternInstanceType(object.getEditionPattern()));
+				bv.setType(EditionPatternInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
 			}
 
 			return returned;
@@ -293,8 +293,8 @@ public interface FIBInspector extends FIBPanel {
 		/*@Override
 		protected void createBindingModel() {
 			super.createBindingModel();
-			for (int i = 0; i < currentEditionPatterns.size(); i++) {
-				EditionPattern ep = currentEditionPatterns.get(i);
+			for (int i = 0; i < currentFlexoConcepts.size(); i++) {
+				FlexoConcept ep = currentFlexoConcepts.get(i);
 				_bindingModel.addToBindingVariables(new EditionPatternInstanceBindingVariable(ep, i));
 			}
 		}*/
@@ -520,16 +520,16 @@ public interface FIBInspector extends FIBPanel {
 
 		}
 
-		private FIBTab makeFIBTab(EditionPattern ep, String epIdentifier) {
+		private FIBTab makeFIBTab(FlexoConcept ep, String epIdentifier) {
 			// logger.info("makeFIBTab " + refIndex + " for " + ep);
-			FIBTab newTab = createFIBTabForEditionPattern(ep);
+			FIBTab newTab = createFIBTabForFlexoConcept(ep);
 			appendInspectorEntries(ep, epIdentifier, newTab);
 			newTab.finalizeDeserialization();
 			return newTab;
 		}
 
-		protected void appendInspectorEntries(EditionPattern ep, String epIdentifier, FIBTab newTab) {
-			for (EditionPattern parentEP : ep.getParentEditionPatterns()) {
+		protected void appendInspectorEntries(FlexoConcept ep, String epIdentifier, FIBTab newTab) {
+			for (FlexoConcept parentEP : ep.getParentFlexoConcepts()) {
 				appendInspectorEntries(parentEP, epIdentifier, newTab);
 			}
 			LocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
@@ -549,8 +549,8 @@ public interface FIBInspector extends FIBPanel {
 			}
 		}
 
-		protected FIBTab createFIBTabForEditionPattern(EditionPattern ep) {
-			String epIdentifier = getEditionPatternIdentifierForEPIReference(ep);
+		protected FIBTab createFIBTabForFlexoConcept(FlexoConcept ep) {
+			String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
 			FIBTab newTab = getFactory().newFIBTab();
 			newTab.setTitle(ep.getInspector().getInspectorTitle());
 			newTab.setLayout(Layout.twocols);
@@ -562,12 +562,12 @@ public interface FIBInspector extends FIBPanel {
 			return newTab;
 		}
 
-		protected String getEditionPatternIdentifierForEPIReference(EditionPattern ep) {
+		protected String getFlexoConceptIdentifierForEPIReference(FlexoConcept ep) {
 			// Instead of just referencing ep name, reference the URI (in case of in same VP, many EP have same name)
 			return "data.getEditionPatternInstance(\"" + ep.getURI() + "\")";
 		}
 
-		protected String getEditionPatternIdentifierForEPI(EditionPattern ep) {
+		protected String getFlexoConceptIdentifierForEPI(FlexoConcept ep) {
 			return "data";
 		}
 	}

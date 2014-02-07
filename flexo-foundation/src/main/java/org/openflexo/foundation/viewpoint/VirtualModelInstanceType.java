@@ -33,11 +33,11 @@ public class VirtualModelInstanceType extends EditionPatternInstanceType {
 
 	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);
-		this.editionPattern = aVirtualModel;
+		this.flexoConcept = aVirtualModel;
 	}
 
 	public VirtualModel getVirtualModel() {
-		return (VirtualModel) editionPattern;
+		return (VirtualModel) flexoConcept;
 	}
 
 	@Override
@@ -51,12 +51,12 @@ public class VirtualModelInstanceType extends EditionPatternInstanceType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "VirtualModel" + ":" + editionPattern;
+		return "VirtualModel" + ":" + flexoConcept;
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "VirtualModel" + ":" + editionPattern;
+		return "VirtualModel" + ":" + flexoConcept;
 	}
 
 }

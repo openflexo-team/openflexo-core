@@ -9,7 +9,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -83,9 +83,9 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			if (getAction() != null) {
-				return getAction().getEditionPattern();
+				return getAction().getFlexoConcept();
 			}
 			return null;
 		}
@@ -179,8 +179,8 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 
 		@Override
 		public PatternRole getPatternRole() {
-			if (patternRole == null && patternRoleName != null && getAction() != null && getAction().getEditionPatternType() != null) {
-				patternRole = getAction().getEditionPatternType().getPatternRole(patternRoleName);
+			if (patternRole == null && patternRoleName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
+				patternRole = getAction().getFlexoConceptType().getPatternRole(patternRoleName);
 			}
 			return patternRole;
 		}

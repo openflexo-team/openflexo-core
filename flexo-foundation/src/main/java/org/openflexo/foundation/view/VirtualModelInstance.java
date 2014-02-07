@@ -44,7 +44,7 @@ import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResourceImpl;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -75,7 +75,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	// this.
 	private String title;
 
-	private Hashtable<EditionPattern, Map<Long, EditionPatternInstance>> editionPatternInstances;
+	private Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances;
 
 	public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
 			VirtualModel virtualModel, View view) throws SaveResourceException {
@@ -111,7 +111,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 		super(virtualModel, null, view.getProject());
 		logger.info("Created new VirtualModelInstance for virtual model " + virtualModel);
 		modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-		editionPatternInstances = new Hashtable<EditionPattern, Map<Long, EditionPatternInstance>>();
+		flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>>();
 		view.addToVirtualModelInstances(this);
 	}
 
@@ -132,8 +132,8 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	}
 
 	@Override
-	public VirtualModel getEditionPattern() {
-		return (VirtualModel) super.getEditionPattern();
+	public VirtualModel getFlexoConcept() {
+		return (VirtualModel) super.getFlexoConcept();
 	}
 
 	public ViewPoint getViewPoint() {
@@ -144,7 +144,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	}
 
 	public VirtualModel getVirtualModel() {
-		return getEditionPattern();
+		return getFlexoConcept();
 	}
 
 	public String getVirtualModelURI() {
@@ -157,7 +157,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 
 	@Override
 	public VirtualModel getMetaModel() {
-		return getEditionPattern();
+		return getFlexoConcept();
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	 * @param pattern
 	 * @return
 	 */
-	public EditionPatternInstance makeNewEditionPatternInstance(EditionPattern pattern) {
+	public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept pattern) {
 		EditionPatternInstance returned = new EditionPatternInstance(pattern, this, getProject());
 		return registerEditionPatternInstance(returned);
 	}
@@ -192,14 +192,14 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	 * @return
 	 */
 	protected EditionPatternInstance registerEditionPatternInstance(EditionPatternInstance epi) {
-		if (epi.getEditionPattern() == null) {
-			logger.warning("Could not register EditionPatternInstance with null EditionPattern: " + epi);
+		if (epi.getFlexoConcept() == null) {
+			logger.warning("Could not register EditionPatternInstance with null FlexoConcept: " + epi);
 			logger.warning("EPI: " + epi.debug());
 		} else {
-			Map<Long, EditionPatternInstance> hash = editionPatternInstances.get(epi.getEditionPattern());
+			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
 			if (hash == null) {
 				hash = new Hashtable<Long, EditionPatternInstance>();
-				editionPatternInstances.put(epi.getEditionPattern(), hash);
+				flexoConceptInstances.put(epi.getFlexoConcept(), hash);
 			}
 			hash.put(epi.getFlexoID(), epi);
 			// System.out.println("Registered EPI " + epi + " in " + epi.getEditionPattern());
@@ -215,10 +215,10 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	 * @return
 	 */
 	protected EditionPatternInstance unregisterEditionPatternInstance(EditionPatternInstance epi) {
-		Map<Long, EditionPatternInstance> hash = editionPatternInstances.get(epi.getEditionPattern());
+		Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
 		if (hash == null) {
 			hash = new Hashtable<Long, EditionPatternInstance>();
-			editionPatternInstances.put(epi.getEditionPattern(), hash);
+			flexoConceptInstances.put(epi.getFlexoConcept(), hash);
 		}
 		hash.remove(epi.getFlexoID());
 		return epi;
@@ -227,7 +227,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	// Do not use this since not efficient, used in deserialization only
 	public List<EditionPatternInstance> getEditionPatternInstancesList() {
 		List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
-		for (Map<Long, EditionPatternInstance> epMap : editionPatternInstances.values()) {
+		for (Map<Long, EditionPatternInstance> epMap : flexoConceptInstances.values()) {
 			for (EditionPatternInstance epi : epMap.values()) {
 				returned.add(epi);
 			}
@@ -249,12 +249,12 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 		unregisterEditionPatternInstance(epi);
 	}
 
-	public Hashtable<EditionPattern, Map<Long, EditionPatternInstance>> getEditionPatternInstances() {
-		return editionPatternInstances;
+	public Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> getFlexoConceptInstances() {
+		return flexoConceptInstances;
 	}
 
-	public void setEditionPatternInstances(Hashtable<EditionPattern, Map<Long, EditionPatternInstance>> editionPatternInstances) {
-		this.editionPatternInstances = editionPatternInstances;
+	public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances) {
+		this.flexoConceptInstances = flexoConceptInstances;
 	}
 
 	// TODO: performance isssues
@@ -266,23 +266,23 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 		if (getVirtualModel() == null) {
 			return Collections.emptyList();
 		}
-		EditionPattern ep = getVirtualModel().getEditionPattern(epName);
+		FlexoConcept ep = getVirtualModel().getFlexoConcept(epName);
 		return getEPInstances(ep);
 	}
 
-	public List<EditionPatternInstance> getEPInstances(EditionPattern ep) {
+	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
 		if (ep == null) {
-			// logger.warning("Unexpected null EditionPattern");
+			// logger.warning("Unexpected null FlexoConcept");
 			return Collections.emptyList();
 		}
-		Map<Long, EditionPatternInstance> hash = editionPatternInstances.get(ep);
+		Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(ep);
 		if (hash == null) {
 			hash = new Hashtable<Long, EditionPatternInstance>();
-			editionPatternInstances.put(ep, hash);
+			flexoConceptInstances.put(ep, hash);
 		}
 		// TODO: performance issue here
 		List<EditionPatternInstance> returned = new ArrayList(hash.values());
-		for (EditionPattern childEP : ep.getChildEditionPatterns()) {
+		for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
 			returned.addAll(getEPInstances(childEP));
 		}
 		return returned;

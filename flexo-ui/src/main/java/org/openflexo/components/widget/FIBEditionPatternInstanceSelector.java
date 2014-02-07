@@ -30,7 +30,7 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -59,7 +59,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 	private ViewPointLibrary viewPointLibrary;
 	private ViewPoint viewPoint;
 	private VirtualModel virtualModel;
-	private EditionPattern editionPattern;
+	private FlexoConcept flexoConcept;
 	private View view;
 	private VirtualModelInstance virtualModelInstance;
 
@@ -73,7 +73,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 		viewPointLibrary = null;
 		viewPoint = null;
 		virtualModel = null;
-		editionPattern = null;
+		flexoConcept = null;
 		view = null;
 		virtualModelInstance = null;
 	}
@@ -123,19 +123,19 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 		this.virtualModel = virtualModel;
 	}
 
-	public EditionPattern getEditionPattern() {
-		return editionPattern;
+	public FlexoConcept getFlexoConcept() {
+		return flexoConcept;
 	}
 
-	@CustomComponentParameter(name = "editionPattern", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setEditionPattern(EditionPattern editionPattern) {
-		System.out.println(">>>>>>>>> Sets EditionPattern with " + editionPattern);
-		this.editionPattern = editionPattern;
+	@CustomComponentParameter(name = "flexoConcept", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setFlexoConcept(FlexoConcept flexoConcept) {
+		System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
+		this.flexoConcept = flexoConcept;
 	}
 
 	public FlexoObject getRootObject() {
-		if (getEditionPattern() != null) {
-			return getEditionPattern();
+		if (getFlexoConcept() != null) {
+			return getFlexoConcept();
 		} else if (getVirtualModel() != null) {
 			return getVirtualModel();
 		} else if (getViewPoint() != null) {
@@ -145,7 +145,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 		}
 	}
 
-	public List<EditionPatternInstance> getEPInstances(EditionPattern ep) {
+	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
 		if (getVirtualModelInstance() != null) {
 			return getVirtualModelInstance().getEPInstances(ep);
 		} else if (getView() != null) {

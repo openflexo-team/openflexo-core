@@ -167,7 +167,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 		@Override
 		public String getStringRepresentation() {
 			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#"
-					+ (getEditionPattern() != null ? getEditionPattern().getName() : "null") + "."
+					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "."
 					+ (getEditionScheme() != null ? getEditionScheme().getName() : "null") + "." + getName();
 		}
 
@@ -281,8 +281,8 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return getScheme() != null ? getScheme().getEditionPattern() : null;
+		public FlexoConcept getFlexoConcept() {
+			return getScheme() != null ? getScheme().getFlexoConcept() : null;
 		}
 
 		@Override

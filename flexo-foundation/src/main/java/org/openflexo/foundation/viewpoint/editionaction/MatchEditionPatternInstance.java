@@ -39,7 +39,7 @@ import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -132,16 +132,16 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 	public void setCreationScheme(CreationScheme creationScheme);
 
-	public EditionPattern getEditionPatternType();
+	public FlexoConcept getFlexoConceptType();
 
-	public void setEditionPatternType(EditionPattern editionPatternType);
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public static abstract class MatchEditionPatternInstanceImpl extends
 			AssignableActionImpl<VirtualModelModelSlot, EditionPatternInstance> implements MatchEditionPatternInstance {
 
 		static final Logger logger = Logger.getLogger(MatchEditionPatternInstance.class.getPackage().getName());
 
-		private EditionPattern editionPatternType;
+		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private Vector<MatchingCriteria> matchingCriterias = new Vector<MatchingCriteria>();
@@ -157,8 +157,8 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 			if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
 			}
-			out.append(getClass().getSimpleName() + " as " + getEditionPatternType().getName() + " "
-					+ getMatchingCriteriasFMLRepresentation(context) + " using " + getCreationScheme().getEditionPattern().getName() + ":"
+			out.append(getClass().getSimpleName() + " as " + getFlexoConceptType().getName() + " "
+					+ getMatchingCriteriasFMLRepresentation(context) + " using " + getCreationScheme().getFlexoConcept().getName() + ":"
 					+ getCreationScheme().getName() + "(" + getCreationSchemeParametersFMLRepresentation(context) + ")", context);
 			if (getAssignation().isSet()) {
 				out.append(")", context);
@@ -236,17 +236,17 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		@Override
-		public EditionPattern getEditionPatternType() {
+		public FlexoConcept getFlexoConceptType() {
 			if (getCreationScheme() != null) {
-				return getCreationScheme().getEditionPattern();
+				return getCreationScheme().getFlexoConcept();
 			}
-			return editionPatternType;
+			return flexoConceptType;
 		}
 
 		@Override
-		public void setEditionPatternType(EditionPattern editionPatternType) {
-			this.editionPatternType = editionPatternType;
-			if (getCreationScheme() != null && getCreationScheme().getEditionPattern() != editionPatternType) {
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			this.flexoConceptType = flexoConceptType;
+			if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 				setCreationScheme(null);
 			}
 		}
@@ -368,8 +368,8 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 		private void updateMatchingCriterias() {
 			Vector<MatchingCriteria> criteriasToRemove = new Vector<MatchingCriteria>(matchingCriterias);
-			if (getEditionPatternType() != null) {
-				for (PatternRole pr : getEditionPatternType().getPatternRoles()) {
+			if (getFlexoConceptType() != null) {
+				for (PatternRole pr : getFlexoConceptType().getPatternRoles()) {
 					MatchingCriteria existingCriteria = getMatchingCriteria(pr);
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);
@@ -397,8 +397,8 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 				System.out.println("Pour " + mc.getPatternRole().getPatternRoleName() + " value is " + value);
 			}
 			logger.info("On s'arrete pour regarder ");
-			EditionPatternInstance matchingEditionPatternInstance = ((SynchronizationSchemeAction) action).matchEditionPatternInstance(
-					getEditionPatternType(), criterias);
+			EditionPatternInstance matchingEditionPatternInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
+					getFlexoConceptType(), criterias);
 
 			if (matchingEditionPatternInstance != null) {
 				// A matching EditionPatternInstance was found
@@ -431,7 +431,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 		@Override
 		public Type getAssignableType() {
-			return EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPatternType());
+			return EditionPatternInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 
 		public static class MatchEditionPatternInstanceMustAddressACreationScheme extends
@@ -444,7 +444,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 			public ValidationIssue<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance> applyValidation(
 					MatchEditionPatternInstance action) {
 				if (action.getCreationScheme() == null) {
-					if (action.getEditionPatternType() == null) {
+					if (action.getFlexoConceptType() == null) {
 						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance>(
 								this, action, "match_edition_pattern_action_doesn't_define_any_edition_pattern");
 					} else {

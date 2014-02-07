@@ -30,7 +30,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
@@ -67,8 +67,8 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 	}
 
 	private String newFlexoConceptName;
-	private EditionPattern newFlexoConcept;
-	private final List<EditionPattern> parentConcepts = new ArrayList<EditionPattern>();
+	private FlexoConcept newFlexoConcept;
+	private final List<FlexoConcept> parentConcepts = new ArrayList<FlexoConcept>();
 
 	public boolean switchNewlyCreatedEditionPattern = true;
 
@@ -82,15 +82,15 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 
 		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 
-		newFlexoConcept = factory.newEditionPattern();
+		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());
-		for (EditionPattern parentConcept : getParentConcepts()) {
-			newFlexoConcept.addToParentEditionPatterns(parentConcept);
+		for (FlexoConcept parentConcept : getParentConcepts()) {
+			newFlexoConcept.addToParentFlexoConcepts(parentConcept);
 		}
-		getFocusedObject().addToEditionPatterns(newFlexoConcept);
+		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 	}
 
-	public EditionPattern getNewFlexoConcept() {
+	public FlexoConcept getNewFlexoConcept() {
 		return newFlexoConcept;
 	}
 
@@ -102,15 +102,15 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 		this.newFlexoConceptName = newEditionPatternName;
 	}
 
-	public List<EditionPattern> getParentConcepts() {
+	public List<FlexoConcept> getParentConcepts() {
 		return parentConcepts;
 	}
 
-	public void addToParentConcepts(EditionPattern parentConcept) {
+	public void addToParentConcepts(FlexoConcept parentConcept) {
 		parentConcepts.add(parentConcept);
 	}
 
-	public void removeFromParentConcepts(EditionPattern parentConcept) {
+	public void removeFromParentConcepts(FlexoConcept parentConcept) {
 		parentConcepts.remove(parentConcept);
 	}
 

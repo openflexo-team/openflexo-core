@@ -41,7 +41,7 @@ import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.view.action.NavigationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -196,10 +196,10 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
-			if (getEditionPattern() != null && getEditionPattern().getVirtualModel() != null) {
-				return getEditionPattern().getVirtualModel().getModelSlots(msType);
-			} else if (getEditionPattern() instanceof VirtualModel) {
-				return ((VirtualModel) getEditionPattern()).getModelSlots(msType);
+			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
+				return getFlexoConcept().getVirtualModel().getModelSlots(msType);
+			} else if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
 			}
 			return null;
 		}
@@ -323,11 +323,11 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		public abstract void finalizePerformAction(EditionSchemeAction action, T initialContext);
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			if (getEditionScheme() == null) {
 				return null;
 			}
-			return getEditionScheme().getEditionPattern();
+			return getEditionScheme().getFlexoConcept();
 		}
 
 		public Type getActionClass() {

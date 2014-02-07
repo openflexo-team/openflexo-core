@@ -120,10 +120,10 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 
 		@Override
 		public PatternRole getPatternRole() {
-			if (getEditionPattern() == null) {
+			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getEditionPattern().getPatternRole(getObject().toString());
+			return getFlexoConcept().getPatternRole(getObject().toString());
 		}
 
 		@Override

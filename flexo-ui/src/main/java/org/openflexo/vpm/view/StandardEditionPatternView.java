@@ -20,21 +20,21 @@
 package org.openflexo.vpm.view;
 
 import org.openflexo.components.widget.CommonFIB;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a standard EditionPattern (an EditionPattern which is not a VirtualModel, nor part of a
+ * This is the module view representing a standard FlexoConcept (an FlexoConcept which is not a VirtualModel, nor part of a
  * DiagramSpecification)<br>
  * 
  * @author sguerin
  * 
  */
-public class StandardEditionPatternView extends EditionPatternView<EditionPattern> {
+public class StandardEditionPatternView extends EditionPatternView<FlexoConcept> {
 
-	public StandardEditionPatternView(EditionPattern editionPattern, FlexoController controller, FlexoPerspective perspective) {
-		super(editionPattern, CommonFIB.STANDARD_EDITION_PATTERN_VIEW_FIB, controller, perspective);
+	public StandardEditionPatternView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
+		super(flexoConcept, CommonFIB.STANDARD_EDITION_PATTERN_VIEW_FIB, controller, perspective);
 	}
 
 }

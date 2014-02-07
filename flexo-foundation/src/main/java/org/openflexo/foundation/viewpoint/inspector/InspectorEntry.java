@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.annotations.Getter;
@@ -137,16 +137,16 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionPattern() != null) {
-				return getEditionPattern().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			if (getInspector() != null) {
-				return getInspector().getEditionPattern();
+				return getInspector().getFlexoConcept();
 			}
 			return null;
 		}

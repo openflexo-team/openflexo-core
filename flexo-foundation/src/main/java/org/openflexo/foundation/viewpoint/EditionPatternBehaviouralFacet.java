@@ -25,30 +25,30 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
 @ImplementationClass(EditionPatternBehaviouralFacet.EditionPatternBehaviouralFacetImpl.class)
-public interface EditionPatternBehaviouralFacet extends EditionPatternObject, FlexoFacet<EditionPattern> {
+public interface EditionPatternBehaviouralFacet extends EditionPatternObject, FlexoFacet<FlexoConcept> {
 
 	@Override
-	public EditionPattern getEditionPattern();
+	public FlexoConcept getFlexoConcept();
 
-	public void setEditionPattern(EditionPattern editionPattern);
+	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	public abstract class EditionPatternBehaviouralFacetImpl extends EditionPatternObjectImpl implements EditionPatternBehaviouralFacet {
 
-		private EditionPattern editionPattern;
+		private FlexoConcept flexoConcept;
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return editionPattern;
+		public FlexoConcept getFlexoConcept() {
+			return flexoConcept;
 		}
 
 		@Override
-		public void setEditionPattern(EditionPattern editionPattern) {
-			this.editionPattern = editionPattern;
+		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			this.flexoConcept = flexoConcept;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getEditionPattern().getBindingModel();
+			return getFlexoConcept().getBindingModel();
 		}
 
 		/*@Override
@@ -57,18 +57,18 @@ public interface EditionPatternBehaviouralFacet extends EditionPatternObject, Fl
 		}*/
 
 		@Override
-		public EditionPattern getObject() {
-			return getEditionPattern();
+		public FlexoConcept getObject() {
+			return getFlexoConcept();
 		}
 
 		@Override
 		public String getURI() {
-			return getEditionPattern().getURI();
+			return getFlexoConcept().getURI();
 		}
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			return getEditionPattern().getVirtualModel();
+			return getFlexoConcept().getVirtualModel();
 		}
 	}
 }

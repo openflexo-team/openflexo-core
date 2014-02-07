@@ -32,7 +32,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
@@ -128,9 +128,9 @@ public class SynchronizationSchemeAction extends
 		}
 	}
 
-	public EditionPatternInstance matchEditionPatternInstance(EditionPattern editionPatternType, Hashtable<PatternRole, Object> criterias) {
-		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + editionPatternType + " with " + criterias);
-		for (EditionPatternInstance epi : getVirtualModelInstance().getEPInstances(editionPatternType)) {
+	public EditionPatternInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<PatternRole, Object> criterias) {
+		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
+		for (EditionPatternInstance epi : getVirtualModelInstance().getEPInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
 			for (PatternRole pr : criterias.keySet()) {
 				if (!FlexoObjectImpl.areSameValue(epi.getPatternActor(pr), criterias.get(pr))) {

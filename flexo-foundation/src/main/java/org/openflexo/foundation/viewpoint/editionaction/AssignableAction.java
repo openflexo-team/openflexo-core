@@ -140,11 +140,11 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 		@Override
 		public PatternRole<?> getPatternRole() {
-			if (getEditionPattern() == null) {
+			if (getFlexoConcept() == null) {
 				return null;
 			}
 			if (assignation != null) {
-				return getEditionPattern().getPatternRole(assignation.toString());
+				return getFlexoConcept().getPatternRole(assignation.toString());
 			}
 			return null;
 		}

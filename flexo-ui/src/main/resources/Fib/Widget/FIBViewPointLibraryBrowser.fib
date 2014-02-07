@@ -27,7 +27,7 @@
       <Children data="diagramSpecification.loadedDiagramSpecification.allRootEditionPatterns" visible="diagramSpecification.isLoaded" cast="" name="rootEditionPatterns" />
     </BrowserElement>-->
     <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot" label="(((modelSlot.name + &quot; - [&quot;) + modelSlot.technologyAdapter.name) + &quot;]&quot;)" icon="controller.iconForObject(modelSlot)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="modelSlot" />
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPattern" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPattern">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPattern">
       <Children data="editionPattern.childEditionPatterns" visible="" cast="" name="children" />
       <Children data="editionPattern.inspector" visible="" cast="" name="inspector" />
       <Children data="editionPattern.structuralFacet" visible="" cast="" name="structural" />

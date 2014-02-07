@@ -10,7 +10,7 @@ import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
@@ -57,49 +57,49 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	/**
-	 * Duplicates supplied EditionPattern, given a new name<br>
-	 * Newly created EditionPattern is added to ViewPoint
+	 * Duplicates supplied FlexoConcept, given a new name<br>
+	 * Newly created FlexoConcept is added to ViewPoint
 	 * 
 	 * @param newName
 	 * @return
 	 */
-	public EditionPattern duplicateEditionPattern(EditionPattern editionPattern, String newName) {
-		DuplicateEditionPattern duplicateAction = DuplicateEditionPattern.actionType.makeNewAction(editionPattern, null, getEditor());
+	public FlexoConcept duplicateFlexoConcept(FlexoConcept flexoConcept, String newName) {
+		DuplicateEditionPattern duplicateAction = DuplicateEditionPattern.actionType.makeNewAction(flexoConcept, null, getEditor());
 		duplicateAction.doAction();
-		return duplicateAction.getNewEditionPattern();
+		return duplicateAction.getNewFlexoConcept();
 	}
 
-	public EditionPattern addParentEditionPattern(EditionPattern editionPattern) {
+	public FlexoConcept addParentFlexoConcept(FlexoConcept flexoConcept) {
 		logger.warning("addParentEditionPattern not implemented yet");
 		return null;
 	}
 
-	public PatternRole createPatternRole(EditionPattern editionPattern) {
-		CreatePatternRole createPatternRole = CreatePatternRole.actionType.makeNewAction(editionPattern, null, getEditor());
+	public PatternRole createPatternRole(FlexoConcept flexoConcept) {
+		CreatePatternRole createPatternRole = CreatePatternRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createPatternRole.doAction();
 		return createPatternRole.getNewPatternRole();
 	}
 
-	public PatternRole<?> deletePatternRole(EditionPattern editionPattern, PatternRole<?> aPatternRole) {
-		editionPattern.removeFromPatternRoles(aPatternRole);
+	public PatternRole<?> deletePatternRole(FlexoConcept flexoConcept, PatternRole<?> aPatternRole) {
+		flexoConcept.removeFromPatternRoles(aPatternRole);
 		aPatternRole.delete();
 		return aPatternRole;
 	}
 
-	public void createConstraint(EditionPattern editionPattern) {
-		EditionPatternConstraint constraint = editionPattern.getVirtualModelFactory().newEditionPatternConstraint();
-		editionPattern.addToEditionPatternConstraints(constraint);
+	public void createConstraint(FlexoConcept flexoConcept) {
+		EditionPatternConstraint constraint = flexoConcept.getVirtualModelFactory().newEditionPatternConstraint();
+		flexoConcept.addToEditionPatternConstraints(constraint);
 	}
 
-	public EditionPatternConstraint deleteConstraint(EditionPattern editionPattern, EditionPatternConstraint constraint) {
-		editionPattern.removeFromEditionPatternConstraints(constraint);
+	public EditionPatternConstraint deleteConstraint(FlexoConcept flexoConcept, EditionPatternConstraint constraint) {
+		flexoConcept.removeFromEditionPatternConstraints(constraint);
 		constraint.delete();
 		return constraint;
 	}
 
 	/**
 	 * Duplicates this EditionScheme, given a new name<br>
-	 * Newly created EditionScheme is added to parent EditionPattern
+	 * Newly created EditionScheme is added to parent FlexoConcept
 	 * 
 	 * @param newName
 	 * @return
@@ -107,7 +107,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public EditionScheme duplicateEditionScheme(EditionScheme editionScheme, String newName) {
 		EditionScheme newEditionScheme = (EditionScheme) editionScheme.cloneObject();
 		newEditionScheme.setName(newName);
-		editionScheme.getEditionPattern().addToEditionSchemes(newEditionScheme);
+		editionScheme.getFlexoConcept().addToEditionSchemes(newEditionScheme);
 		return newEditionScheme;
 	}
 
@@ -118,36 +118,36 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return newEditionScheme;
 	}
 
-	public CreationScheme createCreationScheme(EditionPattern editionPattern) {
-		CreationScheme newEditionScheme = editionPattern.getVirtualModelFactory().newCreationScheme();
+	public CreationScheme createCreationScheme(FlexoConcept flexoConcept) {
+		CreationScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCreationScheme();
 		newEditionScheme.setName("creation");
-		editionPattern.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToEditionSchemes(newEditionScheme);
 		return newEditionScheme;
 	}
 
-	public DeletionScheme createDeletionScheme(EditionPattern editionPattern) {
-		DeletionScheme newEditionScheme = editionPattern.getVirtualModelFactory().newDeletionScheme();
+	public DeletionScheme createDeletionScheme(FlexoConcept flexoConcept) {
+		DeletionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newDeletionScheme();
 		newEditionScheme.setName("deletion");
-		editionPattern.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToEditionSchemes(newEditionScheme);
 		return newEditionScheme;
 	}
 
-	public ActionScheme createActionScheme(EditionPattern editionPattern) {
-		ActionScheme newEditionScheme = editionPattern.getVirtualModelFactory().newActionScheme();
+	public ActionScheme createActionScheme(FlexoConcept flexoConcept) {
+		ActionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newActionScheme();
 		newEditionScheme.setName("action");
-		editionPattern.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToEditionSchemes(newEditionScheme);
 		return newEditionScheme;
 	}
 
-	public CloningScheme createCloningScheme(EditionPattern editionPattern) {
-		CloningScheme newEditionScheme = editionPattern.getVirtualModelFactory().newCloningScheme();
+	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
+		CloningScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCloningScheme();
 		newEditionScheme.setName("clone");
-		editionPattern.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToEditionSchemes(newEditionScheme);
 		return newEditionScheme;
 	}
 
-	public EditionScheme deleteEditionScheme(EditionPattern editionPattern, EditionScheme editionScheme) {
-		editionPattern.removeFromEditionSchemes(editionScheme);
+	public EditionScheme deleteEditionScheme(FlexoConcept flexoConcept, EditionScheme editionScheme) {
+		flexoConcept.removeFromEditionSchemes(editionScheme);
 		editionScheme.delete();
 		return editionScheme;
 	}
@@ -158,19 +158,19 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return createEditionAction.getNewEditionAction();
 	}
 
-	public EditionPattern createEditionPattern(EditionPattern editionPattern) {
-		if (editionPattern instanceof VirtualModel) {
-			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction((VirtualModel) editionPattern, null,
+	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			addEditionPattern.switchNewlyCreatedEditionPattern = false;
 			addEditionPattern.doAction();
 			return addEditionPattern.getNewFlexoConcept();
-		} else if (editionPattern != null) {
-			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction(editionPattern.getVirtualModel(), null,
+		} else if (flexoConcept != null) {
+			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
 					getEditor());
 			addEditionPattern.switchNewlyCreatedEditionPattern = false;
 			addEditionPattern.doAction();
-			addEditionPattern.getNewFlexoConcept().addToParentEditionPatterns(editionPattern);
+			addEditionPattern.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
 			return addEditionPattern.getNewFlexoConcept();
 		}
 		logger.warning("Unexpected null edition pattern");

@@ -23,26 +23,26 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Widget allowing to select an EditionPattern
+ * Widget allowing to select an FlexoConcept
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBEditionPatternSelector extends FIBFlexoObjectSelector<EditionPattern> {
+public class FIBEditionPatternSelector extends FIBFlexoObjectSelector<FlexoConcept> {
 
 	static final Logger logger = Logger.getLogger(FIBEditionPatternSelector.class.getPackage().getName());
 
 	public static FileResource FIB_FILE = new FileResource("Fib/EditionPatternSelector.fib");
 
-	public FIBEditionPatternSelector(EditionPattern editedObject) {
+	public FIBEditionPatternSelector(FlexoConcept editedObject) {
 		super(editedObject);
 	}
 
@@ -58,12 +58,12 @@ public class FIBEditionPatternSelector extends FIBFlexoObjectSelector<EditionPat
 	}
 
 	@Override
-	public Class<EditionPattern> getRepresentedType() {
-		return EditionPattern.class;
+	public Class<FlexoConcept> getRepresentedType() {
+		return FlexoConcept.class;
 	}
 
 	@Override
-	public String renderedString(EditionPattern editedObject) {
+	public String renderedString(FlexoConcept editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}

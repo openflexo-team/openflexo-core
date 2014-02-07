@@ -31,7 +31,7 @@ import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionScheme;
@@ -106,7 +106,7 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource("Icons/Model/VPM/ViewPointLibrary.png");
 	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource("Icons/Model/VPM/ViewPoint.png");
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource("Icons/Model/VPM/ModelSlot.png");
-	public static final ImageIconResource EDITION_PATTERN_ICON = new ImageIconResource("Icons/Model/VPM/EditionPattern.png");
+	public static final ImageIconResource EDITION_PATTERN_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/ActionSchemeIcon.png");
 	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(
 			"Icons/Model/VPM/SynchronizationSchemeIcon.png");
@@ -216,7 +216,7 @@ public class VPMIconLibrary extends IconLibrary {
 				}
 			}
 			return UNKNOWN_ICON;
-		} else if (object instanceof EditionPattern) {
+		} else if (object instanceof FlexoConcept) {
 			return EDITION_PATTERN_ICON;
 		} else if (object instanceof EditionSchemeParameter) {
 			return EDITION_PATTERN_PARAMETER_ICON;

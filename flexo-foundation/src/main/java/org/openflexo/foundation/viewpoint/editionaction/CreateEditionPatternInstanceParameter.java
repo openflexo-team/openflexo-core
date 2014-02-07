@@ -9,7 +9,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -87,9 +87,9 @@ public interface CreateEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			if (param != null) {
-				return param.getEditionPattern();
+				return param.getFlexoConcept();
 			}
 			return null;
 		}

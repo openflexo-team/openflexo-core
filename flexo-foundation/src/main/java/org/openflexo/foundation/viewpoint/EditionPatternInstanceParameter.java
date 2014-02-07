@@ -49,7 +49,7 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 	public static abstract class EditionPatternInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
 			EditionPatternInstanceParameter {
 
-		private EditionPattern editionPatternType;
+		private FlexoConcept flexoConceptType;
 		private String editionPatternTypeURI;
 
 		public EditionPatternInstanceParameterImpl() {
@@ -58,8 +58,8 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 
 		@Override
 		public Type getType() {
-			if (getEditionPatternType() != null) {
-				return getViewPoint().getInstanceType(getEditionPatternType());
+			if (getFlexoConceptType() != null) {
+				return getViewPoint().getInstanceType(getFlexoConceptType());
 			}
 			return EditionPatternInstance.class;
 		}
@@ -71,8 +71,8 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 
 		@Override
 		public String _getEditionPatternTypeURI() {
-			if (editionPatternType != null) {
-				return editionPatternType.getURI();
+			if (flexoConceptType != null) {
+				return flexoConceptType.getURI();
 			}
 			return editionPatternTypeURI;
 		}
@@ -82,20 +82,20 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 			this.editionPatternTypeURI = editionPatternURI;
 		}
 
-		public EditionPattern getEditionPatternType() {
-			if (editionPatternType == null && editionPatternTypeURI != null && getModelSlotVirtualModel() != null) {
-				editionPatternType = getModelSlotVirtualModel().getEditionPattern(editionPatternTypeURI);
-				for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
+		public FlexoConcept getFlexoConceptType() {
+			if (flexoConceptType == null && editionPatternTypeURI != null && getModelSlotVirtualModel() != null) {
+				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(editionPatternTypeURI);
+				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 					s.updateBindingModels();
 				}
 			}
-			return editionPatternType;
+			return flexoConceptType;
 		}
 
-		public void setEditionPatternType(EditionPattern editionPatternType) {
-			if (editionPatternType != this.editionPatternType) {
-				this.editionPatternType = editionPatternType;
-				for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			if (flexoConceptType != this.flexoConceptType) {
+				this.flexoConceptType = flexoConceptType;
+				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 					s.updateBindingModels();
 				}
 			}

@@ -90,7 +90,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException {
 		logger.info("Create EditionPatternInstance using CreationScheme");
-		logger.info("getEditionPattern()=" + getEditionPattern());
+		logger.info("getEditionPattern()=" + getFlexoConcept());
 
 		retrieveMissingDefaultParameters();
 
@@ -100,7 +100,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 		// VirtualModelInstance) will be already initialized and should subsequently not been recreated)
 		if (editionPatternInstance == null) {
 			if (getVirtualModelInstance() != null) {
-				editionPatternInstance = getVirtualModelInstance().makeNewEditionPatternInstance(getEditionPattern());
+				editionPatternInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 			} else {
 				logger.warning("Could not create new EditionPatternInstance because container VirtualModelInstance is null");
 				throw new InvalidParametersException("VirtualModelInstance");

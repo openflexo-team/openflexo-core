@@ -72,11 +72,11 @@ import org.openflexo.toolbox.ToolBox;
 /**
  * A {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models.
  * 
- * The base modelling element of a {@link VirtualModel} is provided by {@link EditionPattern} concept.
+ * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
  * 
  * A {@link VirtualModel} instance contains a set of {@link EditionPatternInstance}.
  * 
- * A {@link VirtualModel} is itself an {@link EditionPattern}
+ * A {@link VirtualModel} is itself an {@link FlexoConcept}
  * 
  * @author sylvain
  * 
@@ -84,7 +84,7 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @XMLElement
-public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
+public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
 
 	public static final String REFLEXIVE_MODEL_SLOT_NAME = "this";
 
@@ -144,30 +144,30 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 	public void setModelVersion(FlexoVersion modelVersion);
 
 	/**
-	 * Return all {@link EditionPattern} defined in this {@link VirtualModel}
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
 	 * 
 	 * @return
 	 */
-	@Getter(value = EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = EditionPattern.VIRTUAL_MODEL_KEY)
+	@Getter(value = EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.VIRTUAL_MODEL_KEY)
 	@XMLElement
-	public List<EditionPattern> getEditionPatterns();
+	public List<FlexoConcept> getFlexoConcepts();
 
 	@Setter(EDITION_PATTERNS_KEY)
-	public void setEditionPatterns(List<EditionPattern> editionPatterns);
+	public void setFlexoConcepts(List<FlexoConcept> flexoConcepts);
 
 	@Adder(EDITION_PATTERNS_KEY)
-	public void addToEditionPatterns(EditionPattern aEditionPattern);
+	public void addToFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	@Remover(EDITION_PATTERNS_KEY)
-	public void removeFromEditionPatterns(EditionPattern aEditionPattern);
+	public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	/**
-	 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
+	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
 	 * @param editionPatternId
 	 * @return
 	 */
-	public EditionPattern getEditionPattern(String editionPatternId);
+	public FlexoConcept getFlexoConcept(String editionPatternId);
 
 	@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.VIRTUAL_MODEL_KEY)
 	@XMLElement
@@ -288,18 +288,18 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 	public boolean handleVariable(BindingVariable variable);
 
 	/**
-	 * Return all {@link EditionPattern} defined in this {@link VirtualModel} which have no parent
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent
 	 * 
 	 * @return
 	 */
-	public List<EditionPattern> getAllRootEditionPatterns();
+	public List<FlexoConcept> getAllRootFlexoConcepts();
 
 	public static abstract class VirtualModelImpl extends EditionPatternImpl implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
 		private ViewPoint viewPoint;
-		// private Vector<EditionPattern> editionPatterns;
+		// private Vector<FlexoConcept> editionPatterns;
 		// private List<ModelSlot<?>> modelSlots;
 		private BindingModel bindingModel;
 		private VirtualModelResource resource;
@@ -364,7 +364,7 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 		@Override
 		public void finalizeDeserialization() {
 			finalizeEditionPatternDeserialization();
-			for (EditionPattern ep : getEditionPatterns()) {
+			for (FlexoConcept ep : getFlexoConcepts()) {
 				ep.finalizeEditionPatternDeserialization();
 			}
 			// Ensure access to reflexive model slot
@@ -479,14 +479,14 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 		 */
 
 		/**
-		 * Return all {@link EditionPattern} defined in this {@link VirtualModel} which have no parent
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent
 		 * 
 		 * @return
 		 */
 		@Override
-		public List<EditionPattern> getAllRootEditionPatterns() {
-			Vector<EditionPattern> returned = new Vector<EditionPattern>();
-			for (EditionPattern ep : getEditionPatterns()) {
+		public List<FlexoConcept> getAllRootFlexoConcepts() {
+			Vector<FlexoConcept> returned = new Vector<FlexoConcept>();
+			for (FlexoConcept ep : getFlexoConcepts()) {
 				if (ep.isRoot()) {
 					returned.add(ep);
 				}
@@ -495,49 +495,49 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 		}
 
 		/**
-		 * Return all {@link EditionPattern} defined in this {@link VirtualModel}
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
 		 * 
 		 * @return
 		 */
 		/*
-		 * @Override public Vector<EditionPattern> getEditionPatterns() { return
+		 * @Override public Vector<FlexoConcept> getEditionPatterns() { return
 		 * editionPatterns; }
 		 * 
-		 * public void setEditionPatterns(Vector<EditionPattern>
+		 * public void setEditionPatterns(Vector<FlexoConcept>
 		 * editionPatterns) { this.editionPatterns = editionPatterns; }
 		 * 
-		 * @Override public void addToEditionPatterns(EditionPattern pattern) {
+		 * @Override public void addToEditionPatterns(FlexoConcept pattern) {
 		 * pattern.setVirtualModel(this); editionPatterns.add(pattern);
 		 * setChanged(); notifyObservers(new EditionPatternCreated(pattern)); }
 		 * 
-		 * @Override public void removeFromEditionPatterns(EditionPattern
+		 * @Override public void removeFromEditionPatterns(FlexoConcept
 		 * pattern) { pattern.setVirtualModel(null);
 		 * editionPatterns.remove(pattern); setChanged(); notifyObservers(new
 		 * EditionPatternDeleted(pattern)); }
 		 */
 
 		/**
-		 * Return EditionPattern matching supplied id represented as a string, which could be either the name of EditionPattern, or its URI
+		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
 		 * @param editionPatternId
 		 * @return
 		 */
 		@Override
-		public EditionPattern getEditionPattern(String editionPatternId) {
-			for (EditionPattern editionPattern : getEditionPatterns()) {
-				if (editionPattern.getName().equals(editionPatternId)) {
-					return editionPattern;
+		public FlexoConcept getFlexoConcept(String editionPatternId) {
+			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
+				if (flexoConcept.getName().equals(editionPatternId)) {
+					return flexoConcept;
 				}
-				if (editionPattern.getURI().equals(editionPatternId)) {
-					return editionPattern;
+				if (flexoConcept.getURI().equals(editionPatternId)) {
+					return flexoConcept;
 				}
 				// Special case to handle conversion from old VP version
 				// TODO: to be removed when all VP are up-to-date
-				if ((getViewPoint().getURI() + "#" + editionPattern.getName()).equals(editionPatternId)) {
-					return editionPattern;
+				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(editionPatternId)) {
+					return flexoConcept;
 				}
 			}
-			// logger.warning("Not found EditionPattern:" + editionPatternId);
+			// logger.warning("Not found FlexoConcept:" + editionPatternId);
 			return null;
 		}
 
@@ -567,11 +567,11 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 
 		private void createBindingModel() {
 			bindingModel = new BindingModel();
-			for (EditionPattern ep : getEditionPatterns()) {
+			for (FlexoConcept ep : getFlexoConcepts()) {
 				// bindingModel.addToBindingVariables(new
 				// EditionPatternPathElement<ViewPoint>(ep, this));
 				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), EditionPatternInstanceType
-						.getEditionPatternInstanceType(ep)));
+						.getFlexoConceptInstanceType(ep)));
 			}
 		}
 
@@ -937,9 +937,9 @@ public interface VirtualModel extends EditionPattern, FlexoMetaModel<VirtualMode
 				}
 			}
 
-			if (getEditionPatterns().size() > 0) {
+			if (getFlexoConcepts().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (EditionPattern ep : getEditionPatterns()) {
+				for (FlexoConcept ep : getFlexoConcepts()) {
 					out.append(ep.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}

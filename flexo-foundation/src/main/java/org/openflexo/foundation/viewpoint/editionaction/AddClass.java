@@ -191,7 +191,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		public ValidationIssue<AddClassActionMustDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
 			if (action.getOntologyClass() == null) {
 				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>>();
-				for (ClassPatternRole pr : action.getEditionPattern().getClassPatternRoles()) {
+				for (ClassPatternRole pr : action.getFlexoConcept().getClassPatternRoles()) {
 					v.add(new SetsPatternRole(pr));
 				}
 				return new ValidationError<AddClassActionMustDefineAnOntologyClass, AddClass>(this, action,

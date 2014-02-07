@@ -19,11 +19,11 @@
  */
 package org.openflexo.foundation.viewpoint.dm;
 
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 
 public class EditionPatternHierarchyChanged extends ViewPointDataModification {
 
-	public EditionPatternHierarchyChanged(EditionPattern ep) {
+	public EditionPatternHierarchyChanged(FlexoConcept ep) {
 		super(null, ep);
 	}
 

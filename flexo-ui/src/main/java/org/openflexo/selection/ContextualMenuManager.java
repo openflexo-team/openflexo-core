@@ -281,16 +281,16 @@ public abstract class ContextualMenuManager {
 				if (focusedObject.getEditionPatternReferences() != null) {
 					for (FlexoObjectReference<EditionPatternInstance> ref : focusedObject.getEditionPatternReferences()) {
 						EditionPatternInstance epi = ref.getObject();
-						if (epi != null && epi.getEditionPattern() != null && epi.getEditionPattern().hasActionScheme()) {
-							for (ActionScheme as : epi.getEditionPattern().getActionSchemes()) {
+						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
+							for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
 								contextualMenu.putAction(new ActionSchemeActionType(as, epi));
 							}
 						}
 					}
 					for (FlexoObjectReference<EditionPatternInstance> ref : focusedObject.getEditionPatternReferences()) {
 						EditionPatternInstance epi = ref.getObject();
-						if (epi != null && epi.getEditionPattern() != null && epi.getEditionPattern().hasNavigationScheme()) {
-							for (NavigationScheme ns : epi.getEditionPattern().getNavigationSchemes()) {
+						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
+							for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {
 								contextualMenu.putAction(new NavigationSchemeActionType(ns, epi));
 							}
 						}
@@ -299,16 +299,16 @@ public abstract class ContextualMenuManager {
 			}
 			if (focusedObject instanceof EditionPatternInstance) {
 				EditionPatternInstance epi = (EditionPatternInstance) focusedObject;
-				if (epi != null && epi.getEditionPattern() != null && epi.getEditionPattern().hasSynchronizationScheme()) {
-					contextualMenu.putAction(new SynchronizationSchemeActionType(epi.getEditionPattern().getSynchronizationScheme(), epi));
+				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
+					contextualMenu.putAction(new SynchronizationSchemeActionType(epi.getFlexoConcept().getSynchronizationScheme(), epi));
 				}
-				if (epi != null && epi.getEditionPattern() != null && epi.getEditionPattern().hasActionScheme()) {
-					for (ActionScheme as : epi.getEditionPattern().getActionSchemes()) {
+				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
+					for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
 						contextualMenu.putAction(new ActionSchemeActionType(as, epi));
 					}
 				}
-				if (epi != null && epi.getEditionPattern() != null && epi.getEditionPattern().hasNavigationScheme()) {
-					for (NavigationScheme ns : epi.getEditionPattern().getNavigationSchemes()) {
+				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
+					for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {
 						contextualMenu.putAction(new NavigationSchemeActionType(ns, epi));
 					}
 				}

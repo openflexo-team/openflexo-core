@@ -3,7 +3,7 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -112,7 +112,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
-		if (object instanceof ViewPoint || object instanceof EditionPattern) {
+		if (object instanceof ViewPoint || object instanceof FlexoConcept) {
 			return true;
 		}
 		// TODO not applicable
@@ -137,8 +137,8 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 		if (object instanceof ViewPoint) {
 			return new ViewPointView((ViewPoint) object, controller, perspective);
 		}
-		if (object instanceof EditionPattern) {
-			EditionPattern ep = (EditionPattern) object;
+		if (object instanceof FlexoConcept) {
+			FlexoConcept ep = (FlexoConcept) object;
 			if (ep instanceof VirtualModel) {
 				// if (ep instanceof DiagramSpecification) {
 				// return new DiagramSpecificationView(ep, (VPMController) controller);
@@ -158,8 +158,8 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 		/*if (object instanceof ViewPoint) {
 		return new ViewPointView((ViewPoint) object, controller);
 		}
-		if (object instanceof EditionPattern) {
-		EditionPattern ep = (EditionPattern) object;
+		if (object instanceof FlexoConcept) {
+		FlexoConcept ep = (FlexoConcept) object;
 		if (ep instanceof VirtualModel) {
 			//if (ep instanceof DiagramSpecification) {
 			//	return new DiagramSpecificationView(ep, (VPMController) controller);

@@ -51,12 +51,12 @@ public interface SynchronizationScheme extends AbstractActionScheme {
 
 		@Override
 		public VirtualModel getSynchronizedVirtualModel() {
-			return (VirtualModel) getEditionPattern();
+			return (VirtualModel) getFlexoConcept();
 		}
 
 		@Override
 		public void setSynchronizedVirtualModel(VirtualModel virtualModel) {
-			setEditionPattern(virtualModel);
+			setFlexoConcept(virtualModel);
 		}
 
 	}

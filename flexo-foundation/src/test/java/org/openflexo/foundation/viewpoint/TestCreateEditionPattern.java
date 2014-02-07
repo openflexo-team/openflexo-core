@@ -29,7 +29,7 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test EditionPattern creation facilities
+ * This unit test is intented to test FlexoConcept creation facilities
  * 
  * @author sylvain
  * 
@@ -41,11 +41,11 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	static ViewPoint newViewPoint;
 	static VirtualModel newVirtualModel;
 
-	static EditionPattern flexoConceptA;
-	static EditionPattern flexoConceptB;
-	static EditionPattern flexoConceptC;
-	static EditionPattern flexoConceptD;
-	static EditionPattern flexoConceptE;
+	static FlexoConcept flexoConceptA;
+	static FlexoConcept flexoConceptB;
+	static FlexoConcept flexoConceptC;
+	static FlexoConcept flexoConceptD;
+	static FlexoConcept flexoConceptE;
 
 	/**
 	 * Test the VP creation
@@ -73,7 +73,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(3)
@@ -83,7 +83,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(4)
@@ -105,7 +105,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(5)
@@ -127,7 +127,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(6)
@@ -142,11 +142,11 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 
 		System.out.println("FlexoConcept C = " + flexoConceptC);
 		assertNotNull(flexoConceptC);
-		assertEquals(1, flexoConceptC.getParentEditionPatterns().size());
-		assertEquals(flexoConceptB, flexoConceptC.getParentEditionPatterns().get(0));
+		assertEquals(1, flexoConceptC.getParentFlexoConcepts().size());
+		assertEquals(flexoConceptB, flexoConceptC.getParentFlexoConcepts().get(0));
 
-		assertEquals(1, flexoConceptB.getChildEditionPatterns().size());
-		assertEquals(flexoConceptC, flexoConceptB.getChildEditionPatterns().get(0));
+		assertEquals(1, flexoConceptB.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
@@ -155,7 +155,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(7)
@@ -170,12 +170,12 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 
 		System.out.println("FlexoConcept D = " + flexoConceptD);
 		assertNotNull(flexoConceptD);
-		assertEquals(1, flexoConceptD.getParentEditionPatterns().size());
-		assertEquals(flexoConceptB, flexoConceptD.getParentEditionPatterns().get(0));
+		assertEquals(1, flexoConceptD.getParentFlexoConcepts().size());
+		assertEquals(flexoConceptB, flexoConceptD.getParentFlexoConcepts().get(0));
 
-		assertEquals(2, flexoConceptB.getChildEditionPatterns().size());
-		assertEquals(flexoConceptC, flexoConceptB.getChildEditionPatterns().get(0));
-		assertEquals(flexoConceptD, flexoConceptB.getChildEditionPatterns().get(1));
+		assertEquals(2, flexoConceptB.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
+		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
@@ -184,7 +184,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	}
 
 	/**
-	 * Test the EditionPattern creation
+	 * Test the FlexoConcept creation
 	 */
 	@Test
 	@TestOrder(8)
@@ -201,19 +201,19 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 
 		System.out.println("FlexoConcept E = " + flexoConceptE);
 		assertNotNull(flexoConceptE);
-		assertEquals(3, flexoConceptE.getParentEditionPatterns().size());
-		assertEquals(flexoConceptA, flexoConceptE.getParentEditionPatterns().get(0));
-		assertEquals(flexoConceptB, flexoConceptE.getParentEditionPatterns().get(1));
-		assertEquals(flexoConceptC, flexoConceptE.getParentEditionPatterns().get(2));
+		assertEquals(3, flexoConceptE.getParentFlexoConcepts().size());
+		assertEquals(flexoConceptA, flexoConceptE.getParentFlexoConcepts().get(0));
+		assertEquals(flexoConceptB, flexoConceptE.getParentFlexoConcepts().get(1));
+		assertEquals(flexoConceptC, flexoConceptE.getParentFlexoConcepts().get(2));
 
-		assertEquals(1, flexoConceptA.getChildEditionPatterns().size());
-		assertEquals(flexoConceptE, flexoConceptA.getChildEditionPatterns().get(0));
-		assertEquals(3, flexoConceptB.getChildEditionPatterns().size());
-		assertEquals(flexoConceptC, flexoConceptB.getChildEditionPatterns().get(0));
-		assertEquals(flexoConceptD, flexoConceptB.getChildEditionPatterns().get(1));
-		assertEquals(flexoConceptE, flexoConceptB.getChildEditionPatterns().get(2));
-		assertEquals(1, flexoConceptC.getChildEditionPatterns().size());
-		assertEquals(flexoConceptE, flexoConceptC.getChildEditionPatterns().get(0));
+		assertEquals(1, flexoConceptA.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptE, flexoConceptA.getChildFlexoConcepts().get(0));
+		assertEquals(3, flexoConceptB.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
+		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
+		assertEquals(flexoConceptE, flexoConceptB.getChildFlexoConcepts().get(2));
+		assertEquals(1, flexoConceptC.getChildFlexoConcepts().size());
+		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 

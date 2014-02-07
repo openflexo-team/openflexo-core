@@ -64,12 +64,12 @@ public interface EditionSchemeParameters extends EditionSchemeObject, FlexoFacet
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			return getEditionPattern().getVirtualModel();
+			return getFlexoConcept().getVirtualModel();
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return getEditionScheme().getEditionPattern();
+		public FlexoConcept getFlexoConcept() {
+			return getEditionScheme().getFlexoConcept();
 		}
 	}
 }

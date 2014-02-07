@@ -28,26 +28,26 @@ import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
 /**
- * Represent the type of a EditionPatternInstance of a given EditionPattern
+ * Represent the type of a EditionPatternInstance of a given FlexoConcept
  * 
  * @author sylvain
  * 
  */
 public class EditionPatternInstanceType implements CustomType {
 
-	protected EditionPattern editionPattern;
+	protected FlexoConcept flexoConcept;
 
-	public EditionPatternInstanceType(EditionPattern anEditionPattern) {
-		this.editionPattern = anEditionPattern;
+	public EditionPatternInstanceType(FlexoConcept anFlexoConcept) {
+		this.flexoConcept = anFlexoConcept;
 	}
 
-	public EditionPattern getEditionPattern() {
-		return editionPattern;
+	public FlexoConcept getFlexoConcept() {
+		return flexoConcept;
 	}
 
 	@Override
 	public Class getBaseClass() {
-		if (getEditionPattern() instanceof VirtualModel) {
+		if (getFlexoConcept() instanceof VirtualModel) {
 			return VirtualModelInstance.class;
 		} else {
 			return EditionPatternInstance.class;
@@ -58,19 +58,19 @@ public class EditionPatternInstanceType implements CustomType {
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
 		if (aType instanceof EditionPatternInstanceType) {
-			return editionPattern.isAssignableFrom(((EditionPatternInstanceType) aType).getEditionPattern());
+			return flexoConcept.isAssignableFrom(((EditionPatternInstanceType) aType).getFlexoConcept());
 		}
 		return false;
 	}
 
 	@Override
 	public String simpleRepresentation() {
-		return "EditionPatternInstanceType" + ":" + editionPattern.toString();
+		return "EditionPatternInstanceType" + ":" + flexoConcept.toString();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "EditionPatternInstanceType" + ":" + editionPattern.toString();
+		return "EditionPatternInstanceType" + ":" + flexoConcept.toString();
 	}
 
 	@Override
@@ -78,9 +78,9 @@ public class EditionPatternInstanceType implements CustomType {
 		return simpleRepresentation();
 	}
 
-	public static Type getEditionPatternInstanceType(EditionPattern anEditionPattern) {
-		if (anEditionPattern != null && anEditionPattern.getViewPoint() != null) {
-			return anEditionPattern.getViewPoint().getInstanceType(anEditionPattern);
+	public static Type getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
+		if (anFlexoConcept != null && anFlexoConcept.getViewPoint() != null) {
+			return anFlexoConcept.getViewPoint().getInstanceType(anFlexoConcept);
 		} else {
 			return null;
 		}

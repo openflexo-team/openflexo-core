@@ -2991,7 +2991,7 @@ public class FlexoProject extends ResourceRepository<FlexoResource<?>> implement
 	 * _retrievePendingEditionPatternReferences(IFlexoOntologyConcept object) {
 	 * List<ConceptActorReference> values =
 	 * pendingEditionPatternReferences.get(object.getURI()); if (values == null)
-	 * { // No pending EditionPattern references for object return; } else {
+	 * { // No pending FlexoConcept references for object return; } else {
 	 * List<ConceptActorReference> clonedValues = new
 	 * ArrayList<ConceptActorReference>(values); for (ConceptActorReference
 	 * actorReference : clonedValues) { EditionPatternInstance instance =

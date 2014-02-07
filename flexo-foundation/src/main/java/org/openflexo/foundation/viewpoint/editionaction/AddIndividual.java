@@ -368,7 +368,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> applyValidation(AddIndividual action) {
 			if (action.getOntologyClass() == null) {
 				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>>();
-				for (IndividualPatternRole pr : action.getEditionPattern().getIndividualPatternRoles()) {
+				for (IndividualPatternRole pr : action.getFlexoConcept().getIndividualPatternRoles()) {
 					v.add(new SetsPatternRole(pr));
 				}
 				return new ValidationError<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>(this, action,

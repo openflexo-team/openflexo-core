@@ -26,7 +26,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -109,13 +109,13 @@ public abstract interface AbstractAssertion extends EditionSchemeObject {
 		}
 
 		@Override
-		public EditionPattern getEditionPattern() {
-			return getEditionScheme() != null ? getEditionScheme().getEditionPattern() : null;
+		public FlexoConcept getFlexoConcept() {
+			return getEditionScheme() != null ? getEditionScheme().getFlexoConcept() : null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getEditionPattern().getBindingModel();
+			return getFlexoConcept().getBindingModel();
 		}
 
 		@Override

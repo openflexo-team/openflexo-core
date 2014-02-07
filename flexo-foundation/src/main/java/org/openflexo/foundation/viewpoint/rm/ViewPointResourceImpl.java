@@ -25,7 +25,7 @@ import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
@@ -184,7 +184,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		returned.init(baseName,/* getDirectory(), getFile(),*/getViewPointLibrary());
 
 		for (VirtualModel vm : returned.getVirtualModels()) {
-			for (EditionPattern ep : vm.getEditionPatterns()) {
+			for (FlexoConcept ep : vm.getFlexoConcepts()) {
 				ep.finalizeEditionPatternDeserialization();
 			}
 			vm.clearIsModified();

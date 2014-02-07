@@ -29,23 +29,23 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.viewpoint.EditionPattern;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 
 public class EditionPatternInstancePathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(EditionPatternInstancePathElement.class.getPackage().getName());
 
-	private EditionPattern editionPattern;
+	private FlexoConcept flexoConcept;
 
-	public EditionPatternInstancePathElement(BindingPathElement parent, String pathElementName, EditionPattern editionPattern) {
-		super(parent, pathElementName, EditionPatternInstanceType.getEditionPatternInstanceType(editionPattern));
-		this.editionPattern = editionPattern;
+	public EditionPatternInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
+		super(parent, pathElementName, EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept));
+		this.flexoConcept = flexoConcept;
 	}
 
 	@Override
 	public Type getType() {
-		return EditionPatternInstanceType.getEditionPatternInstanceType(editionPattern);
+		return EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class EditionPatternInstancePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return editionPattern.getDescription();
+		return flexoConcept.getDescription();
 	}
 
 	@Override

@@ -8,7 +8,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.ViewPoint" label="viewPoint.name" icon="controller.iconForObject(viewPoint)" isEditable="false" filtered="false" defaultVisible="true" name="viewPoint">
       <Children data="viewPoint.virtualModels" name="editionPatterns" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPattern" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" isEditable="false" filtered="false" defaultVisible="true" name="editionPattern">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" isEditable="false" filtered="false" defaultVisible="true" name="editionPattern">
       <Children data="editionPattern.childEditionPatterns" name="children" />
       <Children data="data.getEPInstances(editionPattern)" name="epis" />
     </BrowserElement>
