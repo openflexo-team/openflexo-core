@@ -339,7 +339,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 
 	protected void loadInspectorGroup(String inspectorGroup) {
 		File inspectorsDir = new FileResource("Inspectors/" + inspectorGroup);
-		getModuleInspectorController().loadDirectory(inspectorsDir);
+		// getModuleInspectorController().loadDirectory(inspectorsDir);
 	}
 
 	public FlexoFrame getFlexoFrame() {

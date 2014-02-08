@@ -63,7 +63,7 @@ public class NewProjectComponent extends ProjectChooserComponent {
 					newProjectDir = new File(newProjectDir.getAbsolutePath() + ".prj");
 				}
 				if (!newProjectDir.exists()) {
-					newProjectDir.mkdir();
+					// newProjectDir.mkdir();
 				} else {
 					if (!FlexoController.confirmWithWarning(FlexoLocalization
 							.localizedForKey("project_already_exists_do_you_want_to_replace_it"))) {

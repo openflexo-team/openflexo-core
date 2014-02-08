@@ -37,7 +37,7 @@
       <LabelColumn data="iterator.name" title="virtual_model" columnWidth="120" resizable="true" displayTitle="true" name="label" />
       <LocalizedDictionary />
     </Table>
-    <Panel layout="gridbag" border="rounded3d" borderTitle="" borderTop="2" borderBottom="2" borderRight="2" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" constraints="split(index=0;location=center;splitIdentifier=screenshot)">
+    <!--  <Panel layout="gridbag" border="rounded3d" borderTitle="" borderTop="2" borderBottom="2" borderRight="2" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" constraints="split(index=0;location=center;splitIdentifier=screenshot)">
       <Panel layout="border" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" data="($org.openflexo.foundation.rm.DiagramSpecificationResource)VirtualModelTable.selected" dataClassName="org.openflexo.foundation.rm.DiagramSpecificationResource" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=screenshot;weightX=1.0;weightY=1.0)" visible="(VirtualModelTable.selected.resourceDataClass.simpleName = &quot;DiagramSpecification&quot;)" name="DiagramSpecificationPanel">
         <Image sizeAdjustment="FitToAvailableSizeRespectRatio" align="center" imageWidth="400" imageHeight="32" index="0" data="DiagramSpecificationPanel.data.exampleDiagramResources.get(0).exampleDiagram.screenshotImage.image" constraints="border(index=0;location=center;splitIdentifier=screenshot)" visible="(DiagramSpecificationPanel.data.exampleDiagramResources.size &gt; 0)" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
         <Panel layout="grid" hGap="5" vGap="5" cols="2" rows="2" flowAlignment="RIGHT" boxLayoutAxis="X_AXIS" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" constraints="border(location=south)" visible="(data.viewpointResource != null)">
@@ -47,7 +47,7 @@
           <CheckBox selected="true" data="data.createDiagram" constraints="grid(alignmentX=0.5;alignmentY=0.5;expandHorizontally=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;x=1;y=1)" name="checkbox" localize="true" />
         </Panel>
       </Panel>
-    </Panel>
+    </Panel> -->
   </SplitPanel>
   <Label label="label" align="center" index="5" data="data.errorMessage" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=10;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="(!(data.isValid))" localize="true">
     <Dependancy componentName="ViewPointBrowser" />
