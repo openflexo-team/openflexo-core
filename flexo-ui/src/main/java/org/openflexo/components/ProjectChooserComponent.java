@@ -109,7 +109,9 @@ public abstract class ProjectChooserComponent {
 			fileDialog = new FileDialog(FlexoFrame.getActiveFrame());
 		}
 		try {
-			fileDialog.setDirectory(applicationContext.getAdvancedPrefs().getLastVisitedDirectory().getCanonicalPath());
+			if (applicationContext.getAdvancedPrefs().getLastVisitedDirectory() != null) {
+				fileDialog.setDirectory(applicationContext.getAdvancedPrefs().getLastVisitedDirectory().getCanonicalPath());
+			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

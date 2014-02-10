@@ -95,7 +95,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
-import org.openflexo.foundation.resource.ProjectResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -1676,10 +1675,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 			return IconLibrary.INFORMATION_SPACE_ICON;
 		} else if (object instanceof FlexoFacet) {
 			return IconLibrary.FOLDER_ICON;
+		} else if (object instanceof FlexoProject) {
+			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof FlexoResourceCenter) {
-			if (object instanceof ProjectResourceCenter) {
-				return IconLibrary.OPENFLEXO_NOTEXT_16;
-			}
 			return IconLibrary.RESOURCE_CENTER_ICON;
 		} else if (object instanceof FlexoResourceCenterService) {
 			return IconLibrary.INFORMATION_SPACE_ICON;
@@ -1736,8 +1734,6 @@ public abstract class FlexoController implements PropertyChangeListener {
 			if (tac != null) {
 				return tac.getIconForTechnologyObject(((TechnologyObject) object).getClass());
 			}
-		} else if (object instanceof FlexoProject) {
-			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof FlexoProjectReference) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		}

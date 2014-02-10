@@ -30,6 +30,7 @@ import org.openflexo.components.ReviewUnsavedDialog.ReviewUnsavedModel;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
@@ -63,7 +64,7 @@ public class ReviewUnsavedDialog extends FIBDialog<ReviewUnsavedModel> {
 	 * @param resources
 	 *            : a vector of FlexoStorageResource
 	 */
-	public ReviewUnsavedDialog(String title, FlexoEditor editor, Collection<FlexoResource<?>> resources) {
+	public ReviewUnsavedDialog(String title, FlexoEditor editor, Collection<FlexoFileResource<?>> resources) {
 
 		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ReviewUnsavedModel(editor, resources), FlexoFrame.getActiveFrame(),
 				true, FlexoLocalization.getMainLocalizer());
@@ -87,7 +88,7 @@ public class ReviewUnsavedDialog extends FIBDialog<ReviewUnsavedModel> {
 
 		private final PropertyChangeSupport pcSupport;
 
-		public ReviewUnsavedModel(FlexoEditor editor, Collection<FlexoResource<?>> resources) {
+		public ReviewUnsavedModel(FlexoEditor editor, Collection<FlexoFileResource<?>> resources) {
 			super();
 			this.editor = editor;
 			pcSupport = new PropertyChangeSupport(this);

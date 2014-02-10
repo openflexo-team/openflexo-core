@@ -204,8 +204,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (notification instanceof ProjectLoaded) {
-			ProjectResourceCenter pRC = ProjectResourceCenter.instanciateProjectResourceCenter(((ProjectLoaded) notification).getProject());
-			addToResourceCenters(pRC);
+			addToResourceCenters(((ProjectLoaded) notification).getProject());
 		}
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter rc : getResourceCenters()) {

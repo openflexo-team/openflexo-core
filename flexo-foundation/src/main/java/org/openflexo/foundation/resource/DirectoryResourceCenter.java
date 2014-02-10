@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -45,6 +46,7 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
 
 	@ModelEntity
+	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
 	@XMLElement
 	public static interface DirectoryResourceCenterEntry extends ResourceCenterEntry<DirectoryResourceCenter> {
 		@PropertyIdentifier(type = File.class)
@@ -63,15 +65,20 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 			public DirectoryResourceCenter makeResourceCenter() {
 				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory());
 			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (obj instanceof DirectoryResourceCenterEntry) {
+					return getDirectory() != null && getDirectory().equals(((DirectoryResourceCenterEntry) obj).getDirectory());
+				}
+				return false;
+			}
 		}
 
 	}
 
-	// private File newViewPointSandboxDirectory;
-
 	public DirectoryResourceCenter(File resourceCenterDirectory) {
 		super(resourceCenterDirectory);
-		// newViewPointSandboxDirectory = new File(resourceCenterDirectory, "ViewPoints");
 	}
 
 	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory) {

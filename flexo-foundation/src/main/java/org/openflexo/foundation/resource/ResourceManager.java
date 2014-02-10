@@ -78,6 +78,20 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		return resources;
 	}
 
+	public List<FlexoFileResource<?>> getRegisteredFileResources() {
+		return (List<FlexoFileResource<?>>) getRegisteredResources(FlexoFileResource.class);
+	}
+
+	public <R extends FlexoResource<?>> List<? extends R> getRegisteredResources(Class<R> resourceClass) {
+		List<R> returned = new ArrayList<R>();
+		for (FlexoResource<?> r : getRegisteredResources()) {
+			if (resourceClass.isAssignableFrom(r.getClass())) {
+				returned.add((R) r);
+			}
+		}
+		return returned;
+	}
+
 	// TODO: optimize this
 	public List<FlexoResource<?>> getLoadedResources() {
 		List<FlexoResource<?>> returned = new ArrayList<FlexoResource<?>>();

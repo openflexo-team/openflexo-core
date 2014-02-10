@@ -62,6 +62,10 @@ public interface ResourceCenterPreferences extends PreferencesContainer {
 	@Remover(RESOURCE_CENTER_ENTRIES_KEY)
 	public void removeFromResourceCenterEntries(ResourceCenterEntry<?> aResourceCenterEntry);
 
+	public void ensureResourceEntryIsPresent(ResourceCenterEntry<?> entry);
+
+	public void ensureResourceEntryIsNoMorePresent(ResourceCenterEntry<?> entry);
+
 	/**
 	 * Return the list all all {@link FlexoResourceCenter} registered for the session
 	 * 
@@ -77,54 +81,25 @@ public interface ResourceCenterPreferences extends PreferencesContainer {
 
 		private static final Logger logger = Logger.getLogger(ResourceCenterPreferences.class.getPackage().getName());
 
-		/**
-		 * Return the list all all {@link DirectoryResourceCenter} registered for the session
-		 * 
-		 * @return
-		 */
-		/*@Override
-		public List<File> getDirectoryResourceCenterList() {
-			String directoriesAsString = getDirectoryResourceCenterListAsString();
-			if (StringUtils.isEmpty(directoriesAsString)) {
-				return Collections.emptyList();
-			} else {
-				List<File> returned = new ArrayList<File>();
-				StringTokenizer st = new StringTokenizer(directoriesAsString, ",");
-				while (st.hasMoreTokens()) {
-					String next = st.nextToken();
-					File f = new File(next);
-					if (f.exists()) {
-						returned.add(f);
-					}
-				}
-				return returned;
+		@Override
+		public void ensureResourceEntryIsPresent(ResourceCenterEntry<?> entry) {
+			System.out.println("Tiens, je me rajoute ca: " + entry);
+			Thread.dumpStack();
+			System.out.println("J'ai deja: " + getResourceCenterEntries());
+			System.out.println("getResourceCenterEntries().contains(entry)=" + getResourceCenterEntries().contains(entry));
+
+			if (!getResourceCenterEntries().contains(entry)) {
+				addToResourceCenterEntries(entry);
 			}
 		}
 
 		@Override
-		public void assertDirectoryResourceCenterRegistered(File dirRC) {
-			List<File> alreadyRegistered = getDirectoryResourceCenterList();
-			if (alreadyRegistered.contains(dirRC)) {
-				return;
+		public void ensureResourceEntryIsNoMorePresent(ResourceCenterEntry<?> entry) {
+			while (getResourceCenterEntries().contains(entry)) {
+				removeFromResourceCenterEntries(entry);
 			}
-			if (alreadyRegistered.size() == 0) {
-				setDirectoryResourceCenterListAsString(dirRC.getAbsolutePath());
-			} else {
-				setDirectoryResourceCenterListAsString(getDirectoryResourceCenterList() + "," + dirRC.getAbsolutePath());
-			}
-		}
 
-		@Override
-		public void setDirectoryResourceCenterList(List<File> rcList) {
-			boolean isFirst = true;
-			StringBuffer s = new StringBuffer();
-			for (File f : rcList) {
-				s.append((isFirst ? "" : ",") + f.getAbsolutePath());
-				isFirst = false;
-			}
-			System.out.println("Sets " + s.toString() + " for " + DIRECTORY_RESOURCE_CENTER_LIST);
-			setDirectoryResourceCenterListAsString(s.toString());
-		}*/
+		}
 
 	}
 

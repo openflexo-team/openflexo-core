@@ -197,6 +197,20 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	}
 
 	/**
+	 * Return the module definition of supplied module class
+	 * 
+	 * @return
+	 */
+	public <M extends Module<?>> M getModule(Class<M> moduleClass) {
+		for (Module<?> module : getKnownModules()) {
+			if (moduleClass.isAssignableFrom(module.getClass())) {
+				return (M) module;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Return a collection containing all loaded modules as a list of Module instances
 	 * 
 	 * @return
@@ -205,7 +219,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		List<Module<?>> returned = new ArrayList<Module<?>>();
 		for (Module<?> module : getKnownModules()) {
 			if (module.isLoaded()) {
-				System.out.println("Le module " + module + " est charge");
+				System.out.println("Le module " + module + " hash=" + module.hashCode() + " est charge");
 				returned.add(module);
 			}
 		}
@@ -353,8 +367,10 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			if (moduleInstance != null) {
 				FlexoModule old = activeModule;
 				if (activeModule != null) {
-					activeModule.getController().getControllerModel().getPropertyChangeSupport()
-							.removePropertyChangeListener(ControllerModel.CURRENT_EDITOR, activeEditorListener);
+					if (activeModule.getController() != null && activeModule.getController().getControllerModel() != null) {
+						activeModule.getController().getControllerModel().getPropertyChangeSupport()
+								.removePropertyChangeListener(ControllerModel.CURRENT_EDITOR, activeEditorListener);
+					}
 					activeModule.setAsInactive();
 				}
 				activeModule = moduleInstance;

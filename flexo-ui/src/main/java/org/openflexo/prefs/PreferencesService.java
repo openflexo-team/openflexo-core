@@ -29,10 +29,12 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.GeneralPreferences;
 import org.openflexo.ResourceCenterPreferences;
 import org.openflexo.components.PreferencesDialog;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.ModelContextLibrary;
@@ -101,11 +103,15 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
-				getResourceCenterPreferences().addToResourceCenterEntries(
-						((ResourceCenterAdded) notification).getAddedResourceCenter().getResourceCenterEntry());
+				FlexoResourceCenter addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				if (!(addedFlexoResourceCenter instanceof FlexoProject)) {
+					System.out.println("Tiens: un resource center: " + addedFlexoResourceCenter + " of "
+							+ addedFlexoResourceCenter.getClass());
+					getResourceCenterPreferences().ensureResourceEntryIsPresent(addedFlexoResourceCenter.getResourceCenterEntry());
+				}
 				savePreferences();
 			} else if (notification instanceof ResourceCenterRemoved) {
-				getResourceCenterPreferences().removeFromResourceCenterEntries(
+				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();
 			}

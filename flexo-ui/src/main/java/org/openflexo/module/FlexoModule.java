@@ -213,6 +213,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			logger.warning("Called twice closeWithoutConfirmation on " + this);
 		}
 		controller = null;
+
 		if (getModuleLoader().isLoaded(getModule())) {
 			getModuleLoader().unloadModule(getModule());
 		}

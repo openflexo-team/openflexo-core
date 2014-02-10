@@ -22,8 +22,9 @@ package org.openflexo.fib;
 import java.io.File;
 
 import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
-public class AskResourceCenterDirectory {
+public class AskResourceCenterDirectory extends PropertyChangedSupportDefaultImplementation {
 
 	public static final FileResource FIB_FILE = new FileResource("Fib/AskResourceCenterDirectory.fib");
 
@@ -34,7 +35,11 @@ public class AskResourceCenterDirectory {
 	}
 
 	public void setLocalResourceDirectory(File localResourceDirectory) {
-		this.localResourceDirectory = localResourceDirectory;
+		if (this.localResourceDirectory == null || !this.localResourceDirectory.equals(localResourceDirectory)) {
+			File old = this.localResourceDirectory;
+			this.localResourceDirectory = localResourceDirectory;
+			getPropertyChangeSupport().firePropertyChange("localResourceDirectory", old, localResourceDirectory);
+		}
 	}
 
 }
