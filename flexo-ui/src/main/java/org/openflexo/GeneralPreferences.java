@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -419,7 +418,8 @@ public interface GeneralPreferences extends PreferencesContainer {
 		/**
 		 * @param files
 		 */
-		public void setLastOpenedProjects(Vector<File> files) {
+		@Override
+		public void setLastOpenedProjects(List<File> files) {
 			if (files.size() > 0) {
 				setLastOpenedProject1(files.get(0).getAbsolutePath());
 			}

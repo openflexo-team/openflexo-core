@@ -93,7 +93,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	public void initialize(ViewPointLibrary viewPointLibrary) {
 		logger.info("Initializing ViewPointLibrary for " + this);
 		viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
-		exploreDirectoryLookingForViewPoints(rootDirectory, viewPointLibrary);
+		exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
 	}
 
 	/**
@@ -181,7 +181,11 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public Iterator<File> iterator() {
 		List<File> allFiles = new ArrayList<File>();
-		appendFiles(getRootDirectory(), allFiles);
+		if (getRootDirectory() != null) {
+			appendFiles(getRootDirectory(), allFiles);
+		} else {
+			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
+		}
 		return allFiles.iterator();
 	}
 
