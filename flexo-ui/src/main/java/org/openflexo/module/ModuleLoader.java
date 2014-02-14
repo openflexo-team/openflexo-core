@@ -255,11 +255,13 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("Unloading module " + module.getName());
 			}
+			FlexoModule<?> unloadedInstance = module.getLoadedModuleInstance();
 			if (activeModule == module.getLoadedModuleInstance()) {
 				activeModule = null;
 			}
 			module.unload();
 			getPropertyChangeSupport().firePropertyChange(MODULE_UNLOADED, module, null);
+			getServiceManager().notify(this, new ModuleUnloaded(unloadedInstance));
 		} else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Unable to unload unloaded module " + module.getName());
@@ -274,19 +276,37 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	 * 
 	 */
 	public class ModuleLoaded implements ServiceNotification {
-		private final FlexoModule loadedModule;
+		private final FlexoModule<?> loadedModule;
 
-		public ModuleLoaded(FlexoModule loadedModule) {
+		public ModuleLoaded(FlexoModule<?> loadedModule) {
 			this.loadedModule = loadedModule;
 		}
 
-		public FlexoModule getLoadedModule() {
+		public FlexoModule<?> getLoadedModule() {
 			return loadedModule;
 		}
 	}
 
 	/**
-	 * Notification of a new Module being loaded
+	 * Notification of a new Module being unloaded
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class ModuleUnloaded implements ServiceNotification {
+		private final FlexoModule<?> unloadedModule;
+
+		public ModuleUnloaded(FlexoModule<?> unloadedModule) {
+			this.unloadedModule = unloadedModule;
+		}
+
+		public FlexoModule<?> getUnloadedModule() {
+			return unloadedModule;
+		}
+	}
+
+	/**
+	 * Notification of a new Module being activated
 	 * 
 	 * @author sylvain
 	 * 
@@ -329,7 +349,13 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 		try {
 			module.load();
-			return module.getLoadedModuleInstance();
+			if (module.getLoadedModuleInstance() != null) {
+				getServiceManager().notify(this, new ModuleLoaded(module.getLoadedModuleInstance()));
+				return module.getLoadedModuleInstance();
+			} else {
+				logger.severe("Module " + module + " could not be loaded");
+				return null;
+			}
 		} catch (Exception e) {
 			ProgressWindow.hideProgressWindow();
 			e.printStackTrace();

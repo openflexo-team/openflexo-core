@@ -42,6 +42,8 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
 
+	private static final String VIEWS = "Views";
+
 	private final FlexoProject project;
 
 	/**
@@ -54,6 +56,7 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 		exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (getProject() != null) {
 			return getProject().getServiceManager();
@@ -181,4 +184,8 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 		return returned;
 	}
 
+	@Override
+	public String getDefaultBaseURI() {
+		return getProject().getURI() + "/" + VIEWS;
+	}
 }

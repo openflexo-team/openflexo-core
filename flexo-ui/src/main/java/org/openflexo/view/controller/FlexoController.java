@@ -1667,9 +1667,18 @@ public abstract class FlexoController implements PropertyChangeListener {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologyAdapterResource<?, ?>) object)
 					.getTechnologyAdapter());
 			// TODO: vincent
-			if (tac != null && TechnologyObject.class.isAssignableFrom(((TechnologyAdapterResource<?, ?>) object).getResourceDataClass())) {
-				return tac.getIconForTechnologyObject((Class<? extends TechnologyObject>) ((TechnologyAdapterResource<?, ?>) object)
-						.getResourceDataClass());
+			if (tac != null) {
+
+				if (TechnologyObject.class.isAssignableFrom(((TechnologyAdapterResource<?, ?>) object).getResourceDataClass())) {
+					return tac.getIconForTechnologyObject((Class<? extends TechnologyObject>) ((TechnologyAdapterResource<?, ?>) object)
+							.getResourceDataClass());
+				} else {
+					logger.warning("Inconsistent data: found a TechnologyAdapterResource with a non TechnologyObject resource data: "
+							+ ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
+				}
+			} else {
+				logger.warning("Could not find TechnologyAdapterController for technology "
+						+ ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
 			}
 		} else if (object instanceof InformationSpace) {
 			return IconLibrary.INFORMATION_SPACE_ICON;
@@ -1706,6 +1715,8 @@ public abstract class FlexoController implements PropertyChangeListener {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController((TechnologyAdapter) object);
 			if (tac != null) {
 				return tac.getTechnologyIcon();
+			} else {
+				logger.warning("Could not find TechnologyAdapterController for technology " + object);
 			}
 		} else if (object instanceof FlexoModel<?, ?>) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoModel<?, ?>) object).getTechnologyAdapter());

@@ -74,6 +74,35 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	}
 
 	/**
+	 * Return the default base URI associated with the {@link ResourceRepository}.<br>
+	 * 
+	 * This URI might be used as default base URI for any resource stored in this repository, if no explicit URI was given to related
+	 * resource. Resulting URI will be given by concatenation of this base URI with base name for related resource
+	 * 
+	 * @return
+	 */
+	public abstract String getDefaultBaseURI();
+
+	/**
+	 * Generate and return an URI of supplied resource, if this resource has no explicit URI, asserting the resource is not yet contained in
+	 * repository (otherwise, an new URI will be generated)<br>
+	 * 
+	 * Returned URI will be given by concatenation of this base URI with base name for related resource
+	 * 
+	 * @return
+	 */
+	public String generateURI(String baseName) {
+		String baseURI = getDefaultBaseURI() + "/" + baseName;
+		String returnedURI = baseURI;
+		int i = 1;
+		while (getResource(returnedURI) != null) {
+			i++;
+			returnedURI = baseURI + i;
+		}
+		return returnedURI;
+	}
+
+	/**
 	 * Stores the object which is the "owner" of this repository. The owner has the responsability of this repository.
 	 */
 	public Object getOwner() {

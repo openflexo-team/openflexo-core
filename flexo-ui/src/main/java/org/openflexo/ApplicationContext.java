@@ -153,8 +153,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 				.getResourceCenterEntries());
 	}
 
-	@Deprecated
-	/*Should be removed when preferences will be a service */
 	@Override
 	public void notify(FlexoService caller, ServiceNotification notification) {
 		super.notify(caller, notification);

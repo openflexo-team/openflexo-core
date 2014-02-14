@@ -382,6 +382,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 	}*/
 
+	public static final String BASE_PROJECT_URI = "http://www.openflexo.org/projects";
+	public static final String RESOURCES = "resources";
+
 	public static final String PROJECT_DIRECTORY = "projectDirectory";
 	public static final String PROJECT_DATA = "projectData";
 	public static final String REVISION = "revision";
@@ -2949,9 +2952,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			return reply;
 		}*/
 
-	public static final String ONTOLOGY_URI = "http://www.agilebirds.com/projects";
-	public static final String RESOURCES = "resources";
-
 	public String getProjectVersionURI() {
 		return projectVersionURI;
 	}
@@ -2976,8 +2976,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public String getURI() {
 		if (projectURI == null /* && !isDeserializing()*/) {
 			Date currentDate = new Date();
-			projectURI = ONTOLOGY_URI + "/" + (1900 + currentDate.getYear()) + "/" + (currentDate.getMonth() + 1) + "/" + getProjectName()
-					+ "_" + System.currentTimeMillis();
+			projectURI = BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/" + (currentDate.getMonth() + 1) + "/"
+					+ getProjectName() + "_" + System.currentTimeMillis();
 			// projectURI=
 			// ONTOLOGY_URI+"/data/prj_"+getPrefix()+"_"+System.currentTimeMillis();
 		}
@@ -3723,6 +3723,11 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public void update() throws IOException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public String getDefaultBaseURI() {
+		return getURI();
 	}
 
 }

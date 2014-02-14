@@ -10,7 +10,7 @@ import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.OpenflexoRunTimeTestCase;
+import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -21,7 +21,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestReviewUnsavedDialog extends OpenflexoRunTimeTestCase {
+public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCase {
 
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 

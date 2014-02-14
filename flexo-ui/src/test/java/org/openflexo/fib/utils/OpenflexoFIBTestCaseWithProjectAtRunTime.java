@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.junit.runner.RunWith;
-import org.openflexo.OpenflexoTestCaseWithGUI;
+import org.openflexo.OpenflexoProjectAtRunTimeTestCaseWithGUI;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.validation.ValidationError;
@@ -23,9 +23,9 @@ import org.openflexo.test.OrderedRunner;
  * 
  */
 @RunWith(OrderedRunner.class)
-public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
+public abstract class OpenflexoFIBTestCaseWithProjectAtRunTime extends OpenflexoProjectAtRunTimeTestCaseWithGUI {
 
-	static final Logger logger = Logger.getLogger(OpenflexoFIBTestCase.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(OpenflexoFIBTestCaseWithProjectAtRunTime.class.getPackage().getName());
 
 	public void validateFIB(File fibFile) {
 		try {

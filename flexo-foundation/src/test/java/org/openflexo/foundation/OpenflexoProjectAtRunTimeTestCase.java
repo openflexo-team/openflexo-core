@@ -45,15 +45,14 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 
 /**
  * Provides a JUnit 4 generic environment with a {@link FlexoProject} for testing purposes<br>
  */
-public abstract class OpenflexoRunTimeTestCase extends OpenflexoTestCase {
+public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCase {
 
-	private static final Logger logger = FlexoLogger.getLogger(OpenflexoRunTimeTestCase.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
 	protected static FlexoProject _project;
@@ -113,7 +112,7 @@ public abstract class OpenflexoRunTimeTestCase extends OpenflexoTestCase {
 
 	// TODO: create a project where all those tests don't need a manual import of projects
 	// TODO: copy all test VP in tmp dir and work with those VP instead of polling GIT workspace
-	protected static FlexoServiceManager instanciateTestServiceManager() {
+	/*protected static FlexoServiceManager instanciateTestServiceManager() {
 		serviceManager = new DefaultFlexoServiceManager() {
 
 			@Override
@@ -141,7 +140,7 @@ public abstract class OpenflexoRunTimeTestCase extends OpenflexoTestCase {
 			}
 		};
 		return serviceManager;
-	}
+	}*/
 
 	protected FlexoEditor createProject(String projectName) {
 		if (serviceManager == null) {

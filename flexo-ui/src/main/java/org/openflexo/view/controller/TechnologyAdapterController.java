@@ -218,6 +218,17 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
 			FlexoPerspective perspective);
 
+	/**
+	 * Called when a {@link ModuleView} is about to be displayed
+	 * 
+	 * @param moduleView
+	 * @param controller
+	 * @param perspective
+	 */
+	public void notifyModuleViewDisplayed(ModuleView<?> moduleView, FlexoController controller, FlexoPerspective perspective) {
+		System.out.println(">>>>>>> Will display module view for " + moduleView.getRepresentedObject());
+	}
+
 	public File getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());

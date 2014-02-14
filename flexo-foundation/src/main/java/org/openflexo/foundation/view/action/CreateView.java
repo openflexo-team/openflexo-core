@@ -71,10 +71,10 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 	private View newView;
 
-	public boolean useViewPoint = true;
-	public String newViewName;
-	public String newViewTitle;
-	public ViewPointResource viewpointResource;
+	private boolean useViewPoint = true;
+	private String newViewName;
+	private String newViewTitle;
+	private ViewPointResource viewpointResource;
 	// public boolean createVirtualModel = false;
 	// public boolean createDiagram = false;
 
@@ -175,5 +175,49 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 	public View getNewView() {
 		return newView;
+	}
+
+	public boolean isUseViewPoint() {
+		return useViewPoint;
+	}
+
+	public void setUseViewPoint(boolean useViewPoint) {
+		boolean wasValid = isValid();
+		this.useViewPoint = useViewPoint;
+		getPropertyChangeSupport().firePropertyChange("useViewPoint", !useViewPoint, useViewPoint);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public String getNewViewName() {
+		return newViewName;
+	}
+
+	public void setNewViewName(String newViewName) {
+		boolean wasValid = isValid();
+		this.newViewName = newViewName;
+		getPropertyChangeSupport().firePropertyChange("newViewName", null, newViewName);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public String getNewViewTitle() {
+		return newViewTitle;
+	}
+
+	public void setNewViewTitle(String newViewTitle) {
+		boolean wasValid = isValid();
+		this.newViewTitle = newViewTitle;
+		getPropertyChangeSupport().firePropertyChange("newViewTitle", null, newViewTitle);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public ViewPointResource getViewpointResource() {
+		return viewpointResource;
+	}
+
+	public void setViewpointResource(ViewPointResource viewpointResource) {
+		boolean wasValid = isValid();
+		this.viewpointResource = viewpointResource;
+		getPropertyChangeSupport().firePropertyChange("viewpointResource", null, viewpointResource);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 }

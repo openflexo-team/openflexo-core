@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.OpenflexoRunTimeTestCase;
+import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -20,7 +20,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateViewPointInProject extends OpenflexoRunTimeTestCase {
+public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestCase {
 
 	static FlexoEditor editor;
 	static FlexoProject project;

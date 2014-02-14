@@ -10,7 +10,7 @@ import org.junit.Test;
  * @author sylvain
  * 
  */
-public class TestCreateProject extends OpenflexoRunTimeTestCase {
+public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	public void testCreateProject() {

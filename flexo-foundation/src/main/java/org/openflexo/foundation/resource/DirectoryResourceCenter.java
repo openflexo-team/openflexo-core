@@ -106,4 +106,9 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	public void update() throws IOException {
 	}
 
+	@Override
+	public String getDefaultBaseURI() {
+		return getDirectory().toURI().toString();
+	}
+
 }

@@ -57,19 +57,24 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			Iterator<TechnologyAdapterController> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapterController technologyAdapterController = iterator.next();
-				technologyAdapterController.setTechnologyAdapterService(this);
-				logger.info("Loaded as " + technologyAdapterController.getClass());
-
-				if (loadedAdapters.containsKey(technologyAdapterController.getClass())) {
-					logger.severe("Cannot include TechnologyAdapter with classname '" + technologyAdapterController.getClass().getName()
-							+ "' because it already exists !!!! A TechnologyAdapter name MUST be unique !");
-				} else {
-					loadedAdapters.put(technologyAdapterController.getClass(), technologyAdapterController);
-				}
+				registerTechnologyAdapterController(technologyAdapterController);
 			}
 			logger.info("Loading available technology adapters. Done.");
 		}
 
+	}
+
+	private void registerTechnologyAdapterController(TechnologyAdapterController<?> technologyAdapterController) {
+		logger.info("Loading " + technologyAdapterController.getClass());
+		technologyAdapterController.setTechnologyAdapterService(this);
+
+		if (loadedAdapters.containsKey(technologyAdapterController.getClass())) {
+			logger.severe("Cannot include TechnologyAdapter with classname '" + technologyAdapterController.getClass().getName()
+					+ "' because it already exists !!!! A TechnologyAdapter name MUST be unique !");
+		} else {
+			loadedAdapters.put(technologyAdapterController.getClass(), technologyAdapterController);
+		}
+		logger.info("Loaded " + technologyAdapterController.getClass());
 	}
 
 	/**

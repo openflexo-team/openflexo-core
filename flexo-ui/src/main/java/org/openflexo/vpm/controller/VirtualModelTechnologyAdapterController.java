@@ -3,8 +3,8 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -81,7 +81,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject> objectClass) {
-		return null;
+		return IconLibrary.OPENFLEXO_NOTEXT_16;
 	}
 
 	/**
