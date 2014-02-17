@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -56,11 +57,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 
 	}
 
-	protected static FlexoServiceManager instanciateTestServiceManager() {
+	protected static ApplicationContext instanciateTestServiceManager() {
 		return instanciateTestServiceManager(false);
 	}
 
-	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
 		return serviceManager;
@@ -68,6 +69,14 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 
 	protected static FlexoServiceManager getFlexoServiceManager() {
 		return serviceManager;
+	}
+
+	@Override
+	protected FlexoEditor createProject(String projectName) {
+		if (serviceManager == null) {
+			serviceManager = instanciateTestServiceManager();
+		}
+		return createProject(projectName, serviceManager);
 	}
 
 }

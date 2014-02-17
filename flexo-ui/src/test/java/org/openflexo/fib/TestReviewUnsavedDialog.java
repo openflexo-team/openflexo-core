@@ -6,11 +6,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.OpenflexoProjectAtRunTimeTestCaseWithGUI;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.fib.testutils.FIBDialogGraphicalContextDelegate;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -21,7 +21,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCase {
+public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCaseWithGUI {
 
 	private static FIBDialogGraphicalContextDelegate gcDelegate;
 
@@ -41,8 +41,7 @@ public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
-		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog("TestReviewUnsaved", editor, editor.getServiceManager().getResourceManager()
-				.getRegisteredFileResources());
+		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(serviceManager.getResourceManager());
 		log("instanciated " + dialog);
 		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ReviewUnsavedDialog.FIB_FILE);
 	}

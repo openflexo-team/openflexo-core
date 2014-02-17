@@ -35,19 +35,19 @@ public class ResourceSavingEntryInfo {
 
 	public String getType() {
 		if (resource.getResourceDataClass() == null) {
-			logger.warning("Resource " + this + " has no resource data class");
+			logger.warning("Resource " + resource + " has no resource data class");
 			return null;
 		}
 		return resource.getResourceDataClass().getSimpleName();
 	}
 
 	public boolean isModified() {
-		try {
-			return resource.getResourceData(null).isModified();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		/*System.out.println("Est ce que la resource " + resource + " est modifiee ?");
+		if (resource.isLoaded()) {
+			System.out.println("chargee=true modified=" + resource.getLoadedResourceData().isModified());
+		}*/
+		return resource.isLoaded() && resource.getLoadedResourceData().isModified();
+
 	}
 
 	public boolean saveThisResource() {
@@ -59,6 +59,7 @@ public class ResourceSavingEntryInfo {
 	}
 
 	public void reviewModifiedResource() {
+
 		saveThisResource = isModified();
 	}
 

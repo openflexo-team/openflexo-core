@@ -385,6 +385,8 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 		} else if ("projectDirectory".equals(dataModification.propertyName())) {
 			updateTitle();
 		}
+
+		System.out.println("Received " + dataModification + " from " + observable);
 		/*
 		 * if (ToolBox.getPLATFORM() == ToolBox.MACOS && dataModification
 		 * instanceof ResourceStatusModification) {

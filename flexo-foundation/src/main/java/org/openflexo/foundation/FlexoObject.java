@@ -226,7 +226,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 
 		protected boolean isDeleted = false;
 		private boolean ignoreNotifications = false;
-		private boolean isModified = false;
+		// private boolean isModified = false;
 		private Date lastMemoryUpdate = null;
 
 		private Object context;
@@ -540,16 +540,17 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			ignoreNotifications = false;
 		}
 
-		@Override
+		/*@Override
 		public boolean isModified() {
 			return isModified;
-		}
+		}*/
 
 		public synchronized void setIsModified() {
 			if (ignoreNotifications) {
 				return;
 			}
-			isModified = true;
+			performSuperSetModified(true);
+			// isModified = true;
 			lastMemoryUpdate = new Date();
 		}
 
@@ -558,7 +559,8 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		public synchronized void clearIsModified(boolean clearLastMemoryUpdate) {
-			isModified = false;
+			performSuperSetModified(false);
+			// isModified = false;
 			// GPO: I commented the line hereunder because I don't think that we need to reset this date
 			if (clearLastMemoryUpdate) {
 				lastMemoryUpdate = null;

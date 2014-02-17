@@ -1,7 +1,6 @@
 package org.openflexo.prefs;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
@@ -100,17 +99,6 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				return super.loadResourceData(progress);
 			} catch (InvalidXMLException e) {
 
-				System.out.println("On arrive pas a lire le fichier " + getFile());
-
-				try {
-					System.out.println(FileUtils.fileContents(getFile()));
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				System.out.println("On tente de refaire un fichier de preferences" + getFile());
-
 				// Preferences file is not readable, perhaps this is because it is an old version of Openflexo
 				// Creates it from scratch
 
@@ -121,8 +109,6 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				prefs.addToContents(advancedPrefs);
 				setResourceData(prefs);
 
-				System.out.println("build " + getFactory().stringRepresentation(prefs));
-
 				try {
 					save(null);
 				} catch (SaveResourceException e2) {
@@ -130,15 +116,13 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 					e2.printStackTrace();
 				}
 
-				try {
-					System.out.println(FileUtils.fileContents(getFile()));
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				return prefs;
 			}
 		}
 
+		@Override
+		public Class<FlexoPreferences> getResourceDataClass() {
+			return FlexoPreferences.class;
+		}
 	}
 }

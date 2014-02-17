@@ -19,8 +19,8 @@
  */
 package org.openflexo.components;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * Dialog allowing to select resources to save in supplied editor's project (resources in project only)
@@ -31,7 +31,8 @@ import org.openflexo.localization.FlexoLocalization;
 @SuppressWarnings("serial")
 public class ProjectResourcesReviewer extends ReviewUnsavedDialog {
 
-	public ProjectResourcesReviewer(FlexoEditor editor) {
-		super(FlexoLocalization.localizedForKey("save_project"), editor, editor.getProject().getAllResources());
+	// TODO: only save resource for supplied project
+	public ProjectResourcesReviewer(FlexoEditor editor, ApplicationContext applicationContext) {
+		super(applicationContext.getResourceManager());
 	}
 }
