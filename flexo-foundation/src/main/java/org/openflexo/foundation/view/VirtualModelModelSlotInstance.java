@@ -37,18 +37,35 @@ import org.openflexo.toolbox.StringUtils;
  * @see VirtualModelModelSlot
  * 
  */
-public class VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> {
+@ModelEntity
+@ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
+@XMLElement
+public interface VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance>{
+
+@PropertyIdentifier(type=String.class)
+public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
+
+@Getter(value=VIRTUAL_MODEL_INSTANCE_URI_KEY)
+@XMLAttribute
+public String getVirtualModelInstanceURI();
+
+@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
+public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
+
+
+public static abstract  class VirtualModelModelSlotInstanceImpl extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance>Impl implements VirtualModelModelSlotInstance
+{
 
 	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
 	// Serialization/deserialization only, do not use
 	private String virtualModelInstanceURI;
 
-	/*public VirtualModelModelSlotInstance(View view, VirtualModelModelSlot modelSlot) {
+	/*public VirtualModelModelSlotInstanceImpl(View view, VirtualModelModelSlot modelSlot) {
 		super(view, modelSlot);
 	}*/
 
-	public VirtualModelModelSlotInstance(VirtualModelInstance vmInstance, VirtualModelModelSlot modelSlot) {
+	public VirtualModelModelSlotInstanceImpl(VirtualModelInstance vmInstance, VirtualModelModelSlot modelSlot) {
 		super(vmInstance, modelSlot);
 	}
 
@@ -93,4 +110,5 @@ public class VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualMode
 		return getVirtualModelInstanceURI();
 	}
 
+}
 }

@@ -57,7 +57,40 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class EditionPatternInstance extends VirtualModelInstanceObject implements Bindable, BindingEvaluationContext {
+@ModelEntity
+@ImplementationClass(EditionPatternInstance.EditionPatternInstanceImpl.class)
+@XMLElement
+public interface EditionPatternInstance extends VirtualModelInstanceObject,Bindable, BindingEvaluationContext{
+
+@PropertyIdentifier(type=String.class)
+public static final String EDITION_PATTERN_URI_KEY = "editionPatternURI";
+@PropertyIdentifier(type=Vector.class)
+public static final String ACTOR_LIST_KEY = "actorList";
+
+@Getter(value=EDITION_PATTERN_URI_KEY)
+@XMLAttribute
+public String getEditionPatternURI();
+
+@Setter(EDITION_PATTERN_URI_KEY)
+public void setEditionPatternURI(String editionPatternURI);
+
+
+@Getter(value=ACTOR_LIST_KEY,cardinality = Cardinality.LIST)
+@XMLElement
+public List<ActorReference> getActorList();
+
+@Setter(ACTOR_LIST_KEY)
+public void setActorList(List<ActorReference> actorList);
+
+@Adder(ACTOR_LIST_KEY)
+public void addToActorList(ActorReference aActorList);
+
+@Remover(ACTOR_LIST_KEY)
+public void removeFromActorList(ActorReference aActorList);
+
+
+public static abstract  class EditionPatternInstanceImpl extends VirtualModelInstanceObjectImpl implements EditionPatternInstance
+{
 
 	private static final Logger logger = FlexoLogger.getLogger(EditionPatternInstance.class.getPackage().toString());
 
@@ -75,7 +108,7 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 	 * @param aPattern
 	 */
 
-	/*public EditionPatternInstance(EditionPatternReference aPattern) {
+	/*public EditionPatternInstanceImpl(EditionPatternReference aPattern) {
 		super(aPattern.getProject());
 		// logger.info(">>>>>>>> EditionPatternInstance "+Integer.toHexString(hashCode())+" <init1> actors="+actors);
 		flexoConcept = aPattern.getEditionPattern();
@@ -93,7 +126,7 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 	/**
 	 * Constructor invoked during deserialization
 	 */
-	public EditionPatternInstance(VirtualModelInstance virtualModelInstance) {
+	public EditionPatternInstanceImpl(VirtualModelInstance virtualModelInstance) {
 		super(virtualModelInstance.getProject());
 		vmInstance = virtualModelInstance;
 		actors = new Hashtable<PatternRole<?>, ActorReference<?>>();
@@ -101,7 +134,7 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 		// initializeDeserialization(builder);
 	}
 
-	public EditionPatternInstance(FlexoConcept aPattern, VirtualModelInstance vmInstance, FlexoProject project) {
+	public EditionPatternInstanceImpl(FlexoConcept aPattern, VirtualModelInstance vmInstance, FlexoProject project) {
 		super(vmInstance != null ? vmInstance.getProject() : project);
 		// logger.info(">>>>>>>> EditionPatternInstance "+Integer.toHexString(hashCode())+" <init2> actors="+actors);
 		this.vmInstance = vmInstance;
@@ -431,7 +464,7 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 	/**
 	 * Clone this FlexoConcept instance using default CloningScheme
 	 */
-	public EditionPatternInstance cloneEditionPatternInstance() {
+	public EditionPatternInstanceImpl cloneEditionPatternInstance() {
 		/*if (getEditionPattern().getDefaultDeletionScheme() != null) {
 			delete(getEditionPattern().getDefaultDeletionScheme());
 		} else {
@@ -445,7 +478,7 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 	/**
 	 * Delete this FlexoConcept instance using supplied DeletionScheme
 	 */
-	public EditionPatternInstance cloneEditionPatternInstance(CloningScheme cloningScheme) {
+	public EditionPatternInstanceImpl cloneEditionPatternInstance(CloningScheme cloningScheme) {
 		/*logger.warning("NEW EditionPatternInstance deletion !");
 		deleted = true;
 		DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(getPatternActor(getEditionPattern()
@@ -606,4 +639,5 @@ public class EditionPatternInstance extends VirtualModelInstanceObject implement
 				+ getFlexoID() + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
 	}
 
+}
 }

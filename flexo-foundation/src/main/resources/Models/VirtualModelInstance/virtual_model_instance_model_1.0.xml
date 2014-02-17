@@ -4,7 +4,7 @@
 
 <model builder="org.openflexo.foundation.xml.VirtualModelInstanceBuilder" handlesReferences="yes" serializationMode="pseudoTree">
 
-	<mapId>
+	<!--  <mapId>
 		<map entityClass="org.openflexo.foundation.FlexoModelObject"
 			identifierAccessor="serializationIdentifier" />
 	</mapId>
@@ -26,7 +26,7 @@
   	<entity name="org.openflexo.foundation.FlexoProperty" xmlTag="FlexoProperty">
 		<property name="name" xmlTag="name" attribute="yes" />
 		<property name="value" xmlTag="value" attribute="yes" />
-	</entity>
+	</entity>-->
 
 	<entity name="org.openflexo.foundation.view.VirtualModelInstance" xmlTag="VirtualModelInstance">
 		<description>VirtualModelInstance</description>
@@ -73,7 +73,7 @@
 	</entity>
 
 	<entity
-		name="org.openflexo.technologyadapter.owl.viewpoint.ObjectPropertyStatementPatternRole$ObjectPropertyStatementActorReference"
+		name="org.openflexo.technologyadapter.owl.viewpoint.ObjectPropertyStatementActorReference"
 		xmlTag="ObjectPropertyStatementActorReference">
 		<property name="subjectURI" xmlTag="subjectURI" attribute="YES"
 			description="" />
@@ -84,7 +84,7 @@
 	</entity>
 
 	<entity
-		name="org.openflexo.technologyadapter.owl.viewpoint.DataPropertyStatementPatternRole$DataPropertyStatementActorReference"
+		name="org.openflexo.technologyadapter.owl.viewpoint.DataPropertyStatementActorReference"
 		xmlTag="DataPropertyStatementActorReference">
 		<property name="subjectURI" xmlTag="subjectURI" attribute="YES"
 			description="" />
@@ -95,7 +95,7 @@
 	</entity>
 
 	<entity
-		name="org.openflexo.technologyadapter.owl.viewpoint.SubClassStatementPatternRole$SubClassStatementActorReference"
+		name="org.openflexo.technologyadapter.owl.viewpoint.SubClassStatementActorReference"
 		xmlTag="SubClassStatementActorReference">
 		<property name="subjectURI" xmlTag="subjectURI" attribute="YES"
 			description="" />
@@ -104,7 +104,7 @@
 	</entity>
 
 	<entity
-		name="org.openflexo.technologyadapter.owl.viewpoint.RestrictionStatementPatternRole$RestrictionStatementActorReference"
+		name="org.openflexo.technologyadapter.owl.viewpoint.RestrictionStatementActorReference"
 		xmlTag="RestrictionStatementActorReference">
 		<!-- <property name="subjectURI" xmlTag="subjectURI" attribute="YES" description=""/> -->
 		<property name="propertyURI" xmlTag="propertyURI" attribute="YES"

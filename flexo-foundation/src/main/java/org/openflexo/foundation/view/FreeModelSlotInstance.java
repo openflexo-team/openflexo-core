@@ -38,11 +38,28 @@ import org.openflexo.toolbox.StringUtils;
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
  * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link VirtualModelInstance}
  * 
- * @author Sylvain Guerin, Vincent Leildé
+ * @author Sylvain Guerin, Vincent LeildÃ©
  * @see FreeModelSlot
  * 
  */
-public class FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends ModelSlotInstance<MS, RD> {
+@ModelEntity
+@ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
+@XMLElement
+public interface FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends ModelSlotInstance<MS, RD>{
+
+@PropertyIdentifier(type=String.class)
+public static final String RESOURCE_URI_KEY = "resourceURI";
+
+@Getter(value=RESOURCE_URI_KEY)
+@XMLAttribute
+public String getResourceURI();
+
+@Setter(RESOURCE_URI_KEY)
+public void setResourceURI(String resourceURI);
+
+
+public static abstract  class FreeModelSlotInstance<RDImpl extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends ModelSlotInstance<MS, RD>Impl implements FreeModelSlotInstance<RD
+{
 
 	private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
@@ -51,11 +68,11 @@ public class FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeM
 
 	private FlexoVersion version;
 
-	/*public FreeModelSlotInstance(View view, MS modelSlot) {
+	/*public FreeModelSlotInstanceImpl(View view, MS modelSlot) {
 		super(view, modelSlot);
 	}*/
 
-	public FreeModelSlotInstance(VirtualModelInstance vmInstance, MS modelSlot) {
+	public FreeModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
 		super(vmInstance, modelSlot);
 	}
 
@@ -115,4 +132,5 @@ public class FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeM
 	public String getBindingDescription() {
 		return getResourceURI();
 	}
+}
 }

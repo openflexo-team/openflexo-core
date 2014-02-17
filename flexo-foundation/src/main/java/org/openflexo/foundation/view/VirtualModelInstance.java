@@ -64,8 +64,67 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
  * @author sylvain
  * 
  */
-public class VirtualModelInstance extends EditionPatternInstance implements ResourceData<VirtualModelInstance>,
-		FlexoModel<VirtualModelInstance, VirtualModel> {
+@ModelEntity
+@ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
+@XMLElement
+public interface VirtualModelInstance extends EditionPatternInstance,ResourceData<VirtualModelInstance>,
+		FlexoModel<VirtualModelInstance, VirtualModel>{
+
+@PropertyIdentifier(type=String.class)
+public static final String TITLE_KEY = "title";
+@PropertyIdentifier(type=String.class)
+public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
+@PropertyIdentifier(type=List.class)
+public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
+@PropertyIdentifier(type=List.class)
+public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "editionPatternInstancesList";
+
+@Getter(value=TITLE_KEY)
+@XMLAttribute
+public String getTitle();
+
+@Setter(TITLE_KEY)
+public void setTitle(String title);
+
+
+@Getter(value=VIRTUAL_MODEL_URI_KEY)
+@XMLAttribute
+public String getVirtualModelURI();
+
+@Setter(VIRTUAL_MODEL_URI_KEY)
+public void setVirtualModelURI(String virtualModelURI);
+
+
+@Getter(value=MODEL_SLOT_INSTANCES_KEY,cardinality = Cardinality.LIST)
+@XMLElement
+public List<ModelSlotInstance> getModelSlotInstances();
+
+@Setter(MODEL_SLOT_INSTANCES_KEY)
+public void setModelSlotInstances(List<ModelSlotInstance> modelSlotInstances);
+
+@Adder(MODEL_SLOT_INSTANCES_KEY)
+public void addToModelSlotInstances(ModelSlotInstance aModelSlotInstance);
+
+@Remover(MODEL_SLOT_INSTANCES_KEY)
+public void removeFromModelSlotInstance(ModelSlotInstance aModelSlotInstance);
+
+
+@Getter(value=EDITION_PATTERN_INSTANCES_LIST_KEY,cardinality = Cardinality.LIST)
+@XMLElement
+public List<EditionPatternInstance> getEditionPatternInstancesList();
+
+@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
+public void setEditionPatternInstancesList(List<EditionPatternInstance> editionPatternInstancesList);
+
+@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
+public void addToEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+
+@Remover(EDITION_PATTERN_INSTANCES_LIST_KEY)
+public void removeFromEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+
+
+public static abstract  class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance
+{
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
 
@@ -98,7 +157,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	/**
 	 * Default constructor with view, virtual model and resource
 	 */
-	public VirtualModelInstance(View view, VirtualModel virtualModel, VirtualModelInstanceResource resource) {
+	public VirtualModelInstanceImpl(View view, VirtualModel virtualModel, VirtualModelInstanceResource resource) {
 		this(view, virtualModel);
 		setResource(resource);
 	}
@@ -107,7 +166,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	 * Default constructor with view and virtual model
 	 * 
 	 */
-	public VirtualModelInstance(View view, VirtualModel virtualModel) {
+	public VirtualModelInstanceImpl(View view, VirtualModel virtualModel) {
 		super(virtualModel, null, view.getProject());
 		logger.info("Created new VirtualModelInstance for virtual model " + virtualModel);
 		modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
@@ -304,7 +363,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	}
 
 	@Override
-	public VirtualModelInstanceResource getResource() {
+	public VirtualModelInstanceImplResource getResource() {
 		return resource;
 	}
 
@@ -334,7 +393,7 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 	}
 
 	@Override
-	public VirtualModelInstance getResourceData() {
+	public VirtualModelInstanceImpl getResourceData() {
 		return this;
 	}
 
@@ -505,4 +564,5 @@ public class VirtualModelInstance extends EditionPatternInstance implements Reso
 		return null;
 	}
 
+}
 }

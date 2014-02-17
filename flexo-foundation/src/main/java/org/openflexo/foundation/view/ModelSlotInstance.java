@@ -41,7 +41,23 @@ import org.openflexo.toolbox.StringUtils;
  * @see View
  * 
  */
-public abstract class ModelSlotInstance<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObject {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
+public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObject{
+
+@PropertyIdentifier(type=String.class)
+public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
+
+@Getter(value=MODEL_SLOT_NAME_KEY)
+@XMLAttribute
+public String getModelSlotName();
+
+@Setter(MODEL_SLOT_NAME_KEY)
+public void setModelSlotName(String modelSlotName);
+
+
+public static abstract  abstract class ModelSlotInstance<MSImpl extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS
+{
 
 	private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
@@ -53,17 +69,17 @@ public abstract class ModelSlotInstance<MS extends ModelSlot<RD>, RD extends Res
 	// Serialization/deserialization only, do not use
 	private String modelSlotName;
 
-	/*public ModelSlotInstance(FlexoProject project) {
+	/*public ModelSlotInstanceImpl(FlexoProject project) {
 		super(project);
 	}*/
 
-	/*public ModelSlotInstance(View view, MS modelSlot) {
+	/*public ModelSlotInstanceImpl(View view, MS modelSlot) {
 		super(view.getProject());
 		this.view = view;
 		this.modelSlot = modelSlot;
 	}*/
 
-	public ModelSlotInstance(VirtualModelInstance vmInstance, MS modelSlot) {
+	public ModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
 		super(vmInstance.getProject());
 		this.vmInstance = vmInstance;
 		this.view = vmInstance.getView();
@@ -177,4 +193,5 @@ public abstract class ModelSlotInstance<MS extends ModelSlot<RD>, RD extends Res
 	 * @return
 	 */
 	public abstract String getBindingDescription();
+}
 }

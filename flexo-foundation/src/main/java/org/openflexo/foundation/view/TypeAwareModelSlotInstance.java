@@ -38,19 +38,37 @@ import org.openflexo.toolbox.StringUtils;
  * @see TypeAwareModelSlot
  * 
  */
-public class TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
-		extends ModelSlotInstance<MS, M> {
+@ModelEntity
+@ImplementationClass(TypeAwareModelSlotInstance.TypeAwareModelSlotInstanceImpl.class)
+@XMLElement
+public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
+		extends ModelSlotInstance<MS, M>{
+
+@PropertyIdentifier(type=String.class)
+public static final String MODEL_URI_KEY = "modelURI";
+
+@Getter(value=MODEL_URI_KEY)
+@XMLAttribute
+public String getModelURI();
+
+@Setter(MODEL_URI_KEY)
+public void setModelURI(String modelURI);
+
+
+public static abstract  class TypeAwareModelSlotInstance<MImpl extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
+		extends ModelSlotInstance<MS, M>Impl implements TypeAwareModelSlotInstance<M
+{
 
 	private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
 	// Serialization/deserialization only, do not use
 	private String modelURI;
 
-	/*public TypeAwareModelSlotInstance(View view, MS modelSlot) {
+	/*public TypeAwareModelSlotInstanceImpl(View view, MS modelSlot) {
 		super(view, modelSlot);
 	}*/
 
-	public TypeAwareModelSlotInstance(VirtualModelInstance vmInstance, MS modelSlot) {
+	public TypeAwareModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
 		super(vmInstance, modelSlot);
 	}
 
@@ -120,4 +138,5 @@ public class TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM extends 
 
 		setModelURI(getAccessedResourceData().getURI());
 	}
+}
 }

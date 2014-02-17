@@ -50,7 +50,60 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author sylvain
  * 
  */
-public class View extends ViewObject implements ResourceData<View>, InnerResourceData<View> {
+@ModelEntity
+@ImplementationClass(View.ViewImpl.class)
+@XMLElement
+public interface View extends ViewObject,ResourceData<View>, InnerResourceData<View>{
+
+@PropertyIdentifier(type=String.class)
+public static final String VIEW_POINT_URI_KEY = "viewPointURI";
+@PropertyIdentifier(type=FlexoVersion.class)
+public static final String VIEW_POINT_VERSION_KEY = "viewPointVersion";
+@PropertyIdentifier(type=String.class)
+public static final String TITLE_KEY = "title";
+@PropertyIdentifier(type=List.class)
+public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
+
+@Getter(value=VIEW_POINT_URI_KEY)
+@XMLAttribute
+public String getViewPointURI();
+
+@Setter(VIEW_POINT_URI_KEY)
+public void setViewPointURI(String viewPointURI);
+
+
+@Getter(value=VIEW_POINT_VERSION_KEY)
+@XMLAttribute
+public FlexoVersion getViewPointVersion();
+
+@Setter(VIEW_POINT_VERSION_KEY)
+public void setViewPointVersion(FlexoVersion viewPointVersion);
+
+
+@Getter(value=TITLE_KEY)
+@XMLAttribute
+public String getTitle();
+
+@Setter(TITLE_KEY)
+public void setTitle(String title);
+
+
+@Getter(value=MODEL_SLOT_INSTANCES_KEY,cardinality = Cardinality.LIST)
+@XMLElement
+public List<ModelSlotInstance> getModelSlotInstances();
+
+@Setter(MODEL_SLOT_INSTANCES_KEY)
+public void setModelSlotInstances(List<ModelSlotInstance> modelSlotInstances);
+
+@Adder(MODEL_SLOT_INSTANCES_KEY)
+public void addToModelSlotInstances(ModelSlotInstance aModelSlotInstance);
+
+@Remover(MODEL_SLOT_INSTANCES_KEY)
+public void removeFromModelSlotInstance(ModelSlotInstance aModelSlotInstance);
+
+
+public static abstract  class ViewImpl extends ViewObjectImpl implements View
+{
 
 	private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -82,7 +135,7 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 	 * Default Constructor
 	 * 
 	 */
-	public View(FlexoProject project, ViewResource resource/*ViewBuilder builder*/) {
+	public ViewImpl(FlexoProject project, ViewResource resource/*ViewBuilder builder*/) {
 		super(project/*builder.getProject()*/);
 		setResource(resource/*builder.getResource()*/);
 		// builder.view = this;
@@ -94,7 +147,7 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 	 * 
 	 * @param shemaDefinition
 	 */
-	public View(FlexoProject project) {
+	public ViewImpl(FlexoProject project) {
 		super(project);
 		logger.info("Created new view with project " + project);
 		vmInstances = new ArrayList<VirtualModelInstance>();
@@ -112,7 +165,7 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 	}*/
 
 	@Override
-	public View getView() {
+	public ViewImpl getView() {
 		return this;
 	}
 
@@ -125,12 +178,12 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 	}
 
 	@Override
-	public View getResourceData() {
+	public ViewImpl getResourceData() {
 		return this;
 	}
 
 	@Override
-	public ViewResource getResource() {
+	public ViewImplResource getResource() {
 		return resource;
 	}
 
@@ -175,7 +228,7 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 		}
 	}
 
-	public ViewPoint getViewPoint() {
+	public ViewImplPoint getViewPoint() {
 		if (getResource() != null) {
 			return getResource().getViewPoint();
 		}
@@ -365,7 +418,7 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 		return true;
 	}
 
-	public ViewLibrary getViewLibrary() {
+	public ViewImplLibrary getViewLibrary() {
 		return getProject().getViewLibrary();
 	}
 
@@ -398,4 +451,5 @@ public class View extends ViewObject implements ResourceData<View>, InnerResourc
 	public void setViewPointVersion(FlexoVersion viewPointVersion) {
 	}
 
+}
 }

@@ -12,7 +12,23 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * @param <T>
  */
-public abstract class ActorReference<T> extends VirtualModelInstanceObject {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ActorReference.ActorReferenceImpl.class)
+public abstract interface ActorReference<T> extends VirtualModelInstanceObject{
+
+@PropertyIdentifier(type=String.class)
+public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
+
+@Getter(value=PATTERN_ROLE_NAME_KEY)
+@XMLAttribute
+public String getPatternRoleName();
+
+@Setter(PATTERN_ROLE_NAME_KEY)
+public void setPatternRoleName(String patternRoleName);
+
+
+public static abstract  abstract class ActorReference<T>Impl extends VirtualModelInstanceObjectImpl implements ActorReference<T>
+{
 	private PatternRole<T> patternRole;
 	private String patternRoleName;
 	private ModelSlot modelSlot;
@@ -85,4 +101,4 @@ public abstract class ActorReference<T> extends VirtualModelInstanceObject {
 		return null;
 	}
 
-}
+}}

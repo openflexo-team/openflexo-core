@@ -6,14 +6,31 @@ import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.viewpoint.OntologicObjectPatternRole;
 import org.openflexo.logging.FlexoLogger;
 
-public class ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T> {
+@ModelEntity
+@ImplementationClass(ConceptActorReference.ConceptActorReferenceImpl.class)
+@XMLElement
+public interface ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T>{
+
+@PropertyIdentifier(type=String.class)
+public static final String OBJECT_URI_KEY = "objectURI";
+
+@Getter(value=OBJECT_URI_KEY)
+@XMLAttribute
+public String _getObjectURI();
+
+@Setter(OBJECT_URI_KEY)
+public void _setObjectURI(String objectURI);
+
+
+public static abstract  class ConceptActorReference<TImpl extends IFlexoOntologyObject> extends ActorReference<T>Impl implements ConceptActorReference<T
+{
 
 	private static final Logger logger = FlexoLogger.getLogger(ConceptActorReference.class.getPackage().toString());
 
 	private T object;
 	private String objectURI;
 
-	public ConceptActorReference(T o, OntologicObjectPatternRole<T> aPatternRole, EditionPatternInstance epi) {
+	public ConceptActorReferenceImpl(T o, OntologicObjectPatternRole<T> aPatternRole, EditionPatternInstance epi) {
 		super(epi.getProject());
 		setEditionPatternInstance(epi);
 		setPatternRole(aPatternRole);
@@ -58,4 +75,5 @@ public class ConceptActorReference<T extends IFlexoOntologyObject> extends Actor
 	public IFlexoOntologyObject getObject() {
 		return object;
 	}
+}
 }
