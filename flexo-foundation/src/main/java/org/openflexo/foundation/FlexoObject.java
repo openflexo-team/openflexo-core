@@ -30,7 +30,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.velocity.runtime.resource.ResourceManager;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoActionType;
