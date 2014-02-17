@@ -386,13 +386,15 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 			updateTitle();
 		}
 
-		System.out.println("Received " + dataModification + " from " + observable);
-		/*
-		 * if (ToolBox.getPLATFORM() == ToolBox.MACOS && dataModification
-		 * instanceof ResourceStatusModification) {
-		 * getRootPane().putClientProperty(WINDOW_MODIFIED,
-		 * getController().getProject().hasUnsaveStorageResources()); }
-		 */
+		updateWindowModified();
+
+	}
+
+	public void updateWindowModified() {
+		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+			getRootPane().putClientProperty(WINDOW_MODIFIED,
+					getController().getApplicationContext().getResourceManager().getUnsavedResources().size() > 0);
+		}
 	}
 
 	@Override

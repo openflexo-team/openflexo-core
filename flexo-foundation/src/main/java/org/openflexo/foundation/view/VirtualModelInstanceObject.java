@@ -22,6 +22,7 @@ package org.openflexo.foundation.view;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 
 /**
@@ -31,7 +32,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
  * @author sylvain
  * 
  */
-public abstract class VirtualModelInstanceObject extends ViewObject {
+public abstract class VirtualModelInstanceObject extends ViewObject implements InnerResourceData<VirtualModelInstance> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
 
@@ -57,5 +58,10 @@ public abstract class VirtualModelInstanceObject extends ViewObject {
 			return getVirtualModelInstance().getView();
 		}
 		return null;
+	}
+
+	@Override
+	public VirtualModelInstance getResourceData() {
+		return getVirtualModelInstance();
 	}
 }

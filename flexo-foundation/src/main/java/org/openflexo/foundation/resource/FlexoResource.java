@@ -318,6 +318,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject 
 	public void notifyResourceSaved();
 
 	/**
+	 * Called to notify that a resource has been modified
+	 */
+	public void notifyResourceModified();
+
+	/**
 	 * Called to notify that a resource has been added to contents
 	 * 
 	 * @param resource

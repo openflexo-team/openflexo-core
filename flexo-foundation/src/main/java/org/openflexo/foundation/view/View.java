@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -49,7 +50,7 @@ import org.openflexo.toolbox.FlexoVersion;
  * @author sylvain
  * 
  */
-public class View extends ViewObject implements ResourceData<View> {
+public class View extends ViewObject implements ResourceData<View>, InnerResourceData<View> {
 
 	private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -223,12 +224,11 @@ public class View extends ViewObject implements ResourceData<View> {
 	public VirtualModelInstance getVirtualModelInstance(String name) {
 		for (VirtualModelInstance vmi : getVirtualModelInstances()) {
 			String lName = vmi.getName();
-			if (lName != null){
+			if (lName != null) {
 				if (vmi.getName().equals(name)) {
 					return vmi;
 				}
-			}
-			else{
+			} else {
 				logger.warning("Name of VirtualModel is null: " + this.toString());
 			}
 		}

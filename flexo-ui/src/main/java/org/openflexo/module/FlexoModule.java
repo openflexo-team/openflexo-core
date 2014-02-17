@@ -30,6 +30,12 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.resource.ResourceModified;
+import org.openflexo.foundation.resource.ResourceRegistered;
+import org.openflexo.foundation.resource.ResourceSaved;
+import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.view.FlexoFrame;
@@ -247,4 +253,11 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	}
 
+	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
+		logger.fine("ModuleLoader service received notification " + notification + " from " + caller);
+		if (notification instanceof ResourceModified || notification instanceof ResourceSaved || notification instanceof ResourceRegistered
+				|| notification instanceof ResourceUnregistered) {
+			getFlexoFrame().updateWindowModified();
+		}
+	}
 }

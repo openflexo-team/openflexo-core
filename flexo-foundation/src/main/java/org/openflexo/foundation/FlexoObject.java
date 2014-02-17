@@ -30,11 +30,13 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.velocity.runtime.resource.ResourceManager;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.action.DeleteFlexoProperty;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoActionizer;
 import org.openflexo.foundation.action.SortFlexoProperties;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference;
@@ -64,9 +66,9 @@ import org.openflexo.model.factory.KeyValueCoding;
 import org.openflexo.toolbox.HTMLUtils;
 
 /**
- * Super class for any object involved in Openflexo in model layer<br>
+ * Super class for any object involved in Openflexo-Core (model layer)<br>
  * 
- * This abstract class represents an object, or "data" in the model-view paradigm.<br>
+ * This abstract class represents an object. (a "model" in the model-view paradigm)<br>
  * 
  * This class provides default implementation for validation (see {@link Validable} interface). When relevant, just extends interface
  * {@link Validable} and implements both methods {@link Validable#getDefaultValidationModel()} and
@@ -540,24 +542,68 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			ignoreNotifications = false;
 		}
 
-		/*@Override
-		public boolean isModified() {
-			return isModified;
-		}*/
+		/**
+		 * Overrides default {@link #setModified(boolean)} method by providing extended support for modification propagation for resource
+		 * embedding
+		 */
+		@Override
+		public void setModified(boolean modified) {
+			if (modified) {
+				setIsModified();
+			} else {
+				clearIsModified();
+			}
+		}
 
+		/**
+		 * Mark the current object to be in 'modified' status<br>
+		 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be
+		 * modified. Also notify the {@link ResourceManager}
+		 */
 		public synchronized void setIsModified() {
+
+			// If ignore notification flag set to true, just return
 			if (ignoreNotifications) {
 				return;
 			}
-			performSuperSetModified(true);
-			// isModified = true;
+
+			// Update last updated date
 			lastMemoryUpdate = new Date();
+
+			// If this object is part of a ResourceData, then call setIsModified() on ResourceData
+			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
+					&& ((InnerResourceData<?>) this).getResourceData() != this) {
+				((InnerResourceData<?>) this).getResourceData().setIsModified();
+			}
+
+			// If object is already in 'modified' status, abort
+			if (isModified()) {
+				return;
+			}
+
+			// Call the super implementation (PAMELA framework)
+			performSuperSetModified(true);
+
+			// If this object is a ResourceData, notify ResourceManager of related resource changing 'modified' status
+			if (this instanceof ResourceData) {
+				FlexoResource<?> resource = ((ResourceData<?>) this).getResource();
+				if (resource != null) {
+					resource.notifyResourceModified();
+				}
+			}
 		}
 
+		/**
+		 * Mark the current object not to be anymore in 'modified' status<br>
+		 */
 		public synchronized void clearIsModified() {
 			clearIsModified(false);
 		}
 
+		/**
+		 * Mark the current object not to be anymore in 'modified' status<br>
+		 * Passed flag indicates if last memory update should be reset
+		 */
 		public synchronized void clearIsModified(boolean clearLastMemoryUpdate) {
 			performSuperSetModified(false);
 			// isModified = false;
@@ -565,6 +611,14 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			if (clearLastMemoryUpdate) {
 				lastMemoryUpdate = null;
 			}
+
+			if (this instanceof ResourceData) {
+				FlexoResource<?> resource = ((ResourceData<?>) this).getResource();
+				if (resource != null) {
+					resource.notifyResourceModified();
+				}
+			}
+
 		}
 
 		/**

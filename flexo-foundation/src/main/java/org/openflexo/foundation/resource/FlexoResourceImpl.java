@@ -130,6 +130,20 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
+	 * Called to notify that a resource has been modified
+	 */
+	@Override
+	public void notifyResourceModified() {
+		logger.info("notifyResourceModified(), resource=" + this);
+
+		ResourceModified notification = new ResourceModified(this, resourceData);
+		setChanged();
+		notifyObservers(notification);
+		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+
+	}
+
+	/**
 	 * Called to notify that a resource has been added to contents<br>
 	 * TODO: integrate this in setContents() when this interface will extends {@link AccessibleProxyObject}
 	 * 
@@ -252,6 +266,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			resourceData.delete();
 			resourceData = null;
 		}
+	}
+
+	@Override
+	public final boolean isModified() {
+		return isLoaded() && getLoadedResourceData().isModified();
 	}
 
 }

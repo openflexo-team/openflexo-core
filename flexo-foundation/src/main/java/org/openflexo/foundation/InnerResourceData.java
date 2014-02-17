@@ -11,7 +11,7 @@ import org.openflexo.foundation.resource.ResourceData;
  * @author sylvain
  * 
  */
-public interface InnerResourceData {
+public interface InnerResourceData<RD extends ResourceData<RD>> {
 
 	/**
 	 * Return the {@link ResourceData} where this object is defined (the global functional root object giving access to the
@@ -19,6 +19,6 @@ public interface InnerResourceData {
 	 * 
 	 * @return
 	 */
-	public abstract ResourceData<?> getResourceData();
+	public abstract RD getResourceData();
 
 }

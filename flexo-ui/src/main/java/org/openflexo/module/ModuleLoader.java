@@ -219,8 +219,22 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		List<Module<?>> returned = new ArrayList<Module<?>>();
 		for (Module<?> module : getKnownModules()) {
 			if (module.isLoaded()) {
-				System.out.println("Le module " + module + " hash=" + module.hashCode() + " est charge");
 				returned.add(module);
+			}
+		}
+		return returned;
+	}
+
+	/**
+	 * Return a collection containing all loaded modules as a list of FlexoModule instances
+	 * 
+	 * @return
+	 */
+	public List<FlexoModule<?>> getLoadedModuleInstances() {
+		List<FlexoModule<?>> returned = new ArrayList<FlexoModule<?>>();
+		for (Module<?> module : getKnownModules()) {
+			if (module.isLoaded()) {
+				returned.add(module.getLoadedModuleInstance());
 			}
 		}
 		return returned;
@@ -335,7 +349,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return getActiveModule() == module;
 	}
 
-	public FlexoModule getModuleInstance(Module<?> module) throws ModuleLoadingException {
+	public FlexoModule<?> getModuleInstance(Module<?> module) throws ModuleLoadingException {
 		if (module == null) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Trying to get module instance for module null");
@@ -524,6 +538,9 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("ModuleLoader service received notification " + notification + " from " + caller);
+		for (FlexoModule<?> module : getLoadedModuleInstances()) {
+			module.receiveNotification(caller, notification);
+		}
 	}
 
 	@Override
