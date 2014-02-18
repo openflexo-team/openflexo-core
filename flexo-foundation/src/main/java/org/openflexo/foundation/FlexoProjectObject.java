@@ -55,7 +55,7 @@ public interface FlexoProjectObject extends FlexoObject {
 
 	public InformationSpace getInformationSpace();
 
-	public abstract class FlexoProjectObjectImpl extends DefaultFlexoObject implements FlexoProjectObject {
+	public abstract class FlexoProjectObjectImpl extends FlexoObjectImpl implements FlexoProjectObject {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoProjectObject.class.getPackage().getName());

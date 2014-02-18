@@ -3557,7 +3557,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * 
 	 * @return
 	 */
-	@Deprecated
+	/*@Deprecated
 	public Set<FlexoModel<?, ?>> getAllReferencedModels() {
 		HashSet<FlexoModel<?, ?>> returned = new HashSet<FlexoModel<?, ?>>();
 		for (ViewResource vr : getViewLibrary().getAllResources()) {
@@ -3571,7 +3571,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		return returned;
-	}
+	}*/
 
 	/**
 	 * Retrieve metamodel referenced by its URI<br>
@@ -3580,7 +3580,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param modelURI
 	 * @return
 	 */
-	@Deprecated
+	/*@Deprecated
 	public FlexoMetaModel<?> getMetaModel(String metaModelURI) {
 		for (FlexoMetaModel<?> m : getAllReferencedMetaModels()) {
 			if (m.getURI().equals(metaModelURI)) {
@@ -3588,7 +3588,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Return the list of all models used in the scope of current project<br>

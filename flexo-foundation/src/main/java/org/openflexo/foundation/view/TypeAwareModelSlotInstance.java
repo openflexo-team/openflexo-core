@@ -28,6 +28,13 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -42,101 +49,108 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(TypeAwareModelSlotInstance.TypeAwareModelSlotInstanceImpl.class)
 @XMLElement
 public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
-		extends ModelSlotInstance<MS, M>{
+		extends ModelSlotInstance<MS, M> {
 
-@PropertyIdentifier(type=String.class)
-public static final String MODEL_URI_KEY = "modelURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String MODEL_URI_KEY = "modelURI";
 
-@Getter(value=MODEL_URI_KEY)
-@XMLAttribute
-public String getModelURI();
+	@Getter(value = MODEL_URI_KEY)
+	@XMLAttribute
+	public String getModelURI();
 
-@Setter(MODEL_URI_KEY)
-public void setModelURI(String modelURI);
+	@Setter(MODEL_URI_KEY)
+	public void setModelURI(String modelURI);
 
+	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
+			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
 
-public static abstract  class TypeAwareModelSlotInstance<MImpl extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
-		extends ModelSlotInstance<MS, M>Impl implements TypeAwareModelSlotInstance<M
-{
+		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
-	private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
+		// Serialization/deserialization only, do not use
+		private String modelURI;
 
-	// Serialization/deserialization only, do not use
-	private String modelURI;
+		/*public TypeAwareModelSlotInstanceImpl(View view, MS modelSlot) {
+			super(view, modelSlot);
+		}*/
 
-	/*public TypeAwareModelSlotInstanceImpl(View view, MS modelSlot) {
-		super(view, modelSlot);
-	}*/
+		/*public TypeAwareModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+			super(vmInstance, modelSlot);
+		}*/
 
-	public TypeAwareModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
-		super(vmInstance, modelSlot);
-	}
+		/**
+		 * Default constructor
+		 */
+		public TypeAwareModelSlotInstanceImpl() {
+			super();
+		}
 
-	/**
-	 * Return the data this model slot gives access to.<br>
-	 * This is the data contractualized by the related model slot
-	 * 
-	 * @return
-	 */
-	@Override
-	public M getAccessedResourceData() {
-		if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-			FlexoModelResource<M, ?, ?> modelResource = (FlexoModelResource<M, ?, ?>) getVirtualModelInstance().getInformationSpace()
-					.getModelWithURI(modelURI, getModelSlot().getTechnologyAdapter());
-			if (modelResource != null) {
-				accessedResourceData = modelResource.getModel();
-				resource = modelResource;
+		/**
+		 * Return the data this model slot gives access to.<br>
+		 * This is the data contractualized by the related model slot
+		 * 
+		 * @return
+		 */
+		@Override
+		public M getAccessedResourceData() {
+			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
+				FlexoModelResource<M, ?, ?> modelResource = (FlexoModelResource<M, ?, ?>) getVirtualModelInstance().getInformationSpace()
+						.getModelWithURI(modelURI, getModelSlot().getTechnologyAdapter());
+				if (modelResource != null) {
+					accessedResourceData = modelResource.getModel();
+					resource = modelResource;
+				}
 			}
+			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
+				logger.warning("cannot find model " + modelURI);
+			}
+			return accessedResourceData;
 		}
-		if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-			logger.warning("cannot find model " + modelURI);
+
+		// Serialization/deserialization only, do not use
+		@Override
+		public String getModelURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return modelURI;
 		}
-		return accessedResourceData;
-	}
 
-	// Serialization/deserialization only, do not use
-	public String getModelURI() {
-		if (getResource() != null) {
-			return getResource().getURI();
+		// Serialization/deserialization only, do not use
+		@Override
+		public void setModelURI(String modelURI) {
+			this.modelURI = modelURI;
 		}
-		return modelURI;
-	}
 
-	// Serialization/deserialization only, do not use
-	public void setModelURI(String modelURI) {
-		this.modelURI = modelURI;
-	}
+		public M getModel() {
+			return getAccessedResourceData();
+		}
 
-	public M getModel() {
-		return getAccessedResourceData();
-	}
+		@Override
+		public String getBindingDescription() {
+			return getModelURI();
+		}
 
-	@Override
-	public String getBindingDescription() {
-		return getModelURI();
-	}
+		@Override
+		public void updateActorReferencesURI() {
+			// Browse the epi and their actors
+			for (EditionPatternInstance epi : getVirtualModelInstance().getEditionPatternInstancesList()) {
+				for (ActorReference<?> actor : epi.getActorList()) {
+					// If it is provided by the right model slot
+					if (actor instanceof ConceptActorReference && actor.getModelSlotInstance().equals(this)) {
 
-	@Override
-	public void updateActorReferencesURI() {
-		// Browse the epi and their actors
-		for (EditionPatternInstance epi : getVirtualModelInstance().getEditionPatternInstancesList()) {
-			for (ActorReference<?> actor : epi.getActorList()) {
-				// If it is provided by the right model slot
-				if (actor instanceof ConceptActorReference && actor.getModelSlotInstance().equals(this)) {
-
-					// This should be changed
-					ConceptActorReference<?> conceptActorRef = (ConceptActorReference<?>) actor;
-					String id = conceptActorRef._getObjectURI().substring(conceptActorRef._getObjectURI().lastIndexOf("#"));
-					conceptActorRef._setObjectURI(getAccessedResourceData().getURI() + id);
-					if (conceptActorRef.getObject() == null) {
-						logger.warning("cannot retrieve objects in this resource " + conceptActorRef);
-						// conceptActorRef.delete();
+						// This should be changed
+						ConceptActorReference<?> conceptActorRef = (ConceptActorReference<?>) actor;
+						String id = conceptActorRef.getConceptURI().substring(conceptActorRef.getConceptURI().lastIndexOf("#"));
+						conceptActorRef.setConceptURI(getAccessedResourceData().getURI() + id);
+						if (conceptActorRef.getModellingElement() == null) {
+							logger.warning("cannot retrieve objects in this resource " + conceptActorRef);
+							// conceptActorRef.delete();
+						}
 					}
 				}
 			}
-		}
 
-		setModelURI(getAccessedResourceData().getURI());
+			setModelURI(getAccessedResourceData().getURI());
+		}
 	}
-}
 }

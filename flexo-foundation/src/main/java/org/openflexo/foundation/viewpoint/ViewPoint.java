@@ -195,6 +195,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
+		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
 			File viewpointDir = new File(containerDir, baseName + ".viewpoint");
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir, library);

@@ -49,6 +49,16 @@ import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Getter.Cardinality;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
 /**
  * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
@@ -67,345 +77,65 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 @ModelEntity
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @XMLElement
-public interface VirtualModelInstance extends EditionPatternInstance,ResourceData<VirtualModelInstance>,
-		FlexoModel<VirtualModelInstance, VirtualModel>{
+public interface VirtualModelInstance extends EditionPatternInstance, ResourceData<VirtualModelInstance>,
+		FlexoModel<VirtualModelInstance, VirtualModel> {
 
-@PropertyIdentifier(type=String.class)
-public static final String TITLE_KEY = "title";
-@PropertyIdentifier(type=String.class)
-public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
-@PropertyIdentifier(type=List.class)
-public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
-@PropertyIdentifier(type=List.class)
-public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "editionPatternInstancesList";
+	@PropertyIdentifier(type = String.class)
+	public static final String TITLE_KEY = "title";
+	@PropertyIdentifier(type = String.class)
+	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
+	@PropertyIdentifier(type = List.class)
+	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
+	@PropertyIdentifier(type = List.class)
+	public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "editionPatternInstancesList";
 
-@Getter(value=TITLE_KEY)
-@XMLAttribute
-public String getTitle();
+	@Getter(value = TITLE_KEY)
+	@XMLAttribute
+	public String getTitle();
 
-@Setter(TITLE_KEY)
-public void setTitle(String title);
+	@Setter(TITLE_KEY)
+	public void setTitle(String title);
 
+	public VirtualModel getVirtualModel();
 
-@Getter(value=VIRTUAL_MODEL_URI_KEY)
-@XMLAttribute
-public String getVirtualModelURI();
+	public void setVirtualModel(VirtualModel virtualModel);
 
-@Setter(VIRTUAL_MODEL_URI_KEY)
-public void setVirtualModelURI(String virtualModelURI);
+	@Getter(value = VIRTUAL_MODEL_URI_KEY)
+	@XMLAttribute
+	public String getVirtualModelURI();
 
+	@Setter(VIRTUAL_MODEL_URI_KEY)
+	public void setVirtualModelURI(String virtualModelURI);
 
-@Getter(value=MODEL_SLOT_INSTANCES_KEY,cardinality = Cardinality.LIST)
-@XMLElement
-public List<ModelSlotInstance> getModelSlotInstances();
+	@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLElement
+	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
 
-@Setter(MODEL_SLOT_INSTANCES_KEY)
-public void setModelSlotInstances(List<ModelSlotInstance> modelSlotInstances);
+	@Setter(MODEL_SLOT_INSTANCES_KEY)
+	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> modelSlotInstances);
 
-@Adder(MODEL_SLOT_INSTANCES_KEY)
-public void addToModelSlotInstances(ModelSlotInstance aModelSlotInstance);
+	@Adder(MODEL_SLOT_INSTANCES_KEY)
+	public void addToModelSlotInstances(ModelSlotInstance<?, ?> aModelSlotInstance);
 
-@Remover(MODEL_SLOT_INSTANCES_KEY)
-public void removeFromModelSlotInstance(ModelSlotInstance aModelSlotInstance);
+	@Remover(MODEL_SLOT_INSTANCES_KEY)
+	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
 
+	@Getter(value = EDITION_PATTERN_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
+	@XMLElement
+	public List<EditionPatternInstance> getEditionPatternInstancesList();
 
-@Getter(value=EDITION_PATTERN_INSTANCES_LIST_KEY,cardinality = Cardinality.LIST)
-@XMLElement
-public List<EditionPatternInstance> getEditionPatternInstancesList();
+	@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	public void setEditionPatternInstancesList(List<EditionPatternInstance> editionPatternInstancesList);
 
-@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
-public void setEditionPatternInstancesList(List<EditionPatternInstance> editionPatternInstancesList);
+	@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	public void addToEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
 
-@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
-public void addToEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+	@Remover(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	public void removeFromEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
 
-@Remover(EDITION_PATTERN_INSTANCES_LIST_KEY)
-public void removeFromEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+	public void synchronize(FlexoEditor editor);
 
-
-public static abstract  class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance
-{
-
-	private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
-
-	private VirtualModelInstanceResource resource;
-	private List<ModelSlotInstance<?, ?>> modelSlotInstances;
-	// private Map<ModelSlot, FlexoModel<?, ?>> modelsMap = new HashMap<ModelSlot, FlexoModel<?, ?>>(); // Do not serialize
-	// this.
-	private String title;
-
-	private Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances;
-
-	public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
-			VirtualModel virtualModel, View view) throws SaveResourceException {
-
-		VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
-				virtualModelName, virtualModel, view);
-
-		VirtualModelInstance newVirtualModelInstance = new VirtualModelInstance(view, virtualModel);
-		newVirtualModelResource.setResourceData(newVirtualModelInstance);
-		newVirtualModelInstance.setResource(newVirtualModelResource);
-		newVirtualModelInstance.setTitle(virtualModelTitle);
-
-		view.getResource().notifyContentsAdded(newVirtualModelResource);
-
-		newVirtualModelResource.save(null);
-
-		return newVirtualModelResource;
-	}
-
-	/**
-	 * Default constructor with view, virtual model and resource
-	 */
-	public VirtualModelInstanceImpl(View view, VirtualModel virtualModel, VirtualModelInstanceResource resource) {
-		this(view, virtualModel);
-		setResource(resource);
-	}
-
-	/**
-	 * Default constructor with view and virtual model
-	 * 
-	 */
-	public VirtualModelInstanceImpl(View view, VirtualModel virtualModel) {
-		super(virtualModel, null, view.getProject());
-		logger.info("Created new VirtualModelInstance for virtual model " + virtualModel);
-		modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-		flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>>();
-		view.addToVirtualModelInstances(this);
-	}
-
-	@Override
-	public String getURI() {
-		if (getResource() != null) {
-			return getResource().getURI();
-		}
-		return null;
-	}
-
-	@Override
-	public View getView() {
-		if (getResource() != null && getResource().getContainer() != null) {
-			return getResource().getContainer().getView();
-		}
-		return null;
-	}
-
-	@Override
-	public VirtualModel getFlexoConcept() {
-		return (VirtualModel) super.getFlexoConcept();
-	}
-
-	public ViewPoint getViewPoint() {
-		if (getVirtualModel() != null) {
-			return getVirtualModel().getViewPoint();
-		}
-		return null;
-	}
-
-	public VirtualModel getVirtualModel() {
-		return getFlexoConcept();
-	}
-
-	public String getVirtualModelURI() {
-		return super.getEditionPatternURI();
-	}
-
-	public void setVirtualModelURI(String virtualModelURI) {
-		super.setEditionPatternURI(virtualModelURI);
-	}
-
-	@Override
-	public VirtualModel getMetaModel() {
-		return getFlexoConcept();
-	}
-
-	@Override
-	public TechnologyAdapter getTechnologyAdapter() {
-		// TODO
-		return null;
-	}
-
-	@Override
-	public FlexoProject getProject() {
-		if (getView() != null) {
-			return getView().getProject();
-		}
-		return super.getProject();
-	}
-
-	/**
-	 * Instanciate and register a new {@link EditionPatternInstance}
-	 * 
-	 * @param pattern
-	 * @return
-	 */
-	public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept pattern) {
-		EditionPatternInstance returned = new EditionPatternInstance(pattern, this, getProject());
-		return registerEditionPatternInstance(returned);
-	}
-
-	/**
-	 * Register an existing {@link EditionPatternInstance} (used in deserialization)
-	 * 
-	 * @param epi
-	 * @return
-	 */
-	protected EditionPatternInstance registerEditionPatternInstance(EditionPatternInstance epi) {
-		if (epi.getFlexoConcept() == null) {
-			logger.warning("Could not register EditionPatternInstance with null FlexoConcept: " + epi);
-			logger.warning("EPI: " + epi.debug());
-		} else {
-			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
-			if (hash == null) {
-				hash = new Hashtable<Long, EditionPatternInstance>();
-				flexoConceptInstances.put(epi.getFlexoConcept(), hash);
-			}
-			hash.put(epi.getFlexoID(), epi);
-			// System.out.println("Registered EPI " + epi + " in " + epi.getEditionPattern());
-			// System.out.println("Registered: " + getEPInstances(epi.getEditionPattern()));
-		}
-		return epi;
-	}
-
-	/**
-	 * Un-register an existing {@link EditionPatternInstance}
-	 * 
-	 * @param epi
-	 * @return
-	 */
-	protected EditionPatternInstance unregisterEditionPatternInstance(EditionPatternInstance epi) {
-		Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
-		if (hash == null) {
-			hash = new Hashtable<Long, EditionPatternInstance>();
-			flexoConceptInstances.put(epi.getFlexoConcept(), hash);
-		}
-		hash.remove(epi.getFlexoID());
-		return epi;
-	}
-
-	// Do not use this since not efficient, used in deserialization only
-	public List<EditionPatternInstance> getEditionPatternInstancesList() {
-		List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
-		for (Map<Long, EditionPatternInstance> epMap : flexoConceptInstances.values()) {
-			for (EditionPatternInstance epi : epMap.values()) {
-				returned.add(epi);
-			}
-		}
-		return returned;
-	}
-
-	public void setEditionPatternInstancesList(List<EditionPatternInstance> epiList) {
-		for (EditionPatternInstance epi : epiList) {
-			addToEditionPatternInstancesList(epi);
-		}
-	}
-
-	public void addToEditionPatternInstancesList(EditionPatternInstance epi) {
-		registerEditionPatternInstance(epi);
-	}
-
-	public void removeFromEditionPatternInstancesList(EditionPatternInstance epi) {
-		unregisterEditionPatternInstance(epi);
-	}
-
-	public Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> getFlexoConceptInstances() {
-		return flexoConceptInstances;
-	}
-
-	public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances) {
-		this.flexoConceptInstances = flexoConceptInstances;
-	}
-
-	// TODO: performance isssues
-	public Collection<EditionPatternInstance> getAllEPInstances() {
-		return getEditionPatternInstancesList();
-	}
-
-	public Collection<EditionPatternInstance> getEPInstances(String epName) {
-		if (getVirtualModel() == null) {
-			return Collections.emptyList();
-		}
-		FlexoConcept ep = getVirtualModel().getFlexoConcept(epName);
-		return getEPInstances(ep);
-	}
-
-	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
-		if (ep == null) {
-			// logger.warning("Unexpected null FlexoConcept");
-			return Collections.emptyList();
-		}
-		Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(ep);
-		if (hash == null) {
-			hash = new Hashtable<Long, EditionPatternInstance>();
-			flexoConceptInstances.put(ep, hash);
-		}
-		// TODO: performance issue here
-		List<EditionPatternInstance> returned = new ArrayList(hash.values());
-		for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
-			returned.addAll(getEPInstances(childEP));
-		}
-		return returned;
-	}
-
-	// TODO: refactor this
-	@Deprecated
-	public List<EditionPatternInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
-		/*List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
-		Collection<EditionPatternInstance> epis = getEPInstances(epName);
-		for (EditionPatternInstance epi : epis) {
-			Object evaluate = epi.evaluate(epProperty);
-			if (value == null && evaluate == value || value != null && value.equals(evaluate)) {
-				returned.add(epi);
-			}
-		}
-		return returned;*/
-		return null;
-	}
-
-	@Override
-	public VirtualModelInstanceImplResource getResource() {
-		return resource;
-	}
-
-	@Override
-	public void setResource(org.openflexo.foundation.resource.FlexoResource<VirtualModelInstance> resource) {
-		this.resource = (VirtualModelInstanceResource) resource;
-	}
-
-	public String getName() {
-		if (getResource() != null) {
-			return getResource().getName();
-		}
-		return null;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		String oldTitle = this.title;
-		if (requireChange(oldTitle, title)) {
-			this.title = title;
-			setChanged();
-			notifyObservers(new VEDataModification("title", oldTitle, title));
-		}
-	}
-
-	@Override
-	public VirtualModelInstanceImpl getResourceData() {
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash=" + Integer.toHexString(hashCode())
-				+ "]";
-	}
-
-	// ==========================================================================
-	// ============================== Model Slots ===============================
-	// ==========================================================================
+	public boolean isSynchronizable();
 
 	/**
 	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
@@ -413,24 +143,7 @@ public static abstract  class VirtualModelInstanceImpl extends EditionPatternIns
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot) {
-		for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-			if (msInstance.getModelSlot() == modelSlot) {
-				return (ModelSlotInstance<?, RD>) msInstance;
-			}
-		}
-		if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
-			ModelSlotInstance reflexiveModelSlotInstance = new VirtualModelModelSlotInstance(this, (VirtualModelModelSlot) modelSlot);
-			reflexiveModelSlotInstance.setAccessedResourceData(this);
-			addToModelSlotInstances(reflexiveModelSlotInstance);
-			return reflexiveModelSlotInstance;
-		}
-		logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
-		if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
-			logger.warning("Worse than that, supplied ModelSlot is not part of virtual model " + getVirtualModel());
-		}
-		return null;
-	}
+	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot);
 
 	/**
 	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
@@ -438,131 +151,469 @@ public static abstract  class VirtualModelInstanceImpl extends EditionPatternIns
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
-		for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-			if (msInstance.getModelSlot().getName().equals(modelSlotName)) {
-				return (ModelSlotInstance<?, RD>) msInstance;
+	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
+
+	public String getName();
+
+	public static abstract class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance {
+
+		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
+
+		private VirtualModelInstanceResource resource;
+		// private List<ModelSlotInstance<?, ?>> modelSlotInstances;
+		// private Map<ModelSlot, FlexoModel<?, ?>> modelsMap = new HashMap<ModelSlot, FlexoModel<?, ?>>(); // Do not serialize
+		// this.
+		private String title;
+
+		private Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances;
+
+		// TODO: move this code to the VirtualModelInstanceResource
+		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
+				VirtualModel virtualModel, View view) throws SaveResourceException {
+
+			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
+					virtualModelName, virtualModel, view);
+
+			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory().newInstance(
+					VirtualModelInstance.class);
+			newVirtualModelInstance.setVirtualModel(virtualModel);
+
+			newVirtualModelResource.setResourceData(newVirtualModelInstance);
+			newVirtualModelInstance.setResource(newVirtualModelResource);
+			newVirtualModelInstance.setTitle(virtualModelTitle);
+
+			view.getResource().notifyContentsAdded(newVirtualModelResource);
+
+			newVirtualModelResource.save(null);
+
+			return newVirtualModelResource;
+		}
+
+		/**
+		 * Default constructor with
+		 */
+		public VirtualModelInstanceImpl() {
+			super();
+			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
+			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>>();
+		}
+
+		@Override
+		public String getURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return null;
+		}
+
+		@Override
+		public View getView() {
+			if (getResource() != null && getResource().getContainer() != null) {
+				return getResource().getContainer().getView();
+			}
+			return null;
+		}
+
+		@Override
+		public VirtualModel getFlexoConcept() {
+			return (VirtualModel) super.getFlexoConcept();
+		}
+
+		public ViewPoint getViewPoint() {
+			if (getVirtualModel() != null) {
+				return getVirtualModel().getViewPoint();
+			}
+			return null;
+		}
+
+		@Override
+		public VirtualModel getVirtualModel() {
+			return getFlexoConcept();
+		}
+
+		@Override
+		public void setVirtualModel(VirtualModel virtualModel) {
+			setFlexoConcept(virtualModel);
+		}
+
+		@Override
+		public String getVirtualModelURI() {
+			return super.getFlexoConceptURI();
+		}
+
+		@Override
+		public void setVirtualModelURI(String virtualModelURI) {
+			super.setFlexoConceptURI(virtualModelURI);
+		}
+
+		@Override
+		public VirtualModel getMetaModel() {
+			return getFlexoConcept();
+		}
+
+		@Override
+		public TechnologyAdapter getTechnologyAdapter() {
+			// TODO
+			return null;
+		}
+
+		@Override
+		public FlexoProject getProject() {
+			if (getView() != null) {
+				return getView().getProject();
+			}
+			return super.getProject();
+		}
+
+		/**
+		 * Instanciate and register a new {@link EditionPatternInstance}
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
+			EditionPatternInstance returned = getResource().getFactory().newInstance(EditionPatternInstance.class);
+			returned.setVirtualModelInstance(this);
+			returned.setFlexoConcept(concept);
+			return registerEditionPatternInstance(returned);
+		}
+
+		/**
+		 * Register an existing {@link EditionPatternInstance} (used in deserialization)
+		 * 
+		 * @param epi
+		 * @return
+		 */
+		protected EditionPatternInstance registerEditionPatternInstance(EditionPatternInstance epi) {
+			if (epi.getFlexoConcept() == null) {
+				logger.warning("Could not register EditionPatternInstance with null FlexoConcept: " + epi);
+				logger.warning("EPI: " + epi.debug());
+			} else {
+				Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
+				if (hash == null) {
+					hash = new Hashtable<Long, EditionPatternInstance>();
+					flexoConceptInstances.put(epi.getFlexoConcept(), hash);
+				}
+				hash.put(epi.getFlexoID(), epi);
+				// System.out.println("Registered EPI " + epi + " in " + epi.getEditionPattern());
+				// System.out.println("Registered: " + getEPInstances(epi.getEditionPattern()));
+			}
+			return epi;
+		}
+
+		/**
+		 * Un-register an existing {@link EditionPatternInstance}
+		 * 
+		 * @param epi
+		 * @return
+		 */
+		protected EditionPatternInstance unregisterEditionPatternInstance(EditionPatternInstance epi) {
+			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
+			if (hash == null) {
+				hash = new Hashtable<Long, EditionPatternInstance>();
+				flexoConceptInstances.put(epi.getFlexoConcept(), hash);
+			}
+			hash.remove(epi.getFlexoID());
+			return epi;
+		}
+
+		// Do not use this since not efficient, used in deserialization only
+		@Override
+		public List<EditionPatternInstance> getEditionPatternInstancesList() {
+			List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
+			for (Map<Long, EditionPatternInstance> epMap : flexoConceptInstances.values()) {
+				for (EditionPatternInstance epi : epMap.values()) {
+					returned.add(epi);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public void setEditionPatternInstancesList(List<EditionPatternInstance> epiList) {
+			for (EditionPatternInstance epi : epiList) {
+				addToEditionPatternInstancesList(epi);
 			}
 		}
-		logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
-		return null;
-	}
 
-	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
-		this.modelSlotInstances = instances;
-	}
-
-	public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
-		return modelSlotInstances;
-	}
-
-	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
-		if (modelSlotInstances.contains(instance)) {
-			instance.setVirtualModelInstance(null);
-			modelSlotInstances.remove(instance);
-			setChanged();
-			notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
+		@Override
+		public void addToEditionPatternInstancesList(EditionPatternInstance epi) {
+			registerEditionPatternInstance(epi);
 		}
-	}
 
-	public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
-		if (!modelSlotInstances.contains(instance)) {
-			instance.setVirtualModelInstance(this);
-			modelSlotInstances.add(instance);
-			setChanged();
-			notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
+		@Override
+		public void removeFromEditionPatternInstancesList(EditionPatternInstance epi) {
+			unregisterEditionPatternInstance(epi);
 		}
-	}
 
-	/**
-	 * Return a set of all meta models (load them when unloaded) used in this {@link VirtualModelInstance}
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public Set<FlexoMetaModel> getAllMetaModels() {
-		Set<FlexoMetaModel> allMetaModels = new HashSet<FlexoMetaModel>();
-		for (ModelSlotInstance instance : getModelSlotInstances()) {
-			if (instance.getModelSlot() instanceof TypeAwareModelSlot
-					&& ((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource() != null) {
-				allMetaModels.add(((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource().getMetaModelData());
+		public Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> getFlexoConceptInstances() {
+			return flexoConceptInstances;
+		}
+
+		public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances) {
+			this.flexoConceptInstances = flexoConceptInstances;
+		}
+
+		// TODO: performance isssues
+		public Collection<EditionPatternInstance> getAllEPInstances() {
+			return getEditionPatternInstancesList();
+		}
+
+		public Collection<EditionPatternInstance> getEPInstances(String epName) {
+			if (getVirtualModel() == null) {
+				return Collections.emptyList();
+			}
+			FlexoConcept ep = getVirtualModel().getFlexoConcept(epName);
+			return getEPInstances(ep);
+		}
+
+		public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
+			if (ep == null) {
+				// logger.warning("Unexpected null FlexoConcept");
+				return Collections.emptyList();
+			}
+			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(ep);
+			if (hash == null) {
+				hash = new Hashtable<Long, EditionPatternInstance>();
+				flexoConceptInstances.put(ep, hash);
+			}
+			// TODO: performance issue here
+			List<EditionPatternInstance> returned = new ArrayList(hash.values());
+			for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
+				returned.addAll(getEPInstances(childEP));
+			}
+			return returned;
+		}
+
+		// TODO: refactor this
+		@Deprecated
+		public List<EditionPatternInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
+			/*List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
+			Collection<EditionPatternInstance> epis = getEPInstances(epName);
+			for (EditionPatternInstance epi : epis) {
+				Object evaluate = epi.evaluate(epProperty);
+				if (value == null && evaluate == value || value != null && value.equals(evaluate)) {
+					returned.add(epi);
+				}
+			}
+			return returned;*/
+			return null;
+		}
+
+		@Override
+		public VirtualModelInstanceResource getResource() {
+			return resource;
+		}
+
+		@Override
+		public void setResource(org.openflexo.foundation.resource.FlexoResource<VirtualModelInstance> resource) {
+			this.resource = (VirtualModelInstanceResource) resource;
+		}
+
+		@Override
+		public String getName() {
+			if (getResource() != null) {
+				return getResource().getName();
+			}
+			return null;
+		}
+
+		@Override
+		public String getTitle() {
+			return title;
+		}
+
+		@Override
+		public void setTitle(String title) {
+			String oldTitle = this.title;
+			if (requireChange(oldTitle, title)) {
+				this.title = title;
+				setChanged();
+				notifyObservers(new VEDataModification("title", oldTitle, title));
 			}
 		}
-		return allMetaModels;
-	}
 
-	/**
-	 * Return a set of all models (load them when unloaded) used in this {@link VirtualModelInstance}
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public Set<FlexoModel<?, ?>> getAllModels() {
-		Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
-		for (ModelSlotInstance instance : getModelSlotInstances()) {
-			if (instance.getResourceData() instanceof FlexoModel) {
-				allModels.add(instance.getResourceData());
+		@Override
+		public VirtualModelInstanceImpl getResourceData() {
+			return this;
+		}
+
+		@Override
+		public String toString() {
+			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
+					+ Integer.toHexString(hashCode()) + "]";
+		}
+
+		// ==========================================================================
+		// ============================== Model Slots ===============================
+		// ==========================================================================
+
+		/**
+		 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
+		 * 
+		 * @param modelSlot
+		 * @return
+		 */
+		@Override
+		public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot) {
+			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
+				if (msInstance.getModelSlot() == modelSlot) {
+					return (ModelSlotInstance<?, RD>) msInstance;
+				}
+			}
+			if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
+				VirtualModelModelSlotInstance reflexiveModelSlotInstance = getResource().getFactory().newInstance(
+						VirtualModelModelSlotInstance.class);
+				reflexiveModelSlotInstance.setModelSlot((VirtualModelModelSlot) modelSlot);
+				reflexiveModelSlotInstance.setAccessedResourceData(this);
+				addToModelSlotInstances(reflexiveModelSlotInstance);
+				return (ModelSlotInstance<?, RD>) reflexiveModelSlotInstance;
+			}
+			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
+			if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
+				logger.warning("Worse than that, supplied ModelSlot is not part of virtual model " + getVirtualModel());
+			}
+			return null;
+		}
+
+		/**
+		 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
+		 * 
+		 * @param modelSlot
+		 * @return
+		 */
+		@Override
+		public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
+			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
+				if (msInstance.getModelSlot().getName().equals(modelSlotName)) {
+					return (ModelSlotInstance<?, RD>) msInstance;
+				}
+			}
+			logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
+			return null;
+		}
+
+		/*	@Override
+			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
+				return modelSlotInstances;
+			}
+
+			@Override
+			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
+				this.modelSlotInstances = instances;
+			}
+
+			@Override
+			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
+				if (!modelSlotInstances.contains(instance)) {
+					instance.setVirtualModelInstance(this);
+					modelSlotInstances.add(instance);
+					setChanged();
+					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
+				}
+			}
+
+			@Override
+			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
+				if (modelSlotInstances.contains(instance)) {
+					instance.setVirtualModelInstance(null);
+					modelSlotInstances.remove(instance);
+					setChanged();
+					notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
+				}
+			}*/
+
+		/**
+		 * Return a set of all meta models (load them when unloaded) used in this {@link VirtualModelInstance}
+		 * 
+		 * @return
+		 */
+		@Deprecated
+		public Set<FlexoMetaModel> getAllMetaModels() {
+			Set<FlexoMetaModel> allMetaModels = new HashSet<FlexoMetaModel>();
+			for (ModelSlotInstance instance : getModelSlotInstances()) {
+				if (instance.getModelSlot() instanceof TypeAwareModelSlot
+						&& ((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource() != null) {
+					allMetaModels.add(((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource().getMetaModelData());
+				}
+			}
+			return allMetaModels;
+		}
+
+		/**
+		 * Return a set of all models (load them when unloaded) used in this {@link VirtualModelInstance}
+		 * 
+		 * @return
+		 */
+		@Deprecated
+		public Set<FlexoModel<?, ?>> getAllModels() {
+			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
+			for (ModelSlotInstance instance : getModelSlotInstances()) {
+				if (instance.getResourceData() instanceof FlexoModel) {
+					allModels.add(instance.getResourceData());
+				}
+			}
+			return allModels;
+		}
+
+		// ==========================================================================
+		// ================================= Delete ===============================
+		// ==========================================================================
+
+		@Override
+		public final boolean delete() {
+
+			logger.info("Deleting virtual model instance " + this);
+
+			// Dereference the resource
+			if (resource != null) {
+				resource = null;
+			}
+
+			super.delete();
+
+			deleteObservers();
+
+			return true;
+		}
+
+		// ==========================================================================
+		// =============================== Synchronize ==============================
+		// ==========================================================================
+
+		@Override
+		public void synchronize(FlexoEditor editor) {
+			if (isSynchronizable()) {
+				VirtualModel vm = getVirtualModel();
+				SynchronizationScheme ss = vm.getSynchronizationScheme();
+				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
+				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
+				action.doAction();
+			} else {
+				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
-		return allModels;
-	}
 
-	// ==========================================================================
-	// ================================= Delete ===============================
-	// ==========================================================================
-
-	@Override
-	public final boolean delete() {
-
-		logger.info("Deleting virtual model instance " + this);
-
-		// Dereference the resource
-		if (resource != null) {
-			resource = null;
+		@Override
+		public boolean isSynchronizable() {
+			return getVirtualModel() != null && getVirtualModel().hasSynchronizationScheme();
 		}
 
-		super.delete();
-
-		deleteObservers();
-
-		return true;
-	}
-
-	// ==========================================================================
-	// =============================== Synchronize ==============================
-	// ==========================================================================
-
-	public void synchronize(FlexoEditor editor) {
-		if (isSynchronizable()) {
-			VirtualModel vm = getVirtualModel();
-			SynchronizationScheme ss = vm.getSynchronizationScheme();
-			SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
-			SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
-			action.doAction();
-		} else {
-			logger.warning("No synchronization scheme defined for " + getVirtualModel());
+		/**
+		 * Return run-time value for {@link BindingVariable} variable
+		 * 
+		 * @param variable
+		 * @return
+		 */
+		public Object getValueForVariable(BindingVariable variable) {
+			return null;
 		}
-	}
 
-	public boolean isSynchronizable() {
-		return getVirtualModel() != null && getVirtualModel().hasSynchronizationScheme();
-	}
+		@Override
+		public Object getObject(String objectURI) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
-	/**
-	 * Return run-time value for {@link BindingVariable} variable
-	 * 
-	 * @param variable
-	 * @return
-	 */
-	public Object getValueForVariable(BindingVariable variable) {
-		return null;
 	}
-
-	@Override
-	public Object getObject(String objectURI) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-}
 }

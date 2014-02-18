@@ -21,47 +21,75 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
- * A {@link VirtualModelInstanceObject} an abstract run-time concept (instance) for an object "living" in a {@link VirtualModelInstance}
+ * A {@link VirtualModelInstanceObject} is an abstract run-time concept (instance) for an object "living" in a {@link VirtualModelInstance}
  * (instanceof a {@link VirtualModel})
  * 
  * @author sylvain
  * 
  */
-public abstract class VirtualModelInstanceObject extends ViewObject implements InnerResourceData<VirtualModelInstance> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(VirtualModelInstanceObject.VirtualModelInstanceObjectImpl.class)
+public interface VirtualModelInstanceObject extends ViewObject, InnerResourceData<VirtualModelInstance> {
 
-	private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
-
-	public VirtualModelInstanceObject(FlexoProject project) {
-		super(project);
-	}
+	@PropertyIdentifier(type = VirtualModelInstance.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
 	/**
 	 * Return the {@link VirtualModelInstance} where this object is declared and living
 	 * 
 	 * @return
 	 */
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	public abstract VirtualModelInstance getVirtualModelInstance();
 
-	/**
-	 * Return the {@link View} where this object is declared and living
-	 * 
-	 * @return
-	 */
-	@Override
-	public View getView() {
-		if (getVirtualModelInstance() != null) {
-			return getVirtualModelInstance().getView();
-		}
-		return null;
-	}
+	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setVirtualModelInstance(String virtualModelInstance);
 
-	@Override
-	public VirtualModelInstance getResourceData() {
-		return getVirtualModelInstance();
+	public abstract class VirtualModelInstanceObjectImpl extends ViewObjectImpl implements VirtualModelInstanceObject {
+
+		private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
+
+		/**
+		 * Return the {@link VirtualModelInstance} where this object is declared and living
+		 * 
+		 * @return
+		 */
+		@Override
+		public abstract VirtualModelInstance getVirtualModelInstance();
+
+		/**
+		 * Return the {@link View} where this object is declared and living
+		 * 
+		 * @return
+		 */
+		@Override
+		public View getView() {
+			if (getVirtualModelInstance() != null) {
+				return getVirtualModelInstance().getView();
+			}
+			return null;
+		}
+
+		/**
+		 * Return the {@link ResourceData} where this object is defined (the global functional root object giving access to the
+		 * {@link FlexoResource}): this object is here the {@link VirtualModelInstance}
+		 * 
+		 * @return
+		 */
+		@Override
+		public VirtualModelInstance getResourceData() {
+			return getVirtualModelInstance();
+		}
 	}
 }

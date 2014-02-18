@@ -21,28 +21,20 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.FlexoProjectObject.FlexoProjectObjectImpl;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * A {@link ViewObject} an abstract run-time concept (instance) for an object "living" in a {@link View} (instanceof a {@link ViewPoint})
+ * A {@link ViewObject} is an abstract run-time concept (instance) for an object "living" in a {@link View} (instanceof a {@link ViewPoint})
  * 
  * @author sylvain
  * 
  */
-public abstract class ViewObject extends FlexoProjectObjectImpl implements FlexoProjectObject {
-
-	private static final Logger logger = Logger.getLogger(ViewObject.class.getPackage().getName());
-
-	/*public ViewObject(ViewBuilder viewBuilder) {
-		super(viewBuilder.getProject());
-	}*/
-
-	public ViewObject(FlexoProject project) {
-		super(project);
-	}
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ViewObject.ViewObjectImpl.class)
+public interface ViewObject extends FlexoProjectObject {
 
 	/**
 	 * Return the {@link View} where this object is declared and living
@@ -50,5 +42,12 @@ public abstract class ViewObject extends FlexoProjectObjectImpl implements Flexo
 	 * @return
 	 */
 	public abstract View getView();
+
+	public abstract class ViewObjectImpl extends FlexoProjectObjectImpl implements FlexoProjectObject {
+
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ViewObject.class.getPackage().getName());
+
+	}
 
 }

@@ -3,77 +3,107 @@ package org.openflexo.foundation.view;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.viewpoint.OntologicObjectPatternRole;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
+/**
+ * Implements {@link ActorReference} for {@link IFlexoOntologyObject} as modelling elements.<br>
+ * Such objects are identifiable using an URI.<br>
+ * In this context, serialization of ActorReference might be supported by a single URI defined as a String.
+ * 
+ * @author sylvain
+ * 
+ * @param <T>
+ */
 @ModelEntity
 @ImplementationClass(ConceptActorReference.ConceptActorReferenceImpl.class)
 @XMLElement
-public interface ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T>{
+public interface ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T> {
 
-@PropertyIdentifier(type=String.class)
-public static final String OBJECT_URI_KEY = "objectURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String OBJECT_URI_KEY = "objectURI";
 
-@Getter(value=OBJECT_URI_KEY)
-@XMLAttribute
-public String _getObjectURI();
+	@Getter(value = OBJECT_URI_KEY)
+	@XMLAttribute
+	public String getConceptURI();
 
-@Setter(OBJECT_URI_KEY)
-public void _setObjectURI(String objectURI);
+	@Setter(OBJECT_URI_KEY)
+	public void setConceptURI(String objectURI);
 
+	public static abstract class ConceptActorReferenceImpl<T extends IFlexoOntologyObject> extends ActorReferenceImpl<T> implements
+			ConceptActorReference<T> {
 
-public static abstract  class ConceptActorReference<TImpl extends IFlexoOntologyObject> extends ActorReference<T>Impl implements ConceptActorReference<T
-{
+		private static final Logger logger = FlexoLogger.getLogger(ConceptActorReference.class.getPackage().toString());
 
-	private static final Logger logger = FlexoLogger.getLogger(ConceptActorReference.class.getPackage().toString());
+		private T concept;
+		private String conceptURI;
 
-	private T object;
-	private String objectURI;
+		/**
+		 * Default constructor
+		 */
+		public ConceptActorReferenceImpl() {
+			super();
+		}
 
-	public ConceptActorReferenceImpl(T o, OntologicObjectPatternRole<T> aPatternRole, EditionPatternInstance epi) {
-		super(epi.getProject());
-		setEditionPatternInstance(epi);
-		setPatternRole(aPatternRole);
-		object = o;
+		/*public ConceptActorReferenceImpl(T o, OntologicObjectPatternRole<T> aPatternRole, EditionPatternInstance epi) {
+			super(epi.getProject());
+			setEditionPatternInstance(epi);
+			setPatternRole(aPatternRole);
+			concept = o;
 
-		ModelSlotInstance msInstance = getModelSlotInstance();
-		/** Model Slot is responsible for URI mapping */
-		objectURI = msInstance.getModelSlot().getURIForObject(msInstance, o);
-	}
-
-	@Override
-	public T retrieveObject() {
-		if (object == null) {
 			ModelSlotInstance msInstance = getModelSlotInstance();
-			if (msInstance.getResourceData() != null) {
-				// object = (T) getProject().getObject(objectURI);
+			// Model Slot is responsible for URI mapping
+			conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, o);
+		}*/
+
+		@Override
+		public void setModellingElement(T concept) {
+			this.concept = concept;
+			if (concept != null && getModelSlotInstance() != null) {
+				ModelSlotInstance msInstance = getModelSlotInstance();
 				/** Model Slot is responsible for URI mapping */
-				object = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, objectURI);
-			} else {
-				logger.warning("Could not access to model in model slot " + getModelSlotInstance());
-				// logger.warning("Searched " + getModelSlotInstance().getModelURI());
+				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, concept);
 			}
 		}
-		if (object == null) {
-			logger.warning("Could not retrieve object " + objectURI);
+
+		@Override
+		public T getModellingElement() {
+			if (concept == null) {
+				ModelSlotInstance msInstance = getModelSlotInstance();
+				if (msInstance.getResourceData() != null) {
+					// object = (T) getProject().getObject(objectURI);
+					/** Model Slot is responsible for URI mapping */
+					concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, conceptURI);
+				} else {
+					logger.warning("Could not access to model in model slot " + getModelSlotInstance());
+					// logger.warning("Searched " + getModelSlotInstance().getModelURI());
+				}
+			}
+			if (concept == null) {
+				logger.warning("Could not retrieve object " + conceptURI);
+			}
+			return concept;
 		}
-		return object;
-	}
 
-	public String _getObjectURI() {
-		if (object != null) {
-			ModelSlotInstance msInstance = getModelSlotInstance();
-			objectURI = msInstance.getModelSlot().getURIForObject(msInstance, object);
+		@Override
+		public String getConceptURI() {
+			if (concept != null) {
+				ModelSlotInstance msInstance = getModelSlotInstance();
+				conceptURI = msInstance.getModelSlot().getURIForObject(msInstance, concept);
+			}
+			return conceptURI;
 		}
-		return objectURI;
-	}
 
-	public void _setObjectURI(String objectURI) {
-		this.objectURI = objectURI;
-	}
+		@Override
+		public void setConceptURI(String objectURI) {
+			this.conceptURI = objectURI;
+		}
 
-	public IFlexoOntologyObject getObject() {
-		return object;
 	}
-}
 }

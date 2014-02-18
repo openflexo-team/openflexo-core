@@ -27,6 +27,12 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -43,85 +49,21 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
-public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObject{
+public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObject {
 
-@PropertyIdentifier(type=String.class)
-public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
+	@PropertyIdentifier(type = String.class)
+	public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
 
-@Getter(value=MODEL_SLOT_NAME_KEY)
-@XMLAttribute
-public String getModelSlotName();
+	@Getter(value = MODEL_SLOT_NAME_KEY)
+	@XMLAttribute
+	public String getModelSlotName();
 
-@Setter(MODEL_SLOT_NAME_KEY)
-public void setModelSlotName(String modelSlotName);
+	@Setter(MODEL_SLOT_NAME_KEY)
+	public void setModelSlotName(String modelSlotName);
 
+	public void setModelSlot(MS modelSlot);
 
-public static abstract  abstract class ModelSlotInstance<MSImpl extends ModelSlot<RD>, RD extends ResourceData<RD>> extends VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS
-{
-
-	private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
-
-	private View view;
-	private VirtualModelInstance vmInstance;
-	private MS modelSlot;
-	protected RD accessedResourceData;
-	protected TechnologyAdapterResource<RD, ?> resource;
-	// Serialization/deserialization only, do not use
-	private String modelSlotName;
-
-	/*public ModelSlotInstanceImpl(FlexoProject project) {
-		super(project);
-	}*/
-
-	/*public ModelSlotInstanceImpl(View view, MS modelSlot) {
-		super(view.getProject());
-		this.view = view;
-		this.modelSlot = modelSlot;
-	}*/
-
-	public ModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
-		super(vmInstance.getProject());
-		this.vmInstance = vmInstance;
-		this.view = vmInstance.getView();
-		this.modelSlot = modelSlot;
-	}
-
-	@Override
-	public VirtualModelInstance getResourceData() {
-		return getVirtualModelInstance();
-	}
-
-	public void setView(View view) {
-		this.view = view;
-	}
-
-	@Override
-	public View getView() {
-		return view;
-	}
-
-	@Override
-	public VirtualModelInstance getVirtualModelInstance() {
-		return vmInstance;
-	}
-
-	public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
-		this.vmInstance = vmInstance;
-	}
-
-	public void setModelSlot(MS modelSlot) {
-		this.modelSlot = modelSlot;
-	}
-
-	public MS getModelSlot() {
-		if (getVirtualModelInstance() != null && modelSlot == null && StringUtils.isNotEmpty(modelSlotName)) {
-			modelSlot = (MS) getVirtualModelInstance().getVirtualModel().getModelSlot(modelSlotName);
-		}
-		return modelSlot;
-	}
-
-	public void updateActorReferencesURI() {
-	}
+	public MS getModelSlot();
 
 	/**
 	 * Return the data this model slot gives access to.<br>
@@ -129,69 +71,164 @@ public static abstract  abstract class ModelSlotInstance<MSImpl extends ModelSlo
 	 * 
 	 * @return
 	 */
-	public RD getAccessedResourceData() {
-		return accessedResourceData;
-	}
+	public RD getAccessedResourceData();
 
 	/**
 	 * Sets the data this model slot gives access to.<br>
 	 * 
 	 * @param accessedResourceData
 	 */
-	public void setAccessedResourceData(RD accessedResourceData) {
-		boolean requiresUpdate = false;
-		if (this.accessedResourceData != accessedResourceData) {
-			requiresUpdate = true;
+	public void setAccessedResourceData(RD accessedResourceData);
+
+	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends
+			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
+
+		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
+
+		private View view;
+		private VirtualModelInstance vmInstance;
+		private MS modelSlot;
+		protected RD accessedResourceData;
+		protected TechnologyAdapterResource<RD, ?> resource;
+		// Serialization/deserialization only, do not use
+		private String modelSlotName;
+
+		/*public ModelSlotInstanceImpl(FlexoProject project) {
+			super(project);
+		}*/
+
+		/*public ModelSlotInstanceImpl(View view, MS modelSlot) {
+			super(view.getProject());
+			this.view = view;
+			this.modelSlot = modelSlot;
+		}*/
+
+		/*public ModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+			super(vmInstance.getProject());
+			this.vmInstance = vmInstance;
+			this.view = vmInstance.getView();
+			this.modelSlot = modelSlot;
+		}*/
+
+		/**
+		 * Default constructor
+		 */
+		public ModelSlotInstanceImpl() {
+			super();
 		}
 
-		this.accessedResourceData = accessedResourceData;
-		this.resource = (TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource();
+		@Override
+		public VirtualModelInstance getResourceData() {
+			return getVirtualModelInstance();
+		}
 
-		if (requiresUpdate) {
-			// The virtual model can be synchronized with the new resource data.
-			updateActorReferencesURI();
-			if (getVirtualModelInstance().isSynchronizable()) {
-				getVirtualModelInstance().synchronize(null);
+		public void setView(View view) {
+			this.view = view;
+		}
+
+		@Override
+		public View getView() {
+			return view;
+		}
+
+		@Override
+		public VirtualModelInstance getVirtualModelInstance() {
+			return vmInstance;
+		}
+
+		public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
+			this.vmInstance = vmInstance;
+		}
+
+		@Override
+		public void setModelSlot(MS modelSlot) {
+			this.modelSlot = modelSlot;
+		}
+
+		@Override
+		public MS getModelSlot() {
+			if (getVirtualModelInstance() != null && modelSlot == null && StringUtils.isNotEmpty(modelSlotName)) {
+				modelSlot = (MS) getVirtualModelInstance().getVirtualModel().getModelSlot(modelSlotName);
 			}
+			return modelSlot;
 		}
 
-	}
-
-	/**
-	 * Return the resource of the data this model slot gives access to.<br>
-	 * This is the data contractualized by the related model slot
-	 * 
-	 * @return
-	 */
-	public TechnologyAdapterResource<RD, ?> getResource() {
-		return resource;
-	}
-
-	// Serialization/deserialization only, do not use
-	public String getModelSlotName() {
-		if (getModelSlot() != null) {
-			return getModelSlot().getName();
+		public void updateActorReferencesURI() {
 		}
-		return modelSlotName;
-	}
 
-	// Serialization/deserialization only, do not use
-	public void setModelSlotName(String modelSlotName) {
-		this.modelSlotName = modelSlotName;
-	}
+		/**
+		 * Return the data this model slot gives access to.<br>
+		 * This is the data contractualized by the related model slot
+		 * 
+		 * @return
+		 */
+		@Override
+		public RD getAccessedResourceData() {
+			return accessedResourceData;
+		}
 
-	@Override
-	public String toString() {
-		return "ModelSlotInstance:"
-				+ (getModelSlot() != null ? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID()
-						: "null");
-	}
+		/**
+		 * Sets the data this model slot gives access to.<br>
+		 * 
+		 * @param accessedResourceData
+		 */
+		@Override
+		public void setAccessedResourceData(RD accessedResourceData) {
+			boolean requiresUpdate = false;
+			if (this.accessedResourceData != accessedResourceData) {
+				requiresUpdate = true;
+			}
 
-	/**
-	 * Returns a string describing how the model slot instance is bound to a data source
-	 * 
-	 * @return
-	 */
-	public abstract String getBindingDescription();
-}
+			this.accessedResourceData = accessedResourceData;
+			this.resource = (TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource();
+
+			if (requiresUpdate) {
+				// The virtual model can be synchronized with the new resource data.
+				updateActorReferencesURI();
+				if (getVirtualModelInstance().isSynchronizable()) {
+					getVirtualModelInstance().synchronize(null);
+				}
+			}
+
+		}
+
+		/**
+		 * Return the resource of the data this model slot gives access to.<br>
+		 * This is the data contractualized by the related model slot
+		 * 
+		 * @return
+		 */
+		public TechnologyAdapterResource<RD, ?> getResource() {
+			return resource;
+		}
+
+		// Serialization/deserialization only, do not use
+		@Override
+		public String getModelSlotName() {
+			if (getModelSlot() != null) {
+				return getModelSlot().getName();
+			}
+			return modelSlotName;
+		}
+
+		// Serialization/deserialization only, do not use
+		@Override
+		public void setModelSlotName(String modelSlotName) {
+			this.modelSlotName = modelSlotName;
+		}
+
+		@Override
+		public String toString() {
+			return "ModelSlotInstance:"
+					+ (getModelSlot() != null ? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_"
+							+ getFlexoID() : "null");
+		}
+
+		/**
+		 * Returns a string describing how the model slot instance is bound to a data source
+		 * 
+		 * @return
+		 */
+		public abstract String getBindingDescription();
+	}
 }

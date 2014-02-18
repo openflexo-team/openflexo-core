@@ -150,6 +150,8 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 			creationSchemeAction.doAction();
 		}
 
+		getFocusedObject().addToVirtualModelInstances(newVirtualModelInstance);
+
 		System.out.println("Now, we try to synchronize the new virtual model instance");
 
 		if (newVirtualModelInstance.isSynchronizable()) {
