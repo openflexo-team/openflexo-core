@@ -28,9 +28,9 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
  * @author sylvain
  * 
  */
-public class OntologyCalcCreated extends OntologyDataModification {
+public class ViewPointRegistered extends OntologyDataModification {
 
-	public OntologyCalcCreated(ViewPointResource newViewPointResource) {
+	public ViewPointRegistered(ViewPointResource newViewPointResource) {
 		super(null, newViewPointResource);
 	}
 

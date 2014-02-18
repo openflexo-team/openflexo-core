@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.view.EditionPatternInstance;
 import org.openflexo.foundation.view.ModelObjectActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -74,9 +75,9 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 			return out.toString();
 		}
 
-	@Override
-	public Type getType() {
-		return this.getViewPoint().getInstanceType(getFlexoConceptType());
+		@Override
+		public Type getType() {
+			return this.getViewPoint().getInstanceType(getFlexoConceptType());
 		}
 
 		@Override
@@ -189,7 +190,12 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		@Override
 		public ModelObjectActorReference<EditionPatternInstance> makeActorReference(EditionPatternInstance object,
 				EditionPatternInstance epi) {
-			return new ModelObjectActorReference<EditionPatternInstance>(object, this, epi);
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ModelObjectActorReference<EditionPatternInstance> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setPatternRole(this);
+			returned.setEditionPatternInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
 		}
 
 		@Override

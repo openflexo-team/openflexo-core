@@ -109,6 +109,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 	 * 
 	 * @return
 	 */
+	@Override
 	public void setVirtualModelInstance(VirtualModelInstance vmInstance);
 
 	// Debug method
@@ -123,6 +124,8 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 	public <T> void setObjectForPatternRole(T object, PatternRole<T> patternRole);
 
 	public <T> void nullifyPatternActor(PatternRole<T> patternRole);
+
+	public String getStringRepresentation();
 
 	public static abstract class EditionPatternInstanceImpl extends VirtualModelInstanceObjectImpl implements EditionPatternInstance {
 
@@ -630,6 +633,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 					&& getFlexoConcept().getInspector().getRenderer().isValid();
 		}
 
+		@Override
 		public String getStringRepresentation() {
 			if (hasValidRenderer()) {
 				try {

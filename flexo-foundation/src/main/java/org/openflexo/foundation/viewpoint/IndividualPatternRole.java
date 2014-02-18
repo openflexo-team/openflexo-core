@@ -10,6 +10,7 @@ import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.ConceptActorReference;
 import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -99,7 +100,12 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 
 		@Override
 		public ConceptActorReference<I> makeActorReference(I object, EditionPatternInstance epi) {
-			return new ConceptActorReference<I>(object, this, epi);
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
+			returned.setPatternRole(this);
+			returned.setEditionPatternInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
 		}
 
 	}

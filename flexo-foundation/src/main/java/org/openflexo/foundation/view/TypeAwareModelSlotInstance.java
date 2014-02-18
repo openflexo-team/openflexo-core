@@ -61,6 +61,8 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM exte
 	@Setter(MODEL_URI_KEY)
 	public void setModelURI(String modelURI);
 
+	public M getModel();
+
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, MS extends TypeAwareModelSlot<M, MM>>
 			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
 
@@ -121,6 +123,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM exte
 			this.modelURI = modelURI;
 		}
 
+		@Override
 		public M getModel() {
 			return getAccessedResourceData();
 		}

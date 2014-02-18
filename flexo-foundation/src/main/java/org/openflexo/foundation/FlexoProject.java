@@ -26,11 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,13 +41,6 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
-import org.openflexo.foundation.ontology.IFlexoOntology;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
@@ -61,9 +52,6 @@ import org.openflexo.foundation.resource.ImportedProjectLoaded;
 import org.openflexo.foundation.resource.ProjectExternalRepository;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -80,16 +68,12 @@ import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.ModelSlotInstance;
-import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.ViewLibrary;
-import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
 
@@ -3375,7 +3359,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public Object getObject(String uri) {
+	/*public Object getObject(String uri) {
 		for (FlexoModel<?, ?> m : getAllReferencedModels()) {
 			Object o = m.getObject(uri);
 			if (o != null) {
@@ -3389,7 +3373,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology object from its URI.<br>
@@ -3398,13 +3382,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyObject getOntologyObject(String uri) {
+	/*public IFlexoOntologyObject getOntologyObject(String uri) {
 		Object returned = getObject(uri);
 		if (returned instanceof IFlexoOntologyObject) {
 			return (IFlexoOntologyObject) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology class from its URI.<br>
@@ -3413,13 +3397,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyClass getOntologyClass(String uri) {
+	/*public IFlexoOntologyClass getOntologyClass(String uri) {
 		Object returned = getOntologyObject(uri);
 		if (returned instanceof IFlexoOntologyClass) {
 			return (IFlexoOntologyClass) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology individual from its URI.<br>
@@ -3428,13 +3412,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyIndividual getOntologyIndividual(String uri) {
+	/*public IFlexoOntologyIndividual getOntologyIndividual(String uri) {
 		Object returned = getOntologyObject(uri);
 		if (returned instanceof IFlexoOntologyIndividual) {
 			return (IFlexoOntologyIndividual) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology property from its URI.<br>
@@ -3443,13 +3427,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyStructuralProperty getOntologyProperty(String uri) {
+	/*public IFlexoOntologyStructuralProperty getOntologyProperty(String uri) {
 		Object returned = getOntologyObject(uri);
 		if (returned instanceof IFlexoOntologyStructuralProperty) {
 			return (IFlexoOntologyStructuralProperty) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology object property from its URI.<br>
@@ -3458,13 +3442,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri) {
+	/*public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri) {
 		Object returned = getOntologyObject(uri);
 		if (returned instanceof IFlexoOntologyObjectProperty) {
 			return (IFlexoOntologyObjectProperty) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve ontology object property from its URI.<br>
@@ -3473,13 +3457,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyDataProperty getOntologyDataProperty(String uri) {
+	/*public IFlexoOntologyDataProperty getOntologyDataProperty(String uri) {
 		Object returned = getOntologyObject(uri);
 		if (returned instanceof IFlexoOntologyDataProperty) {
 			return (IFlexoOntologyDataProperty) returned;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
@@ -3487,7 +3471,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public boolean testValidURI(String ontologyURI, String conceptURI) {
+	/*public boolean testValidURI(String ontologyURI, String conceptURI) {
 		if (StringUtils.isEmpty(conceptURI)) {
 			return false;
 		}
@@ -3495,7 +3479,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			return false;
 		}
 		return conceptURI.equals(ToolBox.getJavaName(conceptURI, true, false)) && !isDuplicatedURI(ontologyURI, conceptURI);
-	}
+	}*/
 
 	/**
 	 * Return true if URI is duplicated in the context of this project
@@ -3503,7 +3487,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param uri
 	 * @return
 	 */
-	public boolean isDuplicatedURI(String modelURI, String conceptURI) {
+	/*public boolean isDuplicatedURI(String modelURI, String conceptURI) {
 		FlexoModel<?, ?> m = getModel(modelURI);
 		if (m != null) {
 			return m.getObject(modelURI + "#" + conceptURI) != null;
@@ -3513,7 +3497,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			return mm.getObject(modelURI + "#" + conceptURI) != null;
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Retrieve model or metamodel conform to {@link IFlexoOntology} and referenced by its URI<br>
@@ -3522,7 +3506,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param modelURI
 	 * @return
 	 */
-	public IFlexoOntology getFlexoOntology(String modelURI) {
+	/*public IFlexoOntology getFlexoOntology(String modelURI) {
 		FlexoModel<?, ?> m = getModel(modelURI);
 		if (m instanceof IFlexoOntology) {
 			return (IFlexoOntology) m;
@@ -3532,7 +3516,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			return (IFlexoOntology) mm;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Retrieve model referenced by its URI<br>
@@ -3541,7 +3525,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * @param modelURI
 	 * @return
 	 */
-	@Deprecated
+	/*@Deprecated
 	public FlexoModel<?, ?> getModel(String modelURI) {
 		for (FlexoModel<?, ?> m : getAllReferencedModels()) {
 			if (m.getURI().equals(modelURI)) {
@@ -3549,7 +3533,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Return the list of all models used in the scope of current project<br>
@@ -3596,7 +3580,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * 
 	 * @return
 	 */
-	@Deprecated
+	/*@Deprecated
 	public Set<FlexoMetaModel<?>> getAllReferencedMetaModels() {
 		HashSet<FlexoMetaModel<?>> returned = new HashSet<FlexoMetaModel<?>>();
 		for (ViewResource vr : getViewLibrary().getAllResources()) {
@@ -3610,7 +3594,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		return returned;
-	}
+	}*/
 
 	public static File getProjectSpecificModelsDirectory(FlexoProject project) {
 		File returned = new File(project.getProjectDirectory(), "Models");

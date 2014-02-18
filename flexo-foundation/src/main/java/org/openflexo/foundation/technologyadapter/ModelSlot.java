@@ -669,4 +669,5 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		}
 
 	}
+
 }

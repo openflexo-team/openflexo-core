@@ -153,7 +153,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		String uri = vpRes.getURI();
 		map.put(uri, vpRes);
 		setChanged();
-		notifyObservers(new OntologyCalcCreated(vpRes));
+		notifyObservers(new ViewPointRegistered(vpRes));
 		return vpRes;
 	}
 

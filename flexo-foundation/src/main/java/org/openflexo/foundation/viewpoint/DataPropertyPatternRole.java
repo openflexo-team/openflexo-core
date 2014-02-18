@@ -7,6 +7,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.ConceptActorReference;
 import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -74,7 +75,12 @@ public abstract interface DataPropertyPatternRole<P extends IFlexoOntologyDataPr
 
 		@Override
 		public ActorReference<P> makeActorReference(P object, EditionPatternInstance epi) {
-			return new ConceptActorReference<P>(object, this, epi);
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ConceptActorReference<P> returned = factory.newInstance(ConceptActorReference.class);
+			returned.setPatternRole(this);
+			returned.setEditionPatternInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
 		}
 	}
 }

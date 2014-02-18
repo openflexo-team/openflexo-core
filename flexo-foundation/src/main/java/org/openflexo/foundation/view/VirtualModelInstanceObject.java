@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -54,7 +55,9 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 	public abstract VirtualModelInstance getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(String virtualModelInstance);
+	public void setVirtualModelInstance(VirtualModelInstance virtualModelInstance);
+
+	public VirtualModelInstanceModelFactory getFactory();
 
 	public abstract class VirtualModelInstanceObjectImpl extends ViewObjectImpl implements VirtualModelInstanceObject {
 
@@ -90,6 +93,14 @@ public interface VirtualModelInstanceObject extends ViewObject, InnerResourceDat
 		@Override
 		public VirtualModelInstance getResourceData() {
 			return getVirtualModelInstance();
+		}
+
+		@Override
+		public VirtualModelInstanceModelFactory getFactory() {
+			if (getVirtualModelInstance() != null && getVirtualModelInstance().getResource() != null) {
+				return ((VirtualModelInstanceResource) getVirtualModelInstance().getResource()).getFactory();
+			}
+			return null;
 		}
 	}
 }
