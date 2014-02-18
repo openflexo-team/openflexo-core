@@ -34,10 +34,13 @@ import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
@@ -62,8 +65,11 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	public static final String VIEW_POINT_VERSION_KEY = "viewPointVersion";
 	@PropertyIdentifier(type = String.class)
 	public static final String TITLE_KEY = "title";
-	@PropertyIdentifier(type = List.class)
-	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
+	// @PropertyIdentifier(type = List.class)
+	// public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
+
+	@PropertyIdentifier(type = VirtualModelInstance.class, cardinality = Cardinality.LIST)
+	public static final String VIRTUAL_MODEL_INSTANCES_KEY = "virtualModelInstances";
 
 	@Getter(value = VIEW_POINT_URI_KEY)
 	@XMLAttribute
@@ -103,12 +109,39 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 	public void setName(String name);
 
+	public boolean isValidVirtualModelName(String virtualModelName);
+
+	/**
+	 * Return all {@link VirtualModelInstance} defined in this {@link View}
+	 * 
+	 * @return
+	 */
+	@Getter(value = VIRTUAL_MODEL_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = VirtualModelInstance.VIEW_KEY, ignoreType = true)
+	public List<VirtualModelInstance> getVirtualModelInstances();
+
+	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void setVirtualModelInstances(List<VirtualModelInstance> virtualModelInstances);
+
+	@Adder(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void addToVirtualModelInstances(VirtualModelInstance virtualModelInstance);
+
+	@Remover(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void removeFromVirtualModelInstances(VirtualModelInstance virtualModelInstance);
+
+	public VirtualModelInstance getVirtualModelInstance(String name);
+
+	public ViewPoint getViewPoint();
+
+	public RepositoryFolder<ViewResource> getFolder();
+
+	public ViewLibrary getViewLibrary();
+
 	public static abstract class ViewImpl extends ViewObjectImpl implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
 		private ViewResource resource;
-		private List<VirtualModelInstance> vmInstances;
+		// private List<VirtualModelInstance> vmInstances;
 		private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 		private String title;
 
@@ -139,7 +172,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		 */
 		public ViewImpl() {
 			super();
-			vmInstances = new ArrayList<VirtualModelInstance>();
+			// vmInstances = new ArrayList<VirtualModelInstance>();
 			modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
 		}
 
@@ -235,6 +268,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 		}
 
+		@Override
 		public ViewPoint getViewPoint() {
 			if (getResource() != null) {
 				return getResource().getViewPoint();
@@ -252,21 +286,10 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// ======================== Virtual Model Instances =========================
 		// ==========================================================================
 
+		@Override
 		public List<VirtualModelInstance> getVirtualModelInstances() {
 			loadVirtualModelInstancesWhenUnloaded();
-			return vmInstances;
-		}
-
-		public void setVirtualModelInstances(List<VirtualModelInstance> instances) {
-			this.vmInstances = instances;
-		}
-
-		public void addToVirtualModelInstances(VirtualModelInstance vmInstance) {
-			vmInstances.add(vmInstance);
-		}
-
-		public void removeFromVirtualModelInstances(VirtualModelInstance vmInstance) {
-			vmInstances.remove(vmInstance);
+			return (List<VirtualModelInstance>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
 		}
 
 		/**
@@ -281,6 +304,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 		}
 
+		@Override
 		public VirtualModelInstance getVirtualModelInstance(String name) {
 			for (VirtualModelInstance vmi : getVirtualModelInstances()) {
 				String lName = vmi.getName();
@@ -295,6 +319,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			return null;
 		}
 
+		@Override
 		public boolean isValidVirtualModelName(String virtualModelName) {
 			return getVirtualModelInstance(virtualModelName) == null;
 		}
@@ -426,10 +451,12 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			return true;
 		}
 
+		@Override
 		public ViewLibrary getViewLibrary() {
 			return getProject().getViewLibrary();
 		}
 
+		@Override
 		public RepositoryFolder<ViewResource> getFolder() {
 			if (getResource() != null) {
 				return getViewLibrary().getParentFolder(getResource());

@@ -40,6 +40,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelInstance.VirtualModelInstanceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -102,7 +103,7 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 	}
 
 	public VirtualModelInstanceResource makeVirtualModelInstanceResource() throws SaveResourceException {
-		return VirtualModelInstance.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
+		return VirtualModelInstanceImpl.newVirtualModelInstance(getNewVirtualModelInstanceName(), getNewVirtualModelInstanceTitle(),
 				getVirtualModel(), getFocusedObject());
 	}
 

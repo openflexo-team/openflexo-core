@@ -23,8 +23,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * A {@link ViewObject} is an abstract run-time concept (instance) for an object "living" in a {@link View} (instanceof a {@link ViewPoint})
@@ -36,12 +39,24 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(ViewObject.ViewObjectImpl.class)
 public interface ViewObject extends FlexoProjectObject {
 
+	@PropertyIdentifier(type = View.class)
+	public static final String VIEW_KEY = "view";
+
 	/**
 	 * Return the {@link View} where this object is declared and living
 	 * 
 	 * @return
 	 */
+	@Getter(VIEW_KEY)
 	public abstract View getView();
+
+	/**
+	 * Return the {@link View} where this object is declared and living
+	 * 
+	 * @return
+	 */
+	@Setter(VIEW_KEY)
+	public void setView(View view);
 
 	public abstract class ViewObjectImpl extends FlexoProjectObjectImpl implements FlexoProjectObject {
 

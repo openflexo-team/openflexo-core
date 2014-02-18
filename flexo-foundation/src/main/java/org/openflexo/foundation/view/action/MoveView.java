@@ -77,7 +77,7 @@ public class MoveView extends FlexoAction<MoveView, View, View> {
 
 	private void moveToFolder(View v, RepositoryFolder<ViewResource> folder) {
 		RepositoryFolder<ViewResource> oldFolder = v.getFolder();
-		v.getViewLibrary().moveResource(v.getResource(), oldFolder, folder);
+		v.getViewLibrary().moveResource((ViewResource) v.getResource(), oldFolder, folder);
 	}
 
 	public RepositoryFolder<ViewResource> getFolder() {

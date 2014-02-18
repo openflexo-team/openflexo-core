@@ -103,7 +103,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = LocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
-	@PropertyIdentifier(type = List.class)
+	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	public static final String VIRTUAL_MODELS_KEY = "virtualModels";
 
 	@Getter(value = VIEW_POINT_URI_KEY)

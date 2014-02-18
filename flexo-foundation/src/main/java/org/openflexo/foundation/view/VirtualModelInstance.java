@@ -81,6 +81,8 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		FlexoModel<VirtualModelInstance, VirtualModel> {
 
 	@PropertyIdentifier(type = String.class)
+	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = String.class)
 	public static final String TITLE_KEY = "title";
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -153,7 +155,30 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 	 */
 	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
+	@Getter(NAME_KEY)
 	public String getName();
+
+	/**
+	 * Instanciate and register a new {@link EditionPatternInstance}
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept concept);
+
+	/**
+	 * Return run-time value for {@link BindingVariable} variable
+	 * 
+	 * @param variable
+	 * @return
+	 */
+	public Object getValueForVariable(BindingVariable variable);
+
+	public Collection<EditionPatternInstance> getAllEPInstances();
+
+	public Collection<EditionPatternInstance> getEPInstances(String epName);
+
+	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep);
 
 	public static abstract class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance {
 
@@ -271,6 +296,7 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		 * @param pattern
 		 * @return
 		 */
+		@Override
 		public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
 			EditionPatternInstance returned = getResource().getFactory().newInstance(EditionPatternInstance.class);
 			returned.setVirtualModelInstance(this);
@@ -355,10 +381,12 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		}
 
 		// TODO: performance isssues
+		@Override
 		public Collection<EditionPatternInstance> getAllEPInstances() {
 			return getEditionPatternInstancesList();
 		}
 
+		@Override
 		public Collection<EditionPatternInstance> getEPInstances(String epName) {
 			if (getVirtualModel() == null) {
 				return Collections.emptyList();
@@ -367,6 +395,7 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 			return getEPInstances(ep);
 		}
 
+		@Override
 		public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
 			if (ep == null) {
 				// logger.warning("Unexpected null FlexoConcept");
@@ -605,7 +634,9 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		 * @param variable
 		 * @return
 		 */
+		@Override
 		public Object getValueForVariable(BindingVariable variable) {
+			logger.warning("Not implemented: getValueForVariable() " + variable);
 			return null;
 		}
 
