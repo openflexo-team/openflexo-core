@@ -27,13 +27,13 @@ import org.openflexo.model.annotations.XMLElement;
 public interface ConceptActorReference<T extends IFlexoOntologyObject> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String OBJECT_URI_KEY = "objectURI";
+	public static final String CONCEPT_URI_KEY = "conceptURI";
 
-	@Getter(value = OBJECT_URI_KEY)
+	@Getter(value = CONCEPT_URI_KEY)
 	@XMLAttribute
 	public String getConceptURI();
 
-	@Setter(OBJECT_URI_KEY)
+	@Setter(CONCEPT_URI_KEY)
 	public void setConceptURI(String objectURI);
 
 	public static abstract class ConceptActorReferenceImpl<T extends IFlexoOntologyObject> extends ActorReferenceImpl<T> implements

@@ -80,6 +80,14 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 	 */
 	public void setAccessedResourceData(RD accessedResourceData);
 
+	/**
+	 * Return the resource of the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot
+	 * 
+	 * @return
+	 */
+	public TechnologyAdapterResource<RD, ?> getResource();
+
 	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends
 			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
 
@@ -122,6 +130,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 			return getVirtualModelInstance();
 		}
 
+		@Override
 		public void setView(View view) {
 			this.view = view;
 		}
@@ -136,6 +145,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 			return vmInstance;
 		}
 
+		@Override
 		public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
 			this.vmInstance = vmInstance;
 		}
@@ -198,6 +208,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 		 * 
 		 * @return
 		 */
+		@Override
 		public TechnologyAdapterResource<RD, ?> getResource() {
 			return resource;
 		}
