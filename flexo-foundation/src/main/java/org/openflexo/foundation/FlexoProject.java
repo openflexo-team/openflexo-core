@@ -3714,4 +3714,24 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		return getURI();
 	}
 
+	@Override
+	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		setChanged();
+	}
+
+	@Override
+	public void objectDeleted(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
 }

@@ -39,7 +39,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationReport;
@@ -78,8 +77,8 @@ import org.openflexo.toolbox.HTMLUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoObject.FlexoObjectImpl.class)
-public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject,
-		KeyValueCoding, Validable {
+// TODO: remove ReferenceOwner declaration and create a new class
+public abstract interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
 	@PropertyIdentifier(type = String.class)
 	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
@@ -368,26 +367,6 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		@Override
-		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
-		}
-
-		@Override
-		public void objectCantBeFound(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
-		}
-
-		@Override
-		public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-			setChanged();
-		}
-
-		@Override
-		public void objectDeleted(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
-		}
-
-		@Override
 		public List<FlexoObjectReference<EditionPatternInstance>> getEditionPatternReferences() {
 			return editionPatternReferences;
 		}
@@ -409,7 +388,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 				}
 			});*/
 			// logger.info("****************** addToEditionPatternReferences() with " + ref);
-			ref.setOwner(this);
+			// ref.setOwner(this);
 			editionPatternReferences.add(ref);
 			setChanged();
 			notifyObservers(new DataModification("editionPatternReferences", null, ref));
@@ -417,7 +396,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 
 		@Override
 		public void removeFromEditionPatternReferences(FlexoObjectReference<EditionPatternInstance> ref) {
-			ref.setOwner(null);
+			// ref.setOwner(null);
 			editionPatternReferences.remove(ref);
 			setChanged();
 			notifyObservers(new DataModification("editionPatternReferences", ref, null));
@@ -508,7 +487,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			FlexoObjectReference<EditionPatternInstance> existingReference = getEditionPatternReference(editionPatternInstance);
 
 			if (existingReference == null) {
-				addToEditionPatternReferences(new FlexoObjectReference<EditionPatternInstance>(editionPatternInstance, this));
+				addToEditionPatternReferences(new FlexoObjectReference<EditionPatternInstance>(editionPatternInstance));
 			}
 		}
 

@@ -50,7 +50,6 @@ public interface FlexoProjectObject extends FlexoObject {
 	@Setter(PROJECT)
 	public void setProject(FlexoProject project);
 
-	@Override
 	public FlexoServiceManager getServiceManager();
 
 	public InformationSpace getInformationSpace();

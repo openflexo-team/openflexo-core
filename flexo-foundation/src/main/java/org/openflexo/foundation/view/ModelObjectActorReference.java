@@ -2,7 +2,7 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -14,7 +14,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Implements {@link ActorReference} for {@link FlexoProjectObject} as modelling elements.<br>
+ * Implements {@link ActorReference} for {@link FlexoObject} as modelling elements.<br>
  * 
  * @author sylvain
  * 
@@ -23,7 +23,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ModelObjectActorReference.ModelObjectActorReferenceImpl.class)
 @XMLElement
-public interface ModelObjectActorReference<T extends FlexoProjectObject> extends ActorReference<T> {
+public interface ModelObjectActorReference<T extends FlexoObject> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = FlexoObjectReference.class)
 	public static final String OBJECT_REFERENCE_KEY = "objectReference";
@@ -35,7 +35,7 @@ public interface ModelObjectActorReference<T extends FlexoProjectObject> extends
 	@Setter(OBJECT_REFERENCE_KEY)
 	public void setObjectReference(FlexoObjectReference objectReference);
 
-	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoProjectObject> extends ActorReferenceImpl<T> implements
+	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T> implements
 			ModelObjectActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
@@ -61,7 +61,7 @@ public interface ModelObjectActorReference<T extends FlexoProjectObject> extends
 		@Override
 		public void setModellingElement(T object) {
 			this.object = object;
-			objectReference = new FlexoObjectReference(object, object.getProject());
+			objectReference = new FlexoObjectReference(object);
 		}
 
 		@Override

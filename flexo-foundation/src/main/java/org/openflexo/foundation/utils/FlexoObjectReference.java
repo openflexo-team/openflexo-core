@@ -97,11 +97,11 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 					&& ((InnerResourceData) modelObject).getResourceData().getResource() != null) {
 				if (modelObject instanceof FlexoProjectObject) {
 					return ((FlexoProjectObject) modelObject).getProject().getURI() + PROJECT_SEPARATOR
-							+ ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR + SEPARATOR
+							+ ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
 							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
 							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
 				} else {
-					return ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR + SEPARATOR
+					return ((InnerResourceData) modelObject).getResourceData().getResource().getURI() + SEPARATOR
 							+ modelObject.getUserIdentifier() + ID_SEPARATOR + String.valueOf(modelObject.getFlexoID())
 							+ (serializeClassName ? SEPARATOR + modelObject.getClass().getName() : "");
 				}
@@ -130,7 +130,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	private boolean deleted = false;
 	private String modelObjectIdentifier;
 
-	public FlexoObjectReference(O object, ReferenceOwner owner) {
+	public FlexoObjectReference(O object) {
 		this.modelObject = object;
 		this.modelObject.addToReferencers(this);
 		this.status = ReferenceStatus.RESOLVED;
@@ -153,7 +153,14 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		this.userIdentifier = modelObject.getUserIdentifier();
 		this.flexoID = modelObject.getFlexoID();
 		this.className = modelObject.getClass().getName();
-		setOwner(owner);
+
+		if (object instanceof FlexoProjectObject) {
+			setOwner(((FlexoProjectObject) object).getProject());
+		} else if (object instanceof InnerResourceData) {
+			setOwner(((InnerResourceData) object).getResourceData().getResource());
+		} else {
+			logger.warning("Could not find any Reference owner for " + object);
+		}
 	}
 
 	@Override
