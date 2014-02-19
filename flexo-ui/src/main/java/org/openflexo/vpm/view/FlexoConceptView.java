@@ -48,8 +48,8 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	private final FlexoPerspective perspective;
 
-	public FlexoConceptView(EP editionPattern, File fibFile, FlexoController controller, FlexoPerspective perspective) {
-		super(editionPattern, controller, fibFile);
+	public FlexoConceptView(EP flexoConcept, File fibFile, FlexoController controller, FlexoPerspective perspective) {
+		super(flexoConcept, controller, fibFile);
 		this.perspective = perspective;
 	}
 

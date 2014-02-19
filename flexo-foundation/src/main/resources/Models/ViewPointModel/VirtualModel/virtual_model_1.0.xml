@@ -14,7 +14,7 @@
 	<entity name="org.openflexo.foundation.viewpoint.VirtualModel" xmlTag="VirtualModel" finalizer="finalizeDeserialization">
 		<property name="version" xmlTag="version" attribute="YES" />
 		<property name="modelVersion" xmlTag="modelVersion" attribute="YES" />
-		<property name="editionPatterns" type="vector"
+		<property name="flexoConcepts" type="vector"
 			contains="org.openflexo.foundation.viewpoint.FlexoConcept"
 			primary="yes" />
 		<property name="localizedDictionary" xmlTag="LocalizedDictionary" />
@@ -86,7 +86,7 @@
 		<property name="inspector" xmlTag="Inspector" />
 	 	<!--  <property name="parentEditionPattern" contains="org.openflexo.foundation.viewpoint.FlexoConcept" context="Parent" primary="false"/> -->
 		<property name="parentEditionPatternURI" xmlTag="parentEditionPattern" attribute="YES" />
-		<property name="editionPatternConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.FlexoConceptConstraint"/>
+		<property name="flexoConceptConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.FlexoConceptConstraint"/>
 	</entity>
 
 	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptConstraint" xmlTag="Constraint">
@@ -191,7 +191,7 @@
 	</entity>
 
 	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole" xmlTag="EditionPatternInstancePatternRole">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
 	</entity>
 
@@ -436,7 +436,7 @@
 
 	<entity
 		name="org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter" xmlTag="EditionPatternInstanceParameter">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 	</entity>
 
 
@@ -503,7 +503,7 @@
 	</entity>
 
 	<entity name="org.openflexo.foundation.viewpoint.SelectEditionPatternInstance" xmlTag="SelectEditionPatternInstance">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 	</entity>
 
 

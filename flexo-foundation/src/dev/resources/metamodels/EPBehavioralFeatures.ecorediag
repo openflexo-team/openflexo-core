@@ -203,7 +203,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_xzaiIdNaEeKIUudxUJgbAA" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_xzaiItNaEeKIUudxUJgbAA" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternBehavioralFacet/editionPatternSchemes"/>
+    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternBehavioralFacet/flexoConceptSchemes"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_xzaiI9NaEeKIUudxUJgbAA" points="[6, 0, -30, -39]$[44, 0, 8, -39]$[44, 16, 8, -23]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_RLMycNNdEeKIUudxUJgbAA" id="(0.9689119170984456,0.46511627906976744)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_xzc-YNNaEeKIUudxUJgbAA" id="(0.020242914979757085,0.5813953488372093)"/>
@@ -217,7 +217,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_-lbUsdNdEeKIUudxUJgbAA" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_-lbUstNdEeKIUudxUJgbAA" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionSchemeObject/editionPattern"/>
+    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionSchemeObject/flexoConcept"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_-lbUs9NdEeKIUudxUJgbAA" points="[9, -13, 0, 62]$[9, -47, 0, 28]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-ldJ4NNdEeKIUudxUJgbAA" id="(0.6549295774647887,0.07692307692307693)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_-ldJ4dNdEeKIUudxUJgbAA" id="(0.9184491978609626,0.8372093023255814)"/>
@@ -251,7 +251,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_c7pLkdNmEeKIUudxUJgbAA" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_c7pLktNmEeKIUudxUJgbAA" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="Foundation.ecore#//VirtualModel/editionPatterns"/>
+    <element xmi:type="ecore:EReference" href="Foundation.ecore#//VirtualModel/flexoConcepts"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_c7pLk9NmEeKIUudxUJgbAA" points="[-20, 0, -7, 123]$[-56, 0, -43, 123]$[-56, -123, -43, 0]$[-25, -123, -12, 0]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_c7rAwNNmEeKIUudxUJgbAA" id="(0.20588235294117646,0.37209302325581395)"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_c7rAwdNmEeKIUudxUJgbAA" id="(0.017379679144385027,0.7906976744186046)"/>

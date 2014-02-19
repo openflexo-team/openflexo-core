@@ -37,20 +37,20 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<VirtualModelModelSlot> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
+	public static final String EDITION_PATTERN_TYPE_URI_KEY = "flexoConceptTypeURI";
 
 	@Getter(value = EDITION_PATTERN_TYPE_URI_KEY)
 	@XMLAttribute
 	public String _getEditionPatternTypeURI();
 
 	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String editionPatternTypeURI);
+	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
 			FlexoConceptInstanceParameter {
 
 		private FlexoConcept flexoConceptType;
-		private String editionPatternTypeURI;
+		private String flexoConceptTypeURI;
 
 		public FlexoConceptInstanceParameterImpl() {
 			super();
@@ -74,17 +74,17 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
-			return editionPatternTypeURI;
+			return flexoConceptTypeURI;
 		}
 
 		@Override
-		public void _setEditionPatternTypeURI(String editionPatternURI) {
-			this.editionPatternTypeURI = editionPatternURI;
+		public void _setEditionPatternTypeURI(String flexoConceptURI) {
+			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && editionPatternTypeURI != null && getModelSlotVirtualModel() != null) {
-				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(editionPatternTypeURI);
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlotVirtualModel() != null) {
+				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 					s.updateBindingModels();
 				}

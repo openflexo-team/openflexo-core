@@ -206,7 +206,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		// private Vector<EditionSchemeParameter> parameters;
 		private boolean skipConfirmationPanel = false;
 
-		// private FlexoConcept _editionPattern;
+		// private FlexoConcept _flexoConcept;
 
 		private EditionSchemeParameters editionSchemeParameters;
 
@@ -317,13 +317,13 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		/*@Override
 		public FlexoConcept getEditionPattern() {
-			return _editionPattern;
+			return _flexoConcept;
 		}*/
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
 			performSuperSetter(EDITION_PATTERN_KEY, flexoConcept);
-			// _editionPattern = flexoConcept;
+			// _flexoConcept = flexoConcept;
 			updateBindingModels();
 		}
 

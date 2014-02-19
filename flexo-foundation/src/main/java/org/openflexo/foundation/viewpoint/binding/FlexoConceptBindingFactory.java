@@ -270,8 +270,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		// This method is used while executing DiagramElement inspectors
 		if (function.getName().equals("getEditionPatternInstance")) {
 			if (TypeUtils.isTypeAssignableFrom(ViewObject.class, parent.getType()) && args.size() == 1 && args.get(0).isStringConstant()) {
-				String editionPatternId = ((StringConstant) args.get(0).getExpression()).getValue();
-				FlexoConcept ep = viewPoint.getFlexoConcept(editionPatternId);
+				String flexoConceptId = ((StringConstant) args.get(0).getExpression()).getValue();
+				FlexoConcept ep = viewPoint.getFlexoConcept(flexoConceptId);
 				returned.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(ep));
 			}
 		}

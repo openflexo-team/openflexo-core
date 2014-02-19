@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Palette id="1" index="0" name="DefaultPalette">
   <description>Default palette for UseCase diagrams</description>
-  <PaletteElement id="2" name="Actor" editionPattern="Actor">
+  <PaletteElement id="2" name="Actor" flexoConcept="Actor">
     <ShapeGraphicalRepresentation id="3" className="org.openflexo.vpm.palette.PaletteElementGR" x="70.0" y="44.0" width="38.0" height="47.0" isVisible="true" locationConstraints="FREELY_MOVABLE" dimensionConstraints="FREELY_RESIZABLE" layer="1" isFloatingLabel="true" text="Actor" isMultilineAllowed="false" isReadOnly="false" isSelectable="true" isFocusable="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="24.0" absoluteTextY="-8.0" textAlignment="CENTER">
       <ForegroundStyle id="4" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
       <ImageBackgroundStyle id="5" imageFile="Actor.gif" scaleX="1.0555555555555556" scaleY="1.0" deltaX="0.0" deltaY="0.0" imageBackgroundType="TRANSPARENT" imageBackgroundColor="255,255,255" fitToShape="true" useTransparency="false" transparencyLevel="0.5" />
@@ -11,7 +11,7 @@
       <TextStyle id="9" font="Lucida Sans,0,11" color="0,0,0" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="10" name="UseCase" editionPattern="UseCase">
+  <PaletteElement id="10" name="UseCase" flexoConcept="UseCase">
     <ShapeGraphicalRepresentation id="11" className="org.openflexo.vpm.palette.PaletteElementGR" x="17.140845070422557" y="124.0" width="139.85915492957744" height="50.0" isVisible="true" locationConstraints="FREELY_MOVABLE" dimensionConstraints="FREELY_RESIZABLE" layer="1" isFloatingLabel="false" text="UseCase" isMultilineAllowed="false" isReadOnly="false" isSelectable="true" isFocusable="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER">
       <ForegroundStyle id="12" noStroke="false" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
       <ColorBackgroundStyle id="13" color="249,244,205" useTransparency="false" transparencyLevel="0.5" />

@@ -291,25 +291,25 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return EXAMPLE_DRAWING_MODEL;
 	}*/
 
-	public FlexoConcept getFlexoConcept(String editionPatternURI) {
-		if (editionPatternURI.indexOf("#") > -1) {
-			String virtualModelURI = editionPatternURI.substring(0, editionPatternURI.indexOf("#"));
-			String editionPatternName = editionPatternURI.substring(editionPatternURI.indexOf("#") + 1);
+	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
+		if (flexoConceptURI.indexOf("#") > -1) {
+			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
+			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
 			VirtualModel vm = getVirtualModel(virtualModelURI);
 			if (vm != null) {
-				return vm.getFlexoConcept(editionPatternName);
+				return vm.getFlexoConcept(flexoConceptName);
 			}
-			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching edition pattern:" + editionPatternURI + " ("
-					+ editionPatternName + ")");
+			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching edition pattern:" + flexoConceptURI + " ("
+					+ flexoConceptName + ")");
 		}
-		logger.warning("Cannot find edition pattern:" + editionPatternURI);
+		logger.warning("Cannot find edition pattern:" + flexoConceptURI);
 		return null;
 	}
 
 	public EditionScheme getEditionScheme(String editionSchemeURI) {
 		if (editionSchemeURI.lastIndexOf(".") > -1) {
-			String editionPatternURI = editionSchemeURI.substring(0, editionSchemeURI.lastIndexOf("."));
-			FlexoConcept ep = getFlexoConcept(editionPatternURI);
+			String flexoConceptURI = editionSchemeURI.substring(0, editionSchemeURI.lastIndexOf("."));
+			FlexoConcept ep = getFlexoConcept(flexoConceptURI);
 			if (ep != null) {
 				return ep.getEditionScheme(editionSchemeURI.substring(editionSchemeURI.lastIndexOf(".") + 1));
 			}

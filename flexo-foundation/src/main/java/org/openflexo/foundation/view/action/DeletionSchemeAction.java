@@ -70,7 +70,7 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 
 	private VirtualModelInstance vmInstance;
 	private DeletionScheme deletionScheme;
-	private FlexoConceptInstance editionPatternInstanceToDelete;
+	private FlexoConceptInstance flexoConceptInstanceToDelete;
 
 	DeletionSchemeAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -134,14 +134,14 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	}
 
 	public FlexoConceptInstance getEditionPatternInstanceToDelete() {
-		if (editionPatternInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
-			editionPatternInstanceToDelete = ((DiagramElement) getFocusedObject()).getEditionPatternInstance();
+		if (flexoConceptInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
+			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getEditionPatternInstance();
 		}
-		return editionPatternInstanceToDelete;
+		return flexoConceptInstanceToDelete;
 	}
 
-	public void setEditionPatternInstanceToDelete(FlexoConceptInstance editionPatternInstanceToDelete) {
-		this.editionPatternInstanceToDelete = editionPatternInstanceToDelete;
+	public void setEditionPatternInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
+		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}*/
 
 	@Override
@@ -169,14 +169,14 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	}
 
 	public FlexoConceptInstance getEditionPatternInstanceToDelete() {
-		if (editionPatternInstanceToDelete == null && getFocusedObject() != null) {
-			editionPatternInstanceToDelete = getFocusedObject();
+		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
+			flexoConceptInstanceToDelete = getFocusedObject();
 		}
-		return editionPatternInstanceToDelete;
+		return flexoConceptInstanceToDelete;
 	}
 
-	public void setEditionPatternInstanceToDelete(FlexoConceptInstance editionPatternInstanceToDelete) {
-		this.editionPatternInstanceToDelete = editionPatternInstanceToDelete;
+	public void setEditionPatternInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
+		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}
 
 }

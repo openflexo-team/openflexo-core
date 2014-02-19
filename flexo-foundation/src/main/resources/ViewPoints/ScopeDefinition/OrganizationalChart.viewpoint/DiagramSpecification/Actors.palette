@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Palette id="1" index="0" name="Actors">
-  <PaletteElement id="2" name="BlueFemale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="2" name="BlueFemale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="3" name="firstName" />
     <Parameter id="4" name="lastName" />
     <Parameter id="5" name="uri" value="&lt; Computed URI &gt;" />
@@ -54,7 +54,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="44" name="OrangeFemale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="44" name="OrangeFemale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="45" name="firstName" />
     <Parameter id="46" name="lastName" />
     <Parameter id="47" name="uri" value="&lt; Computed URI &gt;" />
@@ -108,7 +108,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="83" name="GreenFemale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="83" name="GreenFemale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="84" name="firstName" />
     <Parameter id="85" name="lastName" />
     <Parameter id="86" name="uri" value="&lt; Computed URI &gt;" />
@@ -162,7 +162,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="122" name="RedFemale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="122" name="RedFemale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="123" name="firstName" />
     <Parameter id="124" name="lastName" />
     <Parameter id="125" name="uri" value="&lt; Computed URI &gt;" />
@@ -216,7 +216,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="161" name="YellowFemale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="161" name="YellowFemale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="162" name="firstName" />
     <Parameter id="163" name="lastName" />
     <Parameter id="164" name="uri" value="&lt; Computed URI &gt;" />
@@ -270,7 +270,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="200" name="BlueMale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="200" name="BlueMale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="201" name="firstName" />
     <Parameter id="202" name="lastName" />
     <Parameter id="203" name="uri" value="&lt; Computed URI &gt;" />
@@ -324,7 +324,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="239" name="OrangeMale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="239" name="OrangeMale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="240" name="firstName" />
     <Parameter id="241" name="lastName" />
     <Parameter id="242" name="uri" value="&lt; Computed URI &gt;" />
@@ -378,7 +378,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="278" name="GreenMale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="278" name="GreenMale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="279" name="firstName" />
     <Parameter id="280" name="lastName" />
     <Parameter id="281" name="uri" value="&lt; Computed URI &gt;" />
@@ -432,7 +432,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="317" name="RedMale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="317" name="RedMale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="318" name="firstName" />
     <Parameter id="319" name="lastName" />
     <Parameter id="320" name="uri" value="&lt; Computed URI &gt;" />
@@ -486,7 +486,7 @@
       </ShapeGraphicalRepresentation>
     </ShapeOverridingGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="356" name="YellowMale" editionPattern="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
+  <PaletteElement id="356" name="YellowMale" flexoConcept="Actor" dropSchemeName="dropActorAtTopLevel" boundLabelToElementName="false">
     <Parameter id="357" name="firstName" />
     <Parameter id="358" name="lastName" />
     <Parameter id="359" name="uri" value="&lt; Computed URI &gt;" />

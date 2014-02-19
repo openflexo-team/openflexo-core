@@ -61,14 +61,14 @@ import org.openflexo.toolbox.StringUtils;
 public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
+	public static final String EDITION_PATTERN_TYPE_URI_KEY = "flexoConceptTypeURI";
 
 	@Getter(value = EDITION_PATTERN_TYPE_URI_KEY)
 	@XMLAttribute
 	public String _getEditionPatternTypeURI();
 
 	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String editionPatternTypeURI);
+	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
 
 	public FlexoConcept getFlexoConceptType();
 
@@ -80,7 +80,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 		protected static final Logger logger = FlexoLogger.getLogger(SelectEditionPatternInstance.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
-		private String editionPatternTypeURI;
+		private String flexoConceptTypeURI;
 
 		public SelectEditionPatternInstanceImpl() {
 			super();
@@ -111,27 +111,27 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
-			return editionPatternTypeURI;
+			return flexoConceptTypeURI;
 		}
 
 		@Override
-		public void _setEditionPatternTypeURI(String editionPatternURI) {
-			this.editionPatternTypeURI = editionPatternURI;
+		public void _setEditionPatternTypeURI(String flexoConceptURI) {
+			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 
 		// private boolean isUpdatingBindingModels = false;
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			// System.out.println("getEditionPatternType() for " + editionPatternTypeURI);
+			// System.out.println("getEditionPatternType() for " + flexoConceptTypeURI);
 			// System.out.println("vm=" + getVirtualModel());
 			// System.out.println("ep=" + getEditionPattern());
 			// System.out.println("ms=" + getModelSlot());
 			// if (getModelSlot() instanceof VirtualModelModelSlot) {
 			// System.out.println("ms.vm=" + ((VirtualModelModelSlot) getModelSlot()).getAddressedVirtualModel());
 			// }
-			if (flexoConceptType == null && editionPatternTypeURI != null && getVirtualModel() != null) {
-				flexoConceptType = getVirtualModel().getFlexoConcept(editionPatternTypeURI);
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getVirtualModel() != null) {
+				flexoConceptType = getVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				/*if (!isUpdatingBindingModels) {
 					isUpdatingBindingModels = true;
 					for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
@@ -140,12 +140,12 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 					isUpdatingBindingModels = false;
 				}*/
 			}
-			if (flexoConceptType == null && editionPatternTypeURI != null && getFlexoConcept() instanceof VirtualModel) {
-				flexoConceptType = ((VirtualModel) getFlexoConcept()).getFlexoConcept(editionPatternTypeURI);
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getFlexoConcept() instanceof VirtualModel) {
+				flexoConceptType = ((VirtualModel) getFlexoConcept()).getFlexoConcept(flexoConceptTypeURI);
 			}
-			if (flexoConceptType == null && editionPatternTypeURI != null && getModelSlot() instanceof VirtualModelModelSlot) {
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlot() instanceof VirtualModelModelSlot) {
 				if (getModelSlot().getAddressedVirtualModel() != null) {
-					flexoConceptType = getModelSlot().getAddressedVirtualModel().getFlexoConcept(editionPatternTypeURI);
+					flexoConceptType = getModelSlot().getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				}
 			}
 			// System.out.println("return " + flexoConceptType);

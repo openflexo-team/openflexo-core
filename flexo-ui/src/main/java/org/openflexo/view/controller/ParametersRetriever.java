@@ -194,8 +194,8 @@ public class ParametersRetriever<ES extends EditionScheme> {
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
 					new DataBinding<Object>("data.view"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.editionPattern"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
-					+ ".editionPatternType"), true));
+					"component.flexoConcept"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
+					+ ".flexoConceptType"), true));
 			return registerWidget(epiSelector, parameter, panel, index);
 		} else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();

@@ -92,7 +92,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = List.class)
 	public static final String CHILD_EDITION_PATTERNS_KEY = "childEditionPatterns";
 	@PropertyIdentifier(type = List.class)
-	public static final String EDITION_PATTERN_CONSTRAINTS_KEY = "editionPatternConstraints";
+	public static final String EDITION_PATTERN_CONSTRAINTS_KEY = "flexoConceptConstraints";
 
 	@Override
 	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.EDITION_PATTERNS_KEY)
@@ -271,7 +271,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		// private List<PatternRole<?>> patternRoles;
 		// private List<EditionScheme> editionSchemes;
-		// private List<FlexoConceptConstraint> editionPatternConstraints;
+		// private List<FlexoConceptConstraint> flexoConceptConstraints;
 		private FlexoConceptInspector inspector;
 
 		// private OntologicObjectPatternRole primaryConceptRole;

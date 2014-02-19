@@ -496,7 +496,7 @@
 <line clip-path="url(#clipPath6)" fill="none" x1="304" x2="304" y1="331" y2="360" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath6)" fill="none" x1="304" x2="480" y1="360" y2="360" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath6)" fill="none" x1="480" x2="480" y1="360" y2="331" stroke="rgb(64,64,64)"/>
-<text x="421" y="356" clip-path="url(#clipPath84)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPatterns</text>
+<text x="421" y="356" clip-path="url(#clipPath84)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConcepts</text>
 <text x="475" y="376" clip-path="url(#clipPath85)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">0..*</text>
 <line clip-path="url(#clipPath6)" fill="none" x1="365" x2="420" y1="304" y2="304" stroke="rgb(64,64,64)"/>
 <polygon fill="white" clip-path="url(#clipPath86)" points=" 420 304 406 310 406 298 420 304" stroke="none"/>

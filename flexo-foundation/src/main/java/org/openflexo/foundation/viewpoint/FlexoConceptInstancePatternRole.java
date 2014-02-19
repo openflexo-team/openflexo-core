@@ -21,7 +21,7 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
+	public static final String EDITION_PATTERN_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
 
@@ -30,7 +30,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 	public String _getEditionPatternTypeURI();
 
 	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String editionPatternTypeURI);
+	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
 
 	@Getter(value = CREATION_SCHEME_URI_KEY)
 	@XMLAttribute
@@ -53,7 +53,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
-		private String _editionPatternTypeURI;
+		private String _flexoConceptTypeURI;
 
 		public FlexoConceptInstancePatternRoleImpl() {
 			super();
@@ -103,8 +103,8 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
-			if (flexoConceptType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
-				flexoConceptType = getViewPoint().getFlexoConcept(_editionPatternTypeURI);
+			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
+				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
 			}
 			return flexoConceptType;
 		}
@@ -127,8 +127,8 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		@Override
 		public void finalizePatternRoleDeserialization() {
 			super.finalizePatternRoleDeserialization();
-			if (flexoConceptType == null && _editionPatternTypeURI != null && getViewPoint() != null) {
-				flexoConceptType = getViewPoint().getFlexoConcept(_editionPatternTypeURI);
+			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
+				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
 			}
 		}
 
@@ -156,7 +156,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 			if (getFlexoConceptType() != null) {
 				return getFlexoConceptType().getURI();
 			}
-			return _editionPatternTypeURI;
+			return _flexoConceptTypeURI;
 		}
 
 		@Override
@@ -164,7 +164,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 			if (getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(uri);
 			}
-			_editionPatternTypeURI = uri;
+			_flexoConceptTypeURI = uri;
 		}
 
 		@Override

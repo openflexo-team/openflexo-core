@@ -3102,12 +3102,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * (reference == null) { return null; } if (reference.getEditionPattern() ==
 	 * null) {
 	 * logger.warning("Found a reference to a null EP, please investigate");
-	 * return null; } if (_editionPatternInstances == null) {
-	 * _editionPatternInstances = new Hashtable<String, Map<Long,
+	 * return null; } if (_flexoConceptInstances == null) {
+	 * _flexoConceptInstances = new Hashtable<String, Map<Long,
 	 * FlexoConceptInstance>>(); } Map<Long, FlexoConceptInstance> hash =
-	 * _editionPatternInstances.get(reference.getEditionPattern().getName()); if
+	 * _flexoConceptInstances.get(reference.getEditionPattern().getName()); if
 	 * (hash == null) { hash = new Hashtable<Long, FlexoConceptInstance>();
-	 * _editionPatternInstances.put(reference.getEditionPattern().getName(),
+	 * _flexoConceptInstances.put(reference.getEditionPattern().getName(),
 	 * hash); } FlexoConceptInstance returned =
 	 * hash.get(reference.getInstanceId()); if (returned == null) { returned =
 	 * new FlexoConceptInstance(reference);
@@ -3138,10 +3138,10 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		 * null) { logger.warning("Changing resource center on project " +
 		 * getProjectName() + ". This is likely to cause problems."); }
 		 * this.resourceCenterService = resourceCenterService;
-		 * EditionPatternConverter editionPatternConverter = new
+		 * EditionPatternConverter flexoConceptConverter = new
 		 * EditionPatternConverter(
 		 * resourceCenterService.getOpenFlexoResourceCenter());
-		 * getStringEncoder()._addConverter(editionPatternConverter); } else {
+		 * getStringEncoder()._addConverter(flexoConceptConverter); } else {
 		 * getResourceCenter(); logger.warning(
 		 * "#@!#@!#@!#@! An attempt to set a null resource center was made. I will print a stacktrace to let you know where it came from but I am not setting the RC to null!\n"
 		 * + "I will try to find one."); new

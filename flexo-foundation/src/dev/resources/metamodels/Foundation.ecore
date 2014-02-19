@@ -13,7 +13,7 @@
         eType="#//EditionPatternConstraint"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindingModel" eType="#//BindingModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="virtualModel" eType="#//VirtualModel"
-        eOpposite="#//VirtualModel/editionPatterns"/>
+        eOpposite="#//VirtualModel/flexoConcepts"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="editionSchemes" upperBound="-1"
         eType="#//EditionScheme" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="behavior" lowerBound="1"
@@ -26,12 +26,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="syncScheme" eType="#//SynchronizationScheme"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="viewpoint" eType="#//Viewpoint"
         eOpposite="#//Viewpoint/virtualModels"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatterns" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConcepts" upperBound="-1"
         eType="#//EditionPattern" eOpposite="#//EditionPattern/virtualModel"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EditionSchemeObject" abstract="true"
       eSuperTypes="#//EditionPatternObject">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPattern" lowerBound="1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConcept" lowerBound="1"
         eType="#//EditionPattern"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EditionScheme" abstract="true" eSuperTypes="#//EditionSchemeObject">
@@ -105,11 +105,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="PatternRoleBindingVariable" eSuperTypes="#//BindingVariable"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataBinding"/>
   <eClassifiers xsi:type="ecore:EClass" name="EditionPatternBehavioralFacet">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatternSchemes"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConceptSchemes"
         upperBound="-1" eType="#//EditionScheme"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EditionPatternStructuralFacet">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatternPatternRoles"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConceptPatternRoles"
         upperBound="-1" eType="#//PatternRole"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AddClass" abstract="true" eSuperTypes="#//AddConcept"/>

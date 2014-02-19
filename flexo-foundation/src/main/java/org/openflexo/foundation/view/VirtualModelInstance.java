@@ -89,7 +89,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@PropertyIdentifier(type = List.class)
 	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 	@PropertyIdentifier(type = List.class)
-	public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "editionPatternInstancesList";
+	public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "flexoConceptInstancesList";
 
 	@Getter(value = TITLE_KEY)
 	@XMLAttribute
@@ -127,7 +127,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public List<FlexoConceptInstance> getEditionPatternInstancesList();
 
 	@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
-	public void setEditionPatternInstancesList(List<FlexoConceptInstance> editionPatternInstancesList);
+	public void setEditionPatternInstancesList(List<FlexoConceptInstance> flexoConceptInstancesList);
 
 	@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
 	public void addToEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);

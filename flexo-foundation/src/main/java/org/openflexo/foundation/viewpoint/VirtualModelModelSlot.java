@@ -115,7 +115,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		@Override
 		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
-				return "editionPatternInstance";
+				return "flexoConceptInstance";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
 			return null;

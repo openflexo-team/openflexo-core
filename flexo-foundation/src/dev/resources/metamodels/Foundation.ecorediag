@@ -568,7 +568,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_NyIZEdQGEeKTIoJ0cPqqLA" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_NyIZEtQGEeKTIoJ0cPqqLA" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternBehavioralFacet/editionPatternSchemes"/>
+    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternBehavioralFacet/flexoConceptSchemes"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_NyIZE9QGEeKTIoJ0cPqqLA" points="[1, 1, -410, -510]$[399, 496, -12, -15]"/>
     <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3fDGoNQHEeKTIoJ0cPqqLA" id="(0.3993610223642173,0.7906976744186046)"/>
   </edges>
@@ -594,7 +594,7 @@
     </children>
     <styles xmi:type="notation:ConnectorStyle" xmi:id="_OOLb4dQGEeKTIoJ0cPqqLA" lineColor="4210752"/>
     <styles xmi:type="notation:FontStyle" xmi:id="_OOLb4tQGEeKTIoJ0cPqqLA" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternStructuralFacet/editionPatternPatternRoles"/>
+    <element xmi:type="ecore:EReference" href="Foundation.ecore#//EditionPatternStructuralFacet/flexoConceptPatternRoles"/>
     <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_OOLb49QGEeKTIoJ0cPqqLA" points="[1, 0, -446, -222]$[383, 190, -64, -32]"/>
     <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_1MN90NQGEeKTIoJ0cPqqLA" id="(0.6064814814814815,0.038461538461538464)"/>
   </edges>

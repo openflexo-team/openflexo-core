@@ -19,8 +19,8 @@
       <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" isEditable="false" filtered="false" defaultVisible="true" name="virtualModel">
         <Children data="virtualModel.allRootEditionPatterns" name="children" />
       </BrowserElement>
-      <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="editionPattern.name" icon="controller.iconForObject(editionPattern)" isEditable="false" filtered="false" defaultVisible="true" name="editionPattern">
-        <Children data="editionPattern.childEditionPatterns" name="children" />
+      <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" isEditable="false" filtered="false" defaultVisible="true" name="flexoConcept">
+        <Children data="flexoConcept.childEditionPatterns" name="children" />
       </BrowserElement>
     </Browser>
     <Table iteratorClassName="org.openflexo.foundation.view.FlexoConceptInstance" visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(EditionPatternInstancesTable.selected,event)" name="EditionPatternInstancesTable" data="data.getEPInstances(EditionPatternBrowser.selected)" constraints="split(splitIdentifier=left)" opaque="false">

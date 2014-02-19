@@ -556,8 +556,8 @@ public interface FIBInspector extends FIBPanel {
 			newTab.setLayout(Layout.twocols);
 			newTab.setUseScrollBar(true);
 			// newTab.setDataClass(FlexoConceptInstance.class);
-			// newTab.setData(new DataBinding("data.editionPatternReferences.get["+refIndex+"].editionPatternInstance"));
-			// newTab.setData(new DataBinding("data.editionPatternReferences.firstElement.editionPatternInstance"));
+			// newTab.setData(new DataBinding("data.flexoConceptReferences.get["+refIndex+"].flexoConceptInstance"));
+			// newTab.setData(new DataBinding("data.flexoConceptReferences.firstElement.flexoConceptInstance"));
 			newTab.setName(epIdentifier + "Panel");
 			return newTab;
 		}

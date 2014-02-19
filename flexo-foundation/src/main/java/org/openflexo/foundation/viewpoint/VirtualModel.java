@@ -97,7 +97,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = Vector.class)
-	public static final String EDITION_PATTERNS_KEY = "editionPatterns";
+	public static final String EDITION_PATTERNS_KEY = "flexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String MODEL_SLOTS_KEY = "modelSlots";
 
@@ -164,10 +164,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @return
 	 */
-	public FlexoConcept getFlexoConcept(String editionPatternId);
+	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.VIRTUAL_MODEL_KEY)
 	@XMLElement
@@ -299,7 +299,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
 		private ViewPoint viewPoint;
-		// private Vector<FlexoConcept> editionPatterns;
+		// private Vector<FlexoConcept> flexoConcepts;
 		// private List<ModelSlot<?>> modelSlots;
 		private BindingModel bindingModel;
 		private VirtualModelResource resource;
@@ -501,43 +501,43 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 */
 		/*
 		 * @Override public Vector<FlexoConcept> getEditionPatterns() { return
-		 * editionPatterns; }
+		 * flexoConcepts; }
 		 * 
 		 * public void setEditionPatterns(Vector<FlexoConcept>
-		 * editionPatterns) { this.editionPatterns = editionPatterns; }
+		 * flexoConcepts) { this.flexoConcepts = flexoConcepts; }
 		 * 
 		 * @Override public void addToEditionPatterns(FlexoConcept pattern) {
-		 * pattern.setVirtualModel(this); editionPatterns.add(pattern);
+		 * pattern.setVirtualModel(this); flexoConcepts.add(pattern);
 		 * setChanged(); notifyObservers(new EditionPatternCreated(pattern)); }
 		 * 
 		 * @Override public void removeFromEditionPatterns(FlexoConcept
 		 * pattern) { pattern.setVirtualModel(null);
-		 * editionPatterns.remove(pattern); setChanged(); notifyObservers(new
+		 * flexoConcepts.remove(pattern); setChanged(); notifyObservers(new
 		 * EditionPatternDeleted(pattern)); }
 		 */
 
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
-		 * @param editionPatternId
+		 * @param flexoConceptId
 		 * @return
 		 */
 		@Override
-		public FlexoConcept getFlexoConcept(String editionPatternId) {
+		public FlexoConcept getFlexoConcept(String flexoConceptId) {
 			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
-				if (flexoConcept.getName().equals(editionPatternId)) {
+				if (flexoConcept.getName().equals(flexoConceptId)) {
 					return flexoConcept;
 				}
-				if (flexoConcept.getURI().equals(editionPatternId)) {
+				if (flexoConcept.getURI().equals(flexoConceptId)) {
 					return flexoConcept;
 				}
 				// Special case to handle conversion from old VP version
 				// TODO: to be removed when all VP are up-to-date
-				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(editionPatternId)) {
+				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(flexoConceptId)) {
 					return flexoConcept;
 				}
 			}
-			// logger.warning("Not found FlexoConcept:" + editionPatternId);
+			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			return null;
 		}
 

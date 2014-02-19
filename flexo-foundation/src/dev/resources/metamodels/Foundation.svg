@@ -814,7 +814,7 @@
 <line clip-path="url(#clipPath6)" fill="none" x1="777" x2="777" y1="416" y2="575" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath146)" fill="none" x1="774" x2="777" y1="568" y2="575" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath146)" fill="none" x1="777" x2="780" y1="575" y2="568" stroke="rgb(64,64,64)"/>
-<text x="721" y="547" clip-path="url(#clipPath147)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPatternSchemes</text>
+<text x="721" y="547" clip-path="url(#clipPath147)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConceptSchemes</text>
 <text x="758" y="567" clip-path="url(#clipPath148)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">0..*</text>
 <line clip-path="url(#clipPath6)" fill="none" x1="815" x2="815" y1="330" y2="375" stroke="rgb(64,64,64)"/>
 <polygon fill="rgb(64,64,64)" clip-path="url(#clipPath149)" points=" 818 337 815 330 812 337 815 344 818 337" stroke="none"/>
@@ -826,7 +826,7 @@
 <line clip-path="url(#clipPath6)" fill="none" x1="482" x2="482" y1="416" y2="475" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath153)" fill="none" x1="479" x2="482" y1="468" y2="475" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath153)" fill="none" x1="482" x2="485" y1="475" y2="468" stroke="rgb(64,64,64)"/>
-<text x="415" y="462" clip-path="url(#clipPath154)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPatternPatternRoles</text>
+<text x="415" y="462" clip-path="url(#clipPath154)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConceptPatternRoles</text>
 <text x="460" y="474" clip-path="url(#clipPath155)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">0..*</text>
 <line clip-path="url(#clipPath6)" fill="none" x1="478" x2="478" y1="330" y2="375" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath156)" fill="none" x1="475" x2="478" y1="368" y2="375" stroke="rgb(64,64,64)"/>

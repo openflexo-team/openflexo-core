@@ -291,7 +291,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public EditionSchemeParameter createEditionPatternInstanceParameter(EditionScheme editionScheme) {
 		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newEditionPatternInstanceParameter();
-		newParameter.setName("editionPatternInstance");
+		newParameter.setName("flexoConceptInstance");
 		// newParameter.setLabel("label");
 		editionScheme.addToParameters(newParameter);
 		return newParameter;

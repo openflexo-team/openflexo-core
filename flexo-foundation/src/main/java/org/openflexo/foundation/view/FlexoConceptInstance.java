@@ -76,7 +76,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public static final String EMPTY_STRING = "<emtpy>";
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_URI_KEY = "editionPatternURI";
+	public static final String EDITION_PATTERN_URI_KEY = "flexoConceptURI";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String ACTOR_LIST_KEY = "actorList";
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Palette id="1" index="0" name="SKOS">
-  <PaletteElement id="2" name="Concept Scheme" editionPattern="ConceptScheme">
+  <PaletteElement id="2" name="Concept Scheme" flexoConcept="ConceptScheme">
     <Parameter id="3" name="conceptSchemeName" value="My Concept Scheme" />
     <Parameter id="4" name="conceptSchemeURI" value="&lt; Computed URI &gt;" />
     <Parameter id="5" name="preferedLabel" value="" />
@@ -14,7 +14,7 @@
       <TextStyle id="13" font="Lucida Sans,1,11" color="102,0,0" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="14" name="Concept" editionPattern="Concept">
+  <PaletteElement id="14" name="Concept" flexoConcept="Concept">
     <Parameter id="15" name="conceptName" value="My Concept" />
     <Parameter id="16" name="preferedLabel" value="" />
     <Parameter id="17" name="alternativeLabel" value="" />

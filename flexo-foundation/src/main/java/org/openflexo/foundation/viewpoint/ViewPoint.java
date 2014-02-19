@@ -143,10 +143,10 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @return
 	 */
-	public FlexoConcept getFlexoConcept(String editionPatternId);
+	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
 	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
@@ -491,18 +491,18 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
-		 * @param editionPatternId
+		 * @param flexoConceptId
 		 * @return
 		 */
 		@Override
-		public FlexoConcept getFlexoConcept(String editionPatternId) {
+		public FlexoConcept getFlexoConcept(String flexoConceptId) {
 			for (VirtualModel vm : getVirtualModels()) {
-				FlexoConcept returned = vm.getFlexoConcept(editionPatternId);
+				FlexoConcept returned = vm.getFlexoConcept(flexoConceptId);
 				if (returned != null) {
 					return returned;
 				}
 			}
-			// logger.warning("Not found FlexoConcept:" + editionPatternId);
+			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			return null;
 		}
 
