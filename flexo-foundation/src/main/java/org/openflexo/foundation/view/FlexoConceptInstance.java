@@ -76,7 +76,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public static final String EMPTY_STRING = "<emtpy>";
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_URI_KEY = "flexoConceptURI";
+	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String ACTOR_LIST_KEY = "actorList";
 
@@ -84,14 +84,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
-	@Getter(value = EDITION_PATTERN_URI_KEY)
+	@Getter(value = FLEXO_CONCEPT_URI_KEY)
 	@XMLAttribute
 	public String getFlexoConceptURI();
 
-	@Setter(EDITION_PATTERN_URI_KEY)
+	@Setter(FLEXO_CONCEPT_URI_KEY)
 	public void setFlexoConceptURI(String flexoConceptURI);
 
-	@Getter(value = ACTOR_LIST_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.EDITION_PATTERN_INSTANCE_KEY)
+	@Getter(value = ACTOR_LIST_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.FLEXO_CONCEPT_INSTANCE_KEY)
 	@XMLElement
 	public List<ActorReference<?>> getActorList();
 

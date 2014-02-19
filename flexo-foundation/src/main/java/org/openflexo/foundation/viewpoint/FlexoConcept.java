@@ -88,14 +88,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
-	public static final String PARENT_EDITION_PATTERNS_KEY = "parentEditionPatterns";
+	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentEditionPatterns";
 	@PropertyIdentifier(type = List.class)
-	public static final String CHILD_EDITION_PATTERNS_KEY = "childEditionPatterns";
+	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childEditionPatterns";
 	@PropertyIdentifier(type = List.class)
-	public static final String EDITION_PATTERN_CONSTRAINTS_KEY = "flexoConceptConstraints";
+	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
 
 	@Override
-	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.EDITION_PATTERNS_KEY)
+	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	public VirtualModel getVirtualModel();
 
 	@Setter(VIRTUAL_MODEL_KEY)
@@ -119,7 +119,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);
 
-	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = EditionScheme.EDITION_PATTERN_KEY)
+	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = EditionScheme.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	public List<EditionScheme> getEditionSchemes();
 
@@ -135,7 +135,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Finder(collection = EDITION_SCHEMES_KEY, attribute = EditionScheme.NAME_KEY)
 	public EditionScheme getEditionScheme(String editionSchemeName);
 
-	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = PatternRole.EDITION_PATTERN_KEY)
+	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = PatternRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	public List<PatternRole<?>> getPatternRoles();
 
@@ -153,50 +153,50 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public <R> List<R> getPatternRoles(Class<R> type);
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.EDITION_PATTERN_KEY)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
 	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
 	public void setInspector(FlexoConceptInspector inspector);
 
-	@Getter(value = PARENT_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_EDITION_PATTERNS_KEY)
+	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY)
 	@XMLElement(context = "Parent")
 	public List<FlexoConcept> getParentFlexoConcepts();
 
-	@Setter(PARENT_EDITION_PATTERNS_KEY)
+	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
 	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts);
 
-	@Adder(PARENT_EDITION_PATTERNS_KEY)
+	@Adder(PARENT_FLEXO_CONCEPTS_KEY)
 	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
-	@Remover(PARENT_EDITION_PATTERNS_KEY)
+	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
-	@Getter(value = CHILD_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = PARENT_EDITION_PATTERNS_KEY)
+	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = PARENT_FLEXO_CONCEPTS_KEY)
 	// @XMLElement(context = "Child")
 	public List<FlexoConcept> getChildFlexoConcepts();
 
-	@Setter(CHILD_EDITION_PATTERNS_KEY)
+	@Setter(CHILD_FLEXO_CONCEPTS_KEY)
 	public void setChildFlexoConcepts(List<FlexoConcept> childFlexoConcepts);
 
-	@Adder(CHILD_EDITION_PATTERNS_KEY)
+	@Adder(CHILD_FLEXO_CONCEPTS_KEY)
 	public void addToChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
-	@Remover(CHILD_EDITION_PATTERNS_KEY)
+	@Remover(CHILD_FLEXO_CONCEPTS_KEY)
 	public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
-	@Getter(value = EDITION_PATTERN_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_CONCEPT_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	public List<FlexoConceptConstraint> getEditionPatternConstraints();
 
-	@Setter(EDITION_PATTERN_CONSTRAINTS_KEY)
+	@Setter(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void setEditionPatternConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
 
-	@Adder(EDITION_PATTERN_CONSTRAINTS_KEY)
+	@Adder(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void addToEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
 
-	@Remover(EDITION_PATTERN_CONSTRAINTS_KEY)
+	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void removeFromEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
 
 	@DeserializationFinalizer
@@ -806,7 +806,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) {
-			performSuperSetter(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcepts);
+			performSuperSetter(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcepts);
 			/*
 			 * if (getVirtualModel() != null) { getVirtualModel().setChanged();
 			 * getVirtualModel().notifyObservers(new
@@ -818,7 +818,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
-			performSuperAdder(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcept);
+			performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 			/*
 			 * parentFlexoConcept.setChanged();
 			 * parentFlexoConcept.notifyObservers(new
@@ -830,7 +830,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
-			performSuperRemover(PARENT_EDITION_PATTERNS_KEY, parentFlexoConcept);
+			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 			/*
 			 * parentFlexoConcept.setChanged();
 			 * parentFlexoConcept.notifyObservers(new

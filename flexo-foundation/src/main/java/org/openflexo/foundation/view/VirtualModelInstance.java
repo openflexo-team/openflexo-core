@@ -89,7 +89,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@PropertyIdentifier(type = List.class)
 	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 	@PropertyIdentifier(type = List.class)
-	public static final String EDITION_PATTERN_INSTANCES_LIST_KEY = "flexoConceptInstancesList";
+	public static final String FLEXO_CONCEPT_INSTANCES_LIST_KEY = "flexoConceptInstancesList";
 
 	@Getter(value = TITLE_KEY)
 	@XMLAttribute
@@ -122,17 +122,17 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@Remover(MODEL_SLOT_INSTANCES_KEY)
 	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
 
-	@Getter(value = EDITION_PATTERN_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = FLEXO_CONCEPT_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	public List<FlexoConceptInstance> getEditionPatternInstancesList();
 
-	@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	@Setter(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
 	public void setEditionPatternInstancesList(List<FlexoConceptInstance> flexoConceptInstancesList);
 
-	@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	@Adder(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
 	public void addToEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
 
-	@Remover(EDITION_PATTERN_INSTANCES_LIST_KEY)
+	@Remover(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
 	public void removeFromEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
 
 	public void synchronize(FlexoEditor editor);

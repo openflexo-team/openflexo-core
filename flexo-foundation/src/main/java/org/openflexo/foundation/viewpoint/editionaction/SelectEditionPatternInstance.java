@@ -61,13 +61,13 @@ import org.openflexo.toolbox.StringUtils;
 public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_TYPE_URI_KEY = "flexoConceptTypeURI";
+	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 
-	@Getter(value = EDITION_PATTERN_TYPE_URI_KEY)
+	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
 	public String _getEditionPatternTypeURI();
 
-	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
+	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
 	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
 
 	public FlexoConcept getFlexoConceptType();

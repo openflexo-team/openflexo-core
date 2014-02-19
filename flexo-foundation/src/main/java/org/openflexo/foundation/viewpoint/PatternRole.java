@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
 public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
-	public static final String EDITION_PATTERN_KEY = "flexoConcept";
+	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
 	@PropertyIdentifier(type = String.class)
@@ -64,10 +64,10 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
 	public FlexoConcept getFlexoConcept();
 
-	@Setter(EDITION_PATTERN_KEY)
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = PATTERN_ROLE_NAME_KEY)

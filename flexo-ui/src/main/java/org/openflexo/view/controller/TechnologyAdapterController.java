@@ -166,11 +166,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.ACTION_SCHEME_ICON;
 		} else if (AddEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.DUPLICATE);
+			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		} else if (SelectEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.IMPORT);
+			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 		} else if (MatchEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.EDITION_PATTERN_ICON, IconLibrary.SYNC);
+			return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
 		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VPMIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
 		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {

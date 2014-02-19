@@ -24,7 +24,7 @@ import org.openflexo.toolbox.StringUtils;
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
-	public static final String EDITION_PATTERN_INSTANCE_KEY = "flexoConceptInstance";
+	public static final String FLEXO_CONCEPT_INSTANCE_KEY = "flexoConceptInstance";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
@@ -55,10 +55,10 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * 
 	 * @return
 	 */
-	@Getter(value = EDITION_PATTERN_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
+	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
 	public FlexoConceptInstance getEditionPatternInstance();
 
-	@Setter(EDITION_PATTERN_INSTANCE_KEY)
+	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
 	public void setEditionPatternInstance(FlexoConceptInstance epi);
 
 	public PatternRole<T> getPatternRole();

@@ -37,13 +37,13 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<VirtualModelModelSlot> {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String EDITION_PATTERN_TYPE_URI_KEY = "flexoConceptTypeURI";
+	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 
-	@Getter(value = EDITION_PATTERN_TYPE_URI_KEY)
+	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
 	public String _getEditionPatternTypeURI();
 
-	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
+	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
 	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
@@ -66,7 +66,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.EDITION_PATTERN;
+			return WidgetType.FLEXO_CONCEPT;
 		}
 
 		@Override

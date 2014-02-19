@@ -68,7 +68,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 		DATA_PROPERTY,
 		FLEXO_OBJECT,
 		LIST,
-		EDITION_PATTERN,
+		FLEXO_CONCEPT,
 		TECHNOLOGY_OBJECT;
 	}
 

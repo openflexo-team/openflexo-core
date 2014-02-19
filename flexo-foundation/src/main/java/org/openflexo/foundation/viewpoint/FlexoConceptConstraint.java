@@ -51,7 +51,7 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 	public static final String CONSTRAINT_KEY = "constraint";
 
 	@Override
-	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.EDITION_PATTERN_CONSTRAINTS_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public FlexoConcept getFlexoConcept();
 
 	@Setter(FLEXO_CONCEPT_KEY)

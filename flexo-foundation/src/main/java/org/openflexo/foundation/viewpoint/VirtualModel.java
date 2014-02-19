@@ -97,7 +97,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = Vector.class)
-	public static final String EDITION_PATTERNS_KEY = "flexoConcepts";
+	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String MODEL_SLOTS_KEY = "modelSlots";
 
@@ -148,17 +148,17 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
-	@Getter(value = EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.VIRTUAL_MODEL_KEY)
+	@Getter(value = FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.VIRTUAL_MODEL_KEY)
 	@XMLElement
 	public List<FlexoConcept> getFlexoConcepts();
 
-	@Setter(EDITION_PATTERNS_KEY)
+	@Setter(FLEXO_CONCEPTS_KEY)
 	public void setFlexoConcepts(List<FlexoConcept> flexoConcepts);
 
-	@Adder(EDITION_PATTERNS_KEY)
+	@Adder(FLEXO_CONCEPTS_KEY)
 	public void addToFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Remover(EDITION_PATTERNS_KEY)
+	@Remover(FLEXO_CONCEPTS_KEY)
 	public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	/**

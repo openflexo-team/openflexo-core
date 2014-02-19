@@ -61,7 +61,7 @@ import org.openflexo.model.annotations.XMLElement;
 public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
-	public static final String EDITION_PATTERN_KEY = "flexo_concept";
+	public static final String FLEXO_CONCEPT_KEY = "flexo_concept";
 	@PropertyIdentifier(type = String.class)
 	public static final String INSPECTOR_TITLE_KEY = "inspectorTitle";
 	@PropertyIdentifier(type = DataBinding.class)
@@ -70,10 +70,10 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 	public static final String ENTRIES_KEY = "entries";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.INSPECTOR_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.INSPECTOR_KEY)
 	public FlexoConcept getFlexoConcept();
 
-	@Setter(EDITION_PATTERN_KEY)
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = INSPECTOR_TITLE_KEY)

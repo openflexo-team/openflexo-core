@@ -106,7 +106,7 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource("Icons/Model/VPM/ViewPointLibrary.png");
 	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource("Icons/Model/VPM/ViewPoint.png");
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource("Icons/Model/VPM/ModelSlot.png");
-	public static final ImageIconResource EDITION_PATTERN_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
+	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/ActionSchemeIcon.png");
 	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(
 			"Icons/Model/VPM/SynchronizationSchemeIcon.png");
@@ -114,8 +114,8 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource CREATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/CreationSchemeIcon.png");
 	public static final ImageIconResource DELETION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/DeletionSchemeIcon.png");
 	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/NavigationSchemeIcon.png");
-	public static final ImageIconResource EDITION_PATTERN_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
-	public static final ImageIconResource EDITION_PATTERN_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
+	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
+	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
 	public static final ImageIconResource LOCALIZATION_ICON = new ImageIconResource("Icons/Model/VPM/LocalizationIcon.png");
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VPM/UnknownIcon.gif");
 	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource("Icons/Model/VPM/VirtualModel.png");
@@ -175,11 +175,11 @@ public class VPMIconLibrary extends IconLibrary {
 			return null;
 		} else if (object instanceof EditionAction) {
 			if (object instanceof AddEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.DUPLICATE);
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
 			} else if (object instanceof SelectEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.IMPORT);
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.IMPORT);
 			} else if (object instanceof MatchEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.SYNC);
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
 			} else if (object instanceof AddToListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);
 			} else if (object instanceof RemoveFromListAction) {
@@ -217,9 +217,9 @@ public class VPMIconLibrary extends IconLibrary {
 			}
 			return UNKNOWN_ICON;
 		} else if (object instanceof FlexoConcept) {
-			return EDITION_PATTERN_ICON;
+			return FLEXO_CONCEPT_ICON;
 		} else if (object instanceof EditionSchemeParameter) {
-			return EDITION_PATTERN_PARAMETER_ICON;
+			return FLEXO_CONCEPT_PARAMETER_ICON;
 		} else if (object instanceof EditionScheme) {
 			if (object instanceof ActionScheme) {
 				return ACTION_SCHEME_ICON;
@@ -246,7 +246,7 @@ public class VPMIconLibrary extends IconLibrary {
 				}
 			}
 		} else if (object instanceof FlexoConceptInstancePatternRole) {
-			return EDITION_PATTERN_ICON;
+			return FLEXO_CONCEPT_ICON;
 		} else if (object instanceof PrimitivePatternRole) {
 			return UNKNOWN_ICON;
 		} else if (object instanceof OntologicObjectPatternRole && ((OntologicObjectPatternRole<?>) object).getModelSlot() != null) {

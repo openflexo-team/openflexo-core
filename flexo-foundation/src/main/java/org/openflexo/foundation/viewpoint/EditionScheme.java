@@ -68,7 +68,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
 	@PropertyIdentifier(type = FlexoConcept.class)
-	public static final String EDITION_PATTERN_KEY = "flexoConcept";
+	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
@@ -87,10 +87,10 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 	public static final String PARAMETERS_KEY = "parameters";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.EDITION_SCHEMES_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.EDITION_SCHEMES_KEY)
 	public FlexoConcept getFlexoConcept();
 
-	@Setter(EDITION_PATTERN_KEY)
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Override
@@ -322,7 +322,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			performSuperSetter(EDITION_PATTERN_KEY, flexoConcept);
+			performSuperSetter(FLEXO_CONCEPT_KEY, flexoConcept);
 			// _flexoConcept = flexoConcept;
 			updateBindingModels();
 		}

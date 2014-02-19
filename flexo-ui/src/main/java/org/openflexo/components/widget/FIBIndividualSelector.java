@@ -89,7 +89,7 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 
 	private String defaultRenderer = null;
 
-	private static FlexoConceptBindingFactory EDITION_PATTERN_BINDING_FACTORY = new FlexoConceptBindingFactory(null);
+	private static FlexoConceptBindingFactory FLEXO_CONCEPT_BINDING_FACTORY = new FlexoConceptBindingFactory(null);
 
 	private final HashMap<IFlexoOntologyClass, DataBinding<String>> renderers;
 
@@ -101,7 +101,7 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 
 	@Override
 	public BindingFactory getBindingFactory() {
-		return EDITION_PATTERN_BINDING_FACTORY;
+		return FLEXO_CONCEPT_BINDING_FACTORY;
 	}
 
 	@Override
