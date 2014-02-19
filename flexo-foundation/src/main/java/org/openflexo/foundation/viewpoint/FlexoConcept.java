@@ -186,18 +186,18 @@ public interface FlexoConcept extends EditionPatternObject {
 	@Remover(CHILD_EDITION_PATTERNS_KEY)
 	public void removeFromChildFlexoConcepts(FlexoConcept childFlexoConcept);
 
-	@Getter(value = EDITION_PATTERN_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = EditionPatternConstraint.EDITION_PATTERN_KEY)
+	@Getter(value = EDITION_PATTERN_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
 	@XMLElement
-	public List<EditionPatternConstraint> getEditionPatternConstraints();
+	public List<FlexoConceptConstraint> getEditionPatternConstraints();
 
 	@Setter(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void setEditionPatternConstraints(List<EditionPatternConstraint> editionPatternConstraints);
+	public void setEditionPatternConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
 
 	@Adder(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void addToEditionPatternConstraints(EditionPatternConstraint aEditionPatternConstraint);
+	public void addToEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
 
 	@Remover(EDITION_PATTERN_CONSTRAINTS_KEY)
-	public void removeFromEditionPatternConstraints(EditionPatternConstraint aEditionPatternConstraint);
+	public void removeFromEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
 
 	@DeserializationFinalizer
 	public void finalizeEditionPatternDeserialization();
@@ -271,7 +271,7 @@ public interface FlexoConcept extends EditionPatternObject {
 
 		// private List<PatternRole<?>> patternRoles;
 		// private List<EditionScheme> editionSchemes;
-		// private List<EditionPatternConstraint> editionPatternConstraints;
+		// private List<FlexoConceptConstraint> editionPatternConstraints;
 		private EditionPatternInspector inspector;
 
 		// private OntologicObjectPatternRole primaryConceptRole;

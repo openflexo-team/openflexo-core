@@ -34,27 +34,27 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * An EditionPatternConstraint represents a structural constraint attached to an FlexoConcept
+ * An FlexoConceptConstraint represents a structural constraint attached to an FlexoConcept
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-@ImplementationClass(EditionPatternConstraint.EditionPatternConstraintImpl.class)
+@ImplementationClass(FlexoConceptConstraint.FlexoConceptConstraintImpl.class)
 @XMLElement(xmlTag = "Constraint")
-public interface EditionPatternConstraint extends EditionPatternObject {
+public interface FlexoConceptConstraint extends EditionPatternObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
-	public static final String EDITION_PATTERN_KEY = "flexoConcept";
+	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONSTRAINT_KEY = "constraint";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.EDITION_PATTERN_CONSTRAINTS_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.EDITION_PATTERN_CONSTRAINTS_KEY)
 	public FlexoConcept getFlexoConcept();
 
-	@Setter(EDITION_PATTERN_KEY)
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = CONSTRAINT_KEY)
@@ -64,14 +64,14 @@ public interface EditionPatternConstraint extends EditionPatternObject {
 	@Setter(CONSTRAINT_KEY)
 	public void setConstraint(DataBinding<Boolean> constraint);
 
-	public static abstract class EditionPatternConstraintImpl extends EditionPatternObjectImpl implements EditionPatternConstraint {
+	public static abstract class FlexoConceptConstraintImpl extends EditionPatternObjectImpl implements FlexoConceptConstraint {
 
-		protected static final Logger logger = FlexoLogger.getLogger(EditionPatternConstraint.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptConstraint.class.getPackage().getName());
 
 		private FlexoConcept flexoConcept;
 		private DataBinding<Boolean> constraint;
 
-		public EditionPatternConstraintImpl() {
+		public FlexoConceptConstraintImpl() {
 			super();
 		}
 

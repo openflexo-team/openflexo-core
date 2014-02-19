@@ -86,8 +86,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(SynchronizationScheme.class);
 	}
 
-	public EditionPatternConstraint newEditionPatternConstraint() {
-		return newInstance(EditionPatternConstraint.class);
+	public FlexoConceptConstraint newEditionPatternConstraint() {
+		return newInstance(FlexoConceptConstraint.class);
 	}
 
 	public CreationScheme newCreationScheme() {

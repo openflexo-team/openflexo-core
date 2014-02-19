@@ -86,10 +86,10 @@
 		<property name="inspector" xmlTag="Inspector" />
 	 	<!--  <property name="parentEditionPattern" contains="org.openflexo.foundation.viewpoint.FlexoConcept" context="Parent" primary="false"/> -->
 		<property name="parentEditionPatternURI" xmlTag="parentEditionPattern" attribute="YES" />
-		<property name="editionPatternConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.EditionPatternConstraint"/>
+		<property name="editionPatternConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.FlexoConceptConstraint"/>
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.EditionPatternConstraint" xmlTag="Constraint">
+	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptConstraint" xmlTag="Constraint">
 		<property name="constraint" xmlTag="constraint" attribute="YES" />
 	</entity>
 

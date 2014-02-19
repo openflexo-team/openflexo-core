@@ -11,7 +11,7 @@ import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
+import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -87,11 +87,11 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public void createConstraint(FlexoConcept flexoConcept) {
-		EditionPatternConstraint constraint = flexoConcept.getVirtualModelFactory().newEditionPatternConstraint();
+		FlexoConceptConstraint constraint = flexoConcept.getVirtualModelFactory().newEditionPatternConstraint();
 		flexoConcept.addToEditionPatternConstraints(constraint);
 	}
 
-	public EditionPatternConstraint deleteConstraint(FlexoConcept flexoConcept, EditionPatternConstraint constraint) {
+	public FlexoConceptConstraint deleteConstraint(FlexoConcept flexoConcept, FlexoConceptConstraint constraint) {
 		flexoConcept.removeFromEditionPatternConstraints(constraint);
 		constraint.delete();
 		return constraint;

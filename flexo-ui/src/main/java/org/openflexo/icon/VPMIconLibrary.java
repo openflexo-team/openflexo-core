@@ -32,7 +32,7 @@ import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
+import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -153,7 +153,7 @@ public class VPMIconLibrary extends IconLibrary {
 			return MODEL_SLOT_ICON;
 		} else if (object instanceof EditionPatternInspector) {
 			return INSPECT_ICON;
-		} else if (object instanceof EditionPatternConstraint) {
+		} else if (object instanceof FlexoConceptConstraint) {
 			return CONSTRAINT_ICON;
 		} else if (object instanceof FetchRequestCondition) {
 			return CONSTRAINT_ICON;

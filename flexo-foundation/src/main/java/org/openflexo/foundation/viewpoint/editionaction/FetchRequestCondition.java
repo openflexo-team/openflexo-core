@@ -44,7 +44,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * An EditionPatternConstraint represents a structural constraint attached to an FlexoConcept
+ * An FlexoConceptConstraint represents a structural constraint attached to an FlexoConcept
  * 
  * @author sylvain
  * 
