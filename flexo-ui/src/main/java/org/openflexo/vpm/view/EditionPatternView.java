@@ -26,7 +26,7 @@ import org.openflexo.fib.view.container.FIBTabPanelView;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBTableWidget;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -58,7 +58,7 @@ public abstract class EditionPatternView<EP extends FlexoConcept> extends FIBMod
 		return perspective;
 	}
 
-	public void tryToSelect(EditionPatternObject object) {
+	public void tryToSelect(FlexoConceptObject object) {
 		FIBTableWidget patternRoleTable = (FIBTableWidget) getFIBView("PatternRoleTable");
 		FIBTabPanelView mainTabPanel = (FIBTabPanelView) getFIBView("MainTabPanel");
 		FIBTableWidget editionSchemeTable = (FIBTableWidget) getFIBView("EditionSchemeTable");

@@ -32,8 +32,8 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
-import org.openflexo.foundation.viewpoint.EditionPatternObject.EditionPatternObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject.FlexoConceptObjectImpl;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -52,7 +52,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FetchRequestCondition.FetchRequestConditionImpl.class)
 @XMLElement(xmlTag = "Condition")
-public interface FetchRequestCondition extends EditionPatternObject {
+public interface FetchRequestCondition extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FetchRequest.class)
 	public static final String ACTION_KEY = "action";
@@ -75,7 +75,7 @@ public interface FetchRequestCondition extends EditionPatternObject {
 
 	public boolean evaluateCondition(final Object proposedFetchResult, final EditionSchemeAction action);
 
-	public static abstract class FetchRequestConditionImpl extends EditionPatternObjectImpl implements FetchRequestCondition {
+	public static abstract class FetchRequestConditionImpl extends FlexoConceptObjectImpl implements FetchRequestCondition {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FetchRequestCondition.class.getPackage().getName());
 

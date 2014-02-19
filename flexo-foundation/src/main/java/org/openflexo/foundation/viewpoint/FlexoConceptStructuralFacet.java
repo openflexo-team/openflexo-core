@@ -25,14 +25,14 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptStructuralFacet.EditionPatternStructuralFacetImpl.class)
-public interface FlexoConceptStructuralFacet extends EditionPatternObject, FlexoFacet<FlexoConcept> {
+public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFacet<FlexoConcept> {
 
 	@Override
 	public FlexoConcept getFlexoConcept();
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
-	public abstract class EditionPatternStructuralFacetImpl extends EditionPatternObjectImpl implements FlexoConceptStructuralFacet {
+	public abstract class EditionPatternStructuralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptStructuralFacet {
 
 		private FlexoConcept flexoConcept;
 

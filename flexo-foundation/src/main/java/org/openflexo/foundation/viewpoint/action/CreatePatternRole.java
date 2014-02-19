@@ -35,7 +35,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.viewpoint.IndividualPatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -48,29 +48,29 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPatternObject, ViewPointObject> {
+public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConceptObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreatePatternRole.class.getPackage().getName());
 
-	public static FlexoActionType<CreatePatternRole, EditionPatternObject, ViewPointObject> actionType = new FlexoActionType<CreatePatternRole, EditionPatternObject, ViewPointObject>(
+	public static FlexoActionType<CreatePatternRole, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreatePatternRole, FlexoConceptObject, ViewPointObject>(
 			"create_pattern_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreatePatternRole makeNewAction(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreatePatternRole makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreatePatternRole(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
@@ -91,7 +91,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 
 	private PatternRole newPatternRole;
 
-	CreatePatternRole(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreatePatternRole(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

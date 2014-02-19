@@ -42,7 +42,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptConstraint.FlexoConceptConstraintImpl.class)
 @XMLElement(xmlTag = "Constraint")
-public interface FlexoConceptConstraint extends EditionPatternObject {
+public interface FlexoConceptConstraint extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
@@ -64,7 +64,7 @@ public interface FlexoConceptConstraint extends EditionPatternObject {
 	@Setter(CONSTRAINT_KEY)
 	public void setConstraint(DataBinding<Boolean> constraint);
 
-	public static abstract class FlexoConceptConstraintImpl extends EditionPatternObjectImpl implements FlexoConceptConstraint {
+	public static abstract class FlexoConceptConstraintImpl extends FlexoConceptObjectImpl implements FlexoConceptConstraint {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptConstraint.class.getPackage().getName());
 

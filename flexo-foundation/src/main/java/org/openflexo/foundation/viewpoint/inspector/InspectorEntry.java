@@ -26,7 +26,7 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,7 +45,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
-public abstract interface InspectorEntry extends EditionPatternObject, Bindable {
+public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = EditionPatternInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
@@ -109,7 +109,7 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 
 	public int getIndex();
 
-	public static abstract class InspectorEntryImpl extends EditionPatternObjectImpl implements InspectorEntry {
+	public static abstract class InspectorEntryImpl extends FlexoConceptObjectImpl implements InspectorEntry {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
 

@@ -30,36 +30,36 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, EditionPatternObject, ViewPointObject> {
+public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoConceptObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionScheme.class.getPackage().getName());
 
-	public static FlexoActionType<CreateEditionScheme, EditionPatternObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionScheme, EditionPatternObject, ViewPointObject>(
+	public static FlexoActionType<CreateEditionScheme, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionScheme, FlexoConceptObject, ViewPointObject>(
 			"create_edition_scheme", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateEditionScheme makeNewAction(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateEditionScheme makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateEditionScheme(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionPatternObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
@@ -76,7 +76,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 
 	private EditionScheme newEditionScheme;
 
-	CreateEditionScheme(EditionPatternObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

@@ -32,7 +32,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.dm.InspectorEntryInserted;
@@ -58,7 +58,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(EditionPatternInspector.EditionPatternInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
-public interface EditionPatternInspector extends EditionPatternObject, Bindable {
+public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String EDITION_PATTERN_KEY = "edition_pattern";
@@ -131,7 +131,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 
 	public void entryLast(InspectorEntry p);
 
-	public static abstract class EditionPatternInspectorImpl extends EditionPatternObjectImpl implements EditionPatternInspector {
+	public static abstract class EditionPatternInspectorImpl extends FlexoConceptObjectImpl implements EditionPatternInspector {
 
 		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInspector.class.getPackage().toString());
 

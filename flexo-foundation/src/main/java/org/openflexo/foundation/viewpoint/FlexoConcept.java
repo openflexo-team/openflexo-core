@@ -73,7 +73,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
-public interface FlexoConcept extends EditionPatternObject {
+public interface FlexoConcept extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -265,7 +265,7 @@ public interface FlexoConcept extends EditionPatternObject {
 
 	public String getAvailableEditionSchemeName(String baseName);
 
-	public static abstract class FlexoConceptImpl extends EditionPatternObjectImpl implements FlexoConcept {
+	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 

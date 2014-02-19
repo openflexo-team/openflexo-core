@@ -52,7 +52,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(PatternRole.PatternRoleImpl.class)
 @Imports({ @Import(EditionPatternInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
-public abstract interface PatternRole<T> extends EditionPatternObject {
+public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String EDITION_PATTERN_KEY = "flexoConcept";
@@ -116,7 +116,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
-	public static abstract class PatternRoleImpl<T> extends EditionPatternObjectImpl implements PatternRole<T> {
+	public static abstract class PatternRoleImpl<T> extends FlexoConceptObjectImpl implements PatternRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(PatternRole.class.getPackage().getName());
 
