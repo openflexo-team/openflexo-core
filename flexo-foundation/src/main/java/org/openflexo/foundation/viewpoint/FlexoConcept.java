@@ -39,7 +39,7 @@ import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresenta
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DeserializationFinalizer;
@@ -85,7 +85,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public static final String EDITION_SCHEMES_KEY = "editionSchemes";
 	@PropertyIdentifier(type = List.class)
 	public static final String PATTERN_ROLES_KEY = "patternRoles";
-	@PropertyIdentifier(type = EditionPatternInspector.class)
+	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARENT_EDITION_PATTERNS_KEY = "parentEditionPatterns";
@@ -153,12 +153,12 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public <R> List<R> getPatternRoles(Class<R> type);
 
-	@Getter(value = INSPECTOR_KEY, inverse = EditionPatternInspector.EDITION_PATTERN_KEY)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.EDITION_PATTERN_KEY)
 	@XMLElement(xmlTag = "Inspector")
-	public EditionPatternInspector getInspector();
+	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
-	public void setInspector(EditionPatternInspector inspector);
+	public void setInspector(FlexoConceptInspector inspector);
 
 	@Getter(value = PARENT_EDITION_PATTERNS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_EDITION_PATTERNS_KEY)
 	@XMLElement(context = "Parent")
@@ -272,7 +272,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		// private List<PatternRole<?>> patternRoles;
 		// private List<EditionScheme> editionSchemes;
 		// private List<FlexoConceptConstraint> editionPatternConstraints;
-		private EditionPatternInspector inspector;
+		private FlexoConceptInspector inspector;
 
 		// private OntologicObjectPatternRole primaryConceptRole;
 		// private GraphicalElementPatternRole primaryRepresentationRole;
@@ -609,7 +609,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public EditionPatternInspector getInspector() {
+		public FlexoConceptInspector getInspector() {
 			if (inspector == null && getVirtualModelFactory() != null) {
 				inspector = getVirtualModelFactory().newFlexoConceptInspector(this);
 				inspector.setInspectorTitle(getName());
@@ -618,7 +618,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void setInspector(EditionPatternInspector inspector) {
+		public void setInspector(FlexoConceptInspector inspector) {
 			inspector.setFlexoConcept(this);
 			this.inspector = inspector;
 		}

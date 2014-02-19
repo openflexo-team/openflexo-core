@@ -19,19 +19,19 @@
  */
 package org.openflexo.foundation.viewpoint.dm;
 
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 
 public class InspectorEntryRemoved extends ViewPointDataModification {
 
-	private EditionPatternInspector _inspector;
+	private FlexoConceptInspector _inspector;
 
-	public InspectorEntryRemoved(InspectorEntry entry, EditionPatternInspector inspector) {
+	public InspectorEntryRemoved(InspectorEntry entry, FlexoConceptInspector inspector) {
 		super(entry, null);
 		_inspector = inspector;
 	}
 
-	public EditionPatternInspector getInspector() {
+	public FlexoConceptInspector getInspector() {
 		return _inspector;
 	}
 

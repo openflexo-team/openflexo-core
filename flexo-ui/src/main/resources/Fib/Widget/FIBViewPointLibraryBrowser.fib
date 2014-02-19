@@ -38,7 +38,7 @@
       <Children data="editionScheme.editionSchemeParameters" visible="(editionScheme.parameters.size &gt; 0)" cast="" name="parameters" />
       <Children data="editionScheme.actions" visible="" cast="" name="actions" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
       <Children data="inspector.entries" visible="" cast="" name="entries" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry" label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />

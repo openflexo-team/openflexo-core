@@ -93,7 +93,7 @@
 		<property name="constraint" xmlTag="constraint" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector"
+	<entity name="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector"
 		xmlTag="Inspector">
 		<property name="inspectorTitle" xmlTag="inspectorTitle" attribute="YES" />
 		<property name="renderer" xmlTag="renderer" attribute="YES" />

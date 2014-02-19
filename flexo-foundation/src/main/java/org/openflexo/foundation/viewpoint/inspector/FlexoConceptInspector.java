@@ -56,9 +56,9 @@ import org.openflexo.model.annotations.XMLElement;
  * 
  */
 @ModelEntity
-@ImplementationClass(EditionPatternInspector.EditionPatternInspectorImpl.class)
+@ImplementationClass(FlexoConceptInspector.FlexoConceptInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
-public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
+public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String EDITION_PATTERN_KEY = "edition_pattern";
@@ -131,9 +131,9 @@ public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 
 	public void entryLast(InspectorEntry p);
 
-	public static abstract class EditionPatternInspectorImpl extends FlexoConceptObjectImpl implements EditionPatternInspector {
+	public static abstract class FlexoConceptInspectorImpl extends FlexoConceptObjectImpl implements FlexoConceptInspector {
 
-		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInspector.class.getPackage().toString());
+		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInspector.class.getPackage().toString());
 
 		private String inspectorTitle;
 		private FlexoConcept _flexoConcept;
@@ -143,15 +143,15 @@ public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 		private final EditionPatternFormatter formatter;
 
 		/*
-		 * public static EditionPatternInspector
+		 * public static FlexoConceptInspector
 		 * makeEditionPatternInspector(FlexoConcept ep) {
-		 * EditionPatternInspector returned =
+		 * FlexoConceptInspector returned =
 		 * ep.getVirtualModelFactory().newEditionPatternInspector(ep);
 		 * returned.setInspectorTitle(ep.getName()); ep.setInspector(returned);
 		 * return returned; }
 		 */
 
-		public EditionPatternInspectorImpl() {
+		public FlexoConceptInspectorImpl() {
 			super();
 			entries = new Vector<InspectorEntry>();
 			formatter = new EditionPatternFormatter();
@@ -424,7 +424,7 @@ public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 
 			@Override
 			public BindingFactory getBindingFactory() {
-				return EditionPatternInspectorImpl.this.getBindingFactory();
+				return FlexoConceptInspectorImpl.this.getBindingFactory();
 			}
 
 			@Override
@@ -449,14 +449,14 @@ public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 			@Override
 			public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this.notifiedBindingChanged(dataBinding);
+					FlexoConceptInspectorImpl.this.notifiedBindingChanged(dataBinding);
 				}
 			}
 
 			@Override
 			public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 				if (dataBinding == getRenderer()) {
-					EditionPatternInspectorImpl.this.notifiedBindingDecoded(dataBinding);
+					FlexoConceptInspectorImpl.this.notifiedBindingDecoded(dataBinding);
 				}
 			}
 

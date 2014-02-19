@@ -31,7 +31,7 @@ import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -103,7 +103,7 @@ public abstract class EditionPatternView<EP extends FlexoConcept> extends FIBMod
 			if (editionActionBrowser != null) {
 				editionActionBrowser.setSelected(object);
 			}
-		} else if (object instanceof EditionPatternInspector) {
+		} else if (object instanceof FlexoConceptInspector) {
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(1);
 			}

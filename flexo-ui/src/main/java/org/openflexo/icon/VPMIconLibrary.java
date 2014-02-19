@@ -64,7 +64,7 @@ import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.FloatInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.IntegerInspectorEntry;
@@ -151,7 +151,7 @@ public class VPMIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
-		} else if (object instanceof EditionPatternInspector) {
+		} else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
 		} else if (object instanceof FlexoConceptConstraint) {
 			return CONSTRAINT_ICON;

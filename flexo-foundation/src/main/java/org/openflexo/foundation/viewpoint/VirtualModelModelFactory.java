@@ -41,7 +41,7 @@ import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInst
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ObjectPropertyInspectorEntry;
@@ -208,8 +208,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(FetchRequestCondition.class);
 	}
 
-	public EditionPatternInspector newFlexoConceptInspector(FlexoConcept ep) {
-		EditionPatternInspector returned = newInstance(EditionPatternInspector.class);
+	public FlexoConceptInspector newFlexoConceptInspector(FlexoConcept ep) {
+		FlexoConceptInspector returned = newInstance(FlexoConceptInspector.class);
 		returned.setFlexoConcept(ep);
 		return returned;
 	}

@@ -47,7 +47,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
-	@PropertyIdentifier(type = EditionPatternInspector.class)
+	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 
 	@PropertyIdentifier(type = String.class)
@@ -61,12 +61,12 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
-	@Getter(value = INSPECTOR_KEY, inverse = EditionPatternInspector.ENTRIES_KEY)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.ENTRIES_KEY)
 	@XMLElement(xmlTag = "Inspector")
-	public EditionPatternInspector getInspector();
+	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
-	public void setInspector(EditionPatternInspector inspector);
+	public void setInspector(FlexoConceptInspector inspector);
 
 	@Getter(value = LABEL_KEY)
 	@XMLAttribute
@@ -113,7 +113,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
 
-		private EditionPatternInspector inspector;
+		private FlexoConceptInspector inspector;
 		private String label;
 		private boolean readOnly;
 
@@ -152,12 +152,12 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public EditionPatternInspector getInspector() {
+		public FlexoConceptInspector getInspector() {
 			return inspector;
 		}
 
 		@Override
-		public void setInspector(EditionPatternInspector inspector) {
+		public void setInspector(FlexoConceptInspector inspector) {
 			this.inspector = inspector;
 		}
 
@@ -241,7 +241,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 		@Override
 		public BindingModel getBindingModel() {
-			EditionPatternInspector inspector = getInspector();
+			FlexoConceptInspector inspector = getInspector();
 			if (inspector != null) {
 				return getInspector().getBindingModel();
 			} else
