@@ -24,7 +24,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
-@ImplementationClass(FlexoConceptBehaviouralFacet.EditionPatternBehaviouralFacetImpl.class)
+@ImplementationClass(FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl.class)
 public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoFacet<FlexoConcept> {
 
 	@Override
@@ -32,7 +32,7 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
-	public abstract class EditionPatternBehaviouralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptBehaviouralFacet {
+	public abstract class FlexoConceptBehaviouralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptBehaviouralFacet {
 
 		private FlexoConcept flexoConcept;
 
