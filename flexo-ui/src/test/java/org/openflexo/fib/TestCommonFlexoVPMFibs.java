@@ -137,7 +137,7 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testStandardEditionPatternView() {
-		validateFIB("Fib/VPM/StandardEditionPatternView.fib");
+		validateFIB("Fib/VPM/StandardFlexoConceptView.fib");
 	}
 
 	@Test

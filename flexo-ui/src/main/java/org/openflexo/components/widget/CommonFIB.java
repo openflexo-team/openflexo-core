@@ -21,7 +21,7 @@ public class CommonFIB {
 
 	// General components
 	public static File VIEWPOINT_VIEW_FIB = new FileResource("Fib/VPM/ViewPointView.fib");
-	public static File STANDARD_FLEXO_CONCEPT_VIEW_FIB = new FileResource("Fib/VPM/StandardEditionPatternView.fib");
+	public static File STANDARD_FLEXO_CONCEPT_VIEW_FIB = new FileResource("Fib/VPM/StandardFlexoConceptView.fib");
 	public static File VIRTUAL_MODEL_VIEW_FIB = new FileResource("Fib/VPM/VirtualModelView.fib");
 
 	public static File CHOOSE_AND_CONFIGURE_CREATION_SCHEME_DIALOG_FIB = new FileResource(

@@ -32,7 +32,7 @@ import org.openflexo.toolbox.FileResource;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
+public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
@@ -167,7 +167,7 @@ public class TestEditionPatternPanel extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestEditionPatternPanel.class.getSimpleName());
+		gcDelegate = new GraphicalContextDelegate(TestFlexoConceptPanel.class.getSimpleName());
 	}
 
 	@AfterClass

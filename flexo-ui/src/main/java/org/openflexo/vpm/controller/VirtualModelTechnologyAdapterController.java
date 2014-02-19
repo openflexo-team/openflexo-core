@@ -22,7 +22,7 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
-import org.openflexo.vpm.view.StandardEditionPatternView;
+import org.openflexo.vpm.view.StandardFlexoConceptView;
 import org.openflexo.vpm.view.ViewPointView;
 import org.openflexo.vpm.view.VirtualModelView;
 
@@ -149,7 +149,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 				// if (ep.getVirtualModel() instanceof DiagramSpecification) {
 				// return new DiagramEditionPatternView(ep, (VPMController) controller);
 				// } else {
-				return new StandardEditionPatternView(ep, controller, perspective);
+				return new StandardFlexoConceptView(ep, controller, perspective);
 				// }
 			}
 
@@ -170,7 +170,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 			// if (ep.getVirtualModel() instanceof DiagramSpecification) {
 			//	return new DiagramEditionPatternView(ep, (VPMController) controller);
 			// } else {
-			return new StandardEditionPatternView(ep, (VPMController) controller);
+			return new StandardFlexoConceptView(ep, (VPMController) controller);
 			// }
 		}
 

@@ -50,9 +50,9 @@ import org.openflexo.toolbox.FileResource;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<FlexoConceptInstance> {
+public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<FlexoConceptInstance> {
 
-	static final Logger logger = Logger.getLogger(FIBEditionPatternInstanceSelector.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FIBFlexoConceptInstanceSelector.class.getPackage().getName());
 
 	public static FileResource FIB_FILE = new FileResource("Fib/EditionPatternInstanceSelector.fib");
 
@@ -63,7 +63,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 	private View view;
 	private VirtualModelInstance virtualModelInstance;
 
-	public FIBEditionPatternInstanceSelector(FlexoConceptInstance editedObject) {
+	public FIBFlexoConceptInstanceSelector(FlexoConceptInstance editedObject) {
 		super(editedObject);
 	}
 
@@ -193,7 +193,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 			public Object[] getData() {
 				TestApplicationContext testApplicationContext = new TestApplicationContext(new FileResource(
 						"src/test/resources/TestResourceCenter"));
-				FIBEditionPatternSelector selector = new FIBEditionPatternSelector(null);
+				FIBFlexoConceptSelector selector = new FIBFlexoConceptSelector(null);
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}

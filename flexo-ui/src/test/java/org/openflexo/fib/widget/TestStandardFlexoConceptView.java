@@ -41,13 +41,13 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Test StandardEditionPatternView fib
+ * Test StandardFlexoConceptView fib
  * 
  * @author sylvain
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestStandardEditionPatternView extends OpenflexoFIBTestCase {
+public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
@@ -76,7 +76,7 @@ public class TestStandardEditionPatternView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/StandardEditionPatternView.fib");
+		fibFile = new FileResource("Fib/VPM/StandardFlexoConceptView.fib");
 		assertTrue(fibFile.exists());
 	}
 
@@ -268,7 +268,7 @@ public class TestStandardEditionPatternView extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestStandardEditionPatternView.class.getSimpleName());
+		gcDelegate = new GraphicalContextDelegate(TestStandardFlexoConceptView.class.getSimpleName());
 	}
 
 	@AfterClass

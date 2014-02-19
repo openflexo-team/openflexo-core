@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.components.widget.FIBEditionPatternInstanceSelector;
+import org.openflexo.components.widget.FIBFlexoConceptInstanceSelector;
 import org.openflexo.components.widget.FIBIndividualSelector;
 import org.openflexo.components.widget.FIBPropertySelector;
 import org.openflexo.fib.controller.FIBController.Status;
@@ -188,7 +188,7 @@ public class ParametersRetriever<ES extends EditionScheme> {
 		} else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
-			epiSelector.setComponentClass(FIBEditionPatternInstanceSelector.class);
+			epiSelector.setComponentClass(FIBFlexoConceptInstanceSelector.class);
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.project"),
 					new DataBinding<Object>("data.project"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),

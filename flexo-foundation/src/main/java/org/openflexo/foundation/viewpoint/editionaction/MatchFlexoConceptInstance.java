@@ -434,21 +434,21 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 
-		public static class MatchEditionPatternInstanceMustAddressACreationScheme extends
-				ValidationRule<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
-			public MatchEditionPatternInstanceMustAddressACreationScheme() {
+		public static class MatchFlexoConceptInstanceMustAddressACreationScheme extends
+				ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
+			public MatchFlexoConceptInstanceMustAddressACreationScheme() {
 				super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
 			}
 
 			@Override
-			public ValidationIssue<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
+			public ValidationIssue<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
 					MatchFlexoConceptInstance action) {
 				if (action.getCreationScheme() == null) {
 					if (action.getFlexoConceptType() == null) {
-						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
+						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
 								this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
 					} else {
-						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
+						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
 								this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
 					}
 				}
@@ -456,17 +456,17 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			}
 		}
 
-		public static class MatchEditionPatternInstanceParametersMustBeValid extends
-				ValidationRule<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
-			public MatchEditionPatternInstanceParametersMustBeValid() {
+		public static class MatchFlexoConceptInstanceParametersMustBeValid extends
+				ValidationRule<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
+			public MatchFlexoConceptInstanceParametersMustBeValid() {
 				super(MatchFlexoConceptInstance.class, "match_flexo_concept_parameters_must_be_valid");
 			}
 
 			@Override
-			public ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance> applyValidation(
+			public ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> applyValidation(
 					MatchFlexoConceptInstance action) {
 				if (action.getCreationScheme() != null) {
-					Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>> issues = new Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>>();
+					Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>> issues = new Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>>();
 					for (CreateFlexoConceptInstanceParameter p : action.getParameters()) {
 						if (p.getParam().getIsRequired()) {
 							if (p.getValue() == null || !p.getValue().isSet()) {
@@ -489,7 +489,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					} else if (issues.size() == 1) {
 						return issues.firstElement();
 					} else {
-						return new CompoundIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action,
+						return new CompoundIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action,
 								issues);
 					}
 				}

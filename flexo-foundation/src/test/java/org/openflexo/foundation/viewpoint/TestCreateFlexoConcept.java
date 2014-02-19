@@ -35,7 +35,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateEditionPattern extends OpenflexoTestCase {
+public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 	static ViewPoint newViewPoint;
