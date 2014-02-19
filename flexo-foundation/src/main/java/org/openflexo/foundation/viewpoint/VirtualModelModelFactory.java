@@ -136,8 +136,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public EditionPatternStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
-		EditionPatternStructuralFacet returned = newInstance(EditionPatternStructuralFacet.class);
+	public FlexoConceptStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
+		FlexoConceptStructuralFacet returned = newInstance(FlexoConceptStructuralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}

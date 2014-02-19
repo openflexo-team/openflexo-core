@@ -36,7 +36,7 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
-import org.openflexo.foundation.viewpoint.EditionPatternStructuralFacet;
+import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.viewpoint.IndividualPatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
@@ -78,7 +78,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, EditionPat
 
 	static {
 		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, FlexoConcept.class);
-		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, EditionPatternStructuralFacet.class);
+		FlexoObjectImpl.addActionForClass(CreatePatternRole.actionType, FlexoConceptStructuralFacet.class);
 	}
 
 	private String patternRoleName;
