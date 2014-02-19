@@ -36,7 +36,7 @@ public class DeleteEditionPattern extends FlexoAction<DeleteEditionPattern, Flex
 	private static final Logger logger = Logger.getLogger(DeleteEditionPattern.class.getPackage().getName());
 
 	public static FlexoActionType<DeleteEditionPattern, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DeleteEditionPattern, FlexoConcept, ViewPointObject>(
-			"delete_edition_pattern", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+			"delete_flexo_concept", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method

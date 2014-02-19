@@ -26,7 +26,7 @@
     <Table iteratorClassName="org.openflexo.foundation.view.FlexoConceptInstance" visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(EditionPatternInstancesTable.selected,event)" name="EditionPatternInstancesTable" data="data.getEPInstances(EditionPatternBrowser.selected)" constraints="split(splitIdentifier=left)" opaque="false">
       <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
       <LabelColumn data="iterator.flexoID.toString" title="id" columnWidth="30" resizable="false" displayTitle="true" name="label" />
-      <LabelColumn data="iterator.stringRepresentation" title="edition_pattern_instances" columnWidth="400" resizable="true" displayTitle="true" name="label" />
+      <LabelColumn data="iterator.stringRepresentation" title="flexo_concept_instances" columnWidth="400" resizable="true" displayTitle="true" name="label" />
       <Dependancy componentName="EditionPatternBrowser" />
       <Dependancy componentName="SynchronizeButton" />
     </Table>
@@ -44,9 +44,9 @@
     </Panel>
   </SplitPanel>
   <LocalizedDictionary>
-    <Localized key="edition_pattern_instances" lang="English">EditionPattern instances</Localized>
-    <Localized key="edition_pattern_instances" lang="French">EditionPattern instances</Localized>
-    <Localized key="edition_pattern_instances" lang="Dutch">edition_pattern_instances</Localized>
+    <Localized key="flexo_concept_instances" lang="English">EditionPattern instances</Localized>
+    <Localized key="flexo_concept_instances" lang="French">EditionPattern instances</Localized>
+    <Localized key="flexo_concept_instances" lang="Dutch">flexo_concept_instances</Localized>
     <Localized key="virtual_model" lang="English">Virtual Model</Localized>
     <Localized key="virtual_model" lang="French">Virtual Model</Localized>
     <Localized key="virtual_model" lang="Dutch">virtual_model</Localized>

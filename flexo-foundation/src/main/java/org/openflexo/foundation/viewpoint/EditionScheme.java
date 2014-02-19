@@ -286,7 +286,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		/**
 		 * Return the URI of the {@link NamedViewPointObject}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<edition_pattern_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.MyEditionScheme
 		 * 

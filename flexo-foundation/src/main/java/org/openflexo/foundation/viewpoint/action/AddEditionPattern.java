@@ -40,7 +40,7 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 	private static final Logger logger = Logger.getLogger(AddEditionPattern.class.getPackage().getName());
 
 	public static FlexoActionType<AddEditionPattern, VirtualModel, ViewPointObject> actionType = new FlexoActionType<AddEditionPattern, VirtualModel, ViewPointObject>(
-			"add_new_edition_pattern", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

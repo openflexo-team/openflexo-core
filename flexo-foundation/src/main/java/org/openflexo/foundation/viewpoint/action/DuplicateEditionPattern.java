@@ -37,7 +37,7 @@ public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern
 	private static final Logger logger = Logger.getLogger(DuplicateEditionPattern.class.getPackage().getName());
 
 	public static FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject>(
-			"duplicate_edition_pattern", FlexoActionType.editGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+			"duplicate_flexo_concept", FlexoActionType.editGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

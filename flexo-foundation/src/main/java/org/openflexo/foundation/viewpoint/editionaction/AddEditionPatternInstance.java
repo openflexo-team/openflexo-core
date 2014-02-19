@@ -301,7 +301,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 	public static class AddEditionPatternInstanceMustAddressACreationScheme extends
 			ValidationRule<AddEditionPatternInstanceMustAddressACreationScheme, AddEditionPatternInstance> {
 		public AddEditionPatternInstanceMustAddressACreationScheme() {
-			super(AddEditionPatternInstance.class, "add_edition_pattern_action_must_address_a_valid_creation_scheme");
+			super(AddEditionPatternInstance.class, "add_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
@@ -310,10 +310,10 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 			if (action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<AddEditionPatternInstanceMustAddressACreationScheme, AddEditionPatternInstance>(this,
-							action, "add_edition_pattern_action_doesn't_define_any_edition_pattern");
+							action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				} else {
 					return new ValidationError<AddEditionPatternInstanceMustAddressACreationScheme, AddEditionPatternInstance>(this,
-							action, "add_edition_pattern_action_doesn't_define_any_creation_scheme");
+							action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
 			}
 			return null;
@@ -324,7 +324,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 			ValidationRule<AddEditionPatternInstanceParametersMustBeValid, AddEditionPatternInstance> {
 
 		public AddEditionPatternInstanceParametersMustBeValid() {
-			super(AddEditionPatternInstance.class, "add_edition_pattern_parameters_must_be_valid");
+			super(AddEditionPatternInstance.class, "add_flexo_concept_parameters_must_be_valid");
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel opaque="false" layout="twocols" titleFont="SansSerif,0,12" darkLevel="0" data="" dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController" visible="" font="SansSerif,0,12" name="EditionPatternPanel">
-  <Label label="edition_pattern" data="" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator=""/>
+  <Label label="flexo_concept" data="" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator=""/>
   <TextField data="data.name" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" columns="7" text="TextField" editable=""/>
   <Label label="parent_concepts" index="2" data="" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator=""/>
   <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoConcept" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="ParentFlexoConceptTable" index="5" data="data.parentFlexoConcepts" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visible="">
@@ -41,9 +41,9 @@
     <Localized key="delete_constraint" lang="English">delete_constraint</Localized>
     <Localized key="delete_constraint" lang="French">delete_constraint</Localized>
     <Localized key="delete_constraint" lang="Dutch">delete_constraint</Localized>
-    <Localized key="edition_pattern" lang="English">Edition Pattern</Localized>
-    <Localized key="edition_pattern" lang="French">Edition Pattern</Localized>
-    <Localized key="edition_pattern" lang="Dutch">edition pattern</Localized>
+    <Localized key="flexo_concept" lang="English">Edition Pattern</Localized>
+    <Localized key="flexo_concept" lang="French">Edition Pattern</Localized>
+    <Localized key="flexo_concept" lang="Dutch">edition pattern</Localized>
     <Localized key="parent" lang="English">Parent</Localized>
     <Localized key="parent" lang="French">Parent</Localized>
     <Localized key="parent" lang="Dutch">Parent</Localized>

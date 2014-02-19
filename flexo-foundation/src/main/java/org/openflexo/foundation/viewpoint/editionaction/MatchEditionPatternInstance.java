@@ -437,7 +437,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		public static class MatchEditionPatternInstanceMustAddressACreationScheme extends
 				ValidationRule<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance> {
 			public MatchEditionPatternInstanceMustAddressACreationScheme() {
-				super(MatchEditionPatternInstance.class, "match_edition_pattern_action_must_address_a_valid_creation_scheme");
+				super(MatchEditionPatternInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
 			}
 
 			@Override
@@ -446,10 +446,10 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 				if (action.getCreationScheme() == null) {
 					if (action.getFlexoConceptType() == null) {
 						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance>(
-								this, action, "match_edition_pattern_action_doesn't_define_any_edition_pattern");
+								this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
 					} else {
 						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance>(
-								this, action, "match_edition_pattern_action_doesn't_define_any_creation_scheme");
+								this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
 					}
 				}
 				return null;
@@ -459,7 +459,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		public static class MatchEditionPatternInstanceParametersMustBeValid extends
 				ValidationRule<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance> {
 			public MatchEditionPatternInstanceParametersMustBeValid() {
-				super(MatchEditionPatternInstance.class, "match_edition_pattern_parameters_must_be_valid");
+				super(MatchEditionPatternInstance.class, "match_flexo_concept_parameters_must_be_valid");
 			}
 
 			@Override

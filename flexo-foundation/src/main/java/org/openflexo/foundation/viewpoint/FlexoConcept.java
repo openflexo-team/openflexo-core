@@ -336,7 +336,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		/**
 		 * Return the URI of the {@link FlexoConcept}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<edition_pattern_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern. MyEditionScheme
 		 * 
@@ -897,14 +897,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public static class FlexoConceptShouldHaveRoles extends ValidationRule<FlexoConceptShouldHaveRoles, FlexoConcept> {
 		public FlexoConceptShouldHaveRoles() {
-			super(FlexoConcept.class, "edition_pattern_should_have_roles");
+			super(FlexoConcept.class, "flexo_concept_should_have_roles");
 		}
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getPatternRoles().size() == 0) {
 				return new ValidationWarning<FlexoConceptShouldHaveRoles, FlexoConcept>(this, flexoConcept,
-						"edition_pattern_role_has_no_role");
+						"flexo_concept_role_has_no_role");
 			}
 			return null;
 		}
@@ -913,14 +913,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public static class FlexoConceptShouldHaveEditionSchemes extends
 			ValidationRule<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> {
 		public FlexoConceptShouldHaveEditionSchemes() {
-			super(FlexoConcept.class, "edition_pattern_should_have_edition_scheme");
+			super(FlexoConcept.class, "flexo_concept_should_have_edition_scheme");
 		}
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getEditionSchemes().size() == 0) {
 				return new ValidationWarning<FlexoConceptShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
-						"edition_pattern_has_no_edition_scheme");
+						"flexo_concept_has_no_edition_scheme");
 			}
 			return null;
 		}
@@ -929,7 +929,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public static class FlexoConceptShouldHaveDeletionScheme extends
 			ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 		public FlexoConceptShouldHaveDeletionScheme() {
-			super(FlexoConcept.class, "edition_pattern_should_have_deletion_scheme");
+			super(FlexoConcept.class, "flexo_concept_should_have_deletion_scheme");
 		}
 
 		@Override
@@ -937,7 +937,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			if (flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
 				return new ValidationWarning<FlexoConceptShouldHaveDeletionScheme, FlexoConcept>(this, flexoConcept,
-						"edition_pattern_has_no_deletion_scheme", fixProposal);
+						"flexo_concept_has_no_deletion_scheme", fixProposal);
 			}
 			return null;
 		}

@@ -20,7 +20,7 @@
     </Table>
     <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoConcept" visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" clickAction="" doubleClickAction="controller.doubleClick(EditionPatternTable.selected)" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="EditionPatternTable" data="VirtualModelTable.selected.flexoConcepts" constraints="split(splitIdentifier=virtualModelDetails)" visible="">
       <IconColumn data="controller.iconForObject(iterator)" format="" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
-      <LabelColumn data="iterator.name" format="" title="edition_pattern" columnWidth="100" resizable="true" displayTitle="true" name="label" />
+      <LabelColumn data="iterator.name" format="" title="flexo_concept" columnWidth="100" resizable="true" displayTitle="true" name="label" />
      <LabelColumn data="iterator.description" title="description" columnWidth="200" resizable="true" displayTitle="true" name="label" />
     </Table>
    <!--   <Panel layout="gridbag" border="rounded3d" borderTop="2" borderBottom="2" borderLeft="2" borderRight="2" darkLevel="0" data="($org.openflexo.technologyadapter.diagram.fml.DiagramSpecification)VirtualModelTable.selected" constraints="split(splitIdentifier=virtualModelDetails)" visible="(VirtualModelTable.selected.class.simpleName = &quot;DiagramSpecification&quot;)" opaque="false">
@@ -42,10 +42,10 @@
     <Localized key="description" lang="Dutch">Description</Localized>
     <Localized key="kind" lang="Dutch">Generic Type</Localized>
     <Localized key="type" lang="Dutch">Type</Localized>
-    <Localized key="edition_pattern" lang="French">Edition pattern</Localized>
-    <Localized key="edition_pattern" lang="English">Edition pattern</Localized>
-    <Localized key="edition_patterns_declared_in_this_calc" lang="English">Edition patterns declared in this calc</Localized>
-    <Localized key="edition_patterns_declared_in_this_calc" lang="French">Edition patterns déclarés dans ce calque</Localized>
+    <Localized key="flexo_concept" lang="French">Edition pattern</Localized>
+    <Localized key="flexo_concept" lang="English">Edition pattern</Localized>
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="English">Edition patterns declared in this calc</Localized>
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="French">Edition patterns déclarés dans ce calque</Localized>
     <Localized key="pattern_role" lang="French">Pattern Role</Localized>
     <Localized key="pattern_role" lang="English">Pattern Role</Localized>
     <Localized key="palette" lang="English">Palette</Localized>
@@ -57,8 +57,8 @@
     <Localized key="example_diagram" lang="French">Example diagram</Localized>
     <Localized key="example_diagram" lang="English">Example diagram</Localized>
     <Localized key="example_diagram" lang="Dutch">Example diagram</Localized>
-    <Localized key="edition_pattern" lang="Dutch">Editie pattern</Localized>
+    <Localized key="flexo_concept" lang="Dutch">Editie pattern</Localized>
     <Localized key="pattern_role" lang="Dutch">Rol van de patroon</Localized>
-    <Localized key="edition_patterns_declared_in_this_calc" lang="Dutch">Edition patterns declared in this calc</Localized>
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="Dutch">Edition patterns declared in this calc</Localized>
   </LocalizedDictionary>
 </Panel>

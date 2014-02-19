@@ -609,7 +609,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public String getClassNameKey() {
-			return "edition_pattern_instance";
+			return "flexo_concept_instance";
 		}*/
 
 		@Override

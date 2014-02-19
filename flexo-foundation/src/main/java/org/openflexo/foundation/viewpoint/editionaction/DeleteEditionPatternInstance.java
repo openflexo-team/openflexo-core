@@ -294,7 +294,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 	public static class DeleteEditionPatternInstanceMustAddressADeletionScheme extends
 			ValidationRule<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance> {
 		public DeleteEditionPatternInstanceMustAddressADeletionScheme() {
-			super(DeleteEditionPatternInstance.class, "delete_edition_pattern_action_must_address_a_valid_creation_scheme");
+			super(DeleteEditionPatternInstance.class, "delete_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
@@ -303,10 +303,10 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 			if (action.getDeletionScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance>(this,
-							action, "delete_edition_pattern_action_doesn't_define_any_edition_pattern");
+							action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");
 				} else {
 					return new ValidationError<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance>(this,
-							action, "delete_edition_pattern_action_doesn't_define_any_creation_scheme");
+							action, "delete_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
 			}
 			return null;
@@ -317,7 +317,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 			ValidationRule<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance> {
 
 		public DeleteEditionPatternInstanceParametersMustBeValid() {
-			super(DeleteEditionPatternInstance.class, "delete_edition_pattern_parameters_must_be_valid");
+			super(DeleteEditionPatternInstance.class, "delete_flexo_concept_parameters_must_be_valid");
 		}
 
 		@Override
