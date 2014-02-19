@@ -78,7 +78,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	@Setter(VIEW_POINT_URI_KEY)
 	public void setViewPointURI(String viewPointURI);
 
-	@Getter(value = VIEW_POINT_VERSION_KEY)
+	@Getter(value = VIEW_POINT_VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public FlexoVersion getViewPointVersion();
 

@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.view;
 
 import static org.junit.Assert.fail;
 
@@ -31,18 +31,18 @@ import org.openflexo.model.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * Test instanciation of VirtualModelModelFactory<br>
+ * Test instanciation of VirtualModelInstanceModelFactory<br>
  * 
  */
-public class VirtualModelModelFactoryTest {
+public class VirtualModelInstanceModelFactoryTest {
 
-	private static final Logger logger = FlexoLogger.getLogger(VirtualModelModelFactoryTest.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(VirtualModelInstanceModelFactoryTest.class.getPackage().getName());
 
 	@Test
 	public void testInstantiateVirtualModelModelFactory() {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
-			VirtualModelModelFactory factory = new VirtualModelModelFactory();
+			VirtualModelInstanceModelFactory factory = new VirtualModelInstanceModelFactory();
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();
