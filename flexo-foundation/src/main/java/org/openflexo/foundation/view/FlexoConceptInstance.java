@@ -244,7 +244,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					actors.remove(patternRole);
 				}
 				setChanged();
-				notifyObservers(new EditionPatternActorChanged(this, patternRole, oldObject, object));
+				notifyObservers(new FlexoActorChanged(this, patternRole, oldObject, object));
 				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
 				getPropertyChangeSupport().firePropertyChange(patternRole.getPatternRoleName(), oldObject, object);
 			}

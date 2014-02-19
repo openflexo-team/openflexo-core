@@ -22,12 +22,12 @@ package org.openflexo.foundation.view;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.viewpoint.PatternRole;
 
-public class EditionPatternActorChanged extends DataModification {
+public class FlexoActorChanged extends DataModification {
 
 	private FlexoConceptInstance flexoConceptInstance;
 	private PatternRole<?> patternRole;
 
-	public <T> EditionPatternActorChanged(FlexoConceptInstance flexoConceptInstance, PatternRole<T> patternRole, T oldActor, T newActor) {
+	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, PatternRole<T> patternRole, T oldActor, T newActor) {
 		super(oldActor, newActor);
 		this.flexoConceptInstance = flexoConceptInstance;
 		this.patternRole = patternRole;
