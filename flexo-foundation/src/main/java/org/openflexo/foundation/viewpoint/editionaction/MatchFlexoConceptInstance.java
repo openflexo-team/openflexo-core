@@ -75,9 +75,9 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @FIBPanel("Fib/VPM/MatchEditionPatternInstancePanel.fib")
 @ModelEntity
-@ImplementationClass(MatchEditionPatternInstance.MatchEditionPatternInstanceImpl.class)
+@ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface MatchEditionPatternInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -115,18 +115,18 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 	@Remover(MATCHING_CRITERIAS_KEY)
 	public void removeFromMatchingCriterias(MatchingCriteria aMatchingCriteria);
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateEditionPatternInstanceParameter.ACTION_KEY)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateFlexoConceptInstanceParameter.ACTION_KEY)
 	@XMLElement
-	public List<CreateEditionPatternInstanceParameter> getParameters();
+	public List<CreateFlexoConceptInstanceParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
-	public void setParameters(List<CreateEditionPatternInstanceParameter> parameters);
+	public void setParameters(List<CreateFlexoConceptInstanceParameter> parameters);
 
 	@Adder(PARAMETERS_KEY)
-	public void addToParameters(CreateEditionPatternInstanceParameter aParameter);
+	public void addToParameters(CreateFlexoConceptInstanceParameter aParameter);
 
 	@Remover(PARAMETERS_KEY)
-	public void removeFromParameters(CreateEditionPatternInstanceParameter aParameter);
+	public void removeFromParameters(CreateFlexoConceptInstanceParameter aParameter);
 
 	public CreationScheme getCreationScheme();
 
@@ -136,18 +136,18 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class MatchEditionPatternInstanceImpl extends
-			AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance> implements MatchEditionPatternInstance {
+	public static abstract class MatchFlexoConceptInstanceImpl extends
+			AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance> implements MatchFlexoConceptInstance {
 
-		static final Logger logger = Logger.getLogger(MatchEditionPatternInstance.class.getPackage().getName());
+		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private Vector<MatchingCriteria> matchingCriterias = new Vector<MatchingCriteria>();
-		private Vector<CreateEditionPatternInstanceParameter> parameters = new Vector<CreateEditionPatternInstanceParameter>();
+		private Vector<CreateFlexoConceptInstanceParameter> parameters = new Vector<CreateFlexoConceptInstanceParameter>();
 
-		public MatchEditionPatternInstanceImpl() {
+		public MatchFlexoConceptInstanceImpl() {
 			super();
 		}
 
@@ -188,7 +188,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 			if (getParameters().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				boolean isFirst = true;
-				for (CreateEditionPatternInstanceParameter p : getParameters()) {
+				for (CreateFlexoConceptInstanceParameter p : getParameters()) {
 					sb.append((isFirst ? "" : ",") + p.getValue().toString());
 					isFirst = false;
 				}
@@ -288,29 +288,29 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		@Override
-		public Vector<CreateEditionPatternInstanceParameter> getParameters() {
+		public Vector<CreateFlexoConceptInstanceParameter> getParameters() {
 			updateParameters();
 			return parameters;
 		}
 
-		public void setParameters(Vector<CreateEditionPatternInstanceParameter> parameters) {
+		public void setParameters(Vector<CreateFlexoConceptInstanceParameter> parameters) {
 			this.parameters = parameters;
 		}
 
 		@Override
-		public void addToParameters(CreateEditionPatternInstanceParameter parameter) {
+		public void addToParameters(CreateFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(this);
 			parameters.add(parameter);
 		}
 
 		@Override
-		public void removeFromParameters(CreateEditionPatternInstanceParameter parameter) {
+		public void removeFromParameters(CreateFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(null);
 			parameters.remove(parameter);
 		}
 
-		public CreateEditionPatternInstanceParameter getParameter(EditionSchemeParameter p) {
-			for (CreateEditionPatternInstanceParameter addEPParam : parameters) {
+		public CreateFlexoConceptInstanceParameter getParameter(EditionSchemeParameter p) {
+			for (CreateFlexoConceptInstanceParameter addEPParam : parameters) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
 				}
@@ -319,10 +319,10 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		private void updateParameters() {
-			Vector<CreateEditionPatternInstanceParameter> parametersToRemove = new Vector<CreateEditionPatternInstanceParameter>(parameters);
+			Vector<CreateFlexoConceptInstanceParameter> parametersToRemove = new Vector<CreateFlexoConceptInstanceParameter>(parameters);
 			if (getCreationScheme() != null) {
 				for (EditionSchemeParameter p : getCreationScheme().getParameters()) {
-					CreateEditionPatternInstanceParameter existingParam = getParameter(p);
+					CreateFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
@@ -330,7 +330,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 					}
 				}
 			}
-			for (CreateEditionPatternInstanceParameter removeThis : parametersToRemove) {
+			for (CreateFlexoConceptInstanceParameter removeThis : parametersToRemove) {
 				removeFromParameters(removeThis);
 			}
 		}
@@ -385,7 +385,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 		@Override
 		public FlexoConceptInstance performAction(EditionSchemeAction action) {
-			logger.info("Perform perform MatchEditionPatternInstance " + action);
+			logger.info("Perform perform MatchFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);
 			Hashtable<PatternRole, Object> criterias = new Hashtable<PatternRole, Object>();
@@ -408,7 +408,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
 				creationSchemeAction.setVirtualModelInstance(vmInstance);
 				creationSchemeAction.setCreationScheme(getCreationScheme());
-				for (CreateEditionPatternInstanceParameter p : getParameters()) {
+				for (CreateFlexoConceptInstanceParameter p : getParameters()) {
 					EditionSchemeParameter param = p.getParam();
 					Object value = p.evaluateParameterValue(action);
 					logger.info("For parameter " + param + " value is " + value);
@@ -435,20 +435,20 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		public static class MatchEditionPatternInstanceMustAddressACreationScheme extends
-				ValidationRule<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance> {
+				ValidationRule<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
 			public MatchEditionPatternInstanceMustAddressACreationScheme() {
-				super(MatchEditionPatternInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
+				super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
 			}
 
 			@Override
-			public ValidationIssue<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance> applyValidation(
-					MatchEditionPatternInstance action) {
+			public ValidationIssue<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
+					MatchFlexoConceptInstance action) {
 				if (action.getCreationScheme() == null) {
 					if (action.getFlexoConceptType() == null) {
-						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance>(
+						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
 								this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
 					} else {
-						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchEditionPatternInstance>(
+						return new ValidationError<MatchEditionPatternInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
 								this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
 					}
 				}
@@ -457,17 +457,17 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		public static class MatchEditionPatternInstanceParametersMustBeValid extends
-				ValidationRule<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance> {
+				ValidationRule<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
 			public MatchEditionPatternInstanceParametersMustBeValid() {
-				super(MatchEditionPatternInstance.class, "match_flexo_concept_parameters_must_be_valid");
+				super(MatchFlexoConceptInstance.class, "match_flexo_concept_parameters_must_be_valid");
 			}
 
 			@Override
-			public ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance> applyValidation(
-					MatchEditionPatternInstance action) {
+			public ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance> applyValidation(
+					MatchFlexoConceptInstance action) {
 				if (action.getCreationScheme() != null) {
-					Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance>> issues = new Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance>>();
-					for (CreateEditionPatternInstanceParameter p : action.getParameters()) {
+					Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>> issues = new Vector<ValidationIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>>();
+					for (CreateFlexoConceptInstanceParameter p : action.getParameters()) {
 						if (p.getParam().getIsRequired()) {
 							if (p.getValue() == null || !p.getValue().isSet()) {
 								if (p.getParam() instanceof URIParameter && ((URIParameter) p.getParam()).getBaseURI().isSet()
@@ -489,7 +489,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 					} else if (issues.size() == 1) {
 						return issues.firstElement();
 					} else {
-						return new CompoundIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchEditionPatternInstance>(action,
+						return new CompoundIssue<MatchEditionPatternInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action,
 								issues);
 					}
 				}
@@ -498,13 +498,13 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-				BindingIsRequiredAndMustBeValid<MatchEditionPatternInstance> {
+				BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
 			public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
-				super("'virtual_model_instance'_binding_is_not_valid", MatchEditionPatternInstance.class);
+				super("'virtual_model_instance'_binding_is_not_valid", MatchFlexoConceptInstance.class);
 			}
 
 			@Override
-			public DataBinding<VirtualModelInstance> getBinding(MatchEditionPatternInstance object) {
+			public DataBinding<VirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
 				return object.getVirtualModelInstance();
 			}
 

@@ -589,8 +589,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public AddEditionPattern createAddEditionPatternAction() {
-			AddEditionPattern newAction = new AddEditionPattern(null);
+		public AddFlexoConcept createAddEditionPatternAction() {
+			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			addToActions(newAction);
 			return newAction;
 		}

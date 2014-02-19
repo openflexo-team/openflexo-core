@@ -35,19 +35,19 @@ import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 
-public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualModel, ViewPointObject> {
+public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, ViewPointObject> {
 
-	private static final Logger logger = Logger.getLogger(AddEditionPattern.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AddFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<AddEditionPattern, VirtualModel, ViewPointObject> actionType = new FlexoActionType<AddEditionPattern, VirtualModel, ViewPointObject>(
+	public static FlexoActionType<AddFlexoConcept, VirtualModel, ViewPointObject> actionType = new FlexoActionType<AddFlexoConcept, VirtualModel, ViewPointObject>(
 			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public AddEditionPattern makeNewAction(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
-			return new AddEditionPattern(focusedObject, globalSelection, editor);
+		public AddFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+			return new AddFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -63,7 +63,7 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(AddEditionPattern.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(AddFlexoConcept.actionType, VirtualModel.class);
 	}
 
 	private String newFlexoConceptName;
@@ -72,7 +72,7 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 
 	public boolean switchNewlyCreatedEditionPattern = true;
 
-	AddEditionPattern(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	AddFlexoConcept(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

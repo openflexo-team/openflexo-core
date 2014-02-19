@@ -66,9 +66,9 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddEditionPatternInstance.class),
+@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class),
 		@Import(DeclarePatternRole.class), @Import(AssignationAction.class), @Import(ExecutionAction.class),
-		@Import(SelectEditionPatternInstance.class), @Import(SelectIndividual.class), @Import(MatchEditionPatternInstance.class),
+		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
 		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
 public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends EditionSchemeObject {
@@ -493,8 +493,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 			return newAction;
 		}
 
-		public AddEditionPattern createAddEditionPatternAction() {
-			AddEditionPattern newAction = new AddEditionPattern(null);
+		public AddFlexoConcept createAddEditionPatternAction() {
+			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}

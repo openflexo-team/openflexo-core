@@ -32,16 +32,16 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
@@ -165,11 +165,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			return VPMIconLibrary.DECLARE_PATTERN_ROLE_ICON;
 		} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.ACTION_SCHEME_ICON;
-		} else if (AddEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (MatchEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
 		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VPMIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);

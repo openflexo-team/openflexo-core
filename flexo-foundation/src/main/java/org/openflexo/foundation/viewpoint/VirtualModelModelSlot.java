@@ -35,9 +35,9 @@ import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -59,10 +59,10 @@ import org.openflexo.toolbox.StringUtils;
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot
-		@DeclareEditionAction(FML = "AddEditionPatternInstance", editionActionClass = AddEditionPatternInstance.class),
-		@DeclareEditionAction(FML = "DeleteEditionPatternInstance", editionActionClass = DeleteEditionPatternInstance.class) })
+		@DeclareEditionAction(FML = "AddFlexoConceptInstance", editionActionClass = AddFlexoConceptInstance.class),
+		@DeclareEditionAction(FML = "DeleteFlexoConceptInstance", editionActionClass = DeleteFlexoConceptInstance.class) })
 @DeclareFetchRequests({ // All requests available through this model slot
-@DeclareFetchRequest(FML = "SelectEditionPatternInstance", fetchRequestClass = SelectEditionPatternInstance.class) })
+@DeclareFetchRequest(FML = "SelectFlexoConceptInstance", fetchRequestClass = SelectFlexoConceptInstance.class) })
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlot.VirtualModelModelSlotImpl.class)
 @XMLElement

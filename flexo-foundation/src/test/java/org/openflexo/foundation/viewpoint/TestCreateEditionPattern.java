@@ -14,7 +14,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
-import org.openflexo.foundation.viewpoint.action.AddEditionPattern;
+import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
@@ -89,7 +89,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	@TestOrder(4)
 	public void testCreateFlexoConceptA() throws SaveResourceException {
 
-		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
+		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(newVirtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptA");
 		addEP.doAction();
 
@@ -111,7 +111,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	@TestOrder(5)
 	public void testCreateFlexoConceptB() throws SaveResourceException {
 
-		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
+		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(newVirtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptB");
 		addEP.doAction();
 
@@ -133,7 +133,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	@TestOrder(6)
 	public void testCreateFlexoConceptC() throws SaveResourceException {
 
-		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
+		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(newVirtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptC");
 		addEP.addToParentConcepts(flexoConceptB);
 		addEP.doAction();
@@ -161,7 +161,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	@TestOrder(7)
 	public void testCreateFlexoConceptD() throws SaveResourceException {
 
-		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
+		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(newVirtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptD");
 		addEP.addToParentConcepts(flexoConceptB);
 		addEP.doAction();
@@ -190,7 +190,7 @@ public class TestCreateEditionPattern extends OpenflexoTestCase {
 	@TestOrder(8)
 	public void testCreateFlexoConceptE() throws SaveResourceException {
 
-		AddEditionPattern addEP = AddEditionPattern.actionType.makeNewAction(newVirtualModel, null, editor);
+		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(newVirtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptE");
 		addEP.addToParentConcepts(flexoConceptA);
 		addEP.addToParentConcepts(flexoConceptB);

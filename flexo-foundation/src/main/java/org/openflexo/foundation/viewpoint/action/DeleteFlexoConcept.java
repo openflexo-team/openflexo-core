@@ -31,21 +31,19 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 
-@SuppressWarnings("serial")
-public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern, FlexoConcept, ViewPointObject> {
+public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoConcept, ViewPointObject> {
 
-	private static final Logger logger = Logger.getLogger(DuplicateEditionPattern.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(DeleteFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DuplicateEditionPattern, FlexoConcept, ViewPointObject>(
-			"duplicate_flexo_concept", FlexoActionType.editGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionType<DeleteFlexoConcept, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DeleteFlexoConcept, FlexoConcept, ViewPointObject>(
+			"delete_flexo_concept", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DuplicateEditionPattern makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection,
-				FlexoEditor editor) {
-			return new DuplicateEditionPattern(focusedObject, globalSelection, editor);
+		public DeleteFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+			return new DeleteFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -61,28 +59,18 @@ public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DuplicateEditionPattern.actionType, FlexoConcept.class);
+		FlexoObjectImpl.addActionForClass(DeleteFlexoConcept.actionType, FlexoConcept.class);
 	}
 
-	DuplicateEditionPattern(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DeleteFlexoConcept(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-	}
-
-	public String newName;
-	private FlexoConcept newFlexoConcept;
-
-	public FlexoConcept getNewFlexoConcept() {
-		return newFlexoConcept;
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Duplicate flexo concept");
+		logger.info("Delete flexo concept");
 
-		newFlexoConcept = (FlexoConcept) getFocusedObject().cloneObject();
-		newFlexoConcept.setName(newName);
-		getFocusedObject().getVirtualModel().addToFlexoConcepts(newFlexoConcept);
-
+		getFocusedObject().delete();
 	}
 
 }

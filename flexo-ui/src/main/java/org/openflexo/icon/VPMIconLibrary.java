@@ -46,7 +46,7 @@ import org.openflexo.foundation.viewpoint.TechnologySpecificEditionScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
@@ -58,11 +58,11 @@ import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
 import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.FloatInspectorEntry;
@@ -174,11 +174,11 @@ public class VPMIconLibrary extends IconLibrary {
 			}
 			return null;
 		} else if (object instanceof EditionAction) {
-			if (object instanceof AddEditionPatternInstance) {
+			if (object instanceof AddFlexoConceptInstance) {
 				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
-			} else if (object instanceof SelectEditionPatternInstance) {
+			} else if (object instanceof SelectFlexoConceptInstance) {
 				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.IMPORT);
-			} else if (object instanceof MatchEditionPatternInstance) {
+			} else if (object instanceof MatchFlexoConceptInstance) {
 				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
 			} else if (object instanceof AddToListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);

@@ -56,9 +56,9 @@ import org.openflexo.toolbox.StringUtils;
  */
 @FIBPanel("Fib/VPM/SelectEditionPatternInstancePanel.fib")
 @ModelEntity
-@ImplementationClass(SelectEditionPatternInstance.SelectEditionPatternInstanceImpl.class)
+@ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -74,15 +74,15 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class SelectEditionPatternInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, FlexoConceptInstance>
-			implements SelectEditionPatternInstance {
+	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, FlexoConceptInstance>
+			implements SelectFlexoConceptInstance {
 
-		protected static final Logger logger = FlexoLogger.getLogger(SelectEditionPatternInstance.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
 		private String flexoConceptTypeURI;
 
-		public SelectEditionPatternInstanceImpl() {
+		public SelectFlexoConceptInstanceImpl() {
 			super();
 		}
 
@@ -187,7 +187,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 				return filterWithConditions(vmi.getEPInstances(getFlexoConceptType()), action);
 			} else {
 				logger.warning(getStringRepresentation()
-						+ " : Cannot find virtual model instance on which to apply SelectEditionPatternInstance");
+						+ " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
 				// logger.warning("Additional info: getModelSlot()=" + getModelSlot());
 				// logger.warning("Additional info: action.getVirtualModelInstance()=" + action.getVirtualModelInstance());
 				// logger.warning("Additional info: action.getVirtualModelInstance().getModelSlotInstance(getModelSlot())="

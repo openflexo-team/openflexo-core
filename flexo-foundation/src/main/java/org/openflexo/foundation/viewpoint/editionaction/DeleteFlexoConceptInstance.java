@@ -68,9 +68,9 @@ import org.openflexo.model.annotations.XMLElement;
 
 @FIBPanel("Fib/VPM/DeleteEditionPatternInstancePanel.fib")
 @ModelEntity
-@ImplementationClass(DeleteEditionPatternInstance.DeleteEditionPatternInstanceImpl.class)
+@ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -97,27 +97,27 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 
 	public void setDeletionScheme(DeletionScheme deletionScheme);
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = DeleteEditionPatternInstanceParameter.ACTION_KEY)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = DeleteFlexoConceptInstanceParameter.ACTION_KEY)
 	@XMLElement
-	public List<DeleteEditionPatternInstanceParameter> getParameters();
+	public List<DeleteFlexoConceptInstanceParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
-	public void setParameters(List<DeleteEditionPatternInstanceParameter> parameters);
+	public void setParameters(List<DeleteFlexoConceptInstanceParameter> parameters);
 
 	@Adder(PARAMETERS_KEY)
-	public void addToParameters(DeleteEditionPatternInstanceParameter aParameter);
+	public void addToParameters(DeleteFlexoConceptInstanceParameter aParameter);
 
 	@Remover(PARAMETERS_KEY)
-	public void removeFromParameters(DeleteEditionPatternInstanceParameter aParameter);
+	public void removeFromParameters(DeleteFlexoConceptInstanceParameter aParameter);
 
 	public FlexoConcept getFlexoConceptType();
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public abstract static class DeleteEditionPatternInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
-			implements DeleteEditionPatternInstance {
+	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
+			implements DeleteFlexoConceptInstance {
 
-		private static final Logger logger = Logger.getLogger(DeleteEditionPatternInstance.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
 		private DeletionScheme deletionScheme;
@@ -209,16 +209,16 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 			}
 		}
 
-		// private Vector<AddEditionPatternInstanceParameter> parameters = new Vector<AddEditionPatternInstanceParameter>();
+		// private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();
 
 		@Override
-		public List<DeleteEditionPatternInstanceParameter> getParameters() {
+		public List<DeleteFlexoConceptInstanceParameter> getParameters() {
 			updateParameters();
-			return (List<DeleteEditionPatternInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
+			return (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 		}
 
-		public DeleteEditionPatternInstanceParameter getParameter(EditionSchemeParameter p) {
-			for (DeleteEditionPatternInstanceParameter deleteEPParam : getParameters()) {
+		public DeleteFlexoConceptInstanceParameter getParameter(EditionSchemeParameter p) {
+			for (DeleteFlexoConceptInstanceParameter deleteEPParam : getParameters()) {
 				if (deleteEPParam.getParam() == p) {
 					return deleteEPParam;
 				}
@@ -227,11 +227,11 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 		}
 
 		private void updateParameters() {
-			List<DeleteEditionPatternInstanceParameter> parametersToRemove = new ArrayList<DeleteEditionPatternInstanceParameter>(
+			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<DeleteFlexoConceptInstanceParameter>(
 					getParameters());
 			if (getDeletionScheme() != null) {
 				for (EditionSchemeParameter p : getDeletionScheme().getParameters()) {
-					DeleteEditionPatternInstanceParameter existingParam = getParameter(p);
+					DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
@@ -239,7 +239,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 					}
 				}
 			}
-			for (DeleteEditionPatternInstanceParameter removeThis : parametersToRemove) {
+			for (DeleteFlexoConceptInstanceParameter removeThis : parametersToRemove) {
 				removeFromParameters(removeThis);
 			}
 		}
@@ -262,7 +262,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 				deletionSchemeAction.setVirtualModelInstance(vmInstance);
 				deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
-				for (DeleteEditionPatternInstanceParameter p : getParameters()) {
+				for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
 					EditionSchemeParameter param = p.getParam();
 					Object value = p.evaluateParameterValue(action);
 					logger.info("For parameter " + param + " value is " + value);
@@ -291,21 +291,21 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 
 	}
 
-	public static class DeleteEditionPatternInstanceMustAddressADeletionScheme extends
-			ValidationRule<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance> {
-		public DeleteEditionPatternInstanceMustAddressADeletionScheme() {
-			super(DeleteEditionPatternInstance.class, "delete_flexo_concept_action_must_address_a_valid_creation_scheme");
+	public static class DeleteFlexoConceptInstanceMustAddressADeletionScheme extends
+			ValidationRule<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance> {
+		public DeleteFlexoConceptInstanceMustAddressADeletionScheme() {
+			super(DeleteFlexoConceptInstance.class, "delete_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
-		public ValidationIssue<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance> applyValidation(
-				DeleteEditionPatternInstance action) {
+		public ValidationIssue<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance> applyValidation(
+				DeleteFlexoConceptInstance action) {
 			if (action.getDeletionScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
-					return new ValidationError<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance>(this,
+					return new ValidationError<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance>(this,
 							action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");
 				} else {
-					return new ValidationError<DeleteEditionPatternInstanceMustAddressADeletionScheme, DeleteEditionPatternInstance>(this,
+					return new ValidationError<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance>(this,
 							action, "delete_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
 			}
@@ -313,19 +313,19 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 		}
 	}
 
-	public static class DeleteEditionPatternInstanceParametersMustBeValid extends
-			ValidationRule<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance> {
+	public static class DeleteFlexoConceptInstanceParametersMustBeValid extends
+			ValidationRule<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance> {
 
-		public DeleteEditionPatternInstanceParametersMustBeValid() {
-			super(DeleteEditionPatternInstance.class, "delete_flexo_concept_parameters_must_be_valid");
+		public DeleteFlexoConceptInstanceParametersMustBeValid() {
+			super(DeleteFlexoConceptInstance.class, "delete_flexo_concept_parameters_must_be_valid");
 		}
 
 		@Override
-		public ValidationIssue<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance> applyValidation(
-				DeleteEditionPatternInstance action) {
+		public ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance> applyValidation(
+				DeleteFlexoConceptInstance action) {
 			if (action.getDeletionScheme() != null) {
-				Vector<ValidationIssue<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance>> issues = new Vector<ValidationIssue<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance>>();
-				for (DeleteEditionPatternInstanceParameter p : action.getParameters()) {
+				Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>> issues = new Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>>();
+				for (DeleteFlexoConceptInstanceParameter p : action.getParameters()) {
 
 					EditionSchemeParameter param = p.getParam();
 					if (param.getIsRequired()) {
@@ -334,14 +334,14 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 							if (param instanceof URIParameter && uri.isSet() && uri.isValid()) {
 								// Special case, we will find a way to manage this
 							} else {
-								issues.add(new ValidationError<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance>(
+								issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
 										this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 							}
 						} else if (!p.getValue().isValid()) {
-							DeleteEditionPatternInstanceImpl.logger.info("Binding NOT valid: " + p.getValue() + " for "
+							DeleteFlexoConceptInstanceImpl.logger.info("Binding NOT valid: " + p.getValue() + " for "
 									+ p.getParam().getName() + " object=" + p.getAction() + ". Reason: "
 									+ p.getValue().invalidBindingReason());
-							issues.add(new ValidationError<DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance>(
+							issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
 									this, action, "parameter_s_value_is_not_valid: " + param.getName()));
 						}
 					}
@@ -351,7 +351,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 				} else if (issues.size() == 1) {
 					return issues.firstElement();
 				} else {
-					return new CompoundIssue<DeleteEditionPatternInstance.DeleteEditionPatternInstanceParametersMustBeValid, DeleteEditionPatternInstance>(
+					return new CompoundIssue<DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
 							action, issues);
 				}
 			}
@@ -360,13 +360,13 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 	}
 
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-			BindingIsRequiredAndMustBeValid<DeleteEditionPatternInstance> {
+			BindingIsRequiredAndMustBeValid<DeleteFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
-			super("'virtual_model_instance'_binding_is_not_valid", DeleteEditionPatternInstance.class);
+			super("'virtual_model_instance'_binding_is_not_valid", DeleteFlexoConceptInstance.class);
 		}
 
 		@Override
-		public DataBinding<VirtualModelInstance> getBinding(DeleteEditionPatternInstance object) {
+		public DataBinding<VirtualModelInstance> getBinding(DeleteFlexoConceptInstance object) {
 			return object.getVirtualModelInstance();
 		}
 

@@ -16,19 +16,31 @@ import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
 import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
-public interface DeleteEditionPatternInstanceParameter extends EditionSchemeObject, Bindable {
+@ModelEntity
+@ImplementationClass(CreateFlexoConceptInstanceParameter.CreateFlexoConceptInstanceParameterImpl.class)
+@XMLElement
+public interface CreateFlexoConceptInstanceParameter extends EditionSchemeObject, Bindable {
 
-	@PropertyIdentifier(type = DeleteEditionPatternInstance.class)
+	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PARAM_NAME_KEY = "paramName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
+
+	@Getter(value = ACTION_KEY, inverse = MatchFlexoConceptInstance.PARAMETERS_KEY)
+	public MatchFlexoConceptInstance getAction();
+
+	@Setter(ACTION_KEY)
+	public void setAction(MatchFlexoConceptInstance action);
 
 	@Getter(value = PARAM_NAME_KEY)
 	@XMLAttribute
@@ -39,42 +51,33 @@ public interface DeleteEditionPatternInstanceParameter extends EditionSchemeObje
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<Object> getValue();
+	public DataBinding<?> getValue();
 
 	@Setter(VALUE_KEY)
-	public void setValue(DataBinding<Object> value);
+	public void setValue(DataBinding<?> value);
 
-	@Getter(value = ACTION_KEY, inverse = DeleteEditionPatternInstance.PARAMETERS_KEY)
-	public DeleteEditionPatternInstance getAction();
-
-	@Setter(ACTION_KEY)
-	public void setAction(DeleteEditionPatternInstance action);
-
-	// TODO: PAMELA
 	public EditionSchemeParameter getParam();
 
-	// TODO: PAMELA
 	public void setParam(EditionSchemeParameter param);
 
 	public Object evaluateParameterValue(EditionSchemeAction action);
 
-	public static abstract class DeleteEditionPatternInstanceParameterImpl extends EditionSchemeObjectImpl implements
-			DeleteEditionPatternInstanceParameter {
+	public static abstract class CreateFlexoConceptInstanceParameterImpl extends EditionSchemeObjectImpl implements
+			CreateFlexoConceptInstanceParameter {
 
-		static final Logger logger = Logger.getLogger(DeleteEditionPatternInstanceParameter.class.getPackage().getName());
-
-		// DeleteEditionPatternInstance action;
+		private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceParameter.class.getPackage().getName());
+		// MatchFlexoConceptInstance action;
 
 		private EditionSchemeParameter param;
 		String paramName;
-		private DataBinding<Object> value;
+		private DataBinding<?> value;
 
 		// Use it only for deserialization
-		public DeleteEditionPatternInstanceParameterImpl() {
+		public CreateFlexoConceptInstanceParameterImpl() {
 			super();
 		}
 
-		public DeleteEditionPatternInstanceParameterImpl(EditionSchemeParameter param) {
+		public CreateFlexoConceptInstanceParameterImpl(EditionSchemeParameter param) {
 			super();
 			this.param = param;
 		}
@@ -100,7 +103,7 @@ public interface DeleteEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		@Override
-		public DataBinding<Object> getValue() {
+		public DataBinding<?> getValue() {
 			if (value == null) {
 				value = new DataBinding<Object>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param.getName());
@@ -109,7 +112,7 @@ public interface DeleteEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		@Override
-		public void setValue(DataBinding<Object> value) {
+		public void setValue(DataBinding<?> value) {
 			if (value != null) {
 				value.setOwner(this);
 				value.setBindingName(param != null ? param.getName() : "param");
@@ -168,19 +171,19 @@ public interface DeleteEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		/*@Override
-		public DeleteEditionPatternInstance getAction() {
+		public MatchFlexoConceptInstance getAction() {
 			return action;
 		}
 
 		@Override
-		public void setAction(DeleteEditionPatternInstance action) {
+		public void setAction(MatchFlexoConceptInstance action) {
 			this.action = action;
 		}*/
 
 		@Override
 		public EditionSchemeParameter getParam() {
-			if (param == null && paramName != null && getAction() != null && getAction().getDeletionScheme() != null) {
-				param = getAction().getDeletionScheme().getParameter(paramName);
+			if (param == null && paramName != null && getAction() != null && getAction().getCreationScheme() != null) {
+				param = getAction().getCreationScheme().getParameter(paramName);
 			}
 			return param;
 		}

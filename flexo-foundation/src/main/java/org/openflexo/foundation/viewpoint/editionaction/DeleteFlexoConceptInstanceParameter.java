@@ -16,19 +16,13 @@ import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
 import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 
-@ModelEntity
-@ImplementationClass(AddEditionPatternInstanceParameter.AddEditionPatternInstanceParameterImpl.class)
-@XMLElement
-public interface AddEditionPatternInstanceParameter extends EditionSchemeObject, Bindable {
+public interface DeleteFlexoConceptInstanceParameter extends EditionSchemeObject, Bindable {
 
-	@PropertyIdentifier(type = AddEditionPatternInstance.class)
+	@PropertyIdentifier(type = DeleteFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
@@ -50,11 +44,11 @@ public interface AddEditionPatternInstanceParameter extends EditionSchemeObject,
 	@Setter(VALUE_KEY)
 	public void setValue(DataBinding<Object> value);
 
-	@Getter(value = ACTION_KEY, inverse = AddEditionPatternInstance.PARAMETERS_KEY)
-	public AddEditionPatternInstance getAction();
+	@Getter(value = ACTION_KEY, inverse = DeleteFlexoConceptInstance.PARAMETERS_KEY)
+	public DeleteFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(AddEditionPatternInstance action);
+	public void setAction(DeleteFlexoConceptInstance action);
 
 	// TODO: PAMELA
 	public EditionSchemeParameter getParam();
@@ -64,23 +58,23 @@ public interface AddEditionPatternInstanceParameter extends EditionSchemeObject,
 
 	public Object evaluateParameterValue(EditionSchemeAction action);
 
-	public static abstract class AddEditionPatternInstanceParameterImpl extends EditionSchemeObjectImpl implements
-			AddEditionPatternInstanceParameter {
+	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends EditionSchemeObjectImpl implements
+			DeleteFlexoConceptInstanceParameter {
 
-		static final Logger logger = Logger.getLogger(AddEditionPatternInstanceParameter.class.getPackage().getName());
+		static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstanceParameter.class.getPackage().getName());
 
-		// AddEditionPatternInstance action;
+		// DeleteFlexoConceptInstance action;
 
 		private EditionSchemeParameter param;
 		String paramName;
 		private DataBinding<Object> value;
 
 		// Use it only for deserialization
-		public AddEditionPatternInstanceParameterImpl() {
+		public DeleteFlexoConceptInstanceParameterImpl() {
 			super();
 		}
 
-		public AddEditionPatternInstanceParameterImpl(EditionSchemeParameter param) {
+		public DeleteFlexoConceptInstanceParameterImpl(EditionSchemeParameter param) {
 			super();
 			this.param = param;
 		}
@@ -174,19 +168,19 @@ public interface AddEditionPatternInstanceParameter extends EditionSchemeObject,
 		}
 
 		/*@Override
-		public AddEditionPatternInstance getAction() {
+		public DeleteFlexoConceptInstance getAction() {
 			return action;
 		}
 
 		@Override
-		public void setAction(AddEditionPatternInstance action) {
+		public void setAction(DeleteFlexoConceptInstance action) {
 			this.action = action;
 		}*/
 
 		@Override
 		public EditionSchemeParameter getParam() {
-			if (param == null && paramName != null && getAction() != null && getAction().getCreationScheme() != null) {
-				param = getAction().getCreationScheme().getParameter(paramName);
+			if (param == null && paramName != null && getAction() != null && getAction().getDeletionScheme() != null) {
+				param = getAction().getDeletionScheme().getParameter(paramName);
 			}
 			return param;
 		}

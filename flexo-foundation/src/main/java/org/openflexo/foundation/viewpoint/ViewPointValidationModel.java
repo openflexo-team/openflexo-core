@@ -22,7 +22,7 @@ package org.openflexo.foundation.viewpoint;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddClass;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddIndividual;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
@@ -94,9 +94,9 @@ public class ViewPointValidationModel extends ValidationModel {
 		// registerRule(new GraphicalAction.GraphicalActionMustHaveASubject());
 		// registerRule(new GraphicalAction.GraphicalActionMustDefineAValue());
 
-		registerRule(new AddEditionPatternInstance.VirtualModelInstanceBindingIsRequiredAndMustBeValid());
-		registerRule(new AddEditionPatternInstance.AddEditionPatternInstanceMustAddressACreationScheme());
-		registerRule(new AddEditionPatternInstance.AddEditionPatternInstanceParametersMustBeValid());
+		registerRule(new AddFlexoConceptInstance.VirtualModelInstanceBindingIsRequiredAndMustBeValid());
+		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceMustAddressACreationScheme());
+		registerRule(new AddFlexoConceptInstance.AddFlexoConceptInstanceParametersMustBeValid());
 
 		registerRule(new ConditionalAction.ConditionBindingIsRequiredAndMustBeValid());
 		registerRule(new IterationAction.IterationBindingIsRequiredAndMustBeValid());

@@ -18,11 +18,11 @@ import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.AddEditionPattern;
+import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
 import org.openflexo.foundation.viewpoint.action.CreatePatternRole;
-import org.openflexo.foundation.viewpoint.action.DuplicateEditionPattern;
+import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
 
@@ -64,7 +64,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	 * @return
 	 */
 	public FlexoConcept duplicateFlexoConcept(FlexoConcept flexoConcept, String newName) {
-		DuplicateEditionPattern duplicateAction = DuplicateEditionPattern.actionType.makeNewAction(flexoConcept, null, getEditor());
+		DuplicateFlexoConcept duplicateAction = DuplicateFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 		duplicateAction.doAction();
 		return duplicateAction.getNewFlexoConcept();
 	}
@@ -160,18 +160,18 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
-			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
-			addEditionPattern.switchNewlyCreatedEditionPattern = false;
-			addEditionPattern.doAction();
-			return addEditionPattern.getNewFlexoConcept();
+			addFlexoConcept.switchNewlyCreatedEditionPattern = false;
+			addFlexoConcept.doAction();
+			return addFlexoConcept.getNewFlexoConcept();
 		} else if (flexoConcept != null) {
-			AddEditionPattern addEditionPattern = AddEditionPattern.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
+			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
 					getEditor());
-			addEditionPattern.switchNewlyCreatedEditionPattern = false;
-			addEditionPattern.doAction();
-			addEditionPattern.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
-			return addEditionPattern.getNewFlexoConcept();
+			addFlexoConcept.switchNewlyCreatedEditionPattern = false;
+			addFlexoConcept.doAction();
+			addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
+			return addFlexoConcept.getNewFlexoConcept();
 		}
 		logger.warning("Unexpected null flexo concept");
 		return null;

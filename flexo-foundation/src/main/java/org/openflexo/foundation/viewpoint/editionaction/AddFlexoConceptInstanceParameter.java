@@ -24,23 +24,17 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CreateEditionPatternInstanceParameter.CreateEditionPatternInstanceParameterImpl.class)
+@ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface CreateEditionPatternInstanceParameter extends EditionSchemeObject, Bindable {
+public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, Bindable {
 
-	@PropertyIdentifier(type = MatchEditionPatternInstance.class)
+	@PropertyIdentifier(type = AddFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PARAM_NAME_KEY = "paramName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
-
-	@Getter(value = ACTION_KEY, inverse = MatchEditionPatternInstance.PARAMETERS_KEY)
-	public MatchEditionPatternInstance getAction();
-
-	@Setter(ACTION_KEY)
-	public void setAction(MatchEditionPatternInstance action);
 
 	@Getter(value = PARAM_NAME_KEY)
 	@XMLAttribute
@@ -51,33 +45,42 @@ public interface CreateEditionPatternInstanceParameter extends EditionSchemeObje
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getValue();
+	public DataBinding<Object> getValue();
 
 	@Setter(VALUE_KEY)
-	public void setValue(DataBinding<?> value);
+	public void setValue(DataBinding<Object> value);
 
+	@Getter(value = ACTION_KEY, inverse = AddFlexoConceptInstance.PARAMETERS_KEY)
+	public AddFlexoConceptInstance getAction();
+
+	@Setter(ACTION_KEY)
+	public void setAction(AddFlexoConceptInstance action);
+
+	// TODO: PAMELA
 	public EditionSchemeParameter getParam();
 
+	// TODO: PAMELA
 	public void setParam(EditionSchemeParameter param);
 
 	public Object evaluateParameterValue(EditionSchemeAction action);
 
-	public static abstract class CreateEditionPatternInstanceParameterImpl extends EditionSchemeObjectImpl implements
-			CreateEditionPatternInstanceParameter {
+	public static abstract class AddFlexoConceptInstanceParameterImpl extends EditionSchemeObjectImpl implements
+			AddFlexoConceptInstanceParameter {
 
-		private static final Logger logger = Logger.getLogger(CreateEditionPatternInstanceParameter.class.getPackage().getName());
-		// MatchEditionPatternInstance action;
+		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());
+
+		// AddFlexoConceptInstance action;
 
 		private EditionSchemeParameter param;
 		String paramName;
-		private DataBinding<?> value;
+		private DataBinding<Object> value;
 
 		// Use it only for deserialization
-		public CreateEditionPatternInstanceParameterImpl() {
+		public AddFlexoConceptInstanceParameterImpl() {
 			super();
 		}
 
-		public CreateEditionPatternInstanceParameterImpl(EditionSchemeParameter param) {
+		public AddFlexoConceptInstanceParameterImpl(EditionSchemeParameter param) {
 			super();
 			this.param = param;
 		}
@@ -103,7 +106,7 @@ public interface CreateEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		@Override
-		public DataBinding<?> getValue() {
+		public DataBinding<Object> getValue() {
 			if (value == null) {
 				value = new DataBinding<Object>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param.getName());
@@ -112,7 +115,7 @@ public interface CreateEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		@Override
-		public void setValue(DataBinding<?> value) {
+		public void setValue(DataBinding<Object> value) {
 			if (value != null) {
 				value.setOwner(this);
 				value.setBindingName(param != null ? param.getName() : "param");
@@ -171,12 +174,12 @@ public interface CreateEditionPatternInstanceParameter extends EditionSchemeObje
 		}
 
 		/*@Override
-		public MatchEditionPatternInstance getAction() {
+		public AddFlexoConceptInstance getAction() {
 			return action;
 		}
 
 		@Override
-		public void setAction(MatchEditionPatternInstance action) {
+		public void setAction(AddFlexoConceptInstance action) {
 			this.action = action;
 		}*/
 
