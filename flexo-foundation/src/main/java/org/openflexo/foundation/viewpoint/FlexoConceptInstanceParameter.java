@@ -32,9 +32,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(EditionPatternInstanceParameter.EditionPatternInstanceParameterImpl.class)
+@ImplementationClass(FlexoConceptInstanceParameter.FlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface EditionPatternInstanceParameter extends InnerModelSlotParameter<VirtualModelModelSlot> {
+public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<VirtualModelModelSlot> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
@@ -46,13 +46,13 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 	@Setter(EDITION_PATTERN_TYPE_URI_KEY)
 	public void _setEditionPatternTypeURI(String editionPatternTypeURI);
 
-	public static abstract class EditionPatternInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
-			EditionPatternInstanceParameter {
+	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
+			FlexoConceptInstanceParameter {
 
 		private FlexoConcept flexoConceptType;
 		private String editionPatternTypeURI;
 
-		public EditionPatternInstanceParameterImpl() {
+		public FlexoConceptInstanceParameterImpl() {
 			super();
 		}
 

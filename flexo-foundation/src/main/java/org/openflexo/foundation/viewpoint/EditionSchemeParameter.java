@@ -48,7 +48,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(EditionSchemeParameter.EditionSchemeParameterImpl.class)
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
-		@Import(EditionPatternInstanceParameter.class), @Import(ClassParameter.class), @Import(IndividualParameter.class),
+		@Import(FlexoConceptInstanceParameter.class), @Import(ClassParameter.class), @Import(IndividualParameter.class),
 		@Import(PropertyParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
 public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArgument {
 

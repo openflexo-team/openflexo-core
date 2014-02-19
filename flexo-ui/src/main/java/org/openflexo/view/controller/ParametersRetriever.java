@@ -70,7 +70,7 @@ import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.ClassParameter;
 import org.openflexo.foundation.viewpoint.DataPropertyParameter;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeActionType;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
@@ -185,7 +185,7 @@ public class ParametersRetriever<ES extends EditionScheme> {
 			cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 			return registerWidget(cbList, parameter, panel, index, true, true);
-		} else if (parameter instanceof EditionPatternInstanceParameter) {
+		} else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
 			epiSelector.setComponentClass(FIBEditionPatternInstanceSelector.class);

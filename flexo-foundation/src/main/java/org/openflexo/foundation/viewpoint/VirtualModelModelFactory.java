@@ -194,8 +194,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ListParameter.class);
 	}
 
-	public EditionPatternInstanceParameter newEditionPatternInstanceParameter() {
-		return newInstance(EditionPatternInstanceParameter.class);
+	public FlexoConceptInstanceParameter newEditionPatternInstanceParameter() {
+		return newInstance(FlexoConceptInstanceParameter.class);
 	}
 
 	public EditionSchemeParameters newEditionSchemeParameters(EditionScheme editionScheme) {
