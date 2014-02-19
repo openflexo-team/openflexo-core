@@ -21,9 +21,9 @@ package org.openflexo.foundation.view;
 
 import org.openflexo.foundation.DataModification;
 
-public class EditionPatternChanged extends DataModification {
+public class FlexoConceptChanged extends DataModification {
 
-	public EditionPatternChanged(FlexoConceptInstance flexoConceptInstance) {
+	public FlexoConceptChanged(FlexoConceptInstance flexoConceptInstance) {
 		super(null, flexoConceptInstance);
 	}
 
