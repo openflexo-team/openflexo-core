@@ -68,7 +68,7 @@ public class DeleteEditionPattern extends FlexoAction<DeleteEditionPattern, Flex
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Delete edition pattern");
+		logger.info("Delete flexo concept");
 
 		getFocusedObject().delete();
 	}

@@ -38,7 +38,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents an inspector entry (a data related to an edition pattern which can be inspected)
+ * Represents an inspector entry (a data related to an flexo concept which can be inspected)
  * 
  * @author sylvain
  * 

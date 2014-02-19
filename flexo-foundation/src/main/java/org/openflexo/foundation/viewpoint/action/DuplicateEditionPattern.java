@@ -77,7 +77,7 @@ public class DuplicateEditionPattern extends FlexoAction<DuplicateEditionPattern
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Duplicate edition pattern");
+		logger.info("Duplicate flexo concept");
 
 		newFlexoConcept = (FlexoConcept) getFocusedObject().cloneObject();
 		newFlexoConcept.setName(newName);

@@ -700,7 +700,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public void notifyBindingModelChanged() {
 			super.notifyBindingModelChanged();
-			// SGU: as all pattern roles share the edition pattern binding
+			// SGU: as all pattern roles share the flexo concept binding
 			// model, they should
 			// all notify change of their binding models
 			for (PatternRole pr : getPatternRoles()) {

@@ -755,7 +755,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
-			// Si edition pattern est un diagram spec alors rajouter la varialble diagram
+			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
 				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, FlexoConceptInstanceType

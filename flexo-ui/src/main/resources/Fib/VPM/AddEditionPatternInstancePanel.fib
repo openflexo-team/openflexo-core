@@ -66,9 +66,9 @@
     <Localized key="view" lang="English">view</Localized>
     <Localized key="view" lang="French">view</Localized>
     <Localized key="view" lang="Dutch">view</Localized>
-    <Localized key="flexo_concept" lang="English">edition pattern</Localized>
-    <Localized key="flexo_concept" lang="French">edition pattern</Localized>
-    <Localized key="flexo_concept" lang="Dutch">edition pattern</Localized>
+    <Localized key="flexo_concept" lang="English">flexo concept</Localized>
+    <Localized key="flexo_concept" lang="French">flexo concept</Localized>
+    <Localized key="flexo_concept" lang="Dutch">flexo concept</Localized>
     <Localized key="parameter" lang="English">parameter</Localized>
     <Localized key="parameter" lang="French">parameter</Localized>
     <Localized key="parameter" lang="Dutch">parameter</Localized>

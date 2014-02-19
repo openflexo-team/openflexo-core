@@ -299,10 +299,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			if (vm != null) {
 				return vm.getFlexoConcept(flexoConceptName);
 			}
-			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching edition pattern:" + flexoConceptURI + " ("
+			logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 					+ flexoConceptName + ")");
 		}
-		logger.warning("Cannot find edition pattern:" + flexoConceptURI);
+		logger.warning("Cannot find flexo concept:" + flexoConceptURI);
 		return null;
 	}
 

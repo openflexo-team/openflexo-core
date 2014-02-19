@@ -495,7 +495,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		public void unregisterEditionPatternReference(FlexoConceptInstance flexoConceptInstance) {
 			FlexoObjectReference<FlexoConceptInstance> referenceToRemove = getEditionPatternReference(flexoConceptInstance);
 			if (referenceToRemove == null) {
-				logger.warning("Called for unregister EditionPatternReference for unexisting reference to edition pattern instance EP="
+				logger.warning("Called for unregister EditionPatternReference for unexisting reference to flexo concept instance EP="
 						+ flexoConceptInstance.getFlexoConcept().getName() + " id=" + flexoConceptInstance.getFlexoID());
 			} else {
 				removeFromEditionPatternReferences(referenceToRemove);

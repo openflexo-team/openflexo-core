@@ -173,7 +173,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			addEditionPattern.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
 			return addEditionPattern.getNewFlexoConcept();
 		}
-		logger.warning("Unexpected null edition pattern");
+		logger.warning("Unexpected null flexo concept");
 		return null;
 	}
 

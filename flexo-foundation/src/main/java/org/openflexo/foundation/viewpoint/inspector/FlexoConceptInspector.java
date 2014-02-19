@@ -322,7 +322,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		@Override
 		public void notifyBindingModelChanged() {
 			super.notifyBindingModelChanged();
-			// SGU: as all entries share the edition pattern binding model, they
+			// SGU: as all entries share the flexo concept binding model, they
 			// should
 			// all notify change of their binding models
 			for (InspectorEntry entry : getEntries()) {

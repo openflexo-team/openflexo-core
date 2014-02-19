@@ -43,7 +43,7 @@
     <Localized key="delete_constraint" lang="Dutch">delete_constraint</Localized>
     <Localized key="flexo_concept" lang="English">Edition Pattern</Localized>
     <Localized key="flexo_concept" lang="French">Edition Pattern</Localized>
-    <Localized key="flexo_concept" lang="Dutch">edition pattern</Localized>
+    <Localized key="flexo_concept" lang="Dutch">flexo concept</Localized>
     <Localized key="parent" lang="English">Parent</Localized>
     <Localized key="parent" lang="French">Parent</Localized>
     <Localized key="parent" lang="Dutch">Parent</Localized>

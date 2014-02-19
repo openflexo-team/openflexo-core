@@ -78,7 +78,7 @@ public class AddEditionPattern extends FlexoAction<AddEditionPattern, VirtualMod
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add new edition pattern");
+		logger.info("Add new flexo concept");
 
 		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 
