@@ -262,8 +262,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public EditionPatternInstancePatternRole newEditionPatternInstancePatternRole() {
-		return newInstance(EditionPatternInstancePatternRole.class);
+	public FlexoConceptInstancePatternRole newEditionPatternInstancePatternRole() {
+		return newInstance(FlexoConceptInstancePatternRole.class);
 	}
 
 	public AddEditionPatternInstance newAddEditionPatternInstance() {

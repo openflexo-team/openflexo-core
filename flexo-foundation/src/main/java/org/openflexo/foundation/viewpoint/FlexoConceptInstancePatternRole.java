@@ -16,9 +16,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(EditionPatternInstancePatternRole.EditionPatternInstancePatternRoleImpl.class)
+@ImplementationClass(FlexoConceptInstancePatternRole.FlexoConceptInstancePatternRoleImpl.class)
 @XMLElement
-public interface EditionPatternInstancePatternRole extends PatternRole<FlexoConceptInstance> {
+public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
@@ -45,19 +45,19 @@ public interface EditionPatternInstancePatternRole extends PatternRole<FlexoConc
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class EditionPatternInstancePatternRoleImpl extends PatternRoleImpl<FlexoConceptInstance> implements
-			EditionPatternInstancePatternRole {
+	public static abstract class FlexoConceptInstancePatternRoleImpl extends PatternRoleImpl<FlexoConceptInstance> implements
+			FlexoConceptInstancePatternRole {
 
-		private static final Logger logger = Logger.getLogger(EditionPatternInstancePatternRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FlexoConceptInstancePatternRole.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private String _editionPatternTypeURI;
 
-		public EditionPatternInstancePatternRoleImpl() {
+		public FlexoConceptInstancePatternRoleImpl() {
 			super();
-			// logger.severe("############# Created EditionPatternInstancePatternRole " + Integer.toHexString(hashCode()) +
+			// logger.severe("############# Created FlexoConceptInstancePatternRole " + Integer.toHexString(hashCode()) +
 			// " model version="
 			// + builder.getModelVersion() + " file=" + builder.resource.getFile().getAbsolutePath());
 		}
@@ -65,7 +65,7 @@ public interface EditionPatternInstancePatternRole extends PatternRole<FlexoConc
 		/*@Override
 		public void finalizeDeserialization(Object builder) {
 			super.finalizeDeserialization(builder);
-			logger.severe("############# Finalized EditionPatternInstancePatternRole " + Integer.toHexString(hashCode()) + toString());
+			logger.severe("############# Finalized FlexoConceptInstancePatternRole " + Integer.toHexString(hashCode()) + toString());
 		}*/
 
 		@Override

@@ -3,7 +3,7 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -92,7 +92,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends PatternRole<?>> patternRoleClass) {
-		if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+		if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 			return VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON;
 		}
 		return null;

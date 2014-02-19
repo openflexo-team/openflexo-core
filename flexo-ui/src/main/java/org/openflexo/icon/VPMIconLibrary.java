@@ -33,7 +33,7 @@ import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
@@ -245,7 +245,7 @@ public class VPMIconLibrary extends IconLibrary {
 					}
 				}
 			}
-		} else if (object instanceof EditionPatternInstancePatternRole) {
+		} else if (object instanceof FlexoConceptInstancePatternRole) {
 			return EDITION_PATTERN_ICON;
 		} else if (object instanceof PrimitivePatternRole) {
 			return UNKNOWN_ICON;

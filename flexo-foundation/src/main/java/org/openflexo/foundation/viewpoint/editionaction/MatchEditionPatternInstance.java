@@ -40,7 +40,7 @@ import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
@@ -269,9 +269,9 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 		@Override
 		public CreationScheme getCreationScheme() {
-			if (getPatternRole() instanceof EditionPatternInstancePatternRole
-					&& ((EditionPatternInstancePatternRole) getPatternRole()).getCreationScheme() != null) {
-				return ((EditionPatternInstancePatternRole) getPatternRole()).getCreationScheme();
+			if (getPatternRole() instanceof FlexoConceptInstancePatternRole
+					&& ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme() != null) {
+				return ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme();
 			}
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(_creationSchemeURI);

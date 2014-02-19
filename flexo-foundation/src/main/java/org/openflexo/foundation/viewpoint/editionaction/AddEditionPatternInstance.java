@@ -40,7 +40,7 @@ import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -207,8 +207,8 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(_creationSchemeURI);
 			}
-			if (creationScheme == null && getPatternRole() instanceof EditionPatternInstancePatternRole) {
-				creationScheme = ((EditionPatternInstancePatternRole) getPatternRole()).getCreationScheme();
+			if (creationScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
+				creationScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme();
 			}
 			return creationScheme;
 		}

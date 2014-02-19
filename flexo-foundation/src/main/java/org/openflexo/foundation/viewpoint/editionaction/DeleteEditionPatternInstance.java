@@ -38,7 +38,7 @@ import org.openflexo.foundation.view.action.DeletionSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -195,8 +195,8 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 			if (deletionScheme == null && _deletionSchemeURI != null && getViewPointLibrary() != null) {
 				deletionScheme = (DeletionScheme) getViewPointLibrary().getEditionScheme(_deletionSchemeURI);
 			}
-			if (deletionScheme == null && getPatternRole() instanceof EditionPatternInstancePatternRole) {
-				deletionScheme = ((EditionPatternInstancePatternRole) getPatternRole()).getFlexoConcept().getDefaultDeletionScheme();
+			if (deletionScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
+				deletionScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getFlexoConcept().getDefaultDeletionScheme();
 			}
 			return deletionScheme;
 		}

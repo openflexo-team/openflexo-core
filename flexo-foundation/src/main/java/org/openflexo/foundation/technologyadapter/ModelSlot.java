@@ -33,7 +33,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.NamedViewPointObject;
@@ -235,7 +235,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 		 */
 		@Override
 		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
-			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConcept";
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";

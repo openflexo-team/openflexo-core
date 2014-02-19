@@ -190,7 +190,7 @@
 		<property name="diagramSpecificationURI" xmlTag="diagramSpecificationURI" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole" xmlTag="EditionPatternInstancePatternRole">
+	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole" xmlTag="EditionPatternInstancePatternRole">
 		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
 	</entity>

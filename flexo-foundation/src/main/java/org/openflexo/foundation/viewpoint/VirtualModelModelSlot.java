@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "FlexoConceptInstance", patternRoleClass = EditionPatternInstancePatternRole.class) // FlexoConceptInstance
+@DeclarePatternRole(FML = "FlexoConceptInstance", patternRoleClass = FlexoConceptInstancePatternRole.class) // FlexoConceptInstance
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot
@@ -88,7 +88,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public boolean isReflexiveModelSlot();
 
-	public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
+	public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
 
 	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
 
@@ -105,8 +105,8 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
-			EditionPatternInstancePatternRole returned = makePatternRole(EditionPatternInstancePatternRole.class);
+		public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
+			FlexoConceptInstancePatternRole returned = makePatternRole(FlexoConceptInstancePatternRole.class);
 			returned.setFlexoConceptType(flexoConcept);
 			returned.setModelSlot(this);
 			return returned;
@@ -114,7 +114,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
-			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "editionPatternInstance";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());

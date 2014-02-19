@@ -34,7 +34,7 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.viewpoint.IndividualPatternRole;
@@ -133,7 +133,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 					((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
 				}
 				if (isEditionPatternInstance()) {
-					((EditionPatternInstancePatternRole) newPatternRole).setFlexoConceptType(flexoConceptInstanceType);
+					((FlexoConceptInstancePatternRole) newPatternRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
@@ -193,7 +193,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 		if (patternRoleClass == null) {
 			return false;
 		}
-		return EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass);
+		return FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass);
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {

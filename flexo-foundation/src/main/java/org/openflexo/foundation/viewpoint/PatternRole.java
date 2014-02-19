@@ -51,7 +51,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(PatternRole.PatternRoleImpl.class)
-@Imports({ @Import(EditionPatternInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
+@Imports({ @Import(FlexoConceptInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
 public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
