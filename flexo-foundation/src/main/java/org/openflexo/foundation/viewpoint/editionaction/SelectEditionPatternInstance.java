@@ -22,7 +22,7 @@ package org.openflexo.foundation.viewpoint.editionaction;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
@@ -45,7 +45,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link EditionPatternInstance} matching some conditions and a given
+ * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a given
  * {@link FlexoConcept}.<br>
  * 
  * @author sylvain
@@ -58,7 +58,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(SelectEditionPatternInstance.SelectEditionPatternInstanceImpl.class)
 @XMLElement
-public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelModelSlot, EditionPatternInstance> {
+public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
@@ -74,7 +74,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class SelectEditionPatternInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, EditionPatternInstance>
+	public static abstract class SelectEditionPatternInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, FlexoConceptInstance>
 			implements SelectEditionPatternInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectEditionPatternInstance.class.getPackage().getName());
@@ -169,7 +169,7 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 		}
 
 		@Override
-		public List<EditionPatternInstance> performAction(EditionSchemeAction action) {
+		public List<FlexoConceptInstance> performAction(EditionSchemeAction action) {
 			VirtualModelInstance vmi = null;
 			if (getModelSlot() instanceof VirtualModelModelSlot) {
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());

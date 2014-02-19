@@ -47,7 +47,7 @@ import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
@@ -84,7 +84,7 @@ public interface FIBInspector extends FIBPanel {
 
 	public void appendSuperInspectors(ModuleInspectorController inspectorController);
 
-	public boolean updateEditionPatternInstanceInspector(EditionPatternInstance object);
+	public boolean updateEditionPatternInstanceInspector(FlexoConceptInstance object);
 
 	public boolean updateFlexoObjectInspector(FlexoObject object);
 
@@ -207,8 +207,8 @@ public interface FIBInspector extends FIBPanel {
 			}
 
 			if (object.getEditionPatternReferences() != null) {
-				for (FlexoObjectReference<EditionPatternInstance> ref : object.getEditionPatternReferences()) {
-					EditionPatternInstance epi = ref.getObject();
+				for (FlexoObjectReference<FlexoConceptInstance> ref : object.getEditionPatternReferences()) {
+					FlexoConceptInstance epi = ref.getObject();
 					flexoConceptsToDisplay.add(epi.getFlexoConcept());
 					if (ensureCreationOfTabForEPIReference(epi.getFlexoConcept())) {
 						returned = true;
@@ -261,7 +261,7 @@ public interface FIBInspector extends FIBPanel {
 		 * @return a boolean indicating if a new tab was created
 		 */
 		@Override
-		public boolean updateEditionPatternInstanceInspector(EditionPatternInstance object) {
+		public boolean updateEditionPatternInstanceInspector(FlexoConceptInstance object) {
 
 			boolean returned = false;
 
@@ -555,7 +555,7 @@ public interface FIBInspector extends FIBPanel {
 			newTab.setTitle(ep.getInspector().getInspectorTitle());
 			newTab.setLayout(Layout.twocols);
 			newTab.setUseScrollBar(true);
-			// newTab.setDataClass(EditionPatternInstance.class);
+			// newTab.setDataClass(FlexoConceptInstance.class);
 			// newTab.setData(new DataBinding("data.editionPatternReferences.get["+refIndex+"].editionPatternInstance"));
 			// newTab.setData(new DataBinding("data.editionPatternReferences.firstElement.editionPatternInstance"));
 			newTab.setName(epIdentifier + "Panel");

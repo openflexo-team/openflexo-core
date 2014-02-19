@@ -349,7 +349,7 @@ public interface EditionPatternInspector extends EditionPatternObject, Bindable 
 		 * getEditionPattern().getPatternRoles()) {
 		 * _bindingModel.addToBindingVariables
 		 * (PatternRolePathElement.makePatternRolePathElement(role,
-		 * (EditionPatternInstance) null)); } }
+		 * (FlexoConceptInstance) null)); } }
 		 */
 
 		@Override

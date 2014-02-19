@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "EditionPatternInstance", patternRoleClass = EditionPatternInstancePatternRole.class) // EditionPatternInstance
+@DeclarePatternRole(FML = "FlexoConceptInstance", patternRoleClass = EditionPatternInstancePatternRole.class) // FlexoConceptInstance
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot

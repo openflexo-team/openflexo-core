@@ -3097,20 +3097,20 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}*/
 
 	/*
-	 * public EditionPatternInstance
+	 * public FlexoConceptInstance
 	 * getEditionPatternInstance(EditionPatternReference reference) { if
 	 * (reference == null) { return null; } if (reference.getEditionPattern() ==
 	 * null) {
 	 * logger.warning("Found a reference to a null EP, please investigate");
 	 * return null; } if (_editionPatternInstances == null) {
 	 * _editionPatternInstances = new Hashtable<String, Map<Long,
-	 * EditionPatternInstance>>(); } Map<Long, EditionPatternInstance> hash =
+	 * FlexoConceptInstance>>(); } Map<Long, FlexoConceptInstance> hash =
 	 * _editionPatternInstances.get(reference.getEditionPattern().getName()); if
-	 * (hash == null) { hash = new Hashtable<Long, EditionPatternInstance>();
+	 * (hash == null) { hash = new Hashtable<Long, FlexoConceptInstance>();
 	 * _editionPatternInstances.put(reference.getEditionPattern().getName(),
-	 * hash); } EditionPatternInstance returned =
+	 * hash); } FlexoConceptInstance returned =
 	 * hash.get(reference.getInstanceId()); if (returned == null) { returned =
-	 * new EditionPatternInstance(reference);
+	 * new FlexoConceptInstance(reference);
 	 * hash.put(reference.getInstanceId(), returned); } return returned; }
 	 */
 
@@ -3191,10 +3191,10 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * { // No pending FlexoConcept references for object return; } else {
 	 * List<ConceptActorReference> clonedValues = new
 	 * ArrayList<ConceptActorReference>(values); for (ConceptActorReference
-	 * actorReference : clonedValues) { EditionPatternInstance instance =
+	 * actorReference : clonedValues) { FlexoConceptInstance instance =
 	 * actorReference.getPatternReference().getEditionPatternInstance(); if
 	 * (instance == null) {
-	 * logger.warning("Found null EditionPatternInstance, please investigate");
+	 * logger.warning("Found null FlexoConceptInstance, please investigate");
 	 * } else if (actorReference.getPatternReference() == null) {
 	 * logger.warning(
 	 * "Found null actorReference.getPatternReference(), please investigate"); }

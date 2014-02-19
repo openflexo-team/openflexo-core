@@ -12,7 +12,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents run-time-level object encoding reference to object considered as a modelling element<br>
- * An {@link ActorReference} is always attached to a {@link EditionPatternInstance}
+ * An {@link ActorReference} is always attached to a {@link FlexoConceptInstance}
  * 
  * @author sylvain
  * 
@@ -23,7 +23,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
-	@PropertyIdentifier(type = EditionPatternInstance.class)
+	@PropertyIdentifier(type = FlexoConceptInstance.class)
 	public static final String EDITION_PATTERN_INSTANCE_KEY = "flexoConceptInstance";
 
 	@PropertyIdentifier(type = String.class)
@@ -51,15 +51,15 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	public void setModellingElement(T object);
 
 	/**
-	 * Return the {@link EditionPatternInstance} where this reference "lives"
+	 * Return the {@link FlexoConceptInstance} where this reference "lives"
 	 * 
 	 * @return
 	 */
-	@Getter(value = EDITION_PATTERN_INSTANCE_KEY, inverse = EditionPatternInstance.ACTOR_LIST_KEY)
-	public EditionPatternInstance getEditionPatternInstance();
+	@Getter(value = EDITION_PATTERN_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
+	public FlexoConceptInstance getEditionPatternInstance();
 
 	@Setter(EDITION_PATTERN_INSTANCE_KEY)
-	public void setEditionPatternInstance(EditionPatternInstance epi);
+	public void setEditionPatternInstance(FlexoConceptInstance epi);
 
 	public PatternRole<T> getPatternRole();
 
@@ -71,7 +71,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		private PatternRole<T> patternRole;
 		private String patternRoleName;
 		private ModelSlot modelSlot;
-		private EditionPatternInstance epi;
+		private FlexoConceptInstance epi;
 
 		public ModelSlot getModelSlot() {
 			return modelSlot;
@@ -98,12 +98,12 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		public abstract T getModellingElement();
 
 		@Override
-		public EditionPatternInstance getEditionPatternInstance() {
+		public FlexoConceptInstance getEditionPatternInstance() {
 			return epi;
 		}
 
 		@Override
-		public void setEditionPatternInstance(EditionPatternInstance epi) {
+		public void setEditionPatternInstance(FlexoConceptInstance epi) {
 			this.epi = epi;
 		}
 

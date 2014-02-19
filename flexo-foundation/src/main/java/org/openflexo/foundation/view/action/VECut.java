@@ -26,7 +26,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoableAction;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 
 public class VECut extends FlexoUndoableAction<VECut, VirtualModelInstanceObject, VirtualModelInstanceObject> {
@@ -58,7 +58,7 @@ public class VECut extends FlexoUndoableAction<VECut, VirtualModelInstanceObject
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(VECut.actionType, EditionPatternInstance.class);
+		FlexoObjectImpl.addActionForClass(VECut.actionType, FlexoConceptInstance.class);
 	}
 
 	VECut(VirtualModelInstanceObject focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {

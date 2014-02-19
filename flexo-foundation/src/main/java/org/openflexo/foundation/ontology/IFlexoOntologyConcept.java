@@ -126,10 +126,10 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 
 	// NB: implemented in FlexoModelObject
 	// @Deprecated
-	// public void registerEditionPatternReference(EditionPatternInstance editionPatternInstance, PatternRole<?> patternRole);
+	// public void registerEditionPatternReference(FlexoConceptInstance editionPatternInstance, PatternRole<?> patternRole);
 
 	// NB: implemented in FlexoModelObject
 	// @Deprecated
-	// public void unregisterEditionPatternReference(EditionPatternInstance editionPatternInstance, PatternRole<?> patternRole);
+	// public void unregisterEditionPatternReference(FlexoConceptInstance editionPatternInstance, PatternRole<?> patternRole);
 
 }

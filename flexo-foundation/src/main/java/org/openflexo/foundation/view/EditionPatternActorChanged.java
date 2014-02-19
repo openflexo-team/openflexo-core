@@ -24,17 +24,17 @@ import org.openflexo.foundation.viewpoint.PatternRole;
 
 public class EditionPatternActorChanged extends DataModification {
 
-	private EditionPatternInstance editionPatternInstance;
+	private FlexoConceptInstance flexoConceptInstance;
 	private PatternRole<?> patternRole;
 
-	public <T> EditionPatternActorChanged(EditionPatternInstance editionPatternInstance, PatternRole<T> patternRole, T oldActor, T newActor) {
+	public <T> EditionPatternActorChanged(FlexoConceptInstance flexoConceptInstance, PatternRole<T> patternRole, T oldActor, T newActor) {
 		super(oldActor, newActor);
-		this.editionPatternInstance = editionPatternInstance;
+		this.flexoConceptInstance = flexoConceptInstance;
 		this.patternRole = patternRole;
 	}
 
-	public EditionPatternInstance getEditionPatternInstance() {
-		return editionPatternInstance;
+	public FlexoConceptInstance getEditionPatternInstance() {
+		return flexoConceptInstance;
 	}
 
 	public PatternRole<?> getPatternRole() {

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.rm.ViewResource;
@@ -37,7 +37,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Widget allowing to select an EditionPatternInstance.<br>
+ * Widget allowing to select an FlexoConceptInstance.<br>
  * 
  * The scope of searched EPI is either:
  * <ul>
@@ -50,7 +50,7 @@ import org.openflexo.toolbox.FileResource;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<EditionPatternInstance> {
+public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<FlexoConceptInstance> {
 
 	static final Logger logger = Logger.getLogger(FIBEditionPatternInstanceSelector.class.getPackage().getName());
 
@@ -63,7 +63,7 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 	private View view;
 	private VirtualModelInstance virtualModelInstance;
 
-	public FIBEditionPatternInstanceSelector(EditionPatternInstance editedObject) {
+	public FIBEditionPatternInstanceSelector(FlexoConceptInstance editedObject) {
 		super(editedObject);
 	}
 
@@ -84,12 +84,12 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 	}
 
 	@Override
-	public Class<EditionPatternInstance> getRepresentedType() {
-		return EditionPatternInstance.class;
+	public Class<FlexoConceptInstance> getRepresentedType() {
+		return FlexoConceptInstance.class;
 	}
 
 	@Override
-	public String renderedString(EditionPatternInstance editedObject) {
+	public String renderedString(FlexoConceptInstance editedObject) {
 		if (editedObject != null) {
 			return editedObject.getStringRepresentation();
 		}
@@ -145,17 +145,17 @@ public class FIBEditionPatternInstanceSelector extends FIBProjectObjectSelector<
 		}
 	}
 
-	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
+	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
 		if (getVirtualModelInstance() != null) {
 			return getVirtualModelInstance().getEPInstances(ep);
 		} else if (getView() != null) {
-			List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
+			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getEPInstances(ep));
 			}
 			return returned;
 		} else if (getProject() != null) {
-			List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
+			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
 				for (VirtualModelInstance vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getEPInstances(ep));

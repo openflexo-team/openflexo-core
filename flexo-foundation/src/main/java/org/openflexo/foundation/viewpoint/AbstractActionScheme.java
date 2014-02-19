@@ -25,7 +25,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -47,7 +47,7 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(EditionPatternInstance editionPatternInstance);
+	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
 	public static abstract class AbstractActionSchemeImpl extends EditionSchemeImpl implements AbstractActionScheme {
 
@@ -78,10 +78,10 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 		}
 
 		@Override
-		public boolean evaluateCondition(EditionPatternInstance editionPatternInstance) {
+		public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) {
 			if (getConditional().isSet() && getConditional().isValid()) {
 				try {
-					Boolean returned = getConditional().getBindingValue(editionPatternInstance);
+					Boolean returned = getConditional().getBindingValue(flexoConceptInstance);
 					return returned;
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();

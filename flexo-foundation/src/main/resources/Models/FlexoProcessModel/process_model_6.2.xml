@@ -26,7 +26,7 @@
     <!--  <property name="editionPatternReferences" type="vector" primary="yes" xmlTag="EditionPatternReference"/> -->
   </entity>
 
-<!--  <entity name="org.openflexo.foundation.view.EditionPatternInstance" xmlTag="EditionPatternInstance">
+<!--  <entity name="org.openflexo.foundation.view.FlexoConceptInstance" xmlTag="EditionPatternInstance">
 		<property name="editionPatternURI" xmlTag="editionPatternURI" attribute="YES" description="" />
 		<property name="actorList" contains="org.openflexo.foundation.view.ActorReference" primary="yes" type="vector"/>
 	</entity>

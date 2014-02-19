@@ -45,7 +45,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -74,7 +74,7 @@ import org.openflexo.toolbox.ToolBox;
  * 
  * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
  * 
- * A {@link VirtualModel} instance contains a set of {@link EditionPatternInstance}.
+ * A {@link VirtualModel} instance contains a set of {@link FlexoConceptInstance}.
  * 
  * A {@link VirtualModel} is itself an {@link FlexoConcept}
  * 

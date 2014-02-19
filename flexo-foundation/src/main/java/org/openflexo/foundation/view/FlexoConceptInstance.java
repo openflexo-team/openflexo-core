@@ -59,18 +59,18 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link EditionPatternInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
+ * A {@link FlexoConceptInstance} is the run-time concept (instance) of an {@link FlexoConcept}.<br>
  * 
- * As such, a {@link EditionPatternInstance} is instantiated inside a {@link VirtualModelInstance} (only {@link VirtualModelInstance}
+ * As such, a {@link FlexoConceptInstance} is instantiated inside a {@link VirtualModelInstance} (only {@link VirtualModelInstance}
  * objects might leave outside an other {@link VirtualModelInstance}).<br>
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-@ImplementationClass(EditionPatternInstance.EditionPatternInstanceImpl.class)
+@ImplementationClass(FlexoConceptInstance.EditionPatternInstanceImpl.class)
 @XMLElement
-public interface EditionPatternInstance extends VirtualModelInstanceObject, Bindable, BindingEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, BindingEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<emtpy>";
@@ -127,9 +127,9 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 
 	public String getStringRepresentation();
 
-	public static abstract class EditionPatternInstanceImpl extends VirtualModelInstanceObjectImpl implements EditionPatternInstance {
+	public static abstract class EditionPatternInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
-		private static final Logger logger = FlexoLogger.getLogger(EditionPatternInstance.class.getPackage().toString());
+		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
 
 		private FlexoConcept flexoConcept;
 		private String flexoConceptURI;
@@ -176,7 +176,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 				logger.warning("Unexpected null patternRole");
 				return null;
 			}
-			// logger.info(">>>>>>>> EditionPatternInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
+			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
 			ActorReference<T> actorReference = (ActorReference<T>) actors.get(patternRole);
 			// Pragmatic attempt to fix "inheritance issue...."
 			for (FlexoConcept parentEP : this.getFlexoConcept().getParentFlexoConcepts()) {
@@ -245,7 +245,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 				}
 				setChanged();
 				notifyObservers(new EditionPatternActorChanged(this, patternRole, oldObject, object));
-				// System.out.println("EditionPatternInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
+				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
 				getPropertyChangeSupport().firePropertyChange(patternRole.getPatternRoleName(), oldObject, object);
 			}
 		}
@@ -487,7 +487,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 			if (container != null) {
 				container.removeFromEditionPatternInstancesList(this);
 			}
-			// logger.warning("EditionPatternInstance deletion !");
+			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;
 			/*if (getEditionPattern().getPrimaryRepresentationRole() != null) {
 				Object primaryPatternActor = getPatternActor(getEditionPattern().getPrimaryRepresentationRole());
@@ -518,7 +518,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 				// Generate on-the-fly default deletion scheme
 				delete(getEditionPattern().generateDefaultDeletionScheme());
 			}*/
-			System.out.println("cloneEditionPatternInstance() in EditionPatternInstance");
+			System.out.println("cloneEditionPatternInstance() in FlexoConceptInstance");
 			return null;
 		}
 
@@ -526,7 +526,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
 		public EditionPatternInstanceImpl cloneEditionPatternInstance(CloningScheme cloningScheme) {
-			/*logger.warning("NEW EditionPatternInstance deletion !");
+			/*logger.warning("NEW FlexoConceptInstance deletion !");
 			deleted = true;
 			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(getPatternActor(getEditionPattern()
 					.getPrimaryRepresentationRole()), null, null);
@@ -536,7 +536,7 @@ public interface EditionPatternInstance extends VirtualModelInstanceObject, Bind
 			if (deletionSchemeAction.hasActionExecutionSucceeded()) {
 				logger.info("Successfully performed delete FlexoConcept instance " + getEditionPattern());
 			}*/
-			System.out.println("cloneEditionPatternInstance() in EditionPatternInstance with " + cloningScheme);
+			System.out.println("cloneEditionPatternInstance() in FlexoConceptInstance with " + cloningScheme);
 			return null;
 		}
 

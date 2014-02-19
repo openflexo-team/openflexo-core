@@ -32,7 +32,7 @@ import org.openflexo.foundation.validation.CompoundIssue;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
@@ -57,7 +57,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This action is used to explicitely instanciate a new {@link EditionPatternInstance} in a given {@link VirtualModelInstance} with some
+ * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link VirtualModelInstance} with some
  * parameters
  * 
  * @author sylvain
@@ -70,7 +70,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeleteEditionPatternInstance.DeleteEditionPatternInstanceImpl.class)
 @XMLElement
-public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelModelSlot, EditionPatternInstance> {
+public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -114,7 +114,7 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public abstract static class DeleteEditionPatternInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, EditionPatternInstance>
+	public abstract static class DeleteEditionPatternInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
 			implements DeleteEditionPatternInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteEditionPatternInstance.class.getPackage().getName());
@@ -245,18 +245,18 @@ public interface DeleteEditionPatternInstance extends DeleteAction<VirtualModelM
 		}
 
 		@Override
-		public EditionPatternInstance performAction(EditionSchemeAction action) {
+		public FlexoConceptInstance performAction(EditionSchemeAction action) {
 			logger.info("Perform performDeleteEditionPatternInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 
 			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
 
 			try {
-				EditionPatternInstance objectToDelete = (EditionPatternInstance) getObject().getBindingValue(action);
+				FlexoConceptInstance objectToDelete = (FlexoConceptInstance) getObject().getBindingValue(action);
 				// if VmInstance is null, use the one of the EPI
 				vmInstance = objectToDelete.getVirtualModelInstance();
 
-				logger.info("EditionPatternInstance To Delete: " + objectToDelete);
+				logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
 				logger.info("VirtualModelInstance: " + vmInstance);
 				deletionSchemeAction.setEditionPatternInstanceToDelete(objectToDelete);
 				deletionSchemeAction.setVirtualModelInstance(vmInstance);

@@ -28,7 +28,7 @@ import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.ActorReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -114,7 +114,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 	 * @param epi
 	 * @return
 	 */
-	public abstract ActorReference<T> makeActorReference(T object, EditionPatternInstance epi);
+	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
 	public static abstract class PatternRoleImpl<T> extends EditionPatternObjectImpl implements PatternRole<T> {
 
@@ -207,7 +207,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 		public abstract boolean defaultBehaviourIsToBeDeleted();
 
 		@Override
-		public abstract ActorReference<T> makeActorReference(T object, EditionPatternInstance epi);
+		public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
 		// @Override
 		// public abstract String getLanguageRepresentation();

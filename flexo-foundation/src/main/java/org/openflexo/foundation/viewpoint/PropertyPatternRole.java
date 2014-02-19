@@ -8,7 +8,7 @@ import org.openflexo.foundation.ontology.SubPropertyOfProperty;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.ConceptActorReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
@@ -122,7 +122,7 @@ public interface PropertyPatternRole<T extends IFlexoOntologyStructuralProperty>
 		}
 
 		@Override
-		public ActorReference<T> makeActorReference(T object, EditionPatternInstance epi) {
+		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<T> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setPatternRole(this);

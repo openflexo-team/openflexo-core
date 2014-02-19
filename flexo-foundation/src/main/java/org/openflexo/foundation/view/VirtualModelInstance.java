@@ -66,8 +66,8 @@ import org.openflexo.model.annotations.XMLElement;
  * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link EditionPatternInstance} and is itself an
- * {@link EditionPatternInstance}.<br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an
+ * {@link FlexoConceptInstance}.<br>
  * 
  * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
  * 
@@ -77,7 +77,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @XMLElement
-public interface VirtualModelInstance extends EditionPatternInstance, ResourceData<VirtualModelInstance>,
+public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData<VirtualModelInstance>,
 		FlexoModel<VirtualModelInstance, VirtualModel> {
 
 	@PropertyIdentifier(type = String.class)
@@ -124,16 +124,16 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 
 	@Getter(value = EDITION_PATTERN_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
-	public List<EditionPatternInstance> getEditionPatternInstancesList();
+	public List<FlexoConceptInstance> getEditionPatternInstancesList();
 
 	@Setter(EDITION_PATTERN_INSTANCES_LIST_KEY)
-	public void setEditionPatternInstancesList(List<EditionPatternInstance> editionPatternInstancesList);
+	public void setEditionPatternInstancesList(List<FlexoConceptInstance> editionPatternInstancesList);
 
 	@Adder(EDITION_PATTERN_INSTANCES_LIST_KEY)
-	public void addToEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+	public void addToEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
 
 	@Remover(EDITION_PATTERN_INSTANCES_LIST_KEY)
-	public void removeFromEditionPatternInstancesList(EditionPatternInstance aEditionPatternInstancesList);
+	public void removeFromEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -159,12 +159,12 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 	public String getName();
 
 	/**
-	 * Instanciate and register a new {@link EditionPatternInstance}
+	 * Instanciate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
 	 * @return
 	 */
-	public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept concept);
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept);
 
 	/**
 	 * Return run-time value for {@link BindingVariable} variable
@@ -174,11 +174,11 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 	 */
 	public Object getValueForVariable(BindingVariable variable);
 
-	public Collection<EditionPatternInstance> getAllEPInstances();
+	public Collection<FlexoConceptInstance> getAllEPInstances();
 
-	public Collection<EditionPatternInstance> getEPInstances(String epName);
+	public Collection<FlexoConceptInstance> getEPInstances(String epName);
 
-	public List<EditionPatternInstance> getEPInstances(FlexoConcept ep);
+	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep);
 
 	public static abstract class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance {
 
@@ -190,7 +190,7 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		// this.
 		private String title;
 
-		private Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances;
+		private Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
 
 		// TODO: move this code to the VirtualModelInstanceResource
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
@@ -220,7 +220,7 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		public VirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>>();
+			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>>();
 		}
 
 		@Override
@@ -291,33 +291,33 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		}
 
 		/**
-		 * Instanciate and register a new {@link EditionPatternInstance}
+		 * Instanciate and register a new {@link FlexoConceptInstance}
 		 * 
 		 * @param pattern
 		 * @return
 		 */
 		@Override
-		public EditionPatternInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
-			EditionPatternInstance returned = getResource().getFactory().newInstance(EditionPatternInstance.class);
+		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
+			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setVirtualModelInstance(this);
 			returned.setFlexoConcept(concept);
 			return registerEditionPatternInstance(returned);
 		}
 
 		/**
-		 * Register an existing {@link EditionPatternInstance} (used in deserialization)
+		 * Register an existing {@link FlexoConceptInstance} (used in deserialization)
 		 * 
 		 * @param epi
 		 * @return
 		 */
-		protected EditionPatternInstance registerEditionPatternInstance(EditionPatternInstance epi) {
+		protected FlexoConceptInstance registerEditionPatternInstance(FlexoConceptInstance epi) {
 			if (epi.getFlexoConcept() == null) {
-				logger.warning("Could not register EditionPatternInstance with null FlexoConcept: " + epi);
+				logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + epi);
 				logger.warning("EPI: " + epi.debug());
 			} else {
-				Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
+				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
 				if (hash == null) {
-					hash = new Hashtable<Long, EditionPatternInstance>();
+					hash = new Hashtable<Long, FlexoConceptInstance>();
 					flexoConceptInstances.put(epi.getFlexoConcept(), hash);
 				}
 				hash.put(epi.getFlexoID(), epi);
@@ -328,15 +328,15 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		}
 
 		/**
-		 * Un-register an existing {@link EditionPatternInstance}
+		 * Un-register an existing {@link FlexoConceptInstance}
 		 * 
 		 * @param epi
 		 * @return
 		 */
-		protected EditionPatternInstance unregisterEditionPatternInstance(EditionPatternInstance epi) {
-			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
+		protected FlexoConceptInstance unregisterEditionPatternInstance(FlexoConceptInstance epi) {
+			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
 			if (hash == null) {
-				hash = new Hashtable<Long, EditionPatternInstance>();
+				hash = new Hashtable<Long, FlexoConceptInstance>();
 				flexoConceptInstances.put(epi.getFlexoConcept(), hash);
 			}
 			hash.remove(epi.getFlexoID());
@@ -345,10 +345,10 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 
 		// Do not use this since not efficient, used in deserialization only
 		@Override
-		public List<EditionPatternInstance> getEditionPatternInstancesList() {
-			List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
-			for (Map<Long, EditionPatternInstance> epMap : flexoConceptInstances.values()) {
-				for (EditionPatternInstance epi : epMap.values()) {
+		public List<FlexoConceptInstance> getEditionPatternInstancesList() {
+			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
+			for (Map<Long, FlexoConceptInstance> epMap : flexoConceptInstances.values()) {
+				for (FlexoConceptInstance epi : epMap.values()) {
 					returned.add(epi);
 				}
 			}
@@ -356,38 +356,38 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		}
 
 		@Override
-		public void setEditionPatternInstancesList(List<EditionPatternInstance> epiList) {
-			for (EditionPatternInstance epi : epiList) {
+		public void setEditionPatternInstancesList(List<FlexoConceptInstance> epiList) {
+			for (FlexoConceptInstance epi : epiList) {
 				addToEditionPatternInstancesList(epi);
 			}
 		}
 
 		@Override
-		public void addToEditionPatternInstancesList(EditionPatternInstance epi) {
+		public void addToEditionPatternInstancesList(FlexoConceptInstance epi) {
 			registerEditionPatternInstance(epi);
 		}
 
 		@Override
-		public void removeFromEditionPatternInstancesList(EditionPatternInstance epi) {
+		public void removeFromEditionPatternInstancesList(FlexoConceptInstance epi) {
 			unregisterEditionPatternInstance(epi);
 		}
 
-		public Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> getFlexoConceptInstances() {
+		public Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> getFlexoConceptInstances() {
 			return flexoConceptInstances;
 		}
 
-		public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, EditionPatternInstance>> flexoConceptInstances) {
+		public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances) {
 			this.flexoConceptInstances = flexoConceptInstances;
 		}
 
 		// TODO: performance isssues
 		@Override
-		public Collection<EditionPatternInstance> getAllEPInstances() {
+		public Collection<FlexoConceptInstance> getAllEPInstances() {
 			return getEditionPatternInstancesList();
 		}
 
 		@Override
-		public Collection<EditionPatternInstance> getEPInstances(String epName) {
+		public Collection<FlexoConceptInstance> getEPInstances(String epName) {
 			if (getVirtualModel() == null) {
 				return Collections.emptyList();
 			}
@@ -396,18 +396,18 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 		}
 
 		@Override
-		public List<EditionPatternInstance> getEPInstances(FlexoConcept ep) {
+		public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
 			if (ep == null) {
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
-			Map<Long, EditionPatternInstance> hash = flexoConceptInstances.get(ep);
+			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(ep);
 			if (hash == null) {
-				hash = new Hashtable<Long, EditionPatternInstance>();
+				hash = new Hashtable<Long, FlexoConceptInstance>();
 				flexoConceptInstances.put(ep, hash);
 			}
 			// TODO: performance issue here
-			List<EditionPatternInstance> returned = new ArrayList(hash.values());
+			List<FlexoConceptInstance> returned = new ArrayList(hash.values());
 			for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
 				returned.addAll(getEPInstances(childEP));
 			}
@@ -416,10 +416,10 @@ public interface VirtualModelInstance extends EditionPatternInstance, ResourceDa
 
 		// TODO: refactor this
 		@Deprecated
-		public List<EditionPatternInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
-			/*List<EditionPatternInstance> returned = new ArrayList<EditionPatternInstance>();
-			Collection<EditionPatternInstance> epis = getEPInstances(epName);
-			for (EditionPatternInstance epi : epis) {
+		public List<FlexoConceptInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
+			/*List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
+			Collection<FlexoConceptInstance> epis = getEPInstances(epName);
+			for (FlexoConceptInstance epi : epis) {
 				Object evaluate = epi.evaluate(epProperty);
 				if (value == null && evaluate == value || value != null && value.equals(evaluate)) {
 					returned.add(epi);

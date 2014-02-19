@@ -33,7 +33,7 @@ import org.openflexo.foundation.validation.CompoundIssue;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
@@ -63,9 +63,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This action is used to perform synchronization regarding an {@link EditionPatternInstance} in a given {@link VirtualModelInstance}.<br>
+ * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given {@link VirtualModelInstance}.<br>
  * The matching is performed on some pattern roles, with some values retrieved from an expression.<br>
- * If target {@link EditionPatternInstance} could not been looked up, then a new {@link EditionPatternInstance} is created using supplied
+ * If target {@link FlexoConceptInstance} could not been looked up, then a new {@link FlexoConceptInstance} is created using supplied
  * {@link CreationScheme} and some parameters
  * 
  * @author sylvain
@@ -77,7 +77,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(MatchEditionPatternInstance.MatchEditionPatternInstanceImpl.class)
 @XMLElement
-public interface MatchEditionPatternInstance extends AssignableAction<VirtualModelModelSlot, EditionPatternInstance> {
+public interface MatchEditionPatternInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -137,7 +137,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public static abstract class MatchEditionPatternInstanceImpl extends
-			AssignableActionImpl<VirtualModelModelSlot, EditionPatternInstance> implements MatchEditionPatternInstance {
+			AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance> implements MatchEditionPatternInstance {
 
 		static final Logger logger = Logger.getLogger(MatchEditionPatternInstance.class.getPackage().getName());
 
@@ -384,7 +384,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 		}
 
 		@Override
-		public EditionPatternInstance performAction(EditionSchemeAction action) {
+		public FlexoConceptInstance performAction(EditionSchemeAction action) {
 			logger.info("Perform perform MatchEditionPatternInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);
@@ -397,11 +397,11 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 				System.out.println("Pour " + mc.getPatternRole().getPatternRoleName() + " value is " + value);
 			}
 			logger.info("On s'arrete pour regarder ");
-			EditionPatternInstance matchingEditionPatternInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
+			FlexoConceptInstance matchingEditionPatternInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
 					getFlexoConceptType(), criterias);
 
 			if (matchingEditionPatternInstance != null) {
-				// A matching EditionPatternInstance was found
+				// A matching FlexoConceptInstance was found
 				((SynchronizationSchemeAction) action).foundMatchingEditionPatternInstance(matchingEditionPatternInstance);
 			} else {
 
@@ -423,7 +423,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 					matchingEditionPatternInstance = creationSchemeAction.getEditionPatternInstance();
 					((SynchronizationSchemeAction) action).newEditionPatternInstance(matchingEditionPatternInstance);
 				} else {
-					logger.warning("Could not create EditionPatternInstance for " + action);
+					logger.warning("Could not create FlexoConceptInstance for " + action);
 				}
 			}
 			return matchingEditionPatternInstance;

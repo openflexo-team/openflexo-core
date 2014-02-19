@@ -24,11 +24,11 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 
 import org.openflexo.antar.binding.CustomType;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
 /**
- * Represent the type of a EditionPatternInstance of a given FlexoConcept
+ * Represent the type of a FlexoConceptInstance of a given FlexoConcept
  * 
  * @author sylvain
  * 
@@ -50,7 +50,7 @@ public class EditionPatternInstanceType implements CustomType {
 		if (getFlexoConcept() instanceof VirtualModel) {
 			return VirtualModelInstance.class;
 		} else {
-			return EditionPatternInstance.class;
+			return FlexoConceptInstance.class;
 		}
 	}
 

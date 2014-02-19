@@ -22,7 +22,7 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -61,7 +61,7 @@ public interface EditionPatternInstanceParameter extends InnerModelSlotParameter
 			if (getFlexoConceptType() != null) {
 				return getViewPoint().getInstanceType(getFlexoConceptType());
 			}
-			return EditionPatternInstance.class;
+			return FlexoConceptInstance.class;
 		}
 
 		@Override

@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
@@ -59,8 +59,8 @@ public class SynchronizationSchemeAction extends
 	}
 
 	/**
-	 * Return the {@link EditionPatternInstance} on which this {@link EditionScheme} is applied.<br>
-	 * Note that here, the returned {@link EditionPatternInstance} is the {@link VirtualModelInstance} which is to be synchronized
+	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link VirtualModelInstance} which is to be synchronized
 	 * 
 	 * @return
 	 */
@@ -112,25 +112,25 @@ public class SynchronizationSchemeAction extends
 		return null;
 	}
 
-	private List<EditionPatternInstance> episToBeRemoved;
+	private List<FlexoConceptInstance> episToBeRemoved;
 
 	public void beginSynchronization() {
 		System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
-		episToBeRemoved = new ArrayList<EditionPatternInstance>();
+		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
 		episToBeRemoved.addAll(getVirtualModelInstance().getAllEPInstances());
 	}
 
 	public void endSynchronization() {
 		System.out.println("END synchronization on " + getVirtualModelInstance());
-		for (EditionPatternInstance epi : episToBeRemoved) {
+		for (FlexoConceptInstance epi : episToBeRemoved) {
 			System.out.println("Deleting " + epi);
 			epi.delete();
 		}
 	}
 
-	public EditionPatternInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<PatternRole, Object> criterias) {
+	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<PatternRole, Object> criterias) {
 		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		for (EditionPatternInstance epi : getVirtualModelInstance().getEPInstances(flexoConceptType)) {
+		for (FlexoConceptInstance epi : getVirtualModelInstance().getEPInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
 			for (PatternRole pr : criterias.keySet()) {
 				if (!FlexoObjectImpl.areSameValue(epi.getPatternActor(pr), criterias.get(pr))) {
@@ -144,12 +144,12 @@ public class SynchronizationSchemeAction extends
 		return null;
 	}
 
-	public void foundMatchingEditionPatternInstance(EditionPatternInstance matchingEditionPatternInstance) {
+	public void foundMatchingEditionPatternInstance(FlexoConceptInstance matchingEditionPatternInstance) {
 		System.out.println("FOUND matching : " + matchingEditionPatternInstance);
 		episToBeRemoved.remove(matchingEditionPatternInstance);
 	}
 
-	public void newEditionPatternInstance(EditionPatternInstance newEditionPatternInstance) {
+	public void newEditionPatternInstance(FlexoConceptInstance newEditionPatternInstance) {
 		System.out.println("NEW EPI : " + newEditionPatternInstance);
 
 	}

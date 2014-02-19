@@ -23,7 +23,7 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
@@ -33,12 +33,12 @@ public class SynchronizationSchemeActionType extends
 		FlexoActionType<SynchronizationSchemeAction, VirtualModelInstance, VirtualModelInstanceObject> {
 
 	private final SynchronizationScheme synchronizationScheme;
-	private final EditionPatternInstance editionPatternInstance;
+	private final FlexoConceptInstance flexoConceptInstance;
 
-	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, EditionPatternInstance editionPatternInstance) {
+	public SynchronizationSchemeActionType(SynchronizationScheme synchronizationScheme, FlexoConceptInstance flexoConceptInstance) {
 		super(synchronizationScheme.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
 		this.synchronizationScheme = synchronizationScheme;
-		this.editionPatternInstance = editionPatternInstance;
+		this.flexoConceptInstance = flexoConceptInstance;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SynchronizationSchemeActionType extends
 
 	@Override
 	public boolean isEnabledForSelection(VirtualModelInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return synchronizationScheme.evaluateCondition(editionPatternInstance);
+		return synchronizationScheme.evaluateCondition(flexoConceptInstance);
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class SynchronizationSchemeActionType extends
 		return synchronizationScheme;
 	}
 
-	public EditionPatternInstance getEditionPatternInstance() {
-		return editionPatternInstance;
+	public FlexoConceptInstance getEditionPatternInstance() {
+		return flexoConceptInstance;
 	}
 
 }

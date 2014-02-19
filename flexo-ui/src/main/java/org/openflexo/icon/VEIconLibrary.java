@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.ViewObject;
@@ -56,7 +56,7 @@ public class VEIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource("Icons/Model/VE/ViewLibrary.png");
 	public static final ImageIconResource VIEW_ICON = new ImageIconResource("Icons/Model/VE/View.png");
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/VirtualModelInstance.png");
-	public static final ImageIconResource EDITION_PATTERN_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/EditionPatternInstance.png");
+	public static final ImageIconResource EDITION_PATTERN_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/FlexoConceptInstance.png");
 	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/ModelSlotInstance.png");
 
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VPM/UnknownIcon.gif");
@@ -68,7 +68,7 @@ public class VEIconLibrary extends IconLibrary {
 			return MODEL_SLOT_INSTANCE_ICON;
 		} else if (object instanceof VirtualModelInstance) {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (object instanceof EditionPatternInstance) {
+		} else if (object instanceof FlexoConceptInstance) {
 			return EDITION_PATTERN_INSTANCE_ICON;
 		}
 		logger.warning("No icon for " + object.getClass());

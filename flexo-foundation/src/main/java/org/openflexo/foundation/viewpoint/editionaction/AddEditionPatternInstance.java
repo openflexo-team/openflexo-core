@@ -34,7 +34,7 @@ import org.openflexo.foundation.validation.CompoundIssue;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
@@ -60,7 +60,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * This action is used to explicitely instanciate a new {@link EditionPatternInstance} in a given {@link VirtualModelInstance} with some
+ * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link VirtualModelInstance} with some
  * parameters
  * 
  * @author sylvain
@@ -73,7 +73,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(AddEditionPatternInstance.AddEditionPatternInstanceImpl.class)
 @XMLElement
-public interface AddEditionPatternInstance extends AssignableAction<VirtualModelModelSlot, EditionPatternInstance> {
+public interface AddEditionPatternInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -117,7 +117,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class AddEditionPatternInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, EditionPatternInstance>
+	public static abstract class AddEditionPatternInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
 			implements AddEditionPatternInstance {
 
 		static final Logger logger = Logger.getLogger(AddEditionPatternInstance.class.getPackage().getName());
@@ -256,7 +256,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 		}
 
 		@Override
-		public EditionPatternInstance performAction(EditionSchemeAction action) {
+		public FlexoConceptInstance performAction(EditionSchemeAction action) {
 			logger.info("Perform performAddEditionPatternInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);

@@ -29,7 +29,7 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.PatternRole;
 
 public class EditionPatternPatternRolePathElement<PR extends PatternRole<?>> extends SimplePathElement {
@@ -55,8 +55,8 @@ public class EditionPatternPatternRolePathElement<PR extends PatternRole<?>> ext
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof EditionPatternInstance) {
-			EditionPatternInstance epi = (EditionPatternInstance) target;
+		if (target instanceof FlexoConceptInstance) {
+			FlexoConceptInstance epi = (FlexoConceptInstance) target;
 			return epi.getPatternActor((PatternRole) patternRole);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
@@ -66,8 +66,8 @@ public class EditionPatternPatternRolePathElement<PR extends PatternRole<?>> ext
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
 			NullReferenceException {
-		if (target instanceof EditionPatternInstance) {
-			((EditionPatternInstance) target).setPatternActor(value, (PatternRole) patternRole);
+		if (target instanceof FlexoConceptInstance) {
+			((FlexoConceptInstance) target).setPatternActor(value, (PatternRole) patternRole);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);

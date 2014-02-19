@@ -8,7 +8,7 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.localization.FlexoLocalization;
 
 public class EPIRendererPathElement extends SimplePathElement {
@@ -37,9 +37,9 @@ public class EPIRendererPathElement extends SimplePathElement {
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		// System.out.println("Renderer for " + target);
-		if (target instanceof EditionPatternInstance) {
-			// System.out.println("return " + ((EditionPatternInstance) target).getStringRepresentation());
-			return ((EditionPatternInstance) target).getStringRepresentation();
+		if (target instanceof FlexoConceptInstance) {
+			// System.out.println("return " + ((FlexoConceptInstance) target).getStringRepresentation());
+			return ((FlexoConceptInstance) target).getStringRepresentation();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

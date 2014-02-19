@@ -3,7 +3,7 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelObjectActorReference;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -18,7 +18,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(EditionPatternInstancePatternRole.EditionPatternInstancePatternRoleImpl.class)
 @XMLElement
-public interface EditionPatternInstancePatternRole extends PatternRole<EditionPatternInstance> {
+public interface EditionPatternInstancePatternRole extends PatternRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String EDITION_PATTERN_TYPE_URI_KEY = "editionPatternTypeURI";
@@ -45,7 +45,7 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class EditionPatternInstancePatternRoleImpl extends PatternRoleImpl<EditionPatternInstance> implements
+	public static abstract class EditionPatternInstancePatternRoleImpl extends PatternRoleImpl<FlexoConceptInstance> implements
 			EditionPatternInstancePatternRole {
 
 		private static final Logger logger = Logger.getLogger(EditionPatternInstancePatternRole.class.getPackage().getName());
@@ -71,7 +71,7 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as EditionPatternInstance conformTo " + getPreciseType() + ";", context);
+			out.append("PatternRole " + getName() + " as FlexoConceptInstance conformTo " + getPreciseType() + ";", context);
 			return out.toString();
 		}
 
@@ -188,10 +188,10 @@ public interface EditionPatternInstancePatternRole extends PatternRole<EditionPa
 		}
 
 		@Override
-		public ModelObjectActorReference<EditionPatternInstance> makeActorReference(EditionPatternInstance object,
-				EditionPatternInstance epi) {
+		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object,
+				FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
-			ModelObjectActorReference<EditionPatternInstance> returned = factory.newInstance(ModelObjectActorReference.class);
+			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setPatternRole(this);
 			returned.setEditionPatternInstance(epi);
 			returned.setModellingElement(object);

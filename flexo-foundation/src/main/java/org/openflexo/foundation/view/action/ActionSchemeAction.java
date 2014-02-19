@@ -25,20 +25,20 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
-public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, AbstractActionScheme, EditionPatternInstance> {
+public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
 
 	private final ActionSchemeActionType actionType;
 
-	public ActionSchemeAction(ActionSchemeActionType actionType, EditionPatternInstance focusedObject,
+	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		this.actionType = actionType;
@@ -52,12 +52,12 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	}
 
 	/**
-	 * Return the {@link EditionPatternInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
 	 * 
 	 * @return
 	 */
 	@Override
-	public EditionPatternInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getEditionPatternInstance() {
 		if (actionType != null) {
 			return actionType.getEditionPatternInstance();
 		}

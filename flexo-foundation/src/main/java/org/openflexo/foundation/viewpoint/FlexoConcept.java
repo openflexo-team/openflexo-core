@@ -34,7 +34,7 @@ import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationWarning;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
@@ -63,9 +63,9 @@ import org.openflexo.toolbox.StringUtils;
  * A PatternRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in
  * different metamodels.
  * 
- * An {@link EditionPatternInstance} is an instance of an {@link FlexoConcept} .
+ * An {@link FlexoConceptInstance} is an instance of an {@link FlexoConcept} .
  * 
- * Instances of modelling elements in an {@link EditionPatternInstance} are called Pattern Actors. They play given Pattern Roles.
+ * Instances of modelling elements in an {@link FlexoConceptInstance} are called Pattern Actors. They play given Pattern Roles.
  * 
  * @author sylvain
  * 
