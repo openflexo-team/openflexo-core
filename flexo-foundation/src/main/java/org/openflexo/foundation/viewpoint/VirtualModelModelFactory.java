@@ -130,8 +130,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ObjectPropertyAssertion.class);
 	}
 
-	public EditionPatternBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
-		EditionPatternBehaviouralFacet returned = newInstance(EditionPatternBehaviouralFacet.class);
+	public FlexoConceptBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
+		FlexoConceptBehaviouralFacet returned = newInstance(FlexoConceptBehaviouralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}

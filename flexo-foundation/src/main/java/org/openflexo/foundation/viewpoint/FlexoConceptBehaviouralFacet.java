@@ -24,15 +24,15 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
-@ImplementationClass(EditionPatternBehaviouralFacet.EditionPatternBehaviouralFacetImpl.class)
-public interface EditionPatternBehaviouralFacet extends EditionPatternObject, FlexoFacet<FlexoConcept> {
+@ImplementationClass(FlexoConceptBehaviouralFacet.EditionPatternBehaviouralFacetImpl.class)
+public interface FlexoConceptBehaviouralFacet extends EditionPatternObject, FlexoFacet<FlexoConcept> {
 
 	@Override
 	public FlexoConcept getFlexoConcept();
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
-	public abstract class EditionPatternBehaviouralFacetImpl extends EditionPatternObjectImpl implements EditionPatternBehaviouralFacet {
+	public abstract class EditionPatternBehaviouralFacetImpl extends EditionPatternObjectImpl implements FlexoConceptBehaviouralFacet {
 
 		private FlexoConcept flexoConcept;
 

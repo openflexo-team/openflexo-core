@@ -257,7 +257,7 @@ public interface FlexoConcept extends EditionPatternObject {
 
 	public EditionPatternStructuralFacet getStructuralFacet();
 
-	public EditionPatternBehaviouralFacet getBehaviouralFacet();
+	public FlexoConceptBehaviouralFacet getBehaviouralFacet();
 
 	public boolean isAssignableFrom(FlexoConcept flexoConcept);
 
@@ -284,7 +284,7 @@ public interface FlexoConcept extends EditionPatternObject {
 		// Vector<FlexoConcept>();
 
 		private EditionPatternStructuralFacet structuralFacet;
-		private EditionPatternBehaviouralFacet behaviouralFacet;
+		private FlexoConceptBehaviouralFacet behaviouralFacet;
 
 		private final EditionPatternInstanceType instanceType = new EditionPatternInstanceType(this);
 
@@ -307,7 +307,7 @@ public interface FlexoConcept extends EditionPatternObject {
 		}
 
 		@Override
-		public EditionPatternBehaviouralFacet getBehaviouralFacet() {
+		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
 			if (behaviouralFacet == null && getVirtualModelFactory() != null) {
 				behaviouralFacet = getVirtualModelFactory().newFlexoConceptBehaviouralFacet(this);
 			}

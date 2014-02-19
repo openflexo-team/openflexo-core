@@ -29,7 +29,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternBehaviouralFacet;
+import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.EditionPatternObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -67,7 +67,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, Editio
 
 	static {
 		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, FlexoConcept.class);
-		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, EditionPatternBehaviouralFacet.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, FlexoConceptBehaviouralFacet.class);
 	}
 
 	private String editionSchemeName;
