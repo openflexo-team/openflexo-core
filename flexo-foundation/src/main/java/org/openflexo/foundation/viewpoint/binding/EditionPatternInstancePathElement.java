@@ -30,7 +30,7 @@ import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 
 public class EditionPatternInstancePathElement extends SimplePathElement {
 
@@ -39,13 +39,13 @@ public class EditionPatternInstancePathElement extends SimplePathElement {
 	private FlexoConcept flexoConcept;
 
 	public EditionPatternInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
-		super(parent, pathElementName, EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept));
+		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 		this.flexoConcept = flexoConcept;
 	}
 
 	@Override
 	public Type getType() {
-		return EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept);
+		return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
 	}
 
 	@Override

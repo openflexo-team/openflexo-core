@@ -138,7 +138,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	 * Retrieves the right type given the FlexoConcept
 	 */
 
-	public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept);
+	public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept);
 
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
@@ -185,9 +185,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		private BindingModel bindingModel;
 		private final EditionPatternBindingFactory bindingFactory = new EditionPatternBindingFactory(this);
 
-		// Maps to reference all the EditionPatternInstanceType, DiagramType, VirtualModelType used in this context
+		// Maps to reference all the FlexoConceptInstanceType, DiagramType, VirtualModelType used in this context
 
-		private final Map<FlexoConcept, EditionPatternInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, EditionPatternInstanceType>();
+		private final Map<FlexoConcept, FlexoConceptInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, FlexoConceptInstanceType>();
 		private final Map<FlexoConcept, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<FlexoConcept, VirtualModelInstanceType>();
 
 		/**
@@ -748,8 +748,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * Retrieves the right type given the FlexoConcept
 		 */
 		@Override
-		public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
-			EditionPatternInstanceType instanceType = null;
+		public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
+			FlexoConceptInstanceType instanceType = null;
 
 			if (anFlexoConcept != null) {
 				if (anFlexoConcept instanceof VirtualModel) {
@@ -761,7 +761,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 				} else {
 					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
-						instanceType = new EditionPatternInstanceType(anFlexoConcept);
+						instanceType = new FlexoConceptInstanceType(anFlexoConcept);
 						flexoConceptTypesMap.put(anFlexoConcept, instanceType);
 					}
 				}

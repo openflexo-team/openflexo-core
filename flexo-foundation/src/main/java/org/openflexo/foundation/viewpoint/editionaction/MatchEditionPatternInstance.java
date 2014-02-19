@@ -41,7 +41,7 @@ import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -431,7 +431,7 @@ public interface MatchEditionPatternInstance extends AssignableAction<VirtualMod
 
 		@Override
 		public Type getAssignableType() {
-			return EditionPatternInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 
 		public static class MatchEditionPatternInstanceMustAddressACreationScheme extends

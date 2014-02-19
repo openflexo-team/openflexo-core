@@ -253,7 +253,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public List<ClassPatternRole> getClassPatternRoles();
 
-	public EditionPatternInstanceType getInstanceType();
+	public FlexoConceptInstanceType getInstanceType();
 
 	public FlexoConceptStructuralFacet getStructuralFacet();
 
@@ -286,7 +286,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		private FlexoConceptStructuralFacet structuralFacet;
 		private FlexoConceptBehaviouralFacet behaviouralFacet;
 
-		private final EditionPatternInstanceType instanceType = new EditionPatternInstanceType(this);
+		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
 
 		/**
 		 * Stores a chained collections of objects which are involved in validation
@@ -294,7 +294,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
 		@Override
-		public EditionPatternInstanceType getInstanceType() {
+		public FlexoConceptInstanceType getInstanceType() {
 			return instanceType;
 		}
 

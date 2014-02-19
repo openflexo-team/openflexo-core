@@ -281,7 +281,7 @@ public interface AddEditionPatternInstance extends AssignableAction<VirtualModel
 
 		/*@Override
 		public Type getAssignableType() {
-			return EditionPatternInstanceType.getEditionPatternInstanceType(getEditionPatternType());
+			return FlexoConceptInstanceType.getEditionPatternInstanceType(getEditionPatternType());
 		}*/
 
 		@Override

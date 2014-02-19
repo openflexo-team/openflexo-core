@@ -49,7 +49,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
@@ -284,7 +284,7 @@ public interface FIBInspector extends FIBPanel {
 			// We MUST here redefine the type of inspected data
 			BindingVariable bv = getBindingModel().bindingVariableNamed("data");
 			if (bv != null && object != null) {
-				bv.setType(EditionPatternInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
+				bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
 			}
 
 			return returned;

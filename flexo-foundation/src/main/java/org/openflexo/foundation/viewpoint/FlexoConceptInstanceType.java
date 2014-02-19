@@ -33,11 +33,11 @@ import org.openflexo.foundation.view.VirtualModelInstance;
  * @author sylvain
  * 
  */
-public class EditionPatternInstanceType implements CustomType {
+public class FlexoConceptInstanceType implements CustomType {
 
 	protected FlexoConcept flexoConcept;
 
-	public EditionPatternInstanceType(FlexoConcept anFlexoConcept) {
+	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		this.flexoConcept = anFlexoConcept;
 	}
 
@@ -57,20 +57,20 @@ public class EditionPatternInstanceType implements CustomType {
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
-		if (aType instanceof EditionPatternInstanceType) {
-			return flexoConcept.isAssignableFrom(((EditionPatternInstanceType) aType).getFlexoConcept());
+		if (aType instanceof FlexoConceptInstanceType) {
+			return flexoConcept.isAssignableFrom(((FlexoConceptInstanceType) aType).getFlexoConcept());
 		}
 		return false;
 	}
 
 	@Override
 	public String simpleRepresentation() {
-		return "EditionPatternInstanceType" + ":" + flexoConcept.toString();
+		return "FlexoConceptInstanceType" + ":" + flexoConcept.toString();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "EditionPatternInstanceType" + ":" + flexoConcept.toString();
+		return "FlexoConceptInstanceType" + ":" + flexoConcept.toString();
 	}
 
 	@Override

@@ -758,19 +758,19 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			// Si edition pattern est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
-				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, EditionPatternInstanceType
+				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())));
 				/*if (getEditionPattern().getVirtualModel() instanceof DiagramSpecification) {
-					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, EditionPatternInstanceType
+					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getEditionPatternInstanceType(getEditionPattern().getVirtualModel())));
 				} 
 				if(getEditionPattern() instanceof DiagramSpecification){
-					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, EditionPatternInstanceType
+					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getEditionPatternInstanceType(getEditionPattern())));
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
 				}
 				else {
-					bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.VIRTUAL_MODEL_INSTANCE, EditionPatternInstanceType
+					bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getEditionPatternInstanceType(getEditionPattern().getVirtualModel())));
 				}*/
 			}

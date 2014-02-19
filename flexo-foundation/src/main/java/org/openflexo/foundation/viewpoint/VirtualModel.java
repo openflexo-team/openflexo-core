@@ -570,7 +570,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			for (FlexoConcept ep : getFlexoConcepts()) {
 				// bindingModel.addToBindingVariables(new
 				// EditionPatternPathElement<ViewPoint>(ep, this));
-				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), EditionPatternInstanceType
+				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(ep)));
 			}
 		}

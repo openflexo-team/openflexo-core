@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 
 public class EditionPatternInstanceBindingVariable extends BindingVariable {
 	static final Logger logger = Logger.getLogger(EditionPatternInstanceBindingVariable.class.getPackage().getName());
@@ -14,14 +14,14 @@ public class EditionPatternInstanceBindingVariable extends BindingVariable {
 	private int index;
 
 	public EditionPatternInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
-		super(anFlexoConcept.getVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, EditionPatternInstanceType
+		super(anFlexoConcept.getVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
 				.getFlexoConceptInstanceType(anFlexoConcept));
 		this.flexoConcept = anFlexoConcept;
 	}
 
 	@Override
 	public Type getType() {
-		return EditionPatternInstanceType.getFlexoConceptInstanceType(flexoConcept);
+		return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
 	}
 
 	@Override

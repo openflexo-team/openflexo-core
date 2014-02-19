@@ -31,7 +31,7 @@ import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -437,11 +437,11 @@ public interface EditionPatternInspector extends FlexoConceptObject, Bindable {
 
 			private void createFormatterBindingModel() {
 				formatterBindingModel = new BindingModel();
-				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", EditionPatternInstanceType
+				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())) {
 					@Override
 					public Type getType() {
-						return EditionPatternInstanceType.getFlexoConceptInstanceType(getFlexoConcept());
+						return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept());
 					}
 				});
 			}

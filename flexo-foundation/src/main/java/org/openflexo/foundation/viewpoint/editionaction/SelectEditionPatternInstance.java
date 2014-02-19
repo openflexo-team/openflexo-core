@@ -27,7 +27,7 @@ import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -102,8 +102,8 @@ public interface SelectEditionPatternInstance extends FetchRequest<VirtualModelM
 		}
 
 		@Override
-		public EditionPatternInstanceType getFetchedType() {
-			return (EditionPatternInstanceType) EditionPatternInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+		public FlexoConceptInstanceType getFetchedType() {
+			return (FlexoConceptInstanceType) FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 
 		@Override
