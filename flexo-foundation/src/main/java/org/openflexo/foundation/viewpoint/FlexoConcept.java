@@ -895,54 +895,54 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	}
 
-	public static class EditionPatternShouldHaveRoles extends ValidationRule<EditionPatternShouldHaveRoles, FlexoConcept> {
-		public EditionPatternShouldHaveRoles() {
+	public static class FlexoConceptShouldHaveRoles extends ValidationRule<FlexoConceptShouldHaveRoles, FlexoConcept> {
+		public FlexoConceptShouldHaveRoles() {
 			super(FlexoConcept.class, "edition_pattern_should_have_roles");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+		public ValidationIssue<FlexoConceptShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getPatternRoles().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveRoles, FlexoConcept>(this, flexoConcept,
+				return new ValidationWarning<FlexoConceptShouldHaveRoles, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_role_has_no_role");
 			}
 			return null;
 		}
 	}
 
-	public static class EditionPatternShouldHaveEditionSchemes extends
-			ValidationRule<EditionPatternShouldHaveEditionSchemes, FlexoConcept> {
-		public EditionPatternShouldHaveEditionSchemes() {
+	public static class FlexoConceptShouldHaveEditionSchemes extends
+			ValidationRule<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> {
+		public FlexoConceptShouldHaveEditionSchemes() {
 			super(FlexoConcept.class, "edition_pattern_should_have_edition_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+		public ValidationIssue<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getEditionSchemes().size() == 0) {
-				return new ValidationWarning<EditionPatternShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
+				return new ValidationWarning<FlexoConceptShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_has_no_edition_scheme");
 			}
 			return null;
 		}
 	}
 
-	public static class EditionPatternShouldHaveDeletionScheme extends
-			ValidationRule<EditionPatternShouldHaveDeletionScheme, FlexoConcept> {
-		public EditionPatternShouldHaveDeletionScheme() {
+	public static class FlexoConceptShouldHaveDeletionScheme extends
+			ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
+		public FlexoConceptShouldHaveDeletionScheme() {
 			super(FlexoConcept.class, "edition_pattern_should_have_deletion_scheme");
 		}
 
 		@Override
-		public ValidationIssue<EditionPatternShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
-				return new ValidationWarning<EditionPatternShouldHaveDeletionScheme, FlexoConcept>(this, flexoConcept,
+				return new ValidationWarning<FlexoConceptShouldHaveDeletionScheme, FlexoConcept>(this, flexoConcept,
 						"edition_pattern_has_no_deletion_scheme", fixProposal);
 			}
 			return null;
 		}
 
-		protected static class CreateDefaultDeletionScheme extends FixProposal<EditionPatternShouldHaveDeletionScheme, FlexoConcept> {
+		protected static class CreateDefaultDeletionScheme extends FixProposal<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 
 			private final FlexoConcept flexoConcept;
 			private DeletionScheme newDefaultDeletionScheme;

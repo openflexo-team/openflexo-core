@@ -44,11 +44,11 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public abstract class EditionPatternView<EP extends FlexoConcept> extends FIBModuleView<EP> {
+public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModuleView<EP> {
 
 	private final FlexoPerspective perspective;
 
-	public EditionPatternView(EP editionPattern, File fibFile, FlexoController controller, FlexoPerspective perspective) {
+	public FlexoConceptView(EP editionPattern, File fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(editionPattern, controller, fibFile);
 		this.perspective = perspective;
 	}

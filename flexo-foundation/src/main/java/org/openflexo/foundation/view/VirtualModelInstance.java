@@ -180,7 +180,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep);
 
-	public static abstract class VirtualModelInstanceImpl extends EditionPatternInstanceImpl implements VirtualModelInstance {
+	public static abstract class VirtualModelInstanceImpl extends FlexoConceptInstanceImpl implements VirtualModelInstance {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
 

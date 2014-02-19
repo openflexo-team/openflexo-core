@@ -68,7 +68,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @ModelEntity
-@ImplementationClass(FlexoConceptInstance.EditionPatternInstanceImpl.class)
+@ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
 public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, BindingEvaluationContext {
 
@@ -127,7 +127,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	public String getStringRepresentation();
 
-	public static abstract class EditionPatternInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
+	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
 
@@ -141,7 +141,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		/**
 		 * Default constructor
 		 */
-		public EditionPatternInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
+		public FlexoConceptInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
 			super();
 			/*if (virtualModelInstance != null) {
 				setProject(virtualModelInstance.getProject());
@@ -152,7 +152,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// initializeDeserialization(builder);
 		}
 
-		/*public EditionPatternInstanceImpl(FlexoConcept aPattern, VirtualModelInstance virtualModelInstance, FlexoProject project) {
+		/*public FlexoConceptInstanceImpl(FlexoConcept aPattern, VirtualModelInstance virtualModelInstance, FlexoProject project) {
 			super();
 			if (virtualModelInstance != null) {
 				setProject(virtualModelInstance.getProject());
@@ -511,7 +511,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		/**
 		 * Clone this FlexoConcept instance using default CloningScheme
 		 */
-		public EditionPatternInstanceImpl cloneEditionPatternInstance() {
+		public FlexoConceptInstanceImpl cloneEditionPatternInstance() {
 			/*if (getEditionPattern().getDefaultDeletionScheme() != null) {
 				delete(getEditionPattern().getDefaultDeletionScheme());
 			} else {
@@ -525,7 +525,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
-		public EditionPatternInstanceImpl cloneEditionPatternInstance(CloningScheme cloningScheme) {
+		public FlexoConceptInstanceImpl cloneEditionPatternInstance(CloningScheme cloningScheme) {
 			/*logger.warning("NEW FlexoConceptInstance deletion !");
 			deleted = true;
 			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(getPatternActor(getEditionPattern()
@@ -642,7 +642,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						@Override
 						public Object getValue(BindingVariable variable) {
 							if (variable.getVariableName().equals("instance")) {
-								return EditionPatternInstanceImpl.this;
+								return FlexoConceptInstanceImpl.this;
 							}
 							logger.warning("Unexpected variable " + variable);
 							return null;

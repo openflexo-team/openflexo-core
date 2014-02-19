@@ -31,7 +31,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class StandardEditionPatternView extends EditionPatternView<FlexoConcept> {
+public class StandardEditionPatternView extends FlexoConceptView<FlexoConcept> {
 
 	public StandardEditionPatternView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, CommonFIB.STANDARD_EDITION_PATTERN_VIEW_FIB, controller, perspective);

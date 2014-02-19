@@ -140,7 +140,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		private Vector<InspectorEntry> entries;
 		private DataBinding<String> renderer;
 
-		private final EditionPatternFormatter formatter;
+		private final FlexoConceptFormatter formatter;
 
 		/*
 		 * public static FlexoConceptInspector
@@ -154,7 +154,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		public FlexoConceptInspectorImpl() {
 			super();
 			entries = new Vector<InspectorEntry>();
-			formatter = new EditionPatternFormatter();
+			formatter = new FlexoConceptFormatter();
 		}
 
 		@Override
@@ -162,7 +162,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return null;
 		}
 
-		public EditionPatternFormatter getFormatter() {
+		public FlexoConceptFormatter getFormatter() {
 			return formatter;
 		}
 
@@ -415,7 +415,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			notifiedBindingChanged(this.renderer);
 		}
 
-		private class EditionPatternFormatter implements Bindable {
+		private class FlexoConceptFormatter implements Bindable {
 			private BindingModel formatterBindingModel = null;
 
 			public void notifiedBindingModelRecreated() {
