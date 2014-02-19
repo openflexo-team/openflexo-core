@@ -71,7 +71,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @ModelEntity
-@ImplementationClass(FlexoConcept.EditionPatternImpl.class)
+@ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
 public interface FlexoConcept extends EditionPatternObject {
 
@@ -265,7 +265,7 @@ public interface FlexoConcept extends EditionPatternObject {
 
 	public String getAvailableEditionSchemeName(String baseName);
 
-	public static abstract class EditionPatternImpl extends EditionPatternObjectImpl implements FlexoConcept {
+	public static abstract class FlexoConceptImpl extends EditionPatternObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
@@ -315,7 +315,7 @@ public interface FlexoConcept extends EditionPatternObject {
 		}
 
 		@Override
-		public EditionPatternImpl getFlexoConcept() {
+		public FlexoConceptImpl getFlexoConcept() {
 			return this;
 		}
 

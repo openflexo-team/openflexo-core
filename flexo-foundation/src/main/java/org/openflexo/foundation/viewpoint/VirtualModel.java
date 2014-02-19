@@ -294,7 +294,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	public List<FlexoConcept> getAllRootFlexoConcepts();
 
-	public static abstract class VirtualModelImpl extends EditionPatternImpl implements VirtualModel {
+	public static abstract class VirtualModelImpl extends FlexoConceptImpl implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
