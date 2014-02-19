@@ -7,13 +7,13 @@ import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 
-public class EditionPatternInstanceBindingVariable extends BindingVariable {
-	static final Logger logger = Logger.getLogger(EditionPatternInstanceBindingVariable.class.getPackage().getName());
+public class FlexoConceptInstanceBindingVariable extends BindingVariable {
+	static final Logger logger = Logger.getLogger(FlexoConceptInstanceBindingVariable.class.getPackage().getName());
 
 	private FlexoConcept flexoConcept;
 	private int index;
 
-	public EditionPatternInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
+	public FlexoConceptInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
 		super(anFlexoConcept.getVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
 				.getFlexoConceptInstanceType(anFlexoConcept));
 		this.flexoConcept = anFlexoConcept;

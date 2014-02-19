@@ -41,7 +41,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.binding.EditionPatternBindingFactory;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.viewpoint.dm.VirtualModelCreated;
 import org.openflexo.foundation.viewpoint.dm.VirtualModelDeleted;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
@@ -183,7 +183,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
 		private BindingModel bindingModel;
-		private final EditionPatternBindingFactory bindingFactory = new EditionPatternBindingFactory(this);
+		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
 		// Maps to reference all the FlexoConceptInstanceType, DiagramType, VirtualModelType used in this context
 
@@ -590,7 +590,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public EditionPatternBindingFactory getBindingFactory() {
+		public FlexoConceptBindingFactory getBindingFactory() {
 			return bindingFactory;
 		}
 

@@ -45,7 +45,7 @@ import org.openflexo.foundation.ontology.OntologyUtils;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.viewpoint.binding.EditionPatternBindingFactory;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.IFlexoOntologyTechnologyAdapterController;
@@ -89,7 +89,7 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 
 	private String defaultRenderer = null;
 
-	private static EditionPatternBindingFactory EDITION_PATTERN_BINDING_FACTORY = new EditionPatternBindingFactory(null);
+	private static FlexoConceptBindingFactory EDITION_PATTERN_BINDING_FACTORY = new FlexoConceptBindingFactory(null);
 
 	private final HashMap<IFlexoOntologyClass, DataBinding<String>> renderers;
 

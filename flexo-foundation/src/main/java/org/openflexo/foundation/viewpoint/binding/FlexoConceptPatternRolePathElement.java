@@ -29,37 +29,36 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.PatternRole;
 
-public class EditionPatternInstancePathElement extends SimplePathElement {
+public class FlexoConceptPatternRolePathElement<PR extends PatternRole<?>> extends SimplePathElement {
 
-	private static final Logger logger = Logger.getLogger(EditionPatternInstancePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoConceptPatternRolePathElement.class.getPackage().getName());
 
-	private FlexoConcept flexoConcept;
+	private PR patternRole;
 
-	public EditionPatternInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
-		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
-		this.flexoConcept = flexoConcept;
-	}
-
-	@Override
-	public Type getType() {
-		return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
+	public FlexoConceptPatternRolePathElement(BindingPathElement parent, PR patternRole) {
+		super(parent, patternRole.getPatternRoleName(), patternRole.getType());
+		this.patternRole = patternRole;
 	}
 
 	@Override
 	public String getLabel() {
-		return getPropertyName();
+		return patternRole.getPatternRoleName();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return flexoConcept.getDescription();
+		return patternRole.getDescription();
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
+		if (target instanceof FlexoConceptInstance) {
+			FlexoConceptInstance epi = (FlexoConceptInstance) target;
+			return epi.getPatternActor((PatternRole) patternRole);
+		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}
@@ -67,6 +66,10 @@ public class EditionPatternInstancePathElement extends SimplePathElement {
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
 			NullReferenceException {
+		if (target instanceof FlexoConceptInstance) {
+			((FlexoConceptInstance) target).setPatternActor(value, (PatternRole) patternRole);
+			return;
+		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 

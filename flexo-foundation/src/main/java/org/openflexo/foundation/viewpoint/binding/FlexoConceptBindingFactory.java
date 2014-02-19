@@ -54,15 +54,15 @@ import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 
-public final class EditionPatternBindingFactory extends JavaBindingFactory {
-	static final Logger logger = Logger.getLogger(EditionPatternBindingFactory.class.getPackage().getName());
+public final class FlexoConceptBindingFactory extends JavaBindingFactory {
+	static final Logger logger = Logger.getLogger(FlexoConceptBindingFactory.class.getPackage().getName());
 
 	private Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
 	private ViewPoint viewPoint;
 
 	private Map<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>> editionSchemePathElements;
 
-	public EditionPatternBindingFactory(ViewPoint viewPoint) {
+	public FlexoConceptBindingFactory(ViewPoint viewPoint) {
 		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
 		editionSchemePathElements = new HashMap<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>>();
 		this.viewPoint = viewPoint;
@@ -84,7 +84,7 @@ public final class EditionPatternBindingFactory extends JavaBindingFactory {
 
 	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
 		if (object instanceof PatternRole) {
-			return new EditionPatternPatternRolePathElement<PatternRole<?>>(parent, (PatternRole<?>) object);
+			return new FlexoConceptPatternRolePathElement<PatternRole<?>>(parent, (PatternRole<?>) object);
 		}
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot>(parent, (ModelSlot) object);

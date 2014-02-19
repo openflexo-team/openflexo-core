@@ -295,7 +295,7 @@ public interface FIBInspector extends FIBPanel {
 			super.createBindingModel();
 			for (int i = 0; i < currentFlexoConcepts.size(); i++) {
 				FlexoConcept ep = currentFlexoConcepts.get(i);
-				_bindingModel.addToBindingVariables(new EditionPatternInstanceBindingVariable(ep, i));
+				_bindingModel.addToBindingVariables(new FlexoConceptInstanceBindingVariable(ep, i));
 			}
 		}*/
 
