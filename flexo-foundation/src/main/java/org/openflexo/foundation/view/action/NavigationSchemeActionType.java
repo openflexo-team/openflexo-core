@@ -69,7 +69,7 @@ public class NavigationSchemeActionType extends FlexoActionType<NavigationScheme
 		return navigationScheme;
 	}
 
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 

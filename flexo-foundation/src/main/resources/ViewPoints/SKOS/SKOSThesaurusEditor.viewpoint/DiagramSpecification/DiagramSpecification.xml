@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DiagramSpecification id="1" name="DiagramSpecification" modelVersion="1.0">
   <description>This calc is intented to be used as a Basic Thesaurus editor, whose underlying used language is SKOS (Simple Knowlege Organization System) and which is an RDF vocabulary for describing the basic structure and content of concept schemes such as thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', other types of controlled vocabulary, and also concept schemes embedded in glossaries and terminologies.</description>
-  <EditionPattern id="2" name="ConceptScheme">
+  <FlexoConcept id="2" name="ConceptScheme">
     <description>Allows to define concept scheme</description>
     <DropScheme id="3" target="top" name="DropConceptSchemeAtTopLevel" label="DropConceptSchemeAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <TextFieldParameter id="4" name="conceptSchemeName" label="concept_scheme_name" defaultValue="" usePaletteLabelAsDefaultValue="true" conditional="" isRequired="false">
@@ -46,8 +46,8 @@
       <TextField id="29" label="uri" name="uri" readOnly="false" data="conceptScheme.uriName" conditional="" />
       <TextField id="30" label="label" name="label" readOnly="false" data="conceptScheme.label.asString" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="31" name="Concept">
+  </FlexoConcept>
+  <FlexoConcept id="31" name="Concept">
     <description>Allows to define concept</description>
     <DropScheme id="32" target="top" name="DropConceptAtTopLevel" label="DropConceptAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <TextFieldParameter id="33" name="conceptName" label="concept_name" defaultValue="" usePaletteLabelAsDefaultValue="true" conditional="" isRequired="false">
@@ -96,8 +96,8 @@
       <TextField id="59" label="uri" name="uri" readOnly="false" data="concept.uriName" conditional="" />
       <TextField id="60" label="label" name="label" readOnly="false" data="concept.label.asString" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="61" name="ConceptToConceptSchemeRelationship">
+  </FlexoConcept>
+  <FlexoConcept id="61" name="ConceptToConceptSchemeRelationship">
     <description>Allows to define link between a concept and a concept scheme</description>
     <LinkScheme id="62" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#ConceptScheme" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="LinkAConceptToAConceptScheme" label="LinkAConceptToAConceptScheme" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <CheckBoxParameter id="63" name="makeInverseRelationship" label="make_inverse_relationship" defaultValue="true" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false">
@@ -149,8 +149,8 @@
       <TextField id="99" label="concept_scheme" name="concept_scheme" readOnly="true" data="topConceptOf.object.uriName" conditional="" />
       <TextField id="100" label="concept" name="concept" readOnly="true" data="topConceptOf.subject.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="101" name="ConceptSpecialization">
+  </FlexoConcept>
+  <FlexoConcept id="101" name="ConceptSpecialization">
     <description>Allows to define link between a concept and a other concept with a specialization semantic</description>
     <LinkScheme id="102" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="SpecializeAConcept" label="SpecializeAConcept" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <CheckBoxParameter id="103" name="match" label="match" defaultValue="false" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false">
@@ -244,8 +244,8 @@
       <TextField id="172" label="general_concept" name="general" readOnly="false" data="broader.object.uriName" conditional="" />
       <TextField id="173" label="specialized_concept" name="specialized" readOnly="false" data="broader.subject.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="174" name="ConceptGeneralization">
+  </FlexoConcept>
+  <FlexoConcept id="174" name="ConceptGeneralization">
     <description>Allows to define link between a concept and a other concept with a specialization semantic</description>
     <LinkScheme id="175" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="GeneralizeAConcept" label="GeneralizeAConcept" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <CheckBoxParameter id="176" name="match" label="match" defaultValue="false" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false">
@@ -339,8 +339,8 @@
       <TextField id="245" label="specialized_concept" name="specialized" readOnly="false" data="narrower.object.uriName" conditional="" />
       <TextField id="246" label="general_concept" name="general" readOnly="false" data="narrower.subject.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="247" name="ConceptRelatedRelationship">
+  </FlexoConcept>
+  <FlexoConcept id="247" name="ConceptRelatedRelationship">
     <description>Allows to define link between a concept and a other concept with a "related-to" semantic</description>
     <LinkScheme id="248" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/SKOS/SKOSThesaurusEditor.owl#Concept" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="MakeTwoConceptRelatedToEachOther" label="MakeTwoConceptRelatedToEachOther" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <CheckBoxParameter id="249" name="match" label="match" defaultValue="false" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false">
@@ -431,7 +431,7 @@
       <TextField id="317" label="concept1" name="concept1" readOnly="false" data="related1.subject.uriName" conditional="" />
       <TextField id="318" label="concept2" name="concept2" readOnly="false" data="related1.object.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="319">
     <Localized id="320" key="preferred_label" lang="en">Preferred label</Localized>
     <Localized id="321" key="alternative_label" lang="en">Alternative label</Localized>

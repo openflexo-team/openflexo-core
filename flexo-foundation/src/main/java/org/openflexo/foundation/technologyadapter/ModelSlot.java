@@ -372,7 +372,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 					availablePatternRoleTypes.add(patternRoleDeclaration.patternRoleClass());
 				}
 			}
-			// availablePatternRoleTypes.add(EditionPatternPatternRole.class);
+			// availablePatternRoleTypes.add(FlexoConceptPatternRole.class);
 			// availablePatternRoleTypes.add(FlexoModelObjectPatternRole.class);
 			// availablePatternRoleTypes.add(PrimitivePatternRole.class);
 			return availablePatternRoleTypes;

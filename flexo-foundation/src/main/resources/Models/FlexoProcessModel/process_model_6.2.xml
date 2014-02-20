@@ -23,10 +23,10 @@
     <property name="specificDescriptions" xmlTag="specificDescriptions" type="hashtable" description="Hashtable(String,String) that contains a name of a DocType as a key, and a description specific to that DocType as the value"/>
     <property name="customProperties" contains="org.openflexo.foundation.FlexoProperty" type="vector" primary="yes"/>
     <property name="dynamicProperties" xmlTag="?" type="unmappedAttributes" description="Hashtable(String,String) that contains dynamic properties (data that are not handled by application, but need to be stored in the context of back compatibility)"/>
-    <!--  <property name="flexoConceptReferences" type="vector" primary="yes" xmlTag="EditionPatternReference"/> -->
+    <!--  <property name="flexoConceptReferences" type="vector" primary="yes" xmlTag="FlexoConceptReference"/> -->
   </entity>
 
-<!--  <entity name="org.openflexo.foundation.view.FlexoConceptInstance" xmlTag="EditionPatternInstance">
+<!--  <entity name="org.openflexo.foundation.view.FlexoConceptInstance" xmlTag="FlexoConceptInstance">
 		<property name="flexoConceptURI" xmlTag="flexoConceptURI" attribute="YES" description="" />
 		<property name="actorList" contains="org.openflexo.foundation.view.ActorReference" primary="yes" type="vector"/>
 	</entity>

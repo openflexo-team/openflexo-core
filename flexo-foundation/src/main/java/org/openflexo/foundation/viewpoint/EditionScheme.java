@@ -288,7 +288,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		 * Return the URI of the {@link NamedViewPointObject}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -316,7 +316,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		/*@Override
-		public FlexoConcept getEditionPattern() {
+		public FlexoConcept getFlexoConcept() {
 			return _flexoConcept;
 		}*/
 
@@ -508,8 +508,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		@Override
 		public AddShape createAddShapeAction() {
 			AddShape newAction = new AddShape(null);
-			if (getEditionPattern().getDefaultShapePatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 			}
 			addToActions(newAction);
 			return newAction;
@@ -560,8 +560,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		@Override
 		public AddConnector createAddConnectorAction() {
 			AddConnector newAction = new AddConnector(null);
-			if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 			}
 			addToActions(newAction);
 			return newAction;
@@ -589,7 +589,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public AddFlexoConcept createAddEditionPatternAction() {
+		public AddFlexoConcept createAddFlexoConceptAction() {
 			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			addToActions(newAction);
 			return newAction;
@@ -611,8 +611,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		public CloneShape createCloneShapeAction() {
 			CloneShape newAction = new CloneShape(null);
-			if (getEditionPattern().getDefaultShapePatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 			}
 			addToActions(newAction);
 			return newAction;
@@ -620,8 +620,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 		public CloneConnector createCloneConnectorAction() {
 			CloneConnector newAction = new CloneConnector(null);
-			if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 			}
 			addToActions(newAction);
 			return newAction;
@@ -697,7 +697,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 				return;
 			}
 			/*if (getName().equals("synchronization")) {
-				System.out.println("******* updateBindingModels() for " + this + " " + getName() + " and ep=" + getEditionPattern());
+				System.out.println("******* updateBindingModels() for " + this + " " + getName() + " and ep=" + getFlexoConcept());
 			}*/
 			logger.fine("updateBindingModels()");
 			_bindingModel = null;
@@ -760,22 +760,22 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			if (getFlexoConcept() != null) {
 				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())));
-				/*if (getEditionPattern().getVirtualModel() instanceof DiagramSpecification) {
+				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-							.getEditionPatternInstanceType(getEditionPattern().getVirtualModel())));
+							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				} 
-				if(getEditionPattern() instanceof DiagramSpecification){
+				if(getFlexoConcept() instanceof DiagramSpecification){
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-							.getEditionPatternInstanceType(getEditionPattern())));
+							.getFlexoConceptInstanceType(getFlexoConcept())));
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
 				}
 				else {
 					bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-							.getEditionPatternInstanceType(getEditionPattern().getVirtualModel())));
+							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				}*/
 			}
 			// if (this instanceof DiagramEditionScheme) {
-			/*if (getEditionPattern() != null && getEditionPattern().getVirtualModel() instanceof DiagramSpecification) {
+			/*if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
 			}*/
 		}

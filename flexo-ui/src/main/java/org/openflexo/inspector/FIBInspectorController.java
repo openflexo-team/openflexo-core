@@ -71,7 +71,7 @@ public class FIBInspectorController extends FlexoFIBController {
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof FlexoConceptInstanceBindingVariable) {
 			if (getDataObject() instanceof FlexoObject) {
-				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getEditionPatternReferences();
+				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
 				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
 					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
 				}

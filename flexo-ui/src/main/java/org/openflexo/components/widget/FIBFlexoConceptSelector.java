@@ -40,7 +40,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	static final Logger logger = Logger.getLogger(FIBFlexoConceptSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/EditionPatternSelector.fib");
+	public static FileResource FIB_FILE = new FileResource("Fib/FlexoConceptSelector.fib");
 
 	public FIBFlexoConceptSelector(FlexoConcept editedObject) {
 		super(editedObject);

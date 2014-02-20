@@ -69,7 +69,7 @@ public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, 
 		return actionScheme;
 	}
 
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 

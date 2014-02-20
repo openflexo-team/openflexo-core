@@ -363,9 +363,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public void finalizeDeserialization() {
-			finalizeEditionPatternDeserialization();
+			finalizeFlexoConceptDeserialization();
 			for (FlexoConcept ep : getFlexoConcepts()) {
-				ep.finalizeEditionPatternDeserialization();
+				ep.finalizeFlexoConceptDeserialization();
 			}
 			// Ensure access to reflexive model slot
 			getReflexiveModelSlot();
@@ -414,7 +414,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * Return the URI of the {@link VirtualModel}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern. MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -500,20 +500,20 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		/*
-		 * @Override public Vector<FlexoConcept> getEditionPatterns() { return
+		 * @Override public Vector<FlexoConcept> getFlexoConcepts() { return
 		 * flexoConcepts; }
 		 * 
-		 * public void setEditionPatterns(Vector<FlexoConcept>
+		 * public void setFlexoConcepts(Vector<FlexoConcept>
 		 * flexoConcepts) { this.flexoConcepts = flexoConcepts; }
 		 * 
-		 * @Override public void addToEditionPatterns(FlexoConcept pattern) {
+		 * @Override public void addToFlexoConcepts(FlexoConcept pattern) {
 		 * pattern.setVirtualModel(this); flexoConcepts.add(pattern);
-		 * setChanged(); notifyObservers(new EditionPatternCreated(pattern)); }
+		 * setChanged(); notifyObservers(new FlexoConceptCreated(pattern)); }
 		 * 
-		 * @Override public void removeFromEditionPatterns(FlexoConcept
+		 * @Override public void removeFromFlexoConcepts(FlexoConcept
 		 * pattern) { pattern.setVirtualModel(null);
 		 * flexoConcepts.remove(pattern); setChanged(); notifyObservers(new
-		 * EditionPatternDeleted(pattern)); }
+		 * FlexoConceptDeleted(pattern)); }
 		 */
 
 		/**
@@ -569,7 +569,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			bindingModel = new BindingModel();
 			for (FlexoConcept ep : getFlexoConcepts()) {
 				// bindingModel.addToBindingVariables(new
-				// EditionPatternPathElement<ViewPoint>(ep, this));
+				// FlexoConceptPathElement<ViewPoint>(ep, this));
 				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(ep)));
 			}

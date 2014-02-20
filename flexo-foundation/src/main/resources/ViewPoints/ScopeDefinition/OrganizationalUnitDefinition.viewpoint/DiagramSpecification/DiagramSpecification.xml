@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DiagramSpecification id="1" name="DiagramSpecification" modelVersion="1.0">
   <description>This viewpoint is intented to deal with the organizational structure</description>
-  <EditionPattern id="2" name="OrganizationalUnit">
+  <FlexoConcept id="2" name="OrganizationalUnit">
     <description>Allows to define an organization unit inside an other organization unit.</description>
     <DropScheme id="3" target="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalUnitDefinition.owl#OrganizationalUnit" name="DropOrganizationalUnitInOrganizationalUnit" label="DropOrganizationalUnitInOrganizationalUnit" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <ContextShapePatternRole id="4" patternRole="shape" name="shape" exampleLabel="Organization Unit">
@@ -176,8 +176,8 @@
       <FlexoObject id="135" flexoObjectType="Process" name="process" label="process" readOnly="false" data="process" conditional="" />
       <FlexoObject id="136" flexoObjectType="Activity" name="activity" label="activity" readOnly="false" data="activity" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="137" name="OrganizationalUnitObjective">
+  </FlexoConcept>
+  <FlexoConcept id="137" name="OrganizationalUnitObjective">
     <description>Allows to define an objective for an organization unit</description>
     <DropScheme id="138" target="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalUnitDefinition.owl#OrganizationalUnit" name="DropObjectiveInOrganizationalUnit" label="DropObjectiveInOrganizationalUnit" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <ContextShapePatternRole idref="4" />
@@ -228,8 +228,8 @@
       <FlexoObject id="170" flexoObjectType="ProcessFolder" name="macroProcess" label="macroProcess" readOnly="false" data="macroProcess" conditional="" />
       <FlexoObject id="171" flexoObjectType="Process" name="process" label="process" readOnly="false" data="process" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="172" name="OrganizationalUnitPosition">
+  </FlexoConcept>
+  <FlexoConcept id="172" name="OrganizationalUnitPosition">
     <description>Allows to add a position for an organization unit</description>
     <DropScheme id="173" target="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalUnitDefinition.owl#OrganizationalUnit" name="DropPositionInOrganizationalUnit" label="DropPositionInOrganizationalUnit" skipConfirmationPanel="false" definePopupDefaultSize="false" width="800" height="600">
       <ContextShapePatternRole idref="4" />
@@ -367,8 +367,8 @@
       <TextArea id="273" label="mission_description" name="mission_description" readOnly="false" data="mission.missionDescription" conditional="" />
       <Individual id="274" conceptURI="http://www.agilebirds.com/openflexo/ontologies/ScopeDefinition/OrganizationalUnitScopeDefinition.owl#Position" conceptValue="" name="ontologicalPosition" label="position" readOnly="false" data="position" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="275" name="PositionTask">
+  </FlexoConcept>
+  <FlexoConcept id="275" name="PositionTask">
     <description>Allows to define a position task</description>
     <DropScheme id="276" target="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalUnitDefinition.owl#OrganizationalUnitPosition" name="DropTaskForPosition" label="DropTaskForPosition" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <ContextShapePatternRole idref="205" />
@@ -451,7 +451,7 @@
       <TextField id="332" label="task" name="textfield" readOnly="false" data="task.taskName" conditional="" />
       <TextArea id="333" label="description" name="textarea" readOnly="false" data="task.taskDescription" conditional="" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="334">
     <Localized id="335" key="position" lang="en">Position</Localized>
     <Localized id="336" key="Position" lang="en">Position</Localized>

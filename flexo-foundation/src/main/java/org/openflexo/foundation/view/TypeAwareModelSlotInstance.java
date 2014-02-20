@@ -136,7 +136,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM>, MM exte
 		@Override
 		public void updateActorReferencesURI() {
 			// Browse the epi and their actors
-			for (FlexoConceptInstance epi : getVirtualModelInstance().getEditionPatternInstancesList()) {
+			for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstancesList()) {
 				for (ActorReference<?> actor : epi.getActorList()) {
 					// If it is provided by the right model slot
 					if (actor instanceof ConceptActorReference && actor.getModelSlotInstance().equals(this)) {

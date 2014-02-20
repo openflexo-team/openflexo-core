@@ -53,7 +53,7 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 
 		/*@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-			return getEditionPattern().getPatternRoles();
+			return getFlexoConcept().getPatternRoles();
 		}*/
 
 		@Override

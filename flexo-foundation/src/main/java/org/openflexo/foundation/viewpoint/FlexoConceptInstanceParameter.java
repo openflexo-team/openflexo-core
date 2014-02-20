@@ -41,10 +41,10 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
-	public String _getEditionPatternTypeURI();
+	public String _getFlexoConceptTypeURI();
 
 	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
+	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
 			FlexoConceptInstanceParameter {
@@ -70,7 +70,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 		}
 
 		@Override
-		public String _getEditionPatternTypeURI() {
+		public String _getFlexoConceptTypeURI() {
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
@@ -78,7 +78,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 		}
 
 		@Override
-		public void _setEditionPatternTypeURI(String flexoConceptURI) {
+		public void _setFlexoConceptTypeURI(String flexoConceptURI) {
 			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 

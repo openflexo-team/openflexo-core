@@ -27,10 +27,10 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
-	public String _getEditionPatternTypeURI();
+	public String _getFlexoConceptTypeURI();
 
 	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
+	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
 
 	@Getter(value = CREATION_SCHEME_URI_KEY)
 	@XMLAttribute
@@ -152,7 +152,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		}
 
 		@Override
-		public String _getEditionPatternTypeURI() {
+		public String _getFlexoConceptTypeURI() {
 			if (getFlexoConceptType() != null) {
 				return getFlexoConceptType().getURI();
 			}
@@ -160,7 +160,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		}
 
 		@Override
-		public void _setEditionPatternTypeURI(String uri) {
+		public void _setFlexoConceptTypeURI(String uri) {
 			if (getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(uri);
 			}
@@ -193,7 +193,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setPatternRole(this);
-			returned.setEditionPatternInstance(epi);
+			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
 		}

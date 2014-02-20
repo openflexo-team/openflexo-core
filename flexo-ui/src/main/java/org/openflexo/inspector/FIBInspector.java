@@ -84,7 +84,7 @@ public interface FIBInspector extends FIBPanel {
 
 	public void appendSuperInspectors(ModuleInspectorController inspectorController);
 
-	public boolean updateEditionPatternInstanceInspector(FlexoConceptInstance object);
+	public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object);
 
 	public boolean updateFlexoObjectInspector(FlexoObject object);
 
@@ -206,8 +206,8 @@ public interface FIBInspector extends FIBPanel {
 				}
 			}
 
-			if (object.getEditionPatternReferences() != null) {
-				for (FlexoObjectReference<FlexoConceptInstance> ref : object.getEditionPatternReferences()) {
+			if (object.getFlexoConceptReferences() != null) {
+				for (FlexoObjectReference<FlexoConceptInstance> ref : object.getFlexoConceptReferences()) {
 					FlexoConceptInstance epi = ref.getObject();
 					flexoConceptsToDisplay.add(epi.getFlexoConcept());
 					if (ensureCreationOfTabForEPIReference(epi.getFlexoConcept())) {
@@ -261,7 +261,7 @@ public interface FIBInspector extends FIBPanel {
 		 * @return a boolean indicating if a new tab was created
 		 */
 		@Override
-		public boolean updateEditionPatternInstanceInspector(FlexoConceptInstance object) {
+		public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object) {
 
 			boolean returned = false;
 
@@ -564,7 +564,7 @@ public interface FIBInspector extends FIBPanel {
 
 		protected String getFlexoConceptIdentifierForEPIReference(FlexoConcept ep) {
 			// Instead of just referencing ep name, reference the URI (in case of in same VP, many EP have same name)
-			return "data.getEditionPatternInstance(\"" + ep.getURI() + "\")";
+			return "data.getFlexoConceptInstance(\"" + ep.getURI() + "\")";
 		}
 
 		protected String getFlexoConceptIdentifierForEPI(FlexoConcept ep) {

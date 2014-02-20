@@ -56,10 +56,10 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * @return
 	 */
 	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
-	public FlexoConceptInstance getEditionPatternInstance();
+	public FlexoConceptInstance getFlexoConceptInstance();
 
 	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
-	public void setEditionPatternInstance(FlexoConceptInstance epi);
+	public void setFlexoConceptInstance(FlexoConceptInstance epi);
 
 	public PatternRole<T> getPatternRole();
 
@@ -83,8 +83,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public VirtualModelInstance getResourceData() {
-			if (getEditionPatternInstance() != null) {
-				return getEditionPatternInstance().getResourceData();
+			if (getFlexoConceptInstance() != null) {
+				return getFlexoConceptInstance().getResourceData();
 			}
 			return null;
 		}
@@ -98,12 +98,12 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		public abstract T getModellingElement();
 
 		@Override
-		public FlexoConceptInstance getEditionPatternInstance() {
+		public FlexoConceptInstance getFlexoConceptInstance() {
 			return epi;
 		}
 
 		@Override
-		public void setEditionPatternInstance(FlexoConceptInstance epi) {
+		public void setFlexoConceptInstance(FlexoConceptInstance epi) {
 			this.epi = epi;
 		}
 
@@ -135,8 +135,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public VirtualModelInstance getVirtualModelInstance() {
-			if (getEditionPatternInstance() != null) {
-				return getEditionPatternInstance().getVirtualModelInstance();
+			if (getFlexoConceptInstance() != null) {
+				return getFlexoConceptInstance().getVirtualModelInstance();
 			}
 			return null;
 		}

@@ -124,7 +124,7 @@ public class EditionSchemePathElement extends FunctionPathElement {
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
 					logger.info("Successfully performed ActionScheme " + getEditionScheme() + " for " + epi);
-					return actionSchemeAction.getEditionPatternInstance();
+					return actionSchemeAction.getFlexoConceptInstance();
 				}
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);

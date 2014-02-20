@@ -250,11 +250,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, Editio
 			} else if (org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newDeclarePatternRole();
 			} else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-				return factory.newAddEditionPatternInstance();
+				return factory.newAddFlexoConceptInstance();
 			} else if (MatchFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-				return factory.newMatchEditionPatternInstance();
+				return factory.newMatchFlexoConceptInstance();
 			} else if (SelectFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-				return factory.newSelectEditionPatternInstance();
+				return factory.newSelectFlexoConceptInstance();
 			} else if (DeleteAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newDeleteAction();
 			} else {

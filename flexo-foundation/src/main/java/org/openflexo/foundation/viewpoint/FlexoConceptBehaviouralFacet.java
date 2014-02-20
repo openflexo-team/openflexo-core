@@ -53,7 +53,7 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 
 		/*@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-			return getEditionPattern().getEditionSchemes();
+			return getFlexoConcept().getEditionSchemes();
 		}*/
 
 		@Override

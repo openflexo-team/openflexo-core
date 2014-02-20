@@ -126,7 +126,7 @@ public interface PropertyPatternRole<T extends IFlexoOntologyStructuralProperty>
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<T> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setPatternRole(this);
-			returned.setEditionPatternInstance(epi);
+			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
 		}

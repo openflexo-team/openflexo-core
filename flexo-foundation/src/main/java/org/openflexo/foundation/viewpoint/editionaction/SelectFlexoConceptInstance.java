@@ -54,7 +54,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <MM>
  * @param <T>
  */
-@FIBPanel("Fib/VPM/SelectEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/SelectFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
@@ -65,10 +65,10 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
-	public String _getEditionPatternTypeURI();
+	public String _getFlexoConceptTypeURI();
 
 	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
-	public void _setEditionPatternTypeURI(String flexoConceptTypeURI);
+	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
 
 	public FlexoConcept getFlexoConceptType();
 
@@ -107,7 +107,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		}
 
 		@Override
-		public String _getEditionPatternTypeURI() {
+		public String _getFlexoConceptTypeURI() {
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
@@ -115,7 +115,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		}
 
 		@Override
-		public void _setEditionPatternTypeURI(String flexoConceptURI) {
+		public void _setFlexoConceptTypeURI(String flexoConceptURI) {
 			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 
@@ -123,9 +123,9 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			// System.out.println("getEditionPatternType() for " + flexoConceptTypeURI);
+			// System.out.println("getFlexoConceptType() for " + flexoConceptTypeURI);
 			// System.out.println("vm=" + getVirtualModel());
-			// System.out.println("ep=" + getEditionPattern());
+			// System.out.println("ep=" + getFlexoConcept());
 			// System.out.println("ms=" + getModelSlot());
 			// if (getModelSlot() instanceof VirtualModelModelSlot) {
 			// System.out.println("ms.vm=" + ((VirtualModelModelSlot) getModelSlot()).getAddressedVirtualModel());
@@ -134,7 +134,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				flexoConceptType = getVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				/*if (!isUpdatingBindingModels) {
 					isUpdatingBindingModels = true;
-					for (EditionScheme s : getEditionPattern().getEditionSchemes()) {
+					for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
 						s.updateBindingModels();
 					}
 					isUpdatingBindingModels = false;

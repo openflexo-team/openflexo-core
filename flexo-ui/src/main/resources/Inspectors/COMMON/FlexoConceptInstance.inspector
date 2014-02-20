@@ -32,9 +32,9 @@
     <Localized key="Id" lang="English">Id</Localized>
     <Localized key="Id" lang="French">Id</Localized>
     <Localized key="Id" lang="Dutch">Id</Localized>
-    <Localized key="EditionPattern" lang="English">EditionPattern</Localized>
-    <Localized key="EditionPattern" lang="French">EditionPattern</Localized>
-    <Localized key="EditionPattern" lang="Dutch">EditionPattern</Localized>
+    <Localized key="FlexoConcept" lang="English">FlexoConcept</Localized>
+    <Localized key="FlexoConcept" lang="French">FlexoConcept</Localized>
+    <Localized key="FlexoConcept" lang="Dutch">FlexoConcept</Localized>
     <Localized key="PatternRole" lang="English">PatternRole</Localized>
     <Localized key="PatternRole" lang="French">PatternRole</Localized>
     <Localized key="PatternRole" lang="Dutch">PatternRole</Localized>
@@ -71,5 +71,5 @@
     <Localized key="Basic" lang="French">Basique</Localized>
     <Localized key="Basic" lang="Dutch">Basis</Localized>
   </LocalizedDictionary>
-  <Parameter name="title" value="EditionPatternInstance" />
+  <Parameter name="title" value="FlexoConceptInstance" />
 </Panel>

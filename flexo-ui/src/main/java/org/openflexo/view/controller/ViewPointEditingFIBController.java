@@ -70,7 +70,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoConcept addParentFlexoConcept(FlexoConcept flexoConcept) {
-		logger.warning("addParentEditionPattern not implemented yet");
+		logger.warning("addParentFlexoConcept not implemented yet");
 		return null;
 	}
 
@@ -87,12 +87,12 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public void createConstraint(FlexoConcept flexoConcept) {
-		FlexoConceptConstraint constraint = flexoConcept.getVirtualModelFactory().newEditionPatternConstraint();
-		flexoConcept.addToEditionPatternConstraints(constraint);
+		FlexoConceptConstraint constraint = flexoConcept.getVirtualModelFactory().newFlexoConceptConstraint();
+		flexoConcept.addToFlexoConceptConstraints(constraint);
 	}
 
 	public FlexoConceptConstraint deleteConstraint(FlexoConcept flexoConcept, FlexoConceptConstraint constraint) {
-		flexoConcept.removeFromEditionPatternConstraints(constraint);
+		flexoConcept.removeFromFlexoConceptConstraints(constraint);
 		constraint.delete();
 		return constraint;
 	}
@@ -162,13 +162,13 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		if (flexoConcept instanceof VirtualModel) {
 			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
-			addFlexoConcept.switchNewlyCreatedEditionPattern = false;
+			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			return addFlexoConcept.getNewFlexoConcept();
 		} else if (flexoConcept != null) {
 			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
 					getEditor());
-			addFlexoConcept.switchNewlyCreatedEditionPattern = false;
+			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
 			return addFlexoConcept.getNewFlexoConcept();
@@ -289,8 +289,8 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createEditionPatternInstanceParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newEditionPatternInstanceParameter();
+	public EditionSchemeParameter createFlexoConceptInstanceParameter(EditionScheme editionScheme) {
+		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");
 		// newParameter.setLabel("label");
 		editionScheme.addToParameters(newParameter);

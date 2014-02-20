@@ -26,7 +26,7 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Test EditionPatternPanel fib
+ * Test FlexoConceptPanel fib
  * 
  * @author sylvain
  * 
@@ -56,7 +56,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/EditionPatternPanel.fib");
+		fibFile = new FileResource("Fib/VPM/FlexoConceptPanel.fib");
 		assertTrue(fibFile.exists());
 	}
 

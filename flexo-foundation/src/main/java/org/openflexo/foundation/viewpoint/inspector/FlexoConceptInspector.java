@@ -144,9 +144,9 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		/*
 		 * public static FlexoConceptInspector
-		 * makeEditionPatternInspector(FlexoConcept ep) {
+		 * makeFlexoConceptInspector(FlexoConcept ep) {
 		 * FlexoConceptInspector returned =
-		 * ep.getVirtualModelFactory().newEditionPatternInspector(ep);
+		 * ep.getVirtualModelFactory().newFlexoConceptInspector(ep);
 		 * returned.setInspectorTitle(ep.getName()); ep.setInspector(returned);
 		 * return returned; }
 		 */
@@ -346,7 +346,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		 * 
 		 * private void createBindingModel() { _bindingModel = new
 		 * BindingModel(); for (PatternRole role :
-		 * getEditionPattern().getPatternRoles()) {
+		 * getFlexoConcept().getPatternRoles()) {
 		 * _bindingModel.addToBindingVariables
 		 * (PatternRolePathElement.makePatternRolePathElement(role,
 		 * (FlexoConceptInstance) null)); } }

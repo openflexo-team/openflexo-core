@@ -79,8 +79,8 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 	/*public void inspectObject(Object object) {
 		if (inspectorPanel.inspectObject(object)) {
 			if (object instanceof FlexoObject && (object instanceof DiagramShape || object instanceof DiagramConnector)
-					&& ((FlexoObject) object).getEditionPatternReferences().size() > 0) {
-				String newTitle = ((FlexoObject) object).getEditionPatternReferences().firstElement().getEditionPattern()
+					&& ((FlexoObject) object).getFlexoConceptReferences().size() > 0) {
+				String newTitle = ((FlexoObject) object).getFlexoConceptReferences().firstElement().getFlexoConcept()
 						.getInspector().getInspectorTitle();
 				setTitle(newTitle);
 			} else {
@@ -102,8 +102,8 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 				String newTitle = ((FlexoConceptInstance) object).getFlexoConcept().getInspector().getInspectorTitle();
 				setTitle(newTitle);
 			} else if (object instanceof FlexoObject /*&& (object instanceof DiagramShape || object instanceof DiagramConnector)*/
-					&& ((FlexoObject) object).getEditionPatternReferences().size() > 0) {
-				String newTitle = ((FlexoObject) object).getEditionPatternReferences().get(0).getObject().getFlexoConcept()
+					&& ((FlexoObject) object).getFlexoConceptReferences().size() > 0) {
+				String newTitle = ((FlexoObject) object).getFlexoConceptReferences().get(0).getObject().getFlexoConcept()
 						.getInspector().getInspectorTitle();
 				setTitle(newTitle);
 			} else if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null) {

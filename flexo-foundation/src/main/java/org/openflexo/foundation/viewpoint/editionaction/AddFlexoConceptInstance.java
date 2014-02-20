@@ -69,7 +69,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <MM>
  */
 
-@FIBPanel("Fib/VPM/AddEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/AddFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
@@ -246,7 +246,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						addToParameters(getVirtualModelFactory().newAddEditionPatternInstanceParameter(p));
+						addToParameters(getVirtualModelFactory().newAddFlexoConceptInstanceParameter(p));
 					}
 				}
 			}
@@ -257,7 +257,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 		@Override
 		public FlexoConceptInstance performAction(EditionSchemeAction action) {
-			logger.info("Perform performAddEditionPatternInstance " + action);
+			logger.info("Perform performAddFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);
 			CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
@@ -273,15 +273,15 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 			}
 			creationSchemeAction.doAction();
 			if (creationSchemeAction.hasActionExecutionSucceeded()) {
-				logger.info("Successfully performed performAddEditionPattern " + action);
-				return creationSchemeAction.getEditionPatternInstance();
+				logger.info("Successfully performed performAddFlexoConcept " + action);
+				return creationSchemeAction.getFlexoConceptInstance();
 			}
 			return null;
 		}
 
 		/*@Override
 		public Type getAssignableType() {
-			return FlexoConceptInstanceType.getEditionPatternInstanceType(getEditionPatternType());
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}*/
 
 		@Override

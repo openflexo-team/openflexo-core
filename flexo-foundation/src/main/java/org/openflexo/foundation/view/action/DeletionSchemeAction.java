@@ -81,7 +81,7 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Delete FlexoConceptInstance using DeletionScheme");
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());
-			logger.fine("getEditionPatternInstance()=" + getEditionPatternInstance());
+			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
 		applyEditionActions();
 
@@ -94,7 +94,7 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	 * @return
 	 */
 	@Override
-	public final FlexoConceptInstance getEditionPatternInstance() {
+	public final FlexoConceptInstance getFlexoConceptInstance() {
 		return getFocusedObject();
 	}
 
@@ -129,18 +129,18 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	}
 
 	/*@Override
-	public FlexoConceptInstance getEditionPatternInstance() {
-		return getEditionPatternInstanceToDelete();
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		return getFlexoConceptInstanceToDelete();
 	}
 
-	public FlexoConceptInstance getEditionPatternInstanceToDelete() {
+	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
-			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getEditionPatternInstance();
+			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getFlexoConceptInstance();
 		}
 		return flexoConceptInstanceToDelete;
 	}
 
-	public void setEditionPatternInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
+	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}*/
 
@@ -152,9 +152,9 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getEditionPatternInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
 		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
-			return getEditionPatternInstance();
+			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
 	}
@@ -162,20 +162,20 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getEditionPatternInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
 			return;
 		}
 		super.setValue(value, variable);
 	}
 
-	public FlexoConceptInstance getEditionPatternInstanceToDelete() {
+	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
 			flexoConceptInstanceToDelete = getFocusedObject();
 		}
 		return flexoConceptInstanceToDelete;
 	}
 
-	public void setEditionPatternInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
+	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}
 

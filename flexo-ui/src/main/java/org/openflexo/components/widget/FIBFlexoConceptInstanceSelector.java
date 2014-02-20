@@ -54,7 +54,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	static final Logger logger = Logger.getLogger(FIBFlexoConceptInstanceSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/EditionPatternInstanceSelector.fib");
+	public static FileResource FIB_FILE = new FileResource("Fib/FlexoConceptInstanceSelector.fib");
 
 	private ViewPointLibrary viewPointLibrary;
 	private ViewPoint viewPoint;

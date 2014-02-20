@@ -362,7 +362,7 @@
 <g font-size="13" stroke-linecap="butt" fill="gray" font-family="'Segoe UI'" stroke="gray" stroke-width="1.1">
 <rect x="420" y="290" clip-path="url(#clipPath1)" fill="none" width="100" height="40"/>
 <image x="420" y="290" clip-path="url(#clipPath2)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="439" y="304" clip-path="url(#clipPath3)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">EditionPattern</text>
+<text x="439" y="304" clip-path="url(#clipPath3)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">FlexoConcept</text>
 <line clip-path="url(#clipPath4)" fill="none" x1="420" x2="521" y1="307" y2="307"/>
 <line clip-path="url(#clipPath5)" fill="none" x1="420" x2="521" y1="319" y2="319"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 266 291 366 291 366 332 266 332 266 291" stroke="none"/>

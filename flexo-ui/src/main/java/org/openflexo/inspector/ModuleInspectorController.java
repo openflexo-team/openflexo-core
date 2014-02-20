@@ -298,7 +298,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		} else {
 			boolean updateEPTabs = false;
 			if (object instanceof FlexoConceptInstance) {
-				updateEPTabs = newInspector.updateEditionPatternInstanceInspector((FlexoConceptInstance) object);
+				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
 			} else if (object instanceof FlexoObject) {
 				updateEPTabs = newInspector.updateFlexoObjectInspector((FlexoObject) object);
 			}

@@ -70,7 +70,7 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 	private FlexoConcept newFlexoConcept;
 	private final List<FlexoConcept> parentConcepts = new ArrayList<FlexoConcept>();
 
-	public boolean switchNewlyCreatedEditionPattern = true;
+	public boolean switchNewlyCreatedFlexoConcept = true;
 
 	AddFlexoConcept(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -98,8 +98,8 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 		return newFlexoConceptName;
 	}
 
-	public void setNewFlexoConceptName(String newEditionPatternName) {
-		this.newFlexoConceptName = newEditionPatternName;
+	public void setNewFlexoConceptName(String newFlexoConceptName) {
+		this.newFlexoConceptName = newFlexoConceptName;
 	}
 
 	public List<FlexoConcept> getParentConcepts() {

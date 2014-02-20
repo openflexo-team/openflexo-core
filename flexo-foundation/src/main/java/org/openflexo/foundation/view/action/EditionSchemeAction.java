@@ -219,7 +219,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 	 * 
 	 * @return
 	 */
-	public abstract FlexoConceptInstance getEditionPatternInstance();
+	public abstract FlexoConceptInstance getFlexoConceptInstance();
 
 	/**
 	 * This is the internal code performing execution of the control graph of {@link EditionAction} defined to be the execution control
@@ -249,7 +249,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 
 		// Hack to be removed (implements model resources as FlexoResource interface !!!)
 		/*System.out.println("HACK !!!!!!! saving the models...");
-		for (ModelSlotInstance<?, ?> instance : getEditionPatternInstance().getVirtualModelInstance().getModelSlotInstances()) {
+		for (ModelSlotInstance<?, ?> instance : getFlexoConceptInstance().getVirtualModelInstance().getModelSlotInstances()) {
 			System.out.println("Slot " + instance + " model " + instance.getModel());
 			if (instance.getModel() instanceof FlexoFileResource) {
 				try {

@@ -53,7 +53,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 
 		/*public ConceptActorReferenceImpl(T o, OntologicObjectPatternRole<T> aPatternRole, FlexoConceptInstance epi) {
 			super(epi.getProject());
-			setEditionPatternInstance(epi);
+			setFlexoConceptInstance(epi);
 			setPatternRole(aPatternRole);
 			concept = o;
 

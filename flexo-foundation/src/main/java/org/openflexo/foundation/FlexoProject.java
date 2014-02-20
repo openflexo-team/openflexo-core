@@ -3098,16 +3098,16 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 	/*
 	 * public FlexoConceptInstance
-	 * getEditionPatternInstance(EditionPatternReference reference) { if
-	 * (reference == null) { return null; } if (reference.getEditionPattern() ==
+	 * getFlexoConceptInstance(FlexoConceptReference reference) { if
+	 * (reference == null) { return null; } if (reference.getFlexoConcept() ==
 	 * null) {
 	 * logger.warning("Found a reference to a null EP, please investigate");
 	 * return null; } if (_flexoConceptInstances == null) {
 	 * _flexoConceptInstances = new Hashtable<String, Map<Long,
 	 * FlexoConceptInstance>>(); } Map<Long, FlexoConceptInstance> hash =
-	 * _flexoConceptInstances.get(reference.getEditionPattern().getName()); if
+	 * _flexoConceptInstances.get(reference.getFlexoConcept().getName()); if
 	 * (hash == null) { hash = new Hashtable<Long, FlexoConceptInstance>();
-	 * _flexoConceptInstances.put(reference.getEditionPattern().getName(),
+	 * _flexoConceptInstances.put(reference.getFlexoConcept().getName(),
 	 * hash); } FlexoConceptInstance returned =
 	 * hash.get(reference.getInstanceId()); if (returned == null) { returned =
 	 * new FlexoConceptInstance(reference);
@@ -3138,8 +3138,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		 * null) { logger.warning("Changing resource center on project " +
 		 * getProjectName() + ". This is likely to cause problems."); }
 		 * this.resourceCenterService = resourceCenterService;
-		 * EditionPatternConverter flexoConceptConverter = new
-		 * EditionPatternConverter(
+		 * FlexoConceptConverter flexoConceptConverter = new
+		 * FlexoConceptConverter(
 		 * resourceCenterService.getOpenFlexoResourceCenter());
 		 * getStringEncoder()._addConverter(flexoConceptConverter); } else {
 		 * getResourceCenter(); logger.warning(
@@ -3161,60 +3161,60 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}*/
 
 	/**
-	 * This method is called while deserialising EditionPatternReference instances Because this storage is distributed, we have to build
+	 * This method is called while deserialising FlexoConceptReference instances Because this storage is distributed, we have to build
 	 * partial knowledge, as resources are being loaded.
 	 * 
 	 * @param conceptURI
 	 * @param actorReference
 	 */
 	/*
-	 * public void _addToPendingEditionPatternReferences(String conceptURI,
+	 * public void _addToPendingFlexoConceptReferences(String conceptURI,
 	 * ConceptActorReference actorReference) {
 	 * logger.fine("Registering concept " + conceptURI +
 	 * " as pending pattern object reference: " + actorReference);
 	 * List<ConceptActorReference> values =
-	 * pendingEditionPatternReferences.get(conceptURI); if (values == null) {
+	 * pendingFlexoConceptReferences.get(conceptURI); if (values == null) {
 	 * values = new Vector<ConceptActorReference>();
-	 * pendingEditionPatternReferences.put(conceptURI, values); }
+	 * pendingFlexoConceptReferences.put(conceptURI, values); }
 	 * values.add(actorReference); }
 	 */
 
 	// private Map<String, List<ConceptActorReference>>
-	// pendingEditionPatternReferences = new Hashtable<String,
+	// pendingFlexoConceptReferences = new Hashtable<String,
 	// List<ConceptActorReference>>();
 
 	/*
 	 * public void
-	 * _retrievePendingEditionPatternReferences(IFlexoOntologyConcept object) {
+	 * _retrievePendingFlexoConceptReferences(IFlexoOntologyConcept object) {
 	 * List<ConceptActorReference> values =
-	 * pendingEditionPatternReferences.get(object.getURI()); if (values == null)
+	 * pendingFlexoConceptReferences.get(object.getURI()); if (values == null)
 	 * { // No pending FlexoConcept references for object return; } else {
 	 * List<ConceptActorReference> clonedValues = new
 	 * ArrayList<ConceptActorReference>(values); for (ConceptActorReference
 	 * actorReference : clonedValues) { FlexoConceptInstance instance =
-	 * actorReference.getPatternReference().getEditionPatternInstance(); if
+	 * actorReference.getPatternReference().getFlexoConceptInstance(); if
 	 * (instance == null) {
 	 * logger.warning("Found null FlexoConceptInstance, please investigate");
 	 * } else if (actorReference.getPatternReference() == null) {
 	 * logger.warning(
 	 * "Found null actorReference.getPatternReference(), please investigate"); }
-	 * else if (actorReference.getPatternReference().getEditionPattern() ==
+	 * else if (actorReference.getPatternReference().getFlexoConcept() ==
 	 * null) { logger.warning(
-	 * "Found null actorReference.getPatternReference().getEditionPattern(), please investigate"
+	 * "Found null actorReference.getPatternReference().getFlexoConcept(), please investigate"
 	 * ); } else if (object instanceof FlexoOntologyObjectImpl) { PatternRole pr
 	 * = actorReference.getPatternReference().getPatternRole();
 	 * logger.fine("Retrieve Edition Pattern Instance " + instance + " for " +
 	 * object + " role=" + pr); ((FlexoOntologyObjectImpl)
-	 * object).registerEditionPatternReference(instance, pr); } }
+	 * object).registerFlexoConceptReference(instance, pr); } }
 	 * values.clear(); } }
 	 * 
-	 * public void resolvePendingEditionPatternReferences() { ArrayList<String>
+	 * public void resolvePendingFlexoConceptReferences() { ArrayList<String>
 	 * allKeys = new
-	 * ArrayList<String>(pendingEditionPatternReferences.keySet()); for (String
+	 * ArrayList<String>(pendingFlexoConceptReferences.keySet()); for (String
 	 * conceptURI : allKeys) { logger.warning("Unresolved ontology object " +
 	 * conceptURI); //OntologyObject oo =
 	 * getProjectOntology().getOntologyObject(conceptURI); //if (oo != null) {
-	 * // _retrievePendingEditionPatternReferences(oo); //} } }
+	 * // _retrievePendingFlexoConceptReferences(oo); //} } }
 	 */
 
 	/*public IModuleLoader getModuleLoader() {

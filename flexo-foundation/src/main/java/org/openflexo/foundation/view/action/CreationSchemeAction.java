@@ -90,11 +90,11 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException {
 		logger.info("Create FlexoConceptInstance using CreationScheme");
-		logger.info("getEditionPattern()=" + getFlexoConcept());
+		logger.info("getFlexoConcept()=" + getFlexoConcept());
 
 		retrieveMissingDefaultParameters();
 
-		// getEditionPattern().getViewPoint().getViewpointOntology().loadWhenUnloaded();
+		// getFlexoConcept().getViewPoint().getViewpointOntology().loadWhenUnloaded();
 
 		// In case of this action is embedded in a CreateVirtualModelInstance action, the flexoConceptInstance (which will be here a
 		// VirtualModelInstance) will be already initialized and should subsequently not been recreated)
@@ -118,7 +118,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	 * 
 	 * @param flexoConceptInstance
 	 */
-	public void initWithEditionPatternInstance(FlexoConceptInstance flexoConceptInstance) {
+	public void initWithFlexoConceptInstance(FlexoConceptInstance flexoConceptInstance) {
 		this.flexoConceptInstance = flexoConceptInstance;
 	}
 
@@ -174,7 +174,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	}
 
 	@Override
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 
@@ -193,7 +193,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 		if (assignedObject != null && action instanceof AssignableAction) {
 			AssignableAction assignableAction = (AssignableAction) action;
 			if (assignableAction.getPatternRole() != null && assignedObject instanceof FlexoObject) {
-				getEditionPatternInstance().setObjectForPatternRole((FlexoObject) assignedObject, assignableAction.getPatternRole());
+				getFlexoConceptInstance().setObjectForPatternRole((FlexoObject) assignedObject, assignableAction.getPatternRole());
 			}
 		}
 
@@ -203,9 +203,9 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getEditionPatternInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
 		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
-			return getEditionPatternInstance();
+			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
 	}
@@ -213,7 +213,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getEditionPatternInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
 			return;
 		}
 		super.setValue(value, variable);

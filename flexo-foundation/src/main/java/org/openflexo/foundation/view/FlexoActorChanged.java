@@ -33,7 +33,7 @@ public class FlexoActorChanged extends DataModification {
 		this.patternRole = patternRole;
 	}
 
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 

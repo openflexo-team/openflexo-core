@@ -73,7 +73,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <M>
  * @param <MM>
  */
-@FIBPanel("Fib/VPM/MatchEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/MatchFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
@@ -326,7 +326,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						addToParameters(getVirtualModelFactory().newCreateEditionPatternInstanceParameter(p));
+						addToParameters(getVirtualModelFactory().newCreateFlexoConceptInstanceParameter(p));
 					}
 				}
 			}
@@ -397,12 +397,12 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				System.out.println("Pour " + mc.getPatternRole().getPatternRoleName() + " value is " + value);
 			}
 			logger.info("On s'arrete pour regarder ");
-			FlexoConceptInstance matchingEditionPatternInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
+			FlexoConceptInstance matchingFlexoConceptInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
 					getFlexoConceptType(), criterias);
 
-			if (matchingEditionPatternInstance != null) {
+			if (matchingFlexoConceptInstance != null) {
 				// A matching FlexoConceptInstance was found
-				((SynchronizationSchemeAction) action).foundMatchingEditionPatternInstance(matchingEditionPatternInstance);
+				((SynchronizationSchemeAction) action).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
 			} else {
 
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
@@ -419,14 +419,14 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				logger.info(">> Creating a new EPI in " + vmInstance);
 				creationSchemeAction.doAction();
 				if (creationSchemeAction.hasActionExecutionSucceeded()) {
-					logger.info("Successfully performed performAddEditionPattern " + action);
-					matchingEditionPatternInstance = creationSchemeAction.getEditionPatternInstance();
-					((SynchronizationSchemeAction) action).newEditionPatternInstance(matchingEditionPatternInstance);
+					logger.info("Successfully performed performAddFlexoConcept " + action);
+					matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
+					((SynchronizationSchemeAction) action).newFlexoConceptInstance(matchingFlexoConceptInstance);
 				} else {
 					logger.warning("Could not create FlexoConceptInstance for " + action);
 				}
 			}
-			return matchingEditionPatternInstance;
+			return matchingFlexoConceptInstance;
 		}
 
 		@Override

@@ -103,7 +103,7 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setPatternRole(this);
-			returned.setEditionPatternInstance(epi);
+			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
 		}

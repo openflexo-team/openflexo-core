@@ -147,7 +147,7 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 		}
 
 		if (creationSchemeAction != null) {
-			creationSchemeAction.initWithEditionPatternInstance(newVirtualModelInstance);
+			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.doAction();
 		}
 

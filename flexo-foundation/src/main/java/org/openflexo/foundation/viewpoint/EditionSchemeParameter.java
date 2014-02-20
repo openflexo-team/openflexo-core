@@ -252,7 +252,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 
 		@Override
 		public String toString() {
-			return "EditionPatternParameter: " + getName();
+			return "FlexoConceptParameter: " + getName();
 		}
 
 		@Override

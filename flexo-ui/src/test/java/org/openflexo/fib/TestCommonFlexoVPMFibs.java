@@ -21,8 +21,8 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testAddEditionPatternInstancePanel() {
-		validateFIB("Fib/VPM/AddEditionPatternInstancePanel.fib");
+	public void testAddFlexoConceptInstancePanel() {
+		validateFIB("Fib/VPM/AddFlexoConceptInstancePanel.fib");
 	}
 
 	@Test
@@ -61,8 +61,8 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDeleteEditionPatternInstancePanel() {
-		validateFIB("Fib/VPM/DeleteEditionPatternInstancePanel.fib");
+	public void testDeleteFlexoConceptInstancePanel() {
+		validateFIB("Fib/VPM/DeleteFlexoConceptInstancePanel.fib");
 	}
 
 	@Test
@@ -76,13 +76,13 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testEditionPatternInspectorPanel() {
-		validateFIB("Fib/VPM/EditionPatternInspectorPanel.fib");
+	public void testFlexoConceptInspectorPanel() {
+		validateFIB("Fib/VPM/FlexoConceptInspectorPanel.fib");
 	}
 
 	@Test
-	public void testEditionPatternPanel() {
-		validateFIB("Fib/VPM/EditionPatternPanel.fib");
+	public void testFlexoConceptPanel() {
+		validateFIB("Fib/VPM/FlexoConceptPanel.fib");
 	}
 
 	@Test
@@ -111,8 +111,8 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testMatchEditionPatternInstancePanel() {
-		validateFIB("Fib/VPM/MatchEditionPatternInstancePanel.fib");
+	public void testMatchFlexoConceptInstancePanel() {
+		validateFIB("Fib/VPM/MatchFlexoConceptInstancePanel.fib");
 	}
 
 	@Test
@@ -126,8 +126,8 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testSelectEditionPatternInstancePanel() {
-		validateFIB("Fib/VPM/SelectEditionPatternInstancePanel.fib");
+	public void testSelectFlexoConceptInstancePanel() {
+		validateFIB("Fib/VPM/SelectFlexoConceptInstancePanel.fib");
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testStandardEditionPatternView() {
+	public void testStandardFlexoConceptView() {
 		validateFIB("Fib/VPM/StandardFlexoConceptView.fib");
 	}
 

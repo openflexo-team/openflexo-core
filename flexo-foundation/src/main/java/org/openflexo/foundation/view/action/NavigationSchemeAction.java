@@ -56,9 +56,9 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 	 * @return
 	 */
 	@Override
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return actionType.getEditionPatternInstance();
+			return actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}
@@ -85,7 +85,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 			logger.warning("No navigation scheme. Please investigate !");
 			return false;
 		}
-		return getNavigationScheme().evaluateCondition(actionType.getEditionPatternInstance());
+		return getNavigationScheme().evaluateCondition(actionType.getFlexoConceptInstance());
 	}
 
 	public FlexoObject getTargetObject() {
@@ -93,7 +93,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;
 		}
-		return getNavigationScheme().evaluateTargetObject(actionType.getEditionPatternInstance());
+		return getNavigationScheme().evaluateTargetObject(actionType.getFlexoConceptInstance());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/
-		return getEditionPatternInstance().getVirtualModelInstance();
+		return getFlexoConceptInstance().getVirtualModelInstance();
 	}
 
 }

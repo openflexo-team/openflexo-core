@@ -97,7 +97,7 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 		@Override
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			super.appendContextualBindingVariables(bindingModel);
-			/*bindingModel.addToBindingVariables(new EditionPatternPathElement<AbstractActionScheme>(EditionScheme.THIS, getEditionPattern(),
+			/*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(EditionScheme.THIS, getFlexoConcept(),
 					this));*/
 		}
 

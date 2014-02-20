@@ -132,7 +132,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 				if (isIndividual()) {
 					((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
 				}
-				if (isEditionPatternInstance()) {
+				if (isFlexoConceptInstance()) {
 					((FlexoConceptInstancePatternRole) newPatternRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
@@ -189,7 +189,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 		return IndividualPatternRole.class.isAssignableFrom(patternRoleClass);
 	}
 
-	public boolean isEditionPatternInstance() {
+	public boolean isFlexoConceptInstance() {
 		if (patternRoleClass == null) {
 			return false;
 		}

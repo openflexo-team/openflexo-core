@@ -278,8 +278,8 @@ public abstract class ContextualMenuManager {
 				}
 			}
 			if (focusedObject instanceof FlexoObject) {
-				if (focusedObject.getEditionPatternReferences() != null) {
-					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getEditionPatternReferences()) {
+				if (focusedObject.getFlexoConceptReferences() != null) {
+					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
 						FlexoConceptInstance epi = ref.getObject();
 						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
 							for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
@@ -287,7 +287,7 @@ public abstract class ContextualMenuManager {
 							}
 						}
 					}
-					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getEditionPatternReferences()) {
+					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
 						FlexoConceptInstance epi = ref.getObject();
 						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
 							for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {

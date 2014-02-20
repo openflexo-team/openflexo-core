@@ -66,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <MM>
  */
 
-@FIBPanel("Fib/VPM/DeleteEditionPatternInstancePanel.fib")
+@FIBPanel("Fib/VPM/DeleteFlexoConceptInstancePanel.fib")
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
@@ -235,7 +235,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						addToParameters(getVirtualModelFactory().newDeleteEditionPatternInstanceParameter(p));
+						addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
 					}
 				}
 			}
@@ -246,7 +246,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 		@Override
 		public FlexoConceptInstance performAction(EditionSchemeAction action) {
-			logger.info("Perform performDeleteEditionPatternInstance " + action);
+			logger.info("Perform performDeleteFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 
 			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
@@ -258,7 +258,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 				logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
 				logger.info("VirtualModelInstance: " + vmInstance);
-				deletionSchemeAction.setEditionPatternInstanceToDelete(objectToDelete);
+				deletionSchemeAction.setFlexoConceptInstanceToDelete(objectToDelete);
 				deletionSchemeAction.setVirtualModelInstance(vmInstance);
 				deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
@@ -283,8 +283,8 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				e1.printStackTrace();
 			}
 			if (deletionSchemeAction.hasActionExecutionSucceeded()) {
-				logger.info("Successfully performed performDeleteEditionPattern " + action);
-				return deletionSchemeAction.getEditionPatternInstance();
+				logger.info("Successfully performed performDeleteFlexoConcept " + action);
+				return deletionSchemeAction.getFlexoConceptInstance();
 			}
 			return null;
 		}

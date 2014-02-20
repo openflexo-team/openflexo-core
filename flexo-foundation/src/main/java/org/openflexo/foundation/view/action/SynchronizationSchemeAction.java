@@ -65,9 +65,9 @@ public class SynchronizationSchemeAction extends
 	 * @return
 	 */
 	@Override
-	public VirtualModelInstance getEditionPatternInstance() {
+	public VirtualModelInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return (VirtualModelInstance) actionType.getEditionPatternInstance();
+			return (VirtualModelInstance) actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}
@@ -83,7 +83,7 @@ public class SynchronizationSchemeAction extends
 			logger.info("Perform action " + actionType);
 		}
 
-		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(actionType.getEditionPatternInstance())) {
+		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
 			applyEditionActions();
 		}
 	}
@@ -100,11 +100,11 @@ public class SynchronizationSchemeAction extends
 	 */
 	@Override
 	public VirtualModelInstance retrieveVirtualModelInstance() {
-		/*if (getEditionPatternInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getEditionPatternInstance();
+		/*if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance) getFlexoConceptInstance();
 		}*/
-		if (getEditionPatternInstance() != null) {
-			return getEditionPatternInstance().getVirtualModelInstance();
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getVirtualModelInstance();
 		}
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
@@ -144,22 +144,22 @@ public class SynchronizationSchemeAction extends
 		return null;
 	}
 
-	public void foundMatchingEditionPatternInstance(FlexoConceptInstance matchingEditionPatternInstance) {
-		System.out.println("FOUND matching : " + matchingEditionPatternInstance);
-		episToBeRemoved.remove(matchingEditionPatternInstance);
+	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
+		System.out.println("FOUND matching : " + matchingFlexoConceptInstance);
+		episToBeRemoved.remove(matchingFlexoConceptInstance);
 	}
 
-	public void newEditionPatternInstance(FlexoConceptInstance newEditionPatternInstance) {
-		System.out.println("NEW EPI : " + newEditionPatternInstance);
+	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
+		System.out.println("NEW EPI : " + newFlexoConceptInstance);
 
 	}
 
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getEditionPatternInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
 		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
-			return getEditionPatternInstance();
+			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
 	}
@@ -167,7 +167,7 @@ public class SynchronizationSchemeAction extends
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getEditionPatternInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
 			return;
 		}
 		super.setValue(value, variable);

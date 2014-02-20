@@ -229,12 +229,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (object != oldObject) {
 				// Un-register last reference
 				if (oldObject instanceof FlexoProjectObject) {
-					((FlexoProjectObject) oldObject).unregisterEditionPatternReference(this);
+					((FlexoProjectObject) oldObject).unregisterFlexoConceptReference(this);
 				}
 
 				// Un-register last reference
 				if (object instanceof FlexoProjectObject) {
-					((FlexoProjectObject) object).registerEditionPatternReference(this);
+					((FlexoProjectObject) object).registerFlexoConceptReference(this);
 				}
 
 				if (object != null) {
@@ -354,7 +354,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		// WARNING: do no use outside context of serialization/deserialization
 		@Override
 		public void addToActorList(ActorReference actorReference) {
-			actorReference.setEditionPatternInstance(this);
+			actorReference.setFlexoConceptInstance(this);
 			if (actorReference.getPatternRole() != null) {
 				actors.put(actorReference.getPatternRole(), actorReference);
 			} else {
@@ -368,7 +368,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		// WARNING: do no use outside context of serialization/deserialization
 		@Override
 		public void removeFromActorList(ActorReference actorReference) {
-			actorReference.setEditionPatternInstance(null);
+			actorReference.setFlexoConceptInstance(null);
 			if (actorReference.getPatternRole() != null) {
 				actors.remove(actorReference.getPatternRole());
 			}
@@ -383,7 +383,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				for (ActorReference actorRef : deserializedActorList) {
 					// System.out.println("Actor: " + actorRef.getPatternRoleName() + " pattern role = " + actorRef.getPatternRole() +
 					// " name="
-					// + actorRef.getPatternRoleName() + " ep=" + getEditionPattern());
+					// + actorRef.getPatternRoleName() + " ep=" + getFlexoConcept());
 					if (actorRef.getPatternRole() != null) {
 						actors.put(actorRef.getPatternRole(), actorRef);
 					}
@@ -485,23 +485,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			VirtualModelInstance container = getVirtualModelInstance();
 			if (container != null) {
-				container.removeFromEditionPatternInstancesList(this);
+				container.removeFromFlexoConceptInstancesList(this);
 			}
 			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;
-			/*if (getEditionPattern().getPrimaryRepresentationRole() != null) {
-				Object primaryPatternActor = getPatternActor(getEditionPattern().getPrimaryRepresentationRole());
+			/*if (getFlexoConcept().getPrimaryRepresentationRole() != null) {
+				Object primaryPatternActor = getPatternActor(getFlexoConcept().getPrimaryRepresentationRole());
 				if (primaryPatternActor instanceof FlexoModelObject) {
 					DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(
 							(FlexoModelObject) primaryPatternActor, null, null);
 					deletionSchemeAction.setDeletionScheme(deletionScheme);
-					deletionSchemeAction.setEditionPatternInstanceToDelete(this);
+					deletionSchemeAction.setFlexoConceptInstanceToDelete(this);
 					deletionSchemeAction.doAction();
 					if (deletionSchemeAction.hasActionExecutionSucceeded()) {
-						logger.info("Successfully performed delete FlexoConcept instance " + getEditionPattern());
+						logger.info("Successfully performed delete FlexoConcept instance " + getFlexoConcept());
 					}
 				} else {
-					logger.warning("Actor for role " + getEditionPattern().getPrimaryRepresentationRole() + " is not a FlexoModelObject: is "
+					logger.warning("Actor for role " + getFlexoConcept().getPrimaryRepresentationRole() + " is not a FlexoModelObject: is "
 							+ primaryPatternActor);
 				}
 			}*/
@@ -511,32 +511,32 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		/**
 		 * Clone this FlexoConcept instance using default CloningScheme
 		 */
-		public FlexoConceptInstanceImpl cloneEditionPatternInstance() {
-			/*if (getEditionPattern().getDefaultDeletionScheme() != null) {
-				delete(getEditionPattern().getDefaultDeletionScheme());
+		public FlexoConceptInstanceImpl cloneFlexoConceptInstance() {
+			/*if (getFlexoConcept().getDefaultDeletionScheme() != null) {
+				delete(getFlexoConcept().getDefaultDeletionScheme());
 			} else {
 				// Generate on-the-fly default deletion scheme
-				delete(getEditionPattern().generateDefaultDeletionScheme());
+				delete(getFlexoConcept().generateDefaultDeletionScheme());
 			}*/
-			System.out.println("cloneEditionPatternInstance() in FlexoConceptInstance");
+			System.out.println("cloneFlexoConceptInstance() in FlexoConceptInstance");
 			return null;
 		}
 
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
-		public FlexoConceptInstanceImpl cloneEditionPatternInstance(CloningScheme cloningScheme) {
+		public FlexoConceptInstanceImpl cloneFlexoConceptInstance(CloningScheme cloningScheme) {
 			/*logger.warning("NEW FlexoConceptInstance deletion !");
 			deleted = true;
-			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(getPatternActor(getEditionPattern()
+			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewAction(getPatternActor(getFlexoConcept()
 					.getPrimaryRepresentationRole()), null, null);
 			deletionSchemeAction.setDeletionScheme(deletionScheme);
-			deletionSchemeAction.setEditionPatternInstanceToDelete(this);
+			deletionSchemeAction.setFlexoConceptInstanceToDelete(this);
 			deletionSchemeAction.doAction();
 			if (deletionSchemeAction.hasActionExecutionSucceeded()) {
-				logger.info("Successfully performed delete FlexoConcept instance " + getEditionPattern());
+				logger.info("Successfully performed delete FlexoConcept instance " + getFlexoConcept());
 			}*/
-			System.out.println("cloneEditionPatternInstance() in FlexoConceptInstance with " + cloningScheme);
+			System.out.println("cloneFlexoConceptInstance() in FlexoConceptInstance with " + cloningScheme);
 			return null;
 		}
 
@@ -577,7 +577,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		// @Override
 		// public String getDisplayableName() {
-		/*for (GraphicalElementPatternRole pr : getEditionPattern().getGraphicalElementPatternRoles()) {
+		/*for (GraphicalElementPatternRole pr : getFlexoConcept().getGraphicalElementPatternRoles()) {
 			if (pr != null && pr.getLabel().isSet() && pr.getLabel().isValid()) {
 				try {
 					return (String) pr.getLabel().getBindingValue(this);
@@ -590,7 +590,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 		}*/
-		// return getEditionPattern().getName();
+		// return getFlexoConcept().getName();
 		// return getStringRepresentation();
 		// }
 
@@ -604,7 +604,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		/*@Override
 		public String getFullyQualifiedName() {
-			return getVirtualModelInstance().getFullyQualifiedName() + "." + getEditionPattern().getURI() + "." + getFlexoID();
+			return getVirtualModelInstance().getFullyQualifiedName() + "." + getFlexoConcept().getURI() + "." + getFlexoID();
 		}
 
 		@Override
@@ -637,7 +637,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String getStringRepresentation() {
 			if (hasValidRenderer()) {
 				try {
-					// System.out.println("Evaluating " + getEditionPattern().getInspector().getRenderer() + " for " + this);
+					// System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer() + " for " + this);
 					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(new BindingEvaluationContext() {
 						@Override
 						public Object getValue(BindingVariable variable) {

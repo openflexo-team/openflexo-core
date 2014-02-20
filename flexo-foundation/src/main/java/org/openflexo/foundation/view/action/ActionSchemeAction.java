@@ -57,9 +57,9 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	 * @return
 	 */
 	@Override
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return actionType.getEditionPatternInstance();
+			return actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}
@@ -75,7 +75,7 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 			logger.info("Perform action " + actionType);
 		}
 
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getEditionPatternInstance())) {
+		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
 			applyEditionActions();
 		}
 	}
@@ -85,11 +85,11 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/
-		if (getEditionPatternInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getEditionPatternInstance();
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance) getFlexoConceptInstance();
 		}
-		if (getEditionPatternInstance() != null) {
-			return getEditionPatternInstance().getVirtualModelInstance();
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getVirtualModelInstance();
 		}
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
@@ -100,9 +100,9 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getEditionPatternInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
 		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
-			return getEditionPatternInstance();
+			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
 	}
@@ -110,7 +110,7 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getEditionPatternInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
 			return;
 		}
 		super.setValue(value, variable);

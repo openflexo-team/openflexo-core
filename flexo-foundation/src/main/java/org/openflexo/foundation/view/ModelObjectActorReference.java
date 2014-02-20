@@ -52,7 +52,7 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 
 		/*public ModelObjectActorReferenceImpl(T o, PatternRole aPatternRole, FlexoConceptInstance epi) {
 			super(epi.getProject());
-			setEditionPatternInstance(epi);
+			setFlexoConceptInstance(epi);
 			setPatternRole(aPatternRole);
 			object = o;
 			objectReference = new FlexoObjectReference(o, o.getProject());

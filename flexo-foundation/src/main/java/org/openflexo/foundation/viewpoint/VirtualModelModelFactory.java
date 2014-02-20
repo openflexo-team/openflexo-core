@@ -86,7 +86,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(SynchronizationScheme.class);
 	}
 
-	public FlexoConceptConstraint newEditionPatternConstraint() {
+	public FlexoConceptConstraint newFlexoConceptConstraint() {
 		return newInstance(FlexoConceptConstraint.class);
 	}
 
@@ -110,13 +110,13 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DeletionScheme.class);
 	}
 
-	public AddFlexoConceptInstanceParameter newAddEditionPatternInstanceParameter(EditionSchemeParameter p) {
+	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(EditionSchemeParameter p) {
 		AddFlexoConceptInstanceParameter returned = newInstance(AddFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
 
-	public DeleteFlexoConceptInstanceParameter newDeleteEditionPatternInstanceParameter(EditionSchemeParameter p) {
+	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(EditionSchemeParameter p) {
 		DeleteFlexoConceptInstanceParameter returned = newInstance(DeleteFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
@@ -194,7 +194,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ListParameter.class);
 	}
 
-	public FlexoConceptInstanceParameter newEditionPatternInstanceParameter() {
+	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter() {
 		return newInstance(FlexoConceptInstanceParameter.class);
 	}
 
@@ -250,7 +250,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DataPropertyInspectorEntry.class);
 	}
 
-	public CreateFlexoConceptInstanceParameter newCreateEditionPatternInstanceParameter(EditionSchemeParameter p) {
+	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(EditionSchemeParameter p) {
 		CreateFlexoConceptInstanceParameter returned = newInstance(CreateFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
@@ -262,15 +262,15 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public FlexoConceptInstancePatternRole newEditionPatternInstancePatternRole() {
+	public FlexoConceptInstancePatternRole newFlexoConceptInstancePatternRole() {
 		return newInstance(FlexoConceptInstancePatternRole.class);
 	}
 
-	public AddFlexoConceptInstance newAddEditionPatternInstance() {
+	public AddFlexoConceptInstance newAddFlexoConceptInstance() {
 		return newInstance(AddFlexoConceptInstance.class);
 	}
 
-	public SelectFlexoConceptInstance newSelectEditionPatternInstance() {
+	public SelectFlexoConceptInstance newSelectFlexoConceptInstance() {
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
@@ -282,7 +282,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DeleteAction.class);
 	}
 
-	public MatchFlexoConceptInstance newMatchEditionPatternInstance() {
+	public MatchFlexoConceptInstance newMatchFlexoConceptInstance() {
 		return newInstance(MatchFlexoConceptInstance.class);
 	}
 

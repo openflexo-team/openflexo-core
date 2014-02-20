@@ -272,23 +272,23 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 						}
 						if (assignableAction.getPatternRole() != null && assignedObject instanceof FlexoObject) {
 							if (contextAction instanceof ActionSchemeAction) {
-								((ActionSchemeAction) contextAction).getEditionPatternInstance().setObjectForPatternRole(
+								((ActionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
 										(FlexoObject) assignedObject, assignableAction.getPatternRole());
 							}
 							if (contextAction instanceof CreationSchemeAction) {
-								((CreationSchemeAction) contextAction).getEditionPatternInstance().setObjectForPatternRole(
+								((CreationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
 										(FlexoObject) assignedObject, assignableAction.getPatternRole());
 							}
 							if (contextAction instanceof DeletionSchemeAction) {
-								((DeletionSchemeAction) contextAction).getEditionPatternInstance().setObjectForPatternRole(
+								((DeletionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
 										(FlexoObject) assignedObject, assignableAction.getPatternRole());
 							}
 							if (contextAction instanceof NavigationSchemeAction) {
-								((NavigationSchemeAction) contextAction).getEditionPatternInstance().setObjectForPatternRole(
+								((NavigationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
 										(FlexoObject) assignedObject, assignableAction.getPatternRole());
 							}
 							if (contextAction instanceof SynchronizationSchemeAction) {
-								((SynchronizationSchemeAction) contextAction).getEditionPatternInstance().setObjectForPatternRole(
+								((SynchronizationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
 										(FlexoObject) assignedObject, assignableAction.getPatternRole());
 							}
 						}
@@ -423,8 +423,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		/*public AddShape createAddShapeAction() {
 			AddShape newAction = new AddShape(null);
-			if (getEditionPattern().getDefaultShapePatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 			}
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
@@ -468,8 +468,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		public AddConnector createAddConnectorAction() {
 			AddConnector newAction = new AddConnector(null);
-			if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 			}
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
@@ -493,7 +493,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 			return newAction;
 		}
 
-		public AddFlexoConcept createAddEditionPatternAction() {
+		public AddFlexoConcept createAddFlexoConceptAction() {
 			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
@@ -513,8 +513,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		public CloneShape createCloneShapeAction() {
 			CloneShape newAction = new CloneShape(null);
-			if (getEditionPattern().getDefaultShapePatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 			}
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
@@ -522,8 +522,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		public CloneConnector createCloneConnectorAction() {
 			CloneConnector newAction = new CloneConnector(null);
-			if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-				newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+				newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 			}
 			insertActionAtCurrentIndex(newAction);
 			return newAction;

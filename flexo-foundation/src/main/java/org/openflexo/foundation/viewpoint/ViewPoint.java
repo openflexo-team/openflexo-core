@@ -257,7 +257,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			loadViewpointMetaModels();
 
 			/*for (VirtualModel vm : getVirtualModels()) {
-				for (FlexoConcept ep : vm.getEditionPatterns()) {
+				for (FlexoConcept ep : vm.getFlexoConcepts()) {
 					for (PatternRole<?> pr : ep.getPatternRoles()) {
 						if (pr instanceof ShapePatternRole) {
 							((ShapePatternRole) pr).tryToFindAGR();
@@ -276,7 +276,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * Return the URI of the {@link ViewPoint}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */

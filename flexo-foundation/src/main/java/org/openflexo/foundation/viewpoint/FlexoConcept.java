@@ -88,9 +88,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
-	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentEditionPatterns";
+	public static final String PARENT_FLEXO_CONCEPTS_KEY = "parentFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
-	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childEditionPatterns";
+	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
 
@@ -188,19 +188,19 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Getter(value = FLEXO_CONCEPT_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
 	@XMLElement
-	public List<FlexoConceptConstraint> getEditionPatternConstraints();
+	public List<FlexoConceptConstraint> getFlexoConceptConstraints();
 
 	@Setter(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void setEditionPatternConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
+	public void setFlexoConceptConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
 
 	@Adder(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void addToEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
+	public void addToFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
 
 	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
-	public void removeFromEditionPatternConstraints(FlexoConceptConstraint aEditionPatternConstraint);
+	public void removeFromFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
 
 	@DeserializationFinalizer
-	public void finalizeEditionPatternDeserialization();
+	public void finalizeFlexoConceptDeserialization();
 
 	public boolean isRoot();
 
@@ -280,7 +280,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		private VirtualModel virtualModel;
 
 		private final FlexoConcept parentFlexoConcept = null;
-		// private final Vector<FlexoConcept> childEditionPatterns = new
+		// private final Vector<FlexoConcept> childFlexoConcepts = new
 		// Vector<FlexoConcept>();
 
 		private FlexoConceptStructuralFacet structuralFacet;
@@ -338,7 +338,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 * Return the URI of the {@link FlexoConcept}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern. MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -639,7 +639,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void finalizeEditionPatternDeserialization() {
+		public void finalizeFlexoConceptDeserialization() {
 			createBindingModel();
 			for (EditionScheme es : getEditionSchemes()) {
 				es.finalizeEditionSchemeDeserialization();
@@ -651,9 +651,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		/*
-		 * public void finalizeParentEditionPatternDeserialization() { if
-		 * (StringUtils.isNotEmpty(parentEditionPatternURI)) {
-		 * setParentEditionPattern(getParentEditionPattern()); } }
+		 * public void finalizeParentFlexoConceptDeserialization() { if
+		 * (StringUtils.isNotEmpty(parentFlexoConceptURI)) {
+		 * setParentFlexoConcept(getParentFlexoConcept()); } }
 		 */
 
 		public void debug() {
@@ -765,43 +765,43 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		/*
-		 * private String parentEditionPatternURI;
+		 * private String parentFlexoConceptURI;
 		 * 
-		 * @Override public String getParentEditionPatternURI() { if
-		 * (getParentEditionPattern() != null) { return
-		 * getParentEditionPattern().getURI(); } return parentEditionPatternURI;
+		 * @Override public String getParentFlexoConceptURI() { if
+		 * (getParentFlexoConcept() != null) { return
+		 * getParentFlexoConcept().getURI(); } return parentFlexoConceptURI;
 		 * }
 		 * 
-		 * @Override public void _setParentEditionPatternURI(String
-		 * aParentEditionPatternURI) { parentEditionPatternURI =
-		 * aParentEditionPatternURI; }
+		 * @Override public void _setParentFlexoConceptURI(String
+		 * aParentFlexoConceptURI) { parentFlexoConceptURI =
+		 * aParentFlexoConceptURI; }
 		 * 
-		 * @Override public FlexoConcept getParentEditionPattern() { if
+		 * @Override public FlexoConcept getParentFlexoConcept() { if
 		 * (parentFlexoConcept == null &&
-		 * StringUtils.isNotEmpty(parentEditionPatternURI)) { if
+		 * StringUtils.isNotEmpty(parentFlexoConceptURI)) { if
 		 * (getVirtualModel() != null) {
-		 * setParentEditionPattern(getVirtualModel(
-		 * ).getEditionPattern(parentEditionPatternURI)); } } return
+		 * setParentFlexoConcept(getVirtualModel(
+		 * ).getFlexoConcept(parentFlexoConceptURI)); } } return
 		 * parentFlexoConcept; }
 		 * 
-		 * public void setParentEditionPattern(FlexoConcept aParentEP) { if
-		 * (this.parentEditionPattern != aParentEP) { if (aParentEP == null) {
-		 * this.parentEditionPattern.childEditionPatterns.remove(this);
-		 * this.parentEditionPattern = aParentEP; if (this.parentEditionPattern
-		 * != null) { this.parentEditionPattern.setChanged();
-		 * this.parentEditionPattern.notifyObservers(new
-		 * EditionPatternHierarchyChanged(this));
-		 * this.parentEditionPattern.notifyChange("childEditionPatterns", null,
-		 * getChildEditionPatterns()); } } else {
-		 * aParentEP.childEditionPatterns.add(this); this.parentEditionPattern =
+		 * public void setParentFlexoConcept(FlexoConcept aParentEP) { if
+		 * (this.parentFlexoConcept != aParentEP) { if (aParentEP == null) {
+		 * this.parentFlexoConcept.childFlexoConcepts.remove(this);
+		 * this.parentFlexoConcept = aParentEP; if (this.parentFlexoConcept
+		 * != null) { this.parentFlexoConcept.setChanged();
+		 * this.parentFlexoConcept.notifyObservers(new
+		 * FlexoConceptHierarchyChanged(this));
+		 * this.parentFlexoConcept.notifyChange("childFlexoConcepts", null,
+		 * getChildFlexoConcepts()); } } else {
+		 * aParentEP.childFlexoConcepts.add(this); this.parentFlexoConcept =
 		 * aParentEP; aParentEP.setChanged(); aParentEP.notifyObservers(new
-		 * EditionPatternHierarchyChanged(this));
-		 * aParentEP.notifyChange("childEditionPatterns", null,
-		 * getChildEditionPatterns()); } if (getVirtualModel() != null) {
+		 * FlexoConceptHierarchyChanged(this));
+		 * aParentEP.notifyChange("childFlexoConcepts", null,
+		 * getChildFlexoConcepts()); } if (getVirtualModel() != null) {
 		 * getVirtualModel().setChanged(); getVirtualModel().notifyObservers(new
-		 * EditionPatternHierarchyChanged(this));
-		 * getVirtualModel().notifyChange("allRootEditionPatterns", null,
-		 * getVirtualModel().getAllRootEditionPatterns()); } } }
+		 * FlexoConceptHierarchyChanged(this));
+		 * getVirtualModel().notifyChange("allRootFlexoConcepts", null,
+		 * getVirtualModel().getAllRootFlexoConcepts()); } } }
 		 */
 
 		@Override
@@ -810,9 +810,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 			/*
 			 * if (getVirtualModel() != null) { getVirtualModel().setChanged();
 			 * getVirtualModel().notifyObservers(new
-			 * EditionPatternHierarchyChanged(this));
-			 * getVirtualModel().notifyChange("allRootEditionPatterns", null,
-			 * getVirtualModel().getAllRootEditionPatterns()); }
+			 * FlexoConceptHierarchyChanged(this));
+			 * getVirtualModel().notifyChange("allRootFlexoConcepts", null,
+			 * getVirtualModel().getAllRootFlexoConcepts()); }
 			 */
 		}
 
@@ -822,9 +822,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 			/*
 			 * parentFlexoConcept.setChanged();
 			 * parentFlexoConcept.notifyObservers(new
-			 * EditionPatternHierarchyChanged(this));
-			 * parentFlexoConcept.notifyChange("childEditionPatterns", null,
-			 * getChildEditionPatterns());
+			 * FlexoConceptHierarchyChanged(this));
+			 * parentFlexoConcept.notifyChange("childFlexoConcepts", null,
+			 * getChildFlexoConcepts());
 			 */
 		}
 
@@ -834,15 +834,15 @@ public interface FlexoConcept extends FlexoConceptObject {
 			/*
 			 * parentFlexoConcept.setChanged();
 			 * parentFlexoConcept.notifyObservers(new
-			 * EditionPatternHierarchyChanged(this));
-			 * parentFlexoConcept.notifyChange("childEditionPatterns", null,
-			 * getChildEditionPatterns());
+			 * FlexoConceptHierarchyChanged(this));
+			 * parentFlexoConcept.notifyChange("childFlexoConcepts", null,
+			 * getChildFlexoConcepts());
 			 */
 		}
 
 		/*
-		 * @Override public Vector<FlexoConcept> getChildEditionPatterns() {
-		 * return childEditionPatterns; }
+		 * @Override public Vector<FlexoConcept> getChildFlexoConcepts() {
+		 * return childFlexoConcepts; }
 		 */
 
 		@Override

@@ -49,7 +49,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 
 		/*@Override
 		public List<PatternRole> getAvailablePatternRoles() {
-			return getEditionPattern().getPatternRoles();
+			return getFlexoConcept().getPatternRoles();
 		}*/
 
 		@Override
@@ -172,8 +172,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		/*	@Override
 			public AddShape createAddShapeAction() {
 				AddShape newAction = new AddShape(null);
-				if (getEditionPattern().getDefaultShapePatternRole() != null) {
-					newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+				if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+					newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 				}
 				addToActions(newAction);
 				return newAction;
@@ -224,8 +224,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			@Override
 			public AddConnector createAddConnectorAction() {
 				AddConnector newAction = new AddConnector(null);
-				if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-					newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+				if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+					newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 				}
 				addToActions(newAction);
 				return newAction;
@@ -253,7 +253,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public AddFlexoConcept createAddEditionPatternAction() {
+			public AddFlexoConcept createAddFlexoConceptAction() {
 				AddFlexoConcept newAction = new AddFlexoConcept(null);
 				addToActions(newAction);
 				return newAction;
@@ -276,8 +276,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			@Override
 			public CloneShape createCloneShapeAction() {
 				CloneShape newAction = new CloneShape(null);
-				if (getEditionPattern().getDefaultShapePatternRole() != null) {
-					newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultShapePatternRole().getPatternRoleName()));
+				if (getFlexoConcept().getDefaultShapePatternRole() != null) {
+					newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultShapePatternRole().getPatternRoleName()));
 				}
 				addToActions(newAction);
 				return newAction;
@@ -286,8 +286,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			@Override
 			public CloneConnector createCloneConnectorAction() {
 				CloneConnector newAction = new CloneConnector(null);
-				if (getEditionPattern().getDefaultConnectorPatternRole() != null) {
-					newAction.setAssignation(new ViewPointDataBinding(getEditionPattern().getDefaultConnectorPatternRole().getPatternRoleName()));
+				if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
+					newAction.setAssignation(new ViewPointDataBinding(getFlexoConcept().getDefaultConnectorPatternRole().getPatternRoleName()));
 				}
 				addToActions(newAction);
 				return newAction;

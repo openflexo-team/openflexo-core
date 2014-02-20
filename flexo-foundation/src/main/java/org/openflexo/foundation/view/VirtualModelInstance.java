@@ -124,16 +124,16 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	@Getter(value = FLEXO_CONCEPT_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
-	public List<FlexoConceptInstance> getEditionPatternInstancesList();
+	public List<FlexoConceptInstance> getFlexoConceptInstancesList();
 
 	@Setter(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void setEditionPatternInstancesList(List<FlexoConceptInstance> flexoConceptInstancesList);
+	public void setFlexoConceptInstancesList(List<FlexoConceptInstance> flexoConceptInstancesList);
 
 	@Adder(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void addToEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
+	public void addToFlexoConceptInstancesList(FlexoConceptInstance aFlexoConceptInstancesList);
 
 	@Remover(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void removeFromEditionPatternInstancesList(FlexoConceptInstance aEditionPatternInstancesList);
+	public void removeFromFlexoConceptInstancesList(FlexoConceptInstance aFlexoConceptInstancesList);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -301,7 +301,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setVirtualModelInstance(this);
 			returned.setFlexoConcept(concept);
-			return registerEditionPatternInstance(returned);
+			return registerFlexoConceptInstance(returned);
 		}
 
 		/**
@@ -310,7 +310,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @param epi
 		 * @return
 		 */
-		protected FlexoConceptInstance registerEditionPatternInstance(FlexoConceptInstance epi) {
+		protected FlexoConceptInstance registerFlexoConceptInstance(FlexoConceptInstance epi) {
 			if (epi.getFlexoConcept() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + epi);
 				logger.warning("EPI: " + epi.debug());
@@ -321,8 +321,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					flexoConceptInstances.put(epi.getFlexoConcept(), hash);
 				}
 				hash.put(epi.getFlexoID(), epi);
-				// System.out.println("Registered EPI " + epi + " in " + epi.getEditionPattern());
-				// System.out.println("Registered: " + getEPInstances(epi.getEditionPattern()));
+				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
+				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
 			}
 			return epi;
 		}
@@ -333,7 +333,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @param epi
 		 * @return
 		 */
-		protected FlexoConceptInstance unregisterEditionPatternInstance(FlexoConceptInstance epi) {
+		protected FlexoConceptInstance unregisterFlexoConceptInstance(FlexoConceptInstance epi) {
 			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
 			if (hash == null) {
 				hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -345,7 +345,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 		// Do not use this since not efficient, used in deserialization only
 		@Override
-		public List<FlexoConceptInstance> getEditionPatternInstancesList() {
+		public List<FlexoConceptInstance> getFlexoConceptInstancesList() {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (Map<Long, FlexoConceptInstance> epMap : flexoConceptInstances.values()) {
 				for (FlexoConceptInstance epi : epMap.values()) {
@@ -356,20 +356,20 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public void setEditionPatternInstancesList(List<FlexoConceptInstance> epiList) {
+		public void setFlexoConceptInstancesList(List<FlexoConceptInstance> epiList) {
 			for (FlexoConceptInstance epi : epiList) {
-				addToEditionPatternInstancesList(epi);
+				addToFlexoConceptInstancesList(epi);
 			}
 		}
 
 		@Override
-		public void addToEditionPatternInstancesList(FlexoConceptInstance epi) {
-			registerEditionPatternInstance(epi);
+		public void addToFlexoConceptInstancesList(FlexoConceptInstance epi) {
+			registerFlexoConceptInstance(epi);
 		}
 
 		@Override
-		public void removeFromEditionPatternInstancesList(FlexoConceptInstance epi) {
-			unregisterEditionPatternInstance(epi);
+		public void removeFromFlexoConceptInstancesList(FlexoConceptInstance epi) {
+			unregisterFlexoConceptInstance(epi);
 		}
 
 		public Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> getFlexoConceptInstances() {
@@ -383,7 +383,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		// TODO: performance isssues
 		@Override
 		public Collection<FlexoConceptInstance> getAllEPInstances() {
-			return getEditionPatternInstancesList();
+			return getFlexoConceptInstancesList();
 		}
 
 		@Override

@@ -71,7 +71,7 @@ public class SynchronizationSchemeActionType extends
 		return synchronizationScheme;
 	}
 
-	public FlexoConceptInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 

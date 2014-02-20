@@ -266,9 +266,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			return new EditionSchemePathElement(parent, (EditionScheme) function, null);
 		}
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
-		// Hook to specialize type returned by getEditionPatternInstance(String)
+		// Hook to specialize type returned by getFlexoConceptInstance(String)
 		// This method is used while executing DiagramElement inspectors
-		if (function.getName().equals("getEditionPatternInstance")) {
+		if (function.getName().equals("getFlexoConceptInstance")) {
 			if (TypeUtils.isTypeAssignableFrom(ViewObject.class, parent.getType()) && args.size() == 1 && args.get(0).isStringConstant()) {
 				String flexoConceptId = ((StringConstant) args.get(0).getExpression()).getValue();
 				FlexoConcept ep = viewPoint.getFlexoConcept(flexoConceptId);
