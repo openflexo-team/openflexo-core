@@ -25,7 +25,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoGUIAction;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 
 public class VESelectAll extends FlexoGUIAction<VESelectAll, VirtualModelInstanceObject, VirtualModelInstanceObject> {
@@ -55,7 +55,7 @@ public class VESelectAll extends FlexoGUIAction<VESelectAll, VirtualModelInstanc
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(VESelectAll.actionType, EditionPatternInstance.class);
+		FlexoObjectImpl.addActionForClass(VESelectAll.actionType, FlexoConceptInstance.class);
 	}
 
 	VESelectAll(VirtualModelInstanceObject focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {

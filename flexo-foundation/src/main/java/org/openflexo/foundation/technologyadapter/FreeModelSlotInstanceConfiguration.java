@@ -31,6 +31,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.FreeModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.toolbox.StringUtils;
@@ -88,7 +89,10 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD>, MS 
 
 	@Override
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(VirtualModelInstance vmInstance) {
-		FreeModelSlotInstance<RD, MS> returned = new FreeModelSlotInstance<RD, MS>(vmInstance, getModelSlot());
+		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
+		returned.setModelSlot(getModelSlot());
+		returned.setVirtualModelInstance(vmInstance);
 		configureModelSlotInstance(returned);
 		return returned;
 	}

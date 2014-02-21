@@ -60,7 +60,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 					.newInstance(VirtualModelInstanceResource.class);
 			returned.setFactory(VIRTUAL_MODEL_INSTANCE_FACTORY);
 			String baseName = name;
-			File xmlFile = new File(view.getResource().getFile().getParentFile(), baseName
+			File xmlFile = new File(((ViewResource) view.getResource()).getFile().getParentFile(), baseName
 					+ VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setProject(view.getProject());
 			returned.setName(name);

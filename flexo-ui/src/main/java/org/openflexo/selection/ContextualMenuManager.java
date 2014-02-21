@@ -47,7 +47,7 @@ import org.openflexo.foundation.action.ActionMenu;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
 import org.openflexo.foundation.view.action.NavigationSchemeActionType;
 import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
@@ -278,17 +278,17 @@ public abstract class ContextualMenuManager {
 				}
 			}
 			if (focusedObject instanceof FlexoObject) {
-				if (focusedObject.getEditionPatternReferences() != null) {
-					for (FlexoObjectReference<EditionPatternInstance> ref : focusedObject.getEditionPatternReferences()) {
-						EditionPatternInstance epi = ref.getObject();
+				if (focusedObject.getFlexoConceptReferences() != null) {
+					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
+						FlexoConceptInstance epi = ref.getObject();
 						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
 							for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
 								contextualMenu.putAction(new ActionSchemeActionType(as, epi));
 							}
 						}
 					}
-					for (FlexoObjectReference<EditionPatternInstance> ref : focusedObject.getEditionPatternReferences()) {
-						EditionPatternInstance epi = ref.getObject();
+					for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
+						FlexoConceptInstance epi = ref.getObject();
 						if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
 							for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {
 								contextualMenu.putAction(new NavigationSchemeActionType(ns, epi));
@@ -297,8 +297,8 @@ public abstract class ContextualMenuManager {
 					}
 				}
 			}
-			if (focusedObject instanceof EditionPatternInstance) {
-				EditionPatternInstance epi = (EditionPatternInstance) focusedObject;
+			if (focusedObject instanceof FlexoConceptInstance) {
+				FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
 				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
 					contextualMenu.putAction(new SynchronizationSchemeActionType(epi.getFlexoConcept().getSynchronizationScheme(), epi));
 				}

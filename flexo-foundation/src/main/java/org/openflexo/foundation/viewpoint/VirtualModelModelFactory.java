@@ -19,29 +19,29 @@
  */
 package org.openflexo.foundation.viewpoint;
 
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
-import org.openflexo.foundation.viewpoint.editionaction.CreateEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteEditionPatternInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
 import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ObjectPropertyInspectorEntry;
@@ -86,8 +86,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(SynchronizationScheme.class);
 	}
 
-	public EditionPatternConstraint newEditionPatternConstraint() {
-		return newInstance(EditionPatternConstraint.class);
+	public FlexoConceptConstraint newFlexoConceptConstraint() {
+		return newInstance(FlexoConceptConstraint.class);
 	}
 
 	public CreationScheme newCreationScheme() {
@@ -110,14 +110,14 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DeletionScheme.class);
 	}
 
-	public AddEditionPatternInstanceParameter newAddEditionPatternInstanceParameter(EditionSchemeParameter p) {
-		AddEditionPatternInstanceParameter returned = newInstance(AddEditionPatternInstanceParameter.class);
+	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+		AddFlexoConceptInstanceParameter returned = newInstance(AddFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
 
-	public DeleteEditionPatternInstanceParameter newDeleteEditionPatternInstanceParameter(EditionSchemeParameter p) {
-		DeleteEditionPatternInstanceParameter returned = newInstance(DeleteEditionPatternInstanceParameter.class);
+	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+		DeleteFlexoConceptInstanceParameter returned = newInstance(DeleteFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
@@ -130,14 +130,14 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ObjectPropertyAssertion.class);
 	}
 
-	public EditionPatternBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
-		EditionPatternBehaviouralFacet returned = newInstance(EditionPatternBehaviouralFacet.class);
+	public FlexoConceptBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
+		FlexoConceptBehaviouralFacet returned = newInstance(FlexoConceptBehaviouralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}
 
-	public EditionPatternStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
-		EditionPatternStructuralFacet returned = newInstance(EditionPatternStructuralFacet.class);
+	public FlexoConceptStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
+		FlexoConceptStructuralFacet returned = newInstance(FlexoConceptStructuralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
 		return returned;
 	}
@@ -194,8 +194,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(ListParameter.class);
 	}
 
-	public EditionPatternInstanceParameter newEditionPatternInstanceParameter() {
-		return newInstance(EditionPatternInstanceParameter.class);
+	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter() {
+		return newInstance(FlexoConceptInstanceParameter.class);
 	}
 
 	public EditionSchemeParameters newEditionSchemeParameters(EditionScheme editionScheme) {
@@ -208,8 +208,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(FetchRequestCondition.class);
 	}
 
-	public EditionPatternInspector newFlexoConceptInspector(FlexoConcept ep) {
-		EditionPatternInspector returned = newInstance(EditionPatternInspector.class);
+	public FlexoConceptInspector newFlexoConceptInspector(FlexoConcept ep) {
+		FlexoConceptInspector returned = newInstance(FlexoConceptInspector.class);
 		returned.setFlexoConcept(ep);
 		return returned;
 	}
@@ -250,8 +250,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DataPropertyInspectorEntry.class);
 	}
 
-	public CreateEditionPatternInstanceParameter newCreateEditionPatternInstanceParameter(EditionSchemeParameter p) {
-		CreateEditionPatternInstanceParameter returned = newInstance(CreateEditionPatternInstanceParameter.class);
+	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+		CreateFlexoConceptInstanceParameter returned = newInstance(CreateFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
@@ -262,16 +262,16 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public EditionPatternInstancePatternRole newEditionPatternInstancePatternRole() {
-		return newInstance(EditionPatternInstancePatternRole.class);
+	public FlexoConceptInstancePatternRole newFlexoConceptInstancePatternRole() {
+		return newInstance(FlexoConceptInstancePatternRole.class);
 	}
 
-	public AddEditionPatternInstance newAddEditionPatternInstance() {
-		return newInstance(AddEditionPatternInstance.class);
+	public AddFlexoConceptInstance newAddFlexoConceptInstance() {
+		return newInstance(AddFlexoConceptInstance.class);
 	}
 
-	public SelectEditionPatternInstance newSelectEditionPatternInstance() {
-		return newInstance(SelectEditionPatternInstance.class);
+	public SelectFlexoConceptInstance newSelectFlexoConceptInstance() {
+		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
 	public FlexoConcept newFlexoConcept() {
@@ -282,8 +282,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DeleteAction.class);
 	}
 
-	public MatchEditionPatternInstance newMatchEditionPatternInstance() {
-		return newInstance(MatchEditionPatternInstance.class);
+	public MatchFlexoConceptInstance newMatchFlexoConceptInstance() {
+		return newInstance(MatchFlexoConceptInstance.class);
 	}
 
 	public DeclarePatternRole newDeclarePatternRole() {

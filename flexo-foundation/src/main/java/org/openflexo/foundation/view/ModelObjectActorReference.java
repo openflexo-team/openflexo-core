@@ -2,34 +2,78 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
-public class ModelObjectActorReference<T extends FlexoProjectObject> extends ActorReference<T> {
+/**
+ * Implements {@link ActorReference} for {@link FlexoObject} as modelling elements.<br>
+ * 
+ * @author sylvain
+ * 
+ * @param <T>
+ */
+@ModelEntity
+@ImplementationClass(ModelObjectActorReference.ModelObjectActorReferenceImpl.class)
+@XMLElement
+public interface ModelObjectActorReference<T extends FlexoObject> extends ActorReference<T> {
 
-	private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
+	@PropertyIdentifier(type = FlexoObjectReference.class)
+	public static final String OBJECT_REFERENCE_KEY = "objectReference";
 
-	public T object;
-	public FlexoObjectReference objectReference;
+	@Getter(value = OBJECT_REFERENCE_KEY)
+	@XMLAttribute
+	public FlexoObjectReference getObjectReference();
 
-	public ModelObjectActorReference(T o, PatternRole aPatternRole, EditionPatternInstance epi) {
-		super(epi.getProject());
-		setEditionPatternInstance(epi);
-		setPatternRole(aPatternRole);
-		object = o;
-		objectReference = new FlexoObjectReference(o, o.getProject());
-	}
+	@Setter(OBJECT_REFERENCE_KEY)
+	public void setObjectReference(FlexoObjectReference objectReference);
 
-	@Override
-	public T retrieveObject() {
-		if (object == null) {
-			object = (T) objectReference.getObject(true);
+	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T> implements
+			ModelObjectActorReference<T> {
+
+		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
+
+		public T object;
+		public FlexoObjectReference objectReference;
+
+		/**
+		 * Default constructor
+		 */
+		public ModelObjectActorReferenceImpl() {
+			super();
 		}
-		if (object == null) {
-			logger.warning("Could not retrieve object " + objectReference);
+
+		/*public ModelObjectActorReferenceImpl(T o, PatternRole aPatternRole, FlexoConceptInstance epi) {
+			super(epi.getProject());
+			setFlexoConceptInstance(epi);
+			setPatternRole(aPatternRole);
+			object = o;
+			objectReference = new FlexoObjectReference(o, o.getProject());
+		}*/
+
+		@Override
+		public void setModellingElement(T object) {
+			this.object = object;
+			objectReference = new FlexoObjectReference(object);
 		}
-		return object;
+
+		@Override
+		public T getModellingElement() {
+			if (object == null) {
+				object = (T) objectReference.getObject(true);
+			}
+			if (object == null) {
+				logger.warning("Could not retrieve object " + objectReference);
+			}
+			return object;
+		}
+
 	}
 }

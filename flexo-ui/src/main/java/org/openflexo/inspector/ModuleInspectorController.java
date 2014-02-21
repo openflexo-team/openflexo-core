@@ -40,7 +40,7 @@ import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.fib.model.FIBWidget;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.controller.FlexoController;
@@ -81,7 +81,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 		this.flexoController = flexoController;
 		inspectors = new Hashtable<Class<?>, FIBInspector>();
 		inspectorDialog = new FIBInspectorDialog(this);
-		Boolean visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+		Boolean visible = null;
+		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
+			visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+		}
 		inspectorDialog.setVisible(visible == null || visible);
 		inspectorDialog.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -297,8 +300,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 			switchToEmptyContent();
 		} else {
 			boolean updateEPTabs = false;
-			if (object instanceof EditionPatternInstance) {
-				updateEPTabs = newInspector.updateEditionPatternInstanceInspector((EditionPatternInstance) object);
+			if (object instanceof FlexoConceptInstance) {
+				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
 			} else if (object instanceof FlexoObject) {
 				updateEPTabs = newInspector.updateFlexoObjectInspector((FlexoObject) object);
 			}

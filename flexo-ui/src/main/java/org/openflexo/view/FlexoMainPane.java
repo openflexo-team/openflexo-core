@@ -158,7 +158,8 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 				if (tab.getObject() == null || tab.getObject().isDeleted()) {
 					return false;
 				}
-				if (!getController().getApplicationContext().getAdvancedPrefs().getShowAllTabs()
+				if (getController().getApplicationContext().getAdvancedPrefs() != null
+						&& !getController().getApplicationContext().getAdvancedPrefs().getShowAllTabs()
 						&& (tab.getEditor() == null || !tab.getEditor().equals(getController().getControllerModel().getCurrentEditor()))) {
 					return false;
 				}

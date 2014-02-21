@@ -3,7 +3,7 @@
   <description>Package diagrams allows to define a graph of packages.
 To simplify complex class diagrams, you can group classes into packages. 
 A package is a collection of logically related UML elements.</description>
-  <EditionPattern id="2" name="Package">
+  <FlexoConcept id="2" name="Package">
     <description>A package is used to group elements, and provides a namespace for the grouped elements.
 A package can have one or more profile applications to indicate which profiles have been applied. Because a profile is a package, it is possible to apply a profile not only to packages, but also to profiles.
 Package specializes TemplateableElement and PackageableElement specializes ParameterableElement to specify that a package can be used as a template and a PackageableElement as a template parameter.</description>
@@ -42,8 +42,8 @@ Package specializes TemplateableElement and PackageableElement specializes Param
       <TextField id="25" label="uri" name="uri" readOnly="false" data="package.uriName" conditional="" />
       <TextField id="26" label="package" name="package" readOnly="false" data="package.name" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="27" name="ImportPackage">
+  </FlexoConcept>
+  <FlexoConcept id="27" name="ImportPackage">
     <description>Allows to define dependancies between packages
 A package import is a relationship that allows the use of unqualified names to refer to package members from other namespaces.
 One package depends on another if changes in the other could possibly force changes in the first.</description>
@@ -102,7 +102,7 @@ One package depends on another if changes in the other could possibly force chan
       <TextField id="70" label="source_package" name="source" readOnly="true" data="package.name" conditional="" />
       <TextField id="71" label="imported_package" name="imported" readOnly="true" data="importedPackage.name" conditional="" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="72" />
   <OWLModelSlot idref="8" />
   <DiagramModelSlot id="73" isRequired="false" isReadOnly="false" name="diagram" />

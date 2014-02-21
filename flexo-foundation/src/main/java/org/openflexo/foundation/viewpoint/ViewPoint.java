@@ -41,7 +41,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.binding.EditionPatternBindingFactory;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.viewpoint.dm.VirtualModelCreated;
 import org.openflexo.foundation.viewpoint.dm.VirtualModelDeleted;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
@@ -103,7 +103,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = LocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
-	@PropertyIdentifier(type = List.class)
+	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	public static final String VIRTUAL_MODELS_KEY = "virtualModels";
 
 	@Getter(value = VIEW_POINT_URI_KEY)
@@ -138,15 +138,15 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	 * Retrieves the right type given the FlexoConcept
 	 */
 
-	public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept);
+	public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept);
 
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @return
 	 */
-	public FlexoConcept getFlexoConcept(String editionPatternId);
+	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
 	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
@@ -183,11 +183,11 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
 		private BindingModel bindingModel;
-		private final EditionPatternBindingFactory bindingFactory = new EditionPatternBindingFactory(this);
+		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
-		// Maps to reference all the EditionPatternInstanceType, DiagramType, VirtualModelType used in this context
+		// Maps to reference all the FlexoConceptInstanceType, DiagramType, VirtualModelType used in this context
 
-		private final Map<FlexoConcept, EditionPatternInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, EditionPatternInstanceType>();
+		private final Map<FlexoConcept, FlexoConceptInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, FlexoConceptInstanceType>();
 		private final Map<FlexoConcept, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<FlexoConcept, VirtualModelInstanceType>();
 
 		/**
@@ -195,6 +195,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
+		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
 			File viewpointDir = new File(containerDir, baseName + ".viewpoint");
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir, library);
@@ -256,7 +257,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			loadViewpointMetaModels();
 
 			/*for (VirtualModel vm : getVirtualModels()) {
-				for (FlexoConcept ep : vm.getEditionPatterns()) {
+				for (FlexoConcept ep : vm.getFlexoConcepts()) {
 					for (PatternRole<?> pr : ep.getPatternRoles()) {
 						if (pr instanceof ShapePatternRole) {
 							((ShapePatternRole) pr).tryToFindAGR();
@@ -273,9 +274,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		/**
 		 * Return the URI of the {@link ViewPoint}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<edition_pattern_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyEditionPattern.MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
 		 * 
 		 * @return String representing unique URI of this object
 		 */
@@ -490,18 +491,18 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
-		 * @param editionPatternId
+		 * @param flexoConceptId
 		 * @return
 		 */
 		@Override
-		public FlexoConcept getFlexoConcept(String editionPatternId) {
+		public FlexoConcept getFlexoConcept(String flexoConceptId) {
 			for (VirtualModel vm : getVirtualModels()) {
-				FlexoConcept returned = vm.getFlexoConcept(editionPatternId);
+				FlexoConcept returned = vm.getFlexoConcept(flexoConceptId);
 				if (returned != null) {
 					return returned;
 				}
 			}
-			// logger.warning("Not found FlexoConcept:" + editionPatternId);
+			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			return null;
 		}
 
@@ -589,7 +590,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public EditionPatternBindingFactory getBindingFactory() {
+		public FlexoConceptBindingFactory getBindingFactory() {
 			return bindingFactory;
 		}
 
@@ -747,8 +748,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * Retrieves the right type given the FlexoConcept
 		 */
 		@Override
-		public EditionPatternInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
-			EditionPatternInstanceType instanceType = null;
+		public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
+			FlexoConceptInstanceType instanceType = null;
 
 			if (anFlexoConcept != null) {
 				if (anFlexoConcept instanceof VirtualModel) {
@@ -760,7 +761,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 				} else {
 					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
-						instanceType = new EditionPatternInstanceType(anFlexoConcept);
+						instanceType = new FlexoConceptInstanceType(anFlexoConcept);
 						flexoConceptTypesMap.put(anFlexoConcept, instanceType);
 					}
 				}

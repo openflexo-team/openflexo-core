@@ -28,7 +28,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 
-	@PropertyIdentifier(type = MatchEditionPatternInstance.class)
+	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
@@ -36,11 +36,11 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
-	@Getter(value = ACTION_KEY, inverse = MatchEditionPatternInstance.MATCHING_CRITERIAS_KEY)
-	public MatchEditionPatternInstance getAction();
+	@Getter(value = ACTION_KEY, inverse = MatchFlexoConceptInstance.MATCHING_CRITERIAS_KEY)
+	public MatchFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(MatchEditionPatternInstance action);
+	public void setAction(MatchFlexoConceptInstance action);
 
 	@Getter(value = PATTERN_ROLE_NAME_KEY)
 	@XMLAttribute
@@ -66,7 +66,7 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 
-		private MatchEditionPatternInstance action;
+		private MatchFlexoConceptInstance action;
 
 		private PatternRole patternRole;
 		private String patternRoleName;
@@ -168,12 +168,12 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 		}
 
 		@Override
-		public MatchEditionPatternInstance getAction() {
+		public MatchFlexoConceptInstance getAction() {
 			return action;
 		}
 
 		@Override
-		public void setAction(MatchEditionPatternInstance action) {
+		public void setAction(MatchFlexoConceptInstance action) {
 			this.action = action;
 		}
 

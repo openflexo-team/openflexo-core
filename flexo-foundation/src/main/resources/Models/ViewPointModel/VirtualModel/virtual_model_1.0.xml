@@ -14,7 +14,7 @@
 	<entity name="org.openflexo.foundation.viewpoint.VirtualModel" xmlTag="VirtualModel" finalizer="finalizeDeserialization">
 		<property name="version" xmlTag="version" attribute="YES" />
 		<property name="modelVersion" xmlTag="modelVersion" attribute="YES" />
-		<property name="editionPatterns" type="vector"
+		<property name="flexoConcepts" type="vector"
 			contains="org.openflexo.foundation.viewpoint.FlexoConcept"
 			primary="yes" />
 		<property name="localizedDictionary" xmlTag="LocalizedDictionary" />
@@ -76,7 +76,7 @@
 	</entity>
 
 	<entity name="org.openflexo.foundation.viewpoint.FlexoConcept"
-		xmlTag="EditionPattern">
+		xmlTag="FlexoConcept">
 		<property name="name" xmlTag="name" attribute="YES" />
 		<property name="description" xmlTag="description" />
 		<property name="editionSchemes" type="vector" contains="org.openflexo.foundation.viewpoint.EditionScheme" />
@@ -84,16 +84,16 @@
 		<property name="primaryConceptRole" contains="org.openflexo.foundation.viewpoint.PatternRole" context="PrimaryConcept"/>
 		<property name="primaryRepresentationRole" contains="org.openflexo.foundation.viewpoint.PatternRole" context="PrimaryRepresentation"/>
 		<property name="inspector" xmlTag="Inspector" />
-	 	<!--  <property name="parentEditionPattern" contains="org.openflexo.foundation.viewpoint.FlexoConcept" context="Parent" primary="false"/> -->
-		<property name="parentEditionPatternURI" xmlTag="parentEditionPattern" attribute="YES" />
-		<property name="editionPatternConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.EditionPatternConstraint"/>
+	 	<!--  <property name="parentFlexoConcept" contains="org.openflexo.foundation.viewpoint.FlexoConcept" context="Parent" primary="false"/> -->
+		<property name="parentFlexoConceptURI" xmlTag="parentFlexoConcept" attribute="YES" />
+		<property name="flexoConceptConstraints" type="vector" contains="org.openflexo.foundation.viewpoint.FlexoConceptConstraint"/>
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.EditionPatternConstraint" xmlTag="Constraint">
+	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptConstraint" xmlTag="Constraint">
 		<property name="constraint" xmlTag="constraint" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector"
+	<entity name="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector"
 		xmlTag="Inspector">
 		<property name="inspectorTitle" xmlTag="inspectorTitle" attribute="YES" />
 		<property name="renderer" xmlTag="renderer" attribute="YES" />
@@ -190,8 +190,8 @@
 		<property name="diagramSpecificationURI" xmlTag="diagramSpecificationURI" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole" xmlTag="EditionPatternInstancePatternRole">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole" xmlTag="FlexoConceptInstancePatternRole">
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
 	</entity>
 
@@ -435,8 +435,8 @@
 	</entity>
 
 	<entity
-		name="org.openflexo.foundation.viewpoint.EditionPatternInstanceParameter" xmlTag="EditionPatternInstanceParameter">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+		name="org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter" xmlTag="FlexoConceptInstanceParameter">
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 	</entity>
 
 
@@ -502,39 +502,39 @@
 		<property name="diagramSpecificationURI" xmlTag="diagramSpecificationURI" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.SelectEditionPatternInstance" xmlTag="SelectEditionPatternInstance">
-		<property name="editionPatternTypeURI" xmlTag="editionPatternTypeURI" attribute="YES" />
+	<entity name="org.openflexo.foundation.viewpoint.SelectFlexoConceptInstance" xmlTag="SelectFlexoConceptInstance">
+		<property name="flexoConceptTypeURI" xmlTag="flexoConceptTypeURI" attribute="YES" />
 	</entity>
 
 
-	<entity name="org.openflexo.foundation.viewpoint.AddEditionPatternInstance" xmlTag="AddEditionPatternInstance">
+	<entity name="org.openflexo.foundation.viewpoint.AddFlexoConceptInstance" xmlTag="AddFlexoConceptInstance">
 		<property name="virtualModelInstance" xmlTag="virtualModelInstance" attribute="YES" />
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
-		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.AddEditionPatternInstanceParameter" />
+		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.AddFlexoConceptInstanceParameter" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.AddEditionPatternInstanceParameter" xmlTag="AddEditionPatternInstanceParameter">
+	<entity name="org.openflexo.foundation.viewpoint.AddFlexoConceptInstanceParameter" xmlTag="AddFlexoConceptInstanceParameter">
 		<property name="paramName" xmlTag="paramName" attribute="YES" />
 		<property name="value" xmlTag="value" attribute="YES" />
 	</entity>
 
 
-	<entity name="org.openflexo.foundation.viewpoint.DeleteEditionPatternInstance" xmlTag="DeleteEditionPatternInstance">
+	<entity name="org.openflexo.foundation.viewpoint.DeleteFlexoConceptInstance" xmlTag="DeleteFlexoConceptInstance">
 		<property name="virtualModelInstance" xmlTag="virtualModelInstance" attribute="YES" />
 		<property name="deletionSchemeURI" xmlTag="deletionSchemeURI" attribute="YES" />
-		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.DeleteEditionPatternInstance$DeleteEditionPatternInstanceParameter" />
+		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.DeleteFlexoConceptInstance$DeleteFlexoConceptInstanceParameter" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.DeleteEditionPatternInstance$DeleteEditionPatternInstanceParameter" xmlTag="DeleteEditionPatternInstanceParameter">
+	<entity name="org.openflexo.foundation.viewpoint.DeleteFlexoConceptInstance$DeleteFlexoConceptInstanceParameter" xmlTag="DeleteFlexoConceptInstanceParameter">
 		<property name="paramName" xmlTag="paramName" attribute="YES" />
 		<property name="value" xmlTag="value" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.MatchEditionPatternInstance" xmlTag="MatchEditionPatternInstance">
+	<entity name="org.openflexo.foundation.viewpoint.MatchFlexoConceptInstance" xmlTag="MatchFlexoConceptInstance">
 		<property name="virtualModelInstance" xmlTag="virtualModelInstance" attribute="YES" />
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
 		<property name="matchingCriterias" type="vector" contains="org.openflexo.foundation.viewpoint.MatchingCriteria" />
-		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.CreateEditionPatternInstanceParameter" />
+		<property name="parameters" type="vector" contains="org.openflexo.foundation.viewpoint.CreateFlexoConceptInstanceParameter" />
 	</entity>
 
 	<entity name="org.openflexo.foundation.viewpoint.MatchingCriteria" xmlTag="MatchingCriteria">
@@ -542,7 +542,7 @@
 		<property name="value" xmlTag="value" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.CreateEditionPatternInstanceParameter" xmlTag="CreateEditionPatternInstanceParameter">
+	<entity name="org.openflexo.foundation.viewpoint.CreateFlexoConceptInstanceParameter" xmlTag="CreateFlexoConceptInstanceParameter">
 		<property name="paramName" xmlTag="paramName" attribute="YES" />
 		<property name="value" xmlTag="value" attribute="YES" />
 	</entity>

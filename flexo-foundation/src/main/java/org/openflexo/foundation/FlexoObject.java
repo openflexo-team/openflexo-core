@@ -39,11 +39,10 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationReport;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Adder;
@@ -78,8 +77,8 @@ import org.openflexo.toolbox.HTMLUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoObject.FlexoObjectImpl.class)
-public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject,
-		KeyValueCoding, Validable {
+// TODO: remove ReferenceOwner declaration and create a new class
+public abstract interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
 	@PropertyIdentifier(type = String.class)
 	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
@@ -168,49 +167,49 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 	public boolean hasSpecificHelp(String key);
 
 	/**
-	 * Return the list of all references to EditionPatternInstance where this FlexoObject is involved in a PatternRole
+	 * Return the list of all references to FlexoConceptInstance where this FlexoObject is involved in a PatternRole
 	 * 
 	 * @return
 	 */
-	public List<FlexoObjectReference<EditionPatternInstance>> getEditionPatternReferences();
+	public List<FlexoObjectReference<FlexoConceptInstance>> getFlexoConceptReferences();
 
-	// public void setEditionPatternReferences(List<FlexoModelObjectReference<EditionPatternInstance>> editionPatternReferences);
+	// public void setFlexoConceptReferences(List<FlexoModelObjectReference<FlexoConceptInstance>> flexoConceptReferences);
 
-	public void addToEditionPatternReferences(final FlexoObjectReference<EditionPatternInstance> ref);
+	public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref);
 
-	public void removeFromEditionPatternReferences(FlexoObjectReference<EditionPatternInstance> ref);
+	public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref);
 
 	/**
-	 * Return the {@link EditionPatternInstance}
+	 * Return the {@link FlexoConceptInstance}
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @param instanceId
 	 * @return
 	 */
-	public EditionPatternInstance getEditionPatternInstance(String editionPatternId, long instanceId);
+	public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId, long instanceId);
 
 	/**
-	 * Return EditionPatternInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its
+	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its
 	 * URI<br>
-	 * If many EditionPatternInstance are declared in this FlexoProjectObject, return first one
+	 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @return
 	 */
-	public EditionPatternInstance getEditionPatternInstance(String editionPatternId);
+	public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId);
 
 	/**
-	 * Return EditionPatternInstance matching supplied FlexoConcept<br>
-	 * If many EditionPatternInstance are declared in this FlexoProjectObject, return first one
+	 * Return FlexoConceptInstance matching supplied FlexoConcept<br>
+	 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 	 * 
-	 * @param editionPatternId
+	 * @param flexoConceptId
 	 * @return
 	 */
-	public EditionPatternInstance getFlexoConceptInstance(FlexoConcept flexoConcept);
+	public FlexoConceptInstance getFlexoConceptInstance(FlexoConcept flexoConcept);
 
-	public void registerEditionPatternReference(EditionPatternInstance editionPatternInstance);
+	public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
 
-	public void unregisterEditionPatternReference(EditionPatternInstance editionPatternInstance);
+	public void unregisterFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
 
 	@Deprecated
 	public void setChanged();
@@ -258,7 +257,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		 * This list contains all EPI's by reference
 		 */
 		// TODO: merge with referencers
-		private List<FlexoObjectReference<EditionPatternInstance>> editionPatternReferences;
+		private List<FlexoObjectReference<FlexoConceptInstance>> flexoConceptReferences;
 
 		private final List<FlexoObjectReference<?>> referencers;
 
@@ -268,7 +267,7 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		public FlexoObjectImpl() {
 			specificDescriptions = new TreeMap<String, String>();
 			customProperties = new ArrayList<FlexoProperty>();
-			editionPatternReferences = new ArrayList<FlexoObjectReference<EditionPatternInstance>>();
+			flexoConceptReferences = new ArrayList<FlexoObjectReference<FlexoConceptInstance>>();
 			referencers = new ArrayList<FlexoObjectReference<?>>();
 		}
 
@@ -294,16 +293,16 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		 */
 		public boolean delete() {
 
-			for (FlexoObjectReference<EditionPatternInstance> ref : new ArrayList<FlexoObjectReference<EditionPatternInstance>>(
-					editionPatternReferences)) {
-				EditionPatternInstance epi = ref.getObject();
+			for (FlexoObjectReference<FlexoConceptInstance> ref : new ArrayList<FlexoObjectReference<FlexoConceptInstance>>(
+					flexoConceptReferences)) {
+				FlexoConceptInstance epi = ref.getObject();
 				if (epi != null) {
 					epi.nullifyPatternActor(epi.getRoleForActor(this));
 				}
 			}
 
-			editionPatternReferences.clear();
-			editionPatternReferences = null;
+			flexoConceptReferences.clear();
+			flexoConceptReferences = null;
 
 			setChanged();
 			notifyObservers(new ObjectDeleted(this));
@@ -368,36 +367,16 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		@Override
-		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
+		public List<FlexoObjectReference<FlexoConceptInstance>> getFlexoConceptReferences() {
+			return flexoConceptReferences;
 		}
 
-		@Override
-		public void objectCantBeFound(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
-		}
-
-		@Override
-		public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-			setChanged();
-		}
-
-		@Override
-		public void objectDeleted(FlexoObjectReference<?> reference) {
-			logger.warning("TODO: implement this");
-		}
-
-		@Override
-		public List<FlexoObjectReference<EditionPatternInstance>> getEditionPatternReferences() {
-			return editionPatternReferences;
-		}
-
-		/*public void setEditionPatternReferences(List<FlexoModelObjectReference<EditionPatternInstance>> editionPatternReferences) {
-			this.editionPatternReferences = editionPatternReferences;
+		/*public void setFlexoConceptReferences(List<FlexoModelObjectReference<FlexoConceptInstance>> flexoConceptReferences) {
+			this.flexoConceptReferences = flexoConceptReferences;
 		}*/
 
 		@Override
-		public void addToEditionPatternReferences(final FlexoObjectReference<EditionPatternInstance> ref) {
+		public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref) {
 			/*SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -408,32 +387,32 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 					}
 				}
 			});*/
-			// logger.info("****************** addToEditionPatternReferences() with " + ref);
-			ref.setOwner(this);
-			editionPatternReferences.add(ref);
+			// logger.info("****************** addToFlexoConceptReferences() with " + ref);
+			// ref.setOwner(this);
+			flexoConceptReferences.add(ref);
 			setChanged();
-			notifyObservers(new DataModification("editionPatternReferences", null, ref));
+			notifyObservers(new DataModification("flexoConceptReferences", null, ref));
 		}
 
 		@Override
-		public void removeFromEditionPatternReferences(FlexoObjectReference<EditionPatternInstance> ref) {
-			ref.setOwner(null);
-			editionPatternReferences.remove(ref);
+		public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref) {
+			// ref.setOwner(null);
+			flexoConceptReferences.remove(ref);
 			setChanged();
-			notifyObservers(new DataModification("editionPatternReferences", ref, null));
+			notifyObservers(new DataModification("flexoConceptReferences", ref, null));
 		}
 
 		@Override
-		public EditionPatternInstance getEditionPatternInstance(String editionPatternId, long instanceId) {
-			if (editionPatternId == null) {
+		public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId, long instanceId) {
+			if (flexoConceptId == null) {
 				return null;
 			}
-			if (editionPatternReferences == null) {
+			if (flexoConceptReferences == null) {
 				return null;
 			}
-			for (FlexoObjectReference<EditionPatternInstance> r : editionPatternReferences) {
-				EditionPatternInstance epi = r.getObject();
-				if (epi.getFlexoConcept().getName().equals(editionPatternId) && epi.getFlexoID() == instanceId) {
+			for (FlexoObjectReference<FlexoConceptInstance> r : flexoConceptReferences) {
+				FlexoConceptInstance epi = r.getObject();
+				if (epi.getFlexoConcept().getName().equals(flexoConceptId) && epi.getFlexoID() == instanceId) {
 					return epi;
 				}
 			}
@@ -441,24 +420,24 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		/**
-		 * Return EditionPatternInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or
+		 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or
 		 * its URI<br>
-		 * If many EditionPatternInstance are declared in this FlexoProjectObject, return first one
+		 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 		 * 
-		 * @param editionPatternId
+		 * @param flexoConceptId
 		 * @return
 		 */
 		@Override
-		public EditionPatternInstance getEditionPatternInstance(String editionPatternId) {
-			if (editionPatternId == null) {
+		public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId) {
+			if (flexoConceptId == null) {
 				return null;
 			}
-			for (FlexoObjectReference<EditionPatternInstance> ref : editionPatternReferences) {
-				EditionPatternInstance epi = ref.getObject();
-				if (epi.getFlexoConcept().getName().equals(editionPatternId)) {
+			for (FlexoObjectReference<FlexoConceptInstance> ref : flexoConceptReferences) {
+				FlexoConceptInstance epi = ref.getObject();
+				if (epi.getFlexoConcept().getName().equals(flexoConceptId)) {
 					return epi;
 				}
-				if (epi.getFlexoConcept().getURI().equals(editionPatternId)) {
+				if (epi.getFlexoConcept().getURI().equals(flexoConceptId)) {
 					return epi;
 				}
 			}
@@ -466,19 +445,19 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		/**
-		 * Return EditionPatternInstance matching supplied FlexoConcept<br>
-		 * If many EditionPatternInstance are declared in this FlexoProjectObject, return first one
+		 * Return FlexoConceptInstance matching supplied FlexoConcept<br>
+		 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 		 * 
-		 * @param editionPatternId
+		 * @param flexoConceptId
 		 * @return
 		 */
 		@Override
-		public EditionPatternInstance getFlexoConceptInstance(FlexoConcept flexoConcept) {
+		public FlexoConceptInstance getFlexoConceptInstance(FlexoConcept flexoConcept) {
 			if (flexoConcept == null) {
 				return null;
 			}
-			for (FlexoObjectReference<EditionPatternInstance> ref : editionPatternReferences) {
-				EditionPatternInstance epi = ref.getObject();
+			for (FlexoObjectReference<FlexoConceptInstance> ref : flexoConceptReferences) {
+				FlexoConceptInstance epi = ref.getObject();
 				if (epi != null && epi.getFlexoConcept() == flexoConcept) {
 					return epi;
 				}
@@ -486,12 +465,12 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 			return null;
 		}
 
-		protected FlexoObjectReference<EditionPatternInstance> getEditionPatternReference(EditionPatternInstance editionPatternInstance) {
-			for (FlexoObjectReference<EditionPatternInstance> ref : editionPatternReferences) {
+		protected FlexoObjectReference<FlexoConceptInstance> getFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
+			for (FlexoObjectReference<FlexoConceptInstance> ref : flexoConceptReferences) {
 				String was = ref.toString() + " serialized as " + ref.getStringRepresentation();
 				try {
-					EditionPatternInstance epi = ref.getObject();
-					if (epi == editionPatternInstance) {
+					FlexoConceptInstance epi = ref.getObject();
+					if (epi == flexoConceptInstance) {
 						return ref;
 					}
 				} catch (ClassCastException e) {
@@ -503,23 +482,23 @@ public abstract interface FlexoObject extends ReferenceOwner, AccessibleProxyObj
 		}
 
 		@Override
-		public void registerEditionPatternReference(EditionPatternInstance editionPatternInstance) {
+		public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
 
-			FlexoObjectReference<EditionPatternInstance> existingReference = getEditionPatternReference(editionPatternInstance);
+			FlexoObjectReference<FlexoConceptInstance> existingReference = getFlexoConceptReference(flexoConceptInstance);
 
 			if (existingReference == null) {
-				addToEditionPatternReferences(new FlexoObjectReference<EditionPatternInstance>(editionPatternInstance, this));
+				addToFlexoConceptReferences(new FlexoObjectReference<FlexoConceptInstance>(flexoConceptInstance));
 			}
 		}
 
 		@Override
-		public void unregisterEditionPatternReference(EditionPatternInstance editionPatternInstance) {
-			FlexoObjectReference<EditionPatternInstance> referenceToRemove = getEditionPatternReference(editionPatternInstance);
+		public void unregisterFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
+			FlexoObjectReference<FlexoConceptInstance> referenceToRemove = getFlexoConceptReference(flexoConceptInstance);
 			if (referenceToRemove == null) {
-				logger.warning("Called for unregister EditionPatternReference for unexisting reference to edition pattern instance EP="
-						+ editionPatternInstance.getFlexoConcept().getName() + " id=" + editionPatternInstance.getFlexoID());
+				logger.warning("Called for unregister FlexoConceptReference for unexisting reference to flexo concept instance EP="
+						+ flexoConceptInstance.getFlexoConcept().getName() + " id=" + flexoConceptInstance.getFlexoID());
 			} else {
-				removeFromEditionPatternReferences(referenceToRemove);
+				removeFromFlexoConceptReferences(referenceToRemove);
 			}
 		}
 

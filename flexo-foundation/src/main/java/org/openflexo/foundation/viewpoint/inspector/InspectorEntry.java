@@ -26,7 +26,7 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternObject;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -38,16 +38,16 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents an inspector entry (a data related to an edition pattern which can be inspected)
+ * Represents an inspector entry (a data related to an flexo concept which can be inspected)
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
-public abstract interface InspectorEntry extends EditionPatternObject, Bindable {
+public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
-	@PropertyIdentifier(type = EditionPatternInspector.class)
+	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 
 	@PropertyIdentifier(type = String.class)
@@ -61,12 +61,12 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
-	@Getter(value = INSPECTOR_KEY, inverse = EditionPatternInspector.ENTRIES_KEY)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.ENTRIES_KEY)
 	@XMLElement(xmlTag = "Inspector")
-	public EditionPatternInspector getInspector();
+	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
-	public void setInspector(EditionPatternInspector inspector);
+	public void setInspector(FlexoConceptInspector inspector);
 
 	@Getter(value = LABEL_KEY)
 	@XMLAttribute
@@ -109,11 +109,11 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 
 	public int getIndex();
 
-	public static abstract class InspectorEntryImpl extends EditionPatternObjectImpl implements InspectorEntry {
+	public static abstract class InspectorEntryImpl extends FlexoConceptObjectImpl implements InspectorEntry {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
 
-		private EditionPatternInspector inspector;
+		private FlexoConceptInspector inspector;
 		private String label;
 		private boolean readOnly;
 
@@ -152,12 +152,12 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 		}
 
 		@Override
-		public EditionPatternInspector getInspector() {
+		public FlexoConceptInspector getInspector() {
 			return inspector;
 		}
 
 		@Override
-		public void setInspector(EditionPatternInspector inspector) {
+		public void setInspector(FlexoConceptInspector inspector) {
 			this.inspector = inspector;
 		}
 
@@ -241,7 +241,7 @@ public abstract interface InspectorEntry extends EditionPatternObject, Bindable 
 
 		@Override
 		public BindingModel getBindingModel() {
-			EditionPatternInspector inspector = getInspector();
+			FlexoConceptInspector inspector = getInspector();
 			if (inspector != null) {
 				return getInspector().getBindingModel();
 			} else

@@ -72,9 +72,9 @@
     <Localized key="description" lang="French">Description</Localized>
     <Localized key="uri" lang="Dutch">URI</Localized>
     <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="edition_pattern" lang="French">Edition pattern</Localized>
+    <Localized key="flexo_concept" lang="French">Edition pattern</Localized>
     <Localized key="ontologic_calc" lang="French">Calque ontologique</Localized>
-    <Localized key="edition_pattern" lang="English">Edition pattern</Localized>
+    <Localized key="flexo_concept" lang="English">Edition pattern</Localized>
     <Localized key="ontologic_calc" lang="English">Ontologic calc</Localized>
     <Localized key="validate" lang="English">Validate</Localized>
     <Localized key="label" lang="English">Label</Localized>

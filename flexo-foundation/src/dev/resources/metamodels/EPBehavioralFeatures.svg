@@ -238,7 +238,7 @@
 <g font-size="13" stroke-linecap="butt" fill="gray" font-family="'Segoe UI'" stroke="gray" stroke-width="1.1">
 <rect x="104" y="10" clip-path="url(#clipPath1)" fill="none" width="745" height="40"/>
 <image x="426" y="10" clip-path="url(#clipPath2)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="445" y="24" clip-path="url(#clipPath3)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">EditionPattern</text>
+<text x="445" y="24" clip-path="url(#clipPath3)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">FlexoConcept</text>
 <line clip-path="url(#clipPath4)" fill="none" x1="104" x2="850" y1="27" y2="27"/>
 <line clip-path="url(#clipPath5)" fill="none" x1="104" x2="850" y1="39" y2="39"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 715 86 855 86 855 266 715 266 715 86" stroke="none"/>
@@ -278,7 +278,7 @@
 <rect x="164" y="80" clip-path="url(#clipPath27)" fill="url(#linearGradient6)" width="191" height="41" stroke="none"/>
 <rect x="164" y="80" clip-path="url(#clipPath27)" fill="none" width="190" height="40"/>
 <image x="164" y="80" clip-path="url(#clipPath28)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="183" y="94" clip-path="url(#clipPath29)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">EditionPatternBehavioralFacet</text>
+<text x="183" y="94" clip-path="url(#clipPath29)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">FlexoConceptBehavioralFacet</text>
 <line clip-path="url(#clipPath30)" fill="none" x1="164" x2="355" y1="97" y2="97"/>
 <line clip-path="url(#clipPath31)" fill="none" x1="164" x2="355" y1="109" y2="109"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 110 151 210 151 210 192 110 192 110 151" stroke="none"/>
@@ -330,12 +330,12 @@
 <line clip-path="url(#clipPath6)" fill="none" x1="393" x2="393" y1="99" y2="115" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath56)" fill="none" x1="390" x2="393" y1="108" y2="115" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath56)" fill="none" x1="393" x2="396" y1="115" y2="108" stroke="rgb(64,64,64)"/>
-<text x="379" y="94" clip-path="url(#clipPath57)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPatternSchemes</text>
+<text x="379" y="94" clip-path="url(#clipPath57)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConceptSchemes</text>
 <text x="399" y="115" clip-path="url(#clipPath58)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">0..*</text>
 <line clip-path="url(#clipPath6)" fill="none" x1="801" x2="801" y1="85" y2="51" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath59)" fill="none" x1="804" x2="801" y1="58" y2="51" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath59)" fill="none" x1="801" x2="798" y1="51" y2="58" stroke="rgb(64,64,64)"/>
-<text x="719" y="84" clip-path="url(#clipPath60)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPattern</text>
+<text x="719" y="84" clip-path="url(#clipPath60)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConcept</text>
 <text x="809" y="79" clip-path="url(#clipPath61)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">1</text>
 <line clip-path="url(#clipPath6)" fill="none" x1="153" x2="153" y1="150" y2="51" stroke="rgb(64,64,64)"/>
 <polygon fill="white" clip-path="url(#clipPath62)" points=" 153 51 159 65 147 65 153 51" stroke="none"/>
@@ -348,7 +348,7 @@
 <line clip-path="url(#clipPath6)" fill="none" x1="109" x2="73" y1="165" y2="165" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath6)" fill="none" x1="73" x2="73" y1="165" y2="42" stroke="rgb(64,64,64)"/>
 <line clip-path="url(#clipPath6)" fill="none" x1="73" x2="104" y1="42" y2="42" stroke="rgb(64,64,64)"/>
-<text x="23" y="38" clip-path="url(#clipPath65)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">editionPatterns</text>
+<text x="23" y="38" clip-path="url(#clipPath65)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">flexoConcepts</text>
 <text x="77" y="58" clip-path="url(#clipPath66)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">0..*</text>
 </g>
 </g>

@@ -27,6 +27,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.toolbox.StringUtils;
@@ -84,7 +85,10 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 
 	@Override
 	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(VirtualModelInstance vmInstance) {
-		TypeAwareModelSlotInstance<M, MM, MS> returned = new TypeAwareModelSlotInstance<M, MM, MS>(vmInstance, getModelSlot());
+		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
+		returned.setModelSlot(getModelSlot());
+		returned.setVirtualModelInstance(vmInstance);
 		configureModelSlotInstance(returned);
 		return returned;
 	}

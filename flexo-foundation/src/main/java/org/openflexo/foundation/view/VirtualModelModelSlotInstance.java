@@ -23,9 +23,17 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -37,60 +45,87 @@ import org.openflexo.toolbox.StringUtils;
  * @see VirtualModelModelSlot
  * 
  */
-public class VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> {
+@ModelEntity
+@ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
+@XMLElement
+public interface VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> {
 
-	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
+	@PropertyIdentifier(type = String.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
 
-	// Serialization/deserialization only, do not use
-	private String virtualModelInstanceURI;
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_URI_KEY)
+	@XMLAttribute
+	public String getVirtualModelInstanceURI();
 
-	/*public VirtualModelModelSlotInstance(View view, VirtualModelModelSlot modelSlot) {
-		super(view, modelSlot);
-	}*/
+	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
+	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public VirtualModelModelSlotInstance(VirtualModelInstance vmInstance, VirtualModelModelSlot modelSlot) {
-		super(vmInstance, modelSlot);
-	}
+	public static abstract class VirtualModelModelSlotInstanceImpl extends
+			ModelSlotInstanceImpl<VirtualModelModelSlot, VirtualModelInstance> implements VirtualModelModelSlotInstance {
 
-	@Override
-	public VirtualModelInstance getAccessedResourceData() {
-		if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
-			VirtualModelInstanceResource vmiResource = getProject().getViewLibrary().getVirtualModelInstance(virtualModelInstanceURI);
-			if (vmiResource != null) {
-				accessedResourceData = vmiResource.getVirtualModelInstance();
-				resource = vmiResource;
+		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
+
+		// Serialization/deserialization only, do not use
+		private String virtualModelInstanceURI;
+
+		/*public VirtualModelModelSlotInstanceImpl(View view, VirtualModelModelSlot modelSlot) {
+			super(view, modelSlot);
+		}*/
+
+		/*public VirtualModelModelSlotInstanceImpl(VirtualModelInstance vmInstance, VirtualModelModelSlot modelSlot) {
+			super(vmInstance, modelSlot);
+		}*/
+
+		/**
+		 * Default constructor
+		 */
+		public VirtualModelModelSlotInstanceImpl() {
+			super();
+		}
+
+		@Override
+		public VirtualModelInstance getAccessedResourceData() {
+			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
+				VirtualModelInstanceResource vmiResource = getProject().getViewLibrary().getVirtualModelInstance(
+						getVirtualModelInstanceURI());
+				if (vmiResource != null) {
+					accessedResourceData = vmiResource.getVirtualModelInstance();
+					resource = vmiResource;
+				}
 			}
-		}
-		// Special case to handle reflexive model slots
-		if (accessedResourceData == null && getVirtualModelInstance() != null
-				&& getModelSlot().equals(getVirtualModelInstance().getVirtualModel().getReflexiveModelSlot())) {
-			accessedResourceData = getVirtualModelInstance();
-			if (accessedResourceData != null) {
-				resource = accessedResourceData.getResource();
+			// Special case to handle reflexive model slots
+			if (accessedResourceData == null && getVirtualModelInstance() != null
+					&& getModelSlot().equals(getVirtualModelInstance().getVirtualModel().getReflexiveModelSlot())) {
+				accessedResourceData = getVirtualModelInstance();
+				if (accessedResourceData != null) {
+					resource = (TechnologyAdapterResource<VirtualModelInstance, ?>) accessedResourceData.getResource();
+				}
 			}
+			if (accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
+				logger.warning("Cannot find virtual model instance " + getVirtualModelInstanceURI());
+			}
+			return accessedResourceData;
 		}
-		if (accessedResourceData == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
-			logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
+
+		// Serialization/deserialization only, do not use
+		@Override
+		public String getVirtualModelInstanceURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return virtualModelInstanceURI;
 		}
-		return accessedResourceData;
-	}
 
-	// Serialization/deserialization only, do not use
-	public String getVirtualModelInstanceURI() {
-		if (getResource() != null) {
-			return getResource().getURI();
+		// Serialization/deserialization only, do not use
+		@Override
+		public void setVirtualModelInstanceURI(String virtualModelInstanceURI) {
+			this.virtualModelInstanceURI = virtualModelInstanceURI;
 		}
-		return virtualModelInstanceURI;
-	}
 
-	// Serialization/deserialization only, do not use
-	public void setVirtualModelInstanceURI(String virtualModelInstanceURI) {
-		this.virtualModelInstanceURI = virtualModelInstanceURI;
-	}
+		@Override
+		public String getBindingDescription() {
+			return getVirtualModelInstanceURI();
+		}
 
-	@Override
-	public String getBindingDescription() {
-		return getVirtualModelInstanceURI();
 	}
-
 }

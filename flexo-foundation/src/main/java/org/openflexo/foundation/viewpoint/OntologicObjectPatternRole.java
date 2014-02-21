@@ -33,20 +33,20 @@ public interface OntologicObjectPatternRole<T extends IFlexoOntologyObject> exte
 			OntologicObjectPatternRole<T> {
 
 		/*public boolean getIsPrimaryConceptRole() {
-			if (getEditionPattern() == null) {
+			if (getFlexoConcept() == null) {
 				return false;
 			}
-			return getEditionPattern().getPrimaryConceptRole() == this;
+			return getFlexoConcept().getPrimaryConceptRole() == this;
 		}
 
 		public void setIsPrimaryConceptRole(boolean isPrimary) {
-			if (getEditionPattern() == null) {
+			if (getFlexoConcept() == null) {
 				return;
 			}
 			if (isPrimary) {
-				getEditionPattern().setPrimaryConceptRole(this);
+				getFlexoConcept().setPrimaryConceptRole(this);
 			} else {
-				getEditionPattern().setPrimaryConceptRole(null);
+				getFlexoConcept().setPrimaryConceptRole(null);
 			}
 		}
 

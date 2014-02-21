@@ -56,7 +56,6 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 		exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 	}
 
-	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (getProject() != null) {
 			return getProject().getServiceManager();

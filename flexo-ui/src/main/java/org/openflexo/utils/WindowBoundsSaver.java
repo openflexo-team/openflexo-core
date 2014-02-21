@@ -21,7 +21,10 @@ public class WindowBoundsSaver implements ComponentListener {
 		this.window = window;
 		this.id = id;
 		this.controller = controller;
-		Rectangle bounds = controller.getApplicationContext().getGeneralPreferences().getBoundForFrameWithID(id);
+		Rectangle bounds = null;
+		if (controller.getApplicationContext().getGeneralPreferences() != null) {
+			bounds = controller.getApplicationContext().getGeneralPreferences().getBoundForFrameWithID(id);
+		}
 		if (bounds == null) {
 			bounds = defaultBounds;
 		} else {

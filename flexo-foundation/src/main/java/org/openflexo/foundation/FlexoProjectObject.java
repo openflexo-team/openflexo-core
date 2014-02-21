@@ -22,7 +22,7 @@ package org.openflexo.foundation;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.technologyadapter.InformationSpace;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -32,7 +32,7 @@ import org.openflexo.model.annotations.Setter;
 /**
  * Super class for any object involved in Openflexo and beeing part of a {@link FlexoProject}<br>
  * Provides a direct access to {@link FlexoServiceManager} (and all services) through {@link FlexoProject}<br>
- * Also provides support for storing references to {@link EditionPatternInstance}
+ * Also provides support for storing references to {@link FlexoConceptInstance}
  * 
  * @author sguerin
  * 
@@ -50,12 +50,11 @@ public interface FlexoProjectObject extends FlexoObject {
 	@Setter(PROJECT)
 	public void setProject(FlexoProject project);
 
-	@Override
 	public FlexoServiceManager getServiceManager();
 
 	public InformationSpace getInformationSpace();
 
-	public abstract class FlexoProjectObjectImpl extends DefaultFlexoObject implements FlexoProjectObject {
+	public abstract class FlexoProjectObjectImpl extends FlexoObjectImpl implements FlexoProjectObject {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoProjectObject.class.getPackage().getName());

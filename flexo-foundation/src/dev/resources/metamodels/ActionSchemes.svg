@@ -579,7 +579,7 @@
 <rect x="365" y="340" clip-path="url(#clipPath62)" fill="url(#linearGradient13)" width="171" height="41" stroke="none"/>
 <rect x="365" y="340" clip-path="url(#clipPath62)" fill="none" width="170" height="40"/>
 <image x="365" y="340" clip-path="url(#clipPath63)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="384" y="354" clip-path="url(#clipPath64)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">AddEditionPatternInstance</text>
+<text x="384" y="354" clip-path="url(#clipPath64)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">AddFlexoConceptInstance</text>
 <line clip-path="url(#clipPath65)" fill="none" x1="365" x2="536" y1="357" y2="357"/>
 <line clip-path="url(#clipPath66)" fill="none" x1="365" x2="536" y1="369" y2="369"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 691 156 839 156 839 197 691 197 691 156" stroke="none"/>
@@ -603,7 +603,7 @@
 <rect x="10" y="410" clip-path="url(#clipPath77)" fill="url(#linearGradient16)" width="181" height="41" stroke="none"/>
 <rect x="10" y="410" clip-path="url(#clipPath77)" fill="none" width="180" height="40"/>
 <image x="10" y="410" clip-path="url(#clipPath78)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="29" y="424" clip-path="url(#clipPath79)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">SelectEditionPatternInstance</text>
+<text x="29" y="424" clip-path="url(#clipPath79)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">SelectFlexoConceptInstance</text>
 <line clip-path="url(#clipPath80)" fill="none" x1="10" x2="191" y1="427" y2="427"/>
 <line clip-path="url(#clipPath81)" fill="none" x1="10" x2="191" y1="439" y2="439"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 211 411 317 411 317 452 211 452 211 411" stroke="none"/>
@@ -619,7 +619,7 @@
 <rect x="415" y="295" clip-path="url(#clipPath87)" fill="url(#linearGradient18)" width="183" height="41" stroke="none"/>
 <rect x="415" y="295" clip-path="url(#clipPath87)" fill="none" width="182" height="40"/>
 <image x="415" y="295" clip-path="url(#clipPath88)" width="16" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAtElEQVR42mNgGGjA&#13;&#10;iC4wt0b/PyFNyS0X4fpYsCmIrl2EU/PS5jgUPhO6gn//GfHaji6P4YI/fxkY/v9n&#13;&#10;hfgPpvY/1LP/IfL4DfjPxLBqwTQGXAEBksdrwO9/TAzhiak4vTCt5gT+MPj9lwlv&#13;&#10;GKDLY7jg119GvGEAksfvBaCC7r7VDLgC4Q9BA4BhUFUcgNMLjYU7CYTBPwJh8I+J&#13;&#10;UDpgJJAOCHjhLzCei7MycbqAmYmJurkRAGS/RaNk4/qhAAAAAElFTkSuQmCC" xlink:type="simple" xlink:actuate="onLoad" height="16" preserveAspectRatio="none" xlink:show="embed"/>
-<text x="434" y="309" clip-path="url(#clipPath89)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">MatchEditionPatternInstance</text>
+<text x="434" y="309" clip-path="url(#clipPath89)" fill="rgb(64,64,64)" stroke="none" xml:space="preserve">MatchFlexoConceptInstance</text>
 <line clip-path="url(#clipPath90)" fill="none" x1="415" x2="598" y1="312" y2="312"/>
 <line clip-path="url(#clipPath91)" fill="none" x1="415" x2="598" y1="324" y2="324"/>
 <polygon fill="rgb(131,122,133)" clip-path="url(#clipPath6)" opacity="0.2549" points=" 131 291 242 291 242 332 131 332 131 291" stroke="none"/>

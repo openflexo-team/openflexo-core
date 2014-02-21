@@ -29,7 +29,9 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.BindingValue;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.foundation.technologyadapter.URIUtilities;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
 import org.openflexo.model.annotations.Getter;
@@ -138,16 +140,24 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			return true;
 		}
 
-		private String getActionOntologyURI(EditionSchemeAction<?, ?, ?> action) {
+		/*private String getActionOntologyURI(EditionSchemeAction<?, ?, ?> action) {
 			return action.getProject().getURI();
+		}*/
+
+		private FlexoModel<?, ?> getFlexoModel(EditionSchemeAction<?, ?, ?> action) {
+			TypeAwareModelSlotInstance msInstance = (TypeAwareModelSlotInstance) action.getVirtualModelInstance().getModelSlotInstance(
+					getModelSlot());
+			return msInstance.getModel();
 		}
 
 		private boolean proposalIsNotUnique(EditionSchemeAction<?, ?, ?> action, String uriProposal) {
-			return action.getProject().isDuplicatedURI(getActionOntologyURI(action), uriProposal);
+			return URIUtilities.isDuplicatedURI(getFlexoModel(action), uriProposal);
+			// return action.getProject().isDuplicatedURI(getActionOntologyURI(action), uriProposal);
 		}
 
 		private boolean proposalIsWellFormed(EditionSchemeAction<?, ?, ?> action, String uriProposal) {
-			return action.getProject().testValidURI(getActionOntologyURI(action), uriProposal);
+			return URIUtilities.testValidURI(getFlexoModel(action), uriProposal);
+			// return action.getProject().testValidURI(getActionOntologyURI(action), uriProposal);
 		}
 
 		@Override

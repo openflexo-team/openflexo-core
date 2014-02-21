@@ -21,34 +21,48 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.FlexoProjectObject.FlexoProjectObjectImpl;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
- * A {@link ViewObject} an abstract run-time concept (instance) for an object "living" in a {@link View} (instanceof a {@link ViewPoint})
+ * A {@link ViewObject} is an abstract run-time concept (instance) for an object "living" in a {@link View} (instanceof a {@link ViewPoint})
  * 
  * @author sylvain
  * 
  */
-public abstract class ViewObject extends FlexoProjectObjectImpl implements FlexoProjectObject {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ViewObject.ViewObjectImpl.class)
+public interface ViewObject extends FlexoProjectObject {
 
-	private static final Logger logger = Logger.getLogger(ViewObject.class.getPackage().getName());
-
-	/*public ViewObject(ViewBuilder viewBuilder) {
-		super(viewBuilder.getProject());
-	}*/
-
-	public ViewObject(FlexoProject project) {
-		super(project);
-	}
+	@PropertyIdentifier(type = View.class)
+	public static final String VIEW_KEY = "view";
 
 	/**
 	 * Return the {@link View} where this object is declared and living
 	 * 
 	 * @return
 	 */
+	@Getter(VIEW_KEY)
 	public abstract View getView();
+
+	/**
+	 * Return the {@link View} where this object is declared and living
+	 * 
+	 * @return
+	 */
+	@Setter(VIEW_KEY)
+	public void setView(View view);
+
+	public abstract class ViewObjectImpl extends FlexoProjectObjectImpl implements FlexoProjectObject {
+
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(ViewObject.class.getPackage().getName());
+
+	}
 
 }

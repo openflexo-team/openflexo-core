@@ -120,8 +120,10 @@ public class FileMenu extends FlexoMenu {
 	public void updateRecentProjectMenu() {
 		if (recentProjectMenu != null) {
 			recentProjectMenu.removeAll();
-			for (File f : getController().getApplicationContext().getGeneralPreferences().getLastOpenedProjects()) {
-				recentProjectMenu.add(new ProjectItem(f));
+			if (getController().getApplicationContext().getGeneralPreferences() != null) {
+				for (File f : getController().getApplicationContext().getGeneralPreferences().getLastOpenedProjects()) {
+					recentProjectMenu.add(new ProjectItem(f));
+				}
 			}
 		}
 	}

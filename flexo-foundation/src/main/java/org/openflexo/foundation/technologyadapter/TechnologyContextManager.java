@@ -97,7 +97,6 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 		subpropertiesOfProperty = new Hashtable<IFlexoOntologyStructuralProperty, SubPropertyOfProperty>();
 	}
 
-	@Override
 	public FlexoServiceManager getServiceManager() {
 		return getResourceCenterService().getServiceManager();
 	}

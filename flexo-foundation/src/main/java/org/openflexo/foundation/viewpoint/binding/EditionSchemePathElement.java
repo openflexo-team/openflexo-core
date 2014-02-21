@@ -33,7 +33,7 @@ import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.antar.expr.InvocationTargetTransformException;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
 import org.openflexo.foundation.view.action.EditionSchemeAction;
@@ -106,10 +106,10 @@ public class EditionSchemePathElement extends FunctionPathElement {
 			logger.warning("Please implements execution of EditionSchemePathElement here !!!! context=" + context + " of "
 					+ context.getClass() + " target=" + target);
 
-			if (context instanceof EditionSchemeAction && target instanceof EditionPatternInstance) {
+			if (context instanceof EditionSchemeAction && target instanceof FlexoConceptInstance) {
 
 				EditionSchemeAction action = (EditionSchemeAction) context;
-				EditionPatternInstance epi = (EditionPatternInstance) target;
+				FlexoConceptInstance epi = (FlexoConceptInstance) target;
 				logger.info("EPI: " + epi);
 				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getEditionScheme(), epi);
 				ActionSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(epi.getVirtualModelInstance(), null, action);
@@ -124,7 +124,7 @@ public class EditionSchemePathElement extends FunctionPathElement {
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
 					logger.info("Successfully performed ActionScheme " + getEditionScheme() + " for " + epi);
-					return actionSchemeAction.getEditionPatternInstance();
+					return actionSchemeAction.getFlexoConceptInstance();
 				}
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);

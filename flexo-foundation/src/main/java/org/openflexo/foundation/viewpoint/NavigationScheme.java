@@ -26,7 +26,7 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -52,7 +52,7 @@ public interface NavigationScheme extends AbstractActionScheme {
 	@Setter(TARGET_OBJECT_KEY)
 	public void setTargetObject(DataBinding<?> targetObject);
 
-	public FlexoObject evaluateTargetObject(EditionPatternInstance editionPatternInstance);
+	public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance);
 
 	public static abstract class NavigationSchemeImpl extends AbstractActionSchemeImpl implements NavigationScheme {
 
@@ -83,10 +83,10 @@ public interface NavigationScheme extends AbstractActionScheme {
 		}
 
 		@Override
-		public FlexoObject evaluateTargetObject(EditionPatternInstance editionPatternInstance) {
+		public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance) {
 			if (getTargetObject().isValid()) {
 				try {
-					return (FlexoObject) getTargetObject().getBindingValue(editionPatternInstance);
+					return (FlexoObject) getTargetObject().getBindingValue(flexoConceptInstance);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

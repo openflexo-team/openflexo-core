@@ -232,7 +232,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 		} else {
 			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
 		}
-		getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (getApplicationContext().getGeneralPreferences() != null) {
+			getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	protected abstract void initializePerspectives();

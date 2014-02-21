@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Palette id="1" index="0" name="BasicOntology">
-  <PaletteElement id="2" name="Concept" editionPattern="Concept">
+  <PaletteElement id="2" name="Concept" flexoConcept="Concept">
     <Parameter id="3" name="conceptName" value="concept" />
     <Parameter id="4" name="conceptURI" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="5" className="org.openflexo.vpm.palette.PaletteElementGR" x="73.0" y="59.0" width="85.484375" height="36.22950819672131" isVisible="true" locationConstraints="FREELY_MOVABLE" dimensionConstraints="FREELY_RESIZABLE" layer="1" isFloatingLabel="false" text="Concept" isMultilineAllowed="false" isReadOnly="false" isSelectable="true" isFocusable="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER">
