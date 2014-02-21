@@ -59,8 +59,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 		 * Factory method
 		 */
 		@Override
-		public CreatePatternRole makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection,
-				FlexoEditor editor) {
+		public CreatePatternRole makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 			return new CreatePatternRole(focusedObject, globalSelection, editor);
 		}
 
@@ -123,7 +122,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add pattern role");
+		logger.info("Add pattern role, patternRoleClass=" + patternRoleClass);
 
 		if (patternRoleClass != null) {
 			if (modelSlot != null) {

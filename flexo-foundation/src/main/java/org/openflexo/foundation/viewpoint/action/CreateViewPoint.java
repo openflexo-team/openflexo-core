@@ -40,12 +40,18 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * This action allows to create a {@link ViewPoint} in a {@link RepositoryFolder}
+ * 
+ * @author sylvain
+ * 
+ */
 public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateViewPoint.class.getPackage().getName());
 
 	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject>(
-			"create_view_definition", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_viewpoint", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -72,9 +78,9 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		FlexoObjectImpl.addActionForClass(CreateViewPoint.actionType, RepositoryFolder.class);
 	}
 
-	private String _newViewPointName;
-	private String _newViewPointURI;
-	private String _newViewPointDescription;
+	private String newViewPointName;
+	private String newViewPointURI;
+	private String newViewPointDescription;
 	private ViewPoint newViewPoint;
 
 	CreateViewPoint(RepositoryFolder focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
@@ -100,7 +106,7 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		ViewPointLibrary viewPointLibrary = getViewPointLibrary();
 		ViewPointRepository vpRepository = (ViewPointRepository) getFocusedObject().getResourceRepository();
 
-		File newViewPointDir = getViewPointDir();
+		File newViewPointDir = getDirectoryWhereToCreateTheViewPoint();
 
 		logger.info("Creating viewpoint " + newViewPointDir.getAbsolutePath());
 
@@ -150,47 +156,41 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 	}*/
 
 	public String getNewViewPointName() {
-		return _newViewPointName;
+		return newViewPointName;
 	}
 
 	public void setNewViewPointName(String newViewPointName) {
-		this._newViewPointName = newViewPointName;
+		boolean wasValid = isValid();
+		this.newViewPointName = newViewPointName;
+		getPropertyChangeSupport().firePropertyChange("newViewPointName", null, newViewPointName);
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public String getNewViewPointURI() {
-		return _newViewPointURI;
+		return newViewPointURI;
 	}
 
 	public void setNewViewPointURI(String newViewPointURI) {
-		this._newViewPointURI = newViewPointURI;
+		boolean wasValid = isValid();
+		this.newViewPointURI = newViewPointURI;
+		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, newViewPointURI);
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+
 	}
 
 	public String getNewViewPointDescription() {
-		return _newViewPointDescription;
+		return newViewPointDescription;
 	}
 
 	public void setNewViewPointDescription(String newViewPointDescription) {
-		this._newViewPointDescription = newViewPointDescription;
+		boolean wasValid = isValid();
+		this.newViewPointDescription = newViewPointDescription;
+		getPropertyChangeSupport().firePropertyChange("newViewPointDescription", null, newViewPointDescription);
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
-
-	/*	public File getOntologyFile() {
-		return _ontologyFile;
-	}
-
-	public void setOntologyFile(File ontologyFile) {
-		this._ontologyFile = ontologyFile;
-		if (ontologyFile != null) {
-			String ontologyURI = OWLOntology.findOntologyURI(getOntologyFile());
-			String ontologyName = ToolBox.getJavaClassName(OWLOntology.findOntologyName(getOntologyFile()));
-			if (ontologyName == null && ontologyFile != null && ontologyFile.getName().length() > 4) {
-				ontologyName = ontologyFile.getName().substring(0, ontologyFile.getName().length() - 4);
-			}
-			if (StringUtils.isNotEmpty(ontologyURI)) {
-				_newViewPointURI = ontologyURI;
-			}
-			setNewViewPointName(ontologyName);
-		}
-		}*/
 
 	public RepositoryFolder getViewPointFolder() {
 		return getFocusedObject();
@@ -223,7 +223,14 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		return true;
 	}
 
-	public String errorMessage;
+	private String errorMessage;
+
+	public String getErrorMessage() {
+		if (isValid()) {
+			return null;
+		}
+		return errorMessage;
+	}
 
 	@Override
 	public boolean isValid() {
@@ -247,10 +254,13 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		return JavaUtils.getClassName(getNewViewPointName());
 	}
 
-	private File getViewPointDir() {
-		String baseName = getBaseName();
+	private File getDirectoryWhereToCreateTheViewPoint() {
+		/*String baseName = getBaseName();
 		if (getFocusedObject().getResourceRepository() instanceof ViewPointRepository) {
 			return new File(getFocusedObject().getFile(), baseName + ".viewpoint");
+		}*/
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getFile();
 		}
 		return null;
 	}

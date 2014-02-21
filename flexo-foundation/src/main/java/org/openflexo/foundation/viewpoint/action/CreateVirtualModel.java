@@ -66,8 +66,8 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 		FlexoObjectImpl.addActionForClass(CreateVirtualModel.actionType, ViewPoint.class);
 	}
 
-	public String newVirtualModelName;
-	public String newVirtualModelDescription;
+	private String newVirtualModelName;
+	private String newVirtualModelDescription;
 	private VirtualModel newVirtualModel;
 
 	public Vector<IFlexoOntology> importedOntologies = new Vector<IFlexoOntology>();
@@ -95,7 +95,14 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 		return true;
 	}
 
-	public String errorMessage;
+	private String errorMessage;
+
+	public String getErrorMessage() {
+		if (isValid()) {
+			return null;
+		}
+		return errorMessage;
+	}
 
 	@Override
 	public boolean isValid() {
@@ -107,6 +114,31 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 
 	public VirtualModel getNewVirtualModel() {
 		return newVirtualModel;
+	}
+
+	public String getNewVirtualModelName() {
+		return newVirtualModelName;
+	}
+
+	public void setNewVirtualModelName(String newVirtualModelName) {
+		boolean wasValid = isValid();
+		this.newVirtualModelName = newVirtualModelName;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelName", null, newVirtualModelName);
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+
+	}
+
+	public String getNewVirtualModelDescription() {
+		return newVirtualModelDescription;
+	}
+
+	public void setNewVirtualModelDescription(String newVirtualModelDescription) {
+		boolean wasValid = isValid();
+		this.newVirtualModelDescription = newVirtualModelDescription;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", null, newVirtualModelDescription);
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 }
