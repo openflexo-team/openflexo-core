@@ -224,8 +224,11 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 			setSize(3 * Toolkit.getDefaultToolkit().getScreenSize().width / 4, 3 * Toolkit.getDefaultToolkit().getScreenSize().height / 4);
 			setLocationByPlatform(true);
 		}
-		Integer state = getController().getApplicationContext().getGeneralPreferences()
-				.getFrameStateForFrameWithID(getController().getModule().getShortName() + "Frame");
+		Integer state = null;
+		if (getController().getApplicationContext().getGeneralPreferences() != null) {
+			state = getController().getApplicationContext().getGeneralPreferences()
+					.getFrameStateForFrameWithID(getController().getModule().getShortName() + "Frame");
+		}
 		if (state != null
 				&& ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH || (state & Frame.MAXIMIZED_HORIZ) == Frame.MAXIMIZED_HORIZ || (state & Frame.MAXIMIZED_VERT) == Frame.MAXIMIZED_VERT)) {
 			setExtendedState(getController().getApplicationContext().getGeneralPreferences()

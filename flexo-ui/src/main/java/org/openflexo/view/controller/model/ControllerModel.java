@@ -523,7 +523,11 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	 **********/
 
 	public Node getLayoutForPerspective(FlexoPerspective perspective) {
-		String layout = context.getGeneralPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
+
+		String layout = null;
+		if (context.getGeneralPreferences() != null) {
+			layout = context.getGeneralPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
+		}
 		if (layout != null) {
 			System.out.println("Parsing layout: " + layout);
 			return getLayoutFromString(layout);

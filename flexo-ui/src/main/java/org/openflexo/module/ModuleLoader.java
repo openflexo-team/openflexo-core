@@ -349,7 +349,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return getActiveModule() == module;
 	}
 
-	public FlexoModule<?> getModuleInstance(Module<?> module) throws ModuleLoadingException {
+	public <M extends FlexoModule<M>> M getModuleInstance(Module<M> module) throws ModuleLoadingException {
 		if (module == null) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Trying to get module instance for module null");

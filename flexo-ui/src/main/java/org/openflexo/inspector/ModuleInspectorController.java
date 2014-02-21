@@ -81,7 +81,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 		this.flexoController = flexoController;
 		inspectors = new Hashtable<Class<?>, FIBInspector>();
 		inspectorDialog = new FIBInspectorDialog(this);
-		Boolean visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+		Boolean visible = null;
+		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
+			visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+		}
 		inspectorDialog.setVisible(visible == null || visible);
 		inspectorDialog.addComponentListener(new ComponentAdapter() {
 			@Override

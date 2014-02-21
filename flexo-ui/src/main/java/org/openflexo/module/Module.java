@@ -281,7 +281,9 @@ public abstract class Module<M extends FlexoModule<M>> {
 				logger.info("Loading module " + module.getName());
 			}
 			module.initModule();
-			getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(module);
+			if (getApplicationContext().getDocResourceManager() != null) {
+				getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(module);
+			}
 			return module;
 		}
 	}
