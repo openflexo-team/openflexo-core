@@ -62,6 +62,8 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	@TestOrder(3)
 	public void loadConcepts() {
 
+		// instanciateTestServiceManager();
+
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
