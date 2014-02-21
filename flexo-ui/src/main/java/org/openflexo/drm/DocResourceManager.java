@@ -484,8 +484,11 @@ public class DocResourceManager extends FlexoServiceImpl {
 		if (getDocResourceCenter() == null) {
 			return null;
 		}
-		return getDocResourceCenter().getItemNamed(itemIdentifier);
-	}
+		if (itemIdentifier != null){
+			return getDocResourceCenter().getItemNamed(itemIdentifier);
+		}
+		else return null;
+		}
 
 	public DocItem getDocItem(String itemIdentifier) {
 		return getDocItemWithId(itemIdentifier);
