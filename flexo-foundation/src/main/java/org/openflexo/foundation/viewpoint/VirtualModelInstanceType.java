@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
  * @author sylvain
  * 
  */
-public class VirtualModelInstanceType extends EditionPatternInstanceType {
+public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);

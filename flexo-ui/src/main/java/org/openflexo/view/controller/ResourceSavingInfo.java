@@ -22,9 +22,10 @@ public class ResourceSavingInfo {
 	public ResourceSavingInfo(ResourceManager resourceManager) {
 		this.resourceManager = resourceManager;
 		entries = new ArrayList<ResourceSavingEntryInfo>();
+		update();
 	}
 
-	public void update() {
+	private void update() {
 		entries.clear();
 		for (FlexoResource<?> r : resourceManager.getLoadedResources()) {
 			ResourceSavingEntryInfo newResourceEntryInfo = new ResourceSavingEntryInfo(r);

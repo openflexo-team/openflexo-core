@@ -31,6 +31,13 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -38,81 +45,107 @@ import org.openflexo.toolbox.StringUtils;
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
  * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link VirtualModelInstance}
  * 
- * @author Sylvain Guerin, Vincent Leildé
+ * @author Sylvain Guerin, Vincent LeildÃ©
  * @see FreeModelSlot
  * 
  */
-public class FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends ModelSlotInstance<MS, RD> {
+@ModelEntity
+@ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
+@XMLElement
+public interface FreeModelSlotInstance<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends ModelSlotInstance<MS, RD> {
 
-	private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
+	@PropertyIdentifier(type = String.class)
+	public static final String RESOURCE_URI_KEY = "resourceURI";
 
-	// Serialization/deserialization only, do not use
-	private String resourceURI;
+	@Getter(value = RESOURCE_URI_KEY)
+	@XMLAttribute
+	public String getResourceURI();
 
-	private FlexoVersion version;
+	@Setter(RESOURCE_URI_KEY)
+	public void setResourceURI(String resourceURI);
 
-	/*public FreeModelSlotInstance(View view, MS modelSlot) {
-		super(view, modelSlot);
-	}*/
+	public static abstract class FreeModelSlotInstanceImpl<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends
+			ModelSlotInstanceImpl<MS, RD> implements FreeModelSlotInstance<RD, MS> {
 
-	public FreeModelSlotInstance(VirtualModelInstance vmInstance, MS modelSlot) {
-		super(vmInstance, modelSlot);
-	}
+		private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
-	@Override
-	public RD getAccessedResourceData() {
-		if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
-			TechnologyAdapterResource<RD, ?> resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance().getInformationSpace()
-					.getResource(resourceURI, getVersion());
-			if (resource != null) {
-				try {
-					accessedResourceData = resource.getResourceData(null);
-					this.resource = resource;
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		// Serialization/deserialization only, do not use
+		private String resourceURI;
+
+		private FlexoVersion version;
+
+		/*public FreeModelSlotInstanceImpl(View view, MS modelSlot) {
+			super(view, modelSlot);
+		}*/
+
+		/*public FreeModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+			super(vmInstance, modelSlot);
+		}*/
+
+		/**
+		 * Default constructor
+		 */
+		public FreeModelSlotInstanceImpl() {
+			super();
+		}
+
+		@Override
+		public RD getAccessedResourceData() {
+			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
+				TechnologyAdapterResource<RD, ?> resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance()
+						.getInformationSpace().getResource(resourceURI, getVersion());
+				if (resource != null) {
+					try {
+						accessedResourceData = resource.getResourceData(null);
+						this.resource = resource;
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ResourceLoadingCancelledException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (FlexoException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
+			if (accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
+				logger.warning("cannot find resource " + resourceURI);
+			}
+			return accessedResourceData;
 		}
-		if (accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
-			logger.warning("cannot find resource " + resourceURI);
+
+		// Serialization/deserialization only, do not use
+		@Override
+		public String getResourceURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return resourceURI;
 		}
-		return accessedResourceData;
-	}
 
-	// Serialization/deserialization only, do not use
-	public String getResourceURI() {
-		if (getResource() != null) {
-			return getResource().getURI();
+		// Serialization/deserialization only, do not use
+		@Override
+		public void setResourceURI(String resourceURI) {
+			this.resourceURI = resourceURI;
 		}
-		return resourceURI;
-	}
 
-	// Serialization/deserialization only, do not use
-	public void setResourceURI(String resourceURI) {
-		this.resourceURI = resourceURI;
-	}
+		public FlexoVersion getVersion() {
+			return version;
+		}
 
-	public FlexoVersion getVersion() {
-		return version;
-	}
+		public void setVersion(FlexoVersion version) {
+			this.version = version;
+		}
 
-	public void setVersion(FlexoVersion version) {
-		this.version = version;
-	}
+		public RD getModel() {
+			return getAccessedResourceData();
+		}
 
-	public RD getModel() {
-		return getAccessedResourceData();
-	}
-
-	@Override
-	public String getBindingDescription() {
-		return getResourceURI();
+		@Override
+		public String getBindingDescription() {
+			return getResourceURI();
+		}
 	}
 }

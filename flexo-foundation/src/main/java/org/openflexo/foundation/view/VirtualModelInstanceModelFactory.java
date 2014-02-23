@@ -19,7 +19,11 @@
  */
 package org.openflexo.foundation.view;
 
+import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.converter.DataBindingConverter;
+import org.openflexo.model.converter.FlexoVersionConverter;
+import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -34,5 +38,15 @@ public class VirtualModelInstanceModelFactory extends ModelFactory {
 
 	public VirtualModelInstanceModelFactory() throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
 	}
+
+	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource) throws ModelDefinitionException {
+		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
+		addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
+		addConverter(new DataBindingConverter());
+		addConverter(new FlexoVersionConverter());
+	}
+
 }

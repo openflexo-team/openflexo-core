@@ -185,7 +185,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 		for (VirtualModel vm : returned.getVirtualModels()) {
 			for (FlexoConcept ep : vm.getFlexoConcepts()) {
-				ep.finalizeEditionPatternDeserialization();
+				ep.finalizeFlexoConceptDeserialization();
 			}
 			vm.clearIsModified();
 		}

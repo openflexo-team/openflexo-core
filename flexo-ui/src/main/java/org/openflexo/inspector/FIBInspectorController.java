@@ -40,8 +40,8 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
-import org.openflexo.foundation.viewpoint.binding.EditionPatternInstanceBindingVariable;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptInstanceBindingVariable;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoFIBController;
 
@@ -69,11 +69,11 @@ public class FIBInspectorController extends FlexoFIBController {
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable instanceof EditionPatternInstanceBindingVariable) {
+		if (variable instanceof FlexoConceptInstanceBindingVariable) {
 			if (getDataObject() instanceof FlexoObject) {
-				List<FlexoObjectReference<EditionPatternInstance>> refs = ((FlexoObject) getDataObject()).getEditionPatternReferences();
-				if (refs != null && ((EditionPatternInstanceBindingVariable) variable).getIndex() < refs.size()) {
-					return refs.get(((EditionPatternInstanceBindingVariable) variable).getIndex()).getObject();
+				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
+				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
+					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
 				}
 			}
 		}

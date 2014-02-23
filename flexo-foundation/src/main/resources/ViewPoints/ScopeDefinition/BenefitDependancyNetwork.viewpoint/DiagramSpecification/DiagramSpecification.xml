@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DiagramSpecification id="1" name="DiagramSpecification" modelVersion="1.0">
-  <EditionPattern id="2" name="ITEnablers">
+  <FlexoConcept id="2" name="ITEnablers">
     <DropScheme id="3" target="top" name="dropITEnablersAtTopLevel" label="dropITEnablersAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="4" base="&quot;ITEnablers&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
       <AddOWLIndividual id="5" conditional="" assignation="itEnablers" individualName="parameters.uri">
@@ -45,8 +45,8 @@
     <Inspector id="35" inspectorTitle="ITEnablers">
       <TextField id="36" label="group" name="group" readOnly="false" data="itEnablers.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="37" name="EnablingChanges">
+  </FlexoConcept>
+  <FlexoConcept id="37" name="EnablingChanges">
     <DropScheme id="38" target="top" name="dropEnablingChangesAtTopLevel" label="dropEnablingChangesAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="39" base="&quot;EnablingChanges&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
       <AddOWLIndividual id="40" conditional="" assignation="enablingChanges" individualName="parameters.uri">
@@ -91,8 +91,8 @@
     <Inspector id="67" inspectorTitle="EnablingChanges">
       <TextField id="68" label="group" name="group" readOnly="false" data="enablingChanges.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="69" name="BusinessChanges">
+  </FlexoConcept>
+  <FlexoConcept id="69" name="BusinessChanges">
     <DropScheme id="70" target="top" name="dropBusinessChangesAtTopLevel" label="dropBusinessChangesAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="71" base="&quot;BusinessChanges&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
       <AddOWLIndividual id="72" conditional="" assignation="businessChanges" individualName="parameters.uri">
@@ -137,8 +137,8 @@
     <Inspector id="101" inspectorTitle="BusinessChanges">
       <TextField id="102" label="group" name="group" readOnly="false" data="businessChanges.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="103" name="Benefits">
+  </FlexoConcept>
+  <FlexoConcept id="103" name="Benefits">
     <DropScheme id="104" target="top" name="dropBenefitsAtTopLevel" label="dropBenefitsAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="105" base="&quot;Benefits&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
       <AddOWLIndividual id="106" conditional="" assignation="benefits" individualName="parameters.uri">
@@ -183,8 +183,8 @@
     <Inspector id="133" inspectorTitle="Benefits">
       <TextField id="134" label="group" name="group" readOnly="false" data="benefits.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="135" name="InvestmentObjectives">
+  </FlexoConcept>
+  <FlexoConcept id="135" name="InvestmentObjectives">
     <DropScheme id="136" target="top" name="dropInvestmentObjectivesAtTopLevel" label="dropInvestmentObjectivesAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="137" base="&quot;InvestmentObjectives&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
       <AddOWLIndividual id="138" conditional="" assignation="investmentObjectives" individualName="parameters.uri">
@@ -229,8 +229,8 @@
     <Inspector id="166" inspectorTitle="InvestmentObjectives">
       <TextField id="167" label="group" name="group" readOnly="false" data="investmentObjectives.uriName" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="168" name="BDNItem">
+  </FlexoConcept>
+  <FlexoConcept id="168" name="BDNItem">
     <DropScheme id="169" target="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/BenefitDependancyNetwork.owl#ITEnablers" name="dropBDNItemInITEnablers" label="dropBDNItemInITEnablers" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <ContextShapePatternRole idref="10" />
       <URIParameter id="170" base="&quot;BDNItem&quot;" name="uri" label="uri" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="true" />
@@ -314,8 +314,8 @@
       <FlexoObject id="225" flexoObjectType="Process" name="process" label="process" readOnly="false" data="process" conditional="" />
       <FlexoObject id="226" flexoObjectType="Activity" name="activity" label="activity" readOnly="false" data="activity" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="227" name="ItemDependancy">
+  </FlexoConcept>
+  <FlexoConcept id="227" name="ItemDependancy">
     <LinkScheme id="228" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/BenefitDependancyNetwork.owl#BDNItem" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/BenefitDependancyNetwork.owl#BDNItem" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="linkBDNItemToBDNItem" label="linkBDNItemToBDNItem" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <AddObjectPropertyStatement id="229" object="fromTarget.bdnItem" conditional="" assignation="dependsOfStatement" subject="toTarget.bdnItem" />
       <AddConnector id="230" fromShape="fromTarget.shape" toShape="toTarget.shape" conditional="" assignation="connector" />
@@ -360,7 +360,7 @@
       <TextField id="261" label="item1" name="item1" readOnly="true" data="dependsOfStatement.subject.itemName" conditional="" />
       <TextField id="262" label="item2" name="item2" readOnly="true" data="dependsOfStatement.object.itemName" conditional="" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="263" />
   <OWLModelSlot idref="6" />
   <DiagramModelSlot id="264" isRequired="false" isReadOnly="false" name="diagram" />

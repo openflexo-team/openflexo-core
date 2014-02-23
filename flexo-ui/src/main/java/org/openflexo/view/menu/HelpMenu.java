@@ -67,7 +67,8 @@ public class HelpMenu extends FlexoMenu implements Observer {
 
 		helpActionListener = new CSH.DisplayHelpFromSource(FlexoHelp.getHelpBroker());
 
-		if (getController().getApplicationContext().getDocResourceManager().getDocResourceCenter() != null) {
+		if (getController().getApplicationContext().getDocResourceManager() != null
+				&& getController().getApplicationContext().getDocResourceManager().getDocResourceCenter() != null) {
 
 			generalHelp = new JMenuItem();
 			generalHelp.setAccelerator(ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyStroke.getKeyStroke(KeyEvent.VK_HELP, 0) : KeyStroke

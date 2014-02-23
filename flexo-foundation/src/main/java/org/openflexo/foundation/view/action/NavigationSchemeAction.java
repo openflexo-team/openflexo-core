@@ -24,19 +24,19 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 
-public class NavigationSchemeAction extends EditionSchemeAction<NavigationSchemeAction, NavigationScheme, EditionPatternInstance> {
+public class NavigationSchemeAction extends EditionSchemeAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(NavigationSchemeAction.class.getPackage().getName());
 
 	private final NavigationSchemeActionType actionType;
 
-	public NavigationSchemeAction(NavigationSchemeActionType actionType, EditionPatternInstance focusedObject,
+	public NavigationSchemeAction(NavigationSchemeActionType actionType, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		this.actionType = actionType;
@@ -50,15 +50,15 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 	}
 
 	/**
-	 * Return the {@link EditionPatternInstance} on which this {@link EditionScheme} is applied.<br>
-	 * We want to navigate to this {@link EditionPatternInstance}
+	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
+	 * We want to navigate to this {@link FlexoConceptInstance}
 	 * 
 	 * @return
 	 */
 	@Override
-	public EditionPatternInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return actionType.getEditionPatternInstance();
+			return actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}
@@ -85,7 +85,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 			logger.warning("No navigation scheme. Please investigate !");
 			return false;
 		}
-		return getNavigationScheme().evaluateCondition(actionType.getEditionPatternInstance());
+		return getNavigationScheme().evaluateCondition(actionType.getFlexoConceptInstance());
 	}
 
 	public FlexoObject getTargetObject() {
@@ -93,7 +93,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;
 		}
-		return getNavigationScheme().evaluateTargetObject(actionType.getEditionPatternInstance());
+		return getNavigationScheme().evaluateTargetObject(actionType.getFlexoConceptInstance());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/
-		return getEditionPatternInstance().getVirtualModelInstance();
+		return getFlexoConceptInstance().getVirtualModelInstance();
 	}
 
 }

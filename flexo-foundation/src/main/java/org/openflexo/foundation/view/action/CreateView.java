@@ -32,7 +32,9 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.view.View;
+import org.openflexo.foundation.view.View.ViewImpl;
 import org.openflexo.foundation.view.ViewLibrary;
+import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.JavaUtils;
@@ -110,11 +112,11 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 			index++;
 		}
 
-		newView = View.newView(newViewName, newViewTitle, viewpointResource.getViewPoint(), getFolder(), getProject());
+		newView = ViewImpl.newView(newViewName, newViewTitle, viewpointResource.getViewPoint(), getFolder(), getProject());
 
 		logger.info("Added view " + newView + " in folder " + getFolder() + " for project " + getProject());
 
-		getViewLibrary().registerResource(newView.getResource(), getFocusedObject());
+		getViewLibrary().registerResource((ViewResource) newView.getResource(), getFocusedObject());
 	}
 
 	public ViewLibrary getViewLibrary() {

@@ -78,17 +78,17 @@ import org.openflexo.FlexoCst;
 import org.openflexo.GeneralPreferences;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.ProgressWindow;
+import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ConsistencyCheckDialog;
-import org.openflexo.components.widget.CommonFIB;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.ProjectData;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -97,6 +97,8 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.SaveResourceExceptionList;
+import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -129,6 +131,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
+import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
@@ -229,7 +232,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 		} else {
 			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
 		}
-		getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (getApplicationContext().getGeneralPreferences() != null) {
+			getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	protected abstract void initializePerspectives();
@@ -1686,6 +1691,10 @@ public abstract class FlexoController implements PropertyChangeListener {
 			return IconLibrary.FOLDER_ICON;
 		} else if (object instanceof FlexoProject) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
+		} else if (object instanceof ProjectData) {
+			return IconLibrary.OPENFLEXO_NOTEXT_16;
+		} else if (object instanceof FlexoPreferences) {
+			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof FlexoResourceCenter) {
 			return IconLibrary.RESOURCE_CENTER_ICON;
 		} else if (object instanceof FlexoResourceCenterService) {
@@ -1756,15 +1765,6 @@ public abstract class FlexoController implements PropertyChangeListener {
 	// ============ Resources management ==============
 	// ================================================
 
-	private ResourceSavingInfo resourceSavingInfo = null;
-
-	public ResourceSavingInfo getResourceSavingInfo() {
-		if (resourceSavingInfo == null) {
-			resourceSavingInfo = new ResourceSavingInfo(getApplicationContext().getResourceManager());
-		}
-		return resourceSavingInfo;
-	}
-
 	public void saveModifiedResources() {
 		System.out.println("registered resources: " + getApplicationContext().getResourceManager().getRegisteredResources().size() + " : "
 				+ getApplicationContext().getResourceManager().getRegisteredResources());
@@ -1776,16 +1776,30 @@ public abstract class FlexoController implements PropertyChangeListener {
 	}
 
 	public boolean reviewModifiedResources() {
-		ResourceSavingInfo savingInfo = getResourceSavingInfo();
+		System.out.println("reviewModifiedResources()");
+		/*ResourceSavingInfo savingInfo = getResourceSavingInfo();
 		savingInfo.update();
-		FIBDialog<ResourceSavingInfo> dialog = FIBDialog.instanciateAndShowDialog(CommonFIB.REVIEW_UNSAVED_DIALOG_FIB, savingInfo,
-				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
+		for (ResourceSavingEntryInfo e : savingInfo.getEntries()) {
+			System.out.println(" > " + e + " resource=" + e.getName() + " type=" + e.getType() + " save=" + e.saveThisResource());
+		}*/
+
+		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(getApplicationContext().getResourceManager());
+		dialog.showDialog();
+
+		// FIBDialog<ResourceSavingInfo> dialog = FIBDialog.instanciateAndShowDialog(CommonFIB.REVIEW_UNSAVED_DIALOG_FIB, savingInfo,
+		// FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
-			savingInfo.saveSelectedResources(getEditor().getFlexoProgressFactory());
-			getApplicationContext().getResourceManager().deleteFilesToBeDeleted();
+			try {
+				dialog.saveSelection(getEditor().getFlexoProgressFactory());
+			} catch (SaveResourcePermissionDeniedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SaveResourceExceptionList e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		}
 		return false;
 	}
-
 }

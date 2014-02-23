@@ -41,7 +41,7 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Test EditionPatternPanel fib
+ * Test FlexoConceptPanel fib
  * 
  * @author sylvain
  * 

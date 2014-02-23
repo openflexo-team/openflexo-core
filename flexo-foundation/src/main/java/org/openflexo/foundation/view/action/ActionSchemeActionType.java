@@ -23,20 +23,20 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.localization.LocalizedDelegate;
 
-public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, EditionPatternInstance, VirtualModelInstanceObject> {
+public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private final ActionScheme actionScheme;
-	private final EditionPatternInstance editionPatternInstance;
+	private final FlexoConceptInstance flexoConceptInstance;
 
-	public ActionSchemeActionType(ActionScheme actionScheme, EditionPatternInstance editionPatternInstance) {
+	public ActionSchemeActionType(ActionScheme actionScheme, FlexoConceptInstance flexoConceptInstance) {
 		super(actionScheme.getLabel(), FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE);
 		this.actionScheme = actionScheme;
-		this.editionPatternInstance = editionPatternInstance;
+		this.flexoConceptInstance = flexoConceptInstance;
 	}
 
 	@Override
@@ -45,22 +45,22 @@ public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, 
 	}
 
 	@Override
-	public boolean isEnabled(EditionPatternInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isEnabled(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return isEnabledForSelection(object, globalSelection);
 	}
 
 	@Override
-	public boolean isEnabledForSelection(EditionPatternInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-		return actionScheme.evaluateCondition(editionPatternInstance);
+	public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+		return actionScheme.evaluateCondition(flexoConceptInstance);
 	}
 
 	@Override
-	public boolean isVisibleForSelection(EditionPatternInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return true;
 	}
 
 	@Override
-	public ActionSchemeAction makeNewAction(EditionPatternInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
+	public ActionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 			FlexoEditor editor) {
 		return new ActionSchemeAction(this, focusedObject, globalSelection, editor);
 	}
@@ -69,8 +69,8 @@ public class ActionSchemeActionType extends FlexoActionType<ActionSchemeAction, 
 		return actionScheme;
 	}
 
-	public EditionPatternInstance getEditionPatternInstance() {
-		return editionPatternInstance;
+	public FlexoConceptInstance getFlexoConceptInstance() {
+		return flexoConceptInstance;
 	}
 
 }

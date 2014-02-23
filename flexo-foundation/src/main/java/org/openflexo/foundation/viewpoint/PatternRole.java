@@ -28,7 +28,7 @@ import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.ActorReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -51,11 +51,11 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(PatternRole.PatternRoleImpl.class)
-@Imports({ @Import(EditionPatternInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
-public abstract interface PatternRole<T> extends EditionPatternObject {
+@Imports({ @Import(FlexoConceptInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
+public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
-	public static final String EDITION_PATTERN_KEY = "flexoConcept";
+	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
 	@PropertyIdentifier(type = String.class)
@@ -64,10 +64,10 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Override
-	@Getter(value = EDITION_PATTERN_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
 	public FlexoConcept getFlexoConcept();
 
-	@Setter(EDITION_PATTERN_KEY)
+	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
 	@Getter(value = PATTERN_ROLE_NAME_KEY)
@@ -114,9 +114,9 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 	 * @param epi
 	 * @return
 	 */
-	public abstract ActorReference<T> makeActorReference(T object, EditionPatternInstance epi);
+	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
-	public static abstract class PatternRoleImpl<T> extends EditionPatternObjectImpl implements PatternRole<T> {
+	public static abstract class PatternRoleImpl<T> extends FlexoConceptObjectImpl implements PatternRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(PatternRole.class.getPackage().getName());
 
@@ -207,7 +207,7 @@ public abstract interface PatternRole<T> extends EditionPatternObject {
 		public abstract boolean defaultBehaviourIsToBeDeleted();
 
 		@Override
-		public abstract ActorReference<T> makeActorReference(T object, EditionPatternInstance epi);
+		public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
 		// @Override
 		// public abstract String getLanguageRepresentation();

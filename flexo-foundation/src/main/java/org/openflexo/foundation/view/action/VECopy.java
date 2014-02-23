@@ -26,7 +26,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 
 public class VECopy extends FlexoAction<VECopy, VirtualModelInstanceObject, VirtualModelInstanceObject> {
@@ -59,7 +59,7 @@ public class VECopy extends FlexoAction<VECopy, VirtualModelInstanceObject, Virt
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(VECopy.actionType, EditionPatternInstance.class);
+		FlexoObjectImpl.addActionForClass(VECopy.actionType, FlexoConceptInstance.class);
 	}
 
 	VECopy(VirtualModelInstanceObject focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {

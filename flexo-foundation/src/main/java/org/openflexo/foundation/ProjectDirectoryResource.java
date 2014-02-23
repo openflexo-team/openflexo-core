@@ -76,6 +76,11 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 				getFile().mkdirs();
 			}
 		}
+
+		@Override
+		public Class<FlexoProject> getResourceDataClass() {
+			return FlexoProject.class;
+		}
 	}
 
 }

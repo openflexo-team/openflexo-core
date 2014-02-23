@@ -32,8 +32,8 @@ import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternConstraint;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
@@ -46,7 +46,7 @@ import org.openflexo.foundation.viewpoint.TechnologySpecificEditionScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
@@ -58,13 +58,13 @@ import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
 import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.FloatInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.IntegerInspectorEntry;
@@ -106,7 +106,7 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource("Icons/Model/VPM/ViewPointLibrary.png");
 	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource("Icons/Model/VPM/ViewPoint.png");
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource("Icons/Model/VPM/ModelSlot.png");
-	public static final ImageIconResource EDITION_PATTERN_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
+	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/ActionSchemeIcon.png");
 	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(
 			"Icons/Model/VPM/SynchronizationSchemeIcon.png");
@@ -114,8 +114,8 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource CREATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/CreationSchemeIcon.png");
 	public static final ImageIconResource DELETION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/DeletionSchemeIcon.png");
 	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/NavigationSchemeIcon.png");
-	public static final ImageIconResource EDITION_PATTERN_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
-	public static final ImageIconResource EDITION_PATTERN_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
+	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
+	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
 	public static final ImageIconResource LOCALIZATION_ICON = new ImageIconResource("Icons/Model/VPM/LocalizationIcon.png");
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VPM/UnknownIcon.gif");
 	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource("Icons/Model/VPM/VirtualModel.png");
@@ -151,9 +151,9 @@ public class VPMIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
-		} else if (object instanceof EditionPatternInspector) {
+		} else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
-		} else if (object instanceof EditionPatternConstraint) {
+		} else if (object instanceof FlexoConceptConstraint) {
 			return CONSTRAINT_ICON;
 		} else if (object instanceof FetchRequestCondition) {
 			return CONSTRAINT_ICON;
@@ -174,12 +174,12 @@ public class VPMIconLibrary extends IconLibrary {
 			}
 			return null;
 		} else if (object instanceof EditionAction) {
-			if (object instanceof AddEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.DUPLICATE);
-			} else if (object instanceof SelectEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.IMPORT);
-			} else if (object instanceof MatchEditionPatternInstance) {
-				return IconFactory.getImageIcon(EDITION_PATTERN_ICON, IconLibrary.SYNC);
+			if (object instanceof AddFlexoConceptInstance) {
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
+			} else if (object instanceof SelectFlexoConceptInstance) {
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.IMPORT);
+			} else if (object instanceof MatchFlexoConceptInstance) {
+				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
 			} else if (object instanceof AddToListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);
 			} else if (object instanceof RemoveFromListAction) {
@@ -217,9 +217,9 @@ public class VPMIconLibrary extends IconLibrary {
 			}
 			return UNKNOWN_ICON;
 		} else if (object instanceof FlexoConcept) {
-			return EDITION_PATTERN_ICON;
+			return FLEXO_CONCEPT_ICON;
 		} else if (object instanceof EditionSchemeParameter) {
-			return EDITION_PATTERN_PARAMETER_ICON;
+			return FLEXO_CONCEPT_PARAMETER_ICON;
 		} else if (object instanceof EditionScheme) {
 			if (object instanceof ActionScheme) {
 				return ACTION_SCHEME_ICON;
@@ -245,8 +245,8 @@ public class VPMIconLibrary extends IconLibrary {
 					}
 				}
 			}
-		} else if (object instanceof EditionPatternInstancePatternRole) {
-			return EDITION_PATTERN_ICON;
+		} else if (object instanceof FlexoConceptInstancePatternRole) {
+			return FLEXO_CONCEPT_ICON;
 		} else if (object instanceof PrimitivePatternRole) {
 			return UNKNOWN_ICON;
 		} else if (object instanceof OntologicObjectPatternRole && ((OntologicObjectPatternRole<?>) object).getModelSlot() != null) {

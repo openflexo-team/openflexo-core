@@ -48,7 +48,6 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(ViewPointObject.ViewPointObjectImpl.class)
 public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceData {
 
-	@Override
 	public FlexoServiceManager getServiceManager();
 
 	public InformationSpace getInformationSpace();

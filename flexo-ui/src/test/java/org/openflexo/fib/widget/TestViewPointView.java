@@ -21,7 +21,7 @@ import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileResource;
 
 /**
- * Test EditionPatternPanel fib
+ * Test FlexoConceptPanel fib
  * 
  * @author sylvain
  * 
@@ -61,6 +61,8 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	@Test
 	@TestOrder(3)
 	public void loadConcepts() {
+
+		// instanciateTestServiceManager();
 
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);

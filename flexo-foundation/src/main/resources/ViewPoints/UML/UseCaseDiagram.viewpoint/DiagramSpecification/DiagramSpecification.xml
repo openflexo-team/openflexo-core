@@ -4,7 +4,7 @@
 Use case diagrams are closely connected to scenarios. A scenario is an example of what happens when someone interacts with the system. Here is a scenario for a medical clinic.
 "A patient calls the clinic to make an appointment for a yearly checkup. The receptionist finds the nearest empty time slot in the appointment book and schedules the appointment for that time slot. "
 A use case is a summary of scenarios for a single task or goal. An actor is who or what initiates the events involved in that task. Actors are simply roles that people or objects play. The picture below is a Make Appointment use case for the medical clinic. The actor is a Patient. The connection between actor and use case is a communication association (or communication for short).</description>
-  <EditionPattern id="2" name="Actor">
+  <FlexoConcept id="2" name="Actor">
     <description>An actor specifies a role played by a user or any other system that interacts with the subject.</description>
     <DropScheme id="3" target="top" name="DropNewActor" label="DropNewActor" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <TextFieldParameter id="4" name="name" label="name" defaultValue="&quot;Actor&quot;" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false" />
@@ -45,8 +45,8 @@ A use case is a summary of scenarios for a single task or goal. An actor is who 
       <TextField id="30" label="uri" name="uri" readOnly="false" data="actor.uriName" conditional="" />
       <TextField id="31" label="name" name="name" readOnly="false" data="actor.name" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="32" name="UseCase">
+  </FlexoConcept>
+  <FlexoConcept id="32" name="UseCase">
     <description>A use case is the specification of a set of actions performed by a system, which yields an observable result that is, typically, of value for one or more actors or other stakeholders of the system.</description>
     <DropScheme id="33" target="top" name="DropNewUseCase" label="DropNewUseCase" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <TextFieldParameter id="34" name="name" label="name" defaultValue="&quot;Use Case&quot;" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false" />
@@ -84,8 +84,8 @@ A use case is a summary of scenarios for a single task or goal. An actor is who 
       <TextField id="59" label="uri" name="uri" readOnly="false" data="useCase.uriName" conditional="" />
       <TextField id="60" label="name" name="name" readOnly="false" data="useCase.name" conditional="" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="61" name="ActorUseCaseAssociation">
+  </FlexoConcept>
+  <FlexoConcept id="61" name="ActorUseCaseAssociation">
     <LinkScheme id="62" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/UML/UseCaseDiagram.owl#Actor" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/UML/UseCaseDiagram.owl#UseCase" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="associateActorToUseCase" label="associateActorToUseCase" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <description>Associate actor to a use case</description>
       <IndividualParameter id="63" conceptURI="http://www.agilebirds.com/openflexo/ontologies/UML/UML2.owl#Package" conceptValue="" name="packageParameter" label="package" defaultValue="" usePaletteLabelAsDefaultValue="false" conditional="" isRequired="false" />
@@ -161,7 +161,7 @@ A use case is a summary of scenarios for a single task or goal. An actor is who 
       <TextField id="119" label="actor" name="actor" readOnly="true" data="actor.name" conditional="" />
       <TextField id="120" label="use_case" name="use_case" readOnly="true" data="useCase.name" conditional="" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="121" />
   <OWLModelSlot idref="10" />
   <DiagramModelSlot id="122" isRequired="false" isReadOnly="false" name="diagram" />

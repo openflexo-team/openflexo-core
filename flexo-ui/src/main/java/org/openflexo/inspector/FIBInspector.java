@@ -47,9 +47,9 @@ import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionPatternInstanceType;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
@@ -84,7 +84,7 @@ public interface FIBInspector extends FIBPanel {
 
 	public void appendSuperInspectors(ModuleInspectorController inspectorController);
 
-	public boolean updateEditionPatternInstanceInspector(EditionPatternInstance object);
+	public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object);
 
 	public boolean updateFlexoObjectInspector(FlexoObject object);
 
@@ -206,9 +206,9 @@ public interface FIBInspector extends FIBPanel {
 				}
 			}
 
-			if (object.getEditionPatternReferences() != null) {
-				for (FlexoObjectReference<EditionPatternInstance> ref : object.getEditionPatternReferences()) {
-					EditionPatternInstance epi = ref.getObject();
+			if (object.getFlexoConceptReferences() != null) {
+				for (FlexoObjectReference<FlexoConceptInstance> ref : object.getFlexoConceptReferences()) {
+					FlexoConceptInstance epi = ref.getObject();
 					flexoConceptsToDisplay.add(epi.getFlexoConcept());
 					if (ensureCreationOfTabForEPIReference(epi.getFlexoConcept())) {
 						returned = true;
@@ -261,7 +261,7 @@ public interface FIBInspector extends FIBPanel {
 		 * @return a boolean indicating if a new tab was created
 		 */
 		@Override
-		public boolean updateEditionPatternInstanceInspector(EditionPatternInstance object) {
+		public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object) {
 
 			boolean returned = false;
 
@@ -284,7 +284,7 @@ public interface FIBInspector extends FIBPanel {
 			// We MUST here redefine the type of inspected data
 			BindingVariable bv = getBindingModel().bindingVariableNamed("data");
 			if (bv != null && object != null) {
-				bv.setType(EditionPatternInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
+				bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
 			}
 
 			return returned;
@@ -295,7 +295,7 @@ public interface FIBInspector extends FIBPanel {
 			super.createBindingModel();
 			for (int i = 0; i < currentFlexoConcepts.size(); i++) {
 				FlexoConcept ep = currentFlexoConcepts.get(i);
-				_bindingModel.addToBindingVariables(new EditionPatternInstanceBindingVariable(ep, i));
+				_bindingModel.addToBindingVariables(new FlexoConceptInstanceBindingVariable(ep, i));
 			}
 		}*/
 
@@ -555,16 +555,16 @@ public interface FIBInspector extends FIBPanel {
 			newTab.setTitle(ep.getInspector().getInspectorTitle());
 			newTab.setLayout(Layout.twocols);
 			newTab.setUseScrollBar(true);
-			// newTab.setDataClass(EditionPatternInstance.class);
-			// newTab.setData(new DataBinding("data.editionPatternReferences.get["+refIndex+"].editionPatternInstance"));
-			// newTab.setData(new DataBinding("data.editionPatternReferences.firstElement.editionPatternInstance"));
+			// newTab.setDataClass(FlexoConceptInstance.class);
+			// newTab.setData(new DataBinding("data.flexoConceptReferences.get["+refIndex+"].flexoConceptInstance"));
+			// newTab.setData(new DataBinding("data.flexoConceptReferences.firstElement.flexoConceptInstance"));
 			newTab.setName(epIdentifier + "Panel");
 			return newTab;
 		}
 
 		protected String getFlexoConceptIdentifierForEPIReference(FlexoConcept ep) {
 			// Instead of just referencing ep name, reference the URI (in case of in same VP, many EP have same name)
-			return "data.getEditionPatternInstance(\"" + ep.getURI() + "\")";
+			return "data.getFlexoConceptInstance(\"" + ep.getURI() + "\")";
 		}
 
 		protected String getFlexoConceptIdentifierForEPI(FlexoConcept ep) {

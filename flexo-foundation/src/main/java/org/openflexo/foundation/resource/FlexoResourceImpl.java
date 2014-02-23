@@ -10,6 +10,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.toolbox.IProgress;
 
@@ -127,6 +128,20 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+	}
+
+	/**
+	 * Called to notify that a resource has been modified
+	 */
+	@Override
+	public void notifyResourceModified() {
+		logger.info("notifyResourceModified(), resource=" + this);
+
+		ResourceModified notification = new ResourceModified(this, resourceData);
+		setChanged();
+		notifyObservers(notification);
+		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+
 	}
 
 	/**
@@ -252,6 +267,31 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			resourceData.delete();
 			resourceData = null;
 		}
+	}
+
+	@Override
+	public final boolean isModified() {
+		return isLoaded() && getLoadedResourceData().isModified();
+	}
+
+	@Override
+	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
+	}
+
+	@Override
+	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		setChanged();
+	}
+
+	@Override
+	public void objectDeleted(FlexoObjectReference<?> reference) {
+		logger.warning("TODO: implement this");
 	}
 
 }

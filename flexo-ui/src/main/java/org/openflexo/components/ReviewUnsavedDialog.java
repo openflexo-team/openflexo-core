@@ -19,28 +19,18 @@
  */
 package org.openflexo.components;
 
-import java.beans.PropertyChangeSupport;
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.logging.Logger;
 
-import javax.swing.Icon;
-
-import org.openflexo.components.ReviewUnsavedDialog.ReviewUnsavedModel;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.resource.FlexoFileResource;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.icon.IconLibrary;
+import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileResource;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.view.FlexoFrame;
+import org.openflexo.view.controller.ResourceSavingInfo;
 
 /**
  * Dialog allowing to select resources to save
@@ -49,39 +39,42 @@ import org.openflexo.view.FlexoFrame;
  * 
  */
 @SuppressWarnings("serial")
-public class ReviewUnsavedDialog extends FIBDialog<ReviewUnsavedModel> {
+public class ReviewUnsavedDialog extends FIBDialog<ResourceSavingInfo> {
 
 	static final Logger logger = Logger.getLogger(ReviewUnsavedDialog.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/ReviewUnsavedDialog.fib");
+	public static final FileResource FIB_FILE = new FileResource("Fib/Dialog/ReviewUnsavedDialog.fib");
 
-	ReviewUnsavedModel _reviewUnsavedModel;
+	private final ResourceManager resourceManager;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param title
-	 * @param resources
-	 *            : a vector of FlexoStorageResource
 	 */
-	public ReviewUnsavedDialog(String title, FlexoEditor editor, Collection<FlexoFileResource<?>> resources) {
+	public ReviewUnsavedDialog(ResourceManager resourceManager) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ReviewUnsavedModel(editor, resources), FlexoFrame.getActiveFrame(),
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ResourceSavingInfo(resourceManager), FlexoFrame.getActiveFrame(),
 				true, FlexoLocalization.getMainLocalizer());
-
-		setTitle(title);
+		this.resourceManager = resourceManager;
+		setTitle("Save modified resources");
 
 	}
 
-	public void saveSelection() throws SaveResourceExceptionList, SaveResourcePermissionDeniedException {
-		_reviewUnsavedModel.saveSelected();
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 
-	public String savedFilesList() {
+	public void saveSelection(FlexoProgressFactory progressFactory) throws SaveResourceExceptionList, SaveResourcePermissionDeniedException {
+		getData().saveSelectedResources(progressFactory);
+		// _reviewUnsavedModel.saveSelected();
+		getResourceManager().deleteFilesToBeDeleted();
+	}
+
+	/*public String savedFilesList() {
 		return _reviewUnsavedModel.savedFilesList();
-	}
+	}*/
 
-	public static class ReviewUnsavedModel implements HasPropertyChangeSupport {
+	/*public static class ReviewUnsavedModel implements HasPropertyChangeSupport {
 
 		private final FlexoEditor editor;
 		private final Hashtable<FlexoResource<?>, Boolean> resourcesToSave;
@@ -199,6 +192,6 @@ public class ReviewUnsavedDialog extends FIBDialog<ReviewUnsavedModel> {
 				}
 			}
 		}
-	}
+	}*/
 
 }

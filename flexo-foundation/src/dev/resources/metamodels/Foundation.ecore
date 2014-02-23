@@ -3,36 +3,36 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="foundation"
     nsURI="http://foundation/1.0" nsPrefix="foundation">
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPatternObject" abstract="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPattern" eSuperTypes="#//EditionPatternObject">
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConceptObject" abstract="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConcept" eSuperTypes="#//FlexoConceptObject">
     <eStructuralFeatures xsi:type="ecore:EReference" name="patternRoles" upperBound="-1"
         eType="#//PatternRole" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="childs" upperBound="-1"
-        eType="#//EditionPattern"/>
+        eType="#//FlexoConcept"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="contraints" upperBound="-1"
-        eType="#//EditionPatternConstraint"/>
+        eType="#//FlexoConceptConstraint"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindingModel" eType="#//BindingModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="virtualModel" eType="#//VirtualModel"
-        eOpposite="#//VirtualModel/editionPatterns"/>
+        eOpposite="#//VirtualModel/flexoConcepts"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="editionSchemes" upperBound="-1"
         eType="#//EditionScheme" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="behavior" lowerBound="1"
-        eType="#//EditionPatternBehavioralFacet" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="structure" eType="#//EditionPatternStructuralFacet"/>
+        eType="#//FlexoConceptBehavioralFacet" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="structure" eType="#//FlexoConceptStructuralFacet"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VirtualModel" eSuperTypes="#//EditionPattern">
+  <eClassifiers xsi:type="ecore:EClass" name="VirtualModel" eSuperTypes="#//FlexoConcept">
     <eStructuralFeatures xsi:type="ecore:EReference" name="modelSlots" upperBound="-1"
         eType="#//ModelSlot" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="syncScheme" eType="#//SynchronizationScheme"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="viewpoint" eType="#//Viewpoint"
         eOpposite="#//Viewpoint/virtualModels"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatterns" upperBound="-1"
-        eType="#//EditionPattern" eOpposite="#//EditionPattern/virtualModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConcepts" upperBound="-1"
+        eType="#//FlexoConcept" eOpposite="#//FlexoConcept/virtualModel"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EditionSchemeObject" abstract="true"
-      eSuperTypes="#//EditionPatternObject">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPattern" lowerBound="1"
-        eType="#//EditionPattern"/>
+      eSuperTypes="#//FlexoConceptObject">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConcept" lowerBound="1"
+        eType="#//FlexoConcept"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EditionScheme" abstract="true" eSuperTypes="#//EditionSchemeObject">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
@@ -67,11 +67,11 @@
   <eClassifiers xsi:type="ecore:EClass" name="AssignableAction" abstract="true" eSuperTypes="#//EditionAction"/>
   <eClassifiers xsi:type="ecore:EClass" name="DeclarePatternRole" eSuperTypes="#//AssignableAction"/>
   <eClassifiers xsi:type="ecore:EClass" name="AssignationAction" eSuperTypes="#//AssignableAction"/>
-  <eClassifiers xsi:type="ecore:EClass" name="PatternRole" eSuperTypes="#//EditionPatternObject">
+  <eClassifiers xsi:type="ecore:EClass" name="PatternRole" eSuperTypes="#//FlexoConceptObject">
     <eStructuralFeatures xsi:type="ecore:EReference" name="modelSlot" eType="#//ModelSlot"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PrimitivePatternRole" eSuperTypes="#//PatternRole"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPatternConstraint" eSuperTypes="#//EditionPatternObject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConceptConstraint" eSuperTypes="#//FlexoConceptObject"/>
   <eClassifiers xsi:type="ecore:EClass" name="BindingModel" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindingVariables" upperBound="-1"
         eType="#//BindingVariable" containment="true"/>
@@ -100,20 +100,20 @@
   <eClassifiers xsi:type="ecore:EClass" name="ProcessBindingVariable" eSuperTypes="#//BindingVariable"/>
   <eClassifiers xsi:type="ecore:EClass" name="BindingValue" eSuperTypes="#//AbstractBinding"/>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractBinding" abstract="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPatternInstanceBindingVariable"
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConceptInstanceBindingVariable"
       eSuperTypes="#//BindingVariable"/>
   <eClassifiers xsi:type="ecore:EClass" name="PatternRoleBindingVariable" eSuperTypes="#//BindingVariable"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataBinding"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPatternBehavioralFacet">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatternSchemes"
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConceptBehavioralFacet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConceptSchemes"
         upperBound="-1" eType="#//EditionScheme"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EditionPatternStructuralFacet">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="editionPatternPatternRoles"
+  <eClassifiers xsi:type="ecore:EClass" name="FlexoConceptStructuralFacet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flexoConceptPatternRoles"
         upperBound="-1" eType="#//PatternRole"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AddClass" abstract="true" eSuperTypes="#//AddConcept"/>
-  <eClassifiers xsi:type="ecore:EClass" name="AddEditionPatternInstance" eSuperTypes="#//AssignableAction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AddFlexoConceptInstance" eSuperTypes="#//AssignableAction"/>
   <eClassifiers xsi:type="ecore:EClass" name="ClassParameter" eSuperTypes="#//InnerModelSlotParameter"/>
   <eClassifiers xsi:type="ecore:EClass" name="ClassPatternRole" abstract="true" eSuperTypes="#//OntologicObjectPatternRole"/>
   <eClassifiers xsi:type="ecore:EClass" name="ControlStructureAction" abstract="true"
@@ -122,9 +122,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="AbstractAssertion" abstract="true" eSuperTypes="#//EditionSchemeObject"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataPropertyAssertion" eSuperTypes="#//AbstractAssertion"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataPropertyParameter" eSuperTypes="#//PropertyParameter"/>
-  <eClassifiers xsi:type="ecore:EClass" name="SelectEditionPatternInstance" eSuperTypes="#//FetchRequest"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SelectFlexoConceptInstance" eSuperTypes="#//FetchRequest"/>
   <eClassifiers xsi:type="ecore:EClass" name="SelectIndividual" abstract="true" eSuperTypes="#//FetchRequest"/>
-  <eClassifiers xsi:type="ecore:EClass" name="MatchEditionPatternInstance" eSuperTypes="#//AssignableAction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="MatchFlexoConceptInstance" eSuperTypes="#//AssignableAction"/>
   <eClassifiers xsi:type="ecore:EClass" name="NavigationScheme" eSuperTypes="#//AbstractActionScheme #//DiagramEditionScheme"/>
   <eClassifiers xsi:type="ecore:EClass" name="LinkScheme" eSuperTypes="#//AbstractCreationScheme #//DiagramEditionScheme"/>
   <eClassifiers xsi:type="ecore:EClass" name="DropScheme" eSuperTypes="#//AbstractCreationScheme #//DiagramEditionScheme"/>

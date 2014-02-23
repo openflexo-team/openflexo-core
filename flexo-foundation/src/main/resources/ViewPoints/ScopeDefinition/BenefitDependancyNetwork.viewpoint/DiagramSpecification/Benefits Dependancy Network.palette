@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Palette id="1" index="0" name="Benefits Dependancy Network">
-  <PaletteElement id="2" name="ITEnablers" editionPattern="ITEnablers">
+  <PaletteElement id="2" name="ITEnablers" flexoConcept="ITEnablers">
     <Parameter id="3" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="4" className="org.openflexo.vpm.palette.PaletteElementGR" x="12.0" y="14.0" width="240.0" height="30.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="UNRESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_0" layer="2" hasText="true" text="ITEnablers" isMultilineAllowed="false" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="5" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
@@ -11,7 +11,7 @@
       <TextStyle id="10" font="Lucida Sans Demibold,1,11" color="255,255,255" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="11" name="EnablingChanges" editionPattern="EnablingChanges">
+  <PaletteElement id="11" name="EnablingChanges" flexoConcept="EnablingChanges">
     <Parameter id="12" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="13" className="org.openflexo.vpm.palette.PaletteElementGR" x="12.0" y="52.0" width="240.0" height="30.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="UNRESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_1" layer="2" hasText="true" text="EnablingChanges" isMultilineAllowed="false" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="14" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
@@ -22,7 +22,7 @@
       <TextStyle id="18" font="Lucida Sans Demibold,1,11" color="255,255,255" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="19" name="BusinessChanges" editionPattern="BusinessChanges">
+  <PaletteElement id="19" name="BusinessChanges" flexoConcept="BusinessChanges">
     <Parameter id="20" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="21" className="org.openflexo.vpm.palette.PaletteElementGR" x="12.0" y="90.0" width="240.0" height="30.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="UNRESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_2" layer="2" hasText="true" text="BusinessChanges" isMultilineAllowed="false" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="22" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
@@ -33,7 +33,7 @@
       <TextStyle id="26" font="Lucida Sans Demibold,1,11" color="255,255,255" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="27" name="Benefits" editionPattern="Benefits">
+  <PaletteElement id="27" name="Benefits" flexoConcept="Benefits">
     <Parameter id="28" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="29" className="org.openflexo.vpm.palette.PaletteElementGR" x="12.0" y="129.0" width="240.0" height="30.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="UNRESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_3" layer="2" hasText="true" text="Benefits" isMultilineAllowed="false" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="30" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
@@ -44,7 +44,7 @@
       <TextStyle id="34" font="Lucida Sans Demibold,1,11" color="255,255,255" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="35" name="InvestmentObjectives" editionPattern="InvestmentObjectives">
+  <PaletteElement id="35" name="InvestmentObjectives" flexoConcept="InvestmentObjectives">
     <Parameter id="36" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="37" className="org.openflexo.vpm.palette.PaletteElementGR" x="12.0" y="168.0" width="240.0" height="30.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="UNRESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_4" layer="2" hasText="true" text="InvestmentObjectives" isMultilineAllowed="false" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="38" noStroke="true" color="0,0,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />
@@ -55,7 +55,7 @@
       <TextStyle id="42" font="Lucida Sans Demibold,1,11" color="255,255,255" orientation="0" isBackgroundColored="false" backgroundColor="255,255,255" />
     </ShapeGraphicalRepresentation>
   </PaletteElement>
-  <PaletteElement id="43" name="Item" editionPattern="BDNItem">
+  <PaletteElement id="43" name="Item" flexoConcept="BDNItem">
     <Parameter id="44" name="uri" value="&lt; Computed URI &gt;" />
     <ShapeGraphicalRepresentation id="45" className="org.openflexo.vpm.palette.PaletteElementGR" x="57.0" y="196.0" width="112.0" height="50.0" minimalWidth="0.0" minimalHeight="0.0" maximalWidth="Infinity" maximalHeight="Infinity" locationConstraints="FREELY_MOVABLE" dimensionConstraints="FREELY_RESIZABLE" adjustMinimalWidthToLabelWidth="true" adjustMinimalHeightToLabelHeight="true" adjustMaximalWidthToLabelWidth="false" adjustMaximalHeightToLabelHeight="false" isFloatingLabel="false" allowToLeaveBounds="true" identifier="object_5" layer="2" hasText="true" text="Item" isMultilineAllowed="true" continuousTextEditing="true" relativeTextX="0.5" relativeTextY="0.5" absoluteTextX="0.0" absoluteTextY="0.0" textAlignment="CENTER" isSelectable="true" isFocusable="true" drawControlPointsWhenFocused="true" drawControlPointsWhenSelected="true" isReadOnly="false" isLabelEditable="true" isVisible="true">
       <ForegroundStyle id="46" noStroke="false" color="204,153,0" lineWidth="1.0" joinStyle="JOIN_MITER" capStyle="CAP_SQUARE" dashStyle="PLAIN_STROKE" useTransparency="false" transparencyLevel="0.5" />

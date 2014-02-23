@@ -35,9 +35,9 @@ import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteEditionPatternInstance;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -55,14 +55,14 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "EditionPatternInstance", patternRoleClass = EditionPatternInstancePatternRole.class) // EditionPatternInstance
+@DeclarePatternRole(FML = "FlexoConceptInstance", patternRoleClass = FlexoConceptInstancePatternRole.class) // FlexoConceptInstance
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot
-		@DeclareEditionAction(FML = "AddEditionPatternInstance", editionActionClass = AddEditionPatternInstance.class),
-		@DeclareEditionAction(FML = "DeleteEditionPatternInstance", editionActionClass = DeleteEditionPatternInstance.class) })
+		@DeclareEditionAction(FML = "AddFlexoConceptInstance", editionActionClass = AddFlexoConceptInstance.class),
+		@DeclareEditionAction(FML = "DeleteFlexoConceptInstance", editionActionClass = DeleteFlexoConceptInstance.class) })
 @DeclareFetchRequests({ // All requests available through this model slot
-@DeclareFetchRequest(FML = "SelectEditionPatternInstance", fetchRequestClass = SelectEditionPatternInstance.class) })
+@DeclareFetchRequest(FML = "SelectFlexoConceptInstance", fetchRequestClass = SelectFlexoConceptInstance.class) })
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlot.VirtualModelModelSlotImpl.class)
 @XMLElement
@@ -88,7 +88,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public boolean isReflexiveModelSlot();
 
-	public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
+	public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
 
 	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
 
@@ -105,8 +105,8 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public EditionPatternInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
-			EditionPatternInstancePatternRole returned = makePatternRole(EditionPatternInstancePatternRole.class);
+		public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
+			FlexoConceptInstancePatternRole returned = makePatternRole(FlexoConceptInstancePatternRole.class);
 			returned.setFlexoConceptType(flexoConcept);
 			returned.setModelSlot(this);
 			return returned;
@@ -114,8 +114,8 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
-			if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
-				return "editionPatternInstance";
+			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+				return "flexoConceptInstance";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
 			return null;
@@ -148,7 +148,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public Type getType() {
-			return EditionPatternInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
 		}
 
 		@Override

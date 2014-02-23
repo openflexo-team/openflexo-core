@@ -224,8 +224,11 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 			setSize(3 * Toolkit.getDefaultToolkit().getScreenSize().width / 4, 3 * Toolkit.getDefaultToolkit().getScreenSize().height / 4);
 			setLocationByPlatform(true);
 		}
-		Integer state = getController().getApplicationContext().getGeneralPreferences()
-				.getFrameStateForFrameWithID(getController().getModule().getShortName() + "Frame");
+		Integer state = null;
+		if (getController().getApplicationContext().getGeneralPreferences() != null) {
+			state = getController().getApplicationContext().getGeneralPreferences()
+					.getFrameStateForFrameWithID(getController().getModule().getShortName() + "Frame");
+		}
 		if (state != null
 				&& ((state & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH || (state & Frame.MAXIMIZED_HORIZ) == Frame.MAXIMIZED_HORIZ || (state & Frame.MAXIMIZED_VERT) == Frame.MAXIMIZED_VERT)) {
 			setExtendedState(getController().getApplicationContext().getGeneralPreferences()
@@ -385,12 +388,16 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 		} else if ("projectDirectory".equals(dataModification.propertyName())) {
 			updateTitle();
 		}
-		/*
-		 * if (ToolBox.getPLATFORM() == ToolBox.MACOS && dataModification
-		 * instanceof ResourceStatusModification) {
-		 * getRootPane().putClientProperty(WINDOW_MODIFIED,
-		 * getController().getProject().hasUnsaveStorageResources()); }
-		 */
+
+		updateWindowModified();
+
+	}
+
+	public void updateWindowModified() {
+		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+			getRootPane().putClientProperty(WINDOW_MODIFIED,
+					getController().getApplicationContext().getResourceManager().getUnsavedResources().size() > 0);
+		}
 	}
 
 	@Override

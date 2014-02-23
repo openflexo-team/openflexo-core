@@ -98,5 +98,10 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 			}
 			return null;
 		}
+
+		@Override
+		public Class<ProjectData> getResourceDataClass() {
+			return ProjectData.class;
+		}
 	}
 }

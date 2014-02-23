@@ -25,20 +25,20 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.view.EditionPatternInstance;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
-public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, AbstractActionScheme, EditionPatternInstance> {
+public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
 
 	private final ActionSchemeActionType actionType;
 
-	public ActionSchemeAction(ActionSchemeActionType actionType, EditionPatternInstance focusedObject,
+	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		this.actionType = actionType;
@@ -52,14 +52,14 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	}
 
 	/**
-	 * Return the {@link EditionPatternInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
 	 * 
 	 * @return
 	 */
 	@Override
-	public EditionPatternInstance getEditionPatternInstance() {
+	public FlexoConceptInstance getFlexoConceptInstance() {
 		if (actionType != null) {
-			return actionType.getEditionPatternInstance();
+			return actionType.getFlexoConceptInstance();
 		}
 		return null;
 	}
@@ -75,7 +75,7 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 			logger.info("Perform action " + actionType);
 		}
 
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getEditionPatternInstance())) {
+		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
 			applyEditionActions();
 		}
 	}
@@ -85,11 +85,11 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/
-		if (getEditionPatternInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getEditionPatternInstance();
+		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+			return (VirtualModelInstance) getFlexoConceptInstance();
 		}
-		if (getEditionPatternInstance() != null) {
-			return getEditionPatternInstance().getVirtualModelInstance();
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getVirtualModelInstance();
 		}
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
@@ -100,9 +100,9 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getEditionPatternInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
 		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
-			return getEditionPatternInstance();
+			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
 	}
@@ -110,7 +110,7 @@ public class ActionSchemeAction extends EditionSchemeAction<ActionSchemeAction, 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getEditionPatternInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
 			return;
 		}
 		super.setValue(value, variable);

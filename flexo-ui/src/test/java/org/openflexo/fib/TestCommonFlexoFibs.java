@@ -26,13 +26,13 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testEditionPatternInstanceSelector() {
-		validateFIB("Fib/EditionPatternInstanceSelector.fib");
+	public void testFlexoConceptInstanceSelector() {
+		validateFIB("Fib/FlexoConceptInstanceSelector.fib");
 	}
 
 	@Test
-	public void testEditionPatternSelector() {
-		validateFIB("Fib/EditionPatternSelector.fib");
+	public void testFlexoConceptSelector() {
+		validateFIB("Fib/FlexoConceptSelector.fib");
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testReviewUnsavedDialog() {
-		validateFIB("Fib/ReviewUnsavedDialog.fib");
+		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}
 
 	@Test

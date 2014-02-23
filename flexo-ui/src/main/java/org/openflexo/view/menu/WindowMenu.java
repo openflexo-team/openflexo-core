@@ -19,8 +19,12 @@
  */
 package org.openflexo.view.menu;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Hashtable;
@@ -490,6 +494,57 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 	public PaletteItem getPaletteItem() {
 		return paletteItem;
+	}
+
+	public class WindowMenuItem extends JCheckBoxMenuItem implements WindowListener {
+
+		private final Window window;
+
+		public WindowMenuItem(String menuName, Window aWindow) {
+			super(menuName);
+			this.window = aWindow;
+			addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					window.setVisible(!window.isVisible());
+				}
+			});
+			aWindow.addWindowListener(this);
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			setState(window.isVisible());
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			setState(window.isVisible());
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			setState(window.isVisible());
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			setState(window.isVisible());
+		}
+
+		@Override
+		public void windowActivated(WindowEvent e) {
+			setState(window.isVisible());
+		}
+
 	}
 
 }

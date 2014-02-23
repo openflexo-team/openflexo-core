@@ -1,88 +1,153 @@
 package org.openflexo.foundation.view;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents run-time-level object encoding reference to object
+ * Represents run-time-level object encoding reference to object considered as a modelling element<br>
+ * An {@link ActorReference} is always attached to a {@link FlexoConceptInstance}
  * 
  * @author sylvain
  * 
  * @param <T>
+ *            type of modelling element referenced by this ActorReference
  */
-public abstract class ActorReference<T> extends VirtualModelInstanceObject {
-	private PatternRole<T> patternRole;
-	private String patternRoleName;
-	private ModelSlot modelSlot;
-	private EditionPatternInstance epi;
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ActorReference.ActorReferenceImpl.class)
+public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
-	protected ActorReference(FlexoProject project) {
-		super(project);
-	}
+	@PropertyIdentifier(type = FlexoConceptInstance.class)
+	public static final String FLEXO_CONCEPT_INSTANCE_KEY = "flexoConceptInstance";
 
-	public ModelSlot getModelSlot() {
-		return modelSlot;
-	}
+	@PropertyIdentifier(type = String.class)
+	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
 
-	public void setModelSlot(ModelSlot modelSlot) {
-		this.modelSlot = modelSlot;
-	}
+	@Getter(value = PATTERN_ROLE_NAME_KEY)
+	@XMLAttribute
+	public String getPatternRoleName();
 
-	@Override
-	public VirtualModelInstance getResourceData() {
-		if (getEditionPatternInstance() != null) {
-			return getEditionPatternInstance().getResourceData();
+	@Setter(PATTERN_ROLE_NAME_KEY)
+	public void setPatternRoleName(String patternRoleName);
+
+	/**
+	 * Retrieve and return modelling element from informations stored in this {@link ActorReference}
+	 * 
+	 * @return
+	 */
+	public T getModellingElement();
+
+	/**
+	 * Sets modelling element referenced by this {@link ActorReference}
+	 * 
+	 * @param object
+	 */
+	public void setModellingElement(T object);
+
+	/**
+	 * Return the {@link FlexoConceptInstance} where this reference "lives"
+	 * 
+	 * @return
+	 */
+	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
+	public FlexoConceptInstance getFlexoConceptInstance();
+
+	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
+	public void setFlexoConceptInstance(FlexoConceptInstance epi);
+
+	public PatternRole<T> getPatternRole();
+
+	public void setPatternRole(PatternRole<T> patternRole);
+
+	public ModelSlotInstance<?, ?> getModelSlotInstance();
+
+	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
+		private PatternRole<T> patternRole;
+		private String patternRoleName;
+		private ModelSlot modelSlot;
+		private FlexoConceptInstance epi;
+
+		public ModelSlot getModelSlot() {
+			return modelSlot;
 		}
-		return null;
-	}
 
-	public abstract T retrieveObject();
-
-	public EditionPatternInstance getEditionPatternInstance() {
-		return epi;
-	}
-
-	public void setEditionPatternInstance(EditionPatternInstance epi) {
-		this.epi = epi;
-	}
-
-	public PatternRole<T> getPatternRole() {
-		if (patternRole == null && epi != null && StringUtils.isNotEmpty(patternRoleName)) {
-			patternRole = (PatternRole<T>) epi.getFlexoConcept().getPatternRole(patternRoleName);
+		public void setModelSlot(ModelSlot modelSlot) {
+			this.modelSlot = modelSlot;
 		}
-		return patternRole;
-	}
 
-	public void setPatternRole(PatternRole<T> patternRole) {
-		this.patternRole = patternRole;
-	}
-
-	public String getPatternRoleName() {
-		if (patternRole != null) {
-			return patternRole.getPatternRoleName();
+		@Override
+		public VirtualModelInstance getResourceData() {
+			if (getFlexoConceptInstance() != null) {
+				return getFlexoConceptInstance().getResourceData();
+			}
+			return null;
 		}
-		return patternRoleName;
-	}
 
-	public void setPatternRoleName(String patternRoleName) {
-		this.patternRoleName = patternRoleName;
-	}
+		/**
+		 * Retrieve modelling element from informations stored in this {@link ActorReference}
+		 * 
+		 * @return
+		 */
+		@Override
+		public abstract T getModellingElement();
 
-	@Override
-	public VirtualModelInstance getVirtualModelInstance() {
-		if (getEditionPatternInstance() != null) {
-			return getEditionPatternInstance().getVirtualModelInstance();
+		@Override
+		public FlexoConceptInstance getFlexoConceptInstance() {
+			return epi;
 		}
-		return null;
-	}
 
-	public ModelSlotInstance<?, ?> getModelSlotInstance() {
-		if (getVirtualModelInstance() != null) {
-			return getVirtualModelInstance().getModelSlotInstance(getPatternRole().getModelSlot());
+		@Override
+		public void setFlexoConceptInstance(FlexoConceptInstance epi) {
+			this.epi = epi;
 		}
-		return null;
-	}
 
+		@Override
+		public PatternRole<T> getPatternRole() {
+			if (patternRole == null && epi != null && StringUtils.isNotEmpty(patternRoleName)) {
+				patternRole = (PatternRole<T>) epi.getFlexoConcept().getPatternRole(patternRoleName);
+			}
+			return patternRole;
+		}
+
+		@Override
+		public void setPatternRole(PatternRole<T> patternRole) {
+			this.patternRole = patternRole;
+		}
+
+		@Override
+		public String getPatternRoleName() {
+			if (patternRole != null) {
+				return patternRole.getPatternRoleName();
+			}
+			return patternRoleName;
+		}
+
+		@Override
+		public void setPatternRoleName(String patternRoleName) {
+			this.patternRoleName = patternRoleName;
+		}
+
+		@Override
+		public VirtualModelInstance getVirtualModelInstance() {
+			if (getFlexoConceptInstance() != null) {
+				return getFlexoConceptInstance().getVirtualModelInstance();
+			}
+			return null;
+		}
+
+		@Override
+		public ModelSlotInstance<?, ?> getModelSlotInstance() {
+			if (getVirtualModelInstance() != null) {
+				return getVirtualModelInstance().getModelSlotInstance(getPatternRole().getModelSlot());
+			}
+			return null;
+		}
+
+	}
 }

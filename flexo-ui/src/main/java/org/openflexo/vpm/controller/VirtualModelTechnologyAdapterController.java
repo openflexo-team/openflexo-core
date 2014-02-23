@@ -3,16 +3,16 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.EditionPatternInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
-import org.openflexo.foundation.viewpoint.editionaction.AddEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectEditionPatternInstance;
+import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
@@ -22,7 +22,7 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
-import org.openflexo.vpm.view.StandardEditionPatternView;
+import org.openflexo.vpm.view.StandardFlexoConceptView;
 import org.openflexo.vpm.view.ViewPointView;
 import org.openflexo.vpm.view.VirtualModelView;
 
@@ -92,20 +92,20 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends PatternRole<?>> patternRoleClass) {
-		if (EditionPatternInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
-			return VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON;
+		if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			return VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return null;
 	}
 
 	@Override
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
-		if (AddEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectEditionPatternInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.IMPORT);
+		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.EDITION_PATTERN_INSTANCE_ICON, IconLibrary.DELETE);
+			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
@@ -147,9 +147,9 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 				// }
 			} else {
 				// if (ep.getVirtualModel() instanceof DiagramSpecification) {
-				// return new DiagramEditionPatternView(ep, (VPMController) controller);
+				// return new DiagramFlexoConceptView(ep, (VPMController) controller);
 				// } else {
-				return new StandardEditionPatternView(ep, controller, perspective);
+				return new StandardFlexoConceptView(ep, controller, perspective);
 				// }
 			}
 
@@ -168,9 +168,9 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 			// }
 		} else {
 			// if (ep.getVirtualModel() instanceof DiagramSpecification) {
-			//	return new DiagramEditionPatternView(ep, (VPMController) controller);
+			//	return new DiagramFlexoConceptView(ep, (VPMController) controller);
 			// } else {
-			return new StandardEditionPatternView(ep, (VPMController) controller);
+			return new StandardFlexoConceptView(ep, (VPMController) controller);
 			// }
 		}
 

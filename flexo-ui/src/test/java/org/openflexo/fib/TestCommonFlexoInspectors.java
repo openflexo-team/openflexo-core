@@ -16,8 +16,8 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testEditionPatternInstanceInspector() {
-		validateFIB("Inspectors/COMMON/EditionPatternInstance.inspector");
+	public void testFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/COMMON/FlexoConceptInstance.inspector");
 	}
 
 	@Test

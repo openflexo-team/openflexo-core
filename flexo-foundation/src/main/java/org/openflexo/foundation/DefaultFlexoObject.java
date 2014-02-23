@@ -19,9 +19,9 @@ import org.openflexo.foundation.validation.ValidationModel;
 public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	@Override
-	public FlexoServiceManager getServiceManager() {
+	public boolean isModified() {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 	@Override

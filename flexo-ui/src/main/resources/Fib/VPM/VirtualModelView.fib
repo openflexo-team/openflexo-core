@@ -62,7 +62,7 @@
                   <AddAction method="controller.createObjectPropertyParameter(EditionSchemeTable.selected)" name="add_object_property_parameter" />
                   <AddAction method="controller.createDataPropertyParameter(EditionSchemeTable.selected)" name="add_data_property_parameter" />
                   <AddAction method="controller.createListParameter(EditionSchemeTable.selected)" name="add_list_parameter" />
-                  <AddAction method="controller.createEditionPatternInstanceParameter(EditionSchemeTable.selected)" name="add_flexo_concept_instance_parameter" />
+                  <AddAction method="controller.createFlexoConceptInstanceParameter(EditionSchemeTable.selected)" name="add_flexo_concept_instance_parameter" />
                   <AddAction method="controller.createPropertyParameter(EditionSchemeTable.selected)" name="add_property_parameter" />
         		  <AddAction method="controller.createTechnologyObjectParameter(EditionSchemeTable.selected)" name="add_technology_object" />
                   <RemoveAction method="controller.deleteParameter(EditionSchemeTable.selected,selected)" name="delete" />
@@ -92,8 +92,8 @@
           <FIBReferencedComponent componentFile="EditionSchemePanel.fib" localize="true" manageDynamicModel="true" name="EditionSchemeWidget" index="0" data="EditionSchemeTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" />
         </SplitPanel>
       </Tab>
-      <Tab title="inspector" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector" constraints="border(index=1;location=center)" width="80" height="60" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
-        <FIBReferencedComponent componentFile="EditionPatternInspectorPanel.fib" localize="true" manageDynamicModel="true" name="EditionPatternInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
+      <Tab title="inspector" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" constraints="border(index=1;location=center)" width="80" height="60" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
+        <FIBReferencedComponent componentFile="FlexoConceptInspectorPanel.fib" localize="true" manageDynamicModel="true" name="FlexoConceptInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
       </Tab>
       <Tab title="localization" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" index="2" constraints="border(index=1;location=center)" name="LocalizationTab">
         <FIBReferencedComponent componentFile="LocalizedDictionaryPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />

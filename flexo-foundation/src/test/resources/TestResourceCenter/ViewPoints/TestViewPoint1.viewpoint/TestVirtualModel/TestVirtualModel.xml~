@@ -2,18 +2,18 @@
 <VirtualModel id="0" useSpecificDescriptions="false" userID="FLX" flexoID="4" name="TestVirtualModel">
   <Inspector id="1" flexoID="2" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TestVirtualModel" />
   <VirtualModelModelSlot id="2" flexoID="3" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="this" isReadOnly="false" virtualModelURI="http://openflexo.org/test/TestViewPoint1/TestVirtualModel" />
-  <EditionPattern id="3" useSpecificDescriptions="false" userID="FLX" flexoID="6" name="FlexoConceptA">
+  <FlexoConcept id="3" useSpecificDescriptions="false" userID="FLX" flexoID="6" name="FlexoConceptA">
     <Inspector id="4" flexoID="5" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptA" />
-  </EditionPattern>
-  <EditionPattern id="5" useSpecificDescriptions="false" userID="FLX" flexoID="8" name="FlexoConceptB">
+  </FlexoConcept>
+  <FlexoConcept id="5" useSpecificDescriptions="false" userID="FLX" flexoID="8" name="FlexoConceptB">
     <Inspector id="6" flexoID="7" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptB" />
-  </EditionPattern>
-  <EditionPattern id="7" useSpecificDescriptions="false" userID="FLX" flexoID="10" name="FlexoConceptC">
+  </FlexoConcept>
+  <FlexoConcept id="7" useSpecificDescriptions="false" userID="FLX" flexoID="10" name="FlexoConceptC">
     <Inspector id="8" flexoID="9" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptC" />
-    <ParentEditionPattern idref="5" />
-  </EditionPattern>
-  <EditionPattern id="9" useSpecificDescriptions="false" userID="FLX" flexoID="12" name="FlexoConceptD">
+    <ParentFlexoConcept idref="5" />
+  </FlexoConcept>
+  <FlexoConcept id="9" useSpecificDescriptions="false" userID="FLX" flexoID="12" name="FlexoConceptD">
     <Inspector id="10" flexoID="11" userID="FLX" useSpecificDescriptions="false" inspectorTitle="FlexoConceptD" />
-    <ParentEditionPattern idref="5" />
-  </EditionPattern>
+    <ParentFlexoConcept idref="5" />
+  </FlexoConcept>
 </VirtualModel>

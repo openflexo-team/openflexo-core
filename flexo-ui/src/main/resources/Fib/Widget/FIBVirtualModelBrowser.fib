@@ -17,7 +17,7 @@
       <Children data="editionScheme.editionSchemeParameters" visible="(editionScheme.parameters.size &gt; 0)" cast="" name="parameters" />
       <Children data="editionScheme.actions" visible="" cast="" name="actions" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.EditionPatternInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
       <Children data="inspector.entries" visible="" cast="" name="entries" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry" label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
@@ -26,11 +26,11 @@
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction" label="" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
       <Children data="controlStructureAction.actions" visible="" cast="" name="children" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPatternStructuralFacet" label="&quot;Structural&quot;" icon="controller.iconForObject(editionPatternStructuralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPatternStructuralFacet">
-      <Children data="editionPatternStructuralFacet.flexoConcept.patternRoles" visible="" cast="" name="patternRoles" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet" label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
+      <Children data="flexoConceptStructuralFacet.flexoConcept.patternRoles" visible="" cast="" name="patternRoles" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionPatternBehaviouralFacet" label="&quot;Behavioural&quot;" icon="controller.iconForObject(editionPatternBehaviouralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionPatternBehaviouralFacet">
-      <Children data="editionPatternBehaviouralFacet.flexoConcept.editionSchemes" visible="" cast="" name="editionSchemes" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet" label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptBehaviouralFacet">
+      <Children data="flexoConceptBehaviouralFacet.flexoConcept.editionSchemes" visible="" cast="" name="editionSchemes" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameters" label="&quot;Parameters&quot;" icon="controller.iconForObject(editionSchemeParameters)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionSchemeParameters">
       <Children data="editionSchemeParameters.editionScheme.parameters" visible="" cast="" name="children" />

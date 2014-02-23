@@ -30,11 +30,11 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionSchemeObject.EditionSchemeObjectImpl.class)
-public interface EditionSchemeObject extends EditionPatternObject {
+public interface EditionSchemeObject extends FlexoConceptObject {
 
 	public EditionScheme getEditionScheme();
 
-	public abstract class EditionSchemeObjectImpl extends EditionPatternObjectImpl implements EditionSchemeObject {
+	public abstract class EditionSchemeObjectImpl extends FlexoConceptObjectImpl implements EditionSchemeObject {
 
 	}
 

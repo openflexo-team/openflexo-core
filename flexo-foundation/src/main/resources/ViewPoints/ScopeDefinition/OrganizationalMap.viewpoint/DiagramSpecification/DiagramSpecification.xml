@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DiagramSpecification id="1" name="DiagramSpecification" modelVersion="1.0">
-  <EditionPattern id="2" name="OrganizationalUnit">
+  <FlexoConcept id="2" name="OrganizationalUnit">
     <DropScheme id="3" target="top" name="dropOrganizationalUnitAtTopLevel" label="dropOrganizationalUnitAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="4" base="&quot;OrganizationalUnit&quot;" name="uri" label="uri" usePaletteLabelAsDefaultValue="false" isRequired="true">
         <AddressedOWLModelSlot id="5" isRequired="false" isReadOnly="false" name="owl" metaModelURI="http://www.agilebirds.com/openflexo/ontologies/ScopeDefinition/OrganizationalUnitScopeDefinition.owl" />
@@ -52,8 +52,8 @@
       <Individual id="33" conceptURI="http://www.agilebirds.com/openflexo/ontologies/ScopeDefinition/OrganizationalUnitScopeDefinition.owl#OrganizationalUnit" name="individual" label="individual" readOnly="false" data="organizationalUnit" />
       <Individual id="34" conceptURI="http://www.agilebirds.com/openflexo/ontologies/ScopeDefinition/OrganizationalUnitScopeDefinition.owl#OrganizationalUnit" name="organizationUnit" label="organizationUnit" readOnly="false" data="organizationalUnit" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="35" name="SubOrganizationUnitLink">
+  </FlexoConcept>
+  <FlexoConcept id="35" name="SubOrganizationUnitLink">
     <LinkScheme id="36" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalMap.owl#OrganizationalUnit" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalMap.owl#OrganizationalUnit" isAvailableWithFloatingPalette="true" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="linkOrganizationalUnitToOrganizationalUnit" label="linkOrganizationalUnitToOrganizationalUnit" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <AddConnector id="37" fromShape="fromTarget.shape" toShape="toTarget.shape" assignation="connector">
         <AddressedDiagramModelSlot idref="9" />
@@ -107,8 +107,8 @@
       <TextField id="71" name="parentOU" label="Parent organization unit" readOnly="true" data="hasSubOrgUnitStatement.subject.uriName" />
       <TextField id="72" name="childOU" label="Child organization unit" readOnly="true" data="hasSubOrgUnitStatement.object.uriName" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="73" name="Position">
+  </FlexoConcept>
+  <FlexoConcept id="73" name="Position">
     <DropScheme id="74" target="top" name="dropPositionAtTopLevel" label="dropPositionAtTopLevel" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <URIParameter id="75" base="&quot;Position&quot;" name="uri" label="uri" usePaletteLabelAsDefaultValue="false" isRequired="true">
         <AddressedOWLModelSlot idref="5" />
@@ -198,8 +198,8 @@
       <TextField id="125" name="mission" label="mission" readOnly="false" data="mission.missionName" />
       <TextArea id="126" name="mission_description" label="mission_description" readOnly="false" data="mission.missionDescription" />
     </Inspector>
-  </EditionPattern>
-  <EditionPattern id="127" name="ContainsPositionLink">
+  </FlexoConcept>
+  <FlexoConcept id="127" name="ContainsPositionLink">
     <LinkScheme id="128" fromTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalMap.owl#OrganizationalUnit" toTarget="http://www.agilebirds.com/openflexo/ViewPoints/ScopeDefinition/OrganizationalMap.owl#Position" isAvailableWithFloatingPalette="false" northDirectionSupported="true" eastDirectionSupported="true" southDirectionSupported="true" westDirectionSupported="true" name="linkOrganizationalUnitToPosition" label="linkOrganizationalUnitToPosition" skipConfirmationPanel="true" definePopupDefaultSize="false" width="800" height="600">
       <AddConnector id="129" fromShape="fromTarget.shape" toShape="toTarget.shape" assignation="connector">
         <AddressedDiagramModelSlot idref="9" />
@@ -253,7 +253,7 @@
       <TextField id="162" name="Organization Unit" label="Organization Unit" readOnly="true" data="containsPositionStatement.subject.uriName" />
       <TextField id="163" name="Position" label="Position" readOnly="true" data="containsPositionStatement.object.uriName" />
     </Inspector>
-  </EditionPattern>
+  </FlexoConcept>
   <LocalizedDictionary id="164" />
   <OWLModelSlot idref="5" />
   <DiagramModelSlot idref="9" />

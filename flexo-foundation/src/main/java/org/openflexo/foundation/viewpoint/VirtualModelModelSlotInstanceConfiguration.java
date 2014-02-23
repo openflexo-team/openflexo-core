@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
@@ -65,7 +66,10 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 
 	@Override
 	public ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance) {
-		VirtualModelModelSlotInstance returned = new VirtualModelModelSlotInstance(vmInstance, getModelSlot());
+		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+		returned.setModelSlot(getModelSlot());
+		returned.setVirtualModelInstance(vmInstance);
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
 		} else {
