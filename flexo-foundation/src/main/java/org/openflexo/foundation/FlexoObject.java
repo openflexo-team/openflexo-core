@@ -799,7 +799,12 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		@Override
 		public void setSpecificDescriptions(Map<String, String> specificDescriptions) {
-			this.specificDescriptions = new TreeMap<String, String>(specificDescriptions);
+			if(this.specificDescriptions==null){
+				this.specificDescriptions = new TreeMap<String, String>();
+			}
+			else{
+				this.specificDescriptions = specificDescriptions;
+			}
 		}
 
 		/**
