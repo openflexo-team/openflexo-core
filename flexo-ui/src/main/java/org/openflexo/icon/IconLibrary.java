@@ -152,7 +152,7 @@ public class IconLibrary {
 	public static final IconMarker DUPLICATE = new IconMarker(new ImageIconResource("Icons/Utils/Markers/Plus.png"), 8, 8);
 	public static final IconMarker LOCKED = new IconMarker(new ImageIconResource("Icons/Utils/Markers/Locked.png"), 0, 5);
 	public static final IconMarker SYNC = new IconMarker(new ImageIconResource("Icons/Utils/Markers/Sync.png"), 10, 7);
-	public static final ImageIcon QUESTION_ICON = new ImageIconResource("Icons/Utils/Question.gif");
+	public static final ImageIcon QUESTION_ICON = new ImageIconResource("Icons/Utils/Markers/Question.gif");
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource("Icons/Utils/Cursors/DropOKCursor.gif");

@@ -117,7 +117,7 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
 	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
 	public static final ImageIconResource LOCALIZATION_ICON = new ImageIconResource("Icons/Model/VPM/LocalizationIcon.png");
-	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VPM/UnknownIcon.gif");
+	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VE/UnknownIcon.gif");
 	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource("Icons/Model/VPM/VirtualModel.png");
 	public static final ImageIconResource DECLARE_PATTERN_ROLE_ICON = new ImageIconResource("Icons/Model/VPM/DeclarePatternRoleIcon.png");
 	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ConditionalActionIcon.png");

@@ -59,7 +59,7 @@ public class VEIconLibrary extends IconLibrary {
 	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/FlexoConceptInstance.png");
 	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/ModelSlotInstance.png");
 
-	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VPM/UnknownIcon.gif");
+	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VE/UnknownIcon.gif");
 
 	public static ImageIcon iconForObject(ViewObject object) {
 		if (object instanceof View) {
