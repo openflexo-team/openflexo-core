@@ -10,11 +10,11 @@ import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.EditionScheme;
 import org.openflexo.foundation.viewpoint.EditionSchemeObject;
 import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -75,6 +75,9 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public PatternRole createPatternRole(FlexoConcept flexoConcept) {
+		System.out.println("On tente de creer un PatternRole");
+		System.out.println("getFlexoController()=" + getFlexoController());
+		System.out.println("getEditor()=" + getEditor());
 		CreatePatternRole createPatternRole = CreatePatternRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createPatternRole.doAction();
 		return createPatternRole.getNewPatternRole();
@@ -160,14 +163,12 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
-			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
-					getEditor());
+			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			return addFlexoConcept.getNewFlexoConcept();
 		} else if (flexoConcept != null) {
-			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
-					getEditor());
+			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null, getEditor());
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
