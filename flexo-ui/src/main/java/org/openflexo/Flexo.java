@@ -194,7 +194,7 @@ public class Flexo {
 			getResourcePath();
 		}
 		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
-		// ResourceLocator.printDirectoriesSearchOrder(System.err);
+		ResourceLocator.printDirectoriesSearchOrder(System.err);
 		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
 		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
