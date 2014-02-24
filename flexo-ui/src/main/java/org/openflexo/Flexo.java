@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2013-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -192,7 +193,8 @@ public class Flexo {
 		if (ToolBox.getPLATFORM() != ToolBox.MACOS || !isDev) {
 			getResourcePath();
 		}
-		ResourceLocator.printDirectoriesSearchOrder(System.err);
+		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
+		// ResourceLocator.printDirectoriesSearchOrder(System.err);
 		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
 		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;

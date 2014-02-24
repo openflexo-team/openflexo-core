@@ -261,11 +261,6 @@ public JPopupMenu makePopupMenu(FlexoObject focusedObject, MenuFilter filter) {
 					}
 				}
 			}
-			if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
-				for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {
-					contextualMenu.putAction(new NavigationSchemeActionType(ns, epi));
-				}
-			}
 		}
 		_popupMenu = contextualMenu.makePopupMenu(focusedObject);
 	} else {
