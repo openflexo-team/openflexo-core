@@ -92,6 +92,10 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 			errorMessage = "please_supply_valid_virtual_model_name";
 			return false;
 		}
+		if (getFocusedObject().getVirtualModelNamed(newVirtualModelName) != null) {
+			errorMessage = "duplicated_virtual_model_name";
+			return false;
+		}
 		return true;
 	}
 
