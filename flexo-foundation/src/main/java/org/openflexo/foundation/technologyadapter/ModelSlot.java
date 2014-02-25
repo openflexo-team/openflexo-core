@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
@@ -36,7 +35,6 @@ import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.NamedViewPointObject;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -73,7 +71,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(VirtualModelModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointObject {
+public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -83,8 +81,10 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_READ_ONLY_KEY = "isReadOnly";
 
+	@Override
 	public VirtualModelModelFactory getVirtualModelFactory();
 
+	@Override
 	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
 	public VirtualModel getVirtualModel();
 
@@ -118,6 +118,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter);
 
+	@Override
 	public Type getType();
 
 	public List<Class<? extends PatternRole<?>>> getAvailablePatternRoleTypes();
@@ -190,7 +191,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends NamedViewPointObjectImpl implements ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends PatternRoleImpl<RD> implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -334,10 +335,10 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends NamedViewPointOb
 			this.isRequired = isRequired;
 		}
 
-		@Override
+		/*@Override
 		public BindingModel getBindingModel() {
 			return viewPoint.getBindingModel();
-		}
+		}*/
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
