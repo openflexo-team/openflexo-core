@@ -20,7 +20,7 @@ import org.openflexo.foundation.viewpoint.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.CreatePatternRole;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileResource;
@@ -101,22 +101,22 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		CreatePatternRole createPR1 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR1.setPatternRoleName("aString");
-		createPR1.flexoRoleClass = PrimitiveRole.class;
-		createPR1.primitiveType = PrimitiveType.String;
+		CreateFlexoRole createPR1 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR1.setRoleName("aString");
+		createPR1.setFlexoRoleClass(PrimitiveRole.class);
+		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		CreatePatternRole createPR2 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR2.setPatternRoleName("aBoolean");
-		createPR2.flexoRoleClass = PrimitiveRole.class;
-		createPR2.primitiveType = PrimitiveType.Boolean;
+		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR2.setRoleName("aBoolean");
+		createPR2.setFlexoRoleClass(PrimitiveRole.class);
+		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		CreatePatternRole createPR3 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR3.setPatternRoleName("anInteger");
-		createPR3.flexoRoleClass = PrimitiveRole.class;
-		createPR3.primitiveType = PrimitiveType.Integer;
+		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR3.setRoleName("anInteger");
+		createPR3.setFlexoRoleClass(PrimitiveRole.class);
+		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
 	}

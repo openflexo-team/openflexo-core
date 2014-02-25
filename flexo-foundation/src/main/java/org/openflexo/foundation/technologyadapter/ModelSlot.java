@@ -34,9 +34,7 @@ import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
@@ -232,23 +230,6 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 			return factory.newInstance(patternRoleClass);
 		}
 
-		/**
-		 * Return default name for supplied pattern role class
-		 * 
-		 * @param flexoRoleClass
-		 * @return
-		 */
-		@Override
-		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
-			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
-				return "flexoConcept";
-			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
-				return "primitive";
-			}
-			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
-			return "???";
-		}
-
 		@Override
 		public VirtualModel getVirtualModel() {
 			return virtualModel;
@@ -374,7 +355,10 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 		private List<Class<? extends FlexoRole<?>>> computeAvailableFlexoRoleTypes() {
 			availableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
-			Class<?> cl = getClass();
+			appendDeclarePatternRoles(availableFlexoRoleTypes, getClass());
+			return availableFlexoRoleTypes;
+
+			/*Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
 				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
 				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
@@ -384,7 +368,26 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 			// availableFlexoRoleTypes.add(FlexoConceptPatternRole.class);
 			// availableFlexoRoleTypes.add(FlexoModelObjectPatternRole.class);
 			// availableFlexoRoleTypes.add(PrimitiveRole.class);
-			return availableFlexoRoleTypes;
+			return availableFlexoRoleTypes;*/
+		}
+
+		private void appendDeclarePatternRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
+			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
+				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
+				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
+					if (!availableFlexoRoleTypes.contains(patternRoleDeclaration.flexoRoleClass())) {
+						availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
+					}
+				}
+			}
+			if (cl.getSuperclass() != null) {
+				appendDeclarePatternRoles(aList, cl.getSuperclass());
+			}
+
+			for (Class superInterface : cl.getInterfaces()) {
+				appendDeclarePatternRoles(aList, superInterface);
+			}
+
 		}
 
 		@Override

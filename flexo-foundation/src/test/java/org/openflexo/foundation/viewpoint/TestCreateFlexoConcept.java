@@ -19,7 +19,7 @@ import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
 import org.openflexo.foundation.viewpoint.action.CreateEditionSchemeParameter;
-import org.openflexo.foundation.viewpoint.action.CreatePatternRole;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
@@ -225,22 +225,22 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(9)
 	public void testCreateSomePatternRolesToConceptA() throws SaveResourceException {
 
-		CreatePatternRole createPR1 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR1.setPatternRoleName("aString");
-		createPR1.flexoRoleClass = PrimitiveRole.class;
-		createPR1.primitiveType = PrimitiveType.String;
+		CreateFlexoRole createPR1 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR1.setRoleName("aString");
+		createPR1.setFlexoRoleClass(PrimitiveRole.class);
+		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		CreatePatternRole createPR2 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR2.setPatternRoleName("aBoolean");
-		createPR2.flexoRoleClass = PrimitiveRole.class;
-		createPR2.primitiveType = PrimitiveType.Boolean;
+		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR2.setRoleName("aBoolean");
+		createPR2.setFlexoRoleClass(PrimitiveRole.class);
+		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		CreatePatternRole createPR3 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR3.setPatternRoleName("anInteger");
-		createPR3.flexoRoleClass = PrimitiveRole.class;
-		createPR3.primitiveType = PrimitiveType.Integer;
+		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		createPR3.setRoleName("anInteger");
+		createPR3.setFlexoRoleClass(PrimitiveRole.class);
+		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
 		assertEquals(3, flexoConceptA.getFlexoRoles().size());

@@ -21,7 +21,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
-import org.openflexo.foundation.viewpoint.action.CreatePatternRole;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
@@ -78,9 +78,9 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		System.out.println("On tente de creer un FlexoRole");
 		System.out.println("getFlexoController()=" + getFlexoController());
 		System.out.println("getEditor()=" + getEditor());
-		CreatePatternRole createPatternRole = CreatePatternRole.actionType.makeNewAction(flexoConcept, null, getEditor());
-		createPatternRole.doAction();
-		return createPatternRole.getNewFlexoRole();
+		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createFlexoRole.doAction();
+		return createFlexoRole.getNewFlexoRole();
 	}
 
 	public FlexoRole<?> deleteFlexoRole(FlexoConcept flexoConcept, FlexoRole<?> aPatternRole) {

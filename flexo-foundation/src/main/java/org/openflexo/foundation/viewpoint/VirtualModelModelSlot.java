@@ -55,11 +55,11 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "FlexoConceptInstance", flexoRoleClass = FlexoConceptInstanceRole.class) // FlexoConceptInstance
+@DeclarePatternRole(FML = "FlexoConceptInstanceRole", flexoRoleClass = FlexoConceptInstanceRole.class), // FlexoConceptInstance
+		@DeclarePatternRole(FML = "PrimitiveRole", flexoRoleClass = PrimitiveRole.class) // PrimitiveRole
 })
-@DeclareEditionActions({ // All edition actions available through this model
-		// slot
-		@DeclareEditionAction(FML = "AddFlexoConceptInstance", editionActionClass = AddFlexoConceptInstance.class),
+@DeclareEditionActions({ // All edition actions available through this model slot
+@DeclareEditionAction(FML = "AddFlexoConceptInstance", editionActionClass = AddFlexoConceptInstance.class),
 		@DeclareEditionAction(FML = "DeleteFlexoConceptInstance", editionActionClass = DeleteFlexoConceptInstance.class) })
 @DeclareFetchRequests({ // All requests available through this model slot
 @DeclareFetchRequest(FML = "SelectFlexoConceptInstance", fetchRequestClass = SelectFlexoConceptInstance.class) })
@@ -116,6 +116,8 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
+			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+				return "primitive";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
 			return null;
