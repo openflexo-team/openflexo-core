@@ -119,21 +119,21 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);
 
-	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = EditionScheme.FLEXO_CONCEPT_KEY)
+	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement
-	public List<EditionScheme> getEditionSchemes();
+	public List<FlexoBehaviour> getFlexoBehaviours();
 
 	@Setter(EDITION_SCHEMES_KEY)
-	public void setEditionSchemes(List<EditionScheme> editionSchemes);
+	public void setFlexoBehaviours(List<FlexoBehaviour> flexoBehaviours);
 
 	@Adder(EDITION_SCHEMES_KEY)
-	public void addToEditionSchemes(EditionScheme aEditionScheme);
+	public void addToFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
 	@Remover(EDITION_SCHEMES_KEY)
-	public void removeFromEditionSchemes(EditionScheme aEditionScheme);
+	public void removeFromFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
-	@Finder(collection = EDITION_SCHEMES_KEY, attribute = EditionScheme.NAME_KEY)
-	public EditionScheme getEditionScheme(String editionSchemeName);
+	@Finder(collection = EDITION_SCHEMES_KEY, attribute = FlexoBehaviour.NAME_KEY)
+	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
 
 	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = PatternRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
@@ -204,7 +204,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public boolean isRoot();
 
-	public <ES extends EditionScheme> List<ES> getEditionSchemes(Class<ES> editionSchemeClass);
+	public <ES extends FlexoBehaviour> List<ES> getEditionSchemes(Class<ES> editionSchemeClass);
 
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
@@ -243,7 +243,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public DeletionScheme createDeletionScheme();*/
 
-	// public EditionScheme deleteEditionScheme(EditionScheme editionScheme);
+	// public FlexoBehaviour deleteEditionScheme(FlexoBehaviour editionScheme);
 
 	public DeletionScheme getDefaultDeletionScheme();
 
@@ -270,7 +270,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
 		// private List<PatternRole<?>> patternRoles;
-		// private List<EditionScheme> editionSchemes;
+		// private List<FlexoBehaviour> editionSchemes;
 		// private List<FlexoConceptConstraint> flexoConceptConstraints;
 		private FlexoConceptInspector inspector;
 
@@ -450,7 +450,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getAvailableEditionSchemeName(String baseName) {
 			String testName = baseName;
 			int index = 2;
-			while (getEditionScheme(testName) != null) {
+			while (getFlexoBehaviour(testName) != null) {
 				testName = baseName + index;
 				index++;
 			}
@@ -459,9 +459,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <ES extends EditionScheme> List<ES> getEditionSchemes(Class<ES> editionSchemeClass) {
+		public <ES extends FlexoBehaviour> List<ES> getEditionSchemes(Class<ES> editionSchemeClass) {
 			List<ES> returned = new ArrayList<ES>();
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
 				}
@@ -486,7 +486,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 */
 		@Override
 		public SynchronizationScheme getSynchronizationScheme() {
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof SynchronizationScheme) {
 					return (SynchronizationScheme) es;
 				}
@@ -516,7 +516,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public boolean hasActionScheme() {
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof ActionScheme) {
 					return true;
 				}
@@ -526,7 +526,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public boolean hasCreationScheme() {
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof CreationScheme) {
 					return true;
 				}
@@ -536,7 +536,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public boolean hasSynchronizationScheme() {
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof SynchronizationScheme) {
 					return true;
 				}
@@ -546,7 +546,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public boolean hasNavigationScheme() {
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof NavigationScheme) {
 					return true;
 				}
@@ -604,7 +604,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 				a.setObject(new DataBinding<Object>(pr.getPatternRoleName()));
 				newDeletionScheme.addToActions(a);
 			}
-			addToEditionSchemes(newDeletionScheme);
+			addToFlexoBehaviours(newDeletionScheme);
 			return newDeletionScheme;
 		}
 
@@ -641,7 +641,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public void finalizeFlexoConceptDeserialization() {
 			createBindingModel();
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeEditionSchemeDeserialization();
 			}
 			for (PatternRole pr : getPatternRoles()) {
@@ -684,7 +684,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			logger.fine("updateBindingModel()");
 			_bindingModel = null;
 			createBindingModel();
-			for (EditionScheme es : getEditionSchemes()) {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.updateBindingModels();
 			}
 		}
@@ -881,9 +881,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 				}
 			}
 
-			if (getEditionSchemes().size() > 0) {
+			if (getFlexoBehaviours().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (EditionScheme es : getEditionSchemes()) {
+				for (FlexoBehaviour es : getFlexoBehaviours()) {
 					out.append(es.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
@@ -918,7 +918,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (flexoConcept.getEditionSchemes().size() == 0) {
+			if (flexoConcept.getFlexoBehaviours().size() == 0) {
 				return new ValidationWarning<FlexoConceptShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
 						"flexo_concept_has_no_edition_scheme");
 			}
@@ -963,7 +963,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			@Override
 			protected void fixAction() {
 				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null);
-				action.editionSchemeClass = DeletionScheme.class;
+				action.flexoBehaviourClass = DeletionScheme.class;
 				action.doAction();
 				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();
 				// AddIndividual action = getObject();

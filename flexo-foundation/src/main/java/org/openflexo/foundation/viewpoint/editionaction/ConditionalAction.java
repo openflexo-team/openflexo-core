@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -102,7 +102,7 @@ public interface ConditionalAction extends ControlStructureAction {
 		}
 
 		@Override
-		public boolean evaluateCondition(EditionSchemeAction action) {
+		public boolean evaluateCondition(FlexoBehaviourAction action) {
 			if (getCondition().isSet() && getCondition().isValid()) {
 				try {
 					DataBinding condition = getCondition();
@@ -138,7 +138,7 @@ public interface ConditionalAction extends ControlStructureAction {
 		}
 
 		@Override
-		public Object performAction(EditionSchemeAction action) {
+		public Object performAction(FlexoBehaviourAction action) {
 			if (evaluateCondition(action)) {
 				performBatchOfActions(getActions(), action);
 			}

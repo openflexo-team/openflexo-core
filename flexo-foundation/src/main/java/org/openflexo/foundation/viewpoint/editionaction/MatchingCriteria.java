@@ -8,13 +8,13 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -26,7 +26,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(MatchingCriteria.MatchingCriteriaImpl.class)
 @XMLElement
-public interface MatchingCriteria extends EditionSchemeObject, Bindable {
+public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
@@ -60,9 +60,9 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 
 	public void setPatternRole(PatternRole<?> patternRole);
 
-	public Object evaluateCriteriaValue(EditionSchemeAction action);
+	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
 
-	public static abstract class MatchingCriteriaImpl extends EditionSchemeObjectImpl implements MatchingCriteria {
+	public static abstract class MatchingCriteriaImpl extends FlexoBahaviourObjectImpl implements MatchingCriteria {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 
@@ -91,9 +91,9 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 		}
 
 		@Override
-		public EditionScheme getEditionScheme() {
+		public FlexoBehaviour getFlexoBehaviour() {
 			if (getAction() != null) {
-				return getAction().getEditionScheme();
+				return getAction().getFlexoBehaviour();
 			}
 			return null;
 		}
@@ -120,7 +120,7 @@ public interface MatchingCriteria extends EditionSchemeObject, Bindable {
 		}
 
 		@Override
-		public Object evaluateCriteriaValue(EditionSchemeAction action) {
+		public Object evaluateCriteriaValue(FlexoBehaviourAction action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {

@@ -36,7 +36,7 @@ import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.model.annotations.Getter;
@@ -84,9 +84,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	public void setOntologyProperty(IFlexoOntologyStructuralProperty p);
 
-	public Object getValue(EditionSchemeAction action);
+	public Object getValue(FlexoBehaviourAction action);
 
-	public IFlexoOntologyConcept getAssertionObject(EditionSchemeAction action);
+	public IFlexoOntologyConcept getAssertionObject(FlexoBehaviourAction action);
 
 	public static abstract class ObjectPropertyAssertionImpl extends AbstractAssertionImpl implements ObjectPropertyAssertion {
 
@@ -123,7 +123,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getEditionScheme().getBindingModel();
+			return getFlexoBehaviour().getBindingModel();
 		}
 
 		private DataBinding<?> object;
@@ -158,7 +158,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public IFlexoOntologyConcept getAssertionObject(EditionSchemeAction action) {
+		public IFlexoOntologyConcept getAssertionObject(FlexoBehaviourAction action) {
 			Object value = null;
 			try {
 				value = getObject().getBindingValue(action);
@@ -176,7 +176,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public Object getValue(EditionSchemeAction action) {
+		public Object getValue(FlexoBehaviourAction action) {
 			try {
 				return getObject().getBindingValue(action);
 			} catch (TypeMismatchException e) {

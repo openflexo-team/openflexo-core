@@ -21,30 +21,30 @@ package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.antar.binding.BindingModel;
 
-public interface EditionSchemeParameters extends EditionSchemeObject, FlexoFacet<EditionScheme> {
+public interface FlexoBehaviourParameters extends FlexoBehaviourObject, FlexoFacet<FlexoBehaviour> {
 
 	@Override
-	public EditionScheme getEditionScheme();
+	public FlexoBehaviour getFlexoBehaviour();
 
-	public void setEditionScheme(EditionScheme editionScheme);
+	public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour);
 
-	public abstract class EditionSchemeParametersImpl extends EditionSchemeObjectImpl implements EditionSchemeParameters {
+	public abstract class EditionSchemeParametersImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviourParameters {
 
-		private EditionScheme editionScheme;
+		private FlexoBehaviour flexoBehaviour;
 
 		@Override
-		public EditionScheme getEditionScheme() {
-			return editionScheme;
+		public FlexoBehaviour getFlexoBehaviour() {
+			return flexoBehaviour;
 		}
 
 		@Override
-		public void setEditionScheme(EditionScheme editionScheme) {
-			this.editionScheme = editionScheme;
+		public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
+			this.flexoBehaviour = flexoBehaviour;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getEditionScheme().getBindingModel();
+			return getFlexoBehaviour().getBindingModel();
 		}
 
 		/*@Override
@@ -53,13 +53,13 @@ public interface EditionSchemeParameters extends EditionSchemeObject, FlexoFacet
 		}*/
 
 		@Override
-		public EditionScheme getObject() {
-			return getEditionScheme();
+		public FlexoBehaviour getObject() {
+			return getFlexoBehaviour();
 		}
 
 		@Override
 		public String getURI() {
-			return getEditionScheme().getURI();
+			return getFlexoBehaviour().getURI();
 		}
 
 		@Override
@@ -69,7 +69,7 @@ public interface EditionSchemeParameters extends EditionSchemeObject, FlexoFacet
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			return getEditionScheme().getFlexoConcept();
+			return getFlexoBehaviour().getFlexoConcept();
 		}
 	}
 }

@@ -23,18 +23,18 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Represents an object which is part of the model of an EditionScheme
+ * Represents an object which is part of the model of a FlexoBehaviour
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(EditionSchemeObject.EditionSchemeObjectImpl.class)
-public interface EditionSchemeObject extends FlexoConceptObject {
+@ImplementationClass(FlexoBehaviourObject.FlexoBahaviourObjectImpl.class)
+public interface FlexoBehaviourObject extends FlexoConceptObject {
 
-	public EditionScheme getEditionScheme();
+	public FlexoBehaviour getFlexoBehaviour();
 
-	public abstract class EditionSchemeObjectImpl extends FlexoConceptObjectImpl implements EditionSchemeObject {
+	public abstract class FlexoBahaviourObjectImpl extends FlexoConceptObjectImpl implements FlexoBehaviourObject {
 
 	}
 

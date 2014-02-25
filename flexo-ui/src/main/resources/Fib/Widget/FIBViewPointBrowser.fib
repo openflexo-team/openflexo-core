@@ -20,15 +20,15 @@
       <Children data="flexoConcept.behaviouralFacet" visible="" cast="" name="behavioural" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.PatternRole" label="patternRole.name" icon="controller.iconForObject(patternRole)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="patternRole" />
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionScheme" label="editionScheme.name" icon="controller.iconForObject(editionScheme)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionScheme">
-      <Children data="editionScheme.editionSchemeParameters" visible="(editionScheme.parameters.size &gt; 0)" cast="" name="parameters" />
-      <Children data="editionScheme.actions" visible="" cast="" name="actions" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
+      <Children data="flexoBehaviour.flexoBehaviourParameters" visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
+      <Children data="flexoBehaviour.actions" visible="" cast="" name="actions" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
       <Children data="inspector.entries" visible="" cast="" name="entries" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry" label="" icon="controller.iconForObject(inspectorEntry)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameter" label="" icon="controller.iconForObject(editionSchemeParameter)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionSchemeParameter" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourParameter" label="" icon="controller.iconForObject(flexoBehaviourParameter)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviourParameter" />
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.EditionAction" label="" icon="controller.iconForObject(editionAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionAction" />
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction" label="" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
       <Children data="controlStructureAction.actions" visible="" cast="" name="children" />
@@ -37,10 +37,10 @@
       <Children data="flexoConceptStructuralFacet.flexoConcept.patternRoles" visible="" cast="" name="patternRoles" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet" label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptBehaviouralFacet">
-      <Children data="flexoConceptBehaviouralFacet.flexoConcept.editionSchemes" visible="" cast="" name="editionSchemes" />
+      <Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours" visible="" cast="" name="flexoBehaviours" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.EditionSchemeParameters" label="&quot;Parameters&quot;" icon="controller.iconForObject(editionSchemeParameters)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionSchemeParameters">
-      <Children data="editionSchemeParameters.editionScheme.parameters" visible="" cast="" name="children" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourParameters" label="&quot;Parameters&quot;" icon="controller.iconForObject(flexoBehaviourParameters)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviourParameters">
+      <Children data="flexoBehaviourParameters.flexoBehaviour.parameters" visible="" cast="" name="children" />
     </BrowserElement>
   </Browser>
   <LocalizedDictionary />

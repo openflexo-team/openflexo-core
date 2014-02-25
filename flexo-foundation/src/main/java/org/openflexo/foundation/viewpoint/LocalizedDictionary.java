@@ -298,10 +298,10 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			for (VirtualModel vm : getViewPoint().getVirtualModels()) {
 				for (FlexoConcept ep : vm.getFlexoConcepts()) {
 					checkAndRegisterLocalized(ep.getName());
-					for (EditionScheme es : ep.getEditionSchemes()) {
+					for (FlexoBehaviour es : ep.getFlexoBehaviours()) {
 						checkAndRegisterLocalized(es.getLabel());
 						checkAndRegisterLocalized(es.getDescription());
-						for (EditionSchemeParameter p : es.getParameters()) {
+						for (FlexoBehaviourParameter p : es.getParameters()) {
 							checkAndRegisterLocalized(p.getLabel());
 						}
 						for (InspectorEntry entry : ep.getInspector().getEntries()) {

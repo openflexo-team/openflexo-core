@@ -28,7 +28,7 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -80,7 +80,7 @@ public interface AssignationAction<T> extends AssignableAction<ModelSlot<?>, T> 
 			return true;
 		}
 
-		public Object getDeclaredObject(EditionSchemeAction action) {
+		public Object getDeclaredObject(FlexoBehaviourAction action) {
 			try {
 				return getValue().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -122,7 +122,7 @@ public interface AssignationAction<T> extends AssignableAction<ModelSlot<?>, T> 
 		}
 
 		@Override
-		public T performAction(EditionSchemeAction action) {
+		public T performAction(FlexoBehaviourAction action) {
 			return (T) getDeclaredObject(action);
 		}
 

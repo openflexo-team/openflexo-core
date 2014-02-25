@@ -21,8 +21,8 @@ import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
@@ -121,9 +121,9 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		createPR3.doAction();
 
 		CreateEditionScheme createCreationScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createCreationScheme.editionSchemeClass = CreationScheme.class;
+		createCreationScheme.flexoBehaviourClass = CreationScheme.class;
 		createCreationScheme.doAction();
-		creationScheme = (CreationScheme) createCreationScheme.getNewEditionScheme();
+		creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
@@ -150,16 +150,16 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 		action3.setValue(new DataBinding<Object>("8"));
 
 		CreateEditionScheme createActionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createActionScheme.editionSchemeClass = ActionScheme.class;
+		createActionScheme.flexoBehaviourClass = ActionScheme.class;
 		createActionScheme.doAction();
-		actionScheme = (ActionScheme) createActionScheme.getNewEditionScheme();
+		actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
 		CreateEditionSchemeParameter createParameter = CreateEditionSchemeParameter.actionType.makeNewAction(actionScheme, null, editor);
-		createParameter.editionSchemeParameterClass = CheckboxParameter.class;
+		createParameter.flexoBehaviourParameterClass = CheckboxParameter.class;
 		createParameter.setParameterName("aFlag");
 		createParameter.doAction();
-		EditionSchemeParameter param = createParameter.getNewParameter();
+		FlexoBehaviourParameter param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
@@ -207,7 +207,7 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForCreationScheme() {
 
-		DefaultFIBCustomComponent<EditionScheme> widget = instanciateFIB(fibFile, creationScheme, EditionScheme.class);
+		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibFile, creationScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());
 	}
@@ -216,7 +216,7 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForActionScheme() {
 
-		DefaultFIBCustomComponent<EditionScheme> widget = instanciateFIB(fibFile, actionScheme, EditionScheme.class);
+		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibFile, actionScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}

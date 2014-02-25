@@ -200,7 +200,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 		}
 
 		@Override
-		public void finalizePerformAction(org.openflexo.foundation.view.action.EditionSchemeAction action, T initialContext) {
+		public void finalizePerformAction(org.openflexo.foundation.view.action.FlexoBehaviourAction action, T initialContext) {
 			/*if (getIsVariableDeclaration()) {
 				System.out.println("Setting variable " + getVariableName() + " with " + initialContext);
 				action.declareVariable(getVariableName(), initialContext);

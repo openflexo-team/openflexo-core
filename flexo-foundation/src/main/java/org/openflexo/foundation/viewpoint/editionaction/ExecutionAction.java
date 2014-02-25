@@ -29,7 +29,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -106,7 +106,7 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 		}
 
 		@Override
-		public FlexoObject performAction(EditionSchemeAction action) {
+		public FlexoObject performAction(FlexoBehaviourAction action) {
 			try {
 				getExecution().execute(action);
 			} catch (TypeMismatchException e) {

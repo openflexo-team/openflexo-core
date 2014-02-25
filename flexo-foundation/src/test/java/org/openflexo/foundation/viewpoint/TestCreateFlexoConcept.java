@@ -255,9 +255,9 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	public void testCreateACreationSchemeInConceptA() throws SaveResourceException {
 
 		CreateEditionScheme createCreationScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createCreationScheme.editionSchemeClass = CreationScheme.class;
+		createCreationScheme.flexoBehaviourClass = CreationScheme.class;
 		createCreationScheme.doAction();
-		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewEditionScheme();
+		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
@@ -283,7 +283,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		action3.setAssignation(new DataBinding<Object>("anInteger"));
 		action3.setValue(new DataBinding<Object>("8"));
 
-		assertTrue(flexoConceptA.getEditionSchemes().contains(creationScheme));
+		assertTrue(flexoConceptA.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConceptA.getCreationSchemes().contains(creationScheme));
 
 		assertEquals(3, creationScheme.getActions().size());
@@ -294,16 +294,16 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	public void testCreateAnActionSchemeInConceptA() throws SaveResourceException {
 
 		CreateEditionScheme createActionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createActionScheme.editionSchemeClass = ActionScheme.class;
+		createActionScheme.flexoBehaviourClass = ActionScheme.class;
 		createActionScheme.doAction();
-		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewEditionScheme();
+		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
 		CreateEditionSchemeParameter createParameter = CreateEditionSchemeParameter.actionType.makeNewAction(actionScheme, null, editor);
-		createParameter.editionSchemeParameterClass = CheckboxParameter.class;
+		createParameter.flexoBehaviourParameterClass = CheckboxParameter.class;
 		createParameter.setParameterName("aFlag");
 		createParameter.doAction();
-		EditionSchemeParameter param = createParameter.getNewParameter();
+		FlexoBehaviourParameter param = createParameter.getNewParameter();
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 

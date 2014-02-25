@@ -28,9 +28,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(IntegerParameter.IntegerParameterImpl.class)
 @XMLElement
-public interface IntegerParameter extends EditionSchemeParameter {
+public interface IntegerParameter extends FlexoBehaviourParameter {
 
-	public static abstract class IntegerParameterImpl extends EditionSchemeParameterImpl implements IntegerParameter {
+	public static abstract class IntegerParameterImpl extends FlexoBehaviourParameterImpl implements IntegerParameter {
 
 		public IntegerParameterImpl() {
 			super();

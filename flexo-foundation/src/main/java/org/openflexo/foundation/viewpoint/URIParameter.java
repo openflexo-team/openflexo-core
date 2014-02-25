@@ -33,7 +33,7 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.URIUtilities;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -58,7 +58,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 	@Setter(BASE_URI_KEY)
 	public void setBaseURI(DataBinding<String> baseURI);
 
-	public List<EditionSchemeParameter> getDependancies();
+	public List<FlexoBehaviourParameter> getDependancies();
 
 	public static abstract class URIParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements URIParameter {
 
@@ -74,9 +74,9 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			if (returned != null) {
 				return returned;
 			} else {
-				if (getEditionScheme() != null && getEditionScheme().getVirtualModel() != null) {
-					if (getEditionScheme().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-						return getEditionScheme().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
+				if (getFlexoBehaviour() != null && getFlexoBehaviour().getVirtualModel() != null) {
+					if (getFlexoBehaviour().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
+						return getFlexoBehaviour().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
 					}
 				}
 			}
@@ -119,7 +119,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}
 
 		@Override
-		public boolean isValid(EditionSchemeAction action, Object value) {
+		public boolean isValid(FlexoBehaviourAction action, Object value) {
 			if (!(value instanceof String)) {
 				return false;
 			}
@@ -140,28 +140,28 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			return true;
 		}
 
-		/*private String getActionOntologyURI(EditionSchemeAction<?, ?, ?> action) {
+		/*private String getActionOntologyURI(FlexoBehaviourAction<?, ?, ?> action) {
 			return action.getProject().getURI();
 		}*/
 
-		private FlexoModel<?, ?> getFlexoModel(EditionSchemeAction<?, ?, ?> action) {
+		private FlexoModel<?, ?> getFlexoModel(FlexoBehaviourAction<?, ?, ?> action) {
 			TypeAwareModelSlotInstance msInstance = (TypeAwareModelSlotInstance) action.getVirtualModelInstance().getModelSlotInstance(
 					getModelSlot());
 			return msInstance.getModel();
 		}
 
-		private boolean proposalIsNotUnique(EditionSchemeAction<?, ?, ?> action, String uriProposal) {
+		private boolean proposalIsNotUnique(FlexoBehaviourAction<?, ?, ?> action, String uriProposal) {
 			return URIUtilities.isDuplicatedURI(getFlexoModel(action), uriProposal);
 			// return action.getProject().isDuplicatedURI(getActionOntologyURI(action), uriProposal);
 		}
 
-		private boolean proposalIsWellFormed(EditionSchemeAction<?, ?, ?> action, String uriProposal) {
+		private boolean proposalIsWellFormed(FlexoBehaviourAction<?, ?, ?> action, String uriProposal) {
 			return URIUtilities.testValidURI(getFlexoModel(action), uriProposal);
 			// return action.getProject().testValidURI(getActionOntologyURI(action), uriProposal);
 		}
 
 		@Override
-		public Object getDefaultValue(EditionSchemeAction<?, ?, ?> action) {
+		public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action) {
 			if (getBaseURI().isValid()) {
 				String baseProposal = null;
 				try {
@@ -199,11 +199,11 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		}
 
 		@Override
-		public List<EditionSchemeParameter> getDependancies() {
+		public List<FlexoBehaviourParameter> getDependancies() {
 			if (getBaseURI().isSet() && getBaseURI().isValid()) {
-				List<EditionSchemeParameter> returned = new ArrayList<EditionSchemeParameter>();
+				List<FlexoBehaviourParameter> returned = new ArrayList<FlexoBehaviourParameter>();
 				for (BindingValue bv : getBaseURI().getExpression().getAllBindingValues()) {
-					EditionSchemeParameter p = getScheme().getParameter(bv.getVariableName());
+					FlexoBehaviourParameter p = getScheme().getParameter(bv.getVariableName());
 					if (p != null) {
 						returned.add(p);
 					}

@@ -10,9 +10,9 @@ import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.PatternRole;
@@ -101,61 +101,61 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	/**
-	 * Duplicates this EditionScheme, given a new name<br>
-	 * Newly created EditionScheme is added to parent FlexoConcept
+	 * Duplicates this FlexoBehaviour, given a new name<br>
+	 * Newly created FlexoBehaviour is added to parent FlexoConcept
 	 * 
 	 * @param newName
 	 * @return
 	 */
-	public EditionScheme duplicateEditionScheme(EditionScheme editionScheme, String newName) {
-		EditionScheme newEditionScheme = (EditionScheme) editionScheme.cloneObject();
-		newEditionScheme.setName(newName);
-		editionScheme.getFlexoConcept().addToEditionSchemes(newEditionScheme);
-		return newEditionScheme;
+	public FlexoBehaviour duplicateFlexoBehaviour(FlexoBehaviour flexoBehaviour, String newName) {
+		FlexoBehaviour newFlexoBehaviour = (FlexoBehaviour) flexoBehaviour.cloneObject();
+		newFlexoBehaviour.setName(newName);
+		flexoBehaviour.getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
+		return newFlexoBehaviour;
 	}
 
 	public SynchronizationScheme createSynchronizationScheme(VirtualModel virtualModel) {
 		SynchronizationScheme newEditionScheme = virtualModel.getVirtualModelFactory().newSynchronizationScheme();
 		newEditionScheme.setName("synchronization");
-		virtualModel.addToEditionSchemes(newEditionScheme);
+		virtualModel.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public CreationScheme createCreationScheme(FlexoConcept flexoConcept) {
 		CreationScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCreationScheme();
 		newEditionScheme.setName("creation");
-		flexoConcept.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public DeletionScheme createDeletionScheme(FlexoConcept flexoConcept) {
 		DeletionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newDeletionScheme();
 		newEditionScheme.setName("deletion");
-		flexoConcept.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public ActionScheme createActionScheme(FlexoConcept flexoConcept) {
 		ActionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newActionScheme();
 		newEditionScheme.setName("action");
-		flexoConcept.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
 		CloningScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCloningScheme();
 		newEditionScheme.setName("clone");
-		flexoConcept.addToEditionSchemes(newEditionScheme);
+		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
-	public EditionScheme deleteEditionScheme(FlexoConcept flexoConcept, EditionScheme editionScheme) {
-		flexoConcept.removeFromEditionSchemes(editionScheme);
-		editionScheme.delete();
-		return editionScheme;
+	public FlexoBehaviour deleteFlexoBehaviour(FlexoConcept flexoConcept, FlexoBehaviour flexoBehaviour) {
+		flexoConcept.removeFromFlexoBehaviours(flexoBehaviour);
+		flexoBehaviour.delete();
+		return flexoBehaviour;
 	}
 
-	public EditionAction createEditionAction(EditionSchemeObject object) {
+	public EditionAction createEditionAction(FlexoBehaviourObject object) {
 		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
 		createEditionAction.doAction();
 		return createEditionAction.getNewEditionAction();
@@ -178,133 +178,133 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public EditionSchemeParameter createURIParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newURIParameter();
+	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newURIParameter();
 		newParameter.setName("uri");
 		// newParameter.setLabel("uri");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createTextFieldParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newTextFieldParameter();
+	public FlexoBehaviourParameter createTextFieldParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextFieldParameter();
 		newParameter.setName("textField");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createTextAreaParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newTextAreaParameter();
+	public FlexoBehaviourParameter createTextAreaParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextAreaParameter();
 		newParameter.setName("textArea");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createIntegerParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newIntegerParameter();
+	public FlexoBehaviourParameter createIntegerParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIntegerParameter();
 		newParameter.setName("integer");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createCheckBoxParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newCheckboxParameter();
+	public FlexoBehaviourParameter createCheckBoxParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newCheckboxParameter();
 		newParameter.setName("checkbox");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createDropDownParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newDropDownParameter();
+	public FlexoBehaviourParameter createDropDownParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDropDownParameter();
 		newParameter.setName("dropdown");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createIndividualParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newIndividualParameter();
+	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIndividualParameter();
 		newParameter.setName("individual");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createClassParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newClassParameter();
+	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newClassParameter();
 		newParameter.setName("class");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createPropertyParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newPropertyParameter();
+	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newPropertyParameter();
 		newParameter.setName("property");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createObjectPropertyParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newObjectPropertyParameter();
+	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newObjectPropertyParameter();
 		newParameter.setName("property");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createDataPropertyParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newDataPropertyParameter();
+	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDataPropertyParameter();
 		newParameter.setName("property");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
 	/*public EditionSchemeImplParameter createFlexoObjectParameter() {
-		EditionSchemeParameter newParameter = new FlexoObjectParameter(null);
+		FlexoBehaviourParameter newParameter = new FlexoObjectParameter(null);
 		newParameter.setName("flexoObject");
 		// newParameter.setLabel("label");
 		addToParameters(newParameter);
 		return newParameter;
 	}*/
 
-	public EditionSchemeParameter createTechnologyObjectParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newTechnologyObjectParameter();
+	public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTechnologyObjectParameter();
 		newParameter.setName("technologyObject");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createListParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newListParameter();
+	public FlexoBehaviourParameter createListParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newListParameter();
 		newParameter.setName("list");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter createFlexoConceptInstanceParameter(EditionScheme editionScheme) {
-		EditionSchemeParameter newParameter = editionScheme.getVirtualModelFactory().newFlexoConceptInstanceParameter();
+	public FlexoBehaviourParameter createFlexoConceptInstanceParameter(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");
 		// newParameter.setLabel("label");
-		editionScheme.addToParameters(newParameter);
+		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
 
-	public EditionSchemeParameter deleteParameter(EditionScheme editionScheme, EditionSchemeParameter parameterToDelete) {
-		editionScheme.removeFromParameters(parameterToDelete);
+	public FlexoBehaviourParameter deleteParameter(FlexoBehaviour flexoBehaviour, FlexoBehaviourParameter parameterToDelete) {
+		flexoBehaviour.removeFromParameters(parameterToDelete);
 		parameterToDelete.delete();
 		return parameterToDelete;
 	}
 
-	public boolean isEditionScheme(Object selectedObject, EditionScheme context) {
+	public boolean isFlexoBehaviour(Object selectedObject, FlexoBehaviour context) {
 		return selectedObject == null || selectedObject == context;
 	}
 
@@ -334,12 +334,12 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return fibFile;*/
 	}
 
-	public File fibForEditionScheme(EditionScheme editionScheme) {
-		if (editionScheme == null) {
+	public File fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
+		if (flexoBehaviour == null) {
 			return null;
 		}
 		// No specific TechnologyAdapter, lookup in generic libraries
-		return getFIBPanelForObject(editionScheme);
+		return getFIBPanelForObject(flexoBehaviour);
 
 		/*FileResource fibFile = new FileResource("Fib/" + editionScheme.getClass().getSimpleName() + "Panel.fib");
 		System.out.println("J'essaie " + fibFile + " ca marche ? " + fibFile.exists());

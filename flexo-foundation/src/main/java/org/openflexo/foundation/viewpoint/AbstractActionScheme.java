@@ -35,7 +35,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractActionScheme.AbstractActionSchemeImpl.class)
-public abstract interface AbstractActionScheme extends EditionScheme {
+public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
@@ -49,7 +49,7 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
-	public static abstract class AbstractActionSchemeImpl extends EditionSchemeImpl implements AbstractActionScheme {
+	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
 		private DataBinding<Boolean> conditional;
 
@@ -97,7 +97,7 @@ public abstract interface AbstractActionScheme extends EditionScheme {
 		@Override
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			super.appendContextualBindingVariables(bindingModel);
-			/*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(EditionScheme.THIS, getFlexoConcept(),
+			/*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
 					this));*/
 		}
 

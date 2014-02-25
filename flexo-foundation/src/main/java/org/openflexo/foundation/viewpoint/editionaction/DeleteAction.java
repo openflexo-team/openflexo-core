@@ -28,7 +28,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -80,7 +80,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 			return out.toString();
 		}
 
-		public Object getDeclaredObject(EditionSchemeAction action) {
+		public Object getDeclaredObject(FlexoBehaviourAction action) {
 			try {
 				return getObject().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -127,7 +127,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public T performAction(EditionSchemeAction action) {
+		public T performAction(FlexoBehaviourAction action) {
 			T objectToDelete = null;
 			try {
 				objectToDelete = (T) getObject().getBindingValue(action);
@@ -152,7 +152,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public void finalizePerformAction(EditionSchemeAction action, T initialContext) {
+		public void finalizePerformAction(FlexoBehaviourAction action, T initialContext) {
 			// TODO Auto-generated method stub
 
 		}

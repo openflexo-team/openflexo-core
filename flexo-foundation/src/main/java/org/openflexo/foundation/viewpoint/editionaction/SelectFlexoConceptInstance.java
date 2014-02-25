@@ -25,10 +25,10 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
-import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -134,7 +134,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				flexoConceptType = getVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				/*if (!isUpdatingBindingModels) {
 					isUpdatingBindingModels = true;
-					for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+					for (FlexoBehaviour s : getFlexoConcept().getEditionSchemes()) {
 						s.updateBindingModels();
 					}
 					isUpdatingBindingModels = false;
@@ -156,7 +156,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != this.flexoConceptType) {
 				this.flexoConceptType = flexoConceptType;
-				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}
 			}
@@ -169,7 +169,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		}
 
 		@Override
-		public List<FlexoConceptInstance> performAction(EditionSchemeAction action) {
+		public List<FlexoConceptInstance> performAction(FlexoBehaviourAction action) {
 			VirtualModelInstance vmi = null;
 			if (getModelSlot() instanceof VirtualModelModelSlot) {
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());

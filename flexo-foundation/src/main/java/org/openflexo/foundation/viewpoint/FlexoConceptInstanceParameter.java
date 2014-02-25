@@ -85,7 +85,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 		public FlexoConcept getFlexoConceptType() {
 			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlotVirtualModel() != null) {
 				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}
 			}
@@ -95,7 +95,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != this.flexoConceptType) {
 				this.flexoConceptType = flexoConceptType;
-				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}
 			}

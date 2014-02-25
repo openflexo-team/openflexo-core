@@ -164,13 +164,13 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DeletionScheme.class);
 	}
 
-	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
 		AddFlexoConceptInstanceParameter returned = newInstance(AddFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
 	}
 
-	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+	public DeleteFlexoConceptInstanceParameter newDeleteFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
 		DeleteFlexoConceptInstanceParameter returned = newInstance(DeleteFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;
@@ -252,9 +252,9 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(FlexoConceptInstanceParameter.class);
 	}
 
-	public EditionSchemeParameters newEditionSchemeParameters(EditionScheme editionScheme) {
-		EditionSchemeParameters returned = newInstance(EditionSchemeParameters.class);
-		returned.setEditionScheme(editionScheme);
+	public FlexoBehaviourParameters newFlexoBehaviourParameters(FlexoBehaviour flexoBehaviour) {
+		FlexoBehaviourParameters returned = newInstance(FlexoBehaviourParameters.class);
+		returned.setFlexoBehaviour(flexoBehaviour);
 		return returned;
 	}
 
@@ -304,7 +304,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(DataPropertyInspectorEntry.class);
 	}
 
-	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(EditionSchemeParameter p) {
+	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
 		CreateFlexoConceptInstanceParameter returned = newInstance(CreateFlexoConceptInstanceParameter.class);
 		returned.setParam(p);
 		return returned;

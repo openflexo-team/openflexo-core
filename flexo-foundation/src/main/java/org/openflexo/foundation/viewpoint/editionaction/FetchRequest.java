@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Adder;
@@ -165,7 +165,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 			removeFromConditions(aCondition);
 		}
 
-		public List<T> filterWithConditions(List<T> fetchResult, final EditionSchemeAction action) {
+		public List<T> filterWithConditions(List<T> fetchResult, final FlexoBehaviourAction action) {
 			if (getConditions().size() == 0) {
 				return fetchResult;
 			} else {

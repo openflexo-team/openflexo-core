@@ -31,7 +31,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
@@ -72,9 +72,9 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 
 	private String editionSchemeName;
 	public String description;
-	public Class<? extends EditionScheme> editionSchemeClass;
+	public Class<? extends FlexoBehaviour> flexoBehaviourClass;
 
-	private EditionScheme newEditionScheme;
+	private FlexoBehaviour newFlexoBehaviour;
 
 	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -89,8 +89,8 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	}
 
 	public String getEditionSchemeName() {
-		if (StringUtils.isEmpty(editionSchemeName) && editionSchemeClass != null) {
-			return getFlexoConcept().getAvailableEditionSchemeName(editionSchemeClass.getSimpleName());
+		if (StringUtils.isEmpty(editionSchemeName) && flexoBehaviourClass != null) {
+			return getFlexoConcept().getAvailableEditionSchemeName(flexoBehaviourClass.getSimpleName());
 		}
 		return editionSchemeName;
 	}
@@ -101,20 +101,20 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add edition scheme, name=" + getEditionSchemeName() + " type=" + editionSchemeClass);
+		logger.info("Add edition scheme, name=" + getEditionSchemeName() + " type=" + flexoBehaviourClass);
 
-		if (editionSchemeClass != null) {
+		if (flexoBehaviourClass != null) {
 
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
-			newEditionScheme = factory.newInstance(editionSchemeClass);
-			newEditionScheme.setName(getEditionSchemeName());
-			getFlexoConcept().addToEditionSchemes(newEditionScheme);
+			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
+			newFlexoBehaviour.setName(getEditionSchemeName());
+			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		}
 
 	}
 
-	public EditionScheme getNewEditionScheme() {
-		return newEditionScheme;
+	public FlexoBehaviour getNewFlexoBehaviour() {
+		return newFlexoBehaviour;
 	}
 
 	private String validityMessage = EMPTY_NAME;

@@ -544,7 +544,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			SynchronizationScheme newSynchronizationScheme = getVirtualModelFactory().newSynchronizationScheme();
 			newSynchronizationScheme.setSynchronizedVirtualModel(this);
 			newSynchronizationScheme.setName("synchronization");
-			addToEditionSchemes(newSynchronizationScheme);
+			addToFlexoBehaviours(newSynchronizationScheme);
 			return newSynchronizationScheme;
 		}
 
@@ -934,9 +934,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 
-			if (getEditionSchemes().size() > 0) {
+			if (getFlexoBehaviours().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (EditionScheme es : getEditionSchemes()) {
+				for (FlexoBehaviour es : getFlexoBehaviours()) {
 					out.append(es.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}

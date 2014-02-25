@@ -24,9 +24,9 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
-public abstract interface AbstractCreationScheme extends EditionScheme {
+public abstract interface AbstractCreationScheme extends FlexoBehaviour {
 
-	public static abstract class AbstractCreationSchemeImpl extends EditionSchemeImpl implements AbstractCreationScheme {
+	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
 
 		public AbstractCreationSchemeImpl() {
 			super();

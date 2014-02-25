@@ -28,9 +28,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CheckboxParameter.CheckboxParameterImpl.class)
 @XMLElement(xmlTag = "CheckBoxParameter")
-public interface CheckboxParameter extends EditionSchemeParameter {
+public interface CheckboxParameter extends FlexoBehaviourParameter {
 
-	public static abstract class CheckboxParameterImpl extends EditionSchemeParameterImpl implements CheckboxParameter {
+	public static abstract class CheckboxParameterImpl extends FlexoBehaviourParameterImpl implements CheckboxParameter {
 
 		public CheckboxParameterImpl() {
 			super();

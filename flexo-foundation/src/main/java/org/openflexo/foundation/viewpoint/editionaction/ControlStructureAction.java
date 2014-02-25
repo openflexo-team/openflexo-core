@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction.EditionActionImpl;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -329,7 +329,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		@Override
-		public final void finalizePerformAction(EditionSchemeAction action, Object initialContext) {
+		public final void finalizePerformAction(FlexoBehaviourAction action, Object initialContext) {
 			// Not applicable for ControlStructureAction
 		};
 

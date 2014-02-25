@@ -8,13 +8,13 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -26,7 +26,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, Bindable {
+public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, Bindable {
 
 	@PropertyIdentifier(type = AddFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
@@ -57,21 +57,21 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 	public void setAction(AddFlexoConceptInstance action);
 
 	// TODO: PAMELA
-	public EditionSchemeParameter getParam();
+	public FlexoBehaviourParameter getParam();
 
 	// TODO: PAMELA
-	public void setParam(EditionSchemeParameter param);
+	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(EditionSchemeAction action);
+	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
-	public static abstract class AddFlexoConceptInstanceParameterImpl extends EditionSchemeObjectImpl implements
+	public static abstract class AddFlexoConceptInstanceParameterImpl extends FlexoBahaviourObjectImpl implements
 			AddFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());
 
 		// AddFlexoConceptInstance action;
 
-		private EditionSchemeParameter param;
+		private FlexoBehaviourParameter param;
 		String paramName;
 		private DataBinding<Object> value;
 
@@ -80,12 +80,12 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 			super();
 		}
 
-		public AddFlexoConceptInstanceParameterImpl(EditionSchemeParameter param) {
+		public AddFlexoConceptInstanceParameterImpl(FlexoBehaviourParameter param) {
 			super();
 			this.param = param;
 		}
 
-		public EditionSchemeParameter getParameter() {
+		public FlexoBehaviourParameter getParameter() {
 			return param;
 		}
 
@@ -98,9 +98,9 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 		}
 
 		@Override
-		public EditionScheme getEditionScheme() {
+		public FlexoBehaviour getFlexoBehaviour() {
 			if (param != null) {
-				return param.getEditionScheme();
+				return param.getFlexoBehaviour();
 			}
 			return null;
 		}
@@ -126,7 +126,7 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 		}
 
 		@Override
-		public Object evaluateParameterValue(EditionSchemeAction action) {
+		public Object evaluateParameterValue(FlexoBehaviourAction action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -184,7 +184,7 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 		}*/
 
 		@Override
-		public EditionSchemeParameter getParam() {
+		public FlexoBehaviourParameter getParam() {
 			if (param == null && paramName != null && getAction() != null && getAction().getCreationScheme() != null) {
 				param = getAction().getCreationScheme().getParameter(paramName);
 			}
@@ -192,7 +192,7 @@ public interface AddFlexoConceptInstanceParameter extends EditionSchemeObject, B
 		}
 
 		@Override
-		public void setParam(EditionSchemeParameter param) {
+		public void setParam(FlexoBehaviourParameter param) {
 			this.param = param;
 		}
 

@@ -33,13 +33,13 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
 public class SynchronizationSchemeAction extends
-		EditionSchemeAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance> {
+		FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
@@ -59,7 +59,7 @@ public class SynchronizationSchemeAction extends
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
 	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link VirtualModelInstance} which is to be synchronized
 	 * 
 	 * @return
@@ -158,7 +158,7 @@ public class SynchronizationSchemeAction extends
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
 			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
-		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
 			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);

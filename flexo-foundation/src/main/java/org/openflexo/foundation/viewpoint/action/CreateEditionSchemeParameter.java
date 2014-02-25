@@ -28,67 +28,67 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject> {
+public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchemeParameter, FlexoBehaviourObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionSchemeParameter.class.getPackage().getName());
 
-	public static FlexoActionType<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionSchemeParameter, EditionSchemeObject, ViewPointObject>(
+	public static FlexoActionType<CreateEditionSchemeParameter, FlexoBehaviourObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionSchemeParameter, FlexoBehaviourObject, ViewPointObject>(
 			"create_edition_scheme_parameter", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateEditionSchemeParameter makeNewAction(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateEditionSchemeParameter makeNewAction(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateEditionSchemeParameter(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateEditionSchemeParameter.actionType, EditionScheme.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionSchemeParameter.actionType, FlexoBehaviour.class);
 	}
 
 	private String parameterName;
 	public String description;
-	public Class<? extends EditionSchemeParameter> editionSchemeParameterClass;
+	public Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass;
 
-	private EditionSchemeParameter newParameter;
+	private FlexoBehaviourParameter newParameter;
 
-	CreateEditionSchemeParameter(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateEditionSchemeParameter(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}
 
-	public EditionScheme getEditionScheme() {
+	public FlexoBehaviour getFlexoBehaviour() {
 		if (getFocusedObject() != null) {
-			return getFocusedObject().getEditionScheme();
+			return getFocusedObject().getFlexoBehaviour();
 		}
 		return null;
 	}
 
 	public String getParameterName() {
-		if (StringUtils.isEmpty(parameterName) && editionSchemeParameterClass != null) {
-			return getEditionScheme().getAvailableParameterName(editionSchemeParameterClass.getSimpleName());
+		if (StringUtils.isEmpty(parameterName) && flexoBehaviourParameterClass != null) {
+			return getFlexoBehaviour().getAvailableParameterName(flexoBehaviourParameterClass.getSimpleName());
 		}
 		return parameterName;
 	}
@@ -99,19 +99,19 @@ public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchem
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add edition scheme, name=" + getParameterName() + " type=" + editionSchemeParameterClass);
+		logger.info("Add edition scheme, name=" + getParameterName() + " type=" + flexoBehaviourParameterClass);
 
-		if (editionSchemeParameterClass != null) {
+		if (flexoBehaviourParameterClass != null) {
 
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
-			newParameter = factory.newInstance(editionSchemeParameterClass);
+			newParameter = factory.newInstance(flexoBehaviourParameterClass);
 			newParameter.setName(getParameterName());
-			getEditionScheme().addToParameters(newParameter);
+			getFlexoBehaviour().addToParameters(newParameter);
 		}
 
 	}
 
-	public EditionSchemeParameter getNewParameter() {
+	public FlexoBehaviourParameter getNewParameter() {
 		return newParameter;
 	}
 
@@ -129,7 +129,7 @@ public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchem
 		if (StringUtils.isEmpty(getParameterName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getEditionScheme().getParameter(getParameterName()) != null) {
+		} else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else {

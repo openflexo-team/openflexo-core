@@ -36,53 +36,53 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.ActionScheme;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 
 /**
- * Modelize a call for execution of an EditionScheme
+ * Modelize a call for execution of an FlexoBehaviour
  * 
  * @author sylvain
  * 
  */
-public class EditionSchemePathElement extends FunctionPathElement {
+public class FlexoBehaviourPathElement extends FunctionPathElement {
 
-	static final Logger logger = Logger.getLogger(EditionSchemePathElement.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
-	public EditionSchemePathElement(BindingPathElement parent, EditionScheme editionScheme, List<DataBinding<?>> args) {
-		super(parent, editionScheme, args);
-		if (editionScheme != null) {
-			for (FunctionArgument arg : editionScheme.getArguments()) {
+	public FlexoBehaviourPathElement(BindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
+		super(parent, flexoBehaviour, args);
+		if (flexoBehaviour != null) {
+			for (FunctionArgument arg : flexoBehaviour.getArguments()) {
 				DataBinding<?> argValue = getParameter(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
 			}
-			setType(editionScheme.getReturnType());
+			setType(flexoBehaviour.getReturnType());
 		} else {
-			logger.warning("Inconsistent data: null EditionScheme");
+			logger.warning("Inconsistent data: null FlexoBehaviour");
 		}
 	}
 
-	public EditionScheme getEditionScheme() {
+	public FlexoBehaviour getFlexoBehaviour() {
 		return getFunction();
 	}
 
 	@Override
-	public EditionScheme getFunction() {
-		return (EditionScheme) super.getFunction();
+	public FlexoBehaviour getFunction() {
+		return (FlexoBehaviour) super.getFunction();
 	}
 
 	@Override
 	public String getLabel() {
-		return getEditionScheme().getSignature();
+		return getFlexoBehaviour().getSignature();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return getEditionScheme().getDescription();
+		return getFlexoBehaviour().getDescription();
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class EditionSchemePathElement extends FunctionPathElement {
 		Object[] args = new Object[getFunction().getArguments().size()];
 		int i = 0;
 
-		for (EditionSchemeParameter param : getFunction().getArguments()) {
+		for (FlexoBehaviourParameter param : getFunction().getArguments()) {
 			try {
 				args[i] = TypeUtils.castTo(getParameter(param).getBindingValue(context), param.getType());
 			} catch (InvocationTargetException e) {
@@ -103,17 +103,17 @@ public class EditionSchemePathElement extends FunctionPathElement {
 			i++;
 		}
 		try {
-			logger.warning("Please implements execution of EditionSchemePathElement here !!!! context=" + context + " of "
+			logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
 					+ context.getClass() + " target=" + target);
 
-			if (context instanceof EditionSchemeAction && target instanceof FlexoConceptInstance) {
+			if (context instanceof FlexoBehaviourAction && target instanceof FlexoConceptInstance) {
 
-				EditionSchemeAction action = (EditionSchemeAction) context;
+				FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance epi = (FlexoConceptInstance) target;
 				logger.info("EPI: " + epi);
-				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getEditionScheme(), epi);
+				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), epi);
 				ActionSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(epi.getVirtualModelInstance(), null, action);
-				for (EditionSchemeParameter p : getEditionScheme().getParameters()) {
+				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);
 					Object paramValue = param.getBindingValue(context);
 					logger.info("For parameter " + param + " value is " + paramValue);
@@ -123,13 +123,13 @@ public class EditionSchemePathElement extends FunctionPathElement {
 				}
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
-					logger.info("Successfully performed ActionScheme " + getEditionScheme() + " for " + epi);
+					logger.info("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + epi);
 					return actionSchemeAction.getFlexoConceptInstance();
 				}
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
 		} catch (IllegalArgumentException e) {
-			StringBuffer warningMessage = new StringBuffer("While evaluating edition scheme " + getEditionScheme() + " exception occured: "
+			StringBuffer warningMessage = new StringBuffer("While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: "
 					+ e.getMessage());
 			warningMessage.append(", object = " + target);
 			for (i = 0; i < getFunction().getArguments().size(); i++) {

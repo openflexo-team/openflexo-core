@@ -27,8 +27,8 @@ import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBTableWidget;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
@@ -72,19 +72,19 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 			if (patternRoleTable != null) {
 				patternRoleTable.setSelected(object);
 			}
-		} else if (object instanceof EditionScheme) {
+		} else if (object instanceof FlexoBehaviour) {
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(0);
 			}
 			if (editionSchemeTable != null) {
 				editionSchemeTable.setSelected(object);
 			}
-		} else if (object instanceof EditionSchemeParameter) {
+		} else if (object instanceof FlexoBehaviourParameter) {
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(0);
 			}
 			if (editionSchemeTable != null) {
-				editionSchemeTable.setSelected(((EditionSchemeParameter) object).getEditionScheme());
+				editionSchemeTable.setSelected(((FlexoBehaviourParameter) object).getFlexoBehaviour());
 			}
 			if (parametersTable != null) {
 				parametersTable.setSelected(object);
@@ -96,7 +96,7 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 				mainTabPanel.setSelectedIndex(0);
 			}
 			if (editionSchemeTable != null) {
-				editionSchemeTable.setSelected(((EditionAction) object).getEditionScheme());
+				editionSchemeTable.setSelected(((EditionAction) object).getFlexoBehaviour());
 			}
 			// this is not a tab any more
 			// editionSchemePanel.setSelectedIndex(1);

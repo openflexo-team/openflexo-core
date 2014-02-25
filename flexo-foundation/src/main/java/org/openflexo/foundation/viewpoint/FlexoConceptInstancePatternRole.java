@@ -117,7 +117,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 					setCreationScheme(null);
 				}
 				if (getFlexoConcept() != null) {
-					for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+					for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 						s.updateBindingModels();
 					}
 				}
@@ -143,8 +143,8 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		@Override
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(uri);
-				for (EditionScheme s : getFlexoConcept().getEditionSchemes()) {
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri);
+				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
 				}
 			}
@@ -170,7 +170,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		@Override
 		public CreationScheme getCreationScheme() {
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(_creationSchemeURI);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
 			}
 			return creationScheme;
 		}

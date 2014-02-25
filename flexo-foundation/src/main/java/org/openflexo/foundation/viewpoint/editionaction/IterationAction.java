@@ -32,7 +32,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -166,7 +166,7 @@ public interface IterationAction extends ControlStructureAction {
 			return returned;
 		}
 
-		public List<?> evaluateIteration(EditionSchemeAction action) {
+		public List<?> evaluateIteration(FlexoBehaviourAction action) {
 			if (getIteration().isValid()) {
 				try {
 					return getIteration().getBindingValue(action);
@@ -182,7 +182,7 @@ public interface IterationAction extends ControlStructureAction {
 		}
 
 		@Override
-		public Object performAction(EditionSchemeAction action) {
+		public Object performAction(FlexoBehaviourAction action) {
 			List<?> items = evaluateIteration(action);
 			if (items != null) {
 				for (Object item : items) {

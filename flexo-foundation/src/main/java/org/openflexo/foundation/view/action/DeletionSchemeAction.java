@@ -33,10 +33,10 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
-import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
-public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
+public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(DeletionSchemeAction.class.getPackage().getName());
 
@@ -88,7 +88,7 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
 	 * This is this instance that will be deleted.
 	 * 
 	 * @return
@@ -153,7 +153,7 @@ public class DeletionSchemeAction extends EditionSchemeAction<DeletionSchemeActi
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
 			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
-		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
 			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);

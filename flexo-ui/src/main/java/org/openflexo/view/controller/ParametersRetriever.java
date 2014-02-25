@@ -66,14 +66,14 @@ import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.ClassParameter;
 import org.openflexo.foundation.viewpoint.DataPropertyParameter;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeActionType;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourActionType;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.IndividualParameter;
 import org.openflexo.foundation.viewpoint.IntegerParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
@@ -87,11 +87,11 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.StringUtils;
 
-public class ParametersRetriever<ES extends EditionScheme> {
+public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	private static final Logger logger = Logger.getLogger(ParametersRetriever.class.getPackage().getName());
 
-	private final EditionSchemeAction<?, ES, ?> action;
+	private final FlexoBehaviourAction<?, ES, ?> action;
 
 	private static FIBModelFactory fibModelFactory;
 
@@ -103,7 +103,7 @@ public class ParametersRetriever<ES extends EditionScheme> {
 		}
 	}
 
-	public ParametersRetriever(EditionSchemeAction<?, ES, ?> action) {
+	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action) {
 		this.action = action;
 		action.retrieveDefaultParameters();
 	}
@@ -129,7 +129,7 @@ public class ParametersRetriever<ES extends EditionScheme> {
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
-	private FIBComponent makeWidget(final EditionSchemeParameter parameter, FIBPanel panel, int index) {
+	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 		if (parameter instanceof TextFieldParameter) {
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setName(parameter.getName() + "TextField");
@@ -353,11 +353,11 @@ public class ParametersRetriever<ES extends EditionScheme> {
 		return unknown;
 	}
 
-	private FIBComponent registerWidget(FIBComponent widget, EditionSchemeParameter parameter, FIBPanel panel, int index) {
+	private FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 		return registerWidget(widget, parameter, panel, index, true, false);
 	}
 
-	private FIBComponent registerWidget(FIBComponent widget, EditionSchemeParameter parameter, FIBPanel panel, int index,
+	private FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index,
 			boolean expandHorizontally, boolean expandVertically) {
 		widget.setData(new DataBinding<Object>("data.parameters." + parameter.getName()));
 		if (widget instanceof FIBWidget) {
@@ -374,10 +374,10 @@ public class ParametersRetriever<ES extends EditionScheme> {
 			return fibModelFactory.newFIBPanel();
 		}
 
-		final EditionScheme editionScheme = action.getEditionScheme();
+		final FlexoBehaviour flexoBehaviour = action.getEditionScheme();
 
 		FIBPanel returned = fibModelFactory.newFIBPanel();
-		returned.setDataType(EditionSchemeActionType.getEditionSchemeActionType(action.getEditionScheme()));
+		returned.setDataType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getEditionScheme()));
 		returned.setBindingFactory(action.getEditionScheme().getBindingFactory());
 
 		returned.setLayout(Layout.twocols);
@@ -389,21 +389,21 @@ public class ParametersRetriever<ES extends EditionScheme> {
 		returned.setBorderLeft(10);
 		returned.setControllerClass(ParametersRetrieverController.class);
 
-		if (editionScheme.getDefinePopupDefaultSize()) {
-			returned.setMinWidth(editionScheme.getWidth());
-			returned.setMinHeight(editionScheme.getHeight());
+		if (flexoBehaviour.getDefinePopupDefaultSize()) {
+			returned.setMinWidth(flexoBehaviour.getWidth());
+			returned.setMinHeight(flexoBehaviour.getHeight());
 		}
 
 		int index = 0;
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			titleLabel.setLabel(FlexoLocalization.localizedForKey(editionScheme.getVirtualModel().getLocalizedDictionary(),
-					editionScheme.getLabel() != null ? editionScheme.getLabel() : editionScheme.getName()));
+			titleLabel.setLabel(FlexoLocalization.localizedForKey(flexoBehaviour.getVirtualModel().getLocalizedDictionary(),
+					flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
 			index++;
 
-			if (StringUtils.isNotEmpty(editionScheme.getDescription())) {
+			if (StringUtils.isNotEmpty(flexoBehaviour.getDescription())) {
 				FIBPanel descriptionPanel = fibModelFactory.newFIBPanel();
 				descriptionPanel.setLayout(Layout.twocols);
 				descriptionPanel.setBorder(Border.rounded3d);
@@ -413,7 +413,7 @@ public class ParametersRetriever<ES extends EditionScheme> {
 
 				FIBLabel descriptionLabel = fibModelFactory.newFIBLabel();
 				descriptionLabel.setAlign(Align.center);
-				descriptionLabel.setLabel("<html><i>" + editionScheme.getDescription() + "</i></html>");
+				descriptionLabel.setLabel("<html><i>" + flexoBehaviour.getDescription() + "</i></html>");
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
@@ -422,20 +422,20 @@ public class ParametersRetriever<ES extends EditionScheme> {
 			}
 		}
 
-		Hashtable<EditionSchemeParameter, FIBComponent> widgets = new Hashtable<EditionSchemeParameter, FIBComponent>();
-		for (final EditionSchemeParameter parameter : editionScheme.getParameters()) {
+		Hashtable<FlexoBehaviourParameter, FIBComponent> widgets = new Hashtable<FlexoBehaviourParameter, FIBComponent>();
+		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			FIBLabel label = fibModelFactory.newFIBLabel();
 			label.setLabel(parameter.getLabel());
 			returned.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false), index++);
 			FIBComponent widget = makeWidget(parameter, returned, index++);
 			widgets.put(parameter, widget);
 		}
-		for (final EditionSchemeParameter parameter : editionScheme.getParameters()) {
+		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (parameter instanceof URIParameter) {
 				FIBPanel uriPanel = (FIBPanel) widgets.get(parameter);
-				List<EditionSchemeParameter> dependancies = ((URIParameter) parameter).getDependancies();
+				List<FlexoBehaviourParameter> dependancies = ((URIParameter) parameter).getDependancies();
 				if (dependancies != null) {
-					for (EditionSchemeParameter dep : dependancies) {
+					for (FlexoBehaviourParameter dep : dependancies) {
 						FIBComponent dependingComponent = widgets.get(dep);
 						uriPanel.getComponentNamed("tf").addToExplicitDependancies(fibModelFactory.newFIBDependancy(dependingComponent));
 					}
@@ -544,11 +544,11 @@ public class ParametersRetriever<ES extends EditionScheme> {
 			super(component);
 		}
 
-		public boolean isValidable(EditionSchemeAction<?, ?, ?> action) {
+		public boolean isValidable(FlexoBehaviourAction<?, ?, ?> action) {
 			return action.areRequiredParametersSetAndValid();
 		}
 
-		public boolean parameterValueChanged(EditionSchemeAction<?, ?, ?> action) {
+		public boolean parameterValueChanged(FlexoBehaviourAction<?, ?, ?> action) {
 			action.parameterValueChanged();
 			return true;
 		}

@@ -37,13 +37,13 @@ import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.view.action.NavigationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -57,7 +57,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Abstract class representing a primitive to be executed as an atomic action of an EditionScheme
+ * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
  * 
  * An edition action adresses a {@link ModelSlot}
  * 
@@ -71,7 +71,7 @@ import org.openflexo.model.annotations.XMLElement;
 		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
 		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
-public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends EditionSchemeObject {
+public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = ActionContainer.class)
 	public static final String ACTION_CONTAINER_KEY = "actionContainer";
@@ -111,26 +111,26 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
 
-	public boolean evaluateCondition(EditionSchemeAction<?, ?, ?> action);
+	public boolean evaluateCondition(FlexoBehaviourAction<?, ?, ?> action);
 
 	/**
-	 * Execute edition action in the context provided by supplied {@link EditionSchemeAction}<br>
+	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 	 * Note than returned object will be used to be further reinjected in finalizer
 	 * 
 	 * @param action
 	 * @return
 	 */
-	public T performAction(EditionSchemeAction<?, ?, ?> action);
+	public T performAction(FlexoBehaviourAction<?, ?, ?> action);
 
 	/**
-	 * Provides hooks after executing edition action in the context provided by supplied {@link EditionSchemeAction}
+	 * Provides hooks after executing edition action in the context provided by supplied {@link FlexoBehaviourAction}
 	 * 
 	 * @param action
 	 * @param initialContext
-	 *            the object that was returned during {@link #performAction(EditionSchemeAction)} call
+	 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
 	 * @return
 	 */
-	public void finalizePerformAction(EditionSchemeAction<?, ?, ?> action, T initialContext);
+	public void finalizePerformAction(FlexoBehaviourAction<?, ?, ?> action, T initialContext);
 
 	public BindingModel getInferedBindingModel();
 
@@ -142,9 +142,9 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 	public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(EditionSchemeAction action);
+	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction action);
 
-	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends EditionSchemeObjectImpl implements
+	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBahaviourObjectImpl implements
 			EditionAction<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(EditionAction.class.getPackage().getName());
@@ -167,19 +167,19 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 		@Override
-		public EditionScheme getEditionScheme() {
-			if (getActionContainer() instanceof EditionScheme) {
-				return (EditionScheme) getActionContainer();
+		public FlexoBehaviour getFlexoBehaviour() {
+			if (getActionContainer() instanceof FlexoBehaviour) {
+				return (FlexoBehaviour) getActionContainer();
 			} else if (getActionContainer() != null) {
-				return getActionContainer().getEditionScheme();
+				return getActionContainer().getFlexoBehaviour();
 			}
 			return null;
 		}
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getEditionScheme() != null) {
-				return getEditionScheme().getVirtualModel();
+			if (getFlexoBehaviour() != null) {
+				return getFlexoBehaviour().getVirtualModel();
 			}
 			return null;
 		}
@@ -210,7 +210,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(EditionSchemeAction action) {
+		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction action) {
 			if (action.getVirtualModelInstance() != null) {
 				return action.getVirtualModelInstance().getModelSlotInstance((ModelSlot) getModelSlot());
 			} else {
@@ -220,7 +220,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 		@Override
-		public boolean evaluateCondition(EditionSchemeAction action) {
+		public boolean evaluateCondition(FlexoBehaviourAction action) {
 			if (getConditional().isValid()) {
 				try {
 					return getConditional().getBindingValue(action);
@@ -236,14 +236,14 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 		/**
-		 * Perform batch of actions, in the context provided by supplied {@link EditionSchemeAction}<br>
+		 * Perform batch of actions, in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * An action is performed if and only if the condition evaluation returns true. All finalizers of actions are invoked in a second
 		 * step when all actions are performed.
 		 * 
 		 * @param action
 		 * @return
 		 */
-		public static void performBatchOfActions(Collection<EditionAction<?, ?>> actions, EditionSchemeAction<?, ?, ?> contextAction) {
+		public static void performBatchOfActions(Collection<EditionAction<?, ?>> actions, FlexoBehaviourAction<?, ?, ?> contextAction) {
 
 			Hashtable<EditionAction<?, ?>, Object> performedActions = new Hashtable<EditionAction<?, ?>, Object>();
 
@@ -302,32 +302,32 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 		}
 
 		/**
-		 * Execute edition action in the context provided by supplied {@link EditionSchemeAction}<br>
+		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * Note than returned object will be used to be further reinjected in finalizer
 		 * 
 		 * @param action
 		 * @return
 		 */
 		@Override
-		public abstract T performAction(EditionSchemeAction action);
+		public abstract T performAction(FlexoBehaviourAction action);
 
 		/**
-		 * Provides hooks after executing edition action in the context provided by supplied {@link EditionSchemeAction}
+		 * Provides hooks after executing edition action in the context provided by supplied {@link FlexoBehaviourAction}
 		 * 
 		 * @param action
 		 * @param initialContext
-		 *            the object that was returned during {@link #performAction(EditionSchemeAction)} call
+		 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
 		 * @return
 		 */
 		@Override
-		public abstract void finalizePerformAction(EditionSchemeAction action, T initialContext);
+		public abstract void finalizePerformAction(FlexoBehaviourAction action, T initialContext);
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getEditionScheme() == null) {
+			if (getFlexoBehaviour() == null) {
 				return null;
 			}
-			return getEditionScheme().getFlexoConcept();
+			return getFlexoBehaviour().getFlexoConcept();
 		}
 
 		public Type getActionClass() {
@@ -336,8 +336,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Edit
 
 		@Override
 		public int getIndex() {
-			if (getEditionScheme() != null && getEditionScheme().getActions() != null) {
-				return getEditionScheme().getActions().indexOf(this);
+			if (getFlexoBehaviour() != null && getFlexoBehaviour().getActions() != null) {
+				return getFlexoBehaviour().getActions().indexOf(this);
 			}
 			return -1;
 		}

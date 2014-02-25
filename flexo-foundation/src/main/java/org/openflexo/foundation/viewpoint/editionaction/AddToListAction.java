@@ -30,7 +30,7 @@ import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -97,7 +97,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 			return true;
 		}
 
-		public T getDeclaredObject(EditionSchemeAction action) {
+		public T getDeclaredObject(FlexoBehaviourAction action) {
 			try {
 				return getValue().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -169,7 +169,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public Object performAction(EditionSchemeAction action) {
+		public Object performAction(FlexoBehaviourAction action) {
 			logger.info("performing AddToListAction");
 
 			DataBinding<List<T>> list = getList();
@@ -256,7 +256,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public void finalizePerformAction(EditionSchemeAction action, Object initialContext) {
+		public void finalizePerformAction(FlexoBehaviourAction action, Object initialContext) {
 			// TODO Auto-generated method stub
 
 		}

@@ -23,13 +23,13 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Implemented by all {@link EditionScheme} specific to a technology
+ * Implemented by all {@link FlexoBehaviour} specific to a technology
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface TechnologySpecificEditionScheme extends EditionScheme {
+public interface TechnologySpecificEditionScheme extends FlexoBehaviour {
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where this concept exists

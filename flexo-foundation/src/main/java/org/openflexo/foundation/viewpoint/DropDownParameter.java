@@ -29,9 +29,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DropDownParameter.DropDownParameterImpl.class)
 @XMLElement
-public interface DropDownParameter extends EditionSchemeParameter {
+public interface DropDownParameter extends FlexoBehaviourParameter {
 
-	public abstract class DropDownParameterImpl extends EditionSchemeParameterImpl implements DropDownParameter {
+	public abstract class DropDownParameterImpl extends FlexoBehaviourParameterImpl implements DropDownParameter {
 
 		@Override
 		public Type getType() {

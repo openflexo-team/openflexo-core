@@ -35,11 +35,11 @@ import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
@@ -123,7 +123,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
 
-		public VirtualModelInstance getVirtualModelInstance(EditionSchemeAction<?, ?, ?> action) {
+		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
 				return getVirtualModelInstance().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -185,7 +185,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		@Override
 		public void _setDeletionSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				deletionScheme = (DeletionScheme) getViewPointLibrary().getEditionScheme(uri);
+				deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(uri);
 			}
 			_deletionSchemeURI = uri;
 		}
@@ -193,7 +193,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		@Override
 		public DeletionScheme getDeletionScheme() {
 			if (deletionScheme == null && _deletionSchemeURI != null && getViewPointLibrary() != null) {
-				deletionScheme = (DeletionScheme) getViewPointLibrary().getEditionScheme(_deletionSchemeURI);
+				deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI);
 			}
 			if (deletionScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
 				deletionScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getFlexoConcept().getDefaultDeletionScheme();
@@ -217,7 +217,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 			return (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 		}
 
-		public DeleteFlexoConceptInstanceParameter getParameter(EditionSchemeParameter p) {
+		public DeleteFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
 			for (DeleteFlexoConceptInstanceParameter deleteEPParam : getParameters()) {
 				if (deleteEPParam.getParam() == p) {
 					return deleteEPParam;
@@ -230,7 +230,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<DeleteFlexoConceptInstanceParameter>(
 					getParameters());
 			if (getDeletionScheme() != null) {
-				for (EditionSchemeParameter p : getDeletionScheme().getParameters()) {
+				for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
 					DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
@@ -245,7 +245,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 
 		@Override
-		public FlexoConceptInstance performAction(EditionSchemeAction action) {
+		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
 			logger.info("Perform performDeleteFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 
@@ -263,7 +263,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
 				for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
-					EditionSchemeParameter param = p.getParam();
+					FlexoBehaviourParameter param = p.getParam();
 					Object value = p.evaluateParameterValue(action);
 					logger.info("For parameter " + param + " value is " + value);
 					if (value != null) {
@@ -327,7 +327,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>> issues = new Vector<ValidationIssue<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>>();
 				for (DeleteFlexoConceptInstanceParameter p : action.getParameters()) {
 
-					EditionSchemeParameter param = p.getParam();
+					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							DataBinding<String> uri = ((URIParameter) param).getBaseURI();

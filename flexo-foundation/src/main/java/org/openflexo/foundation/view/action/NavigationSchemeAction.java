@@ -27,10 +27,10 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.EditionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 
-public class NavigationSchemeAction extends EditionSchemeAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
+public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(NavigationSchemeAction.class.getPackage().getName());
 
@@ -50,7 +50,7 @@ public class NavigationSchemeAction extends EditionSchemeAction<NavigationScheme
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
 	 * We want to navigate to this {@link FlexoConceptInstance}
 	 * 
 	 * @return

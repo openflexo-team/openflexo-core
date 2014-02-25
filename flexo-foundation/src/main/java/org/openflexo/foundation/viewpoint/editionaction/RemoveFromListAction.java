@@ -31,7 +31,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -85,7 +85,7 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 			return true;
 		}
 
-		public Object getDeclaredObject(EditionSchemeAction action) {
+		public Object getDeclaredObject(FlexoBehaviourAction action) {
 			try {
 				return getValue().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -127,7 +127,7 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 		}
 
 		@Override
-		public Object performAction(EditionSchemeAction action) {
+		public Object performAction(FlexoBehaviourAction action) {
 			return getDeclaredObject(action);
 		}
 

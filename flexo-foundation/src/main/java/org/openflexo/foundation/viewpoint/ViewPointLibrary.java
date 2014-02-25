@@ -306,12 +306,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return null;
 	}
 
-	public EditionScheme getEditionScheme(String editionSchemeURI) {
+	public FlexoBehaviour getFlexoBehaviour(String editionSchemeURI) {
 		if (editionSchemeURI.lastIndexOf(".") > -1) {
 			String flexoConceptURI = editionSchemeURI.substring(0, editionSchemeURI.lastIndexOf("."));
 			FlexoConcept ep = getFlexoConcept(flexoConceptURI);
 			if (ep != null) {
-				return ep.getEditionScheme(editionSchemeURI.substring(editionSchemeURI.lastIndexOf(".") + 1));
+				return ep.getFlexoBehaviour(editionSchemeURI.substring(editionSchemeURI.lastIndexOf(".") + 1));
 			}
 		}
 		logger.warning("Cannot find edition scheme:" + editionSchemeURI);

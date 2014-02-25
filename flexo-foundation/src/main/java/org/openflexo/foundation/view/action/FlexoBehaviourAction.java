@@ -43,8 +43,8 @@ import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
@@ -54,7 +54,7 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * This abstract class is the root class for all actions which can be performed at conceptual or design level, generally on a view tool
  * (such as a diagram).<br>
- * An {@link EditionSchemeAction} represents the execution (in the "instances" world) of an {@link EditionScheme}.<br>
+ * An {@link FlexoBehaviourAction} represents the execution (in the "instances" world) of an {@link FlexoBehaviour}.<br>
  * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
  * 
  * 
@@ -62,10 +62,10 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * @param <A>
  */
-public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O>, ES extends EditionScheme, O extends VirtualModelInstanceObject>
+public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends VirtualModelInstanceObject>
 		extends FlexoAction<A, O, VirtualModelInstanceObject> implements SettableBindingEvaluationContext {
 
-	private static final Logger logger = Logger.getLogger(EditionSchemeAction.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
 
 	protected Hashtable<String, Object> variables;
 	protected ParameterValues parameterValues;
@@ -73,7 +73,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 
 	public boolean escapeParameterRetrievingWhenValid = true;
 
-	public EditionSchemeAction(FlexoActionType<A, O, VirtualModelInstanceObject> actionType, O focusedObject,
+	public FlexoBehaviourAction(FlexoActionType<A, O, VirtualModelInstanceObject> actionType, O focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		variables = new Hashtable<String, Object>();
@@ -90,9 +90,9 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 	// TODO: we must order this if dependancies are not resolved using basic sequence
 	public boolean retrieveDefaultParameters() {
 		boolean returned = true;
-		EditionScheme editionScheme = getEditionScheme();
-		logger.info("BEGIN retrieveDefaultParameters() for " + editionScheme);
-		for (final EditionSchemeParameter parameter : editionScheme.getParameters()) {
+		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
+		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			Object defaultValue = parameter.getDefaultValue(this);
 			logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
 			if (defaultValue != null) {
@@ -108,7 +108,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 				returned = false;
 			}
 		}
-		logger.info("END retrieveDefaultParameters() for " + editionScheme);
+		logger.info("END retrieveDefaultParameters() for " + flexoBehaviour);
 		return returned;
 	}
 
@@ -118,8 +118,8 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 	 * @return
 	 */
 	public boolean areRequiredParametersSetAndValid() {
-		EditionScheme editionScheme = getEditionScheme();
-		for (final EditionSchemeParameter parameter : editionScheme.getParameters()) {
+		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (!parameter.isValid(this, parameterValues.get(parameter))) {
 				return false;
 			}
@@ -142,7 +142,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 	}
 
 	/**
-	 * Calling this method will register a new variable in the run-time context provided by this {@link EditionSchemeAction} instance in the
+	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in the
 	 * context of its implementation of {@link BindingEvaluationContext}.<br>
 	 * Variable is initialized with supplied name and value
 	 * 
@@ -172,11 +172,11 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 		return (String) parameterValues.get(parameterName);
 	}*/
 
-	/*public Hashtable<EditionSchemeParameter, Object> getParameterValues() {
+	/*public Hashtable<FlexoBehaviourParameter, Object> getParameterValues() {
 		return parameterValues;
 	}*/
 
-	public Object getParameterValue(EditionSchemeParameter parameter) {
+	public Object getParameterValue(FlexoBehaviourParameter parameter) {
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
 		if (parameter instanceof URIParameter) {
@@ -188,10 +188,10 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 		return parameterValues.get(parameter);
 	}
 
-	public void setParameterValue(EditionSchemeParameter parameter, Object value) {
+	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
 		System.out.println("setParameterValue " + value + " for parameter " + parameter.getName());
 		parameterValues.put(parameter, value);
-		/*for (EditionSchemeParameter p : getEditionScheme().getParameters()) {
+		/*for (FlexoBehaviourParameter p : getEditionScheme().getParameters()) {
 			if (p instanceof URIParameter) {
 				// System.out.println("Hop, je recalcule l'uri, ici");
 			}
@@ -204,7 +204,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 		return parameterListValues.get(parameter);
 	}
 
-	public abstract ES getEditionScheme();
+	public abstract FB getEditionScheme();
 
 	public VirtualModelInstance getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
@@ -213,9 +213,9 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 	public abstract VirtualModelInstance retrieveVirtualModelInstance();
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link EditionScheme} is applied.<br>
-	 * An {@link EditionSchemeAction} may concern an existing {@link FlexoConceptInstance} or may also refer to an
-	 * {@link FlexoConceptInstance} instance to be created (if related {@link EditionScheme} is a {@link CreationSchemeAction}).
+	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * An {@link FlexoBehaviourAction} may concern an existing {@link FlexoConceptInstance} or may also refer to an
+	 * {@link FlexoConceptInstance} instance to be created (if related {@link FlexoBehaviour} is a {@link CreationSchemeAction}).
 	 * 
 	 * @return
 	 */
@@ -223,12 +223,12 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 
 	/**
 	 * This is the internal code performing execution of the control graph of {@link EditionAction} defined to be the execution control
-	 * graph of related {@link EditionScheme}<br>
+	 * graph of related {@link FlexoBehaviour}<br>
 	 * Recursively invoke {@link #performAction(EditionAction, Hashtable)}
 	 */
 	protected void applyEditionActions() {
 
-		for (EditionSchemeParameter param : parameterValues.keySet()) {
+		for (FlexoBehaviourParameter param : parameterValues.keySet()) {
 			logger.info("Parameter " + param.getName() + " value=" + parameterValues.get(param));
 		}
 
@@ -264,7 +264,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 
 	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
-	 * related {@link EditionScheme}<br>
+	 * related {@link FlexoBehaviour}<br>
 	 */
 	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) {
 		Object assignedObject = action.performAction(this);
@@ -300,7 +300,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 			return getParametersValues();
 		} else if (variable.getVariableName().equals("parametersDefinitions")) {
 			return getEditionScheme().getParameters();
-		} else if (variable.getVariableName().equals(EditionScheme.VIRTUAL_MODEL_INSTANCE)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE)) {
 			return getVirtualModelInstance();
 		} /*else if (variable.getVariableName().equals(DiagramEditionScheme.DIAGRAM)) {
 			return getVirtualModelInstance();
@@ -318,7 +318,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 			return variables.get(variable.getVariableName());
 		}
 
-		logger.warning("Unexpected variable requested in EditionSchemeAction: " + variable + " of " + variable.getClass());
+		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 		return null;
 	}
 
@@ -328,7 +328,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 			variables.put(variable.getVariableName(), value);
 			return;
 		}
-		logger.warning("Unexpected variable requested in settable context in EditionSchemeAction: " + variable + " of "
+		logger.warning("Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of "
 				+ variable.getClass());
 	}
 
@@ -350,18 +350,18 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 
 	public static final String PARAMETER_VALUE_CHANGED = "parameterValueChanged";
 
-	public class ParameterValues extends Hashtable<EditionSchemeParameter, Object> {
+	public class ParameterValues extends Hashtable<FlexoBehaviourParameter, Object> {
 
 		@Override
-		public synchronized Object put(EditionSchemeParameter parameter, Object value) {
+		public synchronized Object put(FlexoBehaviourParameter parameter, Object value) {
 			Object returned = super.put(parameter, value);
-			for (EditionSchemeParameter p : parameter.getEditionScheme().getParameters()) {
+			for (FlexoBehaviourParameter p : parameter.getFlexoBehaviour().getParameters()) {
 				if (p != parameter && p instanceof URIParameter && ((URIParameter) p).getModelSlot() instanceof TypeAwareModelSlot) {
 					URIParameter uriParam = (URIParameter) p;
 					TypeAwareModelSlot modelSlot = uriParam.getModelSlot();
 					String newURI;
 					try {
-						newURI = uriParam.getBaseURI().getBindingValue(EditionSchemeAction.this);
+						newURI = uriParam.getBaseURI().getBindingValue(FlexoBehaviourAction.this);
 
 						newURI = modelSlot.generateUniqueURIName((TypeAwareModelSlotInstance) getVirtualModelInstance()
 								.getModelSlotInstance(modelSlot), newURI);
@@ -387,7 +387,7 @@ public abstract class EditionSchemeAction<A extends EditionSchemeAction<A, ES, O
 		}
 	}
 
-	public String retrieveFullURI(EditionSchemeParameter parameter) {
+	public String retrieveFullURI(FlexoBehaviourParameter parameter) {
 		if (parameter instanceof URIParameter) {
 			URIParameter uriParam = (URIParameter) parameter;
 			if (uriParam.getModelSlot() instanceof TypeAwareModelSlot) {

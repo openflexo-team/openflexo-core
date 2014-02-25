@@ -28,9 +28,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FloatParameter.FloatParameterImpl.class)
 @XMLElement
-public interface FloatParameter extends EditionSchemeParameter {
+public interface FloatParameter extends FlexoBehaviourParameter {
 
-	public abstract class FloatParameterImpl extends EditionSchemeParameterImpl implements FloatParameter {
+	public abstract class FloatParameterImpl extends FlexoBehaviourParameterImpl implements FloatParameter {
 
 		@Override
 		public Type getType() {

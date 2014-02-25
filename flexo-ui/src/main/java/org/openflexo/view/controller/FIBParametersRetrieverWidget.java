@@ -23,31 +23,31 @@ import java.awt.BorderLayout;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
- * Widget allowing to edit parameters of an EditionScheme
+ * Widget allowing to edit parameters of an FlexoBehaviour
  * 
  * @author sguerin
  * 
  */
-public class FIBParametersRetrieverWidget extends DefaultFIBCustomComponent<EditionSchemeAction> {
+public class FIBParametersRetrieverWidget extends DefaultFIBCustomComponent<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 
-	public FIBParametersRetrieverWidget(EditionSchemeAction action) {
+	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
 		super((new ParametersRetriever(action)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override
-	public Class<EditionSchemeAction> getRepresentedType() {
-		return EditionSchemeAction.class;
+	public Class<FlexoBehaviourAction> getRepresentedType() {
+		return FlexoBehaviourAction.class;
 	}
 
 	@Override
 	public void fireEditedObjectChanged() {
-		EditionSchemeAction action = getEditedObject();
+		FlexoBehaviourAction action = getEditedObject();
 		if (action != null) {
 			fibComponent = (new ParametersRetriever(action)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);

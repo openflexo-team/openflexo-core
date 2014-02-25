@@ -32,7 +32,7 @@ import org.openflexo.antar.binding.Function;
 import org.openflexo.antar.binding.Function.FunctionArgument;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -44,13 +44,19 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * Represents a parameter of a {@link FlexoBehaviour}
+ * 
+ * @author sylvain
+ * 
+ */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(EditionSchemeParameter.EditionSchemeParameterImpl.class)
+@ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(ClassParameter.class), @Import(IndividualParameter.class),
 		@Import(PropertyParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
-public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArgument {
+public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
 		URI,
@@ -133,9 +139,9 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 
 	public abstract Type getType();
 
-	public boolean isValid(EditionSchemeAction action, Object value);
+	public boolean isValid(FlexoBehaviourAction action, Object value);
 
-	public Object getDefaultValue(EditionSchemeAction<?, ?, ?> action);
+	public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action);
 
 	public boolean evaluateCondition(BindingEvaluationContext parameterRetriever);
 
@@ -143,32 +149,32 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 
 	public int getIndex();
 
-	public static abstract class EditionSchemeParameterImpl extends EditionSchemeObjectImpl implements EditionSchemeParameter {
+	public static abstract class FlexoBehaviourParameterImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviourParameter {
 
-		private static final Logger logger = Logger.getLogger(EditionSchemeParameter.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
 
 		private String label;
 		// private boolean usePaletteLabelAsDefaultValue;
 
-		private EditionScheme _scheme;
+		private FlexoBehaviour _scheme;
 
 		private DataBinding<Boolean> conditional;
 		private DataBinding<?> defaultValue;
 
-		public EditionSchemeParameterImpl() {
+		public FlexoBehaviourParameterImpl() {
 			super();
 		}
 
 		@Override
 		public String getURI() {
-			return getEditionScheme().getURI() + "." + getName();
+			return getFlexoBehaviour().getURI() + "." + getName();
 		}
 
 		@Override
 		public String getStringRepresentation() {
 			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "."
-					+ (getEditionScheme() != null ? getEditionScheme().getName() : "null") + "." + getName();
+					+ (getFlexoBehaviour() != null ? getFlexoBehaviour().getName() : "null") + "." + getName();
 		}
 
 		@Override
@@ -180,7 +186,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 				DataBinding.BindingDefinitionType.GET, false) {
 			@Override
 			public Type getType() {
-				return EditionSchemeParameterImpl.this.getType();
+				return FlexoBehaviourParameterImpl.this.getType();
 			};
 		};
 
@@ -192,17 +198,17 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 			return DEFAULT_VALUE;
 		}
 
-		public void setScheme(EditionScheme scheme) {
+		public void setScheme(FlexoBehaviour scheme) {
 			_scheme = scheme;
 		}
 
 		@Override
-		public EditionScheme getEditionScheme() {
+		public FlexoBehaviour getFlexoBehaviour() {
 			return _scheme;
 		}
 
-		public EditionScheme getScheme() {
-			return getEditionScheme();
+		public FlexoBehaviour getScheme() {
+			return getFlexoBehaviour();
 		}
 
 		@Override
@@ -311,7 +317,7 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 		}
 
 		@Override
-		public Object getDefaultValue(EditionSchemeAction<?, ?, ?> action) {
+		public Object getDefaultValue(FlexoBehaviourAction<?, ?, ?> action) {
 			// DiagramPaletteElement paletteElement = action instanceof DropSchemeAction ? ((DropSchemeAction) action).getPaletteElement() :
 			// null;
 
@@ -346,13 +352,13 @@ public interface EditionSchemeParameter extends EditionSchemeObject, FunctionArg
 		}
 
 		@Override
-		public boolean isValid(EditionSchemeAction action, Object value) {
+		public boolean isValid(FlexoBehaviourAction action, Object value) {
 			return !getIsRequired() || value != null;
 		}
 
 		@Override
 		public Function getFunction() {
-			return getEditionScheme();
+			return getFlexoBehaviour();
 		}
 
 		@Override

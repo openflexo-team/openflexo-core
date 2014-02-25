@@ -37,11 +37,11 @@ import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -130,7 +130,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 			super();
 		}
 
-		public VirtualModelInstance getVirtualModelInstance(EditionSchemeAction action) {
+		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction action) {
 			try {
 				// System.out.println("getVirtualModelInstance() with " + getVirtualModelInstance());
 				// System.out.println("Valid=" + getVirtualModelInstance().isValid() + " " +
@@ -197,7 +197,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		@Override
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(uri);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri);
 			}
 			_creationSchemeURI = uri;
 		}
@@ -205,7 +205,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		@Override
 		public CreationScheme getCreationScheme() {
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
-				creationScheme = (CreationScheme) getViewPointLibrary().getEditionScheme(_creationSchemeURI);
+				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
 			}
 			if (creationScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
 				creationScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme();
@@ -229,7 +229,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 			return (List<AddFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 		}
 
-		public AddFlexoConceptInstanceParameter getParameter(EditionSchemeParameter p) {
+		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
 			for (AddFlexoConceptInstanceParameter addEPParam : getParameters()) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
@@ -241,7 +241,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		private void updateParameters() {
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(getParameters());
 			if (getCreationScheme() != null) {
-				for (EditionSchemeParameter p : getCreationScheme().getParameters()) {
+				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
@@ -256,7 +256,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		}
 
 		@Override
-		public FlexoConceptInstance performAction(EditionSchemeAction action) {
+		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
 			logger.info("Perform performAddFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);
@@ -264,7 +264,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 			creationSchemeAction.setVirtualModelInstance(vmInstance);
 			creationSchemeAction.setCreationScheme(getCreationScheme());
 			for (AddFlexoConceptInstanceParameter p : getParameters()) {
-				EditionSchemeParameter param = p.getParam();
+				FlexoBehaviourParameter param = p.getParam();
 				Object value = p.evaluateParameterValue(action);
 				logger.info("For parameter " + param + " value is " + value);
 				if (value != null) {
@@ -334,7 +334,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 				Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance>> issues = new Vector<ValidationIssue<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance>>();
 				for (AddFlexoConceptInstanceParameter p : action.getParameters()) {
 
-					EditionSchemeParameter param = p.getParam();
+					FlexoBehaviourParameter param = p.getParam();
 					if (param.getIsRequired()) {
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							DataBinding<String> uri = ((URIParameter) param).getBaseURI();

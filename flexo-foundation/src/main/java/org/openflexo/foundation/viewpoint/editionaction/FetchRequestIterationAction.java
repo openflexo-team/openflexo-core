@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -146,7 +146,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			return returned;
 		}
 
-		private List<?> fetchItems(EditionSchemeAction action) {
+		private List<?> fetchItems(FlexoBehaviourAction action) {
 			if (getFetchRequest() != null) {
 				System.out.println("Pour choper mes items, je lance " + getFetchRequest());
 				return getFetchRequest().performAction(action);
@@ -155,7 +155,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 		}
 
 		@Override
-		public Object performAction(EditionSchemeAction action) {
+		public Object performAction(FlexoBehaviourAction action) {
 			System.out.println("Perform FetchRequestIterationAction for " + getFetchRequest());
 			List<?> items = fetchItems(action);
 			System.out.println("Items=" + items);

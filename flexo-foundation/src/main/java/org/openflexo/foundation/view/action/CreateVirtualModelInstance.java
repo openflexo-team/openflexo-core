@@ -342,7 +342,7 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 
 	@Override
 	public void update(FlexoObservable observable, DataModification dataModification) {
-		if (dataModification.propertyName().equals(EditionSchemeAction.PARAMETER_VALUE_CHANGED)) {
+		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
 			setChanged();
 			notifyObservers(new DataModification("isActionValidable", false, true));
 		}

@@ -31,7 +31,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.model.annotations.Getter;
@@ -79,7 +79,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 	public void setOntologyProperty(IFlexoOntologyStructuralProperty p);
 
-	public Object getValue(EditionSchemeAction action);
+	public Object getValue(FlexoBehaviourAction action);
 
 	public java.lang.reflect.Type getType();
 
@@ -116,7 +116,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public Object getValue(EditionSchemeAction action) {
+		public Object getValue(FlexoBehaviourAction action) {
 			try {
 				return getValue().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -131,7 +131,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getEditionScheme().getBindingModel();
+			return getFlexoBehaviour().getBindingModel();
 		}
 
 		@Override

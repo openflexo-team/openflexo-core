@@ -32,8 +32,8 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
@@ -47,36 +47,36 @@ import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstanc
 import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.localization.FlexoLocalization;
 
-public class CreateEditionAction extends FlexoAction<CreateEditionAction, EditionSchemeObject, ViewPointObject> {
+public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoBehaviourObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
-	public static FlexoActionType<CreateEditionAction, EditionSchemeObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionAction, EditionSchemeObject, ViewPointObject>(
+	public static FlexoActionType<CreateEditionAction, FlexoBehaviourObject, ViewPointObject> actionType = new FlexoActionType<CreateEditionAction, FlexoBehaviourObject, ViewPointObject>(
 			"create_edition_action", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateEditionAction makeNewAction(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateEditionAction makeNewAction(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateEditionAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(EditionSchemeObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, EditionScheme.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, FlexoBehaviour.class);
 		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, EditionAction.class);
 	}
 
@@ -102,7 +102,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, Editio
 	private final List<Class<? extends EditionAction>> builtInActions;
 	private final List<Class<? extends EditionAction>> controlActions;
 
-	CreateEditionAction(EditionSchemeObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateEditionAction(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 		builtInActions = new ArrayList<Class<? extends EditionAction>>();

@@ -28,9 +28,9 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(TextAreaParameter.TextAreaParameterImpl.class)
 @XMLElement
-public interface TextAreaParameter extends EditionSchemeParameter {
+public interface TextAreaParameter extends FlexoBehaviourParameter {
 
-	public static abstract class TextAreaParameterImpl extends EditionSchemeParameterImpl implements TextAreaParameter {
+	public static abstract class TextAreaParameterImpl extends FlexoBehaviourParameterImpl implements TextAreaParameter {
 
 		public TextAreaParameterImpl() {
 			super();

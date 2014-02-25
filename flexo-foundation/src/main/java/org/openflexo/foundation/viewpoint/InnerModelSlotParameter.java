@@ -30,7 +30,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InnerModelSlotParameter.InnerModelSlotParameterImpl.class)
-public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> extends EditionSchemeParameter {
+public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> extends FlexoBehaviourParameter {
 
 	@PropertyIdentifier(type = ModelSlot.class)
 	public static final String MODEL_SLOT_KEY = "modelSlot";
@@ -42,7 +42,7 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
 
-	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends EditionSchemeParameterImpl implements
+	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl implements
 			InnerModelSlotParameter<MS> {
 
 		private MS modelSlot;

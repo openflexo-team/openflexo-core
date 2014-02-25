@@ -53,16 +53,16 @@ import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An EditionScheme represents a behavioural feature attached to an FlexoConcept
+ * An FlexoBehaviour represents a behavioural feature attached to an FlexoConcept
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(EditionScheme.EditionSchemeImpl.class)
+@ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
-public interface EditionScheme extends EditionSchemeObject, ActionContainer, Function {
+public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function {
 
 	public static final String THIS = "this";
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
@@ -148,76 +148,76 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
-	public List<EditionSchemeParameter> getParameters();
+	public List<FlexoBehaviourParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
-	public void setParameters(List<EditionSchemeParameter> parameters);
+	public void setParameters(List<FlexoBehaviourParameter> parameters);
 
 	@Adder(PARAMETERS_KEY)
-	public void addToParameters(EditionSchemeParameter aParameter);
+	public void addToParameters(FlexoBehaviourParameter aParameter);
 
 	@Remover(PARAMETERS_KEY)
-	public void removeFromParameters(EditionSchemeParameter aParameter);
+	public void removeFromParameters(FlexoBehaviourParameter aParameter);
 
-	@Finder(collection = PARAMETERS_KEY, attribute = EditionSchemeParameter.NAME_KEY)
-	public EditionSchemeParameter getParameter(String name);
+	@Finder(collection = PARAMETERS_KEY, attribute = FlexoBehaviourParameter.NAME_KEY)
+	public FlexoBehaviourParameter getParameter(String name);
 
 	@DeserializationFinalizer
 	public void finalizeEditionSchemeDeserialization();
 
 	public void updateBindingModels();
 
-	public EditionSchemeType getEditionSchemeType();
+	public FlexoBehaviourType getFlexoBehaviourType();
 
-	public EditionSchemeActionType getEditionSchemeActionType();
+	public FlexoBehaviourActionType getFlexoBehaviourActionType();
 
-	public EditionSchemeParametersType getEditionSchemeParametersType();
+	public FlexoBehaviourParametersType getFlexoBehaviourParametersType();
 
-	public EditionSchemeParametersValuesType getEditionSchemeParametersValuesType();
+	public FlexoBehaviourParametersValuesType getFlexoBehaviourParametersValuesType();
 
-	public EditionSchemeParameters getEditionSchemeParameters();
+	public FlexoBehaviourParameters getFlexoBehaviourParameters();
 
 	public String getSignature();
 
 	@Override
-	public List<EditionSchemeParameter> getArguments();
+	public List<FlexoBehaviourParameter> getArguments();
 
 	public String getAvailableParameterName(String baseName);
 
-	public void parameterFirst(EditionSchemeParameter p);
+	public void parameterFirst(FlexoBehaviourParameter p);
 
-	public void parameterUp(EditionSchemeParameter p);
+	public void parameterUp(FlexoBehaviourParameter p);
 
-	public void parameterDown(EditionSchemeParameter p);
+	public void parameterDown(FlexoBehaviourParameter p);
 
-	public void parameterLast(EditionSchemeParameter p);
+	public void parameterLast(FlexoBehaviourParameter p);
 
-	public static abstract class EditionSchemeImpl extends EditionSchemeObjectImpl implements EditionScheme {
+	public static abstract class FlexoBehaviourImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviour {
 
 		protected BindingModel _bindingModel;
 
 		//
-		protected static final Logger logger = FlexoLogger.getLogger(EditionScheme.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
 		private String name;
 		private String label;
 		private String description;
 		// private Vector<EditionAction<?, ?>> actions;
-		// private Vector<EditionSchemeParameter> parameters;
+		// private Vector<FlexoBehaviourParameter> parameters;
 		private boolean skipConfirmationPanel = false;
 
 		// private FlexoConcept _flexoConcept;
 
-		private EditionSchemeParameters editionSchemeParameters;
+		private FlexoBehaviourParameters flexoBehaviourParameters;
 
 		private boolean definePopupDefaultSize = false;
 		private int width = 800;
 		private int height = 600;
 
-		private final EditionSchemeType editionSchemeType = new EditionSchemeType(this);
-		private final EditionSchemeActionType editionSchemeActionType = new EditionSchemeActionType(this);
-		private final EditionSchemeParametersType editionSchemeParametersType = new EditionSchemeParametersType(this);
-		private final EditionSchemeParametersValuesType editionSchemeParametersValuesType = new EditionSchemeParametersValuesType(this);
+		private final FlexoBehaviourType flexoBehaviourType = new FlexoBehaviourType(this);
+		private final FlexoBehaviourActionType flexoBehaviourActionType = new FlexoBehaviourActionType(this);
+		private final FlexoBehaviourParametersType flexoBehaviourParametersType = new FlexoBehaviourParametersType(this);
+		private final FlexoBehaviourParametersValuesType flexoBehaviourParametersValuesType = new FlexoBehaviourParametersValuesType(this);
 
 		/**
 		 * Stores a chained collections of objects which are involved in validation
@@ -225,31 +225,31 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
 
 		@Override
-		public EditionSchemeType getEditionSchemeType() {
-			return editionSchemeType;
+		public FlexoBehaviourType getFlexoBehaviourType() {
+			return flexoBehaviourType;
 		}
 
 		@Override
-		public EditionSchemeActionType getEditionSchemeActionType() {
-			return editionSchemeActionType;
+		public FlexoBehaviourActionType getFlexoBehaviourActionType() {
+			return flexoBehaviourActionType;
 		}
 
 		@Override
-		public EditionSchemeParametersType getEditionSchemeParametersType() {
-			return editionSchemeParametersType;
+		public FlexoBehaviourParametersType getFlexoBehaviourParametersType() {
+			return flexoBehaviourParametersType;
 		}
 
 		@Override
-		public EditionSchemeParametersValuesType getEditionSchemeParametersValuesType() {
-			return editionSchemeParametersValuesType;
+		public FlexoBehaviourParametersValuesType getFlexoBehaviourParametersValuesType() {
+			return flexoBehaviourParametersValuesType;
 		}
 
 		@Override
-		public EditionSchemeParameters getEditionSchemeParameters() {
-			if (editionSchemeParameters == null && getVirtualModelFactory() != null) {
-				editionSchemeParameters = getVirtualModelFactory().newEditionSchemeParameters(this);
+		public FlexoBehaviourParameters getFlexoBehaviourParameters() {
+			if (flexoBehaviourParameters == null && getVirtualModelFactory() != null) {
+				flexoBehaviourParameters = getVirtualModelFactory().newFlexoBehaviourParameters(this);
 			}
-			return editionSchemeParameters;
+			return flexoBehaviourParameters;
 		}
 
 		@Override
@@ -275,7 +275,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			if (getParameters().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				boolean isFirst = true;
-				for (EditionSchemeParameter p : getParameters()) {
+				for (FlexoBehaviourParameter p : getParameters()) {
 					sb.append((isFirst ? "" : ", ") + TypeUtils.simpleRepresentation(p.getType()) + " " + p.getName());
 					isFirst = false;
 				}
@@ -298,7 +298,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public EditionSchemeImpl getEditionScheme() {
+		public FlexoBehaviourImpl getFlexoBehaviour() {
 			return this;
 		}
 
@@ -414,33 +414,33 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		*/
 
 		/*	@Override
-			public Vector<EditionSchemeParameter> getParameters() {
+			public Vector<FlexoBehaviourParameter> getParameters() {
 				return parameters;
 			}*/
 
 		@Override
-		public void setParameters(List<EditionSchemeParameter> someParameters) {
+		public void setParameters(List<FlexoBehaviourParameter> someParameters) {
 			performSuperSetter(PARAMETERS_KEY, someParameters);
 			updateBindingModels();
 		}
 
 		@Override
-		public void addToParameters(EditionSchemeParameter parameter) {
+		public void addToParameters(FlexoBehaviourParameter parameter) {
 			performSuperAdder(PARAMETERS_KEY, parameter);
 			updateBindingModels();
-			for (EditionSchemeParameter p : getParameters()) {
+			for (FlexoBehaviourParameter p : getParameters()) {
 				p.notifyBindingModelChanged();
 			}
 		}
 
 		@Override
-		public void removeFromParameters(EditionSchemeParameter parameter) {
+		public void removeFromParameters(FlexoBehaviourParameter parameter) {
 			performSuperRemover(PARAMETERS_KEY, parameter);
 			updateBindingModels();
 		}
 
 		@Override
-		public void parameterFirst(EditionSchemeParameter p) {
+		public void parameterFirst(FlexoBehaviourParameter p) {
 			System.out.println("parameterFirst()");
 			getParameters().remove(p);
 			getParameters().add(0, p);
@@ -449,7 +449,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public void parameterUp(EditionSchemeParameter p) {
+		public void parameterUp(FlexoBehaviourParameter p) {
 			System.out.println("parameterUp()");
 			int index = getParameters().indexOf(p);
 			if (index > 0) {
@@ -461,7 +461,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public void parameterDown(EditionSchemeParameter p) {
+		public void parameterDown(FlexoBehaviourParameter p) {
 			System.out.println("parameterDown()");
 			int index = getParameters().indexOf(p);
 			if (index > -1) {
@@ -473,7 +473,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public void parameterLast(EditionSchemeParameter p) {
+		public void parameterLast(FlexoBehaviourParameter p) {
 			System.out.println("parameterLast()");
 			getParameters().remove(p);
 			getParameters().add(p);
@@ -481,11 +481,11 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			notifyObservers(new DataModification("parameters", null, getParameters()));
 		}
 
-		/*public EditionSchemeParameter getParameter(String name) {
+		/*public FlexoBehaviourParameter getParameter(String name) {
 			if (name == null) {
 				return null;
 			}
-			for (EditionSchemeParameter p : parameters) {
+			for (FlexoBehaviourParameter p : parameters) {
 				if (name.equals(p.getName())) {
 					return p;
 				}
@@ -729,8 +729,8 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		private final void createBindingModel() {
 			_bindingModel = new BindingModel();
 			isRebuildingBindingModel = true;
-			_bindingModel.addToBindingVariables(new BindingVariable("parameters", getEditionSchemeParametersValuesType()));
-			_bindingModel.addToBindingVariables(new BindingVariable("parametersDefinitions", getEditionSchemeParametersType()));
+			_bindingModel.addToBindingVariables(new BindingVariable("parameters", getFlexoBehaviourParametersValuesType()));
+			_bindingModel.addToBindingVariables(new BindingVariable("parametersDefinitions", getFlexoBehaviourParametersType()));
 			// _bindingModel.addToBindingVariables(new EditionSchemeParametersBindingVariable(this));
 			// _bindingModel.addToBindingVariables(new EditionSchemeParameterListPathElement(this, null));
 			appendContextualBindingVariables(_bindingModel);
@@ -758,7 +758,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
-				bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.THIS, FlexoConceptInstanceType
+				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.THIS, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())));
 				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
@@ -770,7 +770,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
 				}
 				else {
-					bindingModel.addToBindingVariables(new BindingVariable(EditionScheme.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				}*/
 			}
@@ -821,7 +821,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		}
 
 		@Override
-		public List<EditionSchemeParameter> getArguments() {
+		public List<FlexoBehaviourParameter> getArguments() {
 			return getParameters();
 		}
 
@@ -843,7 +843,7 @@ public interface EditionScheme extends EditionSchemeObject, ActionContainer, Fun
 		private String getParameterListAsString(boolean fullyQualified) {
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
-			for (EditionSchemeParameter param : getParameters()) {
+			for (FlexoBehaviourParameter param : getParameters()) {
 				returned.append((isFirst ? "" : ",")
 						+ (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType()) : TypeUtils.simpleRepresentation(param
 								.getType())));

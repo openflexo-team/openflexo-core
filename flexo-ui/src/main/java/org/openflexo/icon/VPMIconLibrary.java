@@ -34,8 +34,8 @@ import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.OntologicObjectPatternRole;
@@ -218,9 +218,9 @@ public class VPMIconLibrary extends IconLibrary {
 			return UNKNOWN_ICON;
 		} else if (object instanceof FlexoConcept) {
 			return FLEXO_CONCEPT_ICON;
-		} else if (object instanceof EditionSchemeParameter) {
+		} else if (object instanceof FlexoBehaviourParameter) {
 			return FLEXO_CONCEPT_PARAMETER_ICON;
-		} else if (object instanceof EditionScheme) {
+		} else if (object instanceof FlexoBehaviour) {
 			if (object instanceof ActionScheme) {
 				return ACTION_SCHEME_ICON;
 			} else if (object instanceof SynchronizationScheme) {

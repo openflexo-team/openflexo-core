@@ -25,12 +25,12 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.EditionSchemeObject.EditionSchemeObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssertion.AbstractAssertionImpl.class)
-public abstract interface AbstractAssertion extends EditionSchemeObject {
+public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
@@ -52,9 +52,9 @@ public abstract interface AbstractAssertion extends EditionSchemeObject {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(EditionSchemeAction action);
+	public boolean evaluateCondition(FlexoBehaviourAction action);
 
-	public static abstract class AbstractAssertionImpl extends EditionSchemeObjectImpl implements AbstractAssertion {
+	public static abstract class AbstractAssertionImpl extends FlexoBahaviourObjectImpl implements AbstractAssertion {
 
 		private AddIndividual _action;
 		private DataBinding<Boolean> conditional;
@@ -77,9 +77,9 @@ public abstract interface AbstractAssertion extends EditionSchemeObject {
 		}
 
 		@Override
-		public EditionScheme getEditionScheme() {
+		public FlexoBehaviour getFlexoBehaviour() {
 			if (getAction() != null) {
-				return getAction().getEditionScheme();
+				return getAction().getFlexoBehaviour();
 			}
 			return null;
 		}
@@ -93,7 +93,7 @@ public abstract interface AbstractAssertion extends EditionSchemeObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(EditionSchemeAction action) {
+		public boolean evaluateCondition(FlexoBehaviourAction action) {
 			if (getConditional().isValid()) {
 				try {
 					return getConditional().getBindingValue(action);
@@ -110,7 +110,7 @@ public abstract interface AbstractAssertion extends EditionSchemeObject {
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			return getEditionScheme() != null ? getEditionScheme().getFlexoConcept() : null;
+			return getFlexoBehaviour() != null ? getFlexoBehaviour().getFlexoConcept() : null;
 		}
 
 		@Override

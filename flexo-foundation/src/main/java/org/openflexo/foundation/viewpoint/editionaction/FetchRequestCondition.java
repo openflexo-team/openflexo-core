@@ -30,7 +30,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.EditionSchemeAction;
+import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject.FlexoConceptObjectImpl;
@@ -73,7 +73,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 	@Setter(CONDITION_KEY)
 	public void setCondition(DataBinding<Boolean> condition);
 
-	public boolean evaluateCondition(final Object proposedFetchResult, final EditionSchemeAction action);
+	public boolean evaluateCondition(final Object proposedFetchResult, final FlexoBehaviourAction action);
 
 	public static abstract class FetchRequestConditionImpl extends FlexoConceptObjectImpl implements FetchRequestCondition {
 
@@ -169,7 +169,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(final Object proposedFetchResult, final EditionSchemeAction action) {
+		public boolean evaluateCondition(final Object proposedFetchResult, final FlexoBehaviourAction action) {
 			Boolean returned = null;
 			try {
 				returned = condition.getBindingValue(new BindingEvaluationContext() {

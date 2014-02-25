@@ -43,12 +43,12 @@ import org.openflexo.foundation.view.ViewObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeActionType;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
-import org.openflexo.foundation.viewpoint.EditionSchemeParametersType;
-import org.openflexo.foundation.viewpoint.EditionSchemeParametersValuesType;
-import org.openflexo.foundation.viewpoint.EditionSchemeType;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourActionType;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParametersType;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParametersValuesType;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourType;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -60,11 +60,11 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	private Map<BindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
 	private ViewPoint viewPoint;
 
-	private Map<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>> editionSchemePathElements;
+	private Map<BindingPathElement, Map<FlexoConcept, List<FlexoBehaviourPathElement>>> flexoBehaviourPathElements;
 
 	public FlexoConceptBindingFactory(ViewPoint viewPoint) {
 		storedBindingPathElements = new HashMap<BindingPathElement, Map<Object, SimplePathElement>>();
-		editionSchemePathElements = new HashMap<BindingPathElement, Map<FlexoConcept, List<EditionSchemePathElement>>>();
+		flexoBehaviourPathElements = new HashMap<BindingPathElement, Map<FlexoConcept, List<FlexoBehaviourPathElement>>>();
 		this.viewPoint = viewPoint;
 	}
 
@@ -89,11 +89,11 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot>(parent, (ModelSlot) object);
 		}
-		if (object instanceof EditionSchemeParameter) {
-			if (parent.getType() instanceof EditionSchemeParametersType) {
-				return new EditionSchemeParameterDefinitionPathElement(parent, (EditionSchemeParameter) object);
-			} else if (parent.getType() instanceof EditionSchemeParametersValuesType) {
-				return new EditionSchemeParameterValuePathElement(parent, (EditionSchemeParameter) object);
+		if (object instanceof FlexoBehaviourParameter) {
+			if (parent.getType() instanceof FlexoBehaviourParametersType) {
+				return new FlexoBehaviourParameterDefinitionPathElement(parent, (FlexoBehaviourParameter) object);
+			} else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
+				return new FlexoBehaviourParameterValuePathElement(parent, (FlexoBehaviourParameter) object);
 			}
 		}
 		logger.warning("Unexpected " + object + " for parent=" + parent);
@@ -116,19 +116,19 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			}
 		}
 
-		if (pType instanceof EditionSchemeParametersType) {
+		if (pType instanceof FlexoBehaviourParametersType) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme es = ((EditionSchemeParametersType) pType).getEditionScheme();
-			for (EditionSchemeParameter p : es.getParameters()) {
+			FlexoBehaviour es = ((FlexoBehaviourParametersType) pType).getFlexoBehaviour();
+			for (FlexoBehaviourParameter p : es.getParameters()) {
 				returned.add(getSimplePathElement(p, parent));
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
 			return returned;
 		}
-		else if (pType instanceof EditionSchemeParametersValuesType) {
+		else if (pType instanceof FlexoBehaviourParametersValuesType) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme es = ((EditionSchemeParametersValuesType) pType).getEditionScheme();
-			for (EditionSchemeParameter p : es.getParameters()) {
+			FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
+			for (FlexoBehaviourParameter p : es.getParameters()) {
 				returned.add(getSimplePathElement(p, parent));
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
@@ -136,24 +136,24 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		}
 		/*if (parent instanceof EditionSchemeParametersBindingVariable) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme es = ((EditionSchemeParametersBindingVariable) parent).getEditionScheme();
-			for (EditionSchemeParameter p : es.getParameters()) {
+			FlexoBehaviour es = ((EditionSchemeParametersBindingVariable) parent).getEditionScheme();
+			for (FlexoBehaviourParameter p : es.getParameters()) {
 				returned.add(getSimplePathElement(p, parent));
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
 			return returned;
 		} else if (parent instanceof EditionSchemeParametersPathElement) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme es = ((EditionSchemeParametersPathElement) parent).getEditionScheme();
-			for (EditionSchemeParameter p : es.getParameters()) {
+			FlexoBehaviour es = ((EditionSchemeParametersPathElement) parent).getEditionScheme();
+			for (FlexoBehaviourParameter p : es.getParameters()) {
 				returned.add(getSimplePathElement(p, parent));
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
 			return returned;
-		} else if (parent instanceof EditionSchemeParametersValuesPathElement) {
+		} else if (parent instanceof FlexoBehaviourParametersValuesPathElement) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme es = ((EditionSchemeParametersValuesPathElement) parent).getEditionScheme();
-			for (EditionSchemeParameter p : es.getParameters()) {
+			FlexoBehaviour es = ((FlexoBehaviourParametersValuesPathElement) parent).getEditionScheme();
+			for (FlexoBehaviourParameter p : es.getParameters()) {
 				returned.add(getSimplePathElement(p, parent));
 			}
 			Collections.sort(returned, BindingPathElement.COMPARATOR);
@@ -184,21 +184,21 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				returned.add(new EPIRendererPathElement(parent));
 			}
 			return returned;
-		} else if (pType instanceof EditionSchemeType) {
+		} else if (pType instanceof FlexoBehaviourType) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme editionScheme = ((EditionSchemeType) pType).getEditionScheme();
-			returned.add(new EditionSchemeParametersValuesPathElement(parent, editionScheme));
-			returned.add(new EditionSchemeParametersDefinitionsPathElement(parent, editionScheme));
-			for (PatternRole<?> pr : editionScheme.getFlexoConcept().getPatternRoles()) {
+			FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
+			returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
+			returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
+			for (PatternRole<?> pr : flexoBehaviour.getFlexoConcept().getPatternRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;
-		} else if (pType instanceof EditionSchemeActionType) {
+		} else if (pType instanceof FlexoBehaviourActionType) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-			EditionScheme editionScheme = ((EditionSchemeActionType) pType).getEditionScheme();
-			returned.add(new EditionSchemeParametersValuesPathElement(parent, editionScheme));
-			returned.add(new EditionSchemeParametersDefinitionsPathElement(parent, editionScheme));
-			for (PatternRole<?> pr : editionScheme.getFlexoConcept().getPatternRoles()) {
+			FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
+			returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
+			returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
+			for (PatternRole<?> pr : flexoBehaviour.getFlexoConcept().getPatternRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;
@@ -213,22 +213,22 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 		Type pType = parent.getType();
 		if (pType instanceof FlexoConceptInstanceType) {
-			return getEditionSchemePathElements(parent, ((FlexoConceptInstanceType) pType).getFlexoConcept());
+			return getFlexoBehaviourPathElements(parent, ((FlexoConceptInstanceType) pType).getFlexoConcept());
 		}
 		return super.getAccessibleFunctionPathElements(parent);
 	}
 
-	public List<EditionSchemePathElement> getEditionSchemePathElements(BindingPathElement parent, FlexoConcept ep) {
-		Map<FlexoConcept, List<EditionSchemePathElement>> map = editionSchemePathElements.get(parent);
+	public List<FlexoBehaviourPathElement> getFlexoBehaviourPathElements(BindingPathElement parent, FlexoConcept ep) {
+		Map<FlexoConcept, List<FlexoBehaviourPathElement>> map = flexoBehaviourPathElements.get(parent);
 		if (map == null) {
-			map = new HashMap<FlexoConcept, List<EditionSchemePathElement>>();
-			editionSchemePathElements.put(parent, map);
+			map = new HashMap<FlexoConcept, List<FlexoBehaviourPathElement>>();
+			flexoBehaviourPathElements.put(parent, map);
 		}
-		List<EditionSchemePathElement> returned = map.get(ep);
+		List<FlexoBehaviourPathElement> returned = map.get(ep);
 		if (returned == null) {
-			returned = new ArrayList<EditionSchemePathElement>();
+			returned = new ArrayList<FlexoBehaviourPathElement>();
 			for (AbstractActionScheme as : ep.getAbstractActionSchemes()) {
-				returned.add(new EditionSchemePathElement(parent, as, null));
+				returned.add(new FlexoBehaviourPathElement(parent, as, null));
 			}
 			map.put(ep, returned);
 		}
@@ -248,10 +248,10 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (returned == null) {
 			returned = super.makeSimplePathElement(parent, propertyName);
 		}
-		// Hook to specialize type returned by EditionSchemeAction.getEditionScheme()
+		// Hook to specialize type returned by FlexoBehaviourAction.getEditionScheme()
 		// This method is used while executing DiagramElement inspectors
-		if (propertyName.equals("editionScheme") && (parent.getType() instanceof EditionSchemeActionType)) {
-			returned.setType(EditionSchemeType.getEditionSchemeType(((EditionSchemeActionType) parent.getType()).getEditionScheme()));
+		if (propertyName.equals("editionScheme") && (parent.getType() instanceof FlexoBehaviourActionType)) {
+			returned.setType(FlexoBehaviourType.getFlexoBehaviourType(((FlexoBehaviourActionType) parent.getType()).getFlexoBehaviour()));
 		}
 		return returned;
 	}
@@ -262,8 +262,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (parent.getType() == null) {
 			return null;
 		}
-		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof EditionScheme) {
-			return new EditionSchemePathElement(parent, (EditionScheme) function, args);
+		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
+			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
 		}
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
@@ -281,7 +281,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	@Override
 	public Function retrieveFunction(Type parentType, String functionName, List<DataBinding<?>> args) {
 		if (parentType instanceof FlexoConceptInstanceType) {
-			return ((FlexoConceptInstanceType) parentType).getFlexoConcept().getEditionScheme(functionName);
+			return ((FlexoConceptInstanceType) parentType).getFlexoConcept().getFlexoBehaviour(functionName);
 		}
 		return super.retrieveFunction(parentType, functionName, args);
 	}

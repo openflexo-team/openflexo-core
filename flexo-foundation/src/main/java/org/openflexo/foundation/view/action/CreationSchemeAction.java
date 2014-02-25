@@ -35,14 +35,14 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.CreationScheme;
-import org.openflexo.foundation.viewpoint.EditionScheme;
-import org.openflexo.foundation.viewpoint.EditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 
-public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeAction, CreationScheme, VirtualModelInstance> {
+public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, VirtualModelInstance> {
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeAction.class.getPackage().getName());
 
@@ -124,8 +124,8 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 
 	public boolean retrieveMissingDefaultParameters() {
 		boolean returned = true;
-		EditionScheme editionScheme = getEditionScheme();
-		for (final EditionSchemeParameter parameter : editionScheme.getParameters()) {
+		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (getParameterValue(parameter) == null) {
 				logger.warning("Found not initialized parameter " + parameter);
 				Object defaultValue = parameter.getDefaultValue(this);
@@ -185,7 +185,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 
 	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
-	 * related {@link EditionScheme}<br>
+	 * related {@link FlexoBehaviour}<br>
 	 */
 	@Override
 	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) {
@@ -204,7 +204,7 @@ public class CreationSchemeAction extends EditionSchemeAction<CreationSchemeActi
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
 			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
-		} else if (variable.getVariableName().equals(EditionScheme.THIS)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
 			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);
