@@ -47,7 +47,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			viewPointResource.addToContents(returned);
 			viewPointResource.notifyContentsAdded(returned);
 
-			returned.setFactory(new VirtualModelModelFactory(returned));
+			// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+			returned.setFactory(new VirtualModelModelFactory(viewPointLibrary.getServiceManager().getTechnologyAdapterService(), returned));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -81,7 +83,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			logger.fine("VirtualModelResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
 
-			returned.setFactory(new VirtualModelModelFactory(returned));
+			// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+			returned.setFactory(new VirtualModelModelFactory(viewPointLibrary.getServiceManager().getTechnologyAdapterService(), returned));
 
 			return returned;
 		} catch (ModelDefinitionException e) {

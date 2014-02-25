@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
@@ -32,6 +34,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Test instanciation of VirtualModelModelFactory<br>
+ * Here the model factory is instanciated with no TechnologyAdapters
  * 
  */
 public class VirtualModelModelFactoryTest {
@@ -42,7 +45,8 @@ public class VirtualModelModelFactoryTest {
 	public void testInstantiateVirtualModelModelFactory() {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
-			VirtualModelModelFactory factory = new VirtualModelModelFactory();
+			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
+			VirtualModelModelFactory factory = new VirtualModelModelFactory(taService);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();

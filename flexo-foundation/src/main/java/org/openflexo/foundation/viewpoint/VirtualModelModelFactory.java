@@ -19,6 +19,17 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
+import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequests;
+import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
+import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
@@ -26,7 +37,6 @@ import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
@@ -49,6 +59,7 @@ import org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
@@ -65,17 +76,60 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public class VirtualModelModelFactory extends ModelFactory {
 
-	public VirtualModelModelFactory() throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(VirtualModel.class));
+	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+	public VirtualModelModelFactory(TechnologyAdapterService taService) throws ModelDefinitionException {
+		super(computeModelContext(taService));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 	}
 
-	public VirtualModelModelFactory(VirtualModelResource virtualModelResource) throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(VirtualModel.class));
+	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+	public VirtualModelModelFactory(TechnologyAdapterService taService, VirtualModelResource virtualModelResource)
+			throws ModelDefinitionException {
+		super(computeModelContext(taService));
 		addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(VirtualModel.class);
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				classes.add(modelSlotClass);
+				DeclarePatternRoles prDeclarations = modelSlotClass.getAnnotation(DeclarePatternRoles.class);
+				if (prDeclarations != null) {
+					for (DeclarePatternRole prDeclaration : prDeclarations.value()) {
+						classes.add(prDeclaration.patternRoleClass());
+					}
+				}
+				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
+				if (eaDeclarations != null) {
+					for (DeclareEditionAction eaDeclaration : eaDeclarations.value()) {
+						classes.add(eaDeclaration.editionActionClass());
+					}
+				}
+				DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
+				if (frDeclarations != null) {
+					for (DeclareFetchRequest frDeclaration : frDeclarations.value()) {
+						classes.add(frDeclaration.fetchRequestClass());
+					}
+				}
+			}
+		}
+
+		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}
 
 	public VirtualModel newVirtualModel() {
@@ -286,8 +340,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(MatchFlexoConceptInstance.class);
 	}
 
-	public DeclarePatternRole newDeclarePatternRole() {
-		return newInstance(DeclarePatternRole.class);
+	public org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole newDeclarePatternRole() {
+		return newInstance(org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class);
 	}
 
 	public ExecutionAction newExecutionAction() {
