@@ -182,6 +182,13 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		return false;
 	}
 
+	private void fireChanges(boolean wasValid) {
+		getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", null, isTypeAwareModelSlot());
+		getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", null, isVirtualModelModelSlot());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+	}
+
 	public Class<? extends ModelSlot<?>> getModelSlotClass() {
 		if (modelSlotClass == null && technologyAdapter != null && technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 			return technologyAdapter.getAvailableModelSlotTypes().get(0);
@@ -192,14 +199,20 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
 		boolean wasValid = isValid();
 		this.modelSlotClass = modelSlotClass;
-		getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, modelSlotClass);
-		getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("modelSlotClass", modelSlotClass != null ? null : false, modelSlotClass);
+		fireChanges(wasValid);
 	}
 
 	public boolean isTypeAwareModelSlot() {
-		return getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass());
+		// System.out.println("isTypeAwareModelSlot ? with " + getModelSlotClass());
+		// System.out.println("return " + (getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())));
+		return getModelSlotClass() != null && !isVirtualModelModelSlot() && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass());
+	}
+
+	public boolean isVirtualModelModelSlot() {
+		// System.out.println("isTypeAwareModelSlot ? with " + getModelSlotClass());
+		// System.out.println("return " + (getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())));
+		return getModelSlotClass() != null && getModelSlotClass().equals(VirtualModelModelSlot.class);
 	}
 
 	/**
@@ -236,8 +249,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.modelSlotName = modelSlotName;
 		getPropertyChangeSupport().firePropertyChange("modelSlotName", null, modelSlotName);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 	public String getDescription() {
@@ -248,8 +260,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.description = description;
 		getPropertyChangeSupport().firePropertyChange("description", null, description);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
@@ -260,8 +271,14 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.technologyAdapter = technologyAdapter;
 		getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
+		if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {
+			if (technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
+				setModelSlotClass(technologyAdapter.getAvailableModelSlotTypes().get(0));
+			} else {
+				setModelSlotClass(null);
+			}
+		}
 	}
 
 	public FlexoMetaModelResource<?, ?, ?> getMmRes() {
@@ -272,8 +289,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.mmRes = mmRes;
 		getPropertyChangeSupport().firePropertyChange("mmRes", null, mmRes);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 	public VirtualModelResource getVmRes() {
@@ -284,8 +300,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.vmRes = vmRes;
 		getPropertyChangeSupport().firePropertyChange("vmRes", null, vmRes);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 	public boolean isRequired() {
@@ -296,8 +311,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.required = required;
 		getPropertyChangeSupport().firePropertyChange("required", null, required);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 	public boolean isReadOnly() {
@@ -308,8 +322,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		boolean wasValid = isValid();
 		this.readOnly = readOnly;
 		getPropertyChangeSupport().firePropertyChange("readOnly", null, readOnly);
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		fireChanges(wasValid);
 	}
 
 }

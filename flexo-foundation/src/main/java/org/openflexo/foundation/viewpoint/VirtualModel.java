@@ -137,7 +137,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public void setVersion(FlexoVersion version);
 
 	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
 	public FlexoVersion getModelVersion();
 
 	@Setter(MODEL_VERSION_KEY)
@@ -830,11 +829,17 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public FlexoVersion getModelVersion() {
-			return getResource().getModelVersion();
+			if (getResource() != null) {
+				return getResource().getModelVersion();
+			}
+			return null;
 		}
 
 		@Override
 		public void setModelVersion(FlexoVersion aVersion) {
+			if (getResource() != null) {
+				getResource().setModelVersion(aVersion);
+			}
 		}
 
 		// Implementation of XMLStorageResourceData
