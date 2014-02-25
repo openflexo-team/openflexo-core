@@ -34,9 +34,9 @@ import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
+import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
@@ -191,7 +191,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends PatternRoleImpl<RD> implements ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends FlexoRoleImpl<RD> implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -240,9 +240,9 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 		 */
 		@Override
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
-			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConcept";
-			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
@@ -383,7 +383,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 			}
 			// availableFlexoRoleTypes.add(FlexoConceptPatternRole.class);
 			// availableFlexoRoleTypes.add(FlexoModelObjectPatternRole.class);
-			// availableFlexoRoleTypes.add(PrimitivePatternRole.class);
+			// availableFlexoRoleTypes.add(PrimitiveRole.class);
 			return availableFlexoRoleTypes;
 		}
 

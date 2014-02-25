@@ -14,7 +14,7 @@ import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.AbstractCreationScheme;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.IndividualPatternRole;
+import org.openflexo.foundation.viewpoint.IndividualRole;
 import org.openflexo.foundation.viewpoint.editionaction.AddIndividual;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -80,14 +80,14 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
 
 	/**
-	 * Instantiate a new IndividualPatternRole
+	 * Instantiate a new IndividualRole
 	 * 
 	 * @param ontClass
 	 * @return
 	 */
-	public IndividualPatternRole<?> makeIndividualPatternRole(IFlexoOntologyClass ontClass);
+	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass);
 
-	public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualPatternRole<?> patternRole,
+	public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
 			AbstractCreationScheme creationScheme);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> extends
@@ -106,21 +106,21 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 				CreateVirtualModelInstance action);
 
 		/**
-		 * Instantiate a new IndividualPatternRole
+		 * Instantiate a new IndividualRole
 		 * 
 		 * @param ontClass
 		 * @return
 		 */
 		@Override
-		public IndividualPatternRole<?> makeIndividualPatternRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualPatternRole> individualPRClass = getFlexoRoleClass(IndividualPatternRole.class);
-			IndividualPatternRole<?> returned = makeFlexoRole(individualPRClass);
+		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
+			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
+			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
 			returned.setOntologicType(ontClass);
 			return returned;
 		}
 
 		@Override
-		public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualPatternRole<?> patternRole,
+		public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
 				AbstractCreationScheme creationScheme) {
 			Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
 			AddIndividual<? extends TypeAwareModelSlot, ?> returned = makeEditionAction(addIndividualClass);

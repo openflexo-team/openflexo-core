@@ -3,8 +3,7 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.ontology.IndividualOfClass;
+import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
@@ -20,8 +19,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
-@ImplementationClass(IndividualPatternRole.IndividualPatternRoleImpl.class)
-public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> extends OntologicObjectPatternRole<I> {
+@ImplementationClass(ClassRole.ClassRoleImpl.class)
+public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjectRole<IFlexoOntologyClass> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CONCEPT_URI_KEY = "conceptURI";
@@ -37,32 +36,27 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 
 	public void setOntologicType(IFlexoOntologyClass ontologyClass);
 
-	public static abstract class IndividualPatternRoleImpl<I extends IFlexoOntologyIndividual> extends OntologicObjectPatternRoleImpl<I>
-			implements IndividualPatternRole<I> {
+	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends
+			OntologicObjectRoleImpl<IFlexoOntologyClass> implements ClassRole<C> {
 
-		public IndividualPatternRoleImpl() {
+		public ClassRoleImpl() {
 			super();
 		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as Individual conformTo " + getPreciseType() + " from " + getModelSlot().getName()
-					+ " ;", context);
+			out.append("FlexoRole " + getName() + " as Class conformTo " + getPreciseType() + " from " + "\""
+					+ getModelSlot().getMetaModelURI() + "\"" + " ;", context);
 			return out.toString();
-		}
-
-		@Override
-		public boolean defaultBehaviourIsToBeDeleted() {
-			return true;
 		}
 
 		@Override
 		public Type getType() {
 			if (getOntologicType() == null) {
-				return IFlexoOntologyIndividual.class;
+				return IFlexoOntologyClass.class;
 			}
-			return IndividualOfClass.getIndividualOfClass(getOntologicType());
+			return SubClassOfClass.getSubClassOfClass(getOntologicType());
 		}
 
 		@Override
@@ -87,10 +81,7 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 
 		@Override
 		public IFlexoOntologyClass getOntologicType() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyClass(_getConceptURI());
-			}
-			return null;
+			return getVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
 		@Override
@@ -99,28 +90,31 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 		}
 
 		@Override
-		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance epi) {
+		public boolean defaultBehaviourIsToBeDeleted() {
+			return false;
+		}
+
+		@Override
+		public ConceptActorReference<IFlexoOntologyClass> makeActorReference(IFlexoOntologyClass object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
-			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
+			ConceptActorReference<IFlexoOntologyClass> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
 		}
-
 	}
 
-	public static class IndividualPatternRoleMustDefineAValidConceptClass extends
-			ValidationRule<IndividualPatternRoleMustDefineAValidConceptClass, IndividualPatternRole> {
-		public IndividualPatternRoleMustDefineAValidConceptClass() {
-			super(IndividualPatternRole.class, "pattern_role_must_define_a_valid_concept_class");
+	public static class ClassRoleMustDefineAValidConceptClass extends
+			ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole> {
+		public ClassRoleMustDefineAValidConceptClass() {
+			super(ClassRole.class, "pattern_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualPatternRoleMustDefineAValidConceptClass, IndividualPatternRole> applyValidation(
-				IndividualPatternRole patternRole) {
+		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole> applyValidation(ClassRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
-				return new ValidationError<IndividualPatternRoleMustDefineAValidConceptClass, IndividualPatternRole>(this, patternRole,
+				return new ValidationError<ClassRoleMustDefineAValidConceptClass, ClassRole>(this, patternRole,
 						"pattern_role_does_not_define_any_concept_class");
 			}
 			return null;

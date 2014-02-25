@@ -316,8 +316,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public FlexoConceptInstancePatternRole newFlexoConceptInstancePatternRole() {
-		return newInstance(FlexoConceptInstancePatternRole.class);
+	public FlexoConceptInstanceRole newFlexoConceptInstanceRole() {
+		return newInstance(FlexoConceptInstanceRole.class);
 	}
 
 	public AddFlexoConceptInstance newAddFlexoConceptInstance() {

@@ -31,7 +31,7 @@ import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.viewpoint.ClassPatternRole;
+import org.openflexo.foundation.viewpoint.ClassRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
@@ -93,10 +93,10 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		}
 
 		@Override
-		public ClassPatternRole getFlexoRole() {
+		public ClassRole getFlexoRole() {
 			FlexoRole superFlexoRole = super.getFlexoRole();
-			if (superFlexoRole instanceof ClassPatternRole) {
-				return (ClassPatternRole) superFlexoRole;
+			if (superFlexoRole instanceof ClassRole) {
+				return (ClassRole) superFlexoRole;
 			} else if (superFlexoRole != null) {
 				// logger.warning("Unexpected pattern role of type " + superPatternRole.getClass().getSimpleName());
 				return null;
@@ -109,7 +109,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 			if (StringUtils.isNotEmpty(ontologyClassURI)) {
 				return getVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
-				if (getFlexoRole() instanceof ClassPatternRole) {
+				if (getFlexoRole() instanceof ClassRole) {
 					return getFlexoRole().getOntologicType();
 				}
 			}
@@ -121,7 +121,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getFlexoRole() instanceof ClassPatternRole) {
+				if (getFlexoRole() instanceof ClassRole) {
 					if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
 					} else {
@@ -138,7 +138,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getFlexoRole() instanceof ClassPatternRole && getFlexoRole().getOntologicType() == getOntologyClass()) {
+				if (getFlexoRole() instanceof ClassRole && getFlexoRole().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default provided by pattern role
 					return null;
 				}
@@ -191,7 +191,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		public ValidationIssue<AddClassActionMustDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
 			if (action.getOntologyClass() == null) {
 				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>>();
-				for (ClassPatternRole pr : action.getFlexoConcept().getClassPatternRoles()) {
+				for (ClassRole pr : action.getFlexoConcept().getClassRoles()) {
 					v.add(new SetsPatternRole(pr));
 				}
 				return new ValidationError<AddClassActionMustDefineAnOntologyClass, AddClass>(this, action,
@@ -202,14 +202,14 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 
 		protected static class SetsPatternRole extends FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass> {
 
-			private final ClassPatternRole patternRole;
+			private final ClassRole patternRole;
 
-			public SetsPatternRole(ClassPatternRole patternRole) {
+			public SetsPatternRole(ClassRole patternRole) {
 				super("assign_action_to_pattern_role_($patternRole.patternRoleName)");
 				this.patternRole = patternRole;
 			}
 
-			public ClassPatternRole getPatternRole() {
+			public ClassRole getPatternRole() {
 				return patternRole;
 			}
 

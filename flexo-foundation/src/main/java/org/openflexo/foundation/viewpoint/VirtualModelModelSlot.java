@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "FlexoConceptInstance", flexoRoleClass = FlexoConceptInstancePatternRole.class) // FlexoConceptInstance
+@DeclarePatternRole(FML = "FlexoConceptInstance", flexoRoleClass = FlexoConceptInstanceRole.class) // FlexoConceptInstance
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot
@@ -88,7 +88,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public boolean isReflexiveModelSlot();
 
-	public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept);
+	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
 	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
 
@@ -105,8 +105,8 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
-			FlexoConceptInstancePatternRole returned = makeFlexoRole(FlexoConceptInstancePatternRole.class);
+		public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept) {
+			FlexoConceptInstanceRole returned = makeFlexoRole(FlexoConceptInstanceRole.class);
 			returned.setFlexoConceptType(flexoConcept);
 			returned.setModelSlot(this);
 			return returned;
@@ -114,7 +114,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
-			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
 			}
 			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());

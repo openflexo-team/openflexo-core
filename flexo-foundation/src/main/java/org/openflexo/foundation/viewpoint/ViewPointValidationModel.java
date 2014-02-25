@@ -50,8 +50,8 @@ public class ViewPointValidationModel extends ValidationModel {
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveDeletionScheme());
 
 		registerRule(new FlexoRole.PatternRoleMustHaveAName());
-		registerRule(new ClassPatternRole.ClassPatternRoleMustDefineAValidConceptClass());
-		registerRule(new IndividualPatternRole.IndividualPatternRoleMustDefineAValidConceptClass());
+		registerRule(new ClassRole.ClassRoleMustDefineAValidConceptClass());
+		registerRule(new IndividualRole.IndividualPatternRoleMustDefineAValidConceptClass());
 		// registerRule(new DataPropertyStatementPatternRole.DataPropertyStatementPatternRoleMustDefineAValidProperty());
 		// registerRule(new ObjectPropertyStatementPatternRole.ObjectPropertyStatementPatternRoleMustDefineAValidProperty());
 

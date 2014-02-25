@@ -50,8 +50,8 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FlexoRole.PatternRoleImpl.class)
-@Imports({ @Import(FlexoConceptInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
+@ImplementationClass(FlexoRole.FlexoRoleImpl.class)
+@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(OntologicObjectRole.class), @Import(PrimitiveRole.class) })
 public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
@@ -106,7 +106,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
-	public static abstract class PatternRoleImpl<T> extends FlexoConceptObjectImpl implements FlexoRole<T> {
+	public static abstract class FlexoRoleImpl<T> extends FlexoConceptObjectImpl implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -114,7 +114,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		private ModelSlot<?> modelSlot;
 
-		public PatternRoleImpl() {
+		public FlexoRoleImpl() {
 			super();
 		}
 

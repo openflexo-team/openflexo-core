@@ -16,9 +16,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoConceptInstancePatternRole.FlexoConceptInstancePatternRoleImpl.class)
+@ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
 @XMLElement
-public interface FlexoConceptInstancePatternRole extends FlexoRole<FlexoConceptInstance> {
+public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -45,19 +45,19 @@ public interface FlexoConceptInstancePatternRole extends FlexoRole<FlexoConceptI
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class FlexoConceptInstancePatternRoleImpl extends PatternRoleImpl<FlexoConceptInstance> implements
-			FlexoConceptInstancePatternRole {
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
+			FlexoConceptInstanceRole {
 
-		private static final Logger logger = Logger.getLogger(FlexoConceptInstancePatternRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private String _flexoConceptTypeURI;
 
-		public FlexoConceptInstancePatternRoleImpl() {
+		public FlexoConceptInstanceRoleImpl() {
 			super();
-			// logger.severe("############# Created FlexoConceptInstancePatternRole " + Integer.toHexString(hashCode()) +
+			// logger.severe("############# Created FlexoConceptInstanceRole " + Integer.toHexString(hashCode()) +
 			// " model version="
 			// + builder.getModelVersion() + " file=" + builder.resource.getFile().getAbsolutePath());
 		}
@@ -65,7 +65,7 @@ public interface FlexoConceptInstancePatternRole extends FlexoRole<FlexoConceptI
 		/*@Override
 		public void finalizeDeserialization(Object builder) {
 			super.finalizeDeserialization(builder);
-			logger.severe("############# Finalized FlexoConceptInstancePatternRole " + Integer.toHexString(hashCode()) + toString());
+			logger.severe("############# Finalized FlexoConceptInstanceRole " + Integer.toHexString(hashCode()) + toString());
 		}*/
 
 		@Override

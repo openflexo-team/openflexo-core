@@ -17,9 +17,9 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(PrimitivePatternRole.PrimitivePatternRoleImpl.class)
+@ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
 @XMLElement
-public interface PrimitivePatternRole extends FlexoRole<Object> {
+public interface PrimitiveRole extends FlexoRole<Object> {
 
 	public static enum PrimitiveType {
 		Boolean, String, LocalizedString, Integer, Float
@@ -35,13 +35,13 @@ public interface PrimitivePatternRole extends FlexoRole<Object> {
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(PrimitiveType primitiveType);
 
-	public static abstract class PrimitivePatternRoleImpl extends PatternRoleImpl<Object> implements PrimitivePatternRole {
+	public static abstract class PrimitiveRoleImpl extends FlexoRoleImpl<Object> implements PrimitiveRole {
 
-		protected static final Logger logger = FlexoLogger.getLogger(PrimitivePatternRole.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(PrimitiveRole.class.getPackage().getName());
 
 		private PrimitiveType primitiveType;
 
-		public PrimitivePatternRoleImpl() {
+		public PrimitiveRoleImpl() {
 			super();
 		}
 

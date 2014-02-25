@@ -12,7 +12,7 @@ import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.IndividualPatternRole;
+import org.openflexo.foundation.viewpoint.IndividualRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.toolbox.JavaUtils;
@@ -42,14 +42,14 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD>> extends Mod
 				CreateVirtualModelInstance action);
 
 		/**
-		 * Instantiate a new IndividualPatternRole
+		 * Instantiate a new IndividualRole
 		 * 
 		 * @param ontClass
 		 * @return
 		 */
-		public IndividualPatternRole<?> makeIndividualPatternRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualPatternRole> individualPRClass = getFlexoRoleClass(IndividualPatternRole.class);
-			IndividualPatternRole<?> returned = makeFlexoRole(individualPRClass);
+		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
+			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
+			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
 			returned.setOntologicType(ontClass);
 			return returned;
 		}

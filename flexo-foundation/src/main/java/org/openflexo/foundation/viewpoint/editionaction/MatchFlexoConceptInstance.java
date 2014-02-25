@@ -40,7 +40,7 @@ import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
@@ -269,9 +269,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public CreationScheme getCreationScheme() {
-			if (getFlexoRole() instanceof FlexoConceptInstancePatternRole
-					&& ((FlexoConceptInstancePatternRole) getFlexoRole()).getCreationScheme() != null) {
-				return ((FlexoConceptInstancePatternRole) getFlexoRole()).getCreationScheme();
+			if (getFlexoRole() instanceof FlexoConceptInstanceRole
+					&& ((FlexoConceptInstanceRole) getFlexoRole()).getCreationScheme() != null) {
+				return ((FlexoConceptInstanceRole) getFlexoRole()).getCreationScheme();
 			}
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);

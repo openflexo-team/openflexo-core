@@ -36,7 +36,7 @@ import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.IndividualPatternRole;
+import org.openflexo.foundation.viewpoint.IndividualRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
@@ -187,10 +187,10 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public abstract Class<T> getOntologyIndividualClass();
 
 		@Override
-		public IndividualPatternRole getFlexoRole() {
+		public IndividualRole getFlexoRole() {
 			FlexoRole superFlexoRole = super.getFlexoRole();
-			if (superFlexoRole instanceof IndividualPatternRole) {
-				return (IndividualPatternRole) superFlexoRole;
+			if (superFlexoRole instanceof IndividualRole) {
+				return (IndividualRole) superFlexoRole;
 			} else if (superFlexoRole != null) {
 				// logger.warning("Unexpected pattern role of type " + superPatternRole.getClass().getSimpleName());
 				return null;
@@ -226,7 +226,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getFlexoRole() instanceof IndividualPatternRole) {
+				if (getFlexoRole() instanceof IndividualRole) {
 					if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
 					} else {
@@ -244,7 +244,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getFlexoRole() instanceof IndividualPatternRole && getFlexoRole().getOntologicType() == getOntologyClass()) {
+				if (getFlexoRole() instanceof IndividualRole && getFlexoRole().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default provided by pattern role
 					return null;
 				}
@@ -368,7 +368,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> applyValidation(AddIndividual action) {
 			if (action.getOntologyClass() == null) {
 				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>>();
-				for (IndividualPatternRole pr : action.getFlexoConcept().getIndividualPatternRoles()) {
+				for (IndividualRole pr : action.getFlexoConcept().getIndividualRoles()) {
 					v.add(new SetsPatternRole(pr));
 				}
 				return new ValidationError<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>(this, action,
@@ -379,14 +379,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 		protected static class SetsPatternRole extends FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
 
-			private final IndividualPatternRole patternRole;
+			private final IndividualRole patternRole;
 
-			public SetsPatternRole(IndividualPatternRole patternRole) {
+			public SetsPatternRole(IndividualRole patternRole) {
 				super("assign_action_to_pattern_role_($patternRole.patternRoleName)");
 				this.patternRole = patternRole;
 			}
 
-			public IndividualPatternRole<?> getPatternRole() {
+			public IndividualRole<?> getPatternRole() {
 				return patternRole;
 			}
 

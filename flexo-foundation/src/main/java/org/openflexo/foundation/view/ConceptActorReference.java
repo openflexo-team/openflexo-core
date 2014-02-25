@@ -51,7 +51,7 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 			super();
 		}
 
-		/*public ConceptActorReferenceImpl(T o, OntologicObjectPatternRole<T> aPatternRole, FlexoConceptInstance epi) {
+		/*public ConceptActorReferenceImpl(T o, OntologicObjectRole<T> aPatternRole, FlexoConceptInstance epi) {
 			super(epi.getProject());
 			setFlexoConceptInstance(epi);
 			setPatternRole(aPatternRole);

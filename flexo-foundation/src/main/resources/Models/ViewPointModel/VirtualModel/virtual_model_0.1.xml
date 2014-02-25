@@ -157,7 +157,7 @@
 		<!--  <property name="viewpointURI" xmlTag="viewpointURI" attribute="YES" /> -->
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole" xmlTag="FlexoConceptPatternRole">
+	<entity name="org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole" xmlTag="FlexoConceptPatternRole">
 		<property name="creationSchemeURI" xmlTag="creationSchemeURI" attribute="YES" />
 	</entity>
 
@@ -171,7 +171,7 @@
 		<property name="flexoModelObjectType" xmlTag="flexoModelObjectType" attribute="YES" />
 	</entity>
 
-	<entity name="org.openflexo.foundation.viewpoint.OntologicObjectPatternRole" abstract="yes">
+	<entity name="org.openflexo.foundation.viewpoint.OntologicObjectRole" abstract="yes">
 	</entity>
 
 	<entity name="org.openflexo.technologyadapter.owl.viewpoint.OWLPropertyPatternRole" xmlTag="PropertyPatternRole">
@@ -210,7 +210,7 @@
 
 	<entity name="org.openflexo.technologyadapter.owl.viewpoint.RestrictionStatementPatternRole" xmlTag="RestrictionStatementPatternRole"/>
 
-	<entity name="org.openflexo.foundation.viewpoint.PrimitivePatternRole" xmlTag="PrimitivePatternRole">
+	<entity name="org.openflexo.foundation.viewpoint.PrimitiveRole" xmlTag="PrimitivePatternRole">
 		<property name="primitiveType" xmlTag="primitiveType" attribute="YES" />
 	</entity>
 

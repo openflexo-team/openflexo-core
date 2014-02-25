@@ -16,8 +16,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
-@ImplementationClass(DataPropertyPatternRole.DataPropertyPatternRoleImpl.class)
-public abstract interface DataPropertyPatternRole<P extends IFlexoOntologyDataProperty> extends PropertyPatternRole<P> {
+@ImplementationClass(DataPropertyRole.DataPropertyRoleImpl.class)
+public abstract interface DataPropertyRole<P extends IFlexoOntologyDataProperty> extends PropertyRole<P> {
 
 	@PropertyIdentifier(type = BuiltInDataType.class)
 	public static final String DATA_TYPE_KEY = "dataType";
@@ -29,12 +29,12 @@ public abstract interface DataPropertyPatternRole<P extends IFlexoOntologyDataPr
 	@Setter(DATA_TYPE_KEY)
 	public void setDataType(BuiltInDataType dataType);
 
-	public static abstract class DataPropertyPatternRoleImpl<P extends IFlexoOntologyDataProperty> extends PropertyPatternRoleImpl<P>
-			implements DataPropertyPatternRole<P> {
+	public static abstract class DataPropertyRoleImpl<P extends IFlexoOntologyDataProperty> extends PropertyRoleImpl<P>
+			implements DataPropertyRole<P> {
 
 		private BuiltInDataType dataType;
 
-		public DataPropertyPatternRoleImpl() {
+		public DataPropertyRoleImpl() {
 			super();
 		}
 

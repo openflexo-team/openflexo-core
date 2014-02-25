@@ -26,11 +26,11 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
-@ImplementationClass(OntologicObjectPatternRole.OntologicObjectPatternRoleImpl.class)
-public interface OntologicObjectPatternRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
+@ImplementationClass(OntologicObjectRole.OntologicObjectRoleImpl.class)
+public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
-	public static abstract class OntologicObjectPatternRoleImpl<T extends IFlexoOntologyObject> extends PatternRoleImpl<T> implements
-			OntologicObjectPatternRole<T> {
+	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T> implements
+			OntologicObjectRole<T> {
 
 		/*public boolean getIsPrimaryConceptRole() {
 			if (getFlexoConcept() == null) {

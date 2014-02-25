@@ -249,9 +249,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public DeletionScheme generateDefaultDeletionScheme();
 
-	public List<IndividualPatternRole> getIndividualPatternRoles();
+	public List<IndividualRole> getIndividualRoles();
 
-	public List<ClassPatternRole> getClassPatternRoles();
+	public List<ClassRole> getClassRoles();
 
 	public FlexoConceptInstanceType getInstanceType();
 
@@ -274,7 +274,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		// private List<FlexoConceptConstraint> flexoConceptConstraints;
 		private FlexoConceptInspector inspector;
 
-		// private OntologicObjectPatternRole primaryConceptRole;
+		// private OntologicObjectRole primaryConceptRole;
 		// private GraphicalElementPatternRole primaryRepresentationRole;
 
 		private VirtualModel virtualModel;
@@ -392,13 +392,13 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public List<IndividualPatternRole> getIndividualPatternRoles() {
-			return getPatternRoles(IndividualPatternRole.class);
+		public List<IndividualRole> getIndividualRoles() {
+			return getPatternRoles(IndividualRole.class);
 		}
 
 		@Override
-		public List<ClassPatternRole> getClassPatternRoles() {
-			return getPatternRoles(ClassPatternRole.class);
+		public List<ClassRole> getClassRoles() {
+			return getPatternRoles(ClassRole.class);
 		}
 
 		/*
@@ -568,7 +568,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			newDeletionScheme.setName("deletion");
 			Vector<FlexoRole> rolesToDelete = new Vector<FlexoRole>();
 			for (FlexoRole pr : getFlexoRoles()) {
-				if (/* pr instanceof GraphicalElementPatternRole || */pr instanceof IndividualPatternRole /*
+				if (/* pr instanceof GraphicalElementPatternRole || */pr instanceof IndividualRole /*
 																											* ||
 																											* pr
 																											* instanceof
@@ -710,9 +710,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		/*
-		 * public OntologicObjectPatternRole getDefaultPrimaryConceptRole() {
-		 * List<OntologicObjectPatternRole> roles =
-		 * getPatternRoles(OntologicObjectPatternRole.class); if (roles.size() >
+		 * public OntologicObjectRole getDefaultPrimaryConceptRole() {
+		 * List<OntologicObjectRole> roles =
+		 * getPatternRoles(OntologicObjectRole.class); if (roles.size() >
 		 * 0) { return roles.get(0); } return null; }
 		 */
 
@@ -725,11 +725,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 */
 
 		/*
-		 * public OntologicObjectPatternRole getPrimaryConceptRole() { if
+		 * public OntologicObjectRole getPrimaryConceptRole() { if
 		 * (primaryConceptRole == null) { return getDefaultPrimaryConceptRole();
 		 * } return primaryConceptRole; }
 		 * 
-		 * public void setPrimaryConceptRole(OntologicObjectPatternRole
+		 * public void setPrimaryConceptRole(OntologicObjectRole
 		 * primaryConceptRole) { this.primaryConceptRole = primaryConceptRole; }
 		 * 
 		 * public GraphicalElementPatternRole getPrimaryRepresentationRole() {

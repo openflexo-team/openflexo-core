@@ -33,14 +33,14 @@ import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
-import org.openflexo.foundation.viewpoint.OntologicObjectPatternRole;
+import org.openflexo.foundation.viewpoint.OntologicObjectRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
+import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.TechnologySpecificEditionScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -245,15 +245,15 @@ public class VPMIconLibrary extends IconLibrary {
 					}
 				}
 			}
-		} else if (object instanceof FlexoConceptInstancePatternRole) {
+		} else if (object instanceof FlexoConceptInstanceRole) {
 			return FLEXO_CONCEPT_ICON;
-		} else if (object instanceof PrimitivePatternRole) {
+		} else if (object instanceof PrimitiveRole) {
 			return UNKNOWN_ICON;
-		} else if (object instanceof OntologicObjectPatternRole && ((OntologicObjectPatternRole<?>) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectPatternRole<?>) object).getModelSlot()
+		} else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
 					.getTechnologyAdapter());
 			if (tac != null) {
-				Type accessedType = ((OntologicObjectPatternRole<?>) object).getType();
+				Type accessedType = ((OntologicObjectRole<?>) object).getType();
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
 				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
 			}

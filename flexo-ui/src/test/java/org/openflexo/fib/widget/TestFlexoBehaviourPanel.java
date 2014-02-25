@@ -24,8 +24,8 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
-import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
-import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
+import org.openflexo.foundation.viewpoint.PrimitiveRole;
+import org.openflexo.foundation.viewpoint.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -104,19 +104,19 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreatePatternRole createPR1 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setPatternRoleName("aString");
-		createPR1.flexoRoleClass = PrimitivePatternRole.class;
+		createPR1.flexoRoleClass = PrimitiveRole.class;
 		createPR1.primitiveType = PrimitiveType.String;
 		createPR1.doAction();
 
 		CreatePatternRole createPR2 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setPatternRoleName("aBoolean");
-		createPR2.flexoRoleClass = PrimitivePatternRole.class;
+		createPR2.flexoRoleClass = PrimitiveRole.class;
 		createPR2.primitiveType = PrimitiveType.Boolean;
 		createPR2.doAction();
 
 		CreatePatternRole createPR3 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setPatternRoleName("anInteger");
-		createPR3.flexoRoleClass = PrimitivePatternRole.class;
+		createPR3.flexoRoleClass = PrimitiveRole.class;
 		createPR3.primitiveType = PrimitiveType.Integer;
 		createPR3.doAction();
 
