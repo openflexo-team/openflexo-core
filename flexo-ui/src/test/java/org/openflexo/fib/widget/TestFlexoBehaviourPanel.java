@@ -48,7 +48,7 @@ import org.openflexo.toolbox.FileResource;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
+public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
@@ -73,7 +73,7 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/EditionSchemePanel.fib");
+		fibFile = new FileResource("Fib/VPM/FlexoBehaviourPanel.fib");
 		assertTrue(fibFile.exists());
 	}
 
@@ -232,7 +232,7 @@ public class TestEditionSchemePanel extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestEditionSchemePanel.class.getSimpleName());
+		gcDelegate = new GraphicalContextDelegate(TestFlexoBehaviourPanel.class.getSimpleName());
 	}
 
 	@AfterClass

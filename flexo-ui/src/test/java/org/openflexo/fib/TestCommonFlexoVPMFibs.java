@@ -87,7 +87,7 @@ public class TestCommonFlexoVPMFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testEditionSchemePanel() {
-		validateFIB("Fib/VPM/EditionSchemePanel.fib");
+		validateFIB("Fib/VPM/FlexoBehaviourPanel.fib");
 	}
 
 	@Test

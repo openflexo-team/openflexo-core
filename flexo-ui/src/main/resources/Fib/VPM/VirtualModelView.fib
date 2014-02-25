@@ -21,7 +21,7 @@
             <ReferenceAssignment mandatory="true" variable="controller.flexoController" value="controller.flexoController"  />
         </FIBReferencedComponent>
       </Tab>
-      <Tab title="behavioural" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" protectContent="true" index="1" constraints="border(index=1;location=center)" name="BehaviouralTab">
+      <Tab title="behavioural" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" protectContent="true" index="1" constraints="border(index=1;location=center)" name="BehaviouralTab">
         <SplitPanel index="0" constraints="border(index=0;location=center)">
           <ColSplit name="ColSplit" weight="0.0">
             <Leaf name="top" weight="0.20000000298023224" />
@@ -35,54 +35,54 @@
                 <Divider />
                 <Leaf name="right" weight="0.5" />
               </RowSplit>
-              <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="EditionSchemeTable" index="0" data="data.flexoBehaviours" constraints="split(index=0;location=west;splitIdentifier=left)" opaque="false">
+              <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="FlexoBehaviourTable" index="0" data="data.flexoBehaviours" constraints="split(index=0;location=west;splitIdentifier=left)" opaque="false">
                 <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="25" resizable="false" displayTitle="false" name="icon" />
                 <TextFieldColumn data="iterator.name" title="edition_scheme" columnWidth="200" resizable="true" displayTitle="true" />
                 <LabelColumn data="iterator.flexoBehaviourType.name" title="type" columnWidth="100" resizable="true" displayTitle="true" name="label" />
-                <RemoveAction method="controller.deleteEditionScheme(data,selected)" name="delete_scheme" />
+                <RemoveAction method="controller.deleteFlexoBehaviour(data,selected)" name="delete_scheme" />
                 <AddAction method="controller.createSynchronizationScheme(data)" name="new_synchronization_scheme" />
                 <AddAction method="controller.createActionScheme(data)" name="new_action_scheme" />
                 <AddAction method="controller.createCreationScheme(data)" name="new_creation_scheme" />
                 <AddAction method="controller.createDeletionScheme(data)" name="new_deletion_scheme" />
                 <AddAction method="controller.createCloningScheme(data)" name="new_cloning_scheme" />
-                <CustomAction method="controller.duplicateEditionScheme(selected,(selected.name + &quot;Copy&quot;))" name="duplicate" />
+                <CustomAction method="controller.duplicateFlexoBehaviour(selected,(selected.name + &quot;Copy&quot;))" name="duplicate" />
               </Table>
-              <Panel layout="border" border="rounded3d" borderTitle="Parameters for EditionScheme" borderTop="2" borderBottom="2" borderRight="2" titleFont="SansSerif,0,11" darkLevel="1" index="0" constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=west;padX=0;padY=0;splitIdentifier=right;weightX=0.5;weightY=1.0;x=0;y=0)" opaque="false">
-                <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourParameter" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" enable="(EditionSchemeTable.selected != null)" manageDynamicModel="true" name="ParametersTable" index="0" data="EditionSchemeTable.selected.parameters" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.5;weightY=1.0;x=0;y=0)" font="SansSerif.plain,0,12">
+              <Panel layout="border" border="rounded3d" borderTitle="Parameters for FlexoBehaviour" borderTop="2" borderBottom="2" borderRight="2" titleFont="SansSerif,0,11" darkLevel="1" index="0" constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=west;padX=0;padY=0;splitIdentifier=right;weightX=0.5;weightY=1.0;x=0;y=0)" opaque="false">
+                <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourParameter" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" enable="(FlexoBehaviourTable.selected != null)" manageDynamicModel="true" name="ParametersTable" index="0" data="FlexoBehaviourTable.selected.parameters" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.5;weightY=1.0;x=0;y=0)" font="SansSerif.plain,0,12">
                   <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
                   <TextFieldColumn data="iterator.name" title="name" columnWidth="100" resizable="true" displayTitle="true" />
                   <TextFieldColumn data="iterator.label" title="label" columnWidth="100" resizable="true" displayTitle="true" />
                   <DropDownColumn data="iterator.widget" title="widget" columnWidth="80" resizable="true" displayTitle="true" name="dropdown" />
-                  <AddAction method="controller.createTextFieldParameter(EditionSchemeTable.selected)" name="add_textfield_parameter" />
-                  <AddAction method="controller.createTextAreaParameter(EditionSchemeTable.selected)" name="add_textarea_parameter" />
-                  <AddAction method="controller.createIntegerParameter(EditionSchemeTable.selected)" name="add_integer_parameter" />
-                  <AddAction method="controller.createCheckBoxParameter(EditionSchemeTable.selected)" name="add_checkbox_parameter" />
-                  <AddAction method="controller.createDropDownParameter(EditionSchemeTable.selected)" name="add_dropdown_parameter" />
-                  <AddAction method="controller.createIndividualParameter(EditionSchemeTable.selected)" name="add_individual_parameter" />
-                  <AddAction method="controller.createClassParameter(EditionSchemeTable.selected)" name="add_class_parameter" />
-                  <AddAction method="controller.createURIParameter(EditionSchemeTable.selected)" name="add_uri_parameter" />
-                  <AddAction method="controller.createObjectPropertyParameter(EditionSchemeTable.selected)" name="add_object_property_parameter" />
-                  <AddAction method="controller.createDataPropertyParameter(EditionSchemeTable.selected)" name="add_data_property_parameter" />
-                  <AddAction method="controller.createListParameter(EditionSchemeTable.selected)" name="add_list_parameter" />
-                  <AddAction method="controller.createFlexoConceptInstanceParameter(EditionSchemeTable.selected)" name="add_flexo_concept_instance_parameter" />
-                  <AddAction method="controller.createPropertyParameter(EditionSchemeTable.selected)" name="add_property_parameter" />
-        		  <AddAction method="controller.createTechnologyObjectParameter(EditionSchemeTable.selected)" name="add_technology_object" />
-                  <RemoveAction method="controller.deleteParameter(EditionSchemeTable.selected,selected)" name="delete" />
+                  <AddAction method="controller.createTextFieldParameter(FlexoBehaviourTable.selected)" name="add_textfield_parameter" />
+                  <AddAction method="controller.createTextAreaParameter(FlexoBehaviourTable.selected)" name="add_textarea_parameter" />
+                  <AddAction method="controller.createIntegerParameter(FlexoBehaviourTable.selected)" name="add_integer_parameter" />
+                  <AddAction method="controller.createCheckBoxParameter(FlexoBehaviourTable.selected)" name="add_checkbox_parameter" />
+                  <AddAction method="controller.createDropDownParameter(FlexoBehaviourTable.selected)" name="add_dropdown_parameter" />
+                  <AddAction method="controller.createIndividualParameter(FlexoBehaviourTable.selected)" name="add_individual_parameter" />
+                  <AddAction method="controller.createClassParameter(FlexoBehaviourTable.selected)" name="add_class_parameter" />
+                  <AddAction method="controller.createURIParameter(FlexoBehaviourTable.selected)" name="add_uri_parameter" />
+                  <AddAction method="controller.createObjectPropertyParameter(FlexoBehaviourTable.selected)" name="add_object_property_parameter" />
+                  <AddAction method="controller.createDataPropertyParameter(FlexoBehaviourTable.selected)" name="add_data_property_parameter" />
+                  <AddAction method="controller.createListParameter(FlexoBehaviourTable.selected)" name="add_list_parameter" />
+                  <AddAction method="controller.createFlexoConceptInstanceParameter(FlexoBehaviourTable.selected)" name="add_flexo_concept_instance_parameter" />
+                  <AddAction method="controller.createPropertyParameter(FlexoBehaviourTable.selected)" name="add_property_parameter" />
+        		  <AddAction method="controller.createTechnologyObjectParameter(FlexoBehaviourTable.selected)" name="add_technology_object" />
+                  <RemoveAction method="controller.deleteParameter(FlexoBehaviourTable.selected,selected)" name="delete" />
                 </Table>
                 <Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" constraints="border(location=east)" opaque="false" name="ParametersOrderingPanel">
-                  <Button action="EditionSchemeTable.selected.parameterFirst(ParametersTable.selected)" buttonIcon="controller.arrowTop" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)">
+                  <Button action="FlexoBehaviourTable.selected.parameterFirst(ParametersTable.selected)" buttonIcon="controller.arrowTop" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)">
                     <Dependancy componentName="ParametersTable" />
                     <LocalizedDictionary />
                   </Button>
-                  <Button action="EditionSchemeTable.selected.parameterUp(ParametersTable.selected)" buttonIcon="controller.arrowUp" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)">
+                  <Button action="FlexoBehaviourTable.selected.parameterUp(ParametersTable.selected)" buttonIcon="controller.arrowUp" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)">
                     <Dependancy componentName="ParametersTable" />
                     <LocalizedDictionary />
                   </Button>
-                  <Button action="EditionSchemeTable.selected.parameterDown(ParametersTable.selected)" buttonIcon="controller.arrowDown" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (EditionSchemeTable.selected.parameters.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)">
+                  <Button action="FlexoBehaviourTable.selected.parameterDown(ParametersTable.selected)" buttonIcon="controller.arrowDown" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (FlexoBehaviourTable.selected.parameters.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)">
                     <Dependancy componentName="ParametersTable" />
                     <LocalizedDictionary />
                   </Button>
-                  <Button action="EditionSchemeTable.selected.parameterLast(ParametersTable.selected)" buttonIcon="controller.arrowBottom" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (EditionSchemeTable.selected.parameters.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)">
+                  <Button action="FlexoBehaviourTable.selected.parameterLast(ParametersTable.selected)" buttonIcon="controller.arrowBottom" buttonType="Trigger" label="" localize="true" enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (FlexoBehaviourTable.selected.parameters.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)">
                     <Dependancy componentName="ParametersTable" />
                     <LocalizedDictionary />
                   </Button>
@@ -91,13 +91,13 @@
               </Panel>
             </SplitPanel>
           </Panel>
-          <FIBReferencedComponent componentFile="EditionSchemePanel.fib" localize="true" manageDynamicModel="true" name="EditionSchemeWidget" index="0" data="EditionSchemeTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" />
+          <FIBReferencedComponent componentFile="FlexoBehaviourPanel.fib" localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget" index="0" data="FlexoBehaviourTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" />
         </SplitPanel>
       </Tab>
-      <Tab title="inspector" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" constraints="border(index=1;location=center)" width="80" height="60" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
+      <Tab title="inspector" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" constraints="border(index=1;location=center)" width="80" height="60" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
         <FIBReferencedComponent componentFile="FlexoConceptInspectorPanel.fib" localize="true" manageDynamicModel="true" name="FlexoConceptInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
       </Tab>
-      <Tab title="localization" layout="border" borderTitle="EditionScheme" titleFont="SansSerif,0,11" darkLevel="0" index="2" constraints="border(index=1;location=center)" name="LocalizationTab">
+      <Tab title="localization" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="2" constraints="border(index=1;location=center)" name="LocalizationTab">
         <FIBReferencedComponent componentFile="LocalizedDictionaryPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />
       </Tab>
     </TabPanel>
@@ -202,9 +202,9 @@
     <Localized key="add_flexo_concept_instance_parameter" lang="English">Add flexo concept instance parameter</Localized>
     <Localized key="add_flexo_concept_instance_parameter" lang="French">Ajouter un paramètre de type instance de concept flexo</Localized>
     <Localized key="add_flexo_concept_instance_parameter" lang="Dutch">add_flexo_concept_instance_parameter</Localized>
-    <Localized key="Parameters for EditionScheme" lang="English">Parameters for EditionScheme</Localized>
-    <Localized key="Parameters for EditionScheme" lang="French">Paramètres des procédés d'edition</Localized>
-    <Localized key="Parameters for EditionScheme" lang="Dutch">Parameters for EditionScheme</Localized>
+    <Localized key="Parameters for FlexoBehaviour" lang="English">Parameters for FlexoBehaviour</Localized>
+    <Localized key="Parameters for FlexoBehaviour" lang="French">Paramètres des comportements</Localized>
+    <Localized key="Parameters for FlexoBehaviour" lang="Dutch">Parameters for FlexoBehaviour</Localized>
     <Localized key="localization" lang="English">Localization</Localized>
     <Localized key="localization" lang="French">Locales</Localized>
     <Localized key="localization" lang="Dutch">localization</Localized>
