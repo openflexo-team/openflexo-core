@@ -192,13 +192,13 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 			this.accessedResourceData = accessedResourceData;
 			this.resource = (TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource();
 
-			if (requiresUpdate) {
+			/*if (requiresUpdate) {
 				// The virtual model can be synchronized with the new resource data.
 				updateActorReferencesURI();
 				if (getVirtualModelInstance().isSynchronizable()) {
 					getVirtualModelInstance().synchronize(null);
 				}
-			}
+			}*/
 
 		}
 
