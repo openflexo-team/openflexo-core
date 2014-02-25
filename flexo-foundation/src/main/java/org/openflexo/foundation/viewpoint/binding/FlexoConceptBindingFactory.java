@@ -263,7 +263,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			return null;
 		}
 		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof EditionScheme) {
-			return new EditionSchemePathElement(parent, (EditionScheme) function, null);
+			return new EditionSchemePathElement(parent, (EditionScheme) function, args);
 		}
 		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
