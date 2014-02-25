@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
@@ -91,7 +91,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends PatternRole<?>> patternRoleClass) {
+	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {
 		if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 			return VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}

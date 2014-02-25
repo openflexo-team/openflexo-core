@@ -192,8 +192,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		Object assignedObject = super.performAction(action, performedActions);
 		if (assignedObject != null && action instanceof AssignableAction) {
 			AssignableAction assignableAction = (AssignableAction) action;
-			if (assignableAction.getPatternRole() != null && assignedObject instanceof FlexoObject) {
-				getFlexoConceptInstance().setObjectForPatternRole((FlexoObject) assignedObject, assignableAction.getPatternRole());
+			if (assignableAction.getFlexoRole() != null && assignedObject instanceof FlexoObject) {
+				getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) assignedObject, assignableAction.getFlexoRole());
 			}
 		}
 
@@ -203,7 +203,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
 		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
 			return getFlexoConceptInstance();
 		}
@@ -213,7 +213,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
 			return;
 		}
 		super.setValue(value, variable);

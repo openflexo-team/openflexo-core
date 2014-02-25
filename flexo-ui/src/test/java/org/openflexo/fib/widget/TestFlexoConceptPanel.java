@@ -103,19 +103,19 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 		CreatePatternRole createPR1 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setPatternRoleName("aString");
-		createPR1.patternRoleClass = PrimitivePatternRole.class;
+		createPR1.flexoRoleClass = PrimitivePatternRole.class;
 		createPR1.primitiveType = PrimitiveType.String;
 		createPR1.doAction();
 
 		CreatePatternRole createPR2 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setPatternRoleName("aBoolean");
-		createPR2.patternRoleClass = PrimitivePatternRole.class;
+		createPR2.flexoRoleClass = PrimitivePatternRole.class;
 		createPR2.primitiveType = PrimitiveType.Boolean;
 		createPR2.doAction();
 
 		CreatePatternRole createPR3 = CreatePatternRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setPatternRoleName("anInteger");
-		createPR3.patternRoleClass = PrimitivePatternRole.class;
+		createPR3.flexoRoleClass = PrimitivePatternRole.class;
 		createPR3.primitiveType = PrimitiveType.Integer;
 		createPR3.doAction();
 

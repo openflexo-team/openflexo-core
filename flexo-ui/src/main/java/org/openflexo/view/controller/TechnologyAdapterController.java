@@ -30,7 +30,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
@@ -150,7 +150,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param object
 	 * @return
 	 */
-	public abstract ImageIcon getIconForPatternRole(Class<? extends PatternRole<?>> patternRoleClass);
+	public abstract ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass);
 
 	/**
 	 * Return icon representing supplied edition action

@@ -33,7 +33,7 @@
       <Children data="flexoConcept.structuralFacet" visible="" cast="" name="structural" />
       <Children data="flexoConcept.behaviouralFacet" visible="" cast="" name="behavioural" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.PatternRole" label="patternRole.name" icon="controller.iconForObject(patternRole)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="patternRole" />
+    <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoRole" label="flexoRole.name" icon="controller.iconForObject(flexoRole)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoRole" />
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
       <Children data="flexoBehaviour.flexoBehaviourParameters" visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
       <Children data="flexoBehaviour.actions" visible="" cast="" name="actions" />
@@ -48,7 +48,7 @@
       <Children data="controlStructureAction.actions" visible="" cast="" name="children" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet" label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
-      <Children data="flexoConceptStructuralFacet.flexoConcept.patternRoles" visible="" cast="" name="patternRoles" />
+      <Children data="flexoConceptStructuralFacet.flexoConcept.flexoRoles" visible="" cast="" name="flexoRoles" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet" label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptBehaviouralFacet">
       <Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours" visible="" cast="" name="flexoBehaviours" />

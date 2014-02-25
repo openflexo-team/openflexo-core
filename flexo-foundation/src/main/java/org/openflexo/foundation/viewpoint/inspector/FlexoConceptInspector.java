@@ -345,7 +345,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		 * createBindingModel(); }
 		 * 
 		 * private void createBindingModel() { _bindingModel = new
-		 * BindingModel(); for (PatternRole role :
+		 * BindingModel(); for (FlexoRole role :
 		 * getFlexoConcept().getPatternRoles()) {
 		 * _bindingModel.addToBindingVariables
 		 * (PatternRolePathElement.makePatternRolePathElement(role,

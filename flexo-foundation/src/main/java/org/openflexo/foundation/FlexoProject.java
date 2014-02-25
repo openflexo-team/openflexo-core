@@ -3201,7 +3201,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * else if (actorReference.getPatternReference().getFlexoConcept() ==
 	 * null) { logger.warning(
 	 * "Found null actorReference.getPatternReference().getFlexoConcept(), please investigate"
-	 * ); } else if (object instanceof FlexoOntologyObjectImpl) { PatternRole pr
+	 * ); } else if (object instanceof FlexoOntologyObjectImpl) { FlexoRole pr
 	 * = actorReference.getPatternReference().getPatternRole();
 	 * logger.fine("Retrieve Edition Pattern Instance " + instance + " for " +
 	 * object + " role=" + pr); ((FlexoOntologyObjectImpl)

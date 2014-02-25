@@ -18,7 +18,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstancePatternRole.FlexoConceptInstancePatternRoleImpl.class)
 @XMLElement
-public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConceptInstance> {
+public interface FlexoConceptInstancePatternRole extends FlexoRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -71,7 +71,7 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as FlexoConceptInstance conformTo " + getPreciseType() + ";", context);
+			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getPreciseType() + ";", context);
 			return out.toString();
 		}
 
@@ -188,11 +188,10 @@ public interface FlexoConceptInstancePatternRole extends PatternRole<FlexoConcep
 		}
 
 		@Override
-		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object,
-				FlexoConceptInstance epi) {
+		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
-			returned.setPatternRole(this);
+			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;

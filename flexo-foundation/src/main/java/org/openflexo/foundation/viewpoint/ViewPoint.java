@@ -258,7 +258,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 			/*for (VirtualModel vm : getVirtualModels()) {
 				for (FlexoConcept ep : vm.getFlexoConcepts()) {
-					for (PatternRole<?> pr : ep.getPatternRoles()) {
+					for (FlexoRole<?> pr : ep.getPatternRoles()) {
 						if (pr instanceof ShapePatternRole) {
 							((ShapePatternRole) pr).tryToFindAGR();
 						}

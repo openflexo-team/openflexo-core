@@ -47,7 +47,7 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as Individual conformTo " + getPreciseType() + " from " + getModelSlot().getName()
+			out.append("FlexoRole " + getName() + " as Individual conformTo " + getPreciseType() + " from " + getModelSlot().getName()
 					+ " ;", context);
 			return out.toString();
 		}
@@ -102,7 +102,7 @@ public interface IndividualPatternRole<I extends IFlexoOntologyIndividual> exten
 		public ConceptActorReference<I> makeActorReference(I object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<I> returned = factory.newInstance(ConceptActorReference.class);
-			returned.setPatternRole(this);
+			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;

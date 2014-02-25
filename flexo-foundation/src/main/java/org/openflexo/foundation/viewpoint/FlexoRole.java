@@ -37,27 +37,27 @@ import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link PatternRole} is a structural element of an FlexoConcept, which plays a role in this {@link FlexoConcept}<br>
- * More formerly, a {@link PatternRole} is the specification of an object accessed at run-time (inside an {@link FlexoConcept} instance)
+ * A {@link FlexoRole} is a structural element of an FlexoConcept, which plays a role in this {@link FlexoConcept}<br>
+ * More formerly, a {@link FlexoRole} is the specification of an object accessed at run-time (inside an {@link FlexoConcept} instance)<br>
+ * A model slot formalizes a contract for accessing to a data
  * 
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(PatternRole.PatternRoleImpl.class)
+@ImplementationClass(FlexoRole.PatternRoleImpl.class)
 @Imports({ @Import(FlexoConceptInstancePatternRole.class), @Import(OntologicObjectPatternRole.class), @Import(PrimitivePatternRole.class) })
-public abstract interface PatternRole<T> extends FlexoConceptObject {
+public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
-	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
+	public static final String ROLE_NAME_KEY = "roleName";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = ModelSlot.class)
@@ -70,21 +70,11 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
-	@Getter(value = PATTERN_ROLE_NAME_KEY)
-	@XMLAttribute(xmlTag = "patternRole")
-	public String getPatternRoleName();
+	@Getter(value = ROLE_NAME_KEY)
+	public String getRoleName();
 
-	@Setter(PATTERN_ROLE_NAME_KEY)
-	public void setPatternRoleName(String patternRoleName);
-
-	@Override
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLElement
-	public String getDescription();
-
-	@Override
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
+	@Setter(ROLE_NAME_KEY)
+	public void setRoleName(String patternRoleName);
 
 	@Getter(value = MODEL_SLOT_KEY)
 	@XMLElement
@@ -116,9 +106,9 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
-	public static abstract class PatternRoleImpl<T> extends FlexoConceptObjectImpl implements PatternRole<T> {
+	public static abstract class PatternRoleImpl<T> extends FlexoConceptObjectImpl implements FlexoRole<T> {
 
-		// private static final Logger logger = Logger.getLogger(PatternRole.class.getPackage().getName());
+		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
 		private FlexoConcept _pattern;
 
@@ -130,7 +120,7 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 		@Override
 		public String getURI() {
-			return getFlexoConcept().getURI() + "." + getPatternRoleName();
+			return getFlexoConcept().getURI() + "." + getRoleName();
 		}
 
 		@Override
@@ -164,12 +154,12 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 		}
 
 		@Override
-		public String getPatternRoleName() {
+		public String getRoleName() {
 			return getName();
 		}
 
 		@Override
-		public void setPatternRoleName(String patternRoleName) {
+		public void setRoleName(String patternRoleName) {
 			setName(patternRoleName);
 		}
 
@@ -177,7 +167,7 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 		public String toString() {
 			return getClass().getSimpleName()
 					+ ":"
-					+ getPatternRoleName()
+					+ getRoleName()
 					+ "[container="
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() + "/"
 							+ (getFlexoConcept().getVirtualModel() != null ? getFlexoConcept().getVirtualModel().getName() : "null")
@@ -214,15 +204,15 @@ public abstract interface PatternRole<T> extends FlexoConceptObject {
 
 	}
 
-	public static class PatternRoleMustHaveAName extends ValidationRule<PatternRoleMustHaveAName, PatternRole> {
+	public static class PatternRoleMustHaveAName extends ValidationRule<PatternRoleMustHaveAName, FlexoRole> {
 		public PatternRoleMustHaveAName() {
-			super(PatternRole.class, "pattern_role_must_have_a_name");
+			super(FlexoRole.class, "pattern_role_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<PatternRoleMustHaveAName, PatternRole> applyValidation(PatternRole patternRole) {
-			if (StringUtils.isEmpty(patternRole.getPatternRoleName())) {
-				return new ValidationError<PatternRoleMustHaveAName, PatternRole>(this, patternRole, "pattern_role_has_no_name");
+		public ValidationIssue<PatternRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
+			if (StringUtils.isEmpty(flexoRole.getRoleName())) {
+				return new ValidationError<PatternRoleMustHaveAName, FlexoRole>(this, flexoRole, "pattern_role_has_no_name");
 			}
 			return null;
 		}

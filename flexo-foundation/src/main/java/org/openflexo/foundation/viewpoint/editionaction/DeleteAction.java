@@ -30,7 +30,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
@@ -60,7 +60,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<?> object);
 
-	public PatternRole getPatternRole();
+	public FlexoRole getFlexoRole();
 
 	public static abstract class DeleteActionImpl<MS extends ModelSlot<?>, T extends FlexoObject> extends EditionActionImpl<MS, T>
 			implements DeleteAction<MS, T> {
@@ -119,11 +119,11 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public PatternRole getPatternRole() {
+		public FlexoRole getFlexoRole() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getFlexoConcept().getPatternRole(getObject().toString());
+			return getFlexoConcept().getFlexoRole(getObject().toString());
 		}
 
 		@Override

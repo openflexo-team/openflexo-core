@@ -29,7 +29,7 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
@@ -68,7 +68,7 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		FIBTableWidget inspectorPropertyTable = (FIBTableWidget) getFIBView("InspectorPropertyTable");
 		FIBTableWidget localizedTable = (FIBTableWidget) getFIBView("LocalizedTable");
 
-		if (object instanceof PatternRole) {
+		if (object instanceof FlexoRole) {
 			if (patternRoleTable != null) {
 				patternRoleTable.setSelected(object);
 			}

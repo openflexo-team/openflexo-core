@@ -20,14 +20,14 @@
 package org.openflexo.foundation.viewpoint.dm;
 
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 
 public class PatternRoleRemoved extends ViewPointDataModification {
 
 	private FlexoConcept _parent;
 
-	public PatternRoleRemoved(PatternRole patternRole, FlexoConcept parent) {
-		super("patternRoles", patternRole, null);
+	public PatternRoleRemoved(FlexoRole flexoRole, FlexoConcept parent) {
+		super("patternRoles", flexoRole, null);
 		_parent = parent;
 	}
 

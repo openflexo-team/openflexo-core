@@ -19,7 +19,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(PrimitivePatternRole.PrimitivePatternRoleImpl.class)
 @XMLElement
-public interface PrimitivePatternRole extends PatternRole<Object> {
+public interface PrimitivePatternRole extends FlexoRole<Object> {
 
 	public static enum PrimitiveType {
 		Boolean, String, LocalizedString, Integer, Float
@@ -48,7 +48,7 @@ public interface PrimitivePatternRole extends PatternRole<Object> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as " + getPreciseType() + ";", context);
+			out.append("FlexoRole " + getName() + " as " + getPreciseType() + ";", context);
 			return out.toString();
 		}
 

@@ -167,7 +167,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	public boolean hasSpecificHelp(String key);
 
 	/**
-	 * Return the list of all references to FlexoConceptInstance where this FlexoObject is involved in a PatternRole
+	 * Return the list of all references to FlexoConceptInstance where this FlexoObject is involved in a FlexoRole
 	 * 
 	 * @return
 	 */
@@ -297,7 +297,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 					flexoConceptReferences)) {
 				FlexoConceptInstance epi = ref.getObject();
 				if (epi != null) {
-					epi.nullifyPatternActor(epi.getRoleForActor(this));
+					epi.nullifyFlexoActor(epi.getRoleForActor(this));
 				}
 			}
 

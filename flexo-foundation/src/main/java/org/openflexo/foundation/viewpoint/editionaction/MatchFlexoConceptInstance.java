@@ -44,7 +44,7 @@ import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
@@ -174,7 +174,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					sb.append("(");
 				}
 				for (MatchingCriteria mc : matchingCriterias) {
-					sb.append(mc.getPatternRole().getName() + "=" + mc.getValue().toString() + ";");
+					sb.append(mc.getFlexoRole().getName() + "=" + mc.getValue().toString() + ";");
 				}
 				if (matchingCriterias.size() > 1) {
 					sb.append(")");
@@ -269,9 +269,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public CreationScheme getCreationScheme() {
-			if (getPatternRole() instanceof FlexoConceptInstancePatternRole
-					&& ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme() != null) {
-				return ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme();
+			if (getFlexoRole() instanceof FlexoConceptInstancePatternRole
+					&& ((FlexoConceptInstancePatternRole) getFlexoRole()).getCreationScheme() != null) {
+				return ((FlexoConceptInstancePatternRole) getFlexoRole()).getCreationScheme();
 			}
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
@@ -357,9 +357,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			matchingCriterias.remove(matchingCriteria);
 		}
 
-		public MatchingCriteria getMatchingCriteria(PatternRole pr) {
+		public MatchingCriteria getMatchingCriteria(FlexoRole pr) {
 			for (MatchingCriteria mc : matchingCriterias) {
-				if (mc.getPatternRole() == pr) {
+				if (mc.getFlexoRole() == pr) {
 					return mc;
 				}
 			}
@@ -369,7 +369,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		private void updateMatchingCriterias() {
 			Vector<MatchingCriteria> criteriasToRemove = new Vector<MatchingCriteria>(matchingCriterias);
 			if (getFlexoConceptType() != null) {
-				for (PatternRole pr : getFlexoConceptType().getPatternRoles()) {
+				for (FlexoRole pr : getFlexoConceptType().getFlexoRoles()) {
 					MatchingCriteria existingCriteria = getMatchingCriteria(pr);
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);
@@ -388,13 +388,13 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			logger.info("Perform perform MatchFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);
-			Hashtable<PatternRole, Object> criterias = new Hashtable<PatternRole, Object>();
+			Hashtable<FlexoRole, Object> criterias = new Hashtable<FlexoRole, Object>();
 			for (MatchingCriteria mc : getMatchingCriterias()) {
 				Object value = mc.evaluateCriteriaValue(action);
 				if (value != null) {
-					criterias.put(mc.getPatternRole(), value);
+					criterias.put(mc.getFlexoRole(), value);
 				}
-				System.out.println("Pour " + mc.getPatternRole().getPatternRoleName() + " value is " + value);
+				System.out.println("Pour " + mc.getFlexoRole().getRoleName() + " value is " + value);
 			}
 			logger.info("On s'arrete pour regarder ");
 			FlexoConceptInstance matchingFlexoConceptInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(

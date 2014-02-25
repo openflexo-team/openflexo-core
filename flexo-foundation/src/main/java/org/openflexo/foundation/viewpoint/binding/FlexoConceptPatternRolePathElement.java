@@ -30,22 +30,22 @@ import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 
-public class FlexoConceptPatternRolePathElement<PR extends PatternRole<?>> extends SimplePathElement {
+public class FlexoConceptPatternRolePathElement<PR extends FlexoRole<?>> extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptPatternRolePathElement.class.getPackage().getName());
 
 	private PR patternRole;
 
 	public FlexoConceptPatternRolePathElement(BindingPathElement parent, PR patternRole) {
-		super(parent, patternRole.getPatternRoleName(), patternRole.getType());
+		super(parent, patternRole.getRoleName(), patternRole.getType());
 		this.patternRole = patternRole;
 	}
 
 	@Override
 	public String getLabel() {
-		return patternRole.getPatternRoleName();
+		return patternRole.getRoleName();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class FlexoConceptPatternRolePathElement<PR extends PatternRole<?>> exten
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance epi = (FlexoConceptInstance) target;
-			return epi.getPatternActor((PatternRole) patternRole);
+			return epi.getFlexoActor((FlexoRole) patternRole);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
@@ -67,7 +67,7 @@ public class FlexoConceptPatternRolePathElement<PR extends PatternRole<?>> exten
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
 			NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
-			((FlexoConceptInstance) target).setPatternActor(value, (PatternRole) patternRole);
+			((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) patternRole);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);

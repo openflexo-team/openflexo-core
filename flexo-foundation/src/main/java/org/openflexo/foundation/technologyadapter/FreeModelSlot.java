@@ -48,8 +48,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD>> extends Mod
 		 * @return
 		 */
 		public IndividualPatternRole<?> makeIndividualPatternRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualPatternRole> individualPRClass = getPatternRoleClass(IndividualPatternRole.class);
-			IndividualPatternRole<?> returned = makePatternRole(individualPRClass);
+			Class<? extends IndividualPatternRole> individualPRClass = getFlexoRoleClass(IndividualPatternRole.class);
+			IndividualPatternRole<?> returned = makeFlexoRole(individualPRClass);
 			returned.setOntologicType(ontClass);
 			return returned;
 		}

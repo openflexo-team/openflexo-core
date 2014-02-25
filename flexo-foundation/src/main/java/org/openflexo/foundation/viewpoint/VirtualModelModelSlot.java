@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-@DeclarePatternRole(FML = "FlexoConceptInstance", patternRoleClass = FlexoConceptInstancePatternRole.class) // FlexoConceptInstance
+@DeclarePatternRole(FML = "FlexoConceptInstance", flexoRoleClass = FlexoConceptInstancePatternRole.class) // FlexoConceptInstance
 })
 @DeclareEditionActions({ // All edition actions available through this model
 		// slot
@@ -106,14 +106,14 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public FlexoConceptInstancePatternRole makeFlexoConceptInstancePatternRole(FlexoConcept flexoConcept) {
-			FlexoConceptInstancePatternRole returned = makePatternRole(FlexoConceptInstancePatternRole.class);
+			FlexoConceptInstancePatternRole returned = makeFlexoRole(FlexoConceptInstancePatternRole.class);
 			returned.setFlexoConceptType(flexoConcept);
 			returned.setModelSlot(this);
 			return returned;
 		}
 
 		@Override
-		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
+		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
 			}

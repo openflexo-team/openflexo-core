@@ -35,7 +35,7 @@ import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -55,7 +55,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 /**
  * A model slot is a named object providing access to a particular data encoded in a given technology A model slot should be seen as a
  * connector.<br>
- * A model slot formalize a contract for accessing to a data
+ * A model slot formalizes a contract for accessing to a data
  * 
  * It is defined at viewpoint level. <br>
  * A {@link ModelSlotInstance} binds used slots to some data within the project.
@@ -71,7 +71,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(VirtualModelModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> {
+public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -121,21 +121,21 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 	@Override
 	public Type getType();
 
-	public List<Class<? extends PatternRole<?>>> getAvailablePatternRoleTypes();
+	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableEditionActionTypes();
 
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableFetchRequestActionTypes();
 
 	/**
-	 * Creates and return a new {@link PatternRole} of supplied class.<br>
+	 * Creates and return a new {@link FlexoRole} of supplied class.<br>
 	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-	 * {@link PatternRole} types
+	 * {@link FlexoRole} types
 	 * 
-	 * @param patternRoleClass
+	 * @param flexoRoleClass
 	 * @return
 	 */
-	public abstract <PR extends PatternRole<?>> PR makePatternRole(Class<PR> patternRoleClass);
+	public abstract <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass);
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
@@ -160,10 +160,10 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 	/**
 	 * Return default name for supplied pattern role class
 	 * 
-	 * @param patternRoleClass
+	 * @param flexoRoleClass
 	 * @return
 	 */
-	public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass);
+	public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
@@ -201,7 +201,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		private ViewPoint viewPoint;
 		private VirtualModel virtualModel;
 
-		private List<Class<? extends PatternRole<?>>> availablePatternRoleTypes;
+		private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableFetchRequestActionTypes;
 
@@ -219,15 +219,15 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		}
 
 		/**
-		 * Creates and return a new {@link PatternRole} of supplied class.<br>
+		 * Creates and return a new {@link FlexoRole} of supplied class.<br>
 		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-		 * {@link PatternRole} types
+		 * {@link FlexoRole} types
 		 * 
-		 * @param patternRoleClass
+		 * @param flexoRoleClass
 		 * @return
 		 */
 		@Override
-		public final <PR extends PatternRole<?>> PR makePatternRole(Class<PR> patternRoleClass) {
+		public final <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass) {
 			VirtualModelModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(patternRoleClass);
 		}
@@ -235,11 +235,11 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		/**
 		 * Return default name for supplied pattern role class
 		 * 
-		 * @param patternRoleClass
+		 * @param flexoRoleClass
 		 * @return
 		 */
 		@Override
-		public <PR extends PatternRole<?>> String defaultPatternRoleName(Class<PR> patternRoleClass) {
+		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConcept";
 			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
@@ -365,26 +365,26 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		public abstract Class<? extends TechnologyAdapter> getTechnologyAdapterClass();
 
 		@Override
-		public List<Class<? extends PatternRole<?>>> getAvailablePatternRoleTypes() {
-			if (availablePatternRoleTypes == null) {
-				availablePatternRoleTypes = computeAvailablePatternRoleTypes();
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+			if (availableFlexoRoleTypes == null) {
+				availableFlexoRoleTypes = computeAvailableFlexoRoleTypes();
 			}
-			return availablePatternRoleTypes;
+			return availableFlexoRoleTypes;
 		}
 
-		private List<Class<? extends PatternRole<?>>> computeAvailablePatternRoleTypes() {
-			availablePatternRoleTypes = new ArrayList<Class<? extends PatternRole<?>>>();
+		private List<Class<? extends FlexoRole<?>>> computeAvailableFlexoRoleTypes() {
+			availableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
 			Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
 				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
 				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
-					availablePatternRoleTypes.add(patternRoleDeclaration.patternRoleClass());
+					availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
 				}
 			}
-			// availablePatternRoleTypes.add(FlexoConceptPatternRole.class);
-			// availablePatternRoleTypes.add(FlexoModelObjectPatternRole.class);
-			// availablePatternRoleTypes.add(PrimitivePatternRole.class);
-			return availablePatternRoleTypes;
+			// availableFlexoRoleTypes.add(FlexoConceptPatternRole.class);
+			// availableFlexoRoleTypes.add(FlexoModelObjectPatternRole.class);
+			// availableFlexoRoleTypes.add(PrimitivePatternRole.class);
+			return availableFlexoRoleTypes;
 		}
 
 		@Override
@@ -484,11 +484,11 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		 * Return first found class matching supplied class.<br>
 		 * Returned class is generally the specialized class related to a particular technology
 		 * 
-		 * @param patternRoleClass
+		 * @param flexoRoleClass
 		 * @return
 		 */
-		public <PR extends PatternRole<?>> Class<? extends PR> getPatternRoleClass(Class<PR> patternRoleClass) {
-			for (Class<?> patternRoleType : getAvailablePatternRoleTypes()) {
+		public <PR extends FlexoRole<?>> Class<? extends PR> getFlexoRoleClass(Class<PR> patternRoleClass) {
+			for (Class<?> patternRoleType : getAvailableFlexoRoleTypes()) {
 				if (patternRoleClass.isAssignableFrom(patternRoleType)) {
 					return (Class<? extends PR>) patternRoleType;
 				}
@@ -500,7 +500,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends PatternRole<RD> 
 		 * Return first found class matching supplied class.<br>
 		 * Returned class is generally the specialized class related to a particular technology
 		 * 
-		 * @param patternRoleClass
+		 * @param flexoRoleClass
 		 * @return
 		 */
 		public <EA extends EditionAction> Class<? extends EA> getEditionActionClass(Class<EA> editionActionClass) {

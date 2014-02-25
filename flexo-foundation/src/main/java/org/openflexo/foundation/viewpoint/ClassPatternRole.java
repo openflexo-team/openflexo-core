@@ -46,7 +46,7 @@ public interface ClassPatternRole<C extends IFlexoOntologyClass> extends Ontolog
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as Class conformTo " + getPreciseType() + " from " + "\""
+			out.append("FlexoRole " + getName() + " as Class conformTo " + getPreciseType() + " from " + "\""
 					+ getModelSlot().getMetaModelURI() + "\"" + " ;", context);
 			return out.toString();
 		}
@@ -98,7 +98,7 @@ public interface ClassPatternRole<C extends IFlexoOntologyClass> extends Ontolog
 		public ConceptActorReference<IFlexoOntologyClass> makeActorReference(IFlexoOntologyClass object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<IFlexoOntologyClass> returned = factory.newInstance(ConceptActorReference.class);
-			returned.setPatternRole(this);
+			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;

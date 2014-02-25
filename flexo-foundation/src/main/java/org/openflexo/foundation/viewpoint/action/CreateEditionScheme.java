@@ -131,7 +131,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		if (StringUtils.isEmpty(getEditionSchemeName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getFlexoConcept().getPatternRole(getEditionSchemeName()) != null) {
+		} else if (getFlexoConcept().getFlexoRole(getEditionSchemeName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else {

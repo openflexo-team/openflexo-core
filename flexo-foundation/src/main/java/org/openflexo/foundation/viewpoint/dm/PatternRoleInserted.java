@@ -20,14 +20,14 @@
 package org.openflexo.foundation.viewpoint.dm;
 
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 
 public class PatternRoleInserted extends ViewPointDataModification {
 
 	private FlexoConcept _parent;
 
-	public PatternRoleInserted(PatternRole patternRole, FlexoConcept parent) {
-		super("patternRoles", null, patternRole);
+	public PatternRoleInserted(FlexoRole flexoRole, FlexoConcept parent) {
+		super("patternRoles", null, flexoRole);
 		_parent = parent;
 	}
 

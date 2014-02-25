@@ -58,9 +58,9 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
- * GUI, etcâ¦). Each such element is associated with a {@link PatternRole}.
+ * GUI, etcâ¦). Each such element is associated with a {@link FlexoRole}.
  * 
- * A PatternRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in
+ * A FlexoRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in
  * different metamodels.
  * 
  * An {@link FlexoConceptInstance} is an instance of an {@link FlexoConcept} .
@@ -135,21 +135,21 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Finder(collection = EDITION_SCHEMES_KEY, attribute = FlexoBehaviour.NAME_KEY)
 	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
 
-	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = PatternRole.FLEXO_CONCEPT_KEY)
+	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
-	public List<PatternRole<?>> getPatternRoles();
+	public List<FlexoRole<?>> getFlexoRoles();
 
 	@Setter(PATTERN_ROLES_KEY)
-	public void setPatternRoles(List<PatternRole<?>> patternRoles);
+	public void setPatternRoles(List<FlexoRole<?>> patternRoles);
 
 	@Adder(PATTERN_ROLES_KEY)
-	public void addToPatternRoles(PatternRole<?> aPatternRole);
+	public void addToPatternRoles(FlexoRole<?> aPatternRole);
 
 	@Remover(PATTERN_ROLES_KEY)
-	public void removeFromPatternRoles(PatternRole<?> aPatternRole);
+	public void removeFromFlexoRoles(FlexoRole<?> aPatternRole);
 
-	@Finder(collection = PATTERN_ROLES_KEY, attribute = PatternRole.NAME_KEY)
-	public PatternRole<?> getPatternRole(String patternRoleName);
+	@Finder(collection = PATTERN_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
+	public FlexoRole<?> getFlexoRole(String patternRoleName);
 
 	public <R> List<R> getPatternRoles(Class<R> type);
 
@@ -269,7 +269,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
-		// private List<PatternRole<?>> patternRoles;
+		// private List<FlexoRole<?>> patternRoles;
 		// private List<FlexoBehaviour> editionSchemes;
 		// private List<FlexoConceptConstraint> flexoConceptConstraints;
 		private FlexoConceptInspector inspector;
@@ -356,14 +356,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void setPatternRoles(List<PatternRole<?>> somePatternRole) {
+		public void setPatternRoles(List<FlexoRole<?>> somePatternRole) {
 			// patternRoles = somePatternRole;
 			performSuperSetter(PATTERN_ROLES_KEY, somePatternRole);
 			availablePatternRoleNames = null;
 		}
 
 		@Override
-		public void addToPatternRoles(PatternRole<?> aPatternRole) {
+		public void addToPatternRoles(FlexoRole<?> aPatternRole) {
 			availablePatternRoleNames = null;
 			performSuperAdder(PATTERN_ROLES_KEY, aPatternRole);
 			if (_bindingModel != null) {
@@ -372,9 +372,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void removeFromPatternRoles(PatternRole aPatternRole) {
+		public void removeFromFlexoRoles(FlexoRole aFlexoRole) {
 			availablePatternRoleNames = null;
-			performSuperRemover(PATTERN_ROLES_KEY, aPatternRole);
+			performSuperRemover(PATTERN_ROLES_KEY, aFlexoRole);
 			if (_bindingModel != null) {
 				updateBindingModel();
 			}
@@ -383,7 +383,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public <R> List<R> getPatternRoles(Class<R> type) {
 			List<R> returned = new ArrayList<R>();
-			for (PatternRole<?> r : getPatternRoles()) {
+			for (FlexoRole<?> r : getFlexoRoles()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
 					returned.add((R) r);
 				}
@@ -428,7 +428,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public Vector<String> getAvailablePatternRoleNames() {
 			if (availablePatternRoleNames == null) {
 				availablePatternRoleNames = new Vector<String>();
-				for (PatternRole r : getPatternRoles()) {
+				for (FlexoRole r : getFlexoRoles()) {
 					availablePatternRoleNames.add(r.getName());
 				}
 			}
@@ -439,7 +439,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getAvailableRoleName(String baseName) {
 			String testName = baseName;
 			int index = 2;
-			while (getPatternRole(testName) != null) {
+			while (getFlexoRole(testName) != null) {
 				testName = baseName + index;
 				index++;
 			}
@@ -566,8 +566,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public DeletionScheme generateDefaultDeletionScheme() {
 			DeletionScheme newDeletionScheme = getVirtualModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("deletion");
-			Vector<PatternRole> rolesToDelete = new Vector<PatternRole>();
-			for (PatternRole pr : getPatternRoles()) {
+			Vector<FlexoRole> rolesToDelete = new Vector<FlexoRole>();
+			for (FlexoRole pr : getFlexoRoles()) {
 				if (/* pr instanceof GraphicalElementPatternRole || */pr instanceof IndividualPatternRole /*
 																											* ||
 																											* pr
@@ -577,9 +577,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 					rolesToDelete.add(pr);
 				}
 			}
-			Collections.sort(rolesToDelete, new Comparator<PatternRole>() {
+			Collections.sort(rolesToDelete, new Comparator<FlexoRole>() {
 				@Override
-				public int compare(PatternRole o1, PatternRole o2) {
+				public int compare(FlexoRole o1, FlexoRole o2) {
 					/*
 					 * if (o1 instanceof ShapePatternRole && o2 instanceof
 					 * ConnectorPatternRole) { return 1; } else if (o1
@@ -599,9 +599,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 				}
 
 			});
-			for (PatternRole pr : rolesToDelete) {
+			for (FlexoRole pr : rolesToDelete) {
 				DeleteAction a = getVirtualModelFactory().newDeleteAction();
-				a.setObject(new DataBinding<Object>(pr.getPatternRoleName()));
+				a.setObject(new DataBinding<Object>(pr.getRoleName()));
 				newDeletionScheme.addToActions(a);
 			}
 			addToFlexoBehaviours(newDeletionScheme);
@@ -644,7 +644,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeEditionSchemeDeserialization();
 			}
-			for (PatternRole pr : getPatternRoles()) {
+			for (FlexoRole pr : getFlexoRoles()) {
 				pr.finalizePatternRoleDeserialization();
 			}
 			updateBindingModel();
@@ -691,7 +691,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		private void createBindingModel() {
 			_bindingModel = new BindingModel();
-			for (PatternRole role : getPatternRoles()) {
+			for (FlexoRole role : getFlexoRoles()) {
 				_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
 			}
 			notifyBindingModelChanged();
@@ -703,7 +703,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			// SGU: as all pattern roles share the flexo concept binding
 			// model, they should
 			// all notify change of their binding models
-			for (PatternRole pr : getPatternRoles()) {
+			for (FlexoRole pr : getFlexoRoles()) {
 				pr.notifyBindingModelChanged();
 			}
 			getInspector().notifyBindingModelChanged();
@@ -873,9 +873,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 			}
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			if (getPatternRoles().size() > 0) {
+			if (getFlexoRoles().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (PatternRole pr : getPatternRoles()) {
+				for (FlexoRole pr : getFlexoRoles()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
@@ -902,7 +902,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public ValidationIssue<FlexoConceptShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getPatternRoles().size() == 0) {
+			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getFlexoRoles().size() == 0) {
 				return new ValidationWarning<FlexoConceptShouldHaveRoles, FlexoConcept>(this, flexoConcept,
 						"flexo_concept_role_has_no_role");
 			}

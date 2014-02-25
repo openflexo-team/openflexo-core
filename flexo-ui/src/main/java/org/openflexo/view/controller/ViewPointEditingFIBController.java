@@ -15,7 +15,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
@@ -74,17 +74,17 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public PatternRole createPatternRole(FlexoConcept flexoConcept) {
-		System.out.println("On tente de creer un PatternRole");
+	public FlexoRole createFlexoRole(FlexoConcept flexoConcept) {
+		System.out.println("On tente de creer un FlexoRole");
 		System.out.println("getFlexoController()=" + getFlexoController());
 		System.out.println("getEditor()=" + getEditor());
 		CreatePatternRole createPatternRole = CreatePatternRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createPatternRole.doAction();
-		return createPatternRole.getNewPatternRole();
+		return createPatternRole.getNewFlexoRole();
 	}
 
-	public PatternRole<?> deletePatternRole(FlexoConcept flexoConcept, PatternRole<?> aPatternRole) {
-		flexoConcept.removeFromPatternRoles(aPatternRole);
+	public FlexoRole<?> deleteFlexoRole(FlexoConcept flexoConcept, FlexoRole<?> aPatternRole) {
+		flexoConcept.removeFromFlexoRoles(aPatternRole);
 		aPatternRole.delete();
 		return aPatternRole;
 	}

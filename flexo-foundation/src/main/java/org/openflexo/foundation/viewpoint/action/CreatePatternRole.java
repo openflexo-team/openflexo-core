@@ -38,7 +38,7 @@ import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.viewpoint.IndividualPatternRole;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -83,12 +83,12 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 	private String patternRoleName;
 	public String description;
 	public ModelSlot<?> modelSlot;
-	public Class<? extends PatternRole> patternRoleClass;
+	public Class<? extends FlexoRole> flexoRoleClass;
 	public IFlexoOntologyClass individualType;
 	public FlexoConcept flexoConceptInstanceType;
 	public PrimitiveType primitiveType = PrimitiveType.String;
 
-	private PatternRole newPatternRole;
+	private FlexoRole newFlexoRole;
 
 	CreatePatternRole(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -103,8 +103,8 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 	}
 
 	public String getPatternRoleName() {
-		if (StringUtils.isEmpty(patternRoleName) && modelSlot != null && patternRoleClass != null) {
-			return getFlexoConcept().getAvailableRoleName(modelSlot.defaultPatternRoleName(patternRoleClass));
+		if (StringUtils.isEmpty(patternRoleName) && modelSlot != null && flexoRoleClass != null) {
+			return getFlexoConcept().getAvailableRoleName(modelSlot.defaultFlexoRoleName(flexoRoleClass));
 		}
 		return patternRoleName;
 	}
@@ -113,45 +113,45 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 		this.patternRoleName = patternRoleName;
 	}
 
-	public List<Class<? extends PatternRole<?>>> getAvailablePatternRoleTypes() {
+	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
 		if (modelSlot != null) {
-			return modelSlot.getAvailablePatternRoleTypes();
+			return modelSlot.getAvailableFlexoRoleTypes();
 		}
 		return null;
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add pattern role, patternRoleClass=" + patternRoleClass);
+		logger.info("Add pattern role, flexoRoleClass=" + flexoRoleClass);
 
-		if (patternRoleClass != null) {
+		if (flexoRoleClass != null) {
 			if (modelSlot != null) {
-				newPatternRole = modelSlot.makePatternRole(patternRoleClass);
-				newPatternRole.setModelSlot(modelSlot);
+				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
+				newFlexoRole.setModelSlot(modelSlot);
 				if (isIndividual()) {
-					((IndividualPatternRole) newPatternRole).setOntologicType(individualType);
+					((IndividualPatternRole) newFlexoRole).setOntologicType(individualType);
 				}
 				if (isFlexoConceptInstance()) {
-					((FlexoConceptInstancePatternRole) newPatternRole).setFlexoConceptType(flexoConceptInstanceType);
+					((FlexoConceptInstancePatternRole) newFlexoRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
-			} else if (PrimitivePatternRole.class.isAssignableFrom(patternRoleClass)) {
+			} else if (PrimitivePatternRole.class.isAssignableFrom(flexoRoleClass)) {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
-				newPatternRole = factory.newInstance(patternRoleClass);
-				newPatternRole.setModelSlot(getFocusedObject().getVirtualModel().getReflexiveModelSlot());
-				((PrimitivePatternRole) newPatternRole).setPrimitiveType(primitiveType);
+				newFlexoRole = factory.newInstance(flexoRoleClass);
+				newFlexoRole.setModelSlot(getFocusedObject().getVirtualModel().getReflexiveModelSlot());
+				((PrimitivePatternRole) newFlexoRole).setPrimitiveType(primitiveType);
 			}
 
-			if (newPatternRole != null) {
-				newPatternRole.setPatternRoleName(getPatternRoleName());
-				newPatternRole.setDescription(description);
-				getFlexoConcept().addToPatternRoles(newPatternRole);
+			if (newFlexoRole != null) {
+				newFlexoRole.setRoleName(getPatternRoleName());
+				newFlexoRole.setDescription(description);
+				getFlexoConcept().addToPatternRoles(newFlexoRole);
 			}
 		}
 
 	}
 
-	public PatternRole getNewPatternRole() {
-		return newPatternRole;
+	public FlexoRole getNewFlexoRole() {
+		return newFlexoRole;
 	}
 
 	private String validityMessage = EMPTY_NAME;
@@ -169,7 +169,7 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 		if (StringUtils.isEmpty(getPatternRoleName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getFlexoConcept().getPatternRole(getPatternRoleName()) != null) {
+		} else if (getFlexoConcept().getFlexoRole(getPatternRoleName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else if (modelSlot == null) {
@@ -182,17 +182,17 @@ public class CreatePatternRole extends FlexoAction<CreatePatternRole, FlexoConce
 	}
 
 	public boolean isIndividual() {
-		if (patternRoleClass == null) {
+		if (flexoRoleClass == null) {
 			return false;
 		}
-		return IndividualPatternRole.class.isAssignableFrom(patternRoleClass);
+		return IndividualPatternRole.class.isAssignableFrom(flexoRoleClass);
 	}
 
 	public boolean isFlexoConceptInstance() {
-		if (patternRoleClass == null) {
+		if (flexoRoleClass == null) {
 			return false;
 		}
-		return FlexoConceptInstancePatternRole.class.isAssignableFrom(patternRoleClass);
+		return FlexoConceptInstancePatternRole.class.isAssignableFrom(flexoRoleClass);
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {

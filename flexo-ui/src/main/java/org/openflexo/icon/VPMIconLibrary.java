@@ -39,7 +39,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.OntologicObjectPatternRole;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.PrimitivePatternRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.TechnologySpecificEditionScheme;
@@ -134,11 +134,11 @@ public class VPMIconLibrary extends IconLibrary {
 
 	public static ImageIcon iconForObject(ViewPointObject object) {
 
-		if (object instanceof PatternRole && ((PatternRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((PatternRole) object).getModelSlot()
+		if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
 					.getTechnologyAdapter());
 			if (tac != null) {
-				return tac.getIconForPatternRole((Class<? extends PatternRole<?>>) object.getClass());
+				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}
 		}
 		if (object instanceof ViewPoint) {
@@ -197,7 +197,7 @@ public class VPMIconLibrary extends IconLibrary {
 			} else if (object instanceof FetchRequestIterationAction) {
 				return ITERATION_ACTION_ICON;
 			} else if (object instanceof DeleteAction) {
-				PatternRole pr = ((DeleteAction) object).getPatternRole();
+				FlexoRole pr = ((DeleteAction) object).getFlexoRole();
 				if (pr != null) {
 					ImageIcon baseIcon = iconForObject(pr);
 					return IconFactory.getImageIcon(baseIcon, DELETE);

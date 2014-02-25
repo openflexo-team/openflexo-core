@@ -50,7 +50,7 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 			super();
 		}
 
-		/*public ModelObjectActorReferenceImpl(T o, PatternRole aPatternRole, FlexoConceptInstance epi) {
+		/*public ModelObjectActorReferenceImpl(T o, FlexoRole aPatternRole, FlexoConceptInstance epi) {
 			super(epi.getProject());
 			setFlexoConceptInstance(epi);
 			setPatternRole(aPatternRole);

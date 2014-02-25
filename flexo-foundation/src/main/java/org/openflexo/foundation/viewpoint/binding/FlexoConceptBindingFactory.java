@@ -49,7 +49,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParametersType;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParametersValuesType;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourType;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -83,8 +83,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	}
 
 	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
-		if (object instanceof PatternRole) {
-			return new FlexoConceptPatternRolePathElement<PatternRole<?>>(parent, (PatternRole<?>) object);
+		if (object instanceof FlexoRole) {
+			return new FlexoConceptPatternRolePathElement<FlexoRole<?>>(parent, (FlexoRole<?>) object);
 		}
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot>(parent, (ModelSlot) object);
@@ -161,7 +161,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		}*//*else if (TypeUtils.isTypeAssignableFrom(FlexoConcept.class, pType)) {
 			List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoConcept ep = (FlexoConcept) pType;
-				for (PatternRole<?> pr : ep.getPatternRoles()) {
+				for (FlexoRole<?> pr : ep.getPatternRoles()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}
 			return returned;
@@ -176,7 +176,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					returned.add(getSimplePathElement(ms, parent));
 				}
 			}
-			for (PatternRole<?> pr : ep.getPatternRoles()) {
+			for (FlexoRole<?> pr : ep.getFlexoRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			// TODO: performance issue
@@ -189,7 +189,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 			returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 			returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
-			for (PatternRole<?> pr : flexoBehaviour.getFlexoConcept().getPatternRoles()) {
+			for (FlexoRole<?> pr : flexoBehaviour.getFlexoConcept().getFlexoRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;
@@ -198,7 +198,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 			returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 			returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
-			for (PatternRole<?> pr : flexoBehaviour.getFlexoConcept().getPatternRoles()) {
+			for (FlexoRole<?> pr : flexoBehaviour.getFlexoConcept().getFlexoRoles()) {
 				returned.add(getSimplePathElement(pr, parent));
 			}
 			return returned;

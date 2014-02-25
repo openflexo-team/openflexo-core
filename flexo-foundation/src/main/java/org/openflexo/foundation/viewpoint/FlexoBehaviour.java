@@ -735,7 +735,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// _bindingModel.addToBindingVariables(new EditionSchemeParameterListPathElement(this, null));
 			appendContextualBindingVariables(_bindingModel);
 			if (getFlexoConcept() != null) {
-				for (final PatternRole role : getFlexoConcept().getPatternRoles()) {
+				for (final FlexoRole role : getFlexoConcept().getFlexoRoles()) {
 					_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
 				}
 			}

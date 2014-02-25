@@ -20,24 +20,24 @@
 package org.openflexo.foundation.view;
 
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 
 public class FlexoActorChanged extends DataModification {
 
 	private FlexoConceptInstance flexoConceptInstance;
-	private PatternRole<?> patternRole;
+	private FlexoRole<?> flexoRole;
 
-	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, PatternRole<T> patternRole, T oldActor, T newActor) {
+	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, FlexoRole<T> patternRole, T oldActor, T newActor) {
 		super(oldActor, newActor);
 		this.flexoConceptInstance = flexoConceptInstance;
-		this.patternRole = patternRole;
+		this.flexoRole = patternRole;
 	}
 
 	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 
-	public PatternRole<?> getPatternRole() {
-		return patternRole;
+	public FlexoRole<?> getFlexoRole() {
+		return flexoRole;
 	}
 }

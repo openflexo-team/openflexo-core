@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -15,6 +15,6 @@ public @interface DeclarePatternRole {
 
 	public String FML();
 
-	public Class<? extends PatternRole<?>> patternRoleClass();
+	public Class<? extends FlexoRole<?>> flexoRoleClass();
 
 }

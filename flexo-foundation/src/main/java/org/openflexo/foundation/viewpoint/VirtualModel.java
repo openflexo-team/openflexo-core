@@ -926,9 +926,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 
-			if (getPatternRoles().size() > 0) {
+			if (getFlexoRoles().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (PatternRole pr : getPatternRoles()) {
+				for (FlexoRole pr : getFlexoRoles()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}

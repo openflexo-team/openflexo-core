@@ -195,8 +195,8 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 			if (deletionScheme == null && _deletionSchemeURI != null && getViewPointLibrary() != null) {
 				deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI);
 			}
-			if (deletionScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
-				deletionScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getFlexoConcept().getDefaultDeletionScheme();
+			if (deletionScheme == null && getFlexoRole() instanceof FlexoConceptInstancePatternRole) {
+				deletionScheme = ((FlexoConceptInstancePatternRole) getFlexoRole()).getFlexoConcept().getDefaultDeletionScheme();
 			}
 			return deletionScheme;
 		}

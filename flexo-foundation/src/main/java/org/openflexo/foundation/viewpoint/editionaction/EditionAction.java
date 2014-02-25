@@ -270,26 +270,26 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 								e.printStackTrace();
 							}
 						}
-						if (assignableAction.getPatternRole() != null && assignedObject instanceof FlexoObject) {
+						if (assignableAction.getFlexoRole() != null && assignedObject instanceof FlexoObject) {
 							if (contextAction instanceof ActionSchemeAction) {
-								((ActionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
-										(FlexoObject) assignedObject, assignableAction.getPatternRole());
+								((ActionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForFlexoRole(
+										(FlexoObject) assignedObject, assignableAction.getFlexoRole());
 							}
 							if (contextAction instanceof CreationSchemeAction) {
-								((CreationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
-										(FlexoObject) assignedObject, assignableAction.getPatternRole());
+								((CreationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForFlexoRole(
+										(FlexoObject) assignedObject, assignableAction.getFlexoRole());
 							}
 							if (contextAction instanceof DeletionSchemeAction) {
-								((DeletionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
-										(FlexoObject) assignedObject, assignableAction.getPatternRole());
+								((DeletionSchemeAction) contextAction).getFlexoConceptInstance().setObjectForFlexoRole(
+										(FlexoObject) assignedObject, assignableAction.getFlexoRole());
 							}
 							if (contextAction instanceof NavigationSchemeAction) {
-								((NavigationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
-										(FlexoObject) assignedObject, assignableAction.getPatternRole());
+								((NavigationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForFlexoRole(
+										(FlexoObject) assignedObject, assignableAction.getFlexoRole());
 							}
 							if (contextAction instanceof SynchronizationSchemeAction) {
-								((SynchronizationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForPatternRole(
-										(FlexoObject) assignedObject, assignableAction.getPatternRole());
+								((SynchronizationSchemeAction) contextAction).getFlexoConceptInstance().setObjectForFlexoRole(
+										(FlexoObject) assignedObject, assignableAction.getFlexoRole());
 							}
 						}
 					}

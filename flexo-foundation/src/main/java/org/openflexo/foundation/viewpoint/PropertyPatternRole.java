@@ -58,7 +58,7 @@ public interface PropertyPatternRole<T extends IFlexoOntologyStructuralProperty>
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("PatternRole " + getName() + " as Property " + " from " + getModelSlot().getMetaModelURI() + " ;", context);
+			out.append("FlexoRole " + getName() + " as Property " + " from " + getModelSlot().getMetaModelURI() + " ;", context);
 			return out.toString();
 		}
 
@@ -125,7 +125,7 @@ public interface PropertyPatternRole<T extends IFlexoOntologyStructuralProperty>
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<T> returned = factory.newInstance(ConceptActorReference.class);
-			returned.setPatternRole(this);
+			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;

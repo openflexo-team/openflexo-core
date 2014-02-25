@@ -111,7 +111,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 				DeclarePatternRoles prDeclarations = modelSlotClass.getAnnotation(DeclarePatternRoles.class);
 				if (prDeclarations != null) {
 					for (DeclarePatternRole prDeclaration : prDeclarations.value()) {
-						classes.add(prDeclaration.patternRoleClass());
+						classes.add(prDeclaration.flexoRoleClass());
 					}
 				}
 				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
@@ -310,9 +310,9 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return returned;
 	}
 
-	public MatchingCriteria newMatchingCriteria(PatternRole pr) {
+	public MatchingCriteria newMatchingCriteria(FlexoRole pr) {
 		MatchingCriteria returned = newInstance(MatchingCriteria.class);
-		returned.setPatternRole(pr);
+		returned.setFlexoRole(pr);
 		return returned;
 	}
 

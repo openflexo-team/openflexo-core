@@ -77,7 +77,7 @@ public abstract interface DataPropertyPatternRole<P extends IFlexoOntologyDataPr
 		public ActorReference<P> makeActorReference(P object, FlexoConceptInstance epi) {
 			VirtualModelInstanceModelFactory factory = epi.getFactory();
 			ConceptActorReference<P> returned = factory.newInstance(ConceptActorReference.class);
-			returned.setPatternRole(this);
+			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;

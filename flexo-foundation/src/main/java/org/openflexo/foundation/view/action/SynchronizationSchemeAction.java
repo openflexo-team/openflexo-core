@@ -34,7 +34,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
@@ -128,12 +128,12 @@ public class SynchronizationSchemeAction extends
 		}
 	}
 
-	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<PatternRole, Object> criterias) {
+	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
 		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
 		for (FlexoConceptInstance epi : getVirtualModelInstance().getEPInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
-			for (PatternRole pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(epi.getPatternActor(pr), criterias.get(pr))) {
+			for (FlexoRole pr : criterias.keySet()) {
+				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
 					allCriteriasMatching = false;
 				}
 			}
@@ -157,7 +157,7 @@ public class SynchronizationSchemeAction extends
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			return getFlexoConceptInstance().getPatternActor(((PatternRoleBindingVariable) variable).getPatternRole());
+			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
 		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
 			return getFlexoConceptInstance();
 		}
@@ -167,7 +167,7 @@ public class SynchronizationSchemeAction extends
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
-			getFlexoConceptInstance().setPatternActor(value, ((PatternRoleBindingVariable) variable).getPatternRole());
+			getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
 			return;
 		}
 		super.setValue(value, variable);

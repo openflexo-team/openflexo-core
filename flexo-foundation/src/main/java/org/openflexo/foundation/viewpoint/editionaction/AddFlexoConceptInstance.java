@@ -207,8 +207,8 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
 			}
-			if (creationScheme == null && getPatternRole() instanceof FlexoConceptInstancePatternRole) {
-				creationScheme = ((FlexoConceptInstancePatternRole) getPatternRole()).getCreationScheme();
+			if (creationScheme == null && getFlexoRole() instanceof FlexoConceptInstancePatternRole) {
+				creationScheme = ((FlexoConceptInstancePatternRole) getFlexoRole()).getCreationScheme();
 			}
 			return creationScheme;
 		}

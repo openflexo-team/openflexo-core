@@ -12,7 +12,7 @@ import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
@@ -56,9 +56,9 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 	@Setter(VALUE_KEY)
 	public void setValue(DataBinding<?> value);
 
-	public PatternRole<?> getPatternRole();
+	public FlexoRole<?> getFlexoRole();
 
-	public void setPatternRole(PatternRole<?> patternRole);
+	public void setFlexoRole(FlexoRole<?> patternRole);
 
 	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
 
@@ -68,7 +68,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 
 		private MatchFlexoConceptInstance action;
 
-		private PatternRole patternRole;
+		private FlexoRole flexoRole;
 		private String patternRoleName;
 		private DataBinding<?> value;
 
@@ -77,9 +77,9 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 			super();
 		}
 
-		public MatchingCriteriaImpl(PatternRole patternRole) {
+		public MatchingCriteriaImpl(FlexoRole flexoRole) {
 			super();
-			this.patternRole = patternRole;
+			this.flexoRole = flexoRole;
 		}
 
 		@Override
@@ -101,9 +101,9 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getPatternRole() != null ? getPatternRole().getType() : Object.class,
+				value = new DataBinding<Object>(this, getFlexoRole() != null ? getFlexoRole().getType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
-				value.setBindingName(getPatternRole() != null ? getPatternRole().getName() : "param");
+				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
 			}
 			return value;
 		}
@@ -112,8 +112,8 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		public void setValue(DataBinding<?> value) {
 			if (value != null) {
 				value.setOwner(this);
-				value.setBindingName(getPatternRole() != null ? getPatternRole().getName() : "param");
-				value.setDeclaredType(getPatternRole() != null ? getPatternRole().getType() : Object.class);
+				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
+				value.setDeclaredType(getFlexoRole() != null ? getFlexoRole().getType() : Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;
@@ -178,22 +178,22 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		}
 
 		@Override
-		public PatternRole getPatternRole() {
-			if (patternRole == null && patternRoleName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
-				patternRole = getAction().getFlexoConceptType().getPatternRole(patternRoleName);
+		public FlexoRole getFlexoRole() {
+			if (flexoRole == null && patternRoleName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
+				flexoRole = getAction().getFlexoConceptType().getFlexoRole(patternRoleName);
 			}
-			return patternRole;
+			return flexoRole;
 		}
 
 		@Override
-		public void setPatternRole(PatternRole patternRole) {
-			this.patternRole = patternRole;
+		public void setFlexoRole(FlexoRole flexoRole) {
+			this.flexoRole = flexoRole;
 		}
 
 		@Override
 		public String _getPatternRoleName() {
-			if (patternRole != null) {
-				return patternRole.getName();
+			if (flexoRole != null) {
+				return flexoRole.getName();
 			}
 			return patternRoleName;
 		}

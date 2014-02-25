@@ -48,7 +48,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		/*@Override
-		public List<PatternRole> getAvailablePatternRoles() {
+		public List<FlexoRole> getAvailablePatternRoles() {
 			return getFlexoConcept().getPatternRoles();
 		}*/
 

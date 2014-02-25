@@ -27,7 +27,7 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(OntologicObjectPatternRole.OntologicObjectPatternRoleImpl.class)
-public interface OntologicObjectPatternRole<T extends IFlexoOntologyObject> extends PatternRole<T> {
+public interface OntologicObjectPatternRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
 	public static abstract class OntologicObjectPatternRoleImpl<T extends IFlexoOntologyObject> extends PatternRoleImpl<T> implements
 			OntologicObjectPatternRole<T> {

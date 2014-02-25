@@ -113,8 +113,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 		 */
 		@Override
 		public IndividualPatternRole<?> makeIndividualPatternRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualPatternRole> individualPRClass = getPatternRoleClass(IndividualPatternRole.class);
-			IndividualPatternRole<?> returned = makePatternRole(individualPRClass);
+			Class<? extends IndividualPatternRole> individualPRClass = getFlexoRoleClass(IndividualPatternRole.class);
+			IndividualPatternRole<?> returned = makeFlexoRole(individualPRClass);
 			returned.setOntologicType(ontClass);
 			return returned;
 		}
@@ -125,7 +125,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 			Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
 			AddIndividual<? extends TypeAwareModelSlot, ?> returned = makeEditionAction(addIndividualClass);
 
-			returned.setAssignation(new DataBinding(patternRole.getPatternRoleName()));
+			returned.setAssignation(new DataBinding(patternRole.getRoleName()));
 			if (creationScheme.getParameter("uri") != null) {
 				returned.setIndividualName(new DataBinding("parameters.uri"));
 			}

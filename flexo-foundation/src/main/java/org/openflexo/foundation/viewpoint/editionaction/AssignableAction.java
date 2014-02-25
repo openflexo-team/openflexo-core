@@ -28,7 +28,7 @@ import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.viewpoint.PatternRole;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -70,7 +70,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 	public void setIsVariableDeclaration(boolean flag);
 
-	public PatternRole<?> getPatternRole();
+	public FlexoRole<?> getFlexoRole();
 
 	public Type getAssignableType();
 
@@ -139,12 +139,12 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 		}
 
 		@Override
-		public PatternRole<?> getPatternRole() {
+		public FlexoRole<?> getFlexoRole() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
 			if (assignation != null) {
-				return getFlexoConcept().getPatternRole(assignation.toString());
+				return getFlexoConcept().getFlexoRole(assignation.toString());
 			}
 			return null;
 		}
