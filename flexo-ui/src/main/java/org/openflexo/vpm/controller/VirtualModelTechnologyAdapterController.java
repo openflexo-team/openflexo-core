@@ -3,8 +3,8 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstancePatternRole;
 import org.openflexo.foundation.viewpoint.PatternRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -112,6 +112,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
+
 		if (object instanceof ViewPoint || object instanceof FlexoConcept) {
 			return true;
 		}
