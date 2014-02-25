@@ -75,13 +75,13 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, VirtualModel.class);
 	}
 
-	public String modelSlotName;
-	public String description;
-	public TechnologyAdapter technologyAdapter;
-	public FlexoMetaModelResource<?, ?, ?> mmRes;
-	public VirtualModelResource vmRes;
-	public boolean required = true;
-	public boolean readOnly = false;
+	private String modelSlotName;
+	private String description;
+	private TechnologyAdapter technologyAdapter;
+	private FlexoMetaModelResource<?, ?, ?> mmRes;
+	private VirtualModelResource vmRes;
+	private boolean required = true;
+	private boolean readOnly = false;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 
 	private ModelSlot newModelSlot;
@@ -190,7 +190,12 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 	}
 
 	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
+		boolean wasValid = isValid();
 		this.modelSlotClass = modelSlotClass;
+		getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, modelSlotClass);
+		getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public boolean isTypeAwareModelSlot() {
@@ -221,6 +226,90 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 					TypeAwareModelSlot.class.getTypeParameters()[1]);
 		}
 		return null;
+	}
+
+	public String getModelSlotName() {
+		return modelSlotName;
+	}
+
+	public void setModelSlotName(String modelSlotName) {
+		boolean wasValid = isValid();
+		this.modelSlotName = modelSlotName;
+		getPropertyChangeSupport().firePropertyChange("modelSlotName", null, modelSlotName);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		boolean wasValid = isValid();
+		this.description = description;
+		getPropertyChangeSupport().firePropertyChange("description", null, description);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public TechnologyAdapter getTechnologyAdapter() {
+		return technologyAdapter;
+	}
+
+	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		boolean wasValid = isValid();
+		this.technologyAdapter = technologyAdapter;
+		getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public FlexoMetaModelResource<?, ?, ?> getMmRes() {
+		return mmRes;
+	}
+
+	public void setMmRes(FlexoMetaModelResource<?, ?, ?> mmRes) {
+		boolean wasValid = isValid();
+		this.mmRes = mmRes;
+		getPropertyChangeSupport().firePropertyChange("mmRes", null, mmRes);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public VirtualModelResource getVmRes() {
+		return vmRes;
+	}
+
+	public void setVmRes(VirtualModelResource vmRes) {
+		boolean wasValid = isValid();
+		this.vmRes = vmRes;
+		getPropertyChangeSupport().firePropertyChange("vmRes", null, vmRes);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		boolean wasValid = isValid();
+		this.required = required;
+		getPropertyChangeSupport().firePropertyChange("required", null, required);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		boolean wasValid = isValid();
+		this.readOnly = readOnly;
+		getPropertyChangeSupport().firePropertyChange("readOnly", null, readOnly);
+		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 }
