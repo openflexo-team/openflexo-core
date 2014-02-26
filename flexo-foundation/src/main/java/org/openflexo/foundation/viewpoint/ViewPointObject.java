@@ -72,18 +72,24 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 		@Override
 		public FlexoServiceManager getServiceManager() {
-			return getViewPoint().getViewPointLibrary().getServiceManager();
+			if (getViewPointLibrary() != null) {
+				return getViewPoint().getViewPointLibrary().getServiceManager();
+			}
+			return null;
 		}
 
 		@Override
 		public ViewPointLibrary getViewPointLibrary() {
-			return getViewPoint().getViewPointLibrary();
+			if (getViewPoint() != null) {
+				return getViewPoint().getViewPointLibrary();
+			}
+			return null;
 		}
 
 		@Override
 		public InformationSpace getInformationSpace() {
-			if (getViewPoint().getViewPointLibrary() != null) {
-				return getViewPoint().getViewPointLibrary().getServiceManager().getInformationSpace();
+			if (getViewPointLibrary() != null) {
+				return getViewPointLibrary().getServiceManager().getInformationSpace();
 			}
 			return null;
 		}

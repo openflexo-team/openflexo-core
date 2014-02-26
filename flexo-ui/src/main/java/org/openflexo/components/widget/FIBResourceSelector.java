@@ -76,8 +76,11 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.MANDATORY)
 	public void setInformationSpace(InformationSpace informationSpace) {
+
 		this.informationSpace = informationSpace;
+		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		updateCustomPanel(getEditedObject());
+
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
@@ -86,7 +89,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		// System.out.println(">>>>>>>>> SETS TechnologyAdapter with " + technologyAdapter);
 		this.technologyAdapter = technologyAdapter;
+		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		updateCustomPanel(getEditedObject());
 	}
 

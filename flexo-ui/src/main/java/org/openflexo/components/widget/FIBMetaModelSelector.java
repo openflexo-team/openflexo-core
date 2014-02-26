@@ -70,7 +70,9 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 
 	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.MANDATORY)
 	public void setInformationSpace(InformationSpace informationSpace) {
+
 		this.informationSpace = informationSpace;
+		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		updateCustomPanel(getEditedObject());
 	}
 
@@ -82,7 +84,10 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		// System.out.println(">>>>>>>>> SETS TechnologyAdapter with " + technologyAdapter);
 		this.technologyAdapter = technologyAdapter;
+		// System.out.println("fire rootObject with " + getRootObject() + " on " + this + " hash=" + Integer.toHexString(hashCode()));
+		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		updateCustomPanel(getEditedObject());
 	}
 

@@ -273,11 +273,16 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 		getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
 		fireChanges(wasValid);
 		if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {
+			// The ModelSlot class is not consistent anymore
 			if (technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 				setModelSlotClass(technologyAdapter.getAvailableModelSlotTypes().get(0));
 			} else {
 				setModelSlotClass(null);
 			}
+		}
+		if (getMmRes() != null && getMmRes().getTechnologyAdapter() != technologyAdapter) {
+			// The MetaModel is not consistent anymore, nullify it
+			setMmRes(null);
 		}
 	}
 
@@ -288,7 +293,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 	public void setMmRes(FlexoMetaModelResource<?, ?, ?> mmRes) {
 		boolean wasValid = isValid();
 		this.mmRes = mmRes;
-		getPropertyChangeSupport().firePropertyChange("mmRes", null, mmRes);
+		getPropertyChangeSupport().firePropertyChange("mmRes", mmRes != null ? null : false, mmRes);
 		fireChanges(wasValid);
 	}
 
