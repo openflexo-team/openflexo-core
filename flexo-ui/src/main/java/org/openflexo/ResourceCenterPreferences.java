@@ -83,10 +83,6 @@ public interface ResourceCenterPreferences extends PreferencesContainer {
 
 		@Override
 		public void ensureResourceEntryIsPresent(ResourceCenterEntry<?> entry) {
-			System.out.println("Tiens, je me rajoute ca: " + entry);
-			Thread.dumpStack();
-			System.out.println("J'ai deja: " + getResourceCenterEntries());
-			System.out.println("getResourceCenterEntries().contains(entry)=" + getResourceCenterEntries().contains(entry));
 
 			if (!getResourceCenterEntries().contains(entry)) {
 				addToResourceCenterEntries(entry);
