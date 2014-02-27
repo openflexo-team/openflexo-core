@@ -59,7 +59,7 @@ import org.openflexo.view.controller.action.InspectActionizer;
 import org.openflexo.view.controller.action.LoadAllImportedProjectInitializer;
 import org.openflexo.view.controller.action.LoadResourceActionInitializer;
 import org.openflexo.view.controller.action.SortFlexoPropertiesActionizer;
-import org.openflexo.view.controller.action.SubmitDocumentationActionizer;
+// import org.openflexo.view.controller.action.SubmitDocumentationActionizer;
 
 public class ControllerActionInitializer implements EditorProvider {
 
@@ -123,7 +123,9 @@ public class ControllerActionInitializer implements EditorProvider {
 		new ImportProjectInitializer(this);
 		new RemoveImportedProjectInitializer(this);
 		new HelpActionizer(this);
-		new SubmitDocumentationActionizer(this);
+
+		// TODO : To be re-written when Wysiwyg editor is re-written
+		//new SubmitDocumentationActionizer(this);
 		// new UploadProjectInitializer(this);
 		new ProjectExcelExportInitializer(this);
 		new LoadAllImportedProjectInitializer(this);

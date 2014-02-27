@@ -481,6 +481,8 @@ public abstract class AbstractDocItemView extends JPanel {
 			fullHTMLDescriptionEditor.setPreferredImagePath(new File(_docItem.getFolder().getDirectory(),"Figures"));
 			*/
 			// change AJA
+			// TODO To re-implement when new Wysiwyg editor will be re-written
+			/*
 			abstract class FlexoWysiwygHelpDocEditor extends FlexoWysiwygLight {
 
 				public FlexoWysiwygHelpDocEditor(String htmlContent, File cssFile, boolean isViewSourceAvailable) {
@@ -490,7 +492,11 @@ public abstract class AbstractDocItemView extends JPanel {
 					addSupportForInsertedObjects(new File(_docItem.getFolder().getDirectory(), "Figures"));
 				}
 			}
+			*/
+			
 			File cssFile = getDocResourceManager().getDocumentationCssResourceFile();
+			// TODO : To be re-written when Wysiwyg editor is re-written
+			/*
 			shortHTMLDescriptionEditor = new FlexoWysiwygHelpDocEditor(FlexoLocalization.localizedForKey("write_documentation_here"),
 					cssFile, true) {
 				@Override
@@ -508,7 +514,7 @@ public abstract class AbstractDocItemView extends JPanel {
 				}
 			};
 			fullHTMLDescriptionEditor.setPreferredSize(new Dimension(850, 500));
-
+*/
 			// END change AJA
 
 			add(shortHTMLDescriptionPanel, BorderLayout.NORTH);
@@ -611,16 +617,22 @@ public abstract class AbstractDocItemView extends JPanel {
 			_isEditing = true;
 			remove(shortHTMLDescriptionPanel);
 			remove(fullHTMLDescriptionPanel);
+			// TODO : To be re-written when Wysiwyg editor is re-written
+			/*
 			add(shortHTMLDescriptionEditor, BorderLayout.NORTH);
 			add(fullHTMLDescriptionEditor, BorderLayout.CENTER);
+			*/
 			revalidate();
 			repaint();
 		}
 
 		public void closeEdition() {
 			_isEditing = false;
+			// TODO : To be re-written when Wysiwyg editor is re-written
+			/*
 			remove(shortHTMLDescriptionEditor);
 			remove(fullHTMLDescriptionEditor);
+			*/
 			add(shortHTMLDescriptionPanel, BorderLayout.NORTH);
 			add(fullHTMLDescriptionPanel, BorderLayout.CENTER);
 			revalidate();
