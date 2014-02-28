@@ -41,6 +41,7 @@ import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Finder;
