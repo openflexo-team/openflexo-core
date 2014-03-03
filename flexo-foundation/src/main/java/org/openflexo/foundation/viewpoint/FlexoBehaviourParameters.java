@@ -28,7 +28,7 @@ public interface FlexoBehaviourParameters extends FlexoBehaviourObject, FlexoFac
 
 	public void setFlexoBehaviour(FlexoBehaviour flexoBehaviour);
 
-	public abstract class EditionSchemeParametersImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviourParameters {
+	public abstract class EditionSchemeParametersImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameters {
 
 		private FlexoBehaviour flexoBehaviour;
 

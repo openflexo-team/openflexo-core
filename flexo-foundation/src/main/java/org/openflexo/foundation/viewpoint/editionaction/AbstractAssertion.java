@@ -30,7 +30,7 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -54,7 +54,7 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 
 	public boolean evaluateCondition(FlexoBehaviourAction action);
 
-	public static abstract class AbstractAssertionImpl extends FlexoBahaviourObjectImpl implements AbstractAssertion {
+	public static abstract class AbstractAssertionImpl extends FlexoBehaviourObjectImpl implements AbstractAssertion {
 
 		private AddIndividual _action;
 		private DataBinding<Boolean> conditional;

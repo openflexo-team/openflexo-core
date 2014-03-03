@@ -14,7 +14,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -62,7 +62,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 
 	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
 
-	public static abstract class MatchingCriteriaImpl extends FlexoBahaviourObjectImpl implements MatchingCriteria {
+	public static abstract class MatchingCriteriaImpl extends FlexoBehaviourObjectImpl implements MatchingCriteria {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 

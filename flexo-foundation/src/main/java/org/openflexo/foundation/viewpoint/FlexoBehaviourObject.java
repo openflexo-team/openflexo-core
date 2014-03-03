@@ -29,12 +29,12 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FlexoBehaviourObject.FlexoBahaviourObjectImpl.class)
+@ImplementationClass(FlexoBehaviourObject.FlexoBehaviourObjectImpl.class)
 public interface FlexoBehaviourObject extends FlexoConceptObject {
 
 	public FlexoBehaviour getFlexoBehaviour();
 
-	public abstract class FlexoBahaviourObjectImpl extends FlexoConceptObjectImpl implements FlexoBehaviourObject {
+	public abstract class FlexoBehaviourObjectImpl extends FlexoConceptObjectImpl implements FlexoBehaviourObject {
 
 	}
 

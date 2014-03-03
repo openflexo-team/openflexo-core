@@ -24,7 +24,7 @@ import java.util.Vector;
 
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.annotations.Adder;
@@ -83,7 +83,7 @@ public interface ActionContainer {
 	public void variableAdded(AssignableAction action);
 
 	@Implementation
-	public abstract class ActionContainerImpl extends FlexoBahaviourObjectImpl implements ActionContainer {
+	public abstract class ActionContainerImpl extends FlexoBehaviourObjectImpl implements ActionContainer {
 		@Override
 		public int getIndex(EditionAction<?, ?> action) {
 			return getActions().indexOf(action);

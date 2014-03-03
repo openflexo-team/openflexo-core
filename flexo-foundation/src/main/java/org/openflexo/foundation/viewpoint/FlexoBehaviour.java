@@ -192,7 +192,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	public void parameterLast(FlexoBehaviourParameter p);
 
-	public static abstract class FlexoBehaviourImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviour {
+	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected BindingModel _bindingModel;
 
