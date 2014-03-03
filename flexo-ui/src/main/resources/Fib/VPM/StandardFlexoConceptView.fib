@@ -88,7 +88,9 @@
               </Panel>
             </SplitPanel>
           </Panel>
-          <FIBReferencedComponent componentFile="FlexoBehaviourPanel.fib" localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget" index="0" data="FlexoBehaviourTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" />
+          <FIBReferencedComponent componentFile="FlexoBehaviourPanel.fib" localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget" index="0" data="FlexoBehaviourTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" >
+        	<ReferenceAssignment mandatory="true" variable="controller.flexoController" value="controller.flexoController"  />
+          </FIBReferencedComponent>
         </SplitPanel>
       </Tab>
       <Tab title="inspector" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" constraints="border(index=1;location=center)" opaque="false" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
