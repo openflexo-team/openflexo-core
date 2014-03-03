@@ -400,14 +400,25 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 		private List<Class<? extends EditionAction<?, ?>>> computeAvailableEditionActionTypes() {
 			availableEditionActionTypes = new ArrayList<Class<? extends EditionAction<?, ?>>>();
-			Class<?> cl = getClass();
+			appendEditionActionTypes(availableEditionActionTypes, getClass());
+			return availableEditionActionTypes;
+		}
+		
+		private void appendEditionActionTypes(List<Class<? extends EditionAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-				for (DeclareEditionAction patternRoleDeclaration : allEditionActions.value()) {
-					availableEditionActionTypes.add(patternRoleDeclaration.editionActionClass());
+				for (DeclareEditionAction editionActionDeclaration : allEditionActions.value()) {
+					if (!availableEditionActionTypes.contains(editionActionDeclaration.editionActionClass())) {
+						availableEditionActionTypes.add(editionActionDeclaration.editionActionClass());
+					}
 				}
 			}
-			return availableEditionActionTypes;
+			if (cl.getSuperclass() != null) {
+				appendEditionActionTypes(aList, cl.getSuperclass());
+			}
+			for (Class superInterface : cl.getInterfaces()) {
+				appendEditionActionTypes(aList, superInterface);
+			}
 		}
 
 		@Override
@@ -420,14 +431,25 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 		private List<Class<? extends EditionAction<?, ?>>> computeAvailableFetchRequestActionTypes() {
 			availableFetchRequestActionTypes = new ArrayList<Class<? extends EditionAction<?, ?>>>();
-			Class<?> cl = getClass();
+			appendFetchRequestActionTypes(availableFetchRequestActionTypes, getClass());
+			return availableFetchRequestActionTypes;
+		}
+		
+		private void appendFetchRequestActionTypes(List<Class<? extends EditionAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
 				for (DeclareFetchRequest fetchRequestDeclaration : allFetchRequestActions.value()) {
-					availableFetchRequestActionTypes.add(fetchRequestDeclaration.fetchRequestClass());
+					if (!availableFetchRequestActionTypes.contains(fetchRequestDeclaration.fetchRequestClass())) {
+						availableFetchRequestActionTypes.add(fetchRequestDeclaration.fetchRequestClass());
+					}
 				}
 			}
-			return availableFetchRequestActionTypes;
+			if (cl.getSuperclass() != null) {
+				appendFetchRequestActionTypes(aList, cl.getSuperclass());
+			}
+			for (Class superInterface : cl.getInterfaces()) {
+				appendFetchRequestActionTypes(aList, superInterface);
+			}
 		}
 
 		/**
