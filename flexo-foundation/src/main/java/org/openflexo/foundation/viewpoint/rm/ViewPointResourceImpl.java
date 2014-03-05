@@ -3,12 +3,15 @@ package org.openflexo.foundation.viewpoint.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.jdom2.Attribute;
+import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -109,6 +112,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 			// Now look for virtual models
 			returned.exploreVirtualModels();
+			/*
+			 * Will be activitated when the convertion will be fully compliant
+			 */
+			//convertViewPoint16ToViewpoint17(returned);
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -356,5 +363,127 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		return false;
 	}
+	
+	private static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
 
+		File viewPointDirectory = viewPointResource.getDirectory();
+		
+		List<File> palettes = new ArrayList<File>();
+		List<File> exampleDiagrams = new ArrayList<File>();
+		List<File> virtualModels = new ArrayList<File>();
+		
+		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
+		
+		/*
+		 *  Find the resources
+		 */
+		for (File f : viewPointResource.getDirectory().listFiles()) {
+			if (f.isDirectory()) {
+				// Find palette files if any
+				File paletteFile = new File(f, f.getName() + ".palette");
+				if (paletteFile.exists()) {
+					palettes.add(paletteFile);
+				}
+				// Find diagram files if any
+				File exampleDiagramFile = new File(f, f.getName() + ".diagram");
+				if (exampleDiagramFile.exists()) {
+						exampleDiagrams.add(exampleDiagramFile);
+				}
+				// Find virtualmodels files if any
+				File virtualModelFile = new File(f, f.getName() + ".xml");
+				if (virtualModelFile.exists()) {
+					virtualModels.add(virtualModelFile);
+				}
+			}
+		} 
+		
+		/*
+		 *  Execute the convertion
+		 */
+		for(File virtualModelFile : virtualModels){
+			convertVirtualModels16ToVirtualModels17(viewPointResource,virtualModelFile,palettes,exampleDiagrams);
+		}
+		
+	}
+	
+	
+	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource,
+			File virtualModelFile, List<File> palettes,List<File> exampleDiagrams) {
+		try {
+			Document d = XMLUtils.readXMLFile(virtualModelFile);
+			convertNames16ToNames17(d);
+			if (d.getRootElement().getName().equals("DiagramSpecification")) {
+				convertDiagramSpecification16ToVirtualModel17(d);
+				VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(virtualModelFile.getParentFile(),virtualModelFile, viewPointResource, viewPointResource.getViewPointLibrary());
+				viewPointResource.addToContents(virtualModelResource);
+				// update the palettes and example diagrams for this Diagram Specification
+				for(File palette : palettes){
+					convertPalette16ToPalette17(virtualModelResource,XMLUtils.readXMLFile(palette));
+				}
+				for(File exampleDiagram : exampleDiagrams){
+					convertExampleDiagram16ToExampleDiagram17(virtualModelResource,XMLUtils.readXMLFile(exampleDiagram));
+				}
+			}
+			if (d.getRootElement().getName().equals("VirtualModel")) {
+				convertVirtualModel16ToVirtualModel17(d);
+				VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(virtualModelFile.getParentFile(),virtualModelFile, viewPointResource, viewPointResource.getViewPointLibrary());
+				viewPointResource.addToContents(virtualModelResource);
+			}				
+		} 
+		catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	private static void convertPalette16ToPalette17(VirtualModelResource virtualModelResource,Document palette) {
+		
+	}
+	
+	private static void convertExampleDiagram16ToExampleDiagram17(VirtualModelResource virtualModelResource,Document diagram) {
+		
+	}
+	
+	
+	private static void convertDiagramSpecification16ToVirtualModel17(Document diagram){
+		// Create a new Virtual Model with a TypedDiagramModelSlot
+		
+		// Find
+		
+		// DropScheme
+	}
+	
+	private static void convertVirtualModel16ToVirtualModel17(Document document){
+		
+	}
+	
+	private static void convertNames16ToNames17(Document document){
+		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
+		convertOldNameToNewNames("ContainedEditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
+	}
+	
+	//ModelSlot_VirtualModelModelSlot
+	//ModelSlot_EMFModelSlot
+	
+	/**
+	 * Convert 
+	 * @param oldName
+	 * @param newName
+	 * @param document
+	 */
+	private static void convertOldNameToNewNames(String oldName, String newName, Document document){
+		for(Content content : document.getDescendants()){
+			if(content instanceof Element){
+				Element element = (Element)content;
+				if(element.getName().equals(oldName)){
+					element.setName(newName);
+				}
+			}
+		}
+	}
+	
+	
 }
