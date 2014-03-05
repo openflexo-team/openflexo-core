@@ -111,11 +111,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			logger.fine("ViewPointResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
 
 			// Now look for virtual models
-			returned.exploreVirtualModels();
+			//returned.exploreVirtualModels();
 			/*
 			 * Will be activitated when the convertion will be fully compliant
 			 */
-			//convertViewPoint16ToViewpoint17(returned);
+			convertViewPoint16ToViewpoint17(returned);
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -412,8 +412,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		try {
 			Document d = XMLUtils.readXMLFile(virtualModelFile);
 			convertNames16ToNames17(d);
+			convertProperties16ToProperties17(d);
 			if (d.getRootElement().getName().equals("DiagramSpecification")) {
 				convertDiagramSpecification16ToVirtualModel17(d);
+				XMLUtils.saveXMLFile(d, virtualModelFile);
 				VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(virtualModelFile.getParentFile(),virtualModelFile, viewPointResource, viewPointResource.getViewPointLibrary());
 				viewPointResource.addToContents(virtualModelResource);
 				// update the palettes and example diagrams for this Diagram Specification
@@ -426,6 +428,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 			if (d.getRootElement().getName().equals("VirtualModel")) {
 				convertVirtualModel16ToVirtualModel17(d);
+				XMLUtils.saveXMLFile(d, virtualModelFile);
 				VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(virtualModelFile.getParentFile(),virtualModelFile, viewPointResource, viewPointResource.getViewPointLibrary());
 				viewPointResource.addToContents(virtualModelResource);
 			}				
@@ -450,7 +453,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	
 	private static void convertDiagramSpecification16ToVirtualModel17(Document diagram){
 		// Create a new Virtual Model with a TypedDiagramModelSlot
-		
+		convertOldNameToNewNames("DiagramSpecification", "VirtualModel", diagram);
 		// Find
 		
 		// DropScheme
@@ -460,26 +463,54 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		
 	}
 	
+	
+	//userID="FLX"
 	private static void convertNames16ToNames17(Document document){
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
 		convertOldNameToNewNames("ContainedEditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
+		convertOldNameToNewNames("ContainedEMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
+		convertOldNameToNewNames("AddressedEMFModelSlot", "EMFModelSlot", document);
+		convertOldNameToNewNames("EMFModelSlot", "ModelSlot_EMFModelSlot", document);
+		convertOldNameToNewNames("VirtualModelModelSlot", "ModelSlot_VirtualModelModelSlot", document);
+	}
+
+	private static void convertProperties16ToProperties17(Document document){
+		addProperty("userID", "FLX", document, null);
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "FlexoConceptInstanceRole");
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "AddressedSelectEditionPatternInstance");
+		
 	}
 	
-	//ModelSlot_VirtualModelModelSlot
-	//ModelSlot_EMFModelSlot
-	
-	/**
-	 * Convert 
-	 * @param oldName
-	 * @param newName
-	 * @param document
-	 */
 	private static void convertOldNameToNewNames(String oldName, String newName, Document document){
 		for(Content content : document.getDescendants()){
 			if(content instanceof Element){
 				Element element = (Element)content;
 				if(element.getName().equals(oldName)){
 					element.setName(newName);
+				}
+			}
+		}
+	}
+	
+	private static void addProperty(String property, String value, Document document, String elementName){
+		for(Content content : document.getDescendants()){
+			if(content instanceof Element){
+				Element element = (Element)content;
+				if(elementName==null || elementName.equals(element.getName())){
+					element.setAttribute(property, value);
+				}
+			}
+		}
+	}
+	
+	private static void changePropertyName(String oldPropertyName, String newPropertyName, Document document, String elementName){
+		for(Content content : document.getDescendants()){
+			if(content instanceof Element){
+				Element element = (Element)content;
+				if(elementName==null || elementName.equals(element.getName())){
+					if(element.getAttribute(oldPropertyName)!=null){
+						element.getAttribute(oldPropertyName).setName(newPropertyName);
+					}
 				}
 			}
 		}
