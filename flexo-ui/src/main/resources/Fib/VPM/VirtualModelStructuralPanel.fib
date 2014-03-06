@@ -12,7 +12,7 @@
     </ColSplit>
     <Browser root="data" iteratorClassName="org.openflexo.foundation.viewpoint.FlexoConcept" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true" rootVisible="true" showRootsHandle="true" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoConceptBrowser" data="" constraints="split(splitIdentifier=flexoConceptBrowser)" visible="" width="200" height="76">
       <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
-        <Children data="data.allRootFlexoConcepts" visible="" cast="" name="children" />
+        <Children data="data.allRootFlexoConcepts" visible="data.flexoConcepts!=null" cast="" name="children" />
         <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
       </BrowserElement>
       <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
