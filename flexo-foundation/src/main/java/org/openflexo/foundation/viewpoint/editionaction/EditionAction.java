@@ -144,7 +144,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction action);
 
-	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBahaviourObjectImpl implements
+	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBehaviourObjectImpl implements
 			EditionAction<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(EditionAction.class.getPackage().getName());

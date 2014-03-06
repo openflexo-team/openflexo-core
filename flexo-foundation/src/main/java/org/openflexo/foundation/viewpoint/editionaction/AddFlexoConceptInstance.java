@@ -225,7 +225,8 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 		@Override
 		public List<AddFlexoConceptInstanceParameter> getParameters() {
-			updateParameters();
+			// Comment this because of an infinite loop with  updateParameters() method
+			//updateParameters();
 			return (List<AddFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 		}
 

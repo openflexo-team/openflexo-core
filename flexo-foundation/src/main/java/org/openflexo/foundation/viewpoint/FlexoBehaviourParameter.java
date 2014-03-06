@@ -149,7 +149,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
-	public static abstract class FlexoBehaviourParameterImpl extends FlexoBahaviourObjectImpl implements FlexoBehaviourParameter {
+	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
 

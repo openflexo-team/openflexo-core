@@ -153,7 +153,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 				out.append(getAssignation().toString() + " = (", context);
 			}
 			out.append(getClass().getSimpleName() + (getOntologyClass() != null ? " conformTo " + getOntologyClass().getName() : "")
-					+ " from " + getModelSlot().getName() + " {" + StringUtils.LINE_SEPARATOR, context);
+					+ " from " + (getModelSlot()!=null ? getModelSlot().getName():"") + " {" + StringUtils.LINE_SEPARATOR, context);
 			out.append(getAssertionsFMLRepresentation(context), context);
 			out.append("}", context);
 			if (getAssignation().isSet()) {

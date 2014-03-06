@@ -543,6 +543,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 		}
 		setProjectDirectory(aProjectDirectory);
+		getRootFolder().setName(projectName);
 	}
 
 	/*public CodeType getTargetType() {

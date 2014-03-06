@@ -14,7 +14,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -64,7 +64,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 
 	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
-	public static abstract class AddFlexoConceptInstanceParameterImpl extends FlexoBahaviourObjectImpl implements
+	public static abstract class AddFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
 			AddFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());

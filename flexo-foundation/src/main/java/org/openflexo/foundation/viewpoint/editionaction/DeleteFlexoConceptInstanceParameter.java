@@ -14,7 +14,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBahaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -58,7 +58,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
-	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBahaviourObjectImpl implements
+	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
 			DeleteFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstanceParameter.class.getPackage().getName());
