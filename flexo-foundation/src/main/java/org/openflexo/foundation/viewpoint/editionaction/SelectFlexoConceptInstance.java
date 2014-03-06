@@ -93,7 +93,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				out.append(getAssignation().toString() + " = (", context);
 			}
 			out.append(getClass().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
-					+ getFlexoConceptType().getName()
+					+ (getFlexoConceptType()!=null ? getFlexoConceptType().getName():"No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			if (getAssignation().isSet()) {
 				out.append(")", context);
