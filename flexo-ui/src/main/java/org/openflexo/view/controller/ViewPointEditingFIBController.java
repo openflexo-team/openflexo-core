@@ -312,7 +312,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return selectedObject instanceof EditionAction;
 	}
 
-	public File fibForEditionAction(EditionAction<?, ?> action) {
+	public String fibForEditionAction(EditionAction<?, ?> action) {
 		if (action == null) {
 			return null;
 		}
@@ -334,7 +334,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return fibFile;*/
 	}
 
-	public File fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
+	public String fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
 		if (flexoBehaviour == null) {
 			return null;
 		}

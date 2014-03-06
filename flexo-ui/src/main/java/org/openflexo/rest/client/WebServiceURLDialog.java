@@ -6,13 +6,12 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.controller.FlexoServerAddressBook;
 import org.openflexo.view.controller.FlexoServerInstance;
 
 public class WebServiceURLDialog {
 
-	public static final File FIB_FILE = new FileResource("Fib/WebServiceURLDialog.fib");
+	public static final String FIB_FILE_NAME = "Fib/WebServiceURLDialog.fib";
 
 	@ModelEntity
 	public interface ServerRestClientParameter {

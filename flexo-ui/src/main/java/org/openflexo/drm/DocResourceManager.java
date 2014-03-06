@@ -52,9 +52,9 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.FlexoModule;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.ModuleView;
@@ -157,7 +157,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public File getDRMFile() {
 		if (drmFile == null) {
-			drmFile = new FileResource("DocResourceCenter.xml");
+			drmFile = ResourceLocator.locateFile("DocResourceCenter.xml");
 			if (drmFile.exists()) {
 				if (logger.isLoggable(Level.INFO)) {
 					logger.info("Found DRM File : " + drmFile.getAbsolutePath());

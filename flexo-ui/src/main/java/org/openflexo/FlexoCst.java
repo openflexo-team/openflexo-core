@@ -43,8 +43,8 @@ import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.ToolBox;
 
 public class FlexoCst extends ColorCst {
@@ -85,11 +85,7 @@ public class FlexoCst extends ColorCst {
 
 	public static URL cssUrl() {
 		if (_cssURL == null) {
-			try {
-				_cssURL = new FileResource("Config/FlexoMasterStyle.css").toURI().toURL();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
+				_cssURL = ResourceLocator.locateResource("Config/FlexoMasterStyle.css");
 		}
 		return _cssURL;
 	}

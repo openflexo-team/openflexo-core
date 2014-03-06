@@ -48,7 +48,6 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.ResourceLocator;
 
@@ -132,7 +131,7 @@ public abstract class OpenflexoTestCase {
 							FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
 						}
 					} else {
-						File sourceTestResourceCenter = new FileResource("TestResourceCenter");
+						File sourceTestResourceCenter = ResourceLocator.locateDirectory("TestResourceCenter");
 						System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
 						FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
 					}

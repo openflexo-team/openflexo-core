@@ -32,7 +32,7 @@ import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.PreferencesContainer;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -46,7 +46,7 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 
 	static final Logger logger = Logger.getLogger(PreferencesDialog.class.getPackage().getName());
 
-	public static final File PREFERENCES_FIB = new FileResource("Fib/Preferences.fib");
+	public static final String PREFERENCES_FIB_NAME = "Fib/Preferences.fib";
 
 	private static PreferencesDialog dialog;
 
@@ -71,9 +71,9 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 
 	public PreferencesDialog(ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB),
+		super(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB_NAME,true),
 				applicationContext.getPreferencesService().getFlexoPreferences(), parent, true, new PreferencesFIBController(FIBLibrary
-						.instance().retrieveFIBComponent(PREFERENCES_FIB)));
+						.instance().retrieveFIBComponent(PREFERENCES_FIB_NAME,true)));
 
 		setTitle("Preferences");
 
@@ -101,7 +101,7 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 				FIBPanel fibDeclaration = prefsEntity.getImplementedInterface().getAnnotation(FIBPanel.class);
 
 				if (fibDeclaration != null) {
-					File returned = new FileResource(fibDeclaration.value());
+					File returned = ResourceLocator.locateFile(fibDeclaration.value());
 					// System.out.println("Returning " + returned);
 					return returned;
 				}

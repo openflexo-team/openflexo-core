@@ -85,7 +85,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 	private static final String DELETED = "deleted";
 
-	public abstract File getFIBFile();
+	public abstract String getFIBFileName();
 
 	private T _revertValue;
 
@@ -462,7 +462,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		protected SelectorDetailsPanel(T anObject) {
 			super();
 
-			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBFile());
+			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBFileName());
 			controller = makeCustomFIBController(fibComponent);
 			fibView = controller.buildView(fibComponent);
 

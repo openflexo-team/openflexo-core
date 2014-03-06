@@ -27,7 +27,6 @@ import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -39,10 +38,10 @@ public class ResourceManagerDialog extends FIBDialog<ResourceManager> {
 
 	private static final Logger logger = FlexoLogger.getLogger(ResourceManagerDialog.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/ResourceManager.fib");
+	public static final String FIB_FILE_NAME = "Fib/ResourceManager.fib";
 
 	public ResourceManagerDialog(ApplicationContext context) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}

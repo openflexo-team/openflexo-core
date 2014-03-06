@@ -32,8 +32,8 @@ import org.openflexo.foundation.KVCFlexoObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.ResourceLocator;
 
 public class DRMHelpSet extends KVCFlexoObject {
 
@@ -298,7 +298,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 		}
 		_hsMap.generate();// This will create HTML file also!
 		try {
-			FileUtils.copyFileToDir(new FileResource("Resources/FlexoHelpMasterStyle.css"), new File(getHelpSetDirectory(), "HTML/"
+			FileUtils.copyFileToDir(ResourceLocator.locateFile("Resources/FlexoHelpMasterStyle.css"), new File(getHelpSetDirectory(), "HTML/"
 					+ _drc.getFolder().getIdentifier() + "/"));
 		} catch (IOException e) {
 			e.printStackTrace();

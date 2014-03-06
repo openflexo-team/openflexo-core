@@ -14,8 +14,8 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.ws.jira.JIRAGson;
 import org.openflexo.ws.jira.model.JIRAProject;
 import org.openflexo.ws.jira.model.JIRAProjectList;
@@ -25,7 +25,7 @@ import com.google.gson.JsonSyntaxException;
 
 public class BugReportService extends FlexoServiceImpl {
 
-	private static final File PROJECT_FILE = new FileResource("Config/jira_openflexo_project.json");
+	private static final File PROJECT_FILE = ResourceLocator.locateFile("Config/jira_openflexo_project.json");
 	private static final String OPENFLEXO_KEY = "OPENFLEXO";
 
 	private File userProjectFile;

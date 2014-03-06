@@ -237,7 +237,7 @@ public class ServerRestService {
 			public ServerRestClientParameter call() throws Exception {
 				WebServiceURLDialog data = new WebServiceURLDialog(projectLoader.getServiceManager());
 				data.setClientParameter(params);
-				FIBDialog<WebServiceURLDialog> dialog = FIBDialog.instanciateAndShowDialog(WebServiceURLDialog.FIB_FILE, data,
+				FIBDialog<WebServiceURLDialog> dialog = FIBDialog.instanciateAndShowDialog(WebServiceURLDialog.FIB_FILE_NAME, data,
 						FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 				if (dialog.getStatus() == Status.VALIDATED) {
 					if (params.getWSInstance() != null && !params.getWSInstance().getID().equals(FlexoServerInstance.OTHER_ID)) {

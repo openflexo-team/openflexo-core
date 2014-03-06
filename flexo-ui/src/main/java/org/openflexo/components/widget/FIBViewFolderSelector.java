@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.toolbox.FileResource;
 
 /**
  * Widget allowing to select a View folder
@@ -40,7 +39,7 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 
 	static final Logger logger = Logger.getLogger(FIBViewFolderSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/ViewFolderSelector.fib");
+	public static String FIB_FILE_NAME = "Fib/ViewFolderSelector.fib";
 
 	private FlexoProject project;
 
@@ -48,9 +47,10 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 		super(editedObject);
 	}
 
+
 	@Override
-	public File getFIBFile() {
-		return FIB_FILE;
+	public String getFIBFileName() {
+		return FIB_FILE_NAME;
 	}
 
 	@Override

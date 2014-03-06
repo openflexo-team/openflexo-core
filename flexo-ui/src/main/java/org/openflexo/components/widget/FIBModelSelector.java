@@ -27,7 +27,6 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.toolbox.FileResource;
 
 /**
  * Widget allowing to select a Model while browsing in Information Space<br>
@@ -41,7 +40,7 @@ public class FIBModelSelector extends FIBFlexoObjectSelector<FlexoModelResource>
 
 	static final Logger logger = Logger.getLogger(FIBModelSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/ModelSelector.fib");
+	public static String FIB_FILE_NAME = "Fib/ModelSelector.fib";
 
 	private InformationSpace informationSpace;
 	private TechnologyAdapter technologyAdapter;
@@ -53,8 +52,8 @@ public class FIBModelSelector extends FIBFlexoObjectSelector<FlexoModelResource>
 	}
 
 	@Override
-	public File getFIBFile() {
-		return FIB_FILE;
+	public String getFIBFileName() {
+		return FIB_FILE_NAME;
 	}
 
 	@Override

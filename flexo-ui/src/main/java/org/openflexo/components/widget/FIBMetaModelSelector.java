@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.toolbox.FileResource;
 
 /**
  * Widget allowing to select a MetaModel while browsing in Information Space
@@ -38,15 +37,15 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 
 	static final Logger logger = Logger.getLogger(FIBMetaModelSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/MetaModelSelector.fib");
+	public static String FIB_FILE_NAME = "Fib/MetaModelSelector.fib";
 
 	public FIBMetaModelSelector(FlexoMetaModelResource editedObject) {
 		super(editedObject);
 	}
 
 	@Override
-	public File getFIBFile() {
-		return FIB_FILE;
+	public String getFIBFileName() {
+		return FIB_FILE_NAME;
 	}
 
 	@Override

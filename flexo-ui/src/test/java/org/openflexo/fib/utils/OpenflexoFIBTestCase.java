@@ -44,8 +44,41 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 		}
 	}
 
+	public void validateFIB(String fibFileName) {
+		try {
+			System.out.println("Validating fib file " + fibFileName);
+			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
+			if (component == null) {
+				fail("Component not found: " + fibFileName);
+			}
+			ValidationReport validationReport = component.validate();
+			for (ValidationError error : validationReport.getErrors()) {
+				logger.severe("FIBComponent validation error: Object: " + error.getObject() + " message: " + error.getMessage());
+			}
+			assertEquals(0, validationReport.getErrorNb());
+		} finally {
+			FIBLibrary.instance().removeFIBComponentFromCache(fibFileName);
+		}
+	}
+
 	public <T> DefaultFIBCustomComponent<T> instanciateFIB(File fibFile, T context, final Class<T> contextType) {
 		return new DefaultFIBCustomComponent<T>(fibFile, context, FlexoLocalization.getMainLocalizer()) {
+
+			@Override
+			public Class<T> getRepresentedType() {
+				return contextType;
+			}
+
+			@Override
+			public void delete() {
+			}
+
+		};
+
+	}
+
+	public <T> DefaultFIBCustomComponent<T> instanciateFIB(String fibFileName, T context, final Class<T> contextType) {
+		return new DefaultFIBCustomComponent<T>(fibFileName, context, FlexoLocalization.getMainLocalizer()) {
 
 			@Override
 			public Class<T> getRepresentedType() {

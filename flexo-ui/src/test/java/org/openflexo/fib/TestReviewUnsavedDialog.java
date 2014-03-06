@@ -43,7 +43,7 @@ public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCaseWi
 	public void testInstanciateWidget() {
 		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog(serviceManager.getResourceManager());
 		log("instanciated " + dialog);
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ReviewUnsavedDialog.FIB_FILE);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ReviewUnsavedDialog.FIB_FILE_NAME);
 	}
 
 	/*

@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -39,7 +39,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.swing.FlexoSwingUtils;
 import org.openflexo.swing.ImageUtils;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Utility class used to manage screenshots
@@ -297,27 +297,22 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	 * @return
 	 */
 	private ScreenshotImage<T> getEmptyScreenshot() {
-		File f = new FileResource("LatexExtras/EmptyScreenshot.jpg");
-		if (f.exists()) {
+		InputStream fis = ResourceLocator.retrieveResource("LatexExtras/EmptyScreenshot.jpg");
+		if (fis != null) {
 			try {
-				FileInputStream fis = new FileInputStream(f);
 				BufferedImage bi = ImageIO.read(fis);
 				ScreenshotImage<T> i = new ScreenshotImage<T>(null);
 				i.image = bi;
 				i.trimInfo = new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
 				return i;
-			} catch (FileNotFoundException e) {
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("File " + f.getAbsolutePath() + " does not exist.");
-				}
 			} catch (IOException e) {
 				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Error trying to read file " + f.getAbsolutePath());
+					logger.warning("Error trying to read file (Resource) LatexExtras/EmptyScreenshot.jpg");
 				}
 			}
 		}
 		if (logger.isLoggable(Level.SEVERE)) {
-			logger.severe("Cannot find " + f.getAbsolutePath() + " returning null");
+			logger.severe("Cannot find LatexExtras/EmptyScreenshot.jpg returning null");
 		}
 		return null;
 	}

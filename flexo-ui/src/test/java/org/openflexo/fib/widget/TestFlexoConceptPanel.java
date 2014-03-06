@@ -3,6 +3,8 @@ package org.openflexo.fib.widget;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,7 +25,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -36,7 +38,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static FileResource fibFile;
+	private static File fibFile;
 
 	static FlexoEditor editor;
 
@@ -56,7 +58,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/FlexoConceptPanel.fib");
+		fibFile = ResourceLocator.locateFile("Fib/VPM/FlexoConceptPanel.fib");
 		assertTrue(fibFile.exists());
 	}
 

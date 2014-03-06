@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.toolbox.FileResource;
 
 /**
  * Widget allowing to select a FlexoResourceCenter while browsing in FlexoResourceCenterService
@@ -37,7 +36,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 
 	static final Logger logger = Logger.getLogger(FIBResourceCenterSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/ResourceCenterSelector.fib");
+	public static String FIB_FILE_NAME = "Fib/ResourceCenterSelector.fib";
 
 	private FlexoResourceCenterService rcService;
 
@@ -45,9 +44,10 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 		super(editedObject);
 	}
 
+
 	@Override
-	public File getFIBFile() {
-		return FIB_FILE;
+	public String getFIBFileName() {
+		return FIB_FILE_NAME;
 	}
 
 	@Override

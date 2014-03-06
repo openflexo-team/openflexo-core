@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +41,7 @@ import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -52,7 +54,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static FileResource fibFile;
+	private static File fibFile;
 
 	static FlexoConcept flexoConceptA;
 
@@ -73,7 +75,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/FlexoBehaviourPanel.fib");
+		fibFile = ResourceLocator.locateFile("Fib/VPM/FlexoBehaviourPanel.fib");
 		assertTrue(fibFile.exists());
 	}
 
@@ -225,7 +227,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(new FileResource("Fib/VPM/DeclarePatternRolePanel.fib"),
+		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(ResourceLocator.locateFile("Fib/VPM/DeclarePatternRolePanel.fib"),
 				(DeclarePatternRole) creationScheme.getActions().get(0), DeclarePatternRole.class);
 
 		gcDelegate.addTab("DeclarePatternRole", widget.getController());

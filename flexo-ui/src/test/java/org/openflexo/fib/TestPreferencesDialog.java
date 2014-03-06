@@ -48,7 +48,7 @@ public class TestPreferencesDialog extends OpenflexoTestCaseWithGUI {
 		PreferencesDialog dialog = PreferencesDialog.getPreferencesDialog(serviceManager, null);
 
 		log("instanciated " + dialog);
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, PreferencesDialog.PREFERENCES_FIB);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, PreferencesDialog.PREFERENCES_FIB_NAME);
 	}
 
 	@Before

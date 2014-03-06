@@ -70,10 +70,10 @@ import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
 
@@ -1693,7 +1693,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
  *
  */
 	protected void initJavaFormatter() {
-		FileResource file = new FileResource("Config/FlexoJavaFormatSettings.xml");
+		File file = ResourceLocator.locateFile("Config/FlexoJavaFormatSettings.xml");
 		FlexoProjectFile prjFile = new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
 		try {
 			FileUtils.copyFileToFile(file, prjFile.getFile());

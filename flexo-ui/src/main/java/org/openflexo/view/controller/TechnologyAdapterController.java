@@ -20,6 +20,7 @@
 package org.openflexo.view.controller;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
 import org.openflexo.icon.VPMIconLibrary;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -65,7 +66,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
-	private final Map<Class<?>, File> fibPanelsForClasses = new HashMap<Class<?>, File>();
+	private final Map<Class<?>, String> fibPanelsForClasses = new HashMap<Class<?>, String>();
 
 	/**
 	 * Returns applicable {@link TechnologyAdapterService}
@@ -229,27 +230,28 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		System.out.println(">>>>>>> Will display module view for " + moduleView.getRepresentedObject());
 	}
 
-	public File getFIBPanelForObject(Object anObject) {
+	public String getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());
 		}
 		return null;
 	}
 
-	public File getFIBPanelForClass(Class<?> aClass) {
+	public String getFIBPanelForClass(Class<?> aClass) {
 		if (aClass == null) {
 			return null;
 		}
-		File returned = fibPanelsForClasses.get(aClass);
+		String returned = fibPanelsForClasses.get(aClass);
 		if (returned == null) {
 			if (aClass.getAnnotation(FIBPanel.class) != null) {
-				File fibPanel = new FileResource(aClass.getAnnotation(FIBPanel.class).value());
-				if (fibPanel.exists()) {
-					logger.info("Found " + fibPanel);
-					fibPanelsForClasses.put(aClass, fibPanel);
-					return fibPanel;
+				String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
+				URL fibPanelURL = ResourceLocator.locateResource(fibPanelName);
+				if (fibPanelURL != null) {
+					logger.info("Found " + fibPanelURL.toString());
+					fibPanelsForClasses.put(aClass, fibPanelName);
+					return fibPanelName;
 				} else {
-					logger.warning("Not found " + fibPanel);
+					logger.warning("Not found " + fibPanelName);
 					return null;
 				}
 			}

@@ -29,7 +29,6 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
 import org.openflexo.swing.ImageUtils;
 import org.openflexo.swing.ImageUtils.ImageType;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -156,8 +155,8 @@ public class JIRAIssueReportDialog {
 
 	private static final Logger logger = FlexoLogger.getLogger(JIRAIssueReportDialog.class.getPackage().getName());
 
-	public static final File FIB_FILE = new FileResource("Fib/JIRAIssueReportDialog.fib");
-	public static final File REPORT_FIB_FILE = new FileResource("Fib/JIRASubmitIssueReportDialog.fib");
+	public static final String FIB_FILE_NAME = "Fib/JIRAIssueReportDialog.fib";
+	public static final String REPORT_FIB_FILE_NAME = "Fib/JIRASubmitIssueReportDialog.fib";
 	private static final List<JIRAComponent> EMPTY_LIST = new ArrayList<JIRAComponent>(0);
 
 	private JIRAIssue issue;
@@ -193,7 +192,7 @@ public class JIRAIssueReportDialog {
 					}
 				}
 			}
-			FIBDialog<JIRAIssueReportDialog> dialog = FIBDialog.instanciateAndShowDialog(FIB_FILE, report, FlexoFrame.getActiveFrame(),
+			FIBDialog<JIRAIssueReportDialog> dialog = FIBDialog.instanciateAndShowDialog(FIB_FILE_NAME, report, FlexoFrame.getActiveFrame(),
 					true, FlexoLocalization.getMainLocalizer());
 			boolean ok = false;
 			while (!ok) {
@@ -338,7 +337,7 @@ public class JIRAIssueReportDialog {
 			ProgressWindow.hideProgressWindow();
 		}
 		FIBDialog
-				.instanciateAndShowDialog(REPORT_FIB_FILE, report, FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
+				.instanciateAndShowDialog(REPORT_FIB_FILE_NAME, report, FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		return !report.hasErrors();
 	}
 

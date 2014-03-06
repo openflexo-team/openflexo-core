@@ -2,12 +2,17 @@ package org.openflexo.fib;
 
 import org.junit.Test;
 import org.openflexo.fib.utils.GenericFIBInspectorTestCase;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 
+	/*
+	 * Use this method to print all
+	 * Then copy-paste 
+	 */
+	
 	public static void main(String[] args) {
-		System.out.println(generateInspectorTestCaseClass(new FileResource("Inspectors/COMMON"), "Inspectors/COMMON/"));
+		System.out.println(generateInspectorTestCaseClass(ResourceLocator.locateDirectory("Inspectors/COMMON"), "Inspectors/COMMON/"));
 	}
 
 	@Test

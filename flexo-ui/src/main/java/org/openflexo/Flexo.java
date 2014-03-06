@@ -67,7 +67,6 @@ import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.ssl.DenaliSecurityProvider;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.utils.CancelException;
@@ -297,7 +296,7 @@ public class Flexo {
 
 		if (applicationContext.defaultPackagedResourceCenterIsToBeInstalled()) {
 			FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(
-					InstallDefaultPackagedResourceCenterDirectory.FIB_FILE);
+					InstallDefaultPackagedResourceCenterDirectory.FIB_FILE_NAME,true);
 			InstallDefaultPackagedResourceCenterDirectory installRC = new InstallDefaultPackagedResourceCenterDirectory();
 			FIBDialog<InstallDefaultPackagedResourceCenterDirectory> dialog = FIBDialog.instanciateAndShowDialog(askRCDirectoryComponent,
 					installRC, null, true, FlexoLocalization.getMainLocalizer());
@@ -580,7 +579,7 @@ public class Flexo {
 			// FlexoProperties properties = FlexoProperties.instance();
 			String loggingFileName = System.getProperty("java.util.logging.config.file");
 			if (loggingFileName == null) {
-				File loggingFile = new FileResource("Config/logging_INFO.properties");
+				File loggingFile = ResourceLocator.locateFile("Config/logging_INFO.properties");
 				loggingFileName = loggingFile.getAbsolutePath();
 				System.setProperty("java.util.logging.config.file", loggingFileName);
 			}
@@ -621,7 +620,7 @@ public class Flexo {
 							if (lev == Level.FINEST) {
 								fileName = "FINEST";
 							}
-							File loggingFile = new FileResource("Config/logging_" + fileName + ".properties");
+							File loggingFile = ResourceLocator.locateFile("Config/logging_" + fileName + ".properties");
 							System.out.println("Found file " + loggingFile + " exists=" + loggingFile.exists());
 							reloadLoggingFile(loggingFile.getAbsolutePath());
 							applicationContext.getAdvancedPrefs().setLoggingFileName(null);

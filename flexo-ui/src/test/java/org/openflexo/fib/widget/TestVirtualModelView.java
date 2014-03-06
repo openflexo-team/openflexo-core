@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,7 +40,7 @@ import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -51,7 +53,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static FileResource fibFile;
+	private static File fibFile;
 
 	static ViewPoint viewPoint;
 	static VirtualModel virtualModel;
@@ -75,7 +77,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = new FileResource("Fib/VPM/VirtualModelView.fib");
+		fibFile = ResourceLocator.locateFile("Fib/VPM/VirtualModelView.fib");
 		assertTrue(fibFile.exists());
 	}
 

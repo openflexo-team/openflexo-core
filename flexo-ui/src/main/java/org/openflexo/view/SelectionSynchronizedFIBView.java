@@ -66,6 +66,9 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
 		this(representedObject, controller, fibResourcePath, false, progress);
 	}
+	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath) {
+		this(representedObject, controller, fibResourcePath, false, controller != null ? controller.willLoad(fibResourcePath) : null);
+	}
 
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
 			FlexoProgress progress) {

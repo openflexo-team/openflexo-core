@@ -28,7 +28,6 @@ import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.ResourceSavingInfo;
 
@@ -43,7 +42,7 @@ public class ReviewUnsavedDialog extends FIBDialog<ResourceSavingInfo> {
 
 	static final Logger logger = Logger.getLogger(ReviewUnsavedDialog.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/Dialog/ReviewUnsavedDialog.fib");
+	public static final String FIB_FILE_NAME = "Fib/Dialog/ReviewUnsavedDialog.fib";
 
 	private final ResourceManager resourceManager;
 
@@ -53,7 +52,7 @@ public class ReviewUnsavedDialog extends FIBDialog<ResourceSavingInfo> {
 	 */
 	public ReviewUnsavedDialog(ResourceManager resourceManager) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ResourceSavingInfo(resourceManager), FlexoFrame.getActiveFrame(),
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME), new ResourceSavingInfo(resourceManager), FlexoFrame.getActiveFrame(),
 				true, FlexoLocalization.getMainLocalizer());
 		this.resourceManager = resourceManager;
 		setTitle("Save modified resources");

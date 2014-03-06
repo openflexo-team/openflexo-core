@@ -49,7 +49,6 @@ import org.openflexo.rest.client.model.Session;
 import org.openflexo.rest.client.model.TocEntryDefinition;
 import org.openflexo.rest.client.model.User;
 import org.openflexo.rest.client.model.UserType;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.Holder;
@@ -65,9 +64,9 @@ import com.sun.jersey.multipart.file.StreamDataBodyPart;
 
 public class ServerRestClientModel implements HasPropertyChangeSupport {
 
-	public static final File FIB_FILE = new FileResource("Fib/ServerClientModelView.fib");
-	public static final File DOC_GENERATION_CHOOSER_FIB_FILE = new FileResource("Fib/DocGenerationChooser.fib");
-	public static final File NEW_SERVER_PROJECT_FIB_FILE = new FileResource("Fib/NewServerProject.fib");
+	public static final String FIB_FILE_NAME = "Fib/ServerClientModelView.fib";
+	public static final String DOC_GENERATION_CHOOSER_FIB_FILE_NAME = "Fib/DocGenerationChooser.fib";
+	public static final String NEW_SERVER_PROJECT_FIB_FILE_NAME = "Fib/NewServerProject.fib";
 
 	private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yy hh:mm");
 
@@ -1023,7 +1022,7 @@ public class ServerRestClientModel implements HasPropertyChangeSupport {
 		DocGenerationChoice choice = new DocGenerationChoice(version);
 		choice.setDocFormat(DocFormat.WORD);
 		choice.setDocType(serverProject.getDocTypes().get(0));
-		FIBDialog<DocGenerationChoice> dialog = FIBDialog.instanciateAndShowDialog(DOC_GENERATION_CHOOSER_FIB_FILE, choice,
+		FIBDialog<DocGenerationChoice> dialog = FIBDialog.instanciateAndShowDialog(DOC_GENERATION_CHOOSER_FIB_FILE_NAME, choice,
 				controller.getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getController().getStatus() == FIBController.Status.VALIDATED) {
 			performOperationsInSwingWorker(new GenerateDocumentation(version, choice));
@@ -1066,7 +1065,7 @@ public class ServerRestClientModel implements HasPropertyChangeSupport {
 		NewProjectParameter data = new NewProjectParameter();
 		data.getProject().setName(flexoProject.getDisplayName());
 		data.setComment(FlexoLocalization.localizedForKey("first_import_of_project"));
-		FIBDialog<NewProjectParameter> dialog = FIBDialog.instanciateAndShowDialog(NEW_SERVER_PROJECT_FIB_FILE, data,
+		FIBDialog<NewProjectParameter> dialog = FIBDialog.instanciateAndShowDialog(NEW_SERVER_PROJECT_FIB_FILE_NAME, data,
 				controller.getFlexoFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getController().getStatus() == FIBController.Status.VALIDATED) {
 			performOperationsInSwingWorker(new CreateProjectAndUploadFirstVersion(data));

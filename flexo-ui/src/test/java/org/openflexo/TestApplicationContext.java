@@ -21,7 +21,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
@@ -83,7 +82,7 @@ public class TestApplicationContext extends ApplicationContext {
 					FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
 				}
 			} else {
-				File sourceTestResourceCenter = new FileResource("TestResourceCenter");
+				File sourceTestResourceCenter = ResourceLocator.locateDirectory("TestResourceCenter");
 				System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
 				FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
 			}

@@ -2,12 +2,12 @@ package org.openflexo.fib;
 
 import org.junit.Test;
 import org.openflexo.fib.utils.GenericFIBInspectorTestCase;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 public class TestIFlexoOntologyInspectors extends GenericFIBInspectorTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateInspectorTestCaseClass(new FileResource("Inspectors/IFlexoOntology"), "Inspectors/IFlexoOntology/"));
+		System.out.println(generateInspectorTestCaseClass(ResourceLocator.locateDirectory("Inspectors/IFlexoOntology"), "Inspectors/IFlexoOntology/"));
 	}
 
 	@Test

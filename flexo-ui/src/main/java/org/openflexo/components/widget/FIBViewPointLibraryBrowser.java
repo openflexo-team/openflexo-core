@@ -22,7 +22,6 @@ package org.openflexo.components.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
@@ -36,10 +35,10 @@ import org.openflexo.view.controller.FlexoController;
 public class FIBViewPointLibraryBrowser extends FIBBrowserView<ViewPointLibrary> {
 	static final Logger logger = Logger.getLogger(FIBViewPointLibraryBrowser.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/Widget/FIBViewPointLibraryBrowser.fib");
+	public static final String FIB_FILE_NAME = "Fib/Widget/FIBViewPointLibraryBrowser.fib";
 
 	public FIBViewPointLibraryBrowser(ViewPointLibrary viewPointLibrary, FlexoController controller) {
-		super(viewPointLibrary, controller, FIB_FILE);
+		super(viewPointLibrary, controller, FIB_FILE_NAME);
 	}
 
 	// Please uncomment this for a live test

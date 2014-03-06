@@ -27,7 +27,6 @@ import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -38,7 +37,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  */
 public class SaveProjectsDialog {
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/SaveProjects.fib");
+	public static final String FIB_FILE_NAME = "Fib/SaveProjects.fib";
 	private ProjectList data;
 
 	public static class ProjectList {
@@ -75,7 +74,7 @@ public class SaveProjectsDialog {
 
 	public SaveProjectsDialog(FlexoController controller, List<FlexoProject> modifiedProjects) {
 		data = new ProjectList(modifiedProjects);
-		FIBDialog<ProjectList> dialog = FIBDialog.instanciateDialog(FIB_FILE, data, FlexoFrame.getActiveFrame(), true,
+		FIBDialog<ProjectList> dialog = FIBDialog.instanciateDialog(FIB_FILE_NAME, data, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getController() instanceof FlexoFIBController) {
 			((FlexoFIBController) dialog.getController()).setFlexoController(controller);

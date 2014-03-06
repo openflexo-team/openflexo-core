@@ -24,16 +24,16 @@ import java.io.IOException;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 
 public class InstallDefaultPackagedResourceCenterDirectory {
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
+	public static final String FIB_FILE_NAME = "Fib/InstallDefaultPackagedResourceCenterDirectory.fib";
 
-	private static final File ONTOLOGIES_DIR = new FileResource("Ontologies");
-	private static final File VIEWPOINT_LIBRARY_DIR = new FileResource("ViewPoints");
+	private static final File ONTOLOGIES_DIR = ResourceLocator.locateDirectory("Ontologies");
+	private static final File VIEWPOINT_LIBRARY_DIR = ResourceLocator.locateDirectory("ViewPoints");
 
 	private File resourceCenterDirectory;
 

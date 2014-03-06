@@ -23,7 +23,6 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.toolbox.FileResource;
 
 /**
  * Widget allowing to select a ViewPoint
@@ -36,15 +35,15 @@ public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
 
 	static final Logger logger = Logger.getLogger(FIBViewSelector.class.getPackage().getName());
 
-	public static FileResource FIB_FILE = new FileResource("Fib/ViewSelector.fib");
+	public static String FIB_FILE_NAME = "Fib/ViewSelector.fib";
 
 	public FIBViewSelector(ViewResource editedObject) {
 		super(editedObject);
 	}
 
 	@Override
-	public File getFIBFile() {
-		return FIB_FILE;
+	public String getFIBFileName() {
+		return FIB_FILE_NAME;
 	}
 
 	@Override

@@ -42,7 +42,7 @@ import org.openflexo.fib.model.FIBWidget;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -99,7 +99,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			};
 		});
-		File inspectorsDir = new FileResource("Inspectors/COMMON");
+		// TODO : replace directory by something else...
+		File inspectorsDir = ResourceLocator.locateDirectory("Inspectors/COMMON");
 		loadDirectory(inspectorsDir);
 	}
 
@@ -111,49 +112,51 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Loading directory: " + dir);
 		}
-		if (!dir.exists()) {
-			logger.warning("Directory does NOT exist: " + dir.getAbsolutePath());
-			// (new Exception("???")).printStackTrace();
-			// System.exit(-1);
-			return;
-		}
-		for (File f : dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				// logger.info("name="+name);
-				return name.endsWith(".inspector");
+		if (dir != null){
+			if (!dir.exists()) {
+				logger.warning("Directory does NOT exist: " + dir.getAbsolutePath());
+				// (new Exception("???")).printStackTrace();
+				// System.exit(-1);
+				return;
 			}
-		})) {
-			logger.fine("Loading: " + f.getAbsolutePath());
-			FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
-			if (inspector != null) {
-				appendVisibleFor(inspector);
-				appendEditableCondition(inspector);
-				if (inspector.getDataClass() != null) {
-					// try {
-					inspectors.put(inspector.getDataClass(), inspector);
-					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("Loaded inspector: " + f.getName() + " for " + inspector.getDataClass());
-					}
+			for (File f : dir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					// logger.info("name="+name);
+					return name.endsWith(".inspector");
 				}
-			} else {
-				logger.warning("Not found: " + f.getAbsolutePath());
+			})) {
+				logger.fine("Loading: " + f.getAbsolutePath());
+				FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
+				if (inspector != null) {
+					appendVisibleFor(inspector);
+					appendEditableCondition(inspector);
+					if (inspector.getDataClass() != null) {
+						// try {
+						inspectors.put(inspector.getDataClass(), inspector);
+						if (logger.isLoggable(Level.FINE)) {
+							logger.fine("Loaded inspector: " + f.getName() + " for " + inspector.getDataClass());
+						}
+					}
+				} else {
+					logger.warning("Not found: " + f.getAbsolutePath());
+				}
 			}
-		}
 
-		for (FIBInspector inspector : inspectors.values()) {
-			// logger.info("Merging inspector: " + inspector);
-			inspector.appendSuperInspectors(this);
-		}
-
-		for (FIBInspector inspector : inspectors.values()) {
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Initialized inspector for " + inspector.getDataClass());
+			for (FIBInspector inspector : inspectors.values()) {
+				// logger.info("Merging inspector: " + inspector);
+				inspector.appendSuperInspectors(this);
 			}
-		}
 
-		setChanged();
-		notifyObservers(new NewInspectorsLoaded());
+			for (FIBInspector inspector : inspectors.values()) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Initialized inspector for " + inspector.getDataClass());
+				}
+			}
+
+			setChanged();
+			notifyObservers(new NewInspectorsLoaded());
+		}
 	}
 
 	private void appendEditableCondition(FIBComponent component) {

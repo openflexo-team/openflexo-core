@@ -133,8 +133,8 @@ import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.selection.SelectionManager;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
+import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoDialog;
@@ -342,7 +342,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 	}
 
 	protected void loadInspectorGroup(String inspectorGroup) {
-		File inspectorsDir = new FileResource("Inspectors/" + inspectorGroup);
+		File inspectorsDir = ResourceLocator.locateDirectory("Inspectors/" + inspectorGroup);
 		// getModuleInspectorController().loadDirectory(inspectorsDir);
 	}
 

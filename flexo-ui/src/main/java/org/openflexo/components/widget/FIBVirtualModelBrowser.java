@@ -22,7 +22,6 @@ package org.openflexo.components.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
@@ -36,10 +35,10 @@ import org.openflexo.view.controller.FlexoController;
 public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 	static final Logger logger = Logger.getLogger(FIBVirtualModelBrowser.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/Widget/FIBVirtualModelBrowser.fib");
+	public static final String FIB_FILE_NAME = "Fib/Widget/FIBVirtualModelBrowser.fib";
 
 	public FIBVirtualModelBrowser(VirtualModel virtualModel, FlexoController controller) {
-		super(virtualModel, controller, FIB_FILE);
+		super(virtualModel, controller, FIB_FILE_NAME);
 	}
 
 	// Please uncomment this for a live test

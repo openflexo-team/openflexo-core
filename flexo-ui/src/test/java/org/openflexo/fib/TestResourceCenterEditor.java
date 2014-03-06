@@ -41,7 +41,7 @@ public class TestResourceCenterEditor extends OpenflexoTestCase {
 
 		log("instanciated " + dialog);
 		System.out.println("rcs= " + serviceManager.getResourceCenterService().getResourceCenters());
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB_NAME);
 	}
 
 	@Before

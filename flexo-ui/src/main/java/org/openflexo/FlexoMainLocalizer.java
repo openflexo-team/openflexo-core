@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * This is the general Openflexo localized implementation<br>
@@ -31,7 +31,7 @@ public class FlexoMainLocalizer extends LocalizedDelegateGUIImpl {
 	 */
 	private static File getMainLocalizerLocalizedDirectory() {
 		if (_localizedDirectory == null) {
-			_localizedDirectory = new FileResource(LOCALIZATION_DIRNAME);
+			_localizedDirectory = ResourceLocator.locateDirectory(LOCALIZATION_DIRNAME);
 
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Setting localized directory" + _localizedDirectory.getAbsolutePath());

@@ -42,7 +42,6 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.UtilsIconLibrary;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.SelectionSynchronizedFIBView;
@@ -61,7 +60,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	static final Logger logger = Logger.getLogger(FIBOntologyEditor.class.getPackage().getName());
 
-	public static final FileResource FIB_FILE = new FileResource("Fib/FIBOntologyEditor.fib");
+	public static final String FIB_FILE_NAME = "Fib/FIBOntologyEditor.fib";
 
 	private IFlexoOntology ontology;
 	private boolean hierarchicalMode = true;
@@ -87,7 +86,7 @@ public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 	private IFlexoOntologyConcept selectedValue;
 
 	public FIBOntologyEditor(IFlexoOntology ontology, FlexoController controller) {
-		super(null, controller, FIB_FILE);
+		super(null, controller, FIB_FILE_NAME);
 		matchingValues = new ArrayList<IFlexoOntologyConcept>();
 		setOntology(ontology);
 		setTechnologyAdapter(ontology.getTechnologyAdapter());

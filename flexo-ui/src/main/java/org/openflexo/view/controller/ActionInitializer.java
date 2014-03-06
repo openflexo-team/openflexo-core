@@ -86,9 +86,24 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
 	}
+	
+	public boolean instanciateAndShowDialog(Object object, String fibFileName) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
+		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+				new FlexoFIBController(fibComponent, getController()));
+		return dialog.getStatus() == Status.VALIDATED;
+	}
+
 
 	public Status instanciateShowDialogAndReturnStatus(Object object, File fibFile) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFile);
+		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+				new FlexoFIBController(fibComponent, getController()));
+		return dialog.getStatus();
+	}
+
+	public Status instanciateShowDialogAndReturnStatus(Object object, String fibFileName) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus();

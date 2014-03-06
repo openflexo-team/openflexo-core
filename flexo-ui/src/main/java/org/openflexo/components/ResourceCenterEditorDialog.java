@@ -28,7 +28,6 @@ import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.view.controller.ResourceCenterEditor;
 
 /**
@@ -42,7 +41,7 @@ public class ResourceCenterEditorDialog extends FIBDialog<ResourceCenterEditor> 
 
 	static final Logger logger = Logger.getLogger(ResourceCenterEditorDialog.class.getPackage().getName());
 
-	public static final File RESOURCE_CENTER_EDITOR_FIB = new FileResource("Fib/ResourceCenterEditor.fib");
+	public static final String RESOURCE_CENTER_EDITOR_FIB_NAME = "Fib/ResourceCenterEditor.fib";
 
 	private static ResourceCenterEditor resourceCenterEditor = null;
 
@@ -79,7 +78,7 @@ public class ResourceCenterEditorDialog extends FIBDialog<ResourceCenterEditor> 
 
 	public ResourceCenterEditorDialog(FlexoServiceManager serviceManager, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_CENTER_EDITOR_FIB), getResourceCenterEditor(serviceManager), parent,
+		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_CENTER_EDITOR_FIB_NAME,true), getResourceCenterEditor(serviceManager), parent,
 				true, FlexoLocalization.getMainLocalizer());
 
 		setTitle("Resource Center Editor");

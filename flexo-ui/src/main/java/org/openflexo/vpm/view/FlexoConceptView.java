@@ -53,6 +53,11 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		this.perspective = perspective;
 	}
 
+	public FlexoConceptView(EP flexoConcept, String  fibFileName, FlexoController controller, FlexoPerspective perspective) {
+		super(flexoConcept, controller, fibFileName);
+		this.perspective = perspective;
+	}
+
 	@Override
 	public FlexoPerspective getPerspective() {
 		return perspective;

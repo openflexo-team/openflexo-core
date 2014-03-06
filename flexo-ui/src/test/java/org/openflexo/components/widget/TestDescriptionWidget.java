@@ -16,6 +16,7 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointModelFactory;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test the structural and behavioural features of FIBOntologyBrowser
@@ -88,7 +89,7 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 
 			@Override
 			public File getFIBFile() {
-				return FIBDescriptionWidget.FIB_FILE;
+				return ResourceLocator.locateFile(FIBDescriptionWidget.FIB_FILE_NAME);
 			}
 
 			@Override

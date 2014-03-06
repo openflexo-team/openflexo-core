@@ -34,7 +34,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
 
 	public StandardFlexoConceptView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
+		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB_NAME, controller, perspective);
 	}
 
 }
