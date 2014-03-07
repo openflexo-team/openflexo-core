@@ -179,9 +179,9 @@ public class JIRAIssueReportDialog {
 
 	public static void newBugReport(Exception e, FlexoModule module, FlexoProject project, ApplicationContext serviceManager) {
 		try {
-			JIRAIssueReportDialog report = new JIRAIssueReportDialog(e);
+			JIRAIssueReportDialog report = new JIRAIssueReportDialog(e,serviceManager);
 			report.setFlexoProject(project);
-			report.setServiceManager(serviceManager);
+			//report.setServiceManager(serviceManager);
 			if (module != null) {
 				if (report.getIssue().getIssuetype().getComponentField() != null
 						&& report.getIssue().getIssuetype().getComponentField().getAllowedValues() != null) {
@@ -268,10 +268,11 @@ public class JIRAIssueReportDialog {
 	}
 
 	private JIRAIssueReportDialog() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-		this(null);
+		this(null,null);
 	}
 
-	private JIRAIssueReportDialog(Exception e) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+	private JIRAIssueReportDialog(Exception e,ApplicationContext serviceManager) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+		this.serviceManager = serviceManager;
 		this.project = serviceManager.getBugReportService().getOpenFlexoProject();
 		issue = new JIRAIssue();
 		issue.setIssuetype(project.getIssuetypes().get(0));
