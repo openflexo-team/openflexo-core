@@ -161,7 +161,7 @@ public class JIRAIssueReportDialog {
 	private static final List<JIRAComponent> EMPTY_LIST = new ArrayList<JIRAComponent>(0);
 
 	private JIRAIssue issue;
-	private final JIRAProject project;
+	private JIRAProject project;
 
 	private boolean sendLogs;
 	private boolean sendScreenshots;
@@ -180,7 +180,20 @@ public class JIRAIssueReportDialog {
 	public static void newBugReport(Exception e, FlexoModule module, FlexoProject project, ApplicationContext serviceManager) {
 		try {
 			JIRAIssueReportDialog report = new JIRAIssueReportDialog(e,serviceManager);
-			report.setFlexoProject(project);
+			if (module != null) {
+				JIRAProject moduleProject = serviceManager.getBugReportService().getOpenFlexoProject("MODULES");
+				if(moduleProject!=null){
+					report.setProject(moduleProject);
+					for (JIRAComponent comp :report.getAvailableComponents()) {
+						if (comp.getId().equals(module.getModule().getJiraComponentID())) {
+							report.getIssue().setComponent(comp);
+							break;
+						}
+					}
+				}
+			}
+			
+			/*report.setFlexoProject(project);
 			//report.setServiceManager(serviceManager);
 			if (module != null) {
 				if (report.getIssue().getIssuetype().getComponentField() != null
@@ -192,9 +205,13 @@ public class JIRAIssueReportDialog {
 						}
 					}
 				}
-			}
+			}*/
+			
 			FIBDialog<JIRAIssueReportDialog> dialog = FIBDialog.instanciateAndShowDialog(FIB_FILE, report, FlexoFrame.getActiveFrame(),
 					true, FlexoLocalization.getMainLocalizer());
+			
+			
+			//FIB hrer
 			boolean ok = false;
 			while (!ok) {
 				if (dialog.getStatus() == Status.VALIDATED) {
@@ -273,8 +290,42 @@ public class JIRAIssueReportDialog {
 
 	private JIRAIssueReportDialog(Exception e,ApplicationContext serviceManager) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		this.serviceManager = serviceManager;
-		this.project = serviceManager.getBugReportService().getOpenFlexoProject();
+		//this.project = serviceManager.getBugReportService().getOpenFlexoProject();
 		issue = new JIRAIssue();
+				
+		//issue.setIssuetype(project.getIssuetypes().get(0));
+		//issue.setProject(project);
+		/*if (issue.getIssuetype().getPriorityField() != null && issue.getIssuetype().getPriorityField().getAllowedValues() != null) {
+			JIRAPriority major = null;
+			for (JIRAPriority p : issue.getIssuetype().getPriorityField().getAllowedValues()) {
+				if ("Major".equals(p.getName())) {
+					major = p;
+					break;
+				}
+				if ("3".equals(p.getId())) {
+					major = p;
+				}
+			}
+			issue.setPriority(major);
+		}*/
+		sendSystemProperties = false;
+		sendScreenshots = false;
+		sendLogs = true;
+		if (e != null) {
+			issue.setStacktrace(e.getClass().getName() + ": " + e.getMessage() + "\n" + ToolBox.getStackTraceAsString(e));
+		}
+	}
+
+	public List<JIRAProject> getProjects(){
+		return serviceManager.getBugReportService().getProjects();
+	}
+	
+	public JIRAProject getProject() {
+		return project;
+	}
+
+	public void setProject(JIRAProject project){
+		this.project = project;
 		issue.setIssuetype(project.getIssuetypes().get(0));
 		issue.setProject(project);
 		if (issue.getIssuetype().getPriorityField() != null && issue.getIssuetype().getPriorityField().getAllowedValues() != null) {
@@ -290,18 +341,8 @@ public class JIRAIssueReportDialog {
 			}
 			issue.setPriority(major);
 		}
-		sendSystemProperties = false;
-		sendScreenshots = false;
-		sendLogs = true;
-		if (e != null) {
-			issue.setStacktrace(e.getClass().getName() + ": " + e.getMessage() + "\n" + ToolBox.getStackTraceAsString(e));
-		}
 	}
-
-	public JIRAProject getProject() {
-		return project;
-	}
-
+	
 	public JIRAIssue getIssue() {
 		return issue;
 	}
@@ -555,7 +596,22 @@ public class JIRAIssueReportDialog {
 		}
 	}
 
-	public List<JIRAComponent> getAvailableModules() {
+	public List<JIRAComponent> getAvailableComponents() {
+		if (getIssue().getIssuetype() == null) {
+			return EMPTY_LIST;
+		}
+		List<JIRAComponent> availableComponents = new ArrayList<JIRAComponent>();
+		
+		for (JIRAComponent component : getIssue().getIssuetype().getComponentField().getAllowedValues()) {
+			//if (module.getJiraComponentID().equals(component.getId())) {
+				availableComponents.add(component);
+			//	break;
+			//}
+		}
+		return availableComponents;
+	}
+	
+	/*public List<JIRAComponent> getAvailableModules() {
 		if (getIssue().getIssuetype() == null) {
 			return EMPTY_LIST;
 		}
@@ -569,7 +625,7 @@ public class JIRAIssueReportDialog {
 			}
 		}
 		return availableModules;
-	}
+	}*/
 
 	public boolean isSendLogs() {
 		return sendLogs;
