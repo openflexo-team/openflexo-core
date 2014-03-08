@@ -20,7 +20,11 @@
 package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
+@ModelEntity
+@ImplementationClass(FlexoBehaviourParameters.EditionSchemeParametersImpl.class)
 public interface FlexoBehaviourParameters extends FlexoBehaviourObject, FlexoFacet<FlexoBehaviour> {
 
 	@Override
