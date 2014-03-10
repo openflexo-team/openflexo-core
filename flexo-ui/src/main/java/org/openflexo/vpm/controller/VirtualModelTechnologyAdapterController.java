@@ -39,8 +39,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		// TODO
-		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON;
 	}
 
 	/**
