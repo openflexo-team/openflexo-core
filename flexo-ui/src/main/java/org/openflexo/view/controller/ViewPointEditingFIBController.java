@@ -190,6 +190,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newURIParameter();
 		newParameter.setName("uri");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("uri");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -198,6 +199,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createTextFieldParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextFieldParameter();
 		newParameter.setName("textField");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -206,6 +208,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createTextAreaParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextAreaParameter();
 		newParameter.setName("textArea");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -214,6 +217,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createIntegerParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIntegerParameter();
 		newParameter.setName("integer");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -222,6 +226,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createCheckBoxParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newCheckboxParameter();
 		newParameter.setName("checkbox");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -230,6 +235,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createDropDownParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDropDownParameter();
 		newParameter.setName("dropdown");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -238,6 +244,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIndividualParameter();
 		newParameter.setName("individual");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -246,6 +253,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newClassParameter();
 		newParameter.setName("class");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -254,6 +262,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newPropertyParameter();
 		newParameter.setName("property");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -262,6 +271,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newObjectPropertyParameter();
 		newParameter.setName("property");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -270,6 +280,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDataPropertyParameter();
 		newParameter.setName("property");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -286,6 +297,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTechnologyObjectParameter();
 		newParameter.setName("technologyObject");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -294,6 +306,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createListParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newListParameter();
 		newParameter.setName("list");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
@@ -302,6 +315,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	public FlexoBehaviourParameter createFlexoConceptInstanceParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");
+		newParameter.setScheme(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;

@@ -149,6 +149,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
+	public void setScheme(FlexoBehaviour scheme);
+	
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
