@@ -90,6 +90,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	public static final String CONDITIONAL_KEY = "conditional";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_REQUIRED_KEY = "isRequired";
+	@PropertyIdentifier(type = FlexoBehaviour.class)
+	public static final String FLEXO_BEHAVIOUR_SCHEME_KEY = "flexoBehaviourScheme";
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -149,6 +151,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
+	@Getter(value = FLEXO_BEHAVIOUR_SCHEME_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
+	public FlexoBehaviour getScheme();
+
+	@Setter(FLEXO_BEHAVIOUR_SCHEME_KEY)
 	public void setScheme(FlexoBehaviour scheme);
 	
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
