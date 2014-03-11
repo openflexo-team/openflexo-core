@@ -76,10 +76,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openflexo</groupId>
-			<artifactId>flexowysiwyg</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openflexo</groupId>
 			<artifactId>flexodocresourcemanager</artifactId>
 		</dependency>
 		<dependency>
