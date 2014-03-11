@@ -73,14 +73,13 @@ import org.openflexo.drm.action.AddToRelatedToItem;
 import org.openflexo.drm.action.RemoveEmbeddingChildItem;
 import org.openflexo.drm.action.RemoveInheritanceChildItem;
 import org.openflexo.drm.action.RemoveRelatedToItem;
+import org.openflexo.fib.view.widget.FIBHtmlEditorWidget;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.wysiwyg.FlexoWysiwyg;
-import org.openflexo.wysiwyg.FlexoWysiwygLight;
 
 /**
  * Please comment this class
@@ -428,8 +427,8 @@ public abstract class AbstractDocItemView extends JPanel {
 		private final JPanel fullHTMLDescriptionPanel;
 		private final JEditorPane shortHTMLDescriptionLabel;
 		private final JEditorPane fullHTMLDescriptionLabel;
-		FlexoWysiwyg shortHTMLDescriptionEditor;
-		FlexoWysiwyg fullHTMLDescriptionEditor;
+		FIBHtmlEditorWidget shortHTMLDescriptionEditor;
+		FIBHtmlEditorWidget fullHTMLDescriptionEditor;
 		private boolean _isEditing;
 
 		protected EditorPanel() {
@@ -566,8 +565,8 @@ public abstract class AbstractDocItemView extends JPanel {
 					/*                 if ((historyPanel.getCurrentAction() != null)
 					                         && (historyPanel.getCurrentAction().getVersion() != null)) {
 					                     DocItemVersion version = historyPanel.getCurrentAction().getVersion();*/
-					shortHTMLDescriptionEditor.setContent(version.getShortHTMLDescription()); // change AJA
-					fullHTMLDescriptionEditor.setContent(version.getFullHTMLDescription()); // change AJA
+					shortHTMLDescriptionEditor.setData(version.getShortHTMLDescription()); // change AJA
+					fullHTMLDescriptionEditor.setData(version.getFullHTMLDescription()); // change AJA
 				} else {
 					logger.warning("You are about to edit a null version, which is a strange situation. Good luck !");
 				}
