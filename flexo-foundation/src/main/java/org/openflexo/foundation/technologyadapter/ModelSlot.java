@@ -34,6 +34,7 @@ import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -124,6 +125,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableEditionActionTypes();
 
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableFetchRequestActionTypes();
+	
+	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
 	/**
 	 * Creates and return a new {@link FlexoRole} of supplied class.<br>
