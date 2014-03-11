@@ -76,7 +76,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	}
 
 	public static enum CreateEditionSchemeChoice {
-		BuiltInAction, ModelSlotSpecificAction
+		BuiltInAction, ModelSlotSpecificBehaviour
 	}
 	
 	private String editionSchemeName;
