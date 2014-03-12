@@ -31,7 +31,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity
 @ImplementationClass(FloatInspectorEntry.FloatInspectorEntryImpl.class)
-@XMLElement(xmlTag = "TextField")
+@XMLElement(xmlTag = "Float")
 public interface FloatInspectorEntry extends InspectorEntry {
 
 	public abstract class FloatInspectorEntryImpl extends InspectorEntryImpl implements FloatInspectorEntry {

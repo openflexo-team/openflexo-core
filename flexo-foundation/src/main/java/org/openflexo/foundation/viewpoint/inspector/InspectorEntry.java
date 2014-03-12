@@ -49,7 +49,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 @Imports({ @Import(CheckboxInspectorEntry.class),@Import(ClassInspectorEntry.class), @Import(FloatInspectorEntry.class),
 @Import(IndividualInspectorEntry.class),@Import(IntegerInspectorEntry.class), @Import(PropertyInspectorEntry.class),
-@Import(TextAreaInspectorEntry.class)})
+@Import(TextAreaInspectorEntry.class),@Import(TextFieldInspectorEntry.class),@Import(DataPropertyInspectorEntry.class), @Import(ObjectPropertyInspectorEntry.class)})
 public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
