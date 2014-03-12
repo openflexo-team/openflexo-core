@@ -271,7 +271,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public int getIndex() {
-			return getScheme().getParameters().indexOf(this);
+			if(getScheme()!=null){
+				return getScheme().getParameters().indexOf(this);
+			}
+			return -1;
 		}
 
 		@Override
