@@ -370,8 +370,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 		File viewPointDirectory = viewPointResource.getDirectory();
 		
-		List<File> palettes = new ArrayList<File>();
-		List<File> exampleDiagrams = new ArrayList<File>();
+		List<Document> palettes = new ArrayList<Document>();
+		List<Document> exampleDiagrams = new ArrayList<Document>();
 		List<File> virtualModels = new ArrayList<File>();
 		
 		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
@@ -379,26 +379,35 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		/*
 		 *  Find the resources
 		 */
-		for (File f : viewPointResource.getDirectory().listFiles()) {
-			if (f.isDirectory()) {
-				// Find palette files if any
-				File paletteFile = new File(f, f.getName() + ".palette");
-				if (paletteFile.exists()) {
-					palettes.add(paletteFile);
+		try {
+			for (File f : viewPointResource.getDirectory().listFiles()) {
+				if (f.isDirectory()) {
+					// Find palette files if any
+					for(File palette : f.listFiles()){
+						if (palette.getName().endsWith(".palette")) {
+							palettes.add(XMLUtils.readXMLFile(palette));
+						}
+					}
+					// Find diagram files if any
+					for(File exampleDiagram : f.listFiles()){
+						if (exampleDiagram.getName().endsWith(".diagram")) {
+							exampleDiagrams.add(XMLUtils.readXMLFile(exampleDiagram));
+						}
+					}
+					// Find virtualmodels files if any
+					File virtualModelFile = new File(f, f.getName() + ".xml");
+					if (virtualModelFile.exists()) {
+						virtualModels.add(virtualModelFile);
+					}
 				}
-				// Find diagram files if any
-				File exampleDiagramFile = new File(f, f.getName() + ".diagram");
-				if (exampleDiagramFile.exists()) {
-						exampleDiagrams.add(exampleDiagramFile);
-				}
-				// Find virtualmodels files if any
-				File virtualModelFile = new File(f, f.getName() + ".xml");
-				if (virtualModelFile.exists()) {
-					virtualModels.add(virtualModelFile);
-				}
-			}
-		} 
-		
+			} 
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/*
 		 *  Execute the convertion
 		 */
@@ -410,20 +419,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	
 	
 	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource,
-			File virtualModelFile, List<File> palettes,List<File> exampleDiagrams) {
+			File virtualModelFile, List<Document> palettes,List<Document> exampleDiagrams) {
 		try {
 			Document d = XMLUtils.readXMLFile(virtualModelFile);
 			convertNames16ToNames17(d);
 			if (d.getRootElement().getName().equals("DiagramSpecification")) {
-				convertDiagramSpecification16ToVirtualModel17(d);
+				convertDiagramSpecification16ToVirtualModel17(virtualModelFile, d, palettes, exampleDiagrams);
 				XMLUtils.saveXMLFile(d, virtualModelFile);
-				// update the palettes and example diagrams for this Diagram Specification
-				for(File palette : palettes){
-					convertPalette16ToPalette17(null,XMLUtils.readXMLFile(palette));
-				}
-				for(File exampleDiagram : exampleDiagrams){
-					convertExampleDiagram16ToExampleDiagram17(null,XMLUtils.readXMLFile(exampleDiagram));
-				}
 			}
 			if (d.getRootElement().getName().equals("VirtualModel")) {
 				convertVirtualModel16ToVirtualModel17(d);
@@ -438,22 +440,32 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 	
 	
-	
-	private static void convertPalette16ToPalette17(VirtualModelResource virtualModelResource,Document palette) {
-		
-	}
-	
-	private static void convertExampleDiagram16ToExampleDiagram17(VirtualModelResource virtualModelResource,Document diagram) {
-		
-	}
-	
-	
-	private static void convertDiagramSpecification16ToVirtualModel17(Document diagram){
+	private static void convertDiagramSpecification16ToVirtualModel17(File file, Document diagram, List<Document> palettes, List<Document> exampleDiagrams){
 		// Create a new Virtual Model with a TypedDiagramModelSlot
 		convertOldNameToNewNames("DiagramSpecification", "VirtualModel", diagram);
-		// Find
 		
-		// DropScheme
+		// Create the diagram specification
+		File diagramSpecificationFile = new File(file.getParentFile(), file.getName().replace(".xml", "") + ".diagramspecification");
+		Document diagramSpecification = new Document();
+		Element rootElement = new Element("DiagramSpecification");
+		diagramSpecification.addContent(rootElement);
+		
+		// Find all example diagrams
+		for(Document exampleDiagram : exampleDiagrams){
+			exampleDiagram.getRootElement().setName("Diagram");
+			rootElement.addContent(exampleDiagram.cloneContent());
+		}
+		
+		// Create palettes
+		for(Document palette : palettes){
+			rootElement.addContent(palette.cloneContent());
+		}
+				
+		// Find drop schemes
+		
+		// Save the file
+		XMLUtils.saveXMLFile(diagramSpecification, diagramSpecificationFile);
+		
 	}
 	
 	private static void convertVirtualModel16ToVirtualModel17(Document document){
