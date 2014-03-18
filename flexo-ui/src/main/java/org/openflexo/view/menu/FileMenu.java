@@ -49,7 +49,6 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.print.PrintManagingController;
-import org.openflexo.rest.action.UploadProjectAction;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -87,8 +86,6 @@ public class FileMenu extends FlexoMenu {
 			add(new SaveProjectItem());
 			add(new SaveAllProjectItem());
 			add(new SaveAsProjectItem());
-			add(new SaveProjectForServerItem());
-			add(new SendProjectToFlexoServerItem());
 			// TODO: repair reload project. this includes to also support close project.
 			// add(reloadProjectItem = new ReloadProjectItem());
 			addSeparator();
@@ -363,107 +360,6 @@ public class FileMenu extends FlexoMenu {
 
 	}
 
-	public class SendProjectToFlexoServerItem extends FlexoMenuItem {
-
-		public SendProjectToFlexoServerItem() {
-			super(new SendProjectToFlexoServerAction(), "send_project_to_flexo_server", null, getController(), true);
-			setIcon(IconLibrary.NETWORK_ICON);
-		}
-
-	}
-
-	public class SendProjectToFlexoServerAction extends AbstractAction {
-		public SendProjectToFlexoServerAction() {
-			super();
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			/*
-			boolean isOperationConfirmed = saveForServerPreprocessing();
-			if (!isOperationConfirmed) {
-				return;
-			}
-			 */
-			UploadProjectAction refresh = UploadProjectAction.actionType.makeNewAction(getController().getProject(), null, getController()
-					.getEditor());
-			refresh.doAction();
-		}
-
-	}
-
-	// ==========================================================================
-	// ============================= SaveProjectForServer =============================
-	// ==========================================================================
-
-	public class SaveProjectForServerItem extends FlexoMenuItem {
-
-		public SaveProjectForServerItem() {
-			super(new SaveProjectForServerAction(), "save_project_for_server", null, getController(), true);
-			setIcon(IconLibrary.SAVE_ICON);
-		}
-
-	}
-
-	private boolean saveForServerPreprocessing() {
-		FlexoProject project = _controller.getProject();
-
-		int i = FlexoController.confirmYesNoCancel(FlexoLocalization
-				.localizedForKey("would_you_like_to_check_your_project_consistency_first") + "?");
-		switch (i) {
-		case JOptionPane.YES_OPTION:
-			logger.warning("Please implement this (save for server)");
-			// TODO
-			ValidateProject validate = ValidateProject.actionType.makeNewAction(null, null, getController().getEditor());
-			// ValidateProject validate = ValidateProject.actionType.makeNewAction(project, null, getController().getEditor());
-			validate.doAction();
-			if (validate.getErrorsNb() > 0) {
-				StringBuilder sb = new StringBuilder();
-				if (validate.getIeValidationReport() != null & validate.getIeValidationReport().getErrorNb() > 0) {
-					sb.append(FlexoLocalization.localizedForKey("there_are_errors_in_your_components") + "\n");
-				}
-				if (validate.getWkfValidationReport() != null && validate.getWkfValidationReport().getErrorNb() > 0) {
-					sb.append(FlexoLocalization.localizedForKey("there_are_errors_in_your_processes") + "\n");
-				}
-				if (validate.getDmValidationReport() != null && validate.getDmValidationReport().getErrorNb() > 0) {
-					sb.append(FlexoLocalization.localizedForKey("there_are_errors_in_your_data_model") + "\n");
-				}
-				if (validate.getDkvValidationReport() != null && validate.getDkvValidationReport().getErrorNb() > 0) {
-					sb.append(FlexoLocalization.localizedForKey("there_are_errors_in_the_dkv") + "\n");
-				}
-				sb.append(FlexoLocalization.localizedForKey("would_you_like_to_continue_anyway") + "?");
-				if (!FlexoController.confirmWithWarning(sb.toString())) {
-					return false;
-				}
-			} else {
-				if (getController().getApplicationContext().getGeneralPreferences().getNotifyValidProject()) {
-					logger.warning("please reimplement this");
-					// TODO: please reimplement this
-					/*ParameterDefinition[] params = new ParameterDefinition[1];
-					CheckboxParameter dontNotify = new CheckboxParameter("dont_notify", "dont_notify_if_project_is_valid", false);
-					params[0] = dontNotify;
-					AskParametersDialog dialog = AskParametersDialog.createAskParametersDialog(project,
-							FlexoLocalization.localizedForKey("project_is_valid"), FlexoLocalization.localizedForKey("project_is_valid"),
-							params);
-					if (dialog.getStatus() == AskParametersDialog.VALIDATE) {
-						if (dontNotify.getValue()) {
-							GeneralPreferences.setNotifyValidProject(false);
-							GeneralPreferences.save();
-						}
-					} else {
-						return false;
-					}*/
-				}
-			}
-			break;
-		case JOptionPane.NO_OPTION:
-			break;
-		default:
-			return false;
-		}
-		return true;
-	}
-
 	public class SaveAllProjectItem extends FlexoMenuItem {
 
 		public SaveAllProjectItem() {
@@ -473,7 +369,7 @@ public class FileMenu extends FlexoMenu {
 		}
 
 	}
-
+	
 	public class SaveAllProjectAction extends AbstractAction implements PropertyChangeListener {
 		public SaveAllProjectAction() {
 			super();
@@ -518,21 +414,6 @@ public class FileMenu extends FlexoMenu {
 
 	protected ProjectLoader getProjectLoader() {
 		return getController().getProjectLoader();
-	}
-
-	public class SaveProjectForServerAction extends AbstractAction {
-		public SaveProjectForServerAction() {
-			super();
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			boolean isOperationConfirmed = saveForServerPreprocessing();
-			if (isOperationConfirmed) {
-				getProjectLoader().saveProjectForServer(getController().getProject());
-			}
-		}
-
 	}
 
 	// ==========================================================================
