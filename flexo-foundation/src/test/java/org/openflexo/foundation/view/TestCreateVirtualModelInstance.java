@@ -21,7 +21,7 @@ import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
+import org.openflexo.foundation.viewpoint.action.CreateVirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.test.OrderedRunner;
@@ -59,7 +59,13 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(newViewPoint.getResource());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
-		newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
+
+		CreateVirtualModel action = CreateVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
+		action.setNewVirtualModelName("TestVirtualModel");
+		action.doAction();
+		assertTrue(action.hasActionExecutionSucceeded());
+		newVirtualModel = action.getNewVirtualModel();
+		// newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getDirectory().exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFile().exists());
 	}
