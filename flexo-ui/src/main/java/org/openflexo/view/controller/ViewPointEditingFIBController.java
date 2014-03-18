@@ -169,7 +169,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		createEditionAction.doAction();
 		return createEditionAction.getNewEditionAction();
 	}
-
+	
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
 			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
