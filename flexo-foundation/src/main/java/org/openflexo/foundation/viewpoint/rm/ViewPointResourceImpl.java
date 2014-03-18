@@ -113,7 +113,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			/*
 			 * Will be activitated when the convertion will be fully compliant
 			 */
-			convertViewPoint16ToViewpoint17(returned);
+			//convertViewPoint16ToViewpoint17(returned);
 			
 			// Now look for virtual models
 			returned.exploreVirtualModels();
@@ -462,6 +462,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 				
 		// Find drop schemes
+		
 		
 		// Save the file
 		XMLUtils.saveXMLFile(diagramSpecification, diagramSpecificationFile);
