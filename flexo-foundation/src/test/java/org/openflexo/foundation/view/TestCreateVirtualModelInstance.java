@@ -134,19 +134,12 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@TestOrder(5)
 	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
-		String oldURI = project.getURI();
-		System.out.println("Old URI: " + oldURI);
 		instanciateTestServiceManager();
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();
-		String newURI = project.getURI();
-		System.out.println("New URI: " + newURI);
-		assertEquals(newURI, oldURI);
 		assertNotNull(editor);
 		assertNotNull(project);
-		System.out.println("Searching view: " + newView.getURI());
 		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
-		System.out.println("Found: " + newViewResource);
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
 		newViewResource.loadResourceData(null);
