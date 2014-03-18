@@ -66,8 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
  * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an
- * {@link FlexoConceptInstance}.<br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.<br>
  * 
  * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
  * 
@@ -221,6 +220,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
 			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>>();
+		}
+
+		@Override
+		public VirtualModelInstanceModelFactory getFactory() {
+			if (getResource() != null) {
+				return getResource().getFactory();
+			}
+			return null;
 		}
 
 		@Override

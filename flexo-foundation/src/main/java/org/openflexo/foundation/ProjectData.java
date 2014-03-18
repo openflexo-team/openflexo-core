@@ -1,5 +1,6 @@
 package org.openflexo.foundation;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openflexo.foundation.resource.FlexoProjectReference;
@@ -15,12 +16,16 @@ import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.FlexoVersion;
 
 /**
  * Encodes meta-data relative to project
@@ -33,7 +38,44 @@ import org.openflexo.model.factory.ModelFactory;
 @XMLElement
 public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, ProjectResourceData<ProjectData> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String URI_KEY = "uri";
+	@PropertyIdentifier(type = Date.class)
+	public static final String CREATION_DATE_KEY = "creationDate";
+	@PropertyIdentifier(type = String.class)
+	public static final String CREATION_USER_ID_KEY = "creationUserId";
+	@PropertyIdentifier(type = FlexoVersion.class)
+	public static final String PROJECT_VERSION_KEY = "projectVersion";
+	@PropertyIdentifier(type = FlexoProjectReference.class, cardinality = Cardinality.LIST)
 	public static final String IMPORTED_PROJECTS = "importedProjects";
+
+	@Getter(value = URI_KEY)
+	@XMLAttribute
+	public String getURI();
+
+	@Setter(URI_KEY)
+	public void setURI(String projectURI);
+
+	@Getter(value = CREATION_DATE_KEY)
+	@XMLAttribute
+	public Date getCreationDate();
+
+	@Setter(CREATION_DATE_KEY)
+	public void setCreationDate(Date creationDate);
+
+	@Getter(value = CREATION_USER_ID_KEY)
+	@XMLAttribute
+	public String getCreationUserId();
+
+	@Setter(CREATION_USER_ID_KEY)
+	public void setCreationUserId(String creationUser);
+
+	@Getter(value = PROJECT_VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getProjectVersion();
+
+	@Setter(PROJECT_VERSION_KEY)
+	public void setProjectVersion(FlexoVersion version);
 
 	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.URI, isMultiValued = false)
 	public FlexoProjectReference getProjectReferenceWithURI(String uri);
@@ -165,6 +207,7 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 
 		public ProjectDataFactory() throws ModelDefinitionException {
 			super(ModelContextLibrary.getModelContext(ProjectData.class));
+			addConverter(new FlexoVersionConverter());
 		}
 	}
 

@@ -189,8 +189,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId, long instanceId);
 
 	/**
-	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its
-	 * URI<br>
+	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI<br>
 	 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 	 * 
 	 * @param flexoConceptId
@@ -420,8 +419,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		}
 
 		/**
-		 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or
-		 * its URI<br>
+		 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its
+		 * URI<br>
 		 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 		 * 
 		 * @param flexoConceptId
@@ -799,10 +798,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		@Override
 		public void setSpecificDescriptions(Map<String, String> specificDescriptions) {
-			if(this.specificDescriptions==null){
+			if (this.specificDescriptions == null) {
 				this.specificDescriptions = new TreeMap<String, String>();
-			}
-			else{
+			} else {
 				this.specificDescriptions = specificDescriptions;
 			}
 		}

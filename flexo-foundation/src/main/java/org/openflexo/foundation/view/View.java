@@ -92,6 +92,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	@Setter(TITLE_KEY)
 	public void setTitle(String title);
 
+	public String getURI();
+
 	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	public List<ModelSlotInstance> getModelSlotInstances();
@@ -209,6 +211,14 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 				return getResource().getURI();
 			}
 		}*/
+
+		@Override
+		public String getURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return null;
+		}
 
 		@Override
 		public ViewImpl getView() {

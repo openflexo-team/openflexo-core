@@ -47,7 +47,7 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 	private final FlexoProject project;
 
 	/**
-	 * Create a new FlexoComponentLibrary.
+	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoProject project) {
 		super(project, getExpectedViewLibraryDirectory(project));
@@ -166,7 +166,8 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 					if (vRes != null) {
 						logger.info("Found and register view " + vRes.getURI() + " file=" + vRes.getFile().getAbsolutePath() + " folder="
 								+ folder + " path=" + folder.getFile());
-						registerResource(vRes, folder);
+						// Not necessary, it has already been done
+						// registerResource(vRes, folder);
 						returned = true;
 					}
 				}

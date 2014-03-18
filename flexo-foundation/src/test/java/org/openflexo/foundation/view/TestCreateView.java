@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.view.action.CreateView;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -72,12 +71,6 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 		newView = action.getNewView();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
-		try {
-			newView.getResource().save(null);
-		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
 	}
