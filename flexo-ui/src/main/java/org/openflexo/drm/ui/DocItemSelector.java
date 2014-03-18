@@ -23,7 +23,8 @@ import java.io.File;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.drm.DocItem;
-import org.openflexo.toolbox.ResourceLocator;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a DocItem while browsing the DocResourceCenter
@@ -36,7 +37,7 @@ public class DocItemSelector extends FIBFlexoObjectSelector<DocItem> {
 
 	protected static final String EMPTY_STRING = "";
 
-	public static final String  FIB_FILE_NAME = "Fib/DocItemSelector.fib";
+	public static final Resource  FIB_FILE = ResourceLocator.locateResource("Fib/DocItemSelector.fib");
 
 	public DocItemSelector(DocItem editedObject) {
 		super(editedObject);
@@ -48,8 +49,8 @@ public class DocItemSelector extends FIBFlexoObjectSelector<DocItem> {
 	}
 
 	@Override
-	public String getFIBFileName() {
-		return FIB_FILE_NAME;
+	public Resource getFIBResource() {
+		return FIB_FILE;
 	}
 
 }

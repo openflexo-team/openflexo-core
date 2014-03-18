@@ -2,12 +2,13 @@ package org.openflexo.fib;
 
 import org.junit.Test;
 import org.openflexo.fib.utils.GenericFIBTestCase;
-import org.openflexo.toolbox.ResourceLocator;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
 
 public class TestCommonFlexoWidgetFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateFIBTestCaseClass(ResourceLocator.locateDirectory("Fib/Widget"), "Fib/Widget/"));
+		System.out.println(generateFIBTestCaseClass(((FileResourceImpl ) ResourceLocator.locateResource("Fib/Widget")).getFile(), "Fib/Widget/"));
 	}
 
 	@Test

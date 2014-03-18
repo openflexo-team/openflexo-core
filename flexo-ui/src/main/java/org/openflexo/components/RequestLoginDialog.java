@@ -27,6 +27,8 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -37,11 +39,12 @@ import org.openflexo.view.FlexoFrame;
 public class RequestLoginDialog extends FIBDialog<LoginData> {
 
 	private static final Logger logger = FlexoLogger.getLogger(RequestLoginDialog.class.getPackage().getName());
+	
 
-	public static final String FIB_FILE_NAME = "Fib/RequestLoginDialog.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/RequestLoginDialog.fib");
 
 	public RequestLoginDialog(ApplicationContext applicationContext) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME,true), new LoginData(applicationContext), FlexoFrame.getActiveFrame(), true,
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE,true), new LoginData(applicationContext), FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}

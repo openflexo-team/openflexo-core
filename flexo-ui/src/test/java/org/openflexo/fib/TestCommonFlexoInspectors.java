@@ -2,7 +2,8 @@ package org.openflexo.fib;
 
 import org.junit.Test;
 import org.openflexo.fib.utils.GenericFIBInspectorTestCase;
-import org.openflexo.toolbox.ResourceLocator;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
 
 public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 
@@ -12,7 +13,7 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	 */
 	
 	public static void main(String[] args) {
-		System.out.println(generateInspectorTestCaseClass(ResourceLocator.locateDirectory("Inspectors/COMMON"), "Inspectors/COMMON/"));
+		System.out.println(generateInspectorTestCaseClass(((FileResourceImpl ) ResourceLocator.locateResource("Inspectors/COMMON")).getFile(), "Inspectors/COMMON/"));
 	}
 
 	@Test

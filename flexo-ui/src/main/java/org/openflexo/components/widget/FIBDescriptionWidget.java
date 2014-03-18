@@ -28,6 +28,8 @@ import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to represent/edit specific descriptions related to a {@link FlexoObject} instance
@@ -39,11 +41,12 @@ import org.openflexo.localization.LocalizedDelegate;
 public class FIBDescriptionWidget extends DefaultFIBCustomComponent<FlexoObject> {
 
 	static final Logger logger = Logger.getLogger(FIBDescriptionWidget.class.getPackage().getName());
+	
 
-	public static final String FIB_FILE_NAME = "Fib/DescriptionWidget.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DescriptionWidget.fib");
 
 	public FIBDescriptionWidget(FlexoObject editedObject) {
-		super(FIB_FILE_NAME, editedObject, FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, editedObject, FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override

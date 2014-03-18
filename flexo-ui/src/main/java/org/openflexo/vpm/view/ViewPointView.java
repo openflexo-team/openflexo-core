@@ -42,7 +42,7 @@ public class ViewPointView extends FIBModuleView<ViewPoint> implements FIBMouseC
 	private final FlexoPerspective perspective;
 
 	public ViewPointView(ViewPoint viewPoint, FlexoController controller, FlexoPerspective perspective) {
-		super(viewPoint, controller, CommonFIB.VIEWPOINT_VIEW_FIB_NAME);
+		super(viewPoint, controller, CommonFIB.VIEWPOINT_VIEW_FIB);
 		this.perspective = perspective;
 	}
 

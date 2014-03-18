@@ -24,16 +24,19 @@ import java.io.IOException;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 
 public class InstallDefaultPackagedResourceCenterDirectory {
 
-	public static final String FIB_FILE_NAME = "Fib/InstallDefaultPackagedResourceCenterDirectory.fib";
 
-	private static final File ONTOLOGIES_DIR = ResourceLocator.locateDirectory("Ontologies");
-	private static final File VIEWPOINT_LIBRARY_DIR = ResourceLocator.locateDirectory("ViewPoints");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
+
+	private static final Resource ONTOLOGIES_DIR = ResourceLocator.locateResource("Ontologies");
+	private static final Resource VIEWPOINT_LIBRARY_DIR = ResourceLocator.locateResource("ViewPoints");
 
 	private File resourceCenterDirectory;
 
@@ -63,26 +66,29 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 		rcService.storeDirectoryResourceCenterLocations();
 	}
 
-	private static void copyViewPoints(File initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
+	private static void copyViewPoints(Resource initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
 
-		if (initialDirectory.getParentFile().equals(resourceCenterDirectory)) {
-			return;
+		if (initialDirectory instanceof FileResourceImpl){
+			if (((FileResourceImpl) initialDirectory).getFile().getParentFile().equals(resourceCenterDirectory)) {
+				return;
+			}
 		}
-
 		try {
-			FileUtils.copyDirToDir(VIEWPOINT_LIBRARY_DIR, resourceCenterDirectory, copyStrategy);
+			FileUtils.copyResourceToDir(VIEWPOINT_LIBRARY_DIR, resourceCenterDirectory, copyStrategy);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void copyOntologies(File initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
+	private static void copyOntologies(Resource initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
 
-		if (initialDirectory.getParentFile().equals(resourceCenterDirectory)) {
-			return;
+		if (initialDirectory instanceof FileResourceImpl){
+			if (((FileResourceImpl) initialDirectory).getFile().getParentFile().equals(resourceCenterDirectory)) {
+				return;
+			}
 		}
 		try {
-			FileUtils.copyDirToDir(initialDirectory, resourceCenterDirectory, copyStrategy);
+			FileUtils.copyResourceToDir(initialDirectory, resourceCenterDirectory, copyStrategy);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

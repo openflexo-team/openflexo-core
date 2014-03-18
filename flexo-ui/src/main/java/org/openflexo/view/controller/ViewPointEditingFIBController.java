@@ -25,6 +25,7 @@ import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.rm.Resource;
 
 /**
  * Represents a controller with basic ViewPoint edition facilities Extends FlexoFIBController by supporting features relative to ViewPoint
@@ -312,7 +313,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return selectedObject instanceof EditionAction;
 	}
 
-	public String fibForEditionAction(EditionAction<?, ?> action) {
+	public Resource fibForEditionAction(EditionAction<?, ?> action) {
 		if (action == null) {
 			return null;
 		}
@@ -334,7 +335,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return fibFile;*/
 	}
 
-	public String fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
+	public Resource fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
 		if (flexoBehaviour == null) {
 			return null;
 		}

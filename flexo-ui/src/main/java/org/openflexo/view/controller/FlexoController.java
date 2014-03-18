@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2013-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -132,9 +133,10 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.prefs.FlexoPreferences;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoDialog;
@@ -160,6 +162,9 @@ import com.google.common.collect.Multimap;
 public abstract class FlexoController implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
+
+	
+	
 
 	public static final String DISPOSED = "disposed";
 
@@ -342,8 +347,9 @@ public abstract class FlexoController implements PropertyChangeListener {
 	}
 
 	protected void loadInspectorGroup(String inspectorGroup) {
-		File inspectorsDir = ResourceLocator.locateDirectory("Inspectors/" + inspectorGroup);
-		// getModuleInspectorController().loadDirectory(inspectorsDir);
+		// TODO : To be optimized 
+		Resource inspectorsDir = ResourceLocator.locateResource("Inspectors/" + inspectorGroup);
+		getModuleInspectorController().loadDirectory(inspectorsDir);
 	}
 
 	public FlexoFrame getFlexoFrame() {
@@ -1511,8 +1517,11 @@ public abstract class FlexoController implements PropertyChangeListener {
 		return false;
 	}
 
+	/*
+	 * File moved to Resource
 	public FlexoProgress willLoad(File fibFile) {
 
+		
 		if (!FIBLibrary.instance().componentIsLoaded(fibFile)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1521,8 +1530,21 @@ public abstract class FlexoController implements PropertyChangeListener {
 			return progress;
 		}
 		return null;
-	}
+	}*/
 
+
+	public FlexoProgress willLoad(Resource fibResource) {
+
+		if (!FIBLibrary.instance().componentIsLoaded(fibResource)) {
+			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
+			progress.setProgress("loading_component");
+			FIBLibrary.instance().retrieveFIBComponent(fibResource);
+			progress.setProgress("build_interface");
+			return progress;
+		}
+		return null;
+	}
+	/*
 	public FlexoProgress willLoad(String fibResourcePath) {
 
 		if (!FIBLibrary.instance().componentIsLoaded(fibResourcePath)) {
@@ -1534,6 +1556,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		}
 		return null;
 	}
+	*/
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {

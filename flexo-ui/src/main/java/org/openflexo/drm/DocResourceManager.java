@@ -24,6 +24,7 @@ import java.awt.Container;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -52,9 +53,12 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.ModuleView;
@@ -157,35 +161,41 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	public File getDRMFile() {
 		if (drmFile == null) {
-			drmFile = ResourceLocator.locateFile("DocResourceCenter.xml");
-			if (drmFile.exists()) {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("Found DRM File : " + drmFile.getAbsolutePath());
-				}
-			} else {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("DRM File not found: " + drmFile.getAbsolutePath());
-				}
+			Resource drmResource = ResourceLocator.locateResource("DocResourceCenter.xml");
+			if (drmResource instanceof FileResourceImpl) {
+				logger.info("Found DRM File : " + drmResource.getURI());
+				drmFile = ((FileResourceImpl) drmResource).getFile();
 			}
+			else if (drmResource == null) {
+				logger.info("DRM File not found: " + drmResource.getURI());
+				try {
+					drmResource = new FileResourceImpl(new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(), "DocResourceCenter.xml"));
+				} catch (Exception e) {
+					logger.severe("Unable to create DocResourceCenter files");
+					e.printStackTrace();
+				} 
+				drmFile = ((FileResourceImpl) drmResource).getFile();
+				}
 		}
 		if (!drmFile.exists() && !isSaving) {
-			drmFile = new File(getDocResourceCenterDirectory(), "DocResourceCenter.xml");
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("DocResourceCenter.xml not found. Creates new DocResourceCenter");
-			}
 			docResourceCenter = DocResourceCenter.createDefaultDocResourceCenter();
 			save();
 		}
 		return drmFile;
 	}
 
-	private File drmDirectory;
+	private Resource drmDirectory;
 
-	public File getDocResourceCenterDirectory() {
+	public Resource getDocResourceCenterDirectory() {
 		if (drmDirectory == null) {
-			drmDirectory = getDRMFile().getParentFile();
+			try {
+				drmDirectory = new FileResourceImpl(getDRMFile().getParentFile());
+			} catch (Exception e) {
+				logger.severe("Unable to find DocResourceCenterDirectory");
+				e.printStackTrace();
+			} 
 			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Doc Resource Center Directory: " + drmDirectory.getAbsolutePath());
+				logger.info("Doc Resource Center Directory: " + drmDirectory.getURI());
 			}
 		}
 		return drmDirectory;

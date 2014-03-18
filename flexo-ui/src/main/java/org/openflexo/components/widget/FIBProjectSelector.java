@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.module.ProjectLoader;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to select a ViewPoint
@@ -36,7 +38,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 
 	static final Logger logger = Logger.getLogger(FIBProjectSelector.class.getPackage().getName());
 
-	public static String FIB_FILE_NAME = "Fib/ProjectSelector.fib";
+	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/ProjectSelector.fib");
 
 	private ProjectLoader projectLoader;
 
@@ -46,7 +48,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 	}
 
 	@Override
-	public String getFIBFileName() {
+	public Resource getFIBResource() {
 		return FIB_FILE_NAME;
 	}
 

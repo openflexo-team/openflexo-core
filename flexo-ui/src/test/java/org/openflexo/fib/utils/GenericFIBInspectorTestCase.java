@@ -13,6 +13,7 @@ import org.openflexo.fib.model.validation.ValidationError;
 import org.openflexo.fib.model.validation.ValidationReport;
 import org.openflexo.inspector.FIBInspector;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
 
 /**
  * Generic test case allowing to test a FIB component used as an inspector (a .inspector file)
@@ -35,11 +36,11 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 	}
 
 	@Override
-	public void validateFIB(File fibFile) {
+	public void validateFIB(Resource fibResource) {
 		try {
-			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibFile, false, INSPECTOR_FACTORY);
+			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResource, false, INSPECTOR_FACTORY);
 			if (component == null) {
-				fail("Component not found: " + fibFile.getAbsolutePath());
+				fail("Component not found: " + fibResource.getURI());
 			}
 			ValidationReport validationReport = component.validate();
 			for (ValidationError error : validationReport.getErrors()) {
@@ -47,7 +48,7 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 			}
 			assertEquals(0, validationReport.getErrorNb());
 		} finally {
-			FIBLibrary.instance().removeFIBComponentFromCache(fibFile);
+			FIBLibrary.instance().removeFIBComponentFromCache(fibResource);
 		}
 	}
 

@@ -43,6 +43,8 @@ import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptInstanceBindingVariable;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -86,25 +88,29 @@ public class FIBInspectorController extends FlexoFIBController {
 			JPopupMenu popup = new JPopupMenu();
 			FIBInspector current = (FIBInspector) component;
 			while (current != null) {
-				File inspectorFile = new File(current.getDefinitionFile());
-				// System.out.println("> " + inspectorFile);
-				if (inspectorFile.exists()) {
-					JMenuItem menuItem = new JMenuItem(inspectorFile.getName());
-					// We dont use existing inspector which is already
-					// aggregated !!!
-					final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(inspectorFile, false,
-							ModuleInspectorController.INSPECTOR_FACTORY);
-					menuItem.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							FIBInspectorController.super.openFIBEditor(inspectorToOpen, event);
-						}
-					});
-					popup.add(menuItem);
+				Resource inspectorResource = current.getDefinitionFile();
+				if (!inspectorResource.isReadOnly()){
+
+					File inspectorFile = ((FileResourceImpl) inspectorResource).getFile();
+					// System.out.println("> " + inspectorFile);
+					if (inspectorFile.exists()) {
+						JMenuItem menuItem = new JMenuItem(inspectorFile.getName());
+						// We dont use existing inspector which is already
+						// aggregated !!!
+						final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(inspectorFile, false,
+								ModuleInspectorController.INSPECTOR_FACTORY);
+						menuItem.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								FIBInspectorController.super.openFIBEditor(inspectorToOpen, event);
+							}
+						});
+						popup.add(menuItem);
+					}
+					current = current.getSuperInspector();
 				}
-				current = current.getSuperInspector();
+				popup.show(event.getComponent(), event.getX(), event.getY());
 			}
-			popup.show(event.getComponent(), event.getX(), event.getY());
 		}
 	}
 

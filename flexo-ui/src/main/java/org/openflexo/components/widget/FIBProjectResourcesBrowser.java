@@ -22,6 +22,8 @@ package org.openflexo.components.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
@@ -35,9 +37,9 @@ import org.openflexo.view.controller.FlexoController;
 public class FIBProjectResourcesBrowser extends FIBBrowserView<FlexoProject> {
 	static final Logger logger = Logger.getLogger(FIBProjectResourcesBrowser.class.getPackage().getName());
 
-	public static final String FIB_FILE_NAME = "Fib/Widget/FIBProjectResourcesBrowser.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBProjectResourcesBrowser.fib");
 
 	public FIBProjectResourcesBrowser(FlexoProject project, FlexoController controller) {
-		super(project, controller, FIB_FILE_NAME);
+		super(project, controller, FIB_FILE);
 	}
 }

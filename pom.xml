@@ -18,7 +18,6 @@
 		<diana.version>1.0-SNAPSHOT</diana.version>
 		<jiraclient.version>1.0-SNAPSHOT</jiraclient.version>
 		<flexohelp.version>1.0-SNAPSHOT</flexohelp.version>
-		<flexowysiwyg.version>1.0-SNAPSHOT</flexowysiwyg.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com:openflexo-team/openflexo-core.git</connection>
@@ -390,16 +389,6 @@
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.17</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.h2database</groupId>

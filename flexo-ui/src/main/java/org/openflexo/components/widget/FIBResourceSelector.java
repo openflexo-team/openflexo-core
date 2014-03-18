@@ -27,6 +27,8 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to select a Resource while browsing in Information Space<br>
@@ -40,7 +42,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	static final Logger logger = Logger.getLogger(FIBResourceSelector.class.getPackage().getName());
 
-	public static String FIB_FILE_NAME = "Fib/ResourceSelector.fib";
+	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ResourceSelector.fib");
 
 	private InformationSpace informationSpace;
 	private TechnologyAdapter technologyAdapter;
@@ -52,8 +54,8 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	@Override
-	public String getFIBFileName() {
-		return FIB_FILE_NAME;
+	public Resource getFIBResource() {
+		return FIB_FILE;
 	}
 
 	@Override

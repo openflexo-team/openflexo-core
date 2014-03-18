@@ -33,6 +33,8 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -48,13 +50,13 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	private final FlexoPerspective perspective;
 
-	public FlexoConceptView(EP flexoConcept, File fibFile, FlexoController controller, FlexoPerspective perspective) {
+	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, controller, fibFile);
 		this.perspective = perspective;
 	}
 
 	public FlexoConceptView(EP flexoConcept, String  fibFileName, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, controller, fibFileName);
+		super(flexoConcept, controller, ResourceLocator.locateResource(fibFileName));
 		this.perspective = perspective;
 	}
 

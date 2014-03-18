@@ -38,10 +38,10 @@ public class ResourceManagerDialog extends FIBDialog<ResourceManager> {
 
 	private static final Logger logger = FlexoLogger.getLogger(ResourceManagerDialog.class.getPackage().getName());
 
-	public static final String FIB_FILE_NAME = "Fib/ResourceManager.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/ResourceManager.fib");
 
 	public ResourceManagerDialog(ApplicationContext context) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		setResizable(false);
 	}

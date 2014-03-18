@@ -38,9 +38,10 @@ import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -53,7 +54,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static File fibFile;
+	private static Resource fibResource;
 
 	static ViewPoint viewPoint;
 	static VirtualModel virtualModel;
@@ -77,15 +78,15 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = ResourceLocator.locateFile("Fib/VPM/VirtualModelView.fib");
-		assertTrue(fibFile.exists());
+		fibResource = ResourceLocator.locateResource("Fib/VPM/VirtualModelView.fib");
+		assertTrue(fibResource != null);
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testValidateWidget() {
 
-		validateFIB(fibFile);
+		validateFIB(fibResource);
 	}
 
 	@Test
@@ -212,7 +213,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidget() {
 
-		DefaultFIBCustomComponent<VirtualModel> widget = instanciateFIB(fibFile, virtualModel, VirtualModel.class);
+		DefaultFIBCustomComponent<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
 
 		gcDelegate.addTab("TestVirtualModel", widget.getController());
 	}

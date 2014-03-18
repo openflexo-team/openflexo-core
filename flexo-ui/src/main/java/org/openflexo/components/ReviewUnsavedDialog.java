@@ -28,6 +28,8 @@ import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.ResourceSavingInfo;
 
@@ -41,8 +43,9 @@ import org.openflexo.view.controller.ResourceSavingInfo;
 public class ReviewUnsavedDialog extends FIBDialog<ResourceSavingInfo> {
 
 	static final Logger logger = Logger.getLogger(ReviewUnsavedDialog.class.getPackage().getName());
+	
 
-	public static final String FIB_FILE_NAME = "Fib/Dialog/ReviewUnsavedDialog.fib";
+	public static final Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/Dialog/ReviewUnsavedDialog.fib");
 
 	private final ResourceManager resourceManager;
 

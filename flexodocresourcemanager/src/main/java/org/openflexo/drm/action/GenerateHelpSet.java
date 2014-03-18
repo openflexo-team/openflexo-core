@@ -38,7 +38,8 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
-import org.openflexo.toolbox.ResourceLocator;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
 
 public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCenter, FlexoObject> {
 
@@ -133,7 +134,7 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	public File getHelpsetDirectory() {
 		if (_helpSetDirectory == null) {
-			_helpSetDirectory = ResourceLocator.locateDirectory("Help");
+			_helpSetDirectory = ((FileResourceImpl) ResourceLocator.locateResource("Help")).getFile();
 		}
 		return _helpSetDirectory;
 	}

@@ -27,6 +27,8 @@ import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -37,7 +39,9 @@ import org.openflexo.view.controller.FlexoFIBController;
  */
 public class SaveProjectsDialog {
 
-	public static final String FIB_FILE_NAME = "Fib/SaveProjects.fib";
+	
+	
+	public static final Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/SaveProjects.fib");
 	private ProjectList data;
 
 	public static class ProjectList {

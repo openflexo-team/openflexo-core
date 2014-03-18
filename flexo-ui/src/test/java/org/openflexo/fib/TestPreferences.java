@@ -15,9 +15,10 @@ import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.testutils.GraphicalContextDelegate;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test the structural and behavioural features of FIBTextField widget
@@ -46,7 +47,7 @@ public class TestPreferences extends FIBTestCase {
 	@Test
 	@TestOrder(2)
 	public void testInstanciateGeneralPreferences() {
-		File generalPreferences = ResourceLocator.locateFile("Fib/Prefs/GeneralPreferences.fib");
+		Resource generalPreferences = ResourceLocator.locateResource("Fib/Prefs/GeneralPreferences.fib");
 
 		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(generalPreferences),
 				FlexoLocalization.getMainLocalizer());
@@ -61,7 +62,7 @@ public class TestPreferences extends FIBTestCase {
 	@Test
 	@TestOrder(3)
 	public void testInstanciateAdvancedPrefs() {
-		File advancedPrefs = ResourceLocator.locateFile("Fib/Prefs/AdvancedPrefs.fib");
+		Resource advancedPrefs = ResourceLocator.locateResource("Fib/Prefs/AdvancedPrefs.fib");
 
 		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(advancedPrefs),
 				FlexoLocalization.getMainLocalizer());

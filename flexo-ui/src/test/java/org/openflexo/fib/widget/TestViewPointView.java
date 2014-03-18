@@ -16,9 +16,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -48,14 +48,14 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	public void testLoadWidget() {
 
 		fibFileName = "Fib/VPM/ViewPointView.fib";
-		assertTrue(ResourceLocator.locateFile(fibFileName).exists());
+		assertTrue(ResourceLocator.locateResource(fibFileName) != null);
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testValidateWidget() {
 
-		validateFIB(fibFileName);
+		validateFIB(ResourceLocator.locateResource(fibFileName));
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidget() {
 
-		DefaultFIBCustomComponent<ViewPoint> widget = instanciateFIB(fibFileName, viewPoint, ViewPoint.class);
+		DefaultFIBCustomComponent<ViewPoint> widget = instanciateFIB(ResourceLocator.locateResource(fibFileName), viewPoint, ViewPoint.class);
 
 		gcDelegate.addTab("TestViewPoint1", widget.getController());
 	}

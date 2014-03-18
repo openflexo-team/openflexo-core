@@ -37,6 +37,8 @@ import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.IFlexoOntologyTechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
@@ -69,7 +71,7 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 
 	static final Logger logger = Logger.getLogger(FIBPropertySelector.class.getPackage().getName());
 
-	public static final String FIB_FILE_NAME = "Fib/FIBPropertySelector.fib";
+	public static final Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/FIBPropertySelector.fib");
 
 	private InformationSpace informationSpace;
 	private IFlexoOntology context;
@@ -100,7 +102,7 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 	}
 
 	@Override
-	public String getFIBFileName() {
+	public Resource getFIBResource() {
 		return FIB_FILE_NAME;
 	}
 	

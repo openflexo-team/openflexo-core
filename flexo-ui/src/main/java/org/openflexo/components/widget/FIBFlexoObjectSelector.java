@@ -63,6 +63,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.IconMarker;
+import org.openflexo.rm.Resource;
 import org.openflexo.swing.TextFieldCustomPopup;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
@@ -85,7 +86,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 	private static final String DELETED = "deleted";
 
-	public abstract String getFIBFileName();
+	public abstract Resource getFIBResource();
 
 	private T _revertValue;
 
@@ -462,7 +463,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		protected SelectorDetailsPanel(T anObject) {
 			super();
 
-			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBFileName());
+			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBResource());
 			controller = makeCustomFIBController(fibComponent);
 			fibView = controller.buildView(fibComponent);
 

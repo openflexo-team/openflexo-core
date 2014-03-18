@@ -43,6 +43,7 @@ import org.openflexo.foundation.action.FlexoActionUndoInitializer;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.FlexoFrame;
 
 public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
@@ -80,30 +81,30 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		}
 	}
 
-	public boolean instanciateAndShowDialog(Object object, File fibFile) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFile);
+	public boolean instanciateAndShowDialog(Object object, File fibResource) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 	
-	public boolean instanciateAndShowDialog(Object object, String fibFileName) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
+	public boolean instanciateAndShowDialog(Object object, Resource fibResource) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
 
-	public Status instanciateShowDialogAndReturnStatus(Object object, File fibFile) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFile);
+	public Status instanciateShowDialogAndReturnStatus(Object object, File fibResource) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus();
 	}
 
-	public Status instanciateShowDialogAndReturnStatus(Object object, String fibFileName) {
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibFileName);
+	public Status instanciateShowDialogAndReturnStatus(Object object, Resource fibResource) {
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus();

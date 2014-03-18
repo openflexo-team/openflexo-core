@@ -48,7 +48,8 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
 import org.openflexo.icon.VPMIconLibrary;
-import org.openflexo.toolbox.ResourceLocator;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -264,16 +265,16 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}*/
 	
 	
-	public String getFIBPanelForObject(Object anObject) {
+	public Resource getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());
 		}
 		return null;
 	}
 
-	private final Map<Class<?>, String> fibPanelsForClasses = new HashMap<Class<?>, String>(){
+	private final Map<Class<?>, Resource> fibPanelsForClasses = new HashMap<Class<?>, Resource>(){
 		@Override
-		public String get(Object key) {
+		public Resource get(Object key) {
 			if (containsKey(key)) {
 				return super.get(key);
 			}
@@ -284,11 +285,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 					// System.out.println("Found annotation " + aClass.getAnnotation(FIBPanel.class));
 					String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
 					// System.out.println("fibPanelFile=" + fibPanel);
-					URL fibLocation = ResourceLocator.locateResource(fibPanelName);
+					Resource fibLocation = ResourceLocator.locateResource(fibPanelName);
 					if (fibLocation != null) {
 						// logger.info("Found " + fibPanel);
-						put(aClass, fibPanelName);
-						return fibPanelName;
+						put(aClass, fibLocation);
+						return fibLocation;
 					}
 				}
 				put(aClass, null);
@@ -298,7 +299,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 	};
 
-	public String getFIBPanelForClass(Class<?> aClass) {
+	public Resource getFIBPanelForClass(Class<?> aClass) {
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}
 

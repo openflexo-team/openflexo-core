@@ -39,6 +39,7 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.view.controller.FlexoController;
@@ -66,14 +67,16 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, File fibFile, FlexoProgress progress) {
-		this(representedObject, controller, fibFile, false, progress);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
+		this(representedObject, controller, fibResource, false, progress);
 	}
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, File fibFile, boolean addScrollBar, FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibFile), addScrollBar, progress);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
 	}
-
+	
+	// Removed as we should only use Resource everywhere
+	/*
 	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
 		this(representedObject, controller, fibResourcePath, false, progress);
 	}
@@ -82,6 +85,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
 	}
+	*/
 
 	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
 			FlexoProgress progress) {

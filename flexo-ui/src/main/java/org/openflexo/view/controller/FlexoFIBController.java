@@ -51,8 +51,9 @@ import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.SelectionManager;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
 /**
@@ -262,16 +263,16 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
-	public String getFIBPanelForObject(Object anObject) {
+	public Resource getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());
 		}
 		return null;
 	}
 
-	private final Map<Class<?>, String> fibPanelsForClasses = new HashMap<Class<?>, String>() {
+	private final Map<Class<?>, Resource> fibPanelsForClasses = new HashMap<Class<?>, Resource>() {
 		@Override
-		public String get(Object key) {
+		public Resource get(Object key) {
 			if (containsKey(key)) {
 				return super.get(key);
 			}
@@ -281,12 +282,12 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 				if (aClass.getAnnotation(FIBPanel.class) != null) {
 					// System.out.println("Found annotation " + aClass.getAnnotation(FIBPanel.class));
 					String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
-					URL fibPanelURL = ResourceLocator.locateResource(fibPanelName);
+					Resource fibPanelResource = ResourceLocator.locateResource(fibPanelName);
 					// System.out.println("fibPanelFile=" + fibPanel);
-					if (fibPanelURL != null ) {
+					if (fibPanelResource != null ) {
 						// logger.info("Found " + fibPanel);
-						put(aClass, fibPanelName);
-						return fibPanelName;
+						put(aClass, fibPanelResource);
+						return fibPanelResource;
 					}
 				}
 				put(aClass, null);
@@ -301,7 +302,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		System.out.println("Result: " + newController.getFIBPanelForClass(DeclarePatternRole.class));
 	}*/
 
-	public String getFIBPanelForClass(Class<?> aClass) {
+	public Resource getFIBPanelForClass(Class<?> aClass) {
 
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}

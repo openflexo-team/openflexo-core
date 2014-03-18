@@ -30,6 +30,7 @@ import org.openflexo.foundation.view.ViewObject;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ImageIconResource;
 
 /**
@@ -42,26 +43,28 @@ public class VEIconLibrary extends IconLibrary {
 
 	private static final Logger logger = Logger.getLogger(VEIconLibrary.class.getPackage().getName());
 
+	
+
 	// Module icons
-	public static final ImageIcon VE_SMALL_ICON = new ImageIconResource("Icons/VE/module-ve-16.png");
-	public static final ImageIcon VE_MEDIUM_ICON = new ImageIconResource("Icons/VE/module-ve-32.png");
-	public static final ImageIcon VE_MEDIUM_ICON_WITH_HOVER = new ImageIconResource("Icons/VE/module-ve-hover-32.png");
-	public static final ImageIcon VE_BIG_ICON = new ImageIconResource("Icons/VE/module-ve-hover-64.png");
+	public static final ImageIcon VE_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/module-ve-16.png"));
+	public static final ImageIcon VE_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/module-ve-32.png"));
+	public static final ImageIcon VE_MEDIUM_ICON_WITH_HOVER = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/module-ve-hover-32.png"));
+	public static final ImageIcon VE_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/module-ve-hover-64.png"));
 
 	// Perspective icons
-	public static final ImageIcon VE_OP_ACTIVE_ICON = new ImageIconResource("Icons/VE/ontology-perspective.png");
-	public static final ImageIcon VE_SP_ACTIVE_ICON = new ImageIconResource("Icons/VE/diagram-perspective.png");
+	public static final ImageIcon VE_OP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/ontology-perspective.png"));
+	public static final ImageIcon VE_SP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VE/diagram-perspective.png"));
 
 	// Model icons
-	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource("Icons/Model/VE/ViewLibrary.png");
-	public static final ImageIconResource VIEW_ICON = new ImageIconResource("Icons/Model/VE/View.png");
-	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/VirtualModelInstance.png");
-	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource("Icons/Model/VE/VirtualModel_32x32.png");
-	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource("Icons/Model/VE/VirtualModel_64x64.png");
-	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/FlexoConceptInstance.png");
-	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource("Icons/Model/VE/ModelSlotInstance.png");
+	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/ViewLibrary.png"));
+	public static final ImageIconResource VIEW_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/View.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/VirtualModel_32x32.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/VirtualModel_64x64.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance.png"));
+	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/ModelSlotInstance.png"));
 
-	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VE/UnknownIcon.gif");
+	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
 	public static ImageIcon iconForObject(ViewObject object) {
 		if (object instanceof View) {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -17,7 +18,9 @@ import java.util.Map.Entry;
 import org.apache.commons.codec.binary.Base64;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.toolbox.FileResource;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.ws.jira.JIRAGson;
 import org.openflexo.ws.jira.model.JIRAProject;
@@ -36,14 +39,17 @@ public class BugReportService extends FlexoServiceImpl {
 		this.projects = projects;
 	}
 
-	private static final File PROJECT_FILE = new FileResource("Config/jira_openflexo_project.json");
-	private static final File MODULES_FILE = new FileResource("Config/jira_modules_project.json");
-	private static final File TA_FILE = new FileResource("Config/jira_ta_project.json");
-	private static final File DIANA_FILE = new FileResource("Config/jira_diana_project.json");
-	private static final File CONNIE_FILE = new FileResource("Config/jira_connie_project.json");
-	private static final File PAMELA_FILE = new FileResource("Config/jira_pamela_project.json");
-	private static final File CORE_FILE = new FileResource("Config/jira_core_project.json");
-	private static final File GINA_FILE = new FileResource("Config/jira_gina_project.json");
+	private static final Resource MODULES_FILE = ResourceLocator.getResourceLocator().locateResource("Config/jira_modules_project.json");
+
+	/*
+	private static final File PROJECT_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_openflexo_project.json");
+	private static final File TA_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_ta_project.json");
+	private static final File DIANA_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_diana_project.json");
+	private static final File CONNIE_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_connie_project.json");
+	private static final File PAMELA_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_pamela_project.json");
+	private static final File CORE_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_core_project.json");
+	private static final File GINA_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_gina_project.json");
+	 */
 	private static final String OPENFLEXO_KEY = "OPENFLEXO";
 	private static final String MODULES_KEY = "MODULES";
 	private static final String TA_KEY = "TA";
@@ -53,7 +59,7 @@ public class BugReportService extends FlexoServiceImpl {
 	private static final String CORE_KEY = "CORE";
 	private static final String GINA_KEY = "GINA";
 
-	private HashMap<String, File> userProjectFiles;
+	private HashMap<String, Resource> userProjectFiles;
 	//private File userProjectFile;
 	private List<JIRAProject> projects;
 
@@ -83,14 +89,14 @@ public class BugReportService extends FlexoServiceImpl {
 		}
 	}*/
 
-	public void loadProjectsFromFile(File file) {
+	public void loadProjectsFromFile(Resource file) {
 		try {
-			JIRAProjectList projects = JIRAGson.getInstance().fromJson(new InputStreamReader(new FileInputStream(file)),
+			JIRAProjectList projects = JIRAGson.getInstance().fromJson(new InputStreamReader(file.openInputStream()),
 					JIRAProjectList.class);
 			if(this.projects==null){
 				this.projects = new ArrayList<JIRAProject>();
 			}
-			
+
 			for (JIRAProject p : projects.getProjects()) {
 				if (p.getKey().equals(MODULES_KEY)) {
 					this.projects.add(p);
@@ -118,8 +124,6 @@ public class BugReportService extends FlexoServiceImpl {
 			e.printStackTrace();
 		} catch (JsonIOException e) {
 			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -127,8 +131,8 @@ public class BugReportService extends FlexoServiceImpl {
 	public void initialize() {
 		logger.info("Initialized BugReportService");
 		if(userProjectFiles==null || userProjectFiles.isEmpty()){
-			userProjectFiles = new HashMap<String,File>();
-			
+			userProjectFiles = new HashMap<String,Resource>();
+
 			/*File moduleFile = new File(FileUtils.getApplicationDataDirectory(), MODULES_FILE.getName());
 			File taFile = new File(FileUtils.getApplicationDataDirectory(), TA_FILE.getName());
 			File dianaFile = new File(FileUtils.getApplicationDataDirectory(), DIANA_FILE.getName());
@@ -136,12 +140,12 @@ public class BugReportService extends FlexoServiceImpl {
 			File pamelaFile = new File(FileUtils.getApplicationDataDirectory(), PAMELA_FILE.getName());
 			File coreFile = new File(FileUtils.getApplicationDataDirectory(), CORE_FILE.getName());
 			File ginaFile = new File(FileUtils.getApplicationDataDirectory(), GINA_FILE.getName());*/
-			
-			
+
+
 			/*if (!userProjectFile.exists()) {
 				userProjectFile = copyOriginalToUserFile(OPENFLEXO_FILE);
 			}*/
-	
+
 			/*userProjectFiles.put(MODULES_KEY, MODULES_FILE);
 			userProjectFiles.put(TA_KEY,TA_FILE);
 			userProjectFiles.put(DIANA_KEY,DIANA_FILE);
@@ -149,10 +153,10 @@ public class BugReportService extends FlexoServiceImpl {
 			userProjectFiles.put(PAMELA_KEY,PAMELA_FILE);
 			userProjectFiles.put(CORE_KEY,CORE_FILE);
 			userProjectFiles.put(GINA_KEY,GINA_FILE);*/
-			
+
 			userProjectFiles.put(MODULES_KEY, MODULES_FILE);
 		}
-		
+
 		try {
 			Map<String, String> headers = new HashMap<String, String>();
 			if (getServiceManager().getAdvancedPrefs().getBugReportUser() != null
@@ -167,17 +171,22 @@ public class BugReportService extends FlexoServiceImpl {
 											.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
 				} catch (UnsupportedEncodingException e) {
 				}
-				
-				for(Entry<String, File> entry : userProjectFiles.entrySet()) {
+
+				for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 					String key = entry.getKey();
-				    File file = entry.getValue();
-				    FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
-							+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKey=" + key), file,
-							headers);
+					Resource file = entry.getValue();
+					if (file != null && file instanceof FileResourceImpl){
+						FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
+								+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKey=" + key),((FileResourceImpl) file).getFile(),
+								headers);
+					}
+					else {
+						logger.severe("Unable to create File for Bug");
+					}
 				}
-					
-			
-				
+
+
+
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -188,9 +197,9 @@ public class BugReportService extends FlexoServiceImpl {
 			project = loadProjectsFromFile(PROJECT_FILE);
 		}*/
 		if(!userProjectFiles.isEmpty()){
-			for(Entry<String, File> entry : userProjectFiles.entrySet()) {
-			    File file = entry.getValue();
-			    loadProjectsFromFile(file);
+			for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
+				Resource file = entry.getValue();
+				loadProjectsFromFile(file);
 			}
 		}
 	}

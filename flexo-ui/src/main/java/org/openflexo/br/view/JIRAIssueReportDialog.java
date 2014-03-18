@@ -27,9 +27,10 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.ImageUtils;
 import org.openflexo.swing.ImageUtils.ImageType;
-import org.openflexo.toolbox.FileResource;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -156,8 +157,8 @@ public class JIRAIssueReportDialog {
 
 	private static final Logger logger = FlexoLogger.getLogger(JIRAIssueReportDialog.class.getPackage().getName());
 
-	public static final File FIB_FILE = new FileResource("Fib/JIRAIssueReportDialog.fib");
-	public static final File REPORT_FIB_FILE = new FileResource("Fib/JIRASubmitIssueReportDialog.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/JIRAIssueReportDialog.fib");
+	public static final Resource REPORT_FIB_FILE = ResourceLocator.locateResource("Fib/JIRASubmitIssueReportDialog.fib");
 	private static final List<JIRAComponent> EMPTY_LIST = new ArrayList<JIRAComponent>(0);
 
 	private JIRAIssue issue;

@@ -29,6 +29,8 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
@@ -46,10 +48,10 @@ import org.openflexo.view.controller.FlexoController;
 public class FIBInformationSpaceBrowser extends FIBBrowserView<InformationSpace> {
 	static final Logger logger = Logger.getLogger(FIBInformationSpaceBrowser.class.getPackage().getName());
 
-	public static final String FIB_FILE_NAME = "Fib/FIBInformationSpaceBrowser.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBInformationSpaceBrowser.fib");
 
 	public FIBInformationSpaceBrowser(InformationSpace informationSpace, FlexoController controller) {
-		super(informationSpace, controller, FIB_FILE_NAME);
+		super(informationSpace, controller, FIB_FILE);
 	}
 
 	// Please uncomment this for a live test

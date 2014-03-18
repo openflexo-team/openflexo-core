@@ -72,6 +72,7 @@ import org.openflexo.foundation.viewpoint.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
@@ -85,52 +86,55 @@ public class VPMIconLibrary extends IconLibrary {
 
 	private static final Logger logger = Logger.getLogger(VPMIconLibrary.class.getPackage().getName());
 
+
+	
+
 	// Module icons
-	public static final ImageIcon VPM_SMALL_ICON = new ImageIconResource("Icons/VPM/module-vpm-16.png");
-	public static final ImageIcon VPM_MEDIUM_ICON = new ImageIconResource("Icons/VPM/module-vpm-32.png");
-	public static final ImageIcon VPM_MEDIUM_ICON_WITH_HOVER = new ImageIconResource("Icons/VPM/module-vpm-hover-32.png");
-	public static final ImageIcon VPM_BIG_ICON = new ImageIconResource("Icons/VPM/module-vpm-hover-64.png");
+	public static final ImageIcon VPM_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/module-vpm-16.png"));
+	public static final ImageIcon VPM_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/module-vpm-32.png"));
+	public static final ImageIcon VPM_MEDIUM_ICON_WITH_HOVER = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/module-vpm-hover-32.png"));
+	public static final ImageIcon VPM_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/module-vpm-hover-64.png"));
 
 	// Perspective icons
-	public static final ImageIcon VPM_VPE_ACTIVE_ICON = new ImageIconResource("Icons/VPM/viewpoint-perspective.png");
-	// public static final ImageIcon VPM_VPE_SELECTED_ICON = new ImageIconResource("Icons/VPM/viewpoint-perspective-hover.png");
-	public static final ImageIcon VPM_OP_ACTIVE_ICON = new ImageIconResource("Icons/VPM/ontology-perspective.png");
-	// public static final ImageIcon VPM_OP_SELECTED_ICON = new ImageIconResource("Icons/VPM/ontology-perspective-hover.png");
+	public static final ImageIcon VPM_VPE_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/viewpoint-perspective.png"));
+	// public static final ImageIcon VPM_VPE_SELECTED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/viewpoint-perspective-hover.png"));
+	public static final ImageIcon VPM_OP_ACTIVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/ontology-perspective.png"));
+	// public static final ImageIcon VPM_OP_SELECTED_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/ontology-perspective-hover.png"));
 
 	// Editor icons
-	public static final ImageIcon NO_HIERARCHY_MODE_ICON = new ImageIconResource("Icons/VPM/NoHierarchyViewMode.gif");
-	public static final ImageIcon PARTIAL_HIERARCHY_MODE_ICON = new ImageIconResource("Icons/VPM/PartialHierarchyViewMode.gif");
-	public static final ImageIcon FULL_HIERARCHY_MODE_ICON = new ImageIconResource("Icons/VPM/FullHierarchyViewMode.gif");
+	public static final ImageIcon NO_HIERARCHY_MODE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/NoHierarchyViewMode.gif"));
+	public static final ImageIcon PARTIAL_HIERARCHY_MODE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/PartialHierarchyViewMode.gif"));
+	public static final ImageIcon FULL_HIERARCHY_MODE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/VPM/FullHierarchyViewMode.gif"));
 
 	// Model icons
-	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource("Icons/Model/VPM/ViewPointLibrary.png");
-	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource("Icons/Model/VPM/ViewPoint.png");
-	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource("Icons/Model/VPM/ModelSlot.png");
-	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource("Icons/Model/VPM/FlexoConcept.png");
-	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/ActionSchemeIcon.png");
-	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(
-			"Icons/Model/VPM/SynchronizationSchemeIcon.png");
-	public static final ImageIconResource CLONING_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/CloningSchemeIcon.png");
-	public static final ImageIconResource CREATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/CreationSchemeIcon.png");
-	public static final ImageIconResource DELETION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/DeletionSchemeIcon.png");
-	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource("Icons/Model/VPM/NavigationSchemeIcon.png");
-	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource("Icons/Model/VPM/ParameterIcon.png");
-	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ActionIcon.png");
-	public static final ImageIconResource LOCALIZATION_ICON = new ImageIconResource("Icons/Model/VPM/LocalizationIcon.png");
-	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource("Icons/Model/VE/UnknownIcon.gif");
-	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource("Icons/Model/VPM/VirtualModel.png");
-	public static final ImageIconResource DECLARE_PATTERN_ROLE_ICON = new ImageIconResource("Icons/Model/VPM/DeclarePatternRoleIcon.png");
-	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/ConditionalActionIcon.png");
-	public static final ImageIconResource ITERATION_ACTION_ICON = new ImageIconResource("Icons/Model/VPM/IterationActionIcon.png");
-	public static final ImageIconResource CONSTRAINT_ICON = new ImageIconResource("Icons/Model/VPM/ConstraintIcon.png");
+	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
+	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint.png"));
+	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept.png"));
+	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ActionSchemeIcon.png"));
+	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource(
+			"Icons/Model/VPM/SynchronizationSchemeIcon.png"));
+	public static final ImageIconResource CLONING_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/CloningSchemeIcon.png"));
+	public static final ImageIconResource CREATION_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/CreationSchemeIcon.png"));
+	public static final ImageIconResource DELETION_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/DeletionSchemeIcon.png"));
+	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/NavigationSchemeIcon.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_PARAMETER_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ParameterIcon.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_ACTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ActionIcon.png"));
+	public static final ImageIconResource LOCALIZATION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/LocalizationIcon.png"));
+	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
+	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel.png"));
+	public static final ImageIconResource DECLARE_PATTERN_ROLE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/DeclarePatternRoleIcon.png"));
+	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ConditionalActionIcon.png"));
+	public static final ImageIconResource ITERATION_ACTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/IterationActionIcon.png"));
+	public static final ImageIconResource CONSTRAINT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ConstraintIcon.png"));
 
-	public static final ImageIconResource CHECKBOX_ICON = new ImageIconResource("Icons/Model/VPM/CheckBoxIcon.png");
-	public static final ImageIconResource LIST_ICON = new ImageIconResource("Icons/Model/VPM/ListIcon.png");
-	public static final ImageIconResource SPINNER_ICON = new ImageIconResource("Icons/Model/VPM/SpinnerIcon.png");
-	public static final ImageIconResource TEXT_AREA_ICON = new ImageIconResource("Icons/Model/VPM/TextAreaIcon.png");
-	public static final ImageIconResource TEXT_FIELD_ICON = new ImageIconResource("Icons/Model/VPM/TextFieldIcon.png");
+	public static final ImageIconResource CHECKBOX_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/CheckBoxIcon.png"));
+	public static final ImageIconResource LIST_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ListIcon.png"));
+	public static final ImageIconResource SPINNER_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/SpinnerIcon.png"));
+	public static final ImageIconResource TEXT_AREA_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/TextAreaIcon.png"));
+	public static final ImageIconResource TEXT_FIELD_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/TextFieldIcon.png"));
 
-	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource("Icons/Model/VPM/ModelSlot.png"), 2, 6);
+	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
 
 	public static ImageIcon iconForObject(ViewPointObject object) {
 

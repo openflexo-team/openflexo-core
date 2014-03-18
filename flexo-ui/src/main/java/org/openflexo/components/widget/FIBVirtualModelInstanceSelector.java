@@ -28,6 +28,8 @@ import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to select a VirtualModelInstance
@@ -40,7 +42,7 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
-	public static String FIB_FILE_NAME = "Fib/VirtualModelInstanceSelector.fib";
+	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/VirtualModelInstanceSelector.fib");
 
 	private ViewLibrary viewLibrary;
 	private View view;
@@ -60,8 +62,8 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 
 
 	@Override
-	public String getFIBFileName() {
-		return FIB_FILE_NAME;
+	public Resource getFIBResource() {
+		return FIB_FILE;
 	}
 	
 	@Override

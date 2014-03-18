@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.rm.ResourceLocator;
+
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to select a ViewPoint while browsing in ViewPoint library
@@ -37,7 +40,7 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 
 	static final Logger logger = Logger.getLogger(FIBViewPointSelector.class.getPackage().getName());
 
-	public static String FIB_FILE_NAME = "Fib/ViewPointSelector.fib";
+	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ViewPointSelector.fib");
 
 	public FIBViewPointSelector(ViewPointResource editedObject) {
 		super(editedObject);
@@ -51,8 +54,8 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 
 
 	@Override
-	public String getFIBFileName() {
-		return FIB_FILE_NAME;
+	public Resource getFIBResource() {
+		return FIB_FILE;
 	}
 
 	@Override

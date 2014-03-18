@@ -34,6 +34,8 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 
 /**
  * Widget allowing to select an FlexoConceptInstance.<br>
@@ -53,7 +55,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	static final Logger logger = Logger.getLogger(FIBFlexoConceptInstanceSelector.class.getPackage().getName());
 
-	public static String FIB_FILE_NAME = "Fib/FlexoConceptInstanceSelector.fib";
+	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/FlexoConceptInstanceSelector.fib");
 
 	private ViewPointLibrary viewPointLibrary;
 	private ViewPoint viewPoint;
@@ -78,8 +80,8 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 	}
 
 	@Override
-	public String getFIBFileName() {
-		return FIB_FILE_NAME;
+	public Resource getFIBResource() {
+		return FIB_FILE;
 	}
 
 	@Override

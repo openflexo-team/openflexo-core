@@ -56,7 +56,6 @@ import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.utils.FlexoProjectFile;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
@@ -73,7 +72,6 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.toolbox.ZipUtils;
 
@@ -113,7 +111,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		try {
 			project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			project.setCreationDate(new Date());
-			project.initJavaFormatter();
+			// TODO : Code to be removed, no more java Generation
+			// project.initJavaFormatter();
 			try {
 				// This needs to be called to ensure the consistency of the
 				// project
@@ -155,7 +154,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		try {
 			// project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			// project.setCreationDate(new Date());
-			project.initJavaFormatter();
+			// TODO: Code to be Removed
+			//project.initJavaFormatter();
 			/*try {
 				// This needs to be called to ensure the consistency of the
 				// project
@@ -1683,18 +1683,24 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		setLastID(lastUniqueID);
 	}
 
+
+	// TODO Code to be Removed as no use for that
+	/*
 	public FlexoProjectFile getJavaFormatterSettings() {
 		if (!new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml").getFile().exists()) {
 			initJavaFormatter();
 		}
 		return new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
 	}
-
+	*/
 	/**
  *
  */
+	
+	// TODO Code to be Removed as no use for that
+	/*
 	protected void initJavaFormatter() {
-		File file = ResourceLocator.locateFile("Config/FlexoJavaFormatSettings.xml");
+		File file = ResourceLocator.retrieveResourceAsFile("Config/FlexoJavaFormatSettings.xml");
 		FlexoProjectFile prjFile = new FlexoProjectFile(this, "FlexoJavaFormatSettings.xml");
 		try {
 			FileUtils.copyFileToFile(file, prjFile.getFile());
@@ -1702,6 +1708,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	public Date getCreationDate() {
 		return creationDate;

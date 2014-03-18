@@ -39,9 +39,10 @@ import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test FlexoConceptPanel fib
@@ -54,7 +55,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static File fibFile;
+	private static Resource fibResource;
 
 	static FlexoConcept flexoConceptA;
 
@@ -75,15 +76,15 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = ResourceLocator.locateFile("Fib/VPM/FlexoBehaviourPanel.fib");
-		assertTrue(fibFile.exists());
+		fibResource = ResourceLocator.locateResource("Fib/VPM/FlexoBehaviourPanel.fib");
+		assertTrue(fibResource != null);
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testValidateWidget() {
 
-		validateFIB(fibFile);
+		validateFIB(fibResource);
 	}
 
 	@Test
@@ -209,7 +210,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForCreationScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibFile, creationScheme, FlexoBehaviour.class);
+		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());
 	}
@@ -218,7 +219,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForActionScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibFile, actionScheme, FlexoBehaviour.class);
+		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
@@ -227,7 +228,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(ResourceLocator.locateFile("Fib/VPM/DeclarePatternRolePanel.fib"),
+		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"),
 				(DeclarePatternRole) creationScheme.getActions().get(0), DeclarePatternRole.class);
 
 		gcDelegate.addTab("DeclarePatternRole", widget.getController());

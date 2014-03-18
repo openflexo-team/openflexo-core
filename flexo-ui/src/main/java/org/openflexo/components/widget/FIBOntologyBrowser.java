@@ -43,6 +43,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.IFlexoOntologyTechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterController;
@@ -67,8 +69,9 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 public abstract class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBrowser> {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
+	
 
-	public static final String FIB_FILE_NAME = "Fib/FIBOntologyBrowser.fib";
+	public static final Resource  FIB_FILE = ResourceLocator.locateResource("Fib/FIBOntologyBrowser.fib");
 
 	private IFlexoOntology ontology;
 	private boolean hierarchicalMode = true;
@@ -98,7 +101,7 @@ public abstract class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOn
 	private IFlexoOntologyConcept selectedValue;
 
 	public FIBOntologyBrowser(IFlexoOntology ontology) {
-		super(FIB_FILE_NAME, null, FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, null, FlexoLocalization.getMainLocalizer());
 		matchingValues = new ArrayList<IFlexoOntologyConcept>();
 		setOntology(ontology);
 		setEditedObject(this);

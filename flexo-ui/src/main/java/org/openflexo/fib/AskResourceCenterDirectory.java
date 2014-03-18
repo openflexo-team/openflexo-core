@@ -21,11 +21,13 @@ package org.openflexo.fib;
 
 import java.io.File;
 
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 public class AskResourceCenterDirectory extends PropertyChangedSupportDefaultImplementation {
 
-	public static final String FIB_FILE_NAME = "Fib/AskResourceCenterDirectory.fib";
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/AskResourceCenterDirectory.fib");
 
 	private File localResourceDirectory;
 

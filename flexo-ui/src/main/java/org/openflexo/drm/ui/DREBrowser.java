@@ -24,6 +24,9 @@ import java.util.logging.Logger;
 import org.openflexo.drm.DocResourceCenter;
 import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocatorDelegate;
 
 /**
  * Browser for DocResourceCenter elements
@@ -35,15 +38,17 @@ import org.openflexo.localization.FlexoLocalization;
 public class DREBrowser extends DefaultFIBCustomComponent<DocResourceCenter> {
 
 	protected static final Logger logger = Logger.getLogger(DREBrowser.class.getPackage().getName());
+	
 
-	public static final String FIB_FILE_NAME = "Fib/DREBrowser.fib";
+
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DREBrowser.fib");
 
 	// ================================================
 	// ================ Constructor ===================
 	// ================================================
 
 	public DREBrowser(DocResourceCenter drc) {
-		super(FIB_FILE_NAME, drc, FlexoLocalization.getMainLocalizer());
+		super(FIB_FILE, drc, FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override

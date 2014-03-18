@@ -34,6 +34,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.utils.FlexoProgress;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl;
 import org.openflexo.view.controller.FlexoController;
 
@@ -50,22 +51,24 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	// private FlexoController controller;
 	// private FIBView fibView;
 
-	public FIBBrowserView(O representedObject, FlexoController controller, File fibFile) {
-		this(representedObject, controller, fibFile, false, controller.willLoad(fibFile));
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource) {
+		this(representedObject, controller, fibResource, false, controller.willLoad(fibResource));
 	}
 
-	public FIBBrowserView(O representedObject, FlexoController controller, File fibFile, FlexoProgress progress) {
-		this(representedObject, controller, fibFile, false, progress);
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
+		this(representedObject, controller, fibResource, false, progress);
 	}
 
-	public FIBBrowserView(O representedObject, FlexoController controller, File fibFile, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibFile), addScrollBar, controller.willLoad(fibFile));
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller.willLoad(fibResource));
 	}
 
-	public FIBBrowserView(O representedObject, FlexoController controller, File fibFile, boolean addScrollBar, FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibFile), addScrollBar, progress);
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
 	}
 
+	// Removed as we should only used Resource everywhere
+	/*
 	public FIBBrowserView(O representedObject, FlexoController controller, String fibResourcePath) {
 		this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
 	}
@@ -78,7 +81,8 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
 	}
-
+*/
+	
 	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
 			FlexoProgress progress) {
 		super(representedObject, controller, fibComponent, addScrollBar, progress);

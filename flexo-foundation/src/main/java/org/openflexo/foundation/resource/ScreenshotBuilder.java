@@ -37,9 +37,9 @@ import javax.swing.JFrame;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.FlexoSwingUtils;
 import org.openflexo.swing.ImageUtils;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Utility class used to manage screenshots
@@ -297,7 +297,7 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	 * @return
 	 */
 	private ScreenshotImage<T> getEmptyScreenshot() {
-		InputStream fis = ResourceLocator.retrieveResource("LatexExtras/EmptyScreenshot.jpg");
+		InputStream fis = ResourceLocator.getResourceLocator().locateResource(("LatexExtras/EmptyScreenshot.jpg")).openInputStream();
 		if (fis != null) {
 			try {
 				BufferedImage bi = ImageIO.read(fis);

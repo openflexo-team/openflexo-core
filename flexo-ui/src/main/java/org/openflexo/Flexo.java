@@ -66,8 +66,10 @@ import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoadingException;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.ssl.DenaliSecurityProvider;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
@@ -85,6 +87,9 @@ import sun.misc.SignalHandler;
  */
 public class Flexo {
 	private static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
+	private static final ResourceLocator rl = ResourceLocator.getResourceLocator();
+
+	private static final FileSystemResourceLocatorImpl fsrl =new FileSystemResourceLocatorImpl(); 
 
 	public static boolean isDev = false;
 
@@ -112,7 +117,8 @@ public class Flexo {
 				String s = (String) m.invoke(null, "English.dict", "Localized");
 				s = s.substring(System.getProperty("user.dir").length() + 1);
 				s = s.substring(0, s.length() - "Localized/English.dict".length());
-				ResourceLocator.resetFlexoResourceLocation(new File(s));
+				// TODO : Fix this when resourceLocator is ok
+				// rl.resetFlexoResourceLocation(new File(s));
 				return s;
 			} catch (SecurityException e) {
 				e.printStackTrace();
@@ -129,7 +135,8 @@ public class Flexo {
 			}
 
 		} else {
-			ResourceLocator.resetFlexoResourceLocation(new File(System.getProperty("user.dir")));
+			fsrl.appendToDirectories(System.getProperty("user.dir"));
+			rl.appendDelegate(fsrl);
 			return System.getProperty("user.dir");
 		}
 		return null;
@@ -148,7 +155,7 @@ public class Flexo {
 					if (activeFrame != null) {
 						try {
 							activeFrame.getController().getModuleLoader()
-									.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
+							.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
 						} catch (OperationCancelledException e) {
 							e.printStackTrace();
 						}
@@ -193,7 +200,7 @@ public class Flexo {
 			getResourcePath();
 		}
 		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
-		ResourceLocator.printDirectoriesSearchOrder(System.err);
+		// CompositeResourceLocatorImpl.printDirectoriesSearchOrder(System.err);
 		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
 		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
@@ -276,7 +283,7 @@ public class Flexo {
 			logger.info("Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
 		}
 		applicationContext.getModuleLoader()
-				.setAllowsDocSubmission(isDev || applicationContext.getAdvancedPrefs().getAllowsDocSubmission());
+		.setAllowsDocSubmission(isDev || applicationContext.getAdvancedPrefs().getAllowsDocSubmission());
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
 		}
@@ -296,7 +303,7 @@ public class Flexo {
 
 		if (applicationContext.defaultPackagedResourceCenterIsToBeInstalled()) {
 			FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(
-					InstallDefaultPackagedResourceCenterDirectory.FIB_FILE_NAME,true);
+					InstallDefaultPackagedResourceCenterDirectory.FIB_FILE,true);
 			InstallDefaultPackagedResourceCenterDirectory installRC = new InstallDefaultPackagedResourceCenterDirectory();
 			FIBDialog<InstallDefaultPackagedResourceCenterDirectory> dialog = FIBDialog.instanciateAndShowDialog(askRCDirectoryComponent,
 					installRC, null, true, FlexoLocalization.getMainLocalizer());
@@ -578,60 +585,69 @@ public class Flexo {
 		try {
 			// FlexoProperties properties = FlexoProperties.instance();
 			String loggingFileName = System.getProperty("java.util.logging.config.file");
+			Resource loggingFile = null;
 			if (loggingFileName == null) {
-				File loggingFile = ResourceLocator.locateFile("Config/logging_INFO.properties");
-				loggingFileName = loggingFile.getAbsolutePath();
-				System.setProperty("java.util.logging.config.file", loggingFileName);
+				loggingFile = ResourceLocator.locateResource("Config/logging_INFO.properties");
+				loggingFileName = loggingFile.getURI();
 			}
-			logger.info("Default logging config file " + loggingFileName);
-			return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(), applicationContext
-					.getAdvancedPrefs().getIsLoggingTrace(),
-					applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null ? applicationContext.getAdvancedPrefs()
-							.getCustomLoggingFile() : new File(System.getProperty("java.util.logging.config.file")), applicationContext
-							.getAdvancedPrefs().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
-						@Override
-						public void setMaxLogCount(Integer maxLogCount) {
-							applicationContext.getAdvancedPrefs().setMaxLogCount(maxLogCount);
-						}
+			else {
+				loggingFile = ResourceLocator.locateResource(loggingFileName);
+			}
+			if (loggingFile != null){
+				logger.info("Default logging config file " + loggingFileName);
+				return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(), applicationContext
+						.getAdvancedPrefs().getIsLoggingTrace(),
+						applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null ? applicationContext.getAdvancedPrefs()
+								.getCustomLoggingFile() : loggingFile, applicationContext
+								.getAdvancedPrefs().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
+									@Override
+									public void setMaxLogCount(Integer maxLogCount) {
+										applicationContext.getAdvancedPrefs().setMaxLogCount(maxLogCount);
+									}
 
-						@Override
-						public void setKeepLogTrace(boolean logTrace) {
-							applicationContext.getAdvancedPrefs().setIsLoggingTrace(logTrace);
-						}
+									@Override
+									public void setKeepLogTrace(boolean logTrace) {
+										applicationContext.getAdvancedPrefs().setIsLoggingTrace(logTrace);
+									}
 
-						@Override
-						public void setDefaultLoggingLevel(Level lev) {
-							String fileName = "SEVERE";
-							if (lev == Level.SEVERE) {
-								fileName = "SEVERE";
-							}
-							if (lev == Level.WARNING) {
-								fileName = "WARNING";
-							}
-							if (lev == Level.INFO) {
-								fileName = "INFO";
-							}
-							if (lev == Level.FINE) {
-								fileName = "FINE";
-							}
-							if (lev == Level.FINER) {
-								fileName = "FINER";
-							}
-							if (lev == Level.FINEST) {
-								fileName = "FINEST";
-							}
-							File loggingFile = ResourceLocator.locateFile("Config/logging_" + fileName + ".properties");
-							System.out.println("Found file " + loggingFile + " exists=" + loggingFile.exists());
-							reloadLoggingFile(loggingFile.getAbsolutePath());
-							applicationContext.getAdvancedPrefs().setLoggingFileName(null);
-						}
+									@Override
+									public void setDefaultLoggingLevel(Level lev) {
+										String fileName = "SEVERE";
+										if (lev == Level.SEVERE) {
+											fileName = "SEVERE";
+										}
+										if (lev == Level.WARNING) {
+											fileName = "WARNING";
+										}
+										if (lev == Level.INFO) {
+											fileName = "INFO";
+										}
+										if (lev == Level.FINE) {
+											fileName = "FINE";
+										}
+										if (lev == Level.FINER) {
+											fileName = "FINER";
+										}
+										if (lev == Level.FINEST) {
+											fileName = "FINEST";
+										}
+										Resource loggingFile = ResourceLocator.locateResource("Config/logging_" + fileName + ".properties");
+										reloadLoggingFile(loggingFile);
+										applicationContext.getAdvancedPrefs().setLoggingFileName(null);
+									}
 
-						@Override
-						public void setConfigurationFileName(String configurationFile) {
-							reloadLoggingFile(configurationFile);
-							applicationContext.getAdvancedPrefs().setLoggingFileName(configurationFile);
-						}
-					});
+									@Override
+									public void setConfigurationFileLocation(Resource configurationFile) {
+										reloadLoggingFile(configurationFile);
+										applicationContext.getAdvancedPrefs().setLoggingFileName(configurationFile.getRelativePath());
+									}
+								});
+			}
+			else {
+				logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file"));
+				return null;
+				
+			}
 		} catch (SecurityException e) {
 			logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file")
 					+ "\nIt seems the file has read access protection.");
@@ -644,11 +660,10 @@ public class Flexo {
 		}
 	}
 
-	private static boolean reloadLoggingFile(String filePath) {
-		logger.info("reloadLoggingFile with " + filePath);
-		System.setProperty("java.util.logging.config.file", filePath);
+	private static boolean reloadLoggingFile(Resource rsc) {
+		logger.info("reloadLoggingFile with " + rsc.getURI());
 		try {
-			LogManager.getLogManager().readConfiguration();
+			LogManager.getLogManager().readConfiguration(rsc.openInputStream());;
 		} catch (SecurityException e) {
 			logger.warning("The specified logging configuration file can't be read (not enough privileges).");
 			e.printStackTrace();

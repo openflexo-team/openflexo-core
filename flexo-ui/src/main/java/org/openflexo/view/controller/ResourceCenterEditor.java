@@ -49,7 +49,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 
 	public void addResourceCenter() {
 		System.out.println("Add resource center ");
-		FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE_NAME);
+		FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
 		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());

@@ -38,9 +38,10 @@ import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.ResourceLocator;
 
 /**
  * Test StandardFlexoConceptView fib
@@ -53,7 +54,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
-	private static File fibFile;
+	private static Resource fibResource;
 
 	static FlexoEditor editor;
 
@@ -78,15 +79,15 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFile = ResourceLocator.locateFile("Fib/VPM/StandardFlexoConceptView.fib");
-		assertTrue(fibFile.exists());
+		fibResource = ResourceLocator.locateResource("Fib/VPM/StandardFlexoConceptView.fib");
+		assertTrue(fibResource != null);
 	}
 
 	@Test
 	@TestOrder(2)
 	public void testValidateWidget() {
 
-		validateFIB(fibFile);
+		validateFIB(fibResource);
 	}
 
 	@Test
@@ -228,7 +229,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForConceptA() {
 
-		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptA, FlexoConcept.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptA, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptA", widget.getController());
 	}
@@ -237,7 +238,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForConceptB() {
 
-		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptB, FlexoConcept.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptB, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptB", widget.getController());
 	}
@@ -246,7 +247,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForConceptC() {
 
-		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptC, FlexoConcept.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptC, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptC", widget.getController());
 	}
@@ -255,7 +256,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(7)
 	public void testInstanciateWidgetForConceptD() {
 
-		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptD, FlexoConcept.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptD, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptD", widget.getController());
 	}
@@ -264,7 +265,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	@TestOrder(8)
 	public void testInstanciateWidgetForConceptE() {
 
-		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibFile, flexoConceptE, FlexoConcept.class);
+		DefaultFIBCustomComponent<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptE, FlexoConcept.class);
 
 		gcDelegate.addTab("FlexoConceptE", widget.getController());
 	}

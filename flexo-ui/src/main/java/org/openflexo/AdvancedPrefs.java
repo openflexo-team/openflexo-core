@@ -36,6 +36,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.prefs.PreferencesContainer;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resource;
 import org.openflexo.swing.FlexoFont;
 import org.openflexo.swing.LookAndFeel;
 import org.openflexo.swing.converter.LookAndFeelConverter;
@@ -349,7 +351,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	@Setter(CUSTOM_LOG_CONFIG_FILE)
 	public void setLoggingFileName(String loggingFileName);
 
-	public File getCustomLoggingFile();
+	public Resource getCustomLoggingFile();
 
 	@Getter(DEFAULT_LOG_LEVEL)
 	@XMLAttribute
@@ -379,6 +381,8 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public abstract class AdvancedPrefsImpl extends PreferencesContainerImpl implements AdvancedPrefs {
 
 		private static final Logger logger = Logger.getLogger(GeneralPreferences.class.getPackage().getName());
+		
+		
 
 		private final LookAndFeelConverter LAF_CONVERTER = new LookAndFeelConverter();
 
@@ -685,11 +689,11 @@ public interface AdvancedPrefs extends PreferencesContainer {
 		}
 
 		@Override
-		public File getCustomLoggingFile() {
+		public Resource getCustomLoggingFile() {
 			if (getLoggingFileName() == null) {
 				return null;
 			}
-			return new File(getLoggingFileName());
+			return ResourceLocator.locateResource(getLoggingFileName());
 		}
 
 		@Override

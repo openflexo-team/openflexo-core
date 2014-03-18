@@ -17,6 +17,7 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -31,7 +32,7 @@ import org.openflexo.toolbox.IProgress;
 @ModelEntity
 @ImplementationClass(FlexoResourceImpl.class)
 @XMLElement
-public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner {
+public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner, Resource {
 
 	public static final String NAME = "name";
 	public static final String URI = "URI";

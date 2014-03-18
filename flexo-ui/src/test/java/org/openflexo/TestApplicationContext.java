@@ -21,8 +21,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.ResourceLocator;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
@@ -76,13 +78,14 @@ public class TestApplicationContext extends ApplicationContext {
 
 			if (generateCompoundTestResourceCenter) {
 				System.out.println("Generating CompoundTestResourceCenter");
-				List<File> testRCList = ResourceLocator.locateAllFiles("TestResourceCenter");
+				// TODO : Do best here, this is crappy!
+				List<File> testRCList = ((FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).locateAllFiles("TestResourceCenter");
 				for (File f : testRCList) {
 					System.out.println("Found TestResourceCenter " + f);
 					FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
 				}
 			} else {
-				File sourceTestResourceCenter = ResourceLocator.locateDirectory("TestResourceCenter");
+				File sourceTestResourceCenter = ((FileResourceImpl ) ResourceLocator.locateResource("TestResourceCenter")).getFile();
 				System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
 				FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
 			}
