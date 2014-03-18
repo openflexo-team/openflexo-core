@@ -34,7 +34,6 @@ import javax.naming.InvalidNameException;
 import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -58,8 +57,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	protected static FlexoProject _project;
 	protected static File _projectDirectory;
 	protected static String _projectIdentifier;
-	protected static FlexoServiceManager serviceManager;
-	protected static DirectoryResourceCenter resourceCenter;
+
 	static {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);

@@ -149,14 +149,24 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		public static View newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
 				FlexoProject project) throws SaveResourceException {
 
+			System.out.println("Hop, on passe par la");
+
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
 
+			System.out.println("La resource est cree");
+
 			View newView = newViewResource.getFactory().newInstance(View.class);
+
+			System.out.println("La view est cree");
+
 			newView.setProject(project);
+
 			newViewResource.setResourceData(newView);
 			newView.setResource(newViewResource);
 
 			newView.setTitle(viewTitle);
+
+			System.out.println("Et hop on sauve " + newViewResource.getFile());
 
 			// Save it
 			newViewResource.save(null);

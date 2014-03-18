@@ -3,7 +3,6 @@ package org.openflexo.foundation.viewpoint.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -113,11 +112,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			/*
 			 * Will be activitated when the convertion will be fully compliant
 			 */
-			//convertViewPoint16ToViewpoint17(returned);
-			
+			// convertViewPoint16ToViewpoint17(returned);
+
 			// Now look for virtual models
 			returned.exploreVirtualModels();
-		
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -157,8 +155,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	@Override
 	public ViewPoint getViewPoint() {
-
-		System.out.println("loadable=" + isLoadable());
 
 		try {
 			return getResourceData(null);
@@ -365,17 +361,17 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		return false;
 	}
-	
+
 	private static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
 
 		File viewPointDirectory = viewPointResource.getDirectory();
-		
+
 		List<Document> palettes = new ArrayList<Document>();
 		List<Document> exampleDiagrams = new ArrayList<Document>();
 		List<File> virtualModels = new ArrayList<File>();
-		
+
 		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
-		
+
 		/*
 		 *  Find the resources
 		 */
@@ -383,13 +379,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			for (File f : viewPointResource.getDirectory().listFiles()) {
 				if (f.isDirectory()) {
 					// Find palette files if any
-					for(File palette : f.listFiles()){
+					for (File palette : f.listFiles()) {
 						if (palette.getName().endsWith(".palette")) {
 							palettes.add(XMLUtils.readXMLFile(palette));
 						}
 					}
 					// Find diagram files if any
-					for(File exampleDiagram : f.listFiles()){
+					for (File exampleDiagram : f.listFiles()) {
 						if (exampleDiagram.getName().endsWith(".diagram")) {
 							exampleDiagrams.add(XMLUtils.readXMLFile(exampleDiagram));
 						}
@@ -400,7 +396,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						virtualModels.add(virtualModelFile);
 					}
 				}
-			} 
+			}
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -411,15 +407,14 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		/*
 		 *  Execute the convertion
 		 */
-		for(File virtualModelFile : virtualModels){
-			convertVirtualModels16ToVirtualModels17(viewPointResource,virtualModelFile,palettes,exampleDiagrams);
+		for (File virtualModelFile : virtualModels) {
+			convertVirtualModels16ToVirtualModels17(viewPointResource, virtualModelFile, palettes, exampleDiagrams);
 		}
-		
+
 	}
-	
-	
-	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource,
-			File virtualModelFile, List<Document> palettes,List<Document> exampleDiagrams) {
+
+	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource, File virtualModelFile,
+			List<Document> palettes, List<Document> exampleDiagrams) {
 		try {
 			Document d = XMLUtils.readXMLFile(virtualModelFile);
 			convertNames16ToNames17(d);
@@ -430,55 +425,52 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			if (d.getRootElement().getName().equals("VirtualModel")) {
 				convertVirtualModel16ToVirtualModel17(d);
 				XMLUtils.saveXMLFile(d, virtualModelFile);
-			}				
-		} 
-		catch (JDOMException e) {
+			}
+		} catch (JDOMException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	private static void convertDiagramSpecification16ToVirtualModel17(File file, Document diagram, List<Document> palettes, List<Document> exampleDiagrams){
+
+	private static void convertDiagramSpecification16ToVirtualModel17(File file, Document diagram, List<Document> palettes,
+			List<Document> exampleDiagrams) {
 		// Create a new Virtual Model with a TypedDiagramModelSlot
 		convertOldNameToNewNames("DiagramSpecification", "VirtualModel", diagram);
-		
+
 		// Create the diagram specification
 		File diagramSpecificationFile = new File(file.getParentFile(), file.getName().replace(".xml", "") + ".diagramspecification");
 		Document diagramSpecification = new Document();
 		Element rootElement = new Element("DiagramSpecification");
 		diagramSpecification.addContent(rootElement);
-		
+
 		// Find all example diagrams
-		for(Document exampleDiagram : exampleDiagrams){
+		for (Document exampleDiagram : exampleDiagrams) {
 			exampleDiagram.getRootElement().setName("Diagram");
 			rootElement.addContent(exampleDiagram.cloneContent());
 		}
-		
+
 		// Create palettes
-		for(Document palette : palettes){
+		for (Document palette : palettes) {
 			rootElement.addContent(palette.cloneContent());
 		}
-				
+
 		// Find drop schemes
-		
-		
+
 		// Save the file
 		XMLUtils.saveXMLFile(diagramSpecification, diagramSpecificationFile);
-		
+
 	}
-	
-	private static void convertVirtualModel16ToVirtualModel17(Document document){
-		
+
+	private static void convertVirtualModel16ToVirtualModel17(Document document) {
+
 	}
-	
-	
-	//userID="FLX"
-	private static void convertNames16ToNames17(Document document){
+
+	// userID="FLX"
+	private static void convertNames16ToNames17(Document document) {
 		// Convert properties
 		convertProperties16ToProperties17(document);
-		
+
 		// Edition Patterns
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
 		// Pattern Roles
@@ -494,7 +486,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("SemanticsPowerpointModelSlot", "ModelSlot_SemanticsPowerpointModelSlot", document);
 		convertOldNameToNewNames("OWLModelSlot", "ModelSlot_OWLModelSlot", document);
 		convertOldNameToNewNames("VirtualModelModelSlot", "ModelSlot_VirtualModelModelSlot", document);
-		
+
 		// Connection to ModelSlots
 		convertOldNameToNewNames("AddressedEMFModelSlot", "EMFModelSlot", document);
 		convertOldNameToNewNames("AddressedXMLModelSlot", "XMLModelSlot", document);
@@ -505,71 +497,69 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("AddressedSemanticsPowerpointModelSlot", "SemanticsPowerpointModelSlot", document);
 		convertOldNameToNewNames("AddressedOWLModelSlot", "OWLModelSlot", document);
 		convertOldNameToNewNames("AddressedVirtualModelModelSlot", "VirtualModelModelSlot", document);
-		
-		//Actions
+
+		// Actions
 		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);
 		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
 		convertOldNameToNewNames("AddressedSelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
 		convertOldNameToNewNames("AddressedSelectFlexoConceptInstance", "SelectFlexoConceptInstance", document);
-		
-		
+
 	}
 
-	private static void convertProperties16ToProperties17(Document document){
+	private static void convertProperties16ToProperties17(Document document) {
 		// All elements
 		addProperty("userID", "FLX", document, null);
 		// Pattern roles
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "ContainedEditionPatternInstancePatternRole");
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "AddressedSelectEditionPatternInstance");
-		removeProperty("patternRole",document,"ContainedEMFObjectIndividualPatternRole");
-		removeProperty("patternRole",document,"ContainedEditionPatternInstancePatternRole");
+		removeProperty("patternRole", document, "ContainedEMFObjectIndividualPatternRole");
+		removeProperty("patternRole", document, "ContainedEditionPatternInstancePatternRole");
 	}
-	
-	private static void convertOldNameToNewNames(String oldName, String newName, Document document){
-		for(Content content : document.getDescendants()){
-			if(content instanceof Element){
-				Element element = (Element)content;
-				if(element.getName().equals(oldName)){
+
+	private static void convertOldNameToNewNames(String oldName, String newName, Document document) {
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if (element.getName().equals(oldName)) {
 					element.setName(newName);
 				}
 			}
 		}
 	}
-	
-	private static void addProperty(String property, String value, Document document, String elementName){
-		for(Content content : document.getDescendants()){
-			if(content instanceof Element){
-				Element element = (Element)content;
-				if(elementName==null || elementName.equals(element.getName())){
+
+	private static void addProperty(String property, String value, Document document, String elementName) {
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if (elementName == null || elementName.equals(element.getName())) {
 					element.setAttribute(property, value);
 				}
 			}
 		}
 	}
-	
-	private static void removeProperty(String property, Document document, String elementName){
-		for(Content content : document.getDescendants()){
-			if(content instanceof Element){
-				Element element = (Element)content;
-				if(elementName==null || elementName.equals(element.getName())){
+
+	private static void removeProperty(String property, Document document, String elementName) {
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if (elementName == null || elementName.equals(element.getName())) {
 					element.removeAttribute(property);
 				}
 			}
 		}
 	}
-	
-	private static void changePropertyName(String oldPropertyName, String newPropertyName, Document document, String elementName){
-		for(Content content : document.getDescendants()){
-			if(content instanceof Element){
-				Element element = (Element)content;
-				if(elementName==null || elementName.equals(element.getName())){
-					if(element.getAttribute(oldPropertyName)!=null){
+
+	private static void changePropertyName(String oldPropertyName, String newPropertyName, Document document, String elementName) {
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if (elementName == null || elementName.equals(element.getName())) {
+					if (element.getAttribute(oldPropertyName) != null) {
 						element.getAttribute(oldPropertyName).setName(newPropertyName);
 					}
 				}
 			}
 		}
 	}
-	
-	
+
 }
