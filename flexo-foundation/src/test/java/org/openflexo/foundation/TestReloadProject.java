@@ -11,7 +11,8 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test project creation facilities
+ * This unit test is intended to test project creation and reloading facilities<br>
+ * We should retrieve project metadata after project creation and saving
  * 
  * @author sylvain
  * 
