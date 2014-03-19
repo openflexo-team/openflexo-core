@@ -4,11 +4,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.AbstractCreationScheme;
@@ -51,7 +51,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 
 	public void setMetaModelResource(FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
-	public FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(View view, String filename, String modelUri,
+	public FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
 			FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 	public FlexoModelResource<M, MM, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath, String filename,
@@ -183,8 +183,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 		}
 
 		@Override
-		public abstract FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(View view, String filename, String modelUri,
-				FlexoMetaModelResource<M, MM, ?> metaModelResource);
+		public abstract FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename,
+				String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override
 		public abstract FlexoModelResource<M, MM, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,

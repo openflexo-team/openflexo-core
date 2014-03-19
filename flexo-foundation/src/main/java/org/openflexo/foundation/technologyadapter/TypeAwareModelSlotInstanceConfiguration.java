@@ -19,13 +19,18 @@
  */
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
@@ -84,16 +89,16 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	@Override
-	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(VirtualModelInstance vmInstance) {
+	public TypeAwareModelSlotInstance<M, MM, MS> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
 		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
 		TypeAwareModelSlotInstance<M, MM, MS> returned = factory.newInstance(TypeAwareModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
-		configureModelSlotInstance(returned);
+		configureModelSlotInstance(returned, view);
 		return returned;
 	}
 
-	protected TypeAwareModelSlotInstance<M, MM, MS> configureModelSlotInstance(TypeAwareModelSlotInstance<M, MM, MS> msInstance) {
+	protected TypeAwareModelSlotInstance<M, MM, MS> configureModelSlotInstance(TypeAwareModelSlotInstance<M, MM, MS> msInstance, View view) {
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
 			if (modelResource != null) {
 				System.out.println("Select model with uri " + getModelResource().getURI());
@@ -103,8 +108,22 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 				logger.warning("No model for model slot " + getModelSlot());
 			}
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
-			modelResource = createProjectSpecificEmptyModel(msInstance, getModelSlot());
+			modelResource = createProjectSpecificEmptyModel(msInstance, getModelSlot(), view.getProject());
 			System.out.println("***** modelResource = " + modelResource);
+			System.out.println("***** model = " + modelResource.getModel());
+			try {
+				modelResource.loadResourceData(null);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("***** model = " + modelResource.getModel());
 			if (modelResource != null) {
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
@@ -127,9 +146,9 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		return null;
 	}
 
-	private FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot) {
-		return modelSlot.createProjectSpecificEmptyModel(msInstance.getView(), getFilename(), getModelUri(),
-				modelSlot.getMetaModelResource());
+	private FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot,
+			FlexoProject project) {
+		return modelSlot.createProjectSpecificEmptyModel(project, getFilename(), getModelUri(), modelSlot.getMetaModelResource());
 	}
 
 	/*private FlexoModelResource<M, MM> createSharedEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot) {

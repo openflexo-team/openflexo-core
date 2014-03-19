@@ -139,7 +139,8 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
 			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 			if (configuration.isValidConfiguration()) {
-				newVirtualModelInstance.addToModelSlotInstances(configuration.createModelSlotInstance(newVirtualModelInstance));
+				newVirtualModelInstance.addToModelSlotInstances(configuration.createModelSlotInstance(newVirtualModelInstance,
+						getFocusedObject()));
 			} else {
 				throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot() + " configuration="
 						+ configuration);
@@ -151,6 +152,7 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 			creationSchemeAction.doAction();
 		}
 
+		// We add the VirtualModelInstance to the view
 		getFocusedObject().addToVirtualModelInstances(newVirtualModelInstance);
 
 		System.out.println("Now, we try to synchronize the new virtual model instance");
