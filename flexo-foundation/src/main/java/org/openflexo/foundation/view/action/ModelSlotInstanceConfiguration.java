@@ -26,6 +26,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.ModelSlotInstance;
+import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
 /**
@@ -127,7 +128,16 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		return option != null;
 	}
 
-	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(VirtualModelInstance msInstance);
+	/**
+	 * Called to instantiate a {@link ModelSlotInstance} using this configuration, in supplied VirtualModelInstance
+	 * 
+	 * @param vmInstance
+	 *            the virtual model instance where the ModelSlotInstance should be created
+	 * @param view
+	 *            the view in which the VirtualModelInstance will be added
+	 * @return
+	 */
+	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(VirtualModelInstance vmInstance, View view);
 
 	private String errorMessage;
 

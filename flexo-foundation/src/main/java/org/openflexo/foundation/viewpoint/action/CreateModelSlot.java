@@ -92,7 +92,11 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add model slot");
+		logger.info("Add model slot, technologyAdapter=" + technologyAdapter);
+
+		if (technologyAdapter == null) {
+			throw new InvalidParameterException("No technology adapter supplied");
+		}
 
 		if (technologyAdapter instanceof VirtualModelTechnologyAdapter) {
 			VirtualModelTechnologyAdapter virtualModelTechnologyAdapter = (VirtualModelTechnologyAdapter) technologyAdapter;
