@@ -86,7 +86,7 @@ public class FlexoCst extends ColorCst {
 
 	public static URL cssUrl() {
 		if (_cssURL == null) {
-				_cssURL = ((BasicResourceImpl) ResourceLocator.getResourceLocator().locateResource("Config/FlexoMasterStyle.css")).getURL();
+				_cssURL = ((BasicResourceImpl) ResourceLocator.locateResource("Config/FlexoMasterStyle.css")).getURL();
 		}
 		return _cssURL;
 	}

@@ -40,7 +40,7 @@ public class FIBViewPointSelector extends FIBFlexoObjectSelector<ViewPointResour
 
 	static final Logger logger = Logger.getLogger(FIBViewPointSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ViewPointSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewPointSelector.fib");
 
 	public FIBViewPointSelector(ViewPointResource editedObject) {
 		super(editedObject);

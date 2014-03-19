@@ -38,7 +38,7 @@ public class FIBResourceCenterSelector extends FIBFlexoObjectSelector<FlexoResou
 
 	static final Logger logger = Logger.getLogger(FIBResourceCenterSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/ResourceCenterSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ResourceCenterSelector.fib");
 
 	private FlexoResourceCenterService rcService;
 

@@ -57,7 +57,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 public class FIBClassSelector extends FIBFlexoObjectSelector<IFlexoOntologyClass> {
 	static final Logger logger = Logger.getLogger(FIBClassSelector.class.getPackage().getName());
 
-	public static final Resource FIB_FILE =  ResourceLocator.getResourceLocator().locateResource("Fib/FIBClassSelector.fib");
+	public static final Resource FIB_FILE =  ResourceLocator.locateResource("Fib/FIBClassSelector.fib");
 
 	private InformationSpace informationSpace;
 	private IFlexoOntology context;

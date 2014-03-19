@@ -39,7 +39,7 @@ public class BugReportService extends FlexoServiceImpl {
 		this.projects = projects;
 	}
 
-	private static final Resource MODULES_FILE = ResourceLocator.getResourceLocator().locateResource("Config/jira_modules_project.json");
+	private static final Resource MODULES_FILE = ResourceLocator.locateResource("Config/jira_modules_project.json");
 
 	/*
 	private static final File PROJECT_FILE = CompositeResourceLocatorImpl.retrieveResourceAsFile("Config/jira_openflexo_project.json");

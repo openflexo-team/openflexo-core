@@ -42,7 +42,7 @@ public class FIBModelSelector extends FIBFlexoObjectSelector<FlexoModelResource>
 
 	static final Logger logger = Logger.getLogger(FIBModelSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/ModelSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ModelSelector.fib");
 
 	private InformationSpace informationSpace;
 	private TechnologyAdapter technologyAdapter;

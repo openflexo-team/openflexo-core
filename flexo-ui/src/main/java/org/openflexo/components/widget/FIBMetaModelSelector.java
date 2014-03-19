@@ -39,7 +39,7 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 
 	static final Logger logger = Logger.getLogger(FIBMetaModelSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/MetaModelSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/MetaModelSelector.fib");
 
 	public FIBMetaModelSelector(FlexoMetaModelResource editedObject) {
 		super(editedObject);

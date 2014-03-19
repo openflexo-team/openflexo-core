@@ -71,7 +71,7 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 
 	static final Logger logger = Logger.getLogger(FIBPropertySelector.class.getPackage().getName());
 
-	public static final Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/FIBPropertySelector.fib");
+	public static final Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/FIBPropertySelector.fib");
 
 	private InformationSpace informationSpace;
 	private IFlexoOntology context;

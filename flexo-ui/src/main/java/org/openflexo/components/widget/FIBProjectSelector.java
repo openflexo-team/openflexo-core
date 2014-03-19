@@ -38,7 +38,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 
 	static final Logger logger = Logger.getLogger(FIBProjectSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/ProjectSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ProjectSelector.fib");
 
 	private ProjectLoader projectLoader;
 

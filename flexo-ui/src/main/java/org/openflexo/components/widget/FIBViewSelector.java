@@ -37,7 +37,7 @@ public class FIBViewSelector extends FIBProjectObjectSelector<ViewResource> {
 
 	static final Logger logger = Logger.getLogger(FIBViewSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ViewSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewSelector.fib");
 
 	public FIBViewSelector(ViewResource editedObject) {
 		super(editedObject);

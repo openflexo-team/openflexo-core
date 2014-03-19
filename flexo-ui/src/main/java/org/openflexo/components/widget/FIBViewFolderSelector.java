@@ -41,7 +41,7 @@ public class FIBViewFolderSelector extends FIBFlexoObjectSelector<RepositoryFold
 
 	static final Logger logger = Logger.getLogger(FIBViewFolderSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ViewFolderSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ViewFolderSelector.fib");
 
 	private FlexoProject project;
 

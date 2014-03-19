@@ -32,7 +32,7 @@ public class FlexoMainLocalizer extends LocalizedDelegateGUIImpl {
 	 */
 	private static Resource getMainLocalizerLocalizedDirectory() {
 		if (_localizedDirectory == null) {
-			_localizedDirectory = ResourceLocator.getResourceLocator().locateResource(LOCALIZATION_DIRNAME);
+			_localizedDirectory = ResourceLocator.locateResource(LOCALIZATION_DIRNAME);
 
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Setting localized directory" + _localizedDirectory.getURI());

@@ -39,7 +39,7 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/VirtualModelSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelSelector.fib");
 
 	public FIBVirtualModelSelector(VirtualModelResource editedObject) {
 		super(editedObject);

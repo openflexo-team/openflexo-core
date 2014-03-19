@@ -41,7 +41,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	static final Logger logger = Logger.getLogger(FIBFlexoConceptSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/FlexoConceptSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/FlexoConceptSelector.fib");
 
 	public FIBFlexoConceptSelector(FlexoConcept editedObject) {
 		super(editedObject);

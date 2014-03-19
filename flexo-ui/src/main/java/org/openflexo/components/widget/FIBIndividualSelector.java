@@ -75,7 +75,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntologyIndividual> implements Bindable {
 	static final Logger logger = Logger.getLogger(FIBIndividualSelector.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/FIBIndividualSelector.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBIndividualSelector.fib");
 
 	private InformationSpace informationSpace;
 	private IFlexoOntology context;

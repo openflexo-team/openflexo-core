@@ -42,7 +42,7 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/VirtualModelInstanceSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
 
 	private ViewLibrary viewLibrary;
 	private View view;

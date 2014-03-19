@@ -297,7 +297,7 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	 * @return
 	 */
 	private ScreenshotImage<T> getEmptyScreenshot() {
-		InputStream fis = ResourceLocator.getResourceLocator().locateResource(("LatexExtras/EmptyScreenshot.jpg")).openInputStream();
+		InputStream fis = ResourceLocator.locateResource(("LatexExtras/EmptyScreenshot.jpg")).openInputStream();
 		if (fis != null) {
 			try {
 				BufferedImage bi = ImageIO.read(fis);

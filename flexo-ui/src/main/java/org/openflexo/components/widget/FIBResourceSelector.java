@@ -42,7 +42,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	static final Logger logger = Logger.getLogger(FIBResourceSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE = ResourceLocator.getResourceLocator().locateResource("Fib/ResourceSelector.fib");
+	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ResourceSelector.fib");
 
 	private InformationSpace informationSpace;
 	private TechnologyAdapter technologyAdapter;

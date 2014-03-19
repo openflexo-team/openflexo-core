@@ -58,7 +58,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 	private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
 
-	private static final ResourceLocator rl = ResourceLocator.getResourceLocator();
+	
 
 	static final Logger logger = Logger.getLogger(ModuleInspectorController.class.getPackage().getName());
 
