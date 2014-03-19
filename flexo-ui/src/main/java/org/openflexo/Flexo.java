@@ -200,18 +200,8 @@ public class Flexo {
 		fsrl.appendToDirectories(resourcepath); 
 		fsrl.appendToDirectories(System.getProperty("user.home"));
 		ResourceLocator.appendDelegate(fsrl);
-		
-		((FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).printDirectoriesSearchOrder(System.err);
-		
-		// And ClassPath!!!
-		 ClassLoader cl = ClassLoader.getSystemClassLoader();
-		 
-	        URL[] urls = ((URLClassLoader)cl).getURLs();
-	 
-	        for(URL url: urls){
-	        	System.out.println(url.getFile());
-	        }
-		
+				
+	
 		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
 		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
