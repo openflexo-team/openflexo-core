@@ -57,7 +57,7 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 		@Override
 		public boolean isVisibleForSelection(RepositoryFolder object, Vector<FlexoObject> globalSelection) {
-			return object.getResourceRepository() instanceof ViewLibrary;
+			return object.getResourceRepository() instanceof FlexoProject;
 		}
 
 		@Override

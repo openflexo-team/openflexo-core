@@ -55,7 +55,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(ClassParameter.class), @Import(IndividualParameter.class),
-		@Import(PropertyParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
+		@Import(PropertyParameter.class),@Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
@@ -90,6 +90,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	public static final String CONDITIONAL_KEY = "conditional";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_REQUIRED_KEY = "isRequired";
+	@PropertyIdentifier(type = FlexoBehaviour.class)
+	public static final String FLEXO_BEHAVIOUR_SCHEME_KEY = "flexoBehaviourScheme";
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -149,6 +151,12 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
+	@Getter(value = FLEXO_BEHAVIOUR_SCHEME_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
+	public FlexoBehaviour getScheme();
+
+	@Setter(FLEXO_BEHAVIOUR_SCHEME_KEY)
+	public void setScheme(FlexoBehaviour scheme);
+	
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
@@ -263,7 +271,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public int getIndex() {
-			return getScheme().getParameters().indexOf(this);
+			if(getScheme()!=null){
+				return getScheme().getParameters().indexOf(this);
+			}
+			return -1;
 		}
 
 		@Override

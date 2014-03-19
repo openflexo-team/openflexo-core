@@ -79,6 +79,9 @@ import org.openflexo.view.controller.FlexoController;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+
 /**
  * Main class of the Flexo Application Suite
  * 
@@ -87,9 +90,6 @@ import sun.misc.SignalHandler;
  */
 public class Flexo {
 	private static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
-	private static final ResourceLocator rl = ResourceLocator.getResourceLocator();
-
-	private static final FileSystemResourceLocatorImpl fsrl =new FileSystemResourceLocatorImpl(); 
 
 	public static boolean isDev = false;
 
@@ -117,8 +117,6 @@ public class Flexo {
 				String s = (String) m.invoke(null, "English.dict", "Localized");
 				s = s.substring(System.getProperty("user.dir").length() + 1);
 				s = s.substring(0, s.length() - "Localized/English.dict".length());
-				// TODO : Fix this when resourceLocator is ok
-				// rl.resetFlexoResourceLocation(new File(s));
 				return s;
 			} catch (SecurityException e) {
 				e.printStackTrace();
@@ -135,8 +133,6 @@ public class Flexo {
 			}
 
 		} else {
-			fsrl.appendToDirectories(System.getProperty("user.dir"));
-			rl.appendDelegate(fsrl);
 			return System.getProperty("user.dir");
 		}
 		return null;
@@ -196,11 +192,26 @@ public class Flexo {
 			}
 		}
 		// 1. Very important to initiate first the ResourceLocator. Nothing else. See also issue 463.
-		if (ToolBox.getPLATFORM() != ToolBox.MACOS || !isDev) {
-			getResourcePath();
-		}
+		String resourcepath = getResourcePath();
+		
 		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
-		// CompositeResourceLocatorImpl.printDirectoriesSearchOrder(System.err);
+
+		final FileSystemResourceLocatorImpl fsrl =new FileSystemResourceLocatorImpl(); 
+		fsrl.appendToDirectories(resourcepath); 
+		fsrl.appendToDirectories(System.getProperty("user.home"));
+		ResourceLocator.appendDelegate(fsrl);
+		
+		((FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).printDirectoriesSearchOrder(System.err);
+		
+		// And ClassPath!!!
+		 ClassLoader cl = ClassLoader.getSystemClassLoader();
+		 
+	        URL[] urls = ((URLClassLoader)cl).getURLs();
+	 
+	        for(URL url: urls){
+	        	System.out.println(url.getFile());
+	        }
+		
 		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
 		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;

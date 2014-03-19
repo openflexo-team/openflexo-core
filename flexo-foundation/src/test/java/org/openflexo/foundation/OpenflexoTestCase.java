@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2013-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -140,7 +141,7 @@ public abstract class OpenflexoTestCase {
 						FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
 					}
 					*/
-					
+	
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);

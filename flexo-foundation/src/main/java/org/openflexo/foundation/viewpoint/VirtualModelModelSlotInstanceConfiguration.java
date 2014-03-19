@@ -67,13 +67,18 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 	@Override
 	public ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance) {
 		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+		System.out.println("factory=" + factory);
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
-		if (getAddressedVirtualModelInstanceResource() != null) {
-			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
+		if (getModelSlot().isReflexiveModelSlot()) {
+			returned.setAccessedResourceData(vmInstance);
 		} else {
-			logger.warning("Addressed virtual model instance is null");
+			if (getAddressedVirtualModelInstanceResource() != null) {
+				returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
+			} else {
+				logger.warning("Addressed virtual model instance is null");
+			}
 		}
 		return returned;
 	}

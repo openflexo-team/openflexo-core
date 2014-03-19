@@ -124,7 +124,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				Module module = iterator.next();
 				registerModule(module);
 			}
-			logger.info("Loading available technology adapters. Done.");
+			logger.info("Loading available modules. Done.");
 		}
 
 	}

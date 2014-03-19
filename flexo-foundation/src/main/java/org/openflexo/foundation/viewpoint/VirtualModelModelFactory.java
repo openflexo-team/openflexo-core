@@ -106,9 +106,9 @@ public class VirtualModelModelFactory extends ModelFactory {
 	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModel.class);
-		classes.add(FlexoConceptStructuralFacet.class);
+		/*classes.add(FlexoConceptStructuralFacet.class);
 		classes.add(FlexoConceptBehaviouralFacet.class);
-		classes.add(FlexoBehaviourParameters.class);
+		classes.add(FlexoBehaviourParameters.class);*/
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				classes.add(modelSlotClass);

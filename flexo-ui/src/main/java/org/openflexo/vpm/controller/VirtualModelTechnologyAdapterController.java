@@ -3,9 +3,16 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.viewpoint.ActionScheme;
+import org.openflexo.foundation.viewpoint.CloningScheme;
+import org.openflexo.foundation.viewpoint.CreationScheme;
+import org.openflexo.foundation.viewpoint.DeletionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.foundation.viewpoint.NavigationScheme;
+import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
@@ -16,6 +23,7 @@ import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstan
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
+import org.openflexo.icon.VPMIconLibrary;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -107,6 +115,24 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
+	}
+	
+	@Override
+	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass)  {
+		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.ACTION_SCHEME_ICON);
+		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.DELETE_ICON);
+		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.CREATION_SCHEME_ICON);
+		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.NAVIGATION_SCHEME_ICON);
+		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
+		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return IconFactory.getImageIcon(VPMIconLibrary.CLONING_SCHEME_ICON);
+		}
+		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}
 
 	@Override

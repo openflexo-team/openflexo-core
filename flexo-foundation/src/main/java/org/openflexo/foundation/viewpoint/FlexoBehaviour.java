@@ -146,7 +146,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_SCHEME_KEY)
 	@XMLElement
 	public List<FlexoBehaviourParameter> getParameters();
 

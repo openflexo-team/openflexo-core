@@ -20,6 +20,8 @@
 package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -28,12 +30,15 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -70,17 +75,46 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, FlexoConceptBehaviouralFacet.class);
 	}
 
+	public static enum CreateEditionSchemeChoice {
+		BuiltInAction, ModelSlotSpecificBehaviour
+	}
+	
 	private String editionSchemeName;
 	public String description;
 	public Class<? extends FlexoBehaviour> flexoBehaviourClass;
+	
+	public Class<? extends FlexoBehaviour> builtInBehaviourClass;
+	public Class<? extends FlexoBehaviour> modelSlotSpecificBehaviourClass;
+	private final List<Class<? extends FlexoBehaviour>> builtInBehaviours;
+	public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
+	public ModelSlot modelSlot;
 
 	private FlexoBehaviour newFlexoBehaviour;
 
 	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-
+		builtInBehaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
+		builtInBehaviours.add(org.openflexo.foundation.viewpoint.ActionScheme.class);
+		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
+		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
+		builtInBehaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
+		
+		if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
+			modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
+		}
 	}
 
+	public List<Class<? extends FlexoBehaviour>> getBuiltInBehaviours() {
+		return builtInBehaviours;
+	}
+	
+	public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
+		if (modelSlot != null) {
+			return modelSlot.getAvailableFlexoBehaviourTypes();
+		}
+		return null;
+	}
+	
 	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
 			return getFocusedObject().getFlexoConcept();
@@ -128,15 +162,13 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(getEditionSchemeName())) {
-			validityMessage = EMPTY_NAME;
-			return false;
-		} else if (getFlexoConcept().getFlexoRole(getEditionSchemeName()) != null) {
+		/*if (getFlexoConcept().getFlexoRole(getEditionSchemeName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
 		} else {
 			validityMessage = "";
 			return true;
-		}
+		}*/
+		return true;
 	}
 }
