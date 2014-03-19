@@ -92,7 +92,9 @@ public class TestPreferences extends FIBTestCase {
 	@Override
 	@After
 	public void tearDown() throws Exception {
-		gcDelegate.tearDown();
+		if(gcDelegate != null){
+			gcDelegate.tearDown();
+		}
 	}
 
 }

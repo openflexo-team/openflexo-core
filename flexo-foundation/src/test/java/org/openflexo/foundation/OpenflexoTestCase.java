@@ -26,8 +26,10 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +51,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
@@ -124,7 +127,21 @@ public abstract class OpenflexoTestCase {
 
 					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
 					System.out.println("***************** WARNING WARNING WARNING ************************");
-					
+
+
+					if (generateCompoundTestResourceCenter) {
+
+						Enumeration<URL> toto = ClassLoader.getSystemClassLoader().getResources("TestResourceCenter");
+
+						while (toto.hasMoreElements()){
+							System.out.println(toto.nextElement().toString());
+						}
+					}
+					else {
+
+						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
+						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
+					}
 
 					// TODO : Code to be refactored!
 					/*
@@ -140,8 +157,8 @@ public abstract class OpenflexoTestCase {
 						System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
 						FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
 					}
-					*/
-	
+					 */
+
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);

@@ -41,6 +41,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void testLoadViewPoint() {
 
+		
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 
 		System.out.println("VPLibrary=" + vpLib);

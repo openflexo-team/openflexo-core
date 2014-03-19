@@ -19,7 +19,9 @@
  */
 package org.openflexo;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 
@@ -53,8 +57,15 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	}
 
 	@AfterClass
-	public static void tearDownClass() {
-
+	public synchronized static void tearDownClass() {
+		 FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
+		 List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
+		for ( FlexoResourceCenter rc : listRC){
+			if (rc instanceof DirectoryResourceCenter) {
+				File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
+				RCDirectory.deleteOnExit();
+			}
+		}
 	}
 
 	protected static ApplicationContext instanciateTestServiceManager() {

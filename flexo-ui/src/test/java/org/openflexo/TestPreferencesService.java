@@ -58,5 +58,6 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 		instanciateTestServiceManager();
 		assertNotNull(serviceManager.getPreferencesService());
 		assertNotNull(serviceManager.getPreferencesService().getPreferencesFactory());
+		
 	}
 }

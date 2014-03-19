@@ -21,11 +21,12 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 		validateFIB("Fib/DescriptionWidget.fib");
 	}
 
+	/*
 	@Test
 	public void testDocGenerationChooser() {
 		validateFIB("Fib/DocGenerationChooser.fib");
 	}
-
+*/
 	@Test
 	public void testFlexoConceptInstanceSelector() {
 		validateFIB("Fib/FlexoConceptInstanceSelector.fib");
@@ -121,10 +122,12 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 		validateFIB("Fib/ModelSelector.fib");
 	}
 
+	/*
 	@Test
 	public void testNewServerProject() {
 		validateFIB("Fib/NewServerProject.fib");
 	}
+	*/
 
 	@Test
 	public void testProjectSelector() {
@@ -165,12 +168,12 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	public void testSaveProjects() {
 		validateFIB("Fib/SaveProjects.fib");
 	}
-
+/*
 	@Test
 	public void testServerClientModelView() {
 		validateFIB("Fib/ServerClientModelView.fib");
 	}
-
+*/
 	@Test
 	public void testViewFolderSelector() {
 		validateFIB("Fib/ViewFolderSelector.fib");
@@ -196,10 +199,12 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 		validateFIB("Fib/VirtualModelSelector.fib");
 	}
 
+	/*
 	@Test
 	public void testWebServiceURLDialog() {
 		validateFIB("Fib/WebServiceURLDialog.fib");
 	}
+	*/
 
 	@Test
 	public void testWelcomePanel() {
