@@ -36,9 +36,8 @@ import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
-import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -79,12 +78,10 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		BuiltInAction, ModelSlotSpecificBehaviour
 	}
 	
-	private String editionSchemeName;
+	private String flexoBehaviourName;
 	public String description;
 	public Class<? extends FlexoBehaviour> flexoBehaviourClass;
-	
-	public Class<? extends FlexoBehaviour> builtInBehaviourClass;
-	public Class<? extends FlexoBehaviour> modelSlotSpecificBehaviourClass;
+
 	private final List<Class<? extends FlexoBehaviour>> builtInBehaviours;
 	public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
 	public ModelSlot modelSlot;
@@ -98,10 +95,15 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
-		
-		if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
-			modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
+		if(focusedObject!=null && focusedObject instanceof VirtualModel){
+			builtInBehaviours.add(org.openflexo.foundation.viewpoint.SynchronizationScheme.class);
 		}
+		if(focusedObject.getVirtualModel()!=null){
+			if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
+				modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
+			}
+		}
+		
 	}
 
 	public List<Class<? extends FlexoBehaviour>> getBuiltInBehaviours() {
@@ -122,26 +124,26 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		return null;
 	}
 
-	public String getEditionSchemeName() {
-		if (StringUtils.isEmpty(editionSchemeName) && flexoBehaviourClass != null) {
+	public String getFlexoBehaviourName() {
+		if (StringUtils.isEmpty(flexoBehaviourName) && flexoBehaviourClass != null) {
 			return getFlexoConcept().getAvailableEditionSchemeName(flexoBehaviourClass.getSimpleName());
 		}
-		return editionSchemeName;
+		return flexoBehaviourName;
 	}
 
-	public void setEditionSchemeName(String editionSchemeName) {
-		this.editionSchemeName = editionSchemeName;
+	public void setFlexoBehaviourName(String flexoBehaviourName) {
+		this.flexoBehaviourName = flexoBehaviourName;
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add edition scheme, name=" + getEditionSchemeName() + " type=" + flexoBehaviourClass);
+		logger.info("Add flexo behaviour, name=" + getFlexoBehaviourName() + " type=" + flexoBehaviourClass);
 
 		if (flexoBehaviourClass != null) {
 
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
-			newFlexoBehaviour.setName(getEditionSchemeName());
+			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		}
 
@@ -154,7 +156,8 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	private String validityMessage = EMPTY_NAME;
 
 	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_scheme_must_have_an_non_empty_and_unique_name");
+	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_behaviour_must_have_an_non_empty_and_unique_name");
+	private static final String EMPTY_FLEXO_BEHAVIOUR_TYPE = FlexoLocalization.localizedForKey("a_flexo_behaviour_type_must_be_selected");
 
 	public String getValidityMessage() {
 		return validityMessage;
@@ -162,13 +165,18 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 
 	@Override
 	public boolean isValid() {
-		/*if (getFlexoConcept().getFlexoRole(getEditionSchemeName()) != null) {
+		if (getFlexoBehaviourName() == null) {
+			validityMessage = EMPTY_NAME;
+			return false;
+		} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
 			validityMessage = DUPLICATED_NAME;
+			return false;
+		} else if (flexoBehaviourClass== null) {
+			validityMessage = EMPTY_FLEXO_BEHAVIOUR_TYPE;
 			return false;
 		} else {
 			validityMessage = "";
 			return true;
-		}*/
-		return true;
+		}
 	}
 }
