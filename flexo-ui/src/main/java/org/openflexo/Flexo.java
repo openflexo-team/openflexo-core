@@ -588,7 +588,7 @@ public class Flexo {
 			String loggingFileName = System.getProperty("java.util.logging.config.file");
 			Resource loggingFile = null;
 			if (loggingFileName == null) {
-				loggingFile = ResourceLocator.locateResource("Config/logging_INFO.properties");
+				loggingFile = ResourceLocator.locateResource("Config/logging_WARNING.properties");
 				loggingFileName = loggingFile.getURI();
 			}
 			else {
