@@ -71,7 +71,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.ws.rs.WebApplicationException;
+// import javax.ws.rs.WebApplicationException;
 import javax.xml.ws.Holder;
 
 import org.openflexo.ApplicationContext;
@@ -1351,7 +1351,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 					+ FlexoLocalization.localizedForKey("the_url_seems_incorrect")
 					+ (location != null ? "\n" + FlexoLocalization.localizedForKey("try_with_this_one") + " " + location : ""));
 			return false;
-		}
+		}/*
 		if (e instanceof WebApplicationException) {
 			WebApplicationException wae = (WebApplicationException) e;
 			Object entity = wae.getResponse().getEntity();
@@ -1372,6 +1372,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 				}
 			}
 		}
+		*/
 		if (e.getCause() instanceof ConnectException) {
 			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error")
 					+ (e.getCause().getMessage() != null ? " (" + e.getCause().getMessage() + ")" : "") + "\n"

@@ -33,62 +33,6 @@
 			<artifactId>diana-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.cayenne</groupId>
-			<artifactId>cayenne-nodeps</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>velocity-dep</artifactId>
-					<groupId>velocity</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-collections</artifactId>
-					<groupId>commons-collections</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.qdox</groupId>
-			<artifactId>qdox</artifactId>
-			<!-- Exclude old ant release from dependencies, to avoid library conflict 
-				with FlexoWarBuilder's dependencies at runtime. This dependency is not directly 
-				needed by FlexoFoundation apparently. -->
-			<exclusions>
-				<exclusion>
-					<artifactId>ant</artifactId>
-					<groupId>ant</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.hp.hpl.jena</groupId>
-			<artifactId>jena</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<artifactId>commons-lang</artifactId>
-			<groupId>commons-lang</groupId>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xsom</groupId>
-			<artifactId>xsom</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>pamela-core</artifactId>
 		</dependency>
@@ -98,6 +42,13 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+		<!-- Third Party -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.7.1</version>
+		</dependency>
+
 	</dependencies>
 </project>
 
