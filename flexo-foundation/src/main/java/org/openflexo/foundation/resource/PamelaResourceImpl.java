@@ -243,6 +243,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			hasWrittenOnDisk(lock);
 			// ((FlexoXMLSerializable) resourceData).finalizeSerialization();
 			// throw new SaveXMLResourceException(this, e, version);
+			throw new SaveResourceException(this, e);
 		}
 	}
 
