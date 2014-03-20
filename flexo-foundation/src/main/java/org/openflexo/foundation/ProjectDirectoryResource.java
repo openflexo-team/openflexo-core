@@ -49,6 +49,7 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 					returned.getFile().mkdirs();
 				}
 				returned.setResourceData(project);
+				project.getViewLibrary();
 				return returned;
 			} catch (ModelDefinitionException e) {
 				e.printStackTrace();
@@ -80,6 +81,14 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 		@Override
 		public Class<FlexoProject> getResourceDataClass() {
 			return FlexoProject.class;
+		}
+		
+		@Override
+		public FlexoProject loadResourceData(IProgress progress)
+				throws ResourceLoadingCancelledException,
+				FileNotFoundException, FlexoException {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 
