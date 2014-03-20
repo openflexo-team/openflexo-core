@@ -90,16 +90,16 @@
               </Panel>
             </SplitPanel>
           </Panel>
-          <FIBReferencedComponent componentFile="FlexoBehaviourPanel.fib" localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget" index="0" data="FlexoBehaviourTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" >
+          <FIBReferencedComponent componentFile="Fib/VPM/FlexoBehaviourPanel.fib" localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget" index="0" data="FlexoBehaviourTable.selected" constraints="split(index=0;location=center;splitIdentifier=bottom)" opaque="false" >
         	<ReferenceAssignment mandatory="true" variable="controller.flexoController" value="controller.flexoController"  />
           </FIBReferencedComponent>
         </SplitPanel>
       </Tab>
       <Tab title="inspector" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="data.inspector" dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector" constraints="border(index=1;location=center)" opaque="false" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="InspectorTab">
-        <FIBReferencedComponent componentFile="FlexoConceptInspectorPanel.fib" localize="true" manageDynamicModel="true" name="FlexoConceptInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
+        <FIBReferencedComponent componentFile="Fib/VPM/FlexoConceptInspectorPanel.fib" localize="true" manageDynamicModel="true" name="FlexoConceptInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
       </Tab>
       <Tab title="localization" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="2" constraints="border(index=1;location=center)" name="LocalizationTab">
-        <FIBReferencedComponent componentFile="LocalizedDictionaryPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />
+        <FIBReferencedComponent componentFile="Fib/VPM/LocalizedDictionaryPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />
       </Tab>
     </TabPanel>
     <Panel layout="border" border="rounded3d" borderTop="2" borderBottom="2" borderLeft="2" borderRight="10" titleFont="SansSerif,0,12" darkLevel="0" index="1" constraints="split(splitIdentifier=preview)" />
