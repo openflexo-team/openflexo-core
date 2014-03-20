@@ -41,7 +41,6 @@ import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Finder;
@@ -61,8 +60,8 @@ import org.openflexo.toolbox.StringUtils;
  * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
  * GUI, etcâ¦). Each such element is associated with a {@link FlexoRole}.
  * 
- * A FlexoRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in
- * different metamodels.
+ * A FlexoRole is an abstraction of the manipulation roles played in the {@link FlexoConcept} by modelling element potentially in different
+ * metamodels.
  * 
  * An {@link FlexoConceptInstance} is an instance of an {@link FlexoConcept} .
  * 
@@ -121,7 +120,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public void setDescription(String description);
 
 	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
-	@XMLElement
+	@XMLElement(primary = true)
 	public List<FlexoBehaviour> getFlexoBehaviours();
 
 	@Setter(EDITION_SCHEMES_KEY)
@@ -911,8 +910,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 	}
 
-	public static class FlexoConceptShouldHaveEditionSchemes extends
-			ValidationRule<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> {
+	public static class FlexoConceptShouldHaveEditionSchemes extends ValidationRule<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> {
 		public FlexoConceptShouldHaveEditionSchemes() {
 			super(FlexoConcept.class, "flexo_concept_should_have_edition_scheme");
 		}
@@ -927,8 +925,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 	}
 
-	public static class FlexoConceptShouldHaveDeletionScheme extends
-			ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
+	public static class FlexoConceptShouldHaveDeletionScheme extends ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 		public FlexoConceptShouldHaveDeletionScheme() {
 			super(FlexoConcept.class, "flexo_concept_should_have_deletion_scheme");
 		}
@@ -964,7 +961,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			@Override
 			protected void fixAction() {
 				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null);
-				action.flexoBehaviourClass = DeletionScheme.class;
+				action.setFlexoBehaviourClass(DeletionScheme.class);
 				action.doAction();
 				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();
 				// AddIndividual action = getObject();

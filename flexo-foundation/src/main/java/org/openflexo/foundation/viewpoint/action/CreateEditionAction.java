@@ -91,11 +91,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 	public String description;
 	public CreateEditionActionChoice actionChoice = CreateEditionActionChoice.BuiltInAction;
 	private LayoutChoice layoutChoice;
-	public ModelSlot modelSlot;
-	public Class<? extends EditionAction> builtInActionClass;
-	public Class<? extends EditionAction> controlActionClass;
-	public Class<? extends EditionAction> modelSlotSpecificActionClass;
-	public Class<? extends FetchRequest> requestActionClass;
+	private ModelSlot modelSlot;
+	private Class<? extends EditionAction> builtInActionClass;
+	private Class<? extends EditionAction> controlActionClass;
+	private Class<? extends EditionAction> modelSlotSpecificActionClass;
+	private Class<? extends FetchRequest> requestActionClass;
 
 	private EditionAction newEditionAction;
 
@@ -171,6 +171,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 			}
 		}
 
+		else {
+			throw new InvalidParameterException("cannot build EditionAction");
+		}
+
 	}
 
 	public EditionAction getNewEditionAction() {
@@ -238,8 +242,6 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 				return null;
 			}
 			if (org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
-
-				System.out.println("Hop, mon assignation");
 				return factory.newAssignationAction();
 			} else if (org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddToListAction();
@@ -317,6 +319,46 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 
 	public void setLayoutChoice(LayoutChoice layoutChoice) {
 		this.layoutChoice = layoutChoice;
+	}
+
+	public ModelSlot getModelSlot() {
+		return modelSlot;
+	}
+
+	public void setModelSlot(ModelSlot modelSlot) {
+		this.modelSlot = modelSlot;
+	}
+
+	public Class<? extends EditionAction> getBuiltInActionClass() {
+		return builtInActionClass;
+	}
+
+	public void setBuiltInActionClass(Class<? extends EditionAction> builtInActionClass) {
+		this.builtInActionClass = builtInActionClass;
+	}
+
+	public Class<? extends EditionAction> getControlActionClass() {
+		return controlActionClass;
+	}
+
+	public void setControlActionClass(Class<? extends EditionAction> controlActionClass) {
+		this.controlActionClass = controlActionClass;
+	}
+
+	public Class<? extends EditionAction> getModelSlotSpecificActionClass() {
+		return modelSlotSpecificActionClass;
+	}
+
+	public void setModelSlotSpecificActionClass(Class<? extends EditionAction> modelSlotSpecificActionClass) {
+		this.modelSlotSpecificActionClass = modelSlotSpecificActionClass;
+	}
+
+	public Class<? extends FetchRequest> getRequestActionClass() {
+		return requestActionClass;
+	}
+
+	public void setRequestActionClass(Class<? extends FetchRequest> requestActionClass) {
+		this.requestActionClass = requestActionClass;
 	}
 
 }

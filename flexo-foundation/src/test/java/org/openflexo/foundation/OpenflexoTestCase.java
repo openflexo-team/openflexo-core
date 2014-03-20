@@ -128,16 +128,14 @@ public abstract class OpenflexoTestCase {
 					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
 					System.out.println("***************** WARNING WARNING WARNING ************************");
 
-
 					if (generateCompoundTestResourceCenter) {
 
 						Enumeration<URL> toto = ClassLoader.getSystemClassLoader().getResources("TestResourceCenter");
 
-						while (toto.hasMoreElements()){
+						while (toto.hasMoreElements()) {
 							System.out.println(toto.nextElement().toString());
 						}
-					}
-					else {
+					} else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
 						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);

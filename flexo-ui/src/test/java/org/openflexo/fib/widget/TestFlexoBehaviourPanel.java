@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -124,13 +122,13 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		createPR3.doAction();
 
 		CreateEditionScheme createCreationScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createCreationScheme.flexoBehaviourClass = CreationScheme.class;
+		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme.doAction();
 		creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction1.builtInActionClass = DeclarePatternRole.class;
+		createEditionAction1.setBuiltInActionClass(DeclarePatternRole.class);
 		createEditionAction1.doAction();
 		DeclarePatternRole action1 = (DeclarePatternRole) createEditionAction1.getNewEditionAction();
 		action1.setAssignation(new DataBinding<Object>("aString"));
@@ -138,7 +136,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction2.builtInActionClass = DeclarePatternRole.class;
+		createEditionAction2.setBuiltInActionClass(DeclarePatternRole.class);
 		createEditionAction2.doAction();
 		DeclarePatternRole action2 = (DeclarePatternRole) createEditionAction2.getNewEditionAction();
 		action2.setAssignation(new DataBinding<Object>("aBoolean"));
@@ -146,14 +144,14 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction3.builtInActionClass = AssignationAction.class;
+		createEditionAction3.setBuiltInActionClass(AssignationAction.class);
 		createEditionAction3.doAction();
 		AssignationAction action3 = (AssignationAction) createEditionAction3.getNewEditionAction();
 		action3.setAssignation(new DataBinding<Object>("anInteger"));
 		action3.setValue(new DataBinding<Object>("8"));
 
 		CreateEditionScheme createActionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
-		createActionScheme.flexoBehaviourClass = ActionScheme.class;
+		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
 		createActionScheme.doAction();
 		actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
@@ -168,7 +166,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
 		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction1.controlActionClass = ConditionalAction.class;
+		createConditionAction1.setControlActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
@@ -178,7 +176,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(conditional1, null, editor);
 		createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition1.builtInActionClass = DeclarePatternRole.class;
+		createDeclarePatternRoleInCondition1.setBuiltInActionClass(DeclarePatternRole.class);
 		createDeclarePatternRoleInCondition1.doAction();
 		DeclarePatternRole declarePatternRoleInCondition1 = (DeclarePatternRole) createDeclarePatternRoleInCondition1.getNewEditionAction();
 		declarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
@@ -186,7 +184,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
 		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction2.controlActionClass = ConditionalAction.class;
+		createConditionAction2.setControlActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();
 		ConditionalAction conditional2 = (ConditionalAction) createConditionAction2.getNewEditionAction();
 		conditional2.setCondition(new DataBinding<Boolean>("parameters.aFlag = false"));
@@ -196,7 +194,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
 		createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition2.builtInActionClass = DeclarePatternRole.class;
+		createDeclarePatternRoleInCondition2.setBuiltInActionClass(DeclarePatternRole.class);
 		createDeclarePatternRoleInCondition2.doAction();
 		DeclarePatternRole declarePatternRoleInCondition2 = (DeclarePatternRole) createDeclarePatternRoleInCondition2.getNewEditionAction();
 		declarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
@@ -228,8 +226,9 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"),
-				(DeclarePatternRole) creationScheme.getActions().get(0), DeclarePatternRole.class);
+		DefaultFIBCustomComponent<DeclarePatternRole> widget = instanciateFIB(
+				ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"), (DeclarePatternRole) creationScheme.getActions()
+						.get(0), DeclarePatternRole.class);
 
 		gcDelegate.addTab("DeclarePatternRole", widget.getController());
 	}

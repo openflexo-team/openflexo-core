@@ -35,20 +35,17 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 
 /**
  * This class represents a technology adapter<br>
- * A {@link TechnologyAdapter} is plugin loaded at run-time which defines and
- * implements the required A.P.I used to connect Flexo Modelling Language
- * Virtual Machine to a technology.<br>
+ * A {@link TechnologyAdapter} is plugin loaded at run-time which defines and implements the required A.P.I used to connect Flexo Modelling
+ * Language Virtual Machine to a technology.<br>
  * 
- * Note: this code was partially adapted from Nicolas Daniels (Blue Pimento
- * team)
+ * Note: this code was partially adapted from Nicolas Daniels (Blue Pimento team)
  * 
  * @author sylvain
  * 
  */
 public abstract class TechnologyAdapter {
 
-	private static final Logger logger = Logger
-			.getLogger(TechnologyAdapter.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TechnologyAdapter.class.getPackage().getName());
 
 	private TechnologyAdapterService technologyAdapterService;
 
@@ -87,8 +84,7 @@ public abstract class TechnologyAdapter {
 	// TechnologyContextManager technologyContextManager);
 
 	/**
-	 * Retrieve and return URI for supplied meta model file, if supplied file
-	 * represents a valid meta model
+	 * Retrieve and return URI for supplied meta model file, if supplied file represents a valid meta model
 	 * 
 	 * @param aMetaModelFile
 	 * @param rc
@@ -111,8 +107,7 @@ public abstract class TechnologyAdapter {
 	// TechnologyContextManager technologyContextManager);
 
 	/**
-	 * Return flag indicating if supplied file represents a valid model conform
-	 * to supplied meta-model
+	 * Return flag indicating if supplied file represents a valid model conform to supplied meta-model
 	 * 
 	 * @param aModelFile
 	 * @param metaModelResource
@@ -151,8 +146,8 @@ public abstract class TechnologyAdapter {
 
 	/**
 	 * Instantiate new model resource stored in supplied model file<br>
-	 * The metamodel is not yet known, so we have to iterate on all known
-	 * metamodels of this technology to find one (or many) which is relevant
+	 * The metamodel is not yet known, so we have to iterate on all known metamodels of this technology to find one (or many) which is
+	 * relevant
 	 * 
 	 * @return
 	 */
@@ -160,11 +155,9 @@ public abstract class TechnologyAdapter {
 	// aModelFile, TechnologyContextManager technologyContextManager);
 
 	/**
-	 * Instantiate new model resource stored in supplied model file, given the
-	 * conformant metamodel<br>
-	 * We assert here that model resource is conform to supplied metamodel, ie
-	 * we will not try to lookup the metamodel but take the one which was
-	 * supplied
+	 * Instantiate new model resource stored in supplied model file, given the conformant metamodel<br>
+	 * We assert here that model resource is conform to supplied metamodel, ie we will not try to lookup the metamodel but take the one
+	 * which was supplied
 	 * 
 	 * @return
 	 */
@@ -173,8 +166,7 @@ public abstract class TechnologyAdapter {
 	// TechnologyContextManager technologyContextManager);
 
 	/**
-	 * Creates new model conform to the supplied meta model in a
-	 * FlexoResourceCenter.
+	 * Creates new model conform to the supplied meta model in a FlexoResourceCenter.
 	 * 
 	 * @param resourceCenter
 	 * @param relativePath
@@ -221,24 +213,20 @@ public abstract class TechnologyAdapter {
 	 * 
 	 * @param technologyAdapterService
 	 */
-	public void setTechnologyAdapterService(
-			TechnologyAdapterService technologyAdapterService) {
+	public void setTechnologyAdapterService(TechnologyAdapterService technologyAdapterService) {
 		this.technologyAdapterService = technologyAdapterService;
 	}
 
 	/**
-	 * Creates and return the {@link TechnologyContextManager} for this
-	 * technology and for all {@link FlexoResourceCenter} declared in the scope
-	 * of {@link FlexoResourceCenterService}
+	 * Creates and return the {@link TechnologyContextManager} for this technology and for all {@link FlexoResourceCenter} declared in the
+	 * scope of {@link FlexoResourceCenterService}
 	 * 
 	 * @return
 	 */
-	public abstract TechnologyContextManager createTechnologyContextManager(
-			FlexoResourceCenterService service);
+	public abstract TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service);
 
 	/**
-	 * Return the {@link TechnologyContextManager} for this technology shared by
-	 * all {@link FlexoResourceCenter} declared in the scope of
+	 * Return the {@link TechnologyContextManager} for this technology shared by all {@link FlexoResourceCenter} declared in the scope of
 	 * {@link FlexoResourceCenterService}
 	 * 
 	 * @return
@@ -267,26 +255,20 @@ public abstract class TechnologyAdapter {
 
 	/**
 	 * Initialize the supplied resource center with the technology<br>
-	 * ResourceCenter is scanned, ResourceRepositories are created and new
-	 * technology-specific resources are build and registered.
+	 * ResourceCenter is scanned, ResourceRepositories are created and new technology-specific resources are build and registered.
 	 * 
 	 * @param resourceCenter
 	 */
-	public abstract <I> void initializeResourceCenter(
-			FlexoResourceCenter<I> resourceCenter);
+	public abstract <I> void initializeResourceCenter(FlexoResourceCenter<I> resourceCenter);
 
-	public abstract <I> boolean isIgnorable(
-			FlexoResourceCenter<I> resourceCenter, I contents);
+	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public abstract <I> void contentsAdded(
-			FlexoResourceCenter<I> resourceCenter, I contents);
+	public abstract <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public abstract <I> void contentsDeleted(
-			FlexoResourceCenter<I> resourceCenter, I contents);
+	public abstract <I> void contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents);
 
 	/**
-	 * Provides a hook to detect when a new resource center was added or
-	 * discovered
+	 * Provides a hook to detect when a new resource center was added or discovered
 	 * 
 	 * @param newResourceCenter
 	 */
@@ -302,8 +284,7 @@ public abstract class TechnologyAdapter {
 	}
 
 	/**
-	 * Return model resource identified by its uri. Lookup is performed on all
-	 * known resource centers.
+	 * Return model resource identified by its uri. Lookup is performed on all known resource centers.
 	 * 
 	 * @param modelURI
 	 * @return
@@ -317,8 +298,7 @@ public abstract class TechnologyAdapter {
 	 */
 
 	/**
-	 * Return model resource identified by its uri. Lookup is performed on all
-	 * known resource centers.
+	 * Return model resource identified by its uri. Lookup is performed on all known resource centers.
 	 * 
 	 * @param modelURI
 	 * @return
@@ -350,11 +330,9 @@ public abstract class TechnologyAdapter {
 		availableModelSlotTypes = new ArrayList<Class<? extends ModelSlot<?>>>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareModelSlots.class)) {
-			DeclareModelSlots allModelSlots = cl
-					.getAnnotation(DeclareModelSlots.class);
+			DeclareModelSlots allModelSlots = cl.getAnnotation(DeclareModelSlots.class);
 			for (DeclareModelSlot modelSlotDeclaration : allModelSlots.value()) {
-				availableModelSlotTypes.add(modelSlotDeclaration
-						.modelSlotClass());
+				availableModelSlotTypes.add(modelSlotDeclaration.modelSlotClass());
 			}
 		}
 		return availableModelSlotTypes;
@@ -362,18 +340,15 @@ public abstract class TechnologyAdapter {
 
 	/**
 	 * Creates and return a new {@link ModelSlot} of supplied class.<br>
-	 * This responsability is delegated to the {@link TechnologyAdapter} which
-	 * manages with introspection its own {@link ModelSlot} types
+	 * This responsability is delegated to the {@link TechnologyAdapter} which manages with introspection its own {@link ModelSlot} types
 	 * 
 	 * @param modelSlotClass
 	 * @param containerVirtualModel
 	 *            the virtual model in which model slot should be created
 	 * @return
 	 */
-	public final <MS extends ModelSlot<?>> MS makeModelSlot(
-			Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
-		VirtualModelModelFactory factory = containerVirtualModel
-				.getVirtualModelFactory();
+	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
+		VirtualModelModelFactory factory = containerVirtualModel.getVirtualModelFactory();
 		MS returned = factory.newInstance(modelSlotClass);
 		// containerVirtualModel.addToModelSlots(returned);
 		returned.setTechnologyAdapter(this);
@@ -388,8 +363,7 @@ public abstract class TechnologyAdapter {
 	 * @param aFile
 	 * @return
 	 */
-	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(
-			ResourceRepository<R> repository, File aFile) {
+	protected <R extends FlexoResource<?>> RepositoryFolder<R> retrieveRepositoryFolder(ResourceRepository<R> repository, File aFile) {
 		try {
 			return repository.getRepositoryFolder(aFile, true);
 		} catch (IOException e) {

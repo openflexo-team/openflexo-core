@@ -265,7 +265,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				setFlexoRoleClass(null);
 			}
 		}
-		if (getFlexoRoleClass() == null && getAvailableFlexoRoleTypes().size() > 0) {
+		if (modelSlot != null && getFlexoRoleClass() == null && getAvailableFlexoRoleTypes().size() > 0) {
 			setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
 		}
 		fireChanges(wasValid);

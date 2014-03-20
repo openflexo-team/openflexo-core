@@ -172,7 +172,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.VIRTUAL_MODEL_KEY)
-	@XMLElement(context = "ModelSlot_")
+	@XMLElement(context = "ModelSlot_", primary = true)
 	// Since ModelSlot are also FlexoRole instances, we need to distinguish both during serialization/deserialization process
 	// To do it, we append ModelSlot_ as context
 	public List<ModelSlot<?>> getModelSlots();

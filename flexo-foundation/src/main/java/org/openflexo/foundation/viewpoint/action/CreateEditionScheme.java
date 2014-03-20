@@ -31,16 +31,17 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
+// TODO: rename as CreateFlexoBehaviour
 public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoConceptObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionScheme.class.getPackage().getName());
@@ -77,10 +78,10 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	public static enum CreateEditionSchemeChoice {
 		BuiltInAction, ModelSlotSpecificBehaviour
 	}
-	
+
 	private String flexoBehaviourName;
-	public String description;
-	public Class<? extends FlexoBehaviour> flexoBehaviourClass;
+	private String description;
+	private Class<? extends FlexoBehaviour> flexoBehaviourClass;
 
 	private final List<Class<? extends FlexoBehaviour>> builtInBehaviours;
 	public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
@@ -95,28 +96,28 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
 		builtInBehaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
-		if(focusedObject!=null && focusedObject instanceof VirtualModel){
+		if (focusedObject != null && focusedObject instanceof VirtualModel) {
 			builtInBehaviours.add(org.openflexo.foundation.viewpoint.SynchronizationScheme.class);
 		}
-		if(focusedObject.getVirtualModel()!=null){
+		if (focusedObject.getVirtualModel() != null) {
 			if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
 				modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
 			}
 		}
-		
+
 	}
 
 	public List<Class<? extends FlexoBehaviour>> getBuiltInBehaviours() {
 		return builtInBehaviours;
 	}
-	
+
 	public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
 		if (modelSlot != null) {
 			return modelSlot.getAvailableFlexoBehaviourTypes();
 		}
 		return null;
 	}
-	
+
 	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
 			return getFocusedObject().getFlexoConcept();
@@ -145,6 +146,8 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
+		} else {
+			throw new InvalidParameterException("flexoBehaviourClass is null");
 		}
 
 	}
@@ -171,12 +174,28 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
-		} else if (flexoBehaviourClass== null) {
+		} else if (flexoBehaviourClass == null) {
 			validityMessage = EMPTY_FLEXO_BEHAVIOUR_TYPE;
 			return false;
 		} else {
 			validityMessage = "";
 			return true;
 		}
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
+		return flexoBehaviourClass;
+	}
+
+	public void setFlexoBehaviourClass(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
+		this.flexoBehaviourClass = flexoBehaviourClass;
 	}
 }

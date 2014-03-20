@@ -41,9 +41,9 @@ import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.view.action.NavigationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -105,7 +105,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	public void setConditional(DataBinding<Boolean> conditional);
 
 	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement
+	@XMLElement(primary = false)
 	public MS getModelSlot();
 
 	@Setter(MODEL_SLOT_KEY)

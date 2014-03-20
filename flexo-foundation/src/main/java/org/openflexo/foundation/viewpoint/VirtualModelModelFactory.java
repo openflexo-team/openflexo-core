@@ -48,7 +48,6 @@ import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
 import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry;
@@ -77,12 +76,12 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public class VirtualModelModelFactory extends ModelFactory {
 
+	private VirtualModelResource virtualModelResource;
+
 	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	public VirtualModelModelFactory(TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(computeModelContext(taService));
-		addConverter(new DataBindingConverter());
-		addConverter(new FlexoVersionConverter());
+		this(taService, null);
 	}
 
 	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
@@ -90,9 +89,16 @@ public class VirtualModelModelFactory extends ModelFactory {
 	public VirtualModelModelFactory(TechnologyAdapterService taService, VirtualModelResource virtualModelResource)
 			throws ModelDefinitionException {
 		super(computeModelContext(taService));
-		addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+		if (virtualModelResource != null) {
+			this.virtualModelResource = virtualModelResource;
+			addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
+		}
+	}
+
+	public VirtualModelResource getVirtualModelResource() {
+		return virtualModelResource;
 	}
 
 	/**

@@ -36,6 +36,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
+//TODO: rename as CreateFlexoBehaviourParameter
 public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchemeParameter, FlexoBehaviourObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionSchemeParameter.class.getPackage().getName());
