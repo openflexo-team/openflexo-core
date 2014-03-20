@@ -82,8 +82,6 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	public void addToResources(R resource) {
-		System.out.println("*********** RepositoryFolder " + this + " addToResources uri=" + resource.getURI());
-		// Thread.dumpStack();
 		if (resources.contains(resource)) {
 			logger.warning("Resource already present in " + this + " : " + resource + ". Ignore it.");
 			Thread.dumpStack();
