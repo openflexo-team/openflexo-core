@@ -589,7 +589,12 @@ public class Flexo {
 			Resource loggingFile = null;
 			if (loggingFileName == null) {
 				loggingFile = ResourceLocator.locateResource("Config/logging_WARNING.properties");
-				loggingFileName = loggingFile.getURI();
+				if (loggingFile != null){
+					loggingFileName = loggingFile.getURI();
+				}
+				else {
+					logger.severe("Unable to find default logging File");
+				}
 			}
 			else {
 				loggingFile = ResourceLocator.locateResource(loggingFileName);
