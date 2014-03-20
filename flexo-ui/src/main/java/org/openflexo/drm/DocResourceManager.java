@@ -177,7 +177,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 				drmFile = ((FileResourceImpl) drmResource).getFile();
 				}
 		}
-		if (!drmFile.exists() && !isSaving) {
+		if (drmFile != null && !drmFile.exists() && !isSaving) {
 			docResourceCenter = DocResourceCenter.createDefaultDocResourceCenter();
 			save();
 		}
