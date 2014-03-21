@@ -30,6 +30,8 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of structural property.
  * 
@@ -37,21 +39,21 @@ import java.util.List;
  * 
  * 
  */
-public interface IFlexoOntologyStructuralProperty extends IFlexoOntologyFeature {
+public interface IFlexoOntologyStructuralProperty<TA extends TechnologyAdapter> extends IFlexoOntologyFeature<TA> {
 
 	/**
 	 * Range of property.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyConcept getDomain();
+	IFlexoOntologyConcept<TA> getDomain();
 
 	/**
 	 * Range of property.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyObject getRange();
+	IFlexoOntologyObject<TA> getRange();
 
 	/**
 	 * Return flag indicating if this property is an annotation property
@@ -65,7 +67,7 @@ public interface IFlexoOntologyStructuralProperty extends IFlexoOntologyFeature 
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyStructuralProperty> getSuperProperties();
+	public List<? extends IFlexoOntologyStructuralProperty<TA>> getSuperProperties();
 
 	/**
 	 * Return a vector of properties, accessible from scope defined by supplied ontology, which are declared to be sub-properties of this
@@ -74,6 +76,6 @@ public interface IFlexoOntologyStructuralProperty extends IFlexoOntologyFeature 
 	 * @param context
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyStructuralProperty> getSubProperties(IFlexoOntology context);
+	public List<? extends IFlexoOntologyStructuralProperty<TA>> getSubProperties(IFlexoOntology<TA> context);
 
 }

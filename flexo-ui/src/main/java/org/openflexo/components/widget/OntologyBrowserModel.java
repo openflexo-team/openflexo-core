@@ -42,6 +42,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.ontology.OntologyUtils;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * Model supporting browsing through models or metamodels conform to {@link FlexoOntology} API<br>
@@ -54,17 +55,17 @@ import org.openflexo.foundation.ontology.OntologyUtils;
  * 
  * @author sguerin
  */
-public class OntologyBrowserModel extends Observable implements FlexoObserver {
+public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observable implements FlexoObserver {
 
 	static final Logger logger = Logger.getLogger(OntologyBrowserModel.class.getPackage().getName());
 
-	private IFlexoOntology context;
+	private IFlexoOntology<TA> context;
 	private boolean hierarchicalMode = true;
 	private boolean strictMode = false;
-	private IFlexoOntologyClass rootClass;
+	private IFlexoOntologyClass<TA> rootClass;
 	private boolean displayPropertiesInClasses = true;
-	private IFlexoOntologyClass domain = null;
-	private IFlexoOntologyClass range = null;
+	private IFlexoOntologyClass<TA> domain = null;
+	private IFlexoOntologyClass<TA> range = null;
 	private BuiltInDataType dataType = null;
 
 	private boolean showObjectProperties = true;
@@ -73,22 +74,22 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 	private boolean showClasses = true;
 	private boolean showIndividuals = true;
 
-	private List<IFlexoOntologyObject> roots = null;
-	private Map<FlexoOntologyObjectImpl, List<FlexoOntologyObjectImpl>> structure = null;
+	private List<IFlexoOntologyObject<TA>> roots = null;
+	private Map<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>> structure = null;
 
-	public OntologyBrowserModel(IFlexoOntology context) {
+	public OntologyBrowserModel(IFlexoOntology<TA> context) {
 		super();
 		setContext(context);
 	}
 
-	public List<IFlexoOntologyObject> getRoots() {
+	public List<IFlexoOntologyObject<TA>> getRoots() {
 		if (roots == null) {
 			recomputeStructure();
 		}
 		return roots;
 	}
 
-	public List<FlexoOntologyObjectImpl> getChildren(FlexoOntologyObjectImpl father) {
+	public List<FlexoOntologyObjectImpl<TA>> getChildren(FlexoOntologyObjectImpl<TA> father) {
 		return structure.get(father);
 	}
 
@@ -119,11 +120,11 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		context = null;
 	}
 
-	public IFlexoOntology getContext() {
+	public IFlexoOntology<TA> getContext() {
 		return context;
 	}
 
-	public void setContext(IFlexoOntology context) {
+	public void setContext(IFlexoOntology<TA> context) {
 		if (this.context != null) {
 			((FlexoObservable) context).deleteObserver(this);
 		}
@@ -141,11 +142,11 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		recomputeStructure();
 	}
 
-	public IFlexoOntologyClass getRootClass() {
+	public IFlexoOntologyClass<TA> getRootClass() {
 		return rootClass;
 	}
 
-	public void setRootClass(IFlexoOntologyClass rootClass) {
+	public void setRootClass(IFlexoOntologyClass<TA> rootClass) {
 		this.rootClass = rootClass;
 	}
 
@@ -213,19 +214,19 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		this.showIndividuals = showIndividuals;
 	}
 
-	public IFlexoOntologyClass getDomain() {
+	public IFlexoOntologyClass<TA> getDomain() {
 		return domain;
 	}
 
-	public void setDomain(IFlexoOntologyClass domain) {
+	public void setDomain(IFlexoOntologyClass<TA> domain) {
 		this.domain = domain;
 	}
 
-	public IFlexoOntologyClass getRange() {
+	public IFlexoOntologyClass<TA> getRange() {
 		return range;
 	}
 
-	public void setRange(IFlexoOntologyClass range) {
+	public void setRange(IFlexoOntologyClass<TA> range) {
 		this.range = range;
 	}
 
@@ -237,7 +238,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		this.dataType = dataType;
 	}
 
-	public boolean isDisplayable(IFlexoOntologyObject object) {
+	public boolean isDisplayable(IFlexoOntologyObject<TA> object) {
 
 		if (object instanceof IFlexoOntology) {
 			return true;
@@ -247,14 +248,14 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 
 		if (object instanceof IFlexoOntologyClass && showClasses) {
 			if (getRootClass() != null && object instanceof IFlexoOntologyConcept) {
-				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept) object);
+				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept<TA>) object);
 			} else {
 				returned = true;
 			}
 		}
 		if (object instanceof IFlexoOntologyIndividual && showIndividuals) {
 			if (getRootClass() != null && object instanceof IFlexoOntologyConcept) {
-				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept) object);
+				returned = getRootClass().isSuperConceptOf((IFlexoOntologyConcept<TA>) object);
 			} else {
 				returned = true;
 			}
@@ -265,7 +266,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		if (object instanceof IFlexoOntologyDataProperty && showDataProperties) {
 			returned = true;
 		}
-		if (object instanceof IFlexoOntologyStructuralProperty && ((IFlexoOntologyStructuralProperty) object).isAnnotationProperty()
+		if (object instanceof IFlexoOntologyStructuralProperty && ((IFlexoOntologyStructuralProperty<TA>) object).isAnnotationProperty()
 				&& showAnnotationProperties) {
 			returned = true;
 		}
@@ -276,8 +277,9 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 
 		if (object instanceof IFlexoOntologyStructuralProperty && getRootClass() != null) {
 			boolean foundAPreferredLocationAsSubClassOfRootClass = false;
-			List<IFlexoOntologyClass> preferredLocation = getPreferredStorageLocations((IFlexoOntologyStructuralProperty) object, null);
-			for (IFlexoOntologyClass pl : preferredLocation) {
+			List<IFlexoOntologyClass<TA>> preferredLocation = getPreferredStorageLocations((IFlexoOntologyStructuralProperty<TA>) object,
+					null);
+			for (IFlexoOntologyClass<TA> pl : preferredLocation) {
 				if (rootClass.isSuperConceptOf(pl)) {
 					foundAPreferredLocationAsSubClassOfRootClass = true;
 					break;
@@ -289,10 +291,10 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (object instanceof IFlexoOntologyStructuralProperty && getDomain() != null) {
-			IFlexoOntologyStructuralProperty p = (IFlexoOntologyStructuralProperty) object;
+			IFlexoOntologyStructuralProperty<TA> p = (IFlexoOntologyStructuralProperty<TA>) object;
 			if (p.getDomain() instanceof IFlexoOntologyClass) {
-				if (!((IFlexoOntologyClass) p.getDomain()).equals(getDomain())
-						&& !((IFlexoOntologyClass) p.getDomain()).isSuperClassOf(getDomain())) {
+				if (!((IFlexoOntologyClass<TA>) p.getDomain()).equals(getDomain())
+						&& !((IFlexoOntologyClass<TA>) p.getDomain()).isSuperClassOf(getDomain())) {
 					// System.out.println("Dismiss " + object + " becasuse " + p.getDomain().getName() + " is not superclass of "
 					// + getDomain().getName());
 					return false;
@@ -307,9 +309,9 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (object instanceof IFlexoOntologyObjectProperty && getRange() != null) {
-			IFlexoOntologyObjectProperty p = (IFlexoOntologyObjectProperty) object;
+			IFlexoOntologyObjectProperty<TA> p = (IFlexoOntologyObjectProperty<TA>) object;
 			if (p.getRange() instanceof IFlexoOntologyClass) {
-				if (!((IFlexoOntologyClass) p.getRange()).isSuperClassOf(getRange())) {
+				if (!((IFlexoOntologyClass<TA>) p.getRange()).isSuperClassOf(getRange())) {
 					return false;
 				}
 				/*if (!getRange().isSuperClassOf(((IFlexoOntologyClass) p.getRange()))) {
@@ -321,7 +323,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (object instanceof IFlexoOntologyDataProperty && getDataType() != null) {
-			IFlexoOntologyDataProperty p = (IFlexoOntologyDataProperty) object;
+			IFlexoOntologyDataProperty<TA> p = (IFlexoOntologyDataProperty<TA>) object;
 			if (p.getRange() != getDataType()) {
 				// System.out.println("Dismiss " + object + " becasuse " + p.getDataType() + " is not  " + getDataType());
 				return false;
@@ -331,23 +333,23 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		return true;
 	}
 
-	private void appendOntologyContents(IFlexoOntology o, IFlexoOntologyObject parent) {
-		List<IFlexoOntologyStructuralProperty> properties = new Vector<IFlexoOntologyStructuralProperty>();
-		List<IFlexoOntologyIndividual> individuals = new Vector<IFlexoOntologyIndividual>();
-		Hashtable<IFlexoOntologyStructuralProperty, List<IFlexoOntologyClass>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty, List<IFlexoOntologyClass>>();
-		Hashtable<IFlexoOntologyIndividual, IFlexoOntologyClass> storedIndividuals = new Hashtable<IFlexoOntologyIndividual, IFlexoOntologyClass>();
-		List<IFlexoOntologyStructuralProperty> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty>();
-		List<IFlexoOntologyIndividual> unstoredIndividuals = new Vector<IFlexoOntologyIndividual>();
-		List<IFlexoOntologyClass> storageClasses = new Vector<IFlexoOntologyClass>();
+	private void appendOntologyContents(IFlexoOntology<TA> o, IFlexoOntologyObject<TA> parent) {
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyIndividual<TA>> individuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>>();
+		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyClass<TA>> storageClasses = new Vector<IFlexoOntologyClass<TA>>();
 		properties = retrieveDisplayableProperties(o);
 		individuals = retrieveDisplayableIndividuals(o);
 
 		if (getDisplayPropertiesInClasses()) {
-			for (IFlexoOntologyStructuralProperty p : properties) {
-				List<IFlexoOntologyClass> preferredLocations = getPreferredStorageLocations(p, o);
+			for (IFlexoOntologyStructuralProperty<TA> p : properties) {
+				List<IFlexoOntologyClass<TA>> preferredLocations = getPreferredStorageLocations(p, o);
 				if (preferredLocations != null && preferredLocations.size() > 0) {
 					storedProperties.put(p, preferredLocations);
-					for (IFlexoOntologyClass preferredLocation : preferredLocations) {
+					for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 						if (!storageClasses.contains(preferredLocation)) {
 							storageClasses.add(preferredLocation);
 						}
@@ -359,8 +361,8 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (showIndividuals) {
-			for (IFlexoOntologyIndividual i : individuals) {
-				IFlexoOntologyClass preferredLocation = getPreferredStorageLocation(i);
+			for (IFlexoOntologyIndividual<TA> i : individuals) {
+				IFlexoOntologyClass<TA> preferredLocation = getPreferredStorageLocation(i);
 				if (preferredLocation != null) {
 					storedIndividuals.put(i, preferredLocation);
 					if (!storageClasses.contains(preferredLocation)) {
@@ -377,7 +379,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (showClasses) {
-			List<IFlexoOntologyClass> classes = retrieveDisplayableClasses(o);
+			List<IFlexoOntologyClass<TA>> classes = retrieveDisplayableClasses(o);
 			if (classes.size() > 0) {
 				removeOriginalFromRedefinedObjects(classes);
 				addClassesAsHierarchy(parent == null ? null : o, classes);
@@ -388,19 +390,19 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 			addClassesAsHierarchy(parent == null ? null : o, storageClasses);
 		}
 
-		for (IFlexoOntologyIndividual i : storedIndividuals.keySet()) {
-			IFlexoOntologyClass preferredLocation = storedIndividuals.get(i);
+		for (IFlexoOntologyIndividual<TA> i : storedIndividuals.keySet()) {
+			IFlexoOntologyClass<TA> preferredLocation = storedIndividuals.get(i);
 			addChildren(preferredLocation, i);
 		}
 
-		for (IFlexoOntologyIndividual i : unstoredIndividuals) {
+		for (IFlexoOntologyIndividual<TA> i : unstoredIndividuals) {
 			addChildren(parent == null ? null : o, i);
 		}
 
 		if (getDisplayPropertiesInClasses()) {
-			for (IFlexoOntologyStructuralProperty p : storedProperties.keySet()) {
-				List<IFlexoOntologyClass> preferredLocations = storedProperties.get(p);
-				for (IFlexoOntologyClass preferredLocation : preferredLocations) {
+			for (IFlexoOntologyStructuralProperty<TA> p : storedProperties.keySet()) {
+				List<IFlexoOntologyClass<TA>> preferredLocations = storedProperties.get(p);
+				for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 					addChildren(preferredLocation, p);
 				}
 			}
@@ -417,12 +419,12 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		if (roots != null) {
 			roots.clear();
 		} else {
-			roots = new Vector<IFlexoOntologyObject>();
+			roots = new Vector<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
 		} else {
-			structure = new Hashtable<FlexoOntologyObjectImpl, List<FlexoOntologyObjectImpl>>();
+			structure = new Hashtable<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>>();
 		}
 
 		if (getContext() == null) {
@@ -434,15 +436,15 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 			appendOntologyContents(getContext(), null);
 
 		} else {
-			System.out.println("computeNonHierarchicalStructure()");
-			System.out.println("context=" + getContext());
-			System.out.println("imported ontologies: " + getContext().getImportedOntologies());
-			System.out.println("all imported ontologies: " + OntologyUtils.getAllImportedOntologies(getContext()));
+			// System.out.println("computeNonHierarchicalStructure()");
+			// System.out.println("context=" + getContext());
+			// System.out.println("imported ontologies: " + getContext().getImportedOntologies());
+			// System.out.println("all imported ontologies: " + OntologyUtils.getAllImportedOntologies(getContext()));
 
 			roots.add(getContext());
 			appendOntologyContents(getContext(), getContext());
-			for (IFlexoOntology o : OntologyUtils.getAllImportedOntologies(getContext())) {
-				System.out.println("Hop " + o + " displayable: " + isDisplayable(o));
+			for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
+				// System.out.println("Hop " + o + " displayable: " + isDisplayable(o));
 				if (o != getContext() && isDisplayable(o)) {
 					appendOntologyContents(o, getContext());
 				}
@@ -450,33 +452,34 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}
 
-	private void addPropertiesAsHierarchy(IFlexoOntologyObject parent, List<IFlexoOntologyStructuralProperty> someProperties) {
-		for (IFlexoOntologyStructuralProperty p : someProperties) {
+	private void addPropertiesAsHierarchy(IFlexoOntologyObject<TA> parent, List<IFlexoOntologyStructuralProperty<TA>> someProperties) {
+		for (IFlexoOntologyStructuralProperty<TA> p : someProperties) {
 			if (!hasASuperPropertyDefinedInList(p, someProperties)) {
 				appendPropertyInHierarchy(parent, p, someProperties);
 			}
 		}
 	}
 
-	private void appendPropertyInHierarchy(IFlexoOntologyObject parent, IFlexoOntologyStructuralProperty p,
-			List<IFlexoOntologyStructuralProperty> someProperties) {
+	private void appendPropertyInHierarchy(IFlexoOntologyObject<TA> parent, IFlexoOntologyStructuralProperty<TA> p,
+			List<IFlexoOntologyStructuralProperty<TA>> someProperties) {
 		if (parent == null) {
 			roots.add(p);
 		} else {
 			addChildren(parent, p);
 		}
-		for (IFlexoOntologyStructuralProperty subProperty : p.getSubProperties(getContext())) {
+		for (IFlexoOntologyStructuralProperty<TA> subProperty : p.getSubProperties(getContext())) {
 			if (someProperties.contains(subProperty)) {
 				appendPropertyInHierarchy(p, subProperty, someProperties);
 			}
 		}
 	}
 
-	private boolean hasASuperPropertyDefinedInList(IFlexoOntologyStructuralProperty p, List<IFlexoOntologyStructuralProperty> someProperties) {
+	private boolean hasASuperPropertyDefinedInList(IFlexoOntologyStructuralProperty<TA> p,
+			List<IFlexoOntologyStructuralProperty<TA>> someProperties) {
 		if (p.getSuperProperties() == null) {
 			return false;
 		} else {
-			for (IFlexoOntologyStructuralProperty sp : p.getSuperProperties()) {
+			for (IFlexoOntologyStructuralProperty<TA> sp : p.getSuperProperties()) {
 				if (someProperties.contains(sp)) {
 					return true;
 				}
@@ -485,14 +488,14 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}
 
-	private void addChildren(IFlexoOntologyObject parent, IFlexoOntologyObject child) {
-		List<FlexoOntologyObjectImpl> v = structure.get(parent);
+	private void addChildren(IFlexoOntologyObject<TA> parent, IFlexoOntologyObject<TA> child) {
+		List<FlexoOntologyObjectImpl<TA>> v = structure.get(parent);
 		if (v == null) {
-			v = new Vector<FlexoOntologyObjectImpl>();
-			structure.put((FlexoOntologyObjectImpl) parent, v);
+			v = new Vector<FlexoOntologyObjectImpl<TA>>();
+			structure.put((FlexoOntologyObjectImpl<TA>) parent, v);
 		}
 		if (!v.contains(child)) {
-			v.add((FlexoOntologyObjectImpl) child);
+			v.add((FlexoOntologyObjectImpl<TA>) child);
 		}
 	}
 
@@ -503,22 +506,22 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		if (roots != null) {
 			roots.clear();
 		} else {
-			roots = new Vector<IFlexoOntologyObject>();
+			roots = new Vector<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
 		} else {
-			structure = new Hashtable<FlexoOntologyObjectImpl, List<FlexoOntologyObjectImpl>>();
+			structure = new Hashtable<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>>();
 		}
 
-		List<IFlexoOntologyStructuralProperty> properties = new Vector<IFlexoOntologyStructuralProperty>();
-		Hashtable<IFlexoOntologyStructuralProperty, List<IFlexoOntologyClass>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty, List<IFlexoOntologyClass>>();
-		List<IFlexoOntologyStructuralProperty> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty>();
-		List<IFlexoOntologyClass> storageClasses = new Vector<IFlexoOntologyClass>();
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyClass<TA>> storageClasses = new Vector<IFlexoOntologyClass<TA>>();
 
-		List<IFlexoOntologyIndividual> individuals = new Vector<IFlexoOntologyIndividual>();
-		Hashtable<IFlexoOntologyIndividual, IFlexoOntologyClass> storedIndividuals = new Hashtable<IFlexoOntologyIndividual, IFlexoOntologyClass>();
-		List<IFlexoOntologyIndividual> unstoredIndividuals = new Vector<IFlexoOntologyIndividual>();
+		List<IFlexoOntologyIndividual<TA>> individuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>>();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new Vector<IFlexoOntologyIndividual<TA>>();
 
 		if (getContext() == null) {
 			return;
@@ -528,18 +531,18 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 			properties = retrieveDisplayableProperties(getContext());
 			individuals = retrieveDisplayableIndividuals(getContext());
 		} else {
-			for (IFlexoOntology o : OntologyUtils.getAllImportedOntologies(getContext())) {
+			for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 				properties.addAll(retrieveDisplayableProperties(o));
 				individuals.addAll(retrieveDisplayableIndividuals(o));
 			}
 		}
 
 		if (getDisplayPropertiesInClasses()) {
-			for (IFlexoOntologyStructuralProperty p : properties) {
-				List<IFlexoOntologyClass> preferredLocations = getPreferredStorageLocations(p, null);
+			for (IFlexoOntologyStructuralProperty<TA> p : properties) {
+				List<IFlexoOntologyClass<TA>> preferredLocations = getPreferredStorageLocations(p, null);
 				if (preferredLocations != null && preferredLocations.size() > 0) {
 					storedProperties.put(p, preferredLocations);
-					for (IFlexoOntologyClass preferredLocation : preferredLocations) {
+					for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 						if (!storageClasses.contains(preferredLocation)) {
 							storageClasses.add(preferredLocation);
 						}
@@ -551,8 +554,8 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (showIndividuals) {
-			for (IFlexoOntologyIndividual i : individuals) {
-				IFlexoOntologyClass preferredLocation = getPreferredStorageLocation(i);
+			for (IFlexoOntologyIndividual<TA> i : individuals) {
+				IFlexoOntologyClass<TA> preferredLocation = getPreferredStorageLocation(i);
 				if (preferredLocation != null) {
 					storedIndividuals.put(i, preferredLocation);
 					if (!storageClasses.contains(preferredLocation)) {
@@ -565,11 +568,11 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 
 		if (getShowClasses()) {
-			List<IFlexoOntologyClass> classes = new Vector<IFlexoOntologyClass>();
+			List<IFlexoOntologyClass<TA>> classes = new Vector<IFlexoOntologyClass<TA>>();
 			if (strictMode) {
 				classes = retrieveDisplayableClasses(getContext());
 			} else {
-				for (IFlexoOntology o : OntologyUtils.getAllImportedOntologies(getContext())) {
+				for (IFlexoOntology<TA> o : OntologyUtils.getAllImportedOntologies(getContext())) {
 					classes.addAll(retrieveDisplayableClasses(o));
 				}
 			}
@@ -582,19 +585,19 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 			addClassesAsHierarchy(null, storageClasses);
 		}
 
-		for (IFlexoOntologyIndividual i : storedIndividuals.keySet()) {
-			IFlexoOntologyClass preferredLocation = storedIndividuals.get(i);
+		for (IFlexoOntologyIndividual<TA> i : storedIndividuals.keySet()) {
+			IFlexoOntologyClass<TA> preferredLocation = storedIndividuals.get(i);
 			addChildren(preferredLocation, i);
 		}
 
-		for (IFlexoOntologyIndividual i : unstoredIndividuals) {
+		for (IFlexoOntologyIndividual<TA> i : unstoredIndividuals) {
 			addChildren(getContext().getRootConcept(), i);
 		}
 
 		if (getDisplayPropertiesInClasses()) {
-			for (IFlexoOntologyStructuralProperty p : storedProperties.keySet()) {
-				List<IFlexoOntologyClass> preferredLocations = storedProperties.get(p);
-				for (IFlexoOntologyClass preferredLocation : preferredLocations) {
+			for (IFlexoOntologyStructuralProperty<TA> p : storedProperties.keySet()) {
+				List<IFlexoOntologyClass<TA>> preferredLocations = storedProperties.get(p);
+				for (IFlexoOntologyClass<TA> preferredLocation : preferredLocations) {
 					addChildren(preferredLocation, p);
 				}
 			}
@@ -613,16 +616,17 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 	 * @param searchedOntology
 	 * @return
 	 */
-	protected List<IFlexoOntologyClass> getPreferredStorageLocations(IFlexoOntologyStructuralProperty p, IFlexoOntology searchedOntology) {
-		List<IFlexoOntologyClass> potentialStorageClasses = new ArrayList<IFlexoOntologyClass>();
+	protected List<IFlexoOntologyClass<TA>> getPreferredStorageLocations(IFlexoOntologyStructuralProperty<TA> p,
+			IFlexoOntology<TA> searchedOntology) {
+		List<IFlexoOntologyClass<TA>> potentialStorageClasses = new ArrayList<IFlexoOntologyClass<TA>>();
 
 		// First we look if property has a defined domain
 		if (p.getDomain() instanceof IFlexoOntologyClass) {
 			// Return the most specialized definition
-			IFlexoOntology ontology = searchedOntology != null ? searchedOntology : getContext();
-			IFlexoOntologyClass c = ontology.getClass(((IFlexoOntologyClass) p.getDomain()).getURI());
+			IFlexoOntology<TA> ontology = searchedOntology != null ? searchedOntology : getContext();
+			IFlexoOntologyClass<TA> c = ontology.getClass(((IFlexoOntologyClass<TA>) p.getDomain()).getURI());
 			if (c == null) {
-				c = (IFlexoOntologyClass) p.getDomain();
+				c = (IFlexoOntologyClass<TA>) p.getDomain();
 			}
 			if (c != null && (searchedOntology == null || c.getOntology() == searchedOntology)) {
 				potentialStorageClasses.add(c);
@@ -642,12 +646,12 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		// return null;
 	}
 
-	private IFlexoOntologyClass getPreferredStorageLocation(IFlexoOntologyIndividual i) {
+	private IFlexoOntologyClass<TA> getPreferredStorageLocation(IFlexoOntologyIndividual<TA> i) {
 
 		// Return the first class which is not the Thing concept
-		for (IFlexoOntologyClass c : i.getTypes()) {
+		for (IFlexoOntologyClass<TA> c : i.getTypes()) {
 			if (c.isNamedClass() && !c.isRootConcept()) {
-				IFlexoOntologyClass returned = getContext().getClass(c.getURI());
+				IFlexoOntologyClass<TA> returned = getContext().getClass(c.getURI());
 				if (returned != null) {
 					return returned;
 				} else {
@@ -658,21 +662,21 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		return getContext().getRootConcept();
 	}
 
-	private void addClassesAsHierarchy(IFlexoOntologyObject parent, List<IFlexoOntologyClass> someClasses) {
+	private void addClassesAsHierarchy(IFlexoOntologyObject<TA> parent, List<IFlexoOntologyClass<TA>> someClasses) {
 		if (someClasses.contains(getContext().getRootConcept())) {
 			appendClassInHierarchy(parent, getContext().getRootConcept(), someClasses);
 		} else {
-			List<IFlexoOntologyClass> listByExcludingRootClasses = new ArrayList<IFlexoOntologyClass>(someClasses);
-			List<IFlexoOntologyClass> localRootClasses = new ArrayList<IFlexoOntologyClass>();
-			for (IFlexoOntologyClass c : someClasses) {
+			List<IFlexoOntologyClass<TA>> listByExcludingRootClasses = new ArrayList<IFlexoOntologyClass<TA>>(someClasses);
+			List<IFlexoOntologyClass<TA>> localRootClasses = new ArrayList<IFlexoOntologyClass<TA>>();
+			for (IFlexoOntologyClass<TA> c : someClasses) {
 				if (!hasASuperClassDefinedInList(c, someClasses)) {
 					localRootClasses.add(c);
 					listByExcludingRootClasses.remove(c);
 				}
 			}
-			for (IFlexoOntologyClass c : localRootClasses) {
-				List<IFlexoOntologyClass> potentialChildren = new ArrayList<IFlexoOntologyClass>();
-				for (IFlexoOntologyClass c2 : listByExcludingRootClasses) {
+			for (IFlexoOntologyClass<TA> c : localRootClasses) {
+				List<IFlexoOntologyClass<TA>> potentialChildren = new ArrayList<IFlexoOntologyClass<TA>>();
+				for (IFlexoOntologyClass<TA> c2 : listByExcludingRootClasses) {
 					if (c.isSuperConceptOf(c2)) {
 						potentialChildren.add(c2);
 					}
@@ -682,9 +686,10 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}
 
-	private void appendClassInHierarchy(IFlexoOntologyObject parent, IFlexoOntologyClass c, List<IFlexoOntologyClass> someClasses) {
+	private void appendClassInHierarchy(IFlexoOntologyObject<TA> parent, IFlexoOntologyClass<TA> c,
+			List<IFlexoOntologyClass<TA>> someClasses) {
 
-		List<IFlexoOntologyClass> listByExcludingCurrentClass = new ArrayList<IFlexoOntologyClass>(someClasses);
+		List<IFlexoOntologyClass<TA>> listByExcludingCurrentClass = new ArrayList<IFlexoOntologyClass<TA>>(someClasses);
 		listByExcludingCurrentClass.remove(c);
 
 		if (parent == null) {
@@ -697,11 +702,11 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}
 
-	private boolean hasASuperClassDefinedInList(IFlexoOntologyClass c, List<IFlexoOntologyClass> someClasses) {
+	private boolean hasASuperClassDefinedInList(IFlexoOntologyClass<TA> c, List<IFlexoOntologyClass<TA>> someClasses) {
 		if (c.getSuperClasses() == null) {
 			return false;
 		} else {
-			for (IFlexoOntologyClass c2 : someClasses) {
+			for (IFlexoOntologyClass<TA> c2 : someClasses) {
 				if (c2.isSuperConceptOf(c) /*&& c2 != c*/&& !c2.getURI().equals(c.getURI())) {
 					return true;
 				}
@@ -710,24 +715,24 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}
 
-	private List<IFlexoOntologyConcept> retrieveDisplayableObjects(IFlexoOntology ontology) {
-		Vector<IFlexoOntologyConcept> returned = new Vector<IFlexoOntologyConcept>();
-		for (IFlexoOntologyClass c : ontology.getClasses()) {
+	private List<IFlexoOntologyConcept<TA>> retrieveDisplayableObjects(IFlexoOntology<TA> ontology) {
+		Vector<IFlexoOntologyConcept<TA>> returned = new Vector<IFlexoOntologyConcept<TA>>();
+		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
 			}
 		}
-		for (IFlexoOntologyIndividual i : ontology.getIndividuals()) {
+		for (IFlexoOntologyIndividual<TA> i : ontology.getIndividuals()) {
 			if (isDisplayable(i)) {
 				returned.add(i);
 			}
 		}
-		for (IFlexoOntologyStructuralProperty p : ontology.getObjectProperties()) {
+		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getObjectProperties()) {
 			if (isDisplayable(p)) {
 				returned.add(p);
 			}
 		}
-		for (IFlexoOntologyStructuralProperty p : ontology.getDataProperties()) {
+		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getDataProperties()) {
 			if (isDisplayable(p)) {
 				returned.add(p);
 			}
@@ -741,24 +746,24 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 	 * 
 	 * @param list
 	 */
-	protected void removeOriginalFromRedefinedObjects(List<? extends IFlexoOntologyConcept> list) {
-		for (IFlexoOntologyConcept c : new ArrayList<IFlexoOntologyConcept>(list)) {
-			if (c instanceof IFlexoOntologyClass && ((IFlexoOntologyClass) c).isRootConcept() && c.getOntology() != getContext()
+	protected void removeOriginalFromRedefinedObjects(List<? extends IFlexoOntologyConcept<TA>> list) {
+		for (IFlexoOntologyConcept<TA> c : new ArrayList<IFlexoOntologyConcept<TA>>(list)) {
+			if (c instanceof IFlexoOntologyClass && ((IFlexoOntologyClass<TA>) c).isRootConcept() && c.getOntology() != getContext()
 					&& list.contains(getContext().getRootConcept())) {
 				list.remove(c);
 			}
 		}
 	}
 
-	private void appendParentClassesToStorageClasses(List<IFlexoOntologyClass> someClasses) {
+	private void appendParentClassesToStorageClasses(List<IFlexoOntologyClass<TA>> someClasses) {
 		// System.out.println("appendParentClassesToStorageClasses with " + someClasses);
 
 		// First compute the list of all top-level classes
-		List<IFlexoOntologyClass> topLevelClasses = new ArrayList<IFlexoOntologyClass>();
-		for (IFlexoOntologyClass c : someClasses) {
+		List<IFlexoOntologyClass<TA>> topLevelClasses = new ArrayList<IFlexoOntologyClass<TA>>();
+		for (IFlexoOntologyClass<TA> c : someClasses) {
 			boolean requireAddInTopClasses = true;
-			List<IFlexoOntologyClass> classesToRemove = new ArrayList<IFlexoOntologyClass>();
-			for (IFlexoOntologyClass tpC : topLevelClasses) {
+			List<IFlexoOntologyClass<TA>> classesToRemove = new ArrayList<IFlexoOntologyClass<TA>>();
+			for (IFlexoOntologyClass<TA> tpC : topLevelClasses) {
 				if (tpC.isSuperClassOf(c)) {
 					requireAddInTopClasses = false;
 				}
@@ -768,25 +773,25 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 			}
 			if (requireAddInTopClasses) {
 				topLevelClasses.add(c);
-				for (IFlexoOntologyClass c2r : classesToRemove) {
+				for (IFlexoOntologyClass<TA> c2r : classesToRemove) {
 					topLevelClasses.remove(c2r);
 				}
 			}
 		}
 
-		List<IFlexoOntologyClass> classesToAdd = new ArrayList<IFlexoOntologyClass>();
+		List<IFlexoOntologyClass<TA>> classesToAdd = new ArrayList<IFlexoOntologyClass<TA>>();
 		if (someClasses.size() > 1) {
 			for (int i = 0; i < topLevelClasses.size(); i++) {
 				for (int j = i + 1; j < topLevelClasses.size(); j++) {
 					// System.out.println("i=" + i + " j=" + j + " someClasses.size()=" + someClasses.size());
 					// System.out.println("i=" + i + " j=" + j + " someClasses.size()=" + someClasses.size() + " someClasses=" +
 					// someClasses);
-					IFlexoOntologyClass c1 = topLevelClasses.get(i);
-					IFlexoOntologyClass c2 = topLevelClasses.get(j);
-					IFlexoOntologyClass ancestor = OntologyUtils.getFirstCommonAncestor(c1, c2);
+					IFlexoOntologyClass<TA> c1 = topLevelClasses.get(i);
+					IFlexoOntologyClass<TA> c2 = topLevelClasses.get(j);
+					IFlexoOntologyClass<TA> ancestor = OntologyUtils.getFirstCommonAncestor(c1, c2);
 					// System.out.println("Ancestor of " + c1 + " and " + c2 + " is " + ancestor);
 					if (ancestor != null /*&& !ancestor.isThing()*/) {
-						IFlexoOntologyClass ancestorSeenFromContextOntology = getContext().getClass(ancestor.getURI());
+						IFlexoOntologyClass<TA> ancestorSeenFromContextOntology = getContext().getClass(ancestor.getURI());
 						if (ancestorSeenFromContextOntology != null) {
 							if (!someClasses.contains(ancestorSeenFromContextOntology)
 									&& !classesToAdd.contains(ancestorSeenFromContextOntology)) {
@@ -799,7 +804,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 				}
 			}
 			if (classesToAdd.size() > 0) {
-				for (IFlexoOntologyClass c : classesToAdd) {
+				for (IFlexoOntologyClass<TA> c : classesToAdd) {
 					someClasses.add(c);
 				}
 
@@ -818,9 +823,9 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		}
 	}*/
 
-	private List<IFlexoOntologyClass> retrieveDisplayableClasses(IFlexoOntology ontology) {
-		Vector<IFlexoOntologyClass> returned = new Vector<IFlexoOntologyClass>();
-		for (IFlexoOntologyClass c : ontology.getClasses()) {
+	private List<IFlexoOntologyClass<TA>> retrieveDisplayableClasses(IFlexoOntology<TA> ontology) {
+		Vector<IFlexoOntologyClass<TA>> returned = new Vector<IFlexoOntologyClass<TA>>();
+		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
 			}
@@ -832,9 +837,9 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		return returned;
 	}
 
-	private List<IFlexoOntologyIndividual> retrieveDisplayableIndividuals(IFlexoOntology ontology) {
-		Vector<IFlexoOntologyIndividual> returned = new Vector<IFlexoOntologyIndividual>();
-		for (IFlexoOntologyIndividual c : ontology.getIndividuals()) {
+	private List<IFlexoOntologyIndividual<TA>> retrieveDisplayableIndividuals(IFlexoOntology<TA> ontology) {
+		Vector<IFlexoOntologyIndividual<TA>> returned = new Vector<IFlexoOntologyIndividual<TA>>();
+		for (IFlexoOntologyIndividual<TA> c : ontology.getIndividuals()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
 			}
@@ -842,14 +847,14 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		return returned;
 	}
 
-	private List<IFlexoOntologyStructuralProperty> retrieveDisplayableProperties(IFlexoOntology ontology) {
-		Vector<IFlexoOntologyStructuralProperty> returned = new Vector<IFlexoOntologyStructuralProperty>();
-		for (IFlexoOntologyStructuralProperty p : ontology.getObjectProperties()) {
+	private List<IFlexoOntologyStructuralProperty<TA>> retrieveDisplayableProperties(IFlexoOntology<TA> ontology) {
+		Vector<IFlexoOntologyStructuralProperty<TA>> returned = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getObjectProperties()) {
 			if (isDisplayable(p)) {
 				returned.add(p);
 			}
 		}
-		for (IFlexoOntologyStructuralProperty p : ontology.getDataProperties()) {
+		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getDataProperties()) {
 			if (isDisplayable(p)) {
 				returned.add(p);
 			}
@@ -857,7 +862,7 @@ public class OntologyBrowserModel extends Observable implements FlexoObserver {
 		return returned;
 	}
 
-	public Font getFont(IFlexoOntologyConcept object, Font baseFont) {
+	public Font getFont(IFlexoOntologyConcept<TA> object, Font baseFont) {
 		if (baseFont != null && object.getOntology() != getContext()) {
 			return baseFont.deriveFont(Font.ITALIC);
 		}

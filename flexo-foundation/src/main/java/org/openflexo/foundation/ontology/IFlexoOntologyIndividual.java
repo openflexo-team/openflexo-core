@@ -30,19 +30,21 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of Individual.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyIndividual extends IFlexoOntologyConcept {
+public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Return types of Individual.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyClass> getTypes();
+	public List<? extends IFlexoOntologyClass<TA>> getTypes();
 
 	/**
 	 * Add supplied type to the list of types implemented by this individual
@@ -64,14 +66,14 @@ public interface IFlexoOntologyIndividual extends IFlexoOntologyConcept {
 	 * @param aClass
 	 * @return
 	 */
-	public boolean isIndividualOf(IFlexoOntologyClass aClass);
+	public boolean isIndividualOf(IFlexoOntologyClass<TA> aClass);
 
 	/**
 	 * Property Values.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyPropertyValue> getPropertyValues();
+	public List<? extends IFlexoOntologyPropertyValue<TA>> getPropertyValues();
 
 	/**
 	 * Return the {@link IFlexoOntologyPropertyValue} matching supplied property and defined for this individual<br>
@@ -80,8 +82,8 @@ public interface IFlexoOntologyIndividual extends IFlexoOntologyConcept {
 	 * @param property
 	 * @return
 	 */
-	public IFlexoOntologyPropertyValue getPropertyValue(IFlexoOntologyStructuralProperty property);
-	
+	public IFlexoOntologyPropertyValue<TA> getPropertyValue(IFlexoOntologyStructuralProperty<TA> property);
+
 	/**
 	 * Add newValue as a value for supplied property<br>
 	 * Return the {@link IFlexoOntologyPropertyValue} matching supplied property and defined for this individual<br>
@@ -90,7 +92,7 @@ public interface IFlexoOntologyIndividual extends IFlexoOntologyConcept {
 	 * @param newValue
 	 * @return
 	 */
-	public IFlexoOntologyPropertyValue addToPropertyValue(IFlexoOntologyStructuralProperty property, Object newValue);
+	public IFlexoOntologyPropertyValue<TA> addToPropertyValue(IFlexoOntologyStructuralProperty<TA> property, Object newValue);
 
 	/**
 	 * Remove valueToRemove from list of values for supplied property<br>
@@ -101,5 +103,5 @@ public interface IFlexoOntologyIndividual extends IFlexoOntologyConcept {
 	 * @param valueToRemove
 	 * @return
 	 */
-	public IFlexoOntologyPropertyValue removeFromPropertyValue(IFlexoOntologyStructuralProperty property, Object valueToRemove);
+	public IFlexoOntologyPropertyValue<TA> removeFromPropertyValue(IFlexoOntologyStructuralProperty<TA> property, Object valueToRemove);
 }

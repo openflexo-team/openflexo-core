@@ -30,19 +30,21 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Data Property Value.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyDataPropertyValue extends IFlexoOntologyPropertyValue {
+public interface IFlexoOntologyDataPropertyValue<TA extends TechnologyAdapter> extends IFlexoOntologyPropertyValue<TA> {
 
 	/**
 	 * Data Property.
 	 * 
 	 * @return
 	 */
-	public IFlexoOntologyDataProperty getDataProperty();
+	public IFlexoOntologyDataProperty<TA> getDataProperty();
 
 	/**
 	 * Value of Data Property.

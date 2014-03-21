@@ -30,6 +30,8 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Flexo Ontology.
  * 
@@ -37,7 +39,7 @@ import java.util.List;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConceptContainer {
+public interface IFlexoOntology<TA extends TechnologyAdapter> extends IFlexoOntologyObject<TA>, IFlexoOntologyConceptContainer<TA> {
 
 	/**
 	 * Version of Ontology.
@@ -51,7 +53,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntology> getImportedOntologies();
+	public List<? extends IFlexoOntology<TA>> getImportedOntologies();
 
 	/**
 	 * Annotations upon Ontology.
@@ -66,7 +68,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyClass> getAccessibleClasses();
+	public List<? extends IFlexoOntologyClass<TA>> getAccessibleClasses();
 
 	/**
 	 * Return all individuals accessible in the context of this ontology.<br>
@@ -74,7 +76,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyIndividual> getAccessibleIndividuals();
+	public List<? extends IFlexoOntologyIndividual<TA>> getAccessibleIndividuals();
 
 	/**
 	 * Return all object properties accessible in the context of this ontology.<br>
@@ -82,7 +84,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyObjectProperty> getAccessibleObjectProperties();
+	public List<? extends IFlexoOntologyObjectProperty<TA>> getAccessibleObjectProperties();
 
 	/**
 	 * Return all data properties accessible in the context of this ontology.<br>
@@ -90,7 +92,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyDataProperty> getAccessibleDataProperties();
+	public List<? extends IFlexoOntologyDataProperty<TA>> getAccessibleDataProperties();
 
 	/**
 	 * Retrieve an ontology object from its URI, in the strict context of this ontology. That means that only objects declared in this
@@ -100,7 +102,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyConcept getDeclaredOntologyObject(String objectURI);
+	public abstract IFlexoOntologyConcept<TA> getDeclaredOntologyObject(String objectURI);
 
 	/**
 	 * Retrieve an class from its URI, in the strict context of this ontology. That means that only objects declared in this ontology are
@@ -111,7 +113,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyClass getDeclaredClass(String classURI);
+	public abstract IFlexoOntologyClass<TA> getDeclaredClass(String classURI);
 
 	/**
 	 * Retrieve an individual from its URI, in the strict context of this ontology. That means that only objects declared in this ontology
@@ -123,7 +125,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyIndividual getDeclaredIndividual(String individualURI);
+	public abstract IFlexoOntologyIndividual<TA> getDeclaredIndividual(String individualURI);
 
 	/**
 	 * Retrieve an object property from its URI, in the strict context of this ontology. That means that only objects declared in this
@@ -134,7 +136,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyObjectProperty getDeclaredObjectProperty(String propertyURI);
+	public abstract IFlexoOntologyObjectProperty<TA> getDeclaredObjectProperty(String propertyURI);
 
 	/**
 	 * Retrieve an datatype property from its URI, in the strict context of this ontology. That means that only objects declared in this
@@ -144,7 +146,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyDataProperty getDeclaredDataProperty(String propertyURI);
+	public abstract IFlexoOntologyDataProperty<TA> getDeclaredDataProperty(String propertyURI);
 
 	/**
 	 * Retrieve a property from its URI, in the strict context of this ontology. That means that only objects declared in this ontology are
@@ -154,7 +156,7 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * @param objectURI
 	 * @return
 	 */
-	public abstract IFlexoOntologyStructuralProperty getDeclaredProperty(String objectURI);
+	public abstract IFlexoOntologyStructuralProperty<TA> getDeclaredProperty(String objectURI);
 
 	/**
 	 * Return the root concept accessible from the scope defined by this ontology (for example in OWL technology this is the owl:Thing
@@ -162,5 +164,5 @@ public interface IFlexoOntology extends IFlexoOntologyObject, IFlexoOntologyConc
 	 * 
 	 * @return
 	 */
-	public IFlexoOntologyClass getRootConcept();
+	public IFlexoOntologyClass<TA> getRootConcept();
 }

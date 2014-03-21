@@ -28,12 +28,14 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of both Class and Individual.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyClabject extends IFlexoOntologyClass, IFlexoOntologyIndividual {
+public interface IFlexoOntologyClabject<TA extends TechnologyAdapter> extends IFlexoOntologyClass<TA>, IFlexoOntologyIndividual<TA> {
 
 }

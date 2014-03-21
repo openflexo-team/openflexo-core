@@ -28,6 +28,8 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Visitor for Concept of Ontology.
  * 
@@ -45,7 +47,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aConstraint
 	 * @return
 	 */
-	T visit(IFlexoOntologyConstraint aConstraint);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyConstraint<TA> aConstraint);
 
 	/**
 	 * Visit a DataType.
@@ -53,7 +55,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aDataType
 	 * @return
 	 */
-	T visit(IFlexoOntologyDataType aDataType);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyDataType<TA> aDataType);
 
 	/**
 	 * Visit an Individual.
@@ -61,7 +63,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aIndividual
 	 * @return
 	 */
-	T visit(IFlexoOntologyIndividual aIndividual);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyIndividual<TA> aIndividual);
 
 	/**
 	 * Visit a Class.
@@ -69,7 +71,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aClass
 	 * @return
 	 */
-	T visit(IFlexoOntologyClass aClass);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyClass<TA> aClass);
 
 	/**
 	 * Visit a Clabject.
@@ -77,7 +79,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aClabject
 	 * @return
 	 */
-	T visit(IFlexoOntologyClabject aClabject);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyClabject<TA> aClabject);
 
 	/**
 	 * Visit a Data Property.
@@ -85,7 +87,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aDataProperty
 	 * @return
 	 */
-	T visit(IFlexoOntologyDataProperty aDataProperty);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyDataProperty<TA> aDataProperty);
 
 	/**
 	 * Visit an Object Property.
@@ -93,7 +95,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aObjectProperty
 	 * @return
 	 */
-	T visit(IFlexoOntologyObjectProperty aObjectProperty);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyObjectProperty<TA> aObjectProperty);
 
 	/**
 	 * Visit a Behavioural Property.
@@ -101,5 +103,5 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aBehaviouralProperty
 	 * @return
 	 */
-	T visit(IFlexoOntologyBehaviouralProperty aBehaviouralProperty);
+	<TA extends TechnologyAdapter> T visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty);
 }

@@ -28,6 +28,8 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * FIXME Concept of behavioural property.
  * 
@@ -35,6 +37,6 @@ package org.openflexo.foundation.ontology;
  * 
  * 
  */
-public interface IFlexoOntologyBehaviouralProperty extends IFlexoOntologyFeature {
+public interface IFlexoOntologyBehaviouralProperty<TA extends TechnologyAdapter> extends IFlexoOntologyFeature<TA> {
 
 }

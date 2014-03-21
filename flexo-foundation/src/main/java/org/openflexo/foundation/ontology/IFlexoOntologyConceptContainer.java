@@ -30,33 +30,35 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept Container.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyConceptContainer {
+public interface IFlexoOntologyConceptContainer<TA extends TechnologyAdapter> {
 
 	/**
 	 * Sub container of container.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyContainer> getSubContainers();
+	public List<? extends IFlexoOntologyContainer<TA>> getSubContainers();
 
 	/**
 	 * Concepts defined by Ontology.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyConcept> getConcepts();
+	public List<? extends IFlexoOntologyConcept<TA>> getConcepts();
 
 	/**
 	 * DataTypes defined by Ontology.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyDataType> getDataTypes();
+	public List<? extends IFlexoOntologyDataType<TA>> getDataTypes();
 
 	/**
 	 * Retrieve an ontology object from its URI, in the context of this container (if this container is an ontology, will lookup in ontology
@@ -67,7 +69,7 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyConcept getOntologyObject(String objectURI);
+	public IFlexoOntologyConcept<TA> getOntologyObject(String objectURI);
 
 	/**
 	 * Retrieve an class from its URI, in the context of this container (if this container is an ontology, will lookup in ontology and
@@ -78,7 +80,7 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyClass getClass(String classURI);
+	public IFlexoOntologyClass<TA> getClass(String classURI);
 
 	/**
 	 * Retrieve an individual from its URI, in the context of this container (if this container is an ontology, will lookup in ontology and
@@ -90,7 +92,7 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyIndividual getIndividual(String individualURI);
+	public IFlexoOntologyIndividual<TA> getIndividual(String individualURI);
 
 	/**
 	 * Retrieve an object property from its URI, in the context of this container (if this container is an ontology, will lookup in ontology
@@ -101,7 +103,7 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyObjectProperty getObjectProperty(String propertyURI);
+	public IFlexoOntologyObjectProperty<TA> getObjectProperty(String propertyURI);
 
 	/**
 	 * Retrieve an datatype property from its URI, in the context of this container (if this container is an ontology, will lookup in
@@ -113,7 +115,7 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyDataProperty getDataProperty(String propertyURI);
+	public IFlexoOntologyDataProperty<TA> getDataProperty(String propertyURI);
 
 	/**
 	 * Retrieve a property from its URI, in the context of this container (if this container is an ontology, will lookup in ontology and
@@ -125,34 +127,34 @@ public interface IFlexoOntologyConceptContainer {
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyStructuralProperty getProperty(String objectURI);
+	public IFlexoOntologyStructuralProperty<TA> getProperty(String objectURI);
 
 	/**
 	 * Return all classes explicitely defined in this container (strict mode)
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyClass> getClasses();
+	public List<? extends IFlexoOntologyClass<TA>> getClasses();
 
 	/**
 	 * Return all individuals explicitely defined in this container (strict mode)
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyIndividual> getIndividuals();
+	public List<? extends IFlexoOntologyIndividual<TA>> getIndividuals();
 
 	/**
 	 * Return all datatype properties explicitely defined in this container (strict mode)
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyDataProperty> getDataProperties();
+	public List<? extends IFlexoOntologyDataProperty<TA>> getDataProperties();
 
 	/**
 	 * Return all object properties explicitely defined in this container (strict mode)
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyObjectProperty> getObjectProperties();
+	public List<? extends IFlexoOntologyObjectProperty<TA>> getObjectProperties();
 
 }

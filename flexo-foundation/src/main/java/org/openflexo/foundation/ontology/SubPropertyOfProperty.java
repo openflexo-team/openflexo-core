@@ -5,27 +5,28 @@ import java.lang.reflect.Type;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 
-public class SubPropertyOfProperty implements TechnologySpecificCustomType {
+public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements TechnologySpecificCustomType<TA> {
 
-	public static SubPropertyOfProperty getSubPropertyOfProperty(IFlexoOntologyStructuralProperty anOntologyProperty) {
+	public static <TA extends TechnologyAdapter> SubPropertyOfProperty<TA> getSubPropertyOfProperty(
+			IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
 		if (anOntologyProperty == null) {
 			return null;
 		}
 		return anOntologyProperty.getTechnologyAdapter().getTechnologyContextManager().getSubPropertyOfProperty(anOntologyProperty);
 	}
 
-	private IFlexoOntologyStructuralProperty ontologyProperty;
+	private final IFlexoOntologyStructuralProperty<TA> ontologyProperty;
 
-	public SubPropertyOfProperty(IFlexoOntologyStructuralProperty anOntologyProperty) {
+	public SubPropertyOfProperty(IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
 		this.ontologyProperty = anOntologyProperty;
 	}
 
-	public IFlexoOntologyStructuralProperty getOntologyProperty() {
+	public IFlexoOntologyStructuralProperty<TA> getOntologyProperty() {
 		return ontologyProperty;
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return IFlexoOntologyStructuralProperty.class;
 	}
 
@@ -33,7 +34,7 @@ public class SubPropertyOfProperty implements TechnologySpecificCustomType {
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
 		if (aType instanceof SubPropertyOfProperty) {
-			return ontologyProperty.isSuperConceptOf(((SubPropertyOfProperty) aType).getOntologyProperty());
+			return ontologyProperty.isSuperConceptOf(((SubPropertyOfProperty<TA>) aType).getOntologyProperty());
 		}
 		return false;
 	}
@@ -49,26 +50,26 @@ public class SubPropertyOfProperty implements TechnologySpecificCustomType {
 	}
 
 	@Override
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		if (getOntologyProperty() != null) {
 			return getOntologyProperty().getTechnologyAdapter();
 		}
 		return null;
 	}
 
-	public static class SubDataPropertyOfProperty extends SubPropertyOfProperty {
+	public static class SubDataPropertyOfProperty<TA extends TechnologyAdapter> extends SubPropertyOfProperty<TA> {
 
-		private SubDataPropertyOfProperty(IFlexoOntologyDataProperty anOntologyProperty) {
+		private SubDataPropertyOfProperty(IFlexoOntologyDataProperty<TA> anOntologyProperty) {
 			super(anOntologyProperty);
 		}
 
 		@Override
-		public IFlexoOntologyDataProperty getOntologyProperty() {
-			return (IFlexoOntologyDataProperty) super.getOntologyProperty();
+		public IFlexoOntologyDataProperty<TA> getOntologyProperty() {
+			return (IFlexoOntologyDataProperty<TA>) super.getOntologyProperty();
 		}
 
 		@Override
-		public Class getBaseClass() {
+		public Class<?> getBaseClass() {
 			return IFlexoOntologyDataProperty.class;
 		}
 
@@ -84,19 +85,19 @@ public class SubPropertyOfProperty implements TechnologySpecificCustomType {
 
 	}
 
-	public static class SubObjectPropertyOfProperty extends SubPropertyOfProperty {
+	public static class SubObjectPropertyOfProperty<TA extends TechnologyAdapter> extends SubPropertyOfProperty<TA> {
 
-		private SubObjectPropertyOfProperty(IFlexoOntologyObjectProperty anOntologyProperty) {
+		private SubObjectPropertyOfProperty(IFlexoOntologyObjectProperty<TA> anOntologyProperty) {
 			super(anOntologyProperty);
 		}
 
 		@Override
-		public IFlexoOntologyObjectProperty getOntologyProperty() {
-			return (IFlexoOntologyObjectProperty) super.getOntologyProperty();
+		public IFlexoOntologyObjectProperty<TA> getOntologyProperty() {
+			return (IFlexoOntologyObjectProperty<TA>) super.getOntologyProperty();
 		}
 
 		@Override
-		public Class getBaseClass() {
+		public Class<?> getBaseClass() {
 			return IFlexoOntologyObjectProperty.class;
 		}
 

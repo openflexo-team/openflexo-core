@@ -28,17 +28,20 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of Object Property.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyObjectProperty extends IFlexoOntologyStructuralProperty {
+public interface IFlexoOntologyObjectProperty<TA extends TechnologyAdapter> extends IFlexoOntologyStructuralProperty<TA> {
 	/**
 	 * Range of property.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyConcept getRange();
+	@Override
+	IFlexoOntologyConcept<TA> getRange();
 }

@@ -28,32 +28,34 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Feature Association with a Concept.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyFeatureAssociation {
+public interface IFlexoOntologyFeatureAssociation<TA extends TechnologyAdapter> {
 	/**
 	 * Domain of association.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyConcept getDomain();
+	IFlexoOntologyConcept<TA> getDomain();
 
 	/**
 	 * Feature associated.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyFeature getFeature();
+	IFlexoOntologyFeature<TA> getFeature();
 
 	/**
 	 * Range of associated feature if any.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyObject getRange();
+	IFlexoOntologyObject<TA> getRange();
 
 	/**
 	 * Min cardinality of association, null when undefined, -1 when Infinite

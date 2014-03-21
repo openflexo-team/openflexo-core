@@ -28,11 +28,13 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * FIXME Concept of Constraint.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyConstraint extends IFlexoOntologyConcept {
+public interface IFlexoOntologyConstraint<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 
 }

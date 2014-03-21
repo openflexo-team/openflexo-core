@@ -40,9 +40,10 @@ import org.openflexo.foundation.ontology.IFlexoOntologyDataType;
 import org.openflexo.foundation.ontology.IFlexoOntologyFeature;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.util.visitor.ToStringVisitor;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Utilitaires pour FlexoOntology.
+ * Utilities for FlexoOntology.
  * 
  * @author gbesancon
  */
@@ -54,7 +55,7 @@ public class FlexoOntologyUtility {
 	 * @param flexoOntology
 	 * @return
 	 */
-	public static String toString(IFlexoOntology flexoOntology) {
+	public static <TA extends TechnologyAdapter> String toString(IFlexoOntology<TA> flexoOntology) {
 		StringBuilder builder = new StringBuilder();
 		try {
 			builder.append("Ontology : ");
@@ -62,17 +63,17 @@ public class FlexoOntologyUtility {
 			builder.append(" (");
 			builder.append(flexoOntology.getURI());
 			builder.append(")\n");
-			for (IFlexoOntologyConcept concept : flexoOntology.getConcepts()) {
+			for (IFlexoOntologyConcept<TA> concept : flexoOntology.getConcepts()) {
 				builder.append(concept.accept(new ToStringVisitor()));
 				builder.append("\n");
 			}
-			for (IFlexoOntologyDataType dataType : flexoOntology.getDataTypes()) {
+			for (IFlexoOntologyDataType<TA> dataType : flexoOntology.getDataTypes()) {
 				builder.append(dataType.getName());
 				builder.append(" (");
 				builder.append(dataType.getURI());
 				builder.append(")\n");
 			}
-			for (IFlexoOntologyContainer subContainer : flexoOntology.getSubContainers()) {
+			for (IFlexoOntologyContainer<TA> subContainer : flexoOntology.getSubContainers()) {
 				builder.append(toString(subContainer));
 			}
 		} catch (Exception e) {
@@ -88,22 +89,22 @@ public class FlexoOntologyUtility {
 	 * @param container
 	 * @return
 	 */
-	protected static String toString(IFlexoOntologyContainer container) {
+	protected static <TA extends TechnologyAdapter> String toString(IFlexoOntologyContainer<TA> container) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Container : ");
 		builder.append(container.getName());
 		builder.append("\n");
-		for (IFlexoOntologyConcept concept : container.getConcepts()) {
+		for (IFlexoOntologyConcept<TA> concept : container.getConcepts()) {
 			builder.append(concept.accept(new ToStringVisitor()));
 			builder.append("\n");
 		}
-		for (IFlexoOntologyDataType dataType : container.getDataTypes()) {
+		for (IFlexoOntologyDataType<TA> dataType : container.getDataTypes()) {
 			builder.append(dataType.getName());
 			builder.append(" (");
 			builder.append(dataType.getURI());
 			builder.append(")\n");
 		}
-		for (IFlexoOntologyContainer subContainer : container.getSubContainers()) {
+		for (IFlexoOntologyContainer<TA> subContainer : container.getSubContainers()) {
 			builder.append(toString(subContainer));
 		}
 		return builder.toString();
@@ -115,10 +116,10 @@ public class FlexoOntologyUtility {
 	 * @param container
 	 * @return
 	 */
-	public static List<IFlexoOntologyConcept> getAllConcepts(IFlexoOntologyConceptContainer container) {
-		List<IFlexoOntologyConcept> result = new ArrayList<IFlexoOntologyConcept>();
+	public static <TA extends TechnologyAdapter> List<IFlexoOntologyConcept<TA>> getAllConcepts(IFlexoOntologyConceptContainer<TA> container) {
+		List<IFlexoOntologyConcept<TA>> result = new ArrayList<IFlexoOntologyConcept<TA>>();
 		result.addAll(container.getConcepts());
-		for (IFlexoOntologyConceptContainer subContainer : container.getSubContainers()) {
+		for (IFlexoOntologyConceptContainer<TA> subContainer : container.getSubContainers()) {
 			result.addAll(getAllConcepts(subContainer));
 		}
 		return result;
@@ -131,12 +132,12 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static IFlexoOntologyClass getClass(IFlexoOntology flexoOntology, String uri) {
-		IFlexoOntologyClass result = null;
-		for (IFlexoOntologyConcept concept : getAllConcepts(flexoOntology)) {
+	public static <TA extends TechnologyAdapter> IFlexoOntologyClass<TA> getClass(IFlexoOntology<TA> flexoOntology, String uri) {
+		IFlexoOntologyClass<TA> result = null;
+		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyClass) {
 				if (concept.getURI().equalsIgnoreCase(uri)) {
-					result = (IFlexoOntologyClass) concept;
+					result = (IFlexoOntologyClass<TA>) concept;
 				}
 			}
 		}
@@ -150,12 +151,12 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static IFlexoOntologyIndividual getIndividual(IFlexoOntology flexoOntology, String uri) {
-		IFlexoOntologyIndividual result = null;
-		for (IFlexoOntologyConcept concept : getAllConcepts(flexoOntology)) {
+	public static <TA extends TechnologyAdapter> IFlexoOntologyIndividual<TA> getIndividual(IFlexoOntology<TA> flexoOntology, String uri) {
+		IFlexoOntologyIndividual<TA> result = null;
+		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyIndividual) {
 				if (concept.getURI().equalsIgnoreCase(uri)) {
-					result = (IFlexoOntologyIndividual) concept;
+					result = (IFlexoOntologyIndividual<TA>) concept;
 				}
 			}
 		}
@@ -169,12 +170,13 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static List<IFlexoOntologyIndividual> getIndividualOfType(IFlexoOntology flexoOntology, IFlexoOntologyClass emfClass) {
-		List<IFlexoOntologyIndividual> result = new ArrayList<IFlexoOntologyIndividual>();
-		for (IFlexoOntologyConcept concept : getAllConcepts(flexoOntology)) {
+	public static <TA extends TechnologyAdapter> List<IFlexoOntologyIndividual<TA>> getIndividualOfType(IFlexoOntology<TA> flexoOntology,
+			IFlexoOntologyClass<TA> emfClass) {
+		List<IFlexoOntologyIndividual<TA>> result = new ArrayList<IFlexoOntologyIndividual<TA>>();
+		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyIndividual) {
-				if (((IFlexoOntologyIndividual) concept).isIndividualOf(emfClass)) {
-					result.add((IFlexoOntologyIndividual) concept);
+				if (((IFlexoOntologyIndividual<TA>) concept).isIndividualOf(emfClass)) {
+					result.add((IFlexoOntologyIndividual<TA>) concept);
 				}
 			}
 		}
@@ -188,12 +190,12 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static IFlexoOntologyFeature getFeature(IFlexoOntology flexoOntology, String uri) {
-		IFlexoOntologyFeature result = null;
-		for (IFlexoOntologyConcept concept : getAllConcepts(flexoOntology)) {
+	public static <TA extends TechnologyAdapter> IFlexoOntologyFeature<TA> getFeature(IFlexoOntology<TA> flexoOntology, String uri) {
+		IFlexoOntologyFeature<TA> result = null;
+		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyFeature) {
 				if (concept.getURI().equalsIgnoreCase(uri)) {
-					result = (IFlexoOntologyFeature) concept;
+					result = (IFlexoOntologyFeature<TA>) concept;
 				}
 			}
 		}

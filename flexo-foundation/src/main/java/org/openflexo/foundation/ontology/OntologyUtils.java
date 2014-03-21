@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 public class OntologyUtils {
 
 	private static final Logger logger = Logger.getLogger(OntologyUtils.class.getPackage().getName());
@@ -40,7 +42,8 @@ public class OntologyUtils {
 
 	}
 
-	public static <C extends IFlexoOntologyClass> IFlexoOntologyClass getFirstCommonAncestor(C c1, C c2) {
+	public static <TA extends TechnologyAdapter, C extends IFlexoOntologyClass<TA>> IFlexoOntologyClass<TA> getFirstCommonAncestor(C c1,
+			C c2) {
 		Set<C> commonAncestors = new HashSet<C>();
 		Set<C> ancestors1 = (Set<C>) getAllSuperClasses(c1);
 		ancestors1.add(c1);
@@ -61,9 +64,9 @@ public class OntologyUtils {
 	 * 
 	 * @return
 	 */
-	public static Set<IFlexoOntologyClass> getAllSuperClasses(IFlexoOntologyClass aClass) {
-		Set<IFlexoOntologyClass> returned = new HashSet<IFlexoOntologyClass>();
-		for (IFlexoOntologyClass c : aClass.getSuperClasses()) {
+	public static Set<IFlexoOntologyClass<?>> getAllSuperClasses(IFlexoOntologyClass<?> aClass) {
+		Set<IFlexoOntologyClass<?>> returned = new HashSet<IFlexoOntologyClass<?>>();
+		for (IFlexoOntologyClass<?> c : aClass.getSuperClasses()) {
 			returned.add(c);
 			returned.addAll(getAllSuperClasses(c));
 		}
@@ -75,9 +78,9 @@ public class OntologyUtils {
 	 * 
 	 * @return
 	 */
-	public static Set<IFlexoOntologyClass> getAllSuperClasses(IFlexoOntologyIndividual anIndividual) {
-		Set<IFlexoOntologyClass> returned = new HashSet<IFlexoOntologyClass>();
-		for (IFlexoOntologyClass c : anIndividual.getTypes()) {
+	public static Set<IFlexoOntologyClass<?>> getAllSuperClasses(IFlexoOntologyIndividual<?> anIndividual) {
+		Set<IFlexoOntologyClass<?>> returned = new HashSet<IFlexoOntologyClass<?>>();
+		for (IFlexoOntologyClass<?> c : anIndividual.getTypes()) {
 			returned.add(c);
 			returned.addAll(getAllSuperClasses(c));
 		}
@@ -89,7 +92,7 @@ public class OntologyUtils {
 	 * 
 	 * @return
 	 */
-	public static <O extends IFlexoOntology> Set<O> getAllImportedOntologies(O ontology) {
+	public static <O extends IFlexoOntology<?>> Set<O> getAllImportedOntologies(O ontology) {
 		Set<O> returned = new HashSet<O>();
 		appendImportedOntologies(ontology, returned);
 		/*
@@ -107,14 +110,14 @@ public class OntologyUtils {
 		return returned;
 	}
 
-	private static <O extends IFlexoOntology> void appendImportedOntologies(O ontology, Set<O> s) {
+	private static <O extends IFlexoOntology<?>> void appendImportedOntologies(O ontology, Set<O> s) {
 		if (ontology == null) {
 			return;
 		}
 		if (!s.contains(ontology)) {
 			s.add(ontology);
 			if (ontology.getImportedOntologies() != null) {
-				for (IFlexoOntology imported : ontology.getImportedOntologies()) {
+				for (IFlexoOntology<?> imported : ontology.getImportedOntologies()) {
 					appendImportedOntologies(imported, (Set) s);
 				}
 			}

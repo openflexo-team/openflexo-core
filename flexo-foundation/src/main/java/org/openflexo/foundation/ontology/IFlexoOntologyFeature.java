@@ -30,18 +30,20 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of feature.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyFeature extends IFlexoOntologyConcept {
+public interface IFlexoOntologyFeature<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 
 	/**
 	 * Feature Associations referencing this Feature.
 	 * 
 	 * @return
 	 */
-	List<? extends IFlexoOntologyFeatureAssociation> getReferencingFeatureAssociations();
+	List<? extends IFlexoOntologyFeatureAssociation<TA>> getReferencingFeatureAssociations();
 }

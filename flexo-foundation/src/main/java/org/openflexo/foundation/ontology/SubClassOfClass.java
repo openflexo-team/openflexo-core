@@ -5,27 +5,27 @@ import java.lang.reflect.Type;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 
-public class SubClassOfClass implements TechnologySpecificCustomType {
+public class SubClassOfClass<TA extends TechnologyAdapter> implements TechnologySpecificCustomType<TA> {
 
-	public static SubClassOfClass getSubClassOfClass(IFlexoOntologyClass anOntologyClass) {
+	public static <TA extends TechnologyAdapter> SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
 			return null;
 		}
 		return anOntologyClass.getTechnologyAdapter().getTechnologyContextManager().getSubClassOfClass(anOntologyClass);
 	}
 
-	private IFlexoOntologyClass ontologyClass;
+	private final IFlexoOntologyClass<TA> ontologyClass;
 
-	public SubClassOfClass(IFlexoOntologyClass anOntologyClass) {
+	public SubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		this.ontologyClass = anOntologyClass;
 	}
 
-	public IFlexoOntologyClass getOntologyClass() {
+	public IFlexoOntologyClass<TA> getOntologyClass() {
 		return ontologyClass;
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return IFlexoOntologyClass.class;
 	}
 
@@ -33,7 +33,7 @@ public class SubClassOfClass implements TechnologySpecificCustomType {
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
 		if (aType instanceof SubClassOfClass) {
-			return ontologyClass.isSuperConceptOf(((SubClassOfClass) aType).getOntologyClass());
+			return ontologyClass.isSuperConceptOf(((SubClassOfClass<TA>) aType).getOntologyClass());
 		}
 		return false;
 	}
@@ -49,7 +49,7 @@ public class SubClassOfClass implements TechnologySpecificCustomType {
 	}
 
 	@Override
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		if (getOntologyClass() != null) {
 			return getOntologyClass().getTechnologyAdapter();
 		}

@@ -22,6 +22,7 @@ package org.openflexo.foundation.ontology;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * This is the default abstract implementation of all objects encoding models or metamodels conform to FlexoOntology layer
@@ -29,15 +30,16 @@ import org.openflexo.foundation.DefaultFlexoObject;
  * @author sylvain
  * 
  */
-public abstract class FlexoOntologyObjectImpl extends DefaultFlexoObject {
+public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> extends DefaultFlexoObject {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyObjectImpl.class.getPackage().getName());
 
 	public FlexoOntologyObjectImpl() {
 		super();
 	}
 
-	public IFlexoOntology getOntology() {
+	public IFlexoOntology<TA> getOntology() {
 		return getFlexoOntology();
 	}
 
@@ -48,7 +50,7 @@ public abstract class FlexoOntologyObjectImpl extends DefaultFlexoObject {
 	 */
 	public abstract String getName();
 
-	public abstract IFlexoOntology getFlexoOntology();
+	public abstract IFlexoOntology<TA> getFlexoOntology();
 
 	public abstract String getDisplayableDescription();
 

@@ -28,12 +28,14 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Flexo Ontology used as a MetaModel.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyMetaModel extends IFlexoOntology {
+public interface IFlexoOntologyMetaModel<TA extends TechnologyAdapter> extends IFlexoOntology<TA> {
 
 }

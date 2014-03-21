@@ -30,17 +30,19 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Flexo Ontology used as a Model.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyModel extends IFlexoOntology {
+public interface IFlexoOntologyModel<TA extends TechnologyAdapter> extends IFlexoOntology<TA> {
 	/**
 	 * Get MetaModels.
 	 * 
 	 * @return
 	 */
-	List<IFlexoOntologyMetaModel> getMetaModels();
+	List<IFlexoOntologyMetaModel<TA>> getMetaModels();
 }

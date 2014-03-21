@@ -28,19 +28,21 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Container.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyContainer extends IFlexoOntologyConceptContainer {
+public interface IFlexoOntologyContainer<TA extends TechnologyAdapter> extends IFlexoOntologyConceptContainer<TA> {
 
 	/**
 	 * Parent container of container.
 	 * 
 	 * @return
 	 */
-	IFlexoOntologyConceptContainer getParent();
+	IFlexoOntologyConceptContainer<TA> getParent();
 
 	/**
 	 * Name of container.

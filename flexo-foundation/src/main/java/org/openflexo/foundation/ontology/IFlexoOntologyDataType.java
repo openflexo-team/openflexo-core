@@ -28,19 +28,21 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of DataType.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyDataType extends IFlexoOntologyObject {
+public interface IFlexoOntologyDataType<TA extends TechnologyAdapter> extends IFlexoOntologyObject<TA> {
 	/**
 	 * Ontology of Concept.
 	 * 
 	 * @return
 	 */
-	IFlexoOntology getOntology();
+	IFlexoOntology<TA> getOntology();
 
 	public Class<?> getAccessedType();
 

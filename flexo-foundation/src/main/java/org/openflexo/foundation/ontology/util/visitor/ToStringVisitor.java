@@ -42,6 +42,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectPropertyValue;
 import org.openflexo.foundation.ontology.IFlexoOntologyPropertyValue;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * To Sting Visitor for Concepts.
@@ -61,7 +62,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyConstraint)
 	 */
 	@Override
-	public String visit(IFlexoOntologyConstraint aConstraint) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyConstraint<TA> aConstraint) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -72,7 +73,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyDataType)
 	 */
 	@Override
-	public String visit(IFlexoOntologyDataType aDataType) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyDataType<TA> aDataType) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("DataType - ");
 		builder.append(aDataType.getName());
@@ -85,7 +86,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyIndividual)
 	 */
 	@Override
-	public String visit(IFlexoOntologyIndividual aIndividual) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyIndividual<TA> aIndividual) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Individual - ");
 		builder.append(aIndividual.getName());
@@ -93,21 +94,21 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 		builder.append(aIndividual.getURI());
 		builder.append(") : ");
 		if (aIndividual.getTypes().size() != 0) {
-			for (IFlexoOntologyClass aClass : aIndividual.getTypes()) {
+			for (IFlexoOntologyClass<TA> aClass : aIndividual.getTypes()) {
 				builder.append(aClass.getName());
 				builder.append(", ");
 			}
 			builder.setLength(builder.length() - 2);
 		}
 		builder.append("\n");
-		for (IFlexoOntologyPropertyValue propertyValue : aIndividual.getPropertyValues()) {
+		for (IFlexoOntologyPropertyValue<TA> propertyValue : aIndividual.getPropertyValues()) {
 			if (propertyValue instanceof IFlexoOntologyDataPropertyValue) {
-				if (((IFlexoOntologyDataPropertyValue) propertyValue).getValues() != null
-						&& ((IFlexoOntologyDataPropertyValue) propertyValue).getValues().size() != 0) {
+				if (((IFlexoOntologyDataPropertyValue<TA>) propertyValue).getValues() != null
+						&& ((IFlexoOntologyDataPropertyValue<TA>) propertyValue).getValues().size() != 0) {
 					builder.append("\t PropertyValue - (");
-					builder.append(((IFlexoOntologyDataPropertyValue) propertyValue).getDataProperty().getName());
+					builder.append(((IFlexoOntologyDataPropertyValue<TA>) propertyValue).getDataProperty().getName());
 					builder.append(" = ");
-					for (Object object : ((IFlexoOntologyDataPropertyValue) propertyValue).getValues()) {
+					for (Object object : ((IFlexoOntologyDataPropertyValue<TA>) propertyValue).getValues()) {
 						builder.append(object);
 						builder.append(", ");
 					}
@@ -115,12 +116,12 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 					builder.append(")\n");
 				}
 			} else if (propertyValue instanceof IFlexoOntologyObjectPropertyValue) {
-				if (((IFlexoOntologyObjectPropertyValue) propertyValue).getValues() != null
-						&& ((IFlexoOntologyObjectPropertyValue) propertyValue).getValues().size() != 0) {
+				if (((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getValues() != null
+						&& ((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getValues().size() != 0) {
 					builder.append("\t PropertyValue - (");
-					builder.append(((IFlexoOntologyObjectPropertyValue) propertyValue).getObjectProperty().getName());
+					builder.append(((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getObjectProperty().getName());
 					builder.append(" = ");
-					for (IFlexoOntologyConcept concept : ((IFlexoOntologyObjectPropertyValue) propertyValue).getValues()) {
+					for (IFlexoOntologyConcept<TA> concept : ((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getValues()) {
 						builder.append(concept.getName());
 						builder.append(", ");
 					}
@@ -138,7 +139,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyClass)
 	 */
 	@Override
-	public String visit(IFlexoOntologyClass aClass) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyClass<TA> aClass) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Class - ");
 		builder.append(aClass.getName());
@@ -147,7 +148,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 		builder.append(")");
 		if (aClass.getSuperClasses().size() != 0) {
 			builder.append(" > ");
-			for (IFlexoOntologyClass aSuperClass : aClass.getSuperClasses()) {
+			for (IFlexoOntologyClass<TA> aSuperClass : aClass.getSuperClasses()) {
 				builder.append(aSuperClass.getName());
 				builder.append(", ");
 			}
@@ -155,7 +156,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 		}
 		if (aClass.getStructuralFeatureAssociations().size() != 0) {
 			builder.append("\n");
-			for (IFlexoOntologyFeatureAssociation featureAssociation : aClass.getStructuralFeatureAssociations()) {
+			for (IFlexoOntologyFeatureAssociation<TA> featureAssociation : aClass.getStructuralFeatureAssociations()) {
 				builder.append("\t Feature - (");
 				builder.append(featureAssociation.getLowerBound() == -1 ? "*" : featureAssociation.getLowerBound());
 				builder.append("..");
@@ -168,7 +169,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 		}
 		if (aClass.getBehaviouralFeatureAssociations().size() != 0) {
 			builder.append("\n");
-			for (IFlexoOntologyFeatureAssociation featureAssociation : aClass.getBehaviouralFeatureAssociations()) {
+			for (IFlexoOntologyFeatureAssociation<TA> featureAssociation : aClass.getBehaviouralFeatureAssociations()) {
 				builder.append("\t Feature - (");
 				builder.append(featureAssociation.getLowerBound() == -1 ? "*" : featureAssociation.getLowerBound());
 				builder.append("..");
@@ -188,7 +189,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyClabject)
 	 */
 	@Override
-	public String visit(IFlexoOntologyClabject aClabject) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyClabject<TA> aClabject) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -199,7 +200,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyDataProperty)
 	 */
 	@Override
-	public String visit(IFlexoOntologyDataProperty aDataProperty) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyDataProperty<TA> aDataProperty) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Data Property - ");
 		builder.append(aDataProperty.getName());
@@ -217,7 +218,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty)
 	 */
 	@Override
-	public String visit(IFlexoOntologyObjectProperty aObjectProperty) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyObjectProperty<TA> aObjectProperty) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Object Property - ");
 		builder.append(aObjectProperty.getName());
@@ -235,7 +236,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyBehaviouralProperty)
 	 */
 	@Override
-	public String visit(IFlexoOntologyBehaviouralProperty aBehaviouralProperty) {
+	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty) {
 		// TODO Auto-generated method stub
 		return null;
 	}

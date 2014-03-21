@@ -30,26 +30,28 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Concept of Class.
  * 
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyClass extends IFlexoOntologyConcept {
+public interface IFlexoOntologyClass<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Super Classes of Class.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyClass> getSuperClasses();
+	public List<? extends IFlexoOntologyClass<TA>> getSuperClasses();
 
 	/**
 	 * Return a list of classes, accessible from scope defined by supplied ontology, which are declared to be sub-classes of this property
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyClass> getSubClasses(IFlexoOntology context);
+	public List<? extends IFlexoOntologyClass<TA>> getSubClasses(IFlexoOntology<TA> context);
 
 	/**
 	 * Is this a Super Class of aClass.
@@ -57,7 +59,7 @@ public interface IFlexoOntologyClass extends IFlexoOntologyConcept {
 	 * 
 	 * @return
 	 */
-	boolean isSuperClassOf(IFlexoOntologyClass aClass);
+	boolean isSuperClassOf(IFlexoOntologyClass<TA> aClass);
 
 	/**
 	 * Return flag indicating if this class is a named class (that may happen in some technologies)

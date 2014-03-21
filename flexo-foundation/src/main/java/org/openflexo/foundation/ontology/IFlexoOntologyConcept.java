@@ -30,18 +30,20 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+
 /**
  * Common interface for concepts of Ontology.
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
+public interface IFlexoOntologyConcept<TA extends TechnologyAdapter> extends IFlexoOntologyObject<TA> {
 	/**
 	 * Ontology of Concept.
 	 * 
 	 * @return
 	 */
-	public IFlexoOntology getOntology();
+	public IFlexoOntology<TA> getOntology();
 
 	/**
 	 * Annotation upon Concept.
@@ -55,21 +57,21 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * 
 	 * @return
 	 */
-	public IFlexoOntologyConceptContainer getContainer();
+	public IFlexoOntologyConceptContainer<TA> getContainer();
 
 	/**
 	 * Association with structural features for Concept.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyFeatureAssociation> getStructuralFeatureAssociations();
+	public List<? extends IFlexoOntologyFeatureAssociation<TA>> getStructuralFeatureAssociations();
 
 	/**
 	 * Association with behavioural features for Concept.
 	 * 
 	 * @return
 	 */
-	public List<? extends IFlexoOntologyFeatureAssociation> getBehaviouralFeatureAssociations();
+	public List<? extends IFlexoOntologyFeatureAssociation<TA>> getBehaviouralFeatureAssociations();
 
 	/**
 	 * 
@@ -77,7 +79,7 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * 
 	 * @return
 	 */
-	public boolean isSuperConceptOf(IFlexoOntologyConcept concept);
+	public boolean isSuperConceptOf(IFlexoOntologyConcept<TA> concept);
 
 	/**
 	 * 
@@ -85,7 +87,7 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * 
 	 * @return
 	 */
-	public boolean isSubConceptOf(IFlexoOntologyConcept concept);
+	public boolean isSubConceptOf(IFlexoOntologyConcept<TA> concept);
 
 	/**
 	 * Visitor access.
@@ -106,7 +108,7 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * @param o
 	 * @return
 	 */
-	public boolean equalsToConcept(IFlexoOntologyConcept concept);
+	public boolean equalsToConcept(IFlexoOntologyConcept<TA> concept);
 
 	/**
 	 * Return all properties accessible in the scope of this ontology object, where declared range is this object
@@ -114,7 +116,7 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * @return
 	 */
 	@Deprecated
-	public List<? extends IFlexoOntologyStructuralProperty> getPropertiesTakingMySelfAsRange();
+	public List<? extends IFlexoOntologyStructuralProperty<TA>> getPropertiesTakingMySelfAsRange();
 
 	/**
 	 * Return all properties accessible in the scope of this ontology object, where declared domain is this object
@@ -122,7 +124,7 @@ public interface IFlexoOntologyConcept extends IFlexoOntologyObject {
 	 * @return
 	 */
 	@Deprecated
-	public List<? extends IFlexoOntologyFeature> getPropertiesTakingMySelfAsDomain();
+	public List<? extends IFlexoOntologyFeature<TA>> getPropertiesTakingMySelfAsDomain();
 
 	// NB: implemented in FlexoModelObject
 	// @Deprecated

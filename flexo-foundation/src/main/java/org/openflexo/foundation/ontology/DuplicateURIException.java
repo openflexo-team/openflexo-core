@@ -27,9 +27,10 @@ import org.openflexo.foundation.FlexoException;
  * @author sguerin
  * 
  */
+@SuppressWarnings("serial")
 public class DuplicateURIException extends FlexoException {
 
-	private String uri;
+	private final String uri;
 
 	public DuplicateURIException(String aURI) {
 		super((String) null);
