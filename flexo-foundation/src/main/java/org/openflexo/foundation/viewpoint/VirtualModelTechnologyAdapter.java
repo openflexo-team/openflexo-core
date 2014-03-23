@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.technologyadapter.DeclareModelSlot;
+import org.openflexo.foundation.technologyadapter.DeclareModelSlots;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
@@ -34,6 +36,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
  * @author sylvain
  * 
  */
+@DeclareModelSlots({ // ModelSlot(s) declaration
+@DeclareModelSlot(FML = "VirtualModelModelSlot", modelSlotClass = VirtualModelModelSlot.class), // Classical type-safe interpretation
+})
 public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelTechnologyAdapter.class.getPackage().getName());
