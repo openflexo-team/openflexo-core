@@ -16,10 +16,16 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 
+@ModelEntity
+@ImplementationClass(DeleteFlexoConceptInstanceParameter.DeleteFlexoConceptInstanceParameterImpl.class)
+@XMLElement
 public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObject, Bindable {
 
 	@PropertyIdentifier(type = DeleteFlexoConceptInstance.class)
