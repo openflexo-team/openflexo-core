@@ -37,8 +37,6 @@ import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -80,9 +78,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<?> object);
 
-	public IFlexoOntologyStructuralProperty getOntologyProperty();
+	public IFlexoOntologyStructuralProperty<?> getOntologyProperty();
 
-	public void setOntologyProperty(IFlexoOntologyStructuralProperty p);
+	public void setOntologyProperty(IFlexoOntologyStructuralProperty<?> p);
 
 	public Object getValue(FlexoBehaviourAction action);
 

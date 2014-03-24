@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.view;
 
+import java.io.File;
+
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.view.rm.ViewResource;
@@ -35,6 +37,10 @@ public class ViewRepository extends ModelRepository<ViewResource, View, ViewPoin
 
 	public ViewRepository(VirtualModelTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);
+	}
+
+	public ViewRepository(VirtualModelTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+		super(adapter, resourceCenter, directory);
 	}
 
 	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/FML/Views";

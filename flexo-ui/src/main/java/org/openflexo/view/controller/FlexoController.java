@@ -133,8 +133,8 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.prefs.FlexoPreferences;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.utils.CancelException;
@@ -162,9 +162,6 @@ import com.google.common.collect.Multimap;
 public abstract class FlexoController implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
-
-	
-	
 
 	public static final String DISPOSED = "disposed";
 
@@ -347,7 +344,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 	}
 
 	protected void loadInspectorGroup(String inspectorGroup) {
-		// TODO : To be optimized 
+		// TODO : To be optimized
 		Resource inspectorsDir = ResourceLocator.locateResource("Inspectors/" + inspectorGroup);
 		getModuleInspectorController().loadDirectory(inspectorsDir);
 	}
@@ -1352,7 +1349,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 					+ (location != null ? "\n" + FlexoLocalization.localizedForKey("try_with_this_one") + " " + location : ""));
 			return false;
 		}/*
-		if (e instanceof WebApplicationException) {
+			if (e instanceof WebApplicationException) {
 			WebApplicationException wae = (WebApplicationException) e;
 			Object entity = wae.getResponse().getEntity();
 			switch (wae.getResponse().getStatus()) {
@@ -1371,8 +1368,8 @@ public abstract class FlexoController implements PropertyChangeListener {
 							+ "\n" + FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
 				}
 			}
-		}
-		*/
+			}
+			*/
 		if (e.getCause() instanceof ConnectException) {
 			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error")
 					+ (e.getCause().getMessage() != null ? " (" + e.getCause().getMessage() + ")" : "") + "\n"
@@ -1533,7 +1530,6 @@ public abstract class FlexoController implements PropertyChangeListener {
 		return null;
 	}*/
 
-
 	public FlexoProgress willLoad(Resource fibResource) {
 
 		if (!FIBLibrary.instance().componentIsLoaded(fibResource)) {
@@ -1545,6 +1541,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		}
 		return null;
 	}
+
 	/*
 	public FlexoProgress willLoad(String fibResourcePath) {
 
@@ -1670,6 +1667,29 @@ public abstract class FlexoController implements PropertyChangeListener {
 		return iconForObject;
 	}
 
+	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyObject(TechnologyObject<TA> object) {
+		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(object.getTechnologyAdapter());
+		if (tac != null) {
+			return tac.getIconForTechnologyObject((Class<TechnologyObject<TA>>) object.getClass());
+		} else {
+			logger.warning("Could not find TechnologyAdapterController for technology "
+					+ ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
+		}
+		return null;
+	}
+
+	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyAdapterResource(
+			TechnologyAdapterResource<?, TA> resource) {
+		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(resource.getTechnologyAdapter());
+		if (tac != null) {
+			return tac.getIconForTechnologyObject(resource.getResourceDataClass());
+		} else {
+			logger.warning("Could not find TechnologyAdapterController for technology "
+					+ ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter());
+		}
+		return null;
+	}
+
 	public static ImageIcon statelessIconForObject(Object object) {
 
 		if (object == null) {
@@ -1678,11 +1698,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 
 		// If object is a TechnologyObject, we delegate this to the right TechnologyAdapterController
 		if (object instanceof TechnologyObject<?>) {
-
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologyObject<?>) object).getTechnologyAdapter());
-			if (tac != null) {
-				return tac.getIconForTechnologyObject(((TechnologyObject<?>) object).getClass());
-			}
+			return statelessIconForTechnologyObject((TechnologyObject<?>) object);
 		}
 
 		// If object is a resource and if this resource is loaded, use icon of loaded resource data
@@ -1693,22 +1709,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		} else if (object instanceof VirtualModelInstanceResource) {
 			return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		} else if (object instanceof TechnologyAdapterResource<?, ?>) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologyAdapterResource<?, ?>) object)
-					.getTechnologyAdapter());
-			// TODO: vincent
-			if (tac != null) {
-
-				if (TechnologyObject.class.isAssignableFrom(((TechnologyAdapterResource<?, ?>) object).getResourceDataClass())) {
-					return tac.getIconForTechnologyObject((Class<? extends TechnologyObject>) ((TechnologyAdapterResource<?, ?>) object)
-							.getResourceDataClass());
-				} else {
-					logger.warning("Inconsistent data: found a TechnologyAdapterResource with a non TechnologyObject resource data: "
-							+ ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
-				}
-			} else {
-				logger.warning("Could not find TechnologyAdapterController for technology "
-						+ ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
-			}
+			return statelessIconForTechnologyAdapterResource((TechnologyAdapterResource<?, ?>) object);
 		} else if (object instanceof InformationSpace) {
 			return IconLibrary.INFORMATION_SPACE_ICON;
 		} else if (object instanceof FlexoFacet) {
@@ -1772,11 +1773,6 @@ public abstract class FlexoController implements PropertyChangeListener {
 					.getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getMetaModelIcon();
-			}
-		} else if (object instanceof TechnologyObject) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologyObject) object).getTechnologyAdapter());
-			if (tac != null) {
-				return tac.getIconForTechnologyObject(((TechnologyObject) object).getClass());
 			}
 		} else if (object instanceof FlexoProjectReference) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;

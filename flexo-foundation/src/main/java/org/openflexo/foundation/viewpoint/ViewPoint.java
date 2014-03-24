@@ -215,6 +215,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
+
 			return viewpoint;
 		}
 

@@ -19,8 +19,6 @@
  */
 package org.openflexo.view.controller;
 
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -67,7 +65,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterController.class.getPackage().getName());
 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
-
 
 	/**
 	 * Returns applicable {@link TechnologyAdapterService}
@@ -144,7 +141,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param object
 	 * @return
 	 */
-	public abstract ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject> objectClass);
+	public abstract ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<TA>> objectClass);
 
 	/**
 	 * Return icon representing supplied pattern role
@@ -232,7 +229,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	/*public File getFIBPanelForObject(Object anObject) {
->>>>>>> branch '1.7' of ssh://git@github.com/openflexo-team/openflexo-core.git
+	>>>>>>> branch '1.7' of ssh://git@github.com/openflexo-team/openflexo-core.git
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());
 		}
@@ -263,8 +260,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 		return returned;
 	}*/
-	
-	
+
 	public Resource getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
 			return getFIBPanelForClass(anObject.getClass());
@@ -272,7 +268,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	private final Map<Class<?>, Resource> fibPanelsForClasses = new HashMap<Class<?>, Resource>(){
+	private final Map<Class<?>, Resource> fibPanelsForClasses = new HashMap<Class<?>, Resource>() {
 		@Override
 		public Resource get(Object key) {
 			if (containsKey(key)) {
@@ -302,6 +298,5 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public Resource getFIBPanelForClass(Class<?> aClass) {
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}
-
 
 }

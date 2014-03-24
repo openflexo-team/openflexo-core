@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.resource.FileResourceRepository;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 
 /**
  * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}
@@ -36,7 +36,7 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
  * @author sylvain
  */
 
-public class ViewLibrary extends FileResourceRepository<ViewResource> {
+public class ViewLibrary extends ViewRepository {
 
 	private static final Logger logger = Logger.getLogger(ViewLibrary.class.getPackage().getName());
 
@@ -48,10 +48,12 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoProject project) {
-		super(project, getExpectedViewLibraryDirectory(project));
+		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class), project,
+				getExpectedViewLibraryDirectory(project));
 		this.project = project;
 		getRootFolder().setName(project.getName());
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
+
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -149,4 +151,5 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 	public String getDefaultBaseURI() {
 		return getProject().getURI() + "/" + VIEWS;
 	}
+
 }

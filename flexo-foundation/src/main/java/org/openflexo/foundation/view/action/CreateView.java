@@ -59,6 +59,19 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		public boolean isVisibleForSelection(RepositoryFolder object, Vector<FlexoObject> globalSelection) {
 			System.out.println("CreateView visible ? object=" + object + " of " + object.getClass());
 			System.out.println("repository=" + object.getResourceRepository());
+			System.out.println("repository class =" + object.getResourceRepository().getClass());
+			System.out.println("folder = " + object);
+			System.out.println("Contents = " + object.getResources());
+			if (object.getResourceRepository() instanceof ViewLibrary) {
+				ViewLibrary vLib = (ViewLibrary) object.getResourceRepository();
+				System.out.println("All views=" + vLib.getAllResources());
+				RepositoryFolder rootFolder = vLib.getRootFolder();
+				System.out.println("root folder = " + rootFolder);
+				System.out.println("folders = " + rootFolder.getChildren());
+				System.out.println("resources = " + rootFolder.getResources());
+				System.out.println("Si on debuggauit ?");
+			}
+
 			return object.getResourceRepository() instanceof ViewLibrary;
 		}
 
