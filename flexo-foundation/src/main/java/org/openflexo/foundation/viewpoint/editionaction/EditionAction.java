@@ -32,8 +32,11 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.view.ModelSlotInstance;
+import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
@@ -142,7 +145,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction action);
+	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
 
 	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBehaviourObjectImpl implements
 			EditionAction<MS, T> {
@@ -210,14 +213,33 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction action) {
+		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			if (action.getVirtualModelInstance() != null) {
-				return action.getVirtualModelInstance().getModelSlotInstance((ModelSlot) getModelSlot());
+				VirtualModelInstance vmi = action.getVirtualModelInstance();
+				return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
+				// return (ModelSlotInstance<MS, ?>) action.getVirtualModelInstance().getModelSlotInstance(getGenericModelSlot());
 			} else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}
 		}
+
+		private <MS2 extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> MS2 getGenericModelSlot() {
+			return (MS2) getModelSlot();
+
+		}
+
+		/*private <MS2 extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<MS2, RD> _getModelSlotInstance(
+				FlexoBehaviourAction<?, ?, ?> action) {
+			if (action.getVirtualModelInstance() != null) {
+				VirtualModelInstance vmi = action.getVirtualModelInstance();
+				MS2 modelSlot = (MS2) getModelSlot();
+				return vmi.getModelSlotInstance(modelSlot);
+			} else {
+				logger.severe("Could not access virtual model instance for action " + action);
+				return null;
+			}
+		}*/
 
 		@Override
 		public boolean evaluateCondition(FlexoBehaviourAction action) {

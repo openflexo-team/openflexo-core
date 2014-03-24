@@ -145,7 +145,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot);
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+			MS modelSlot);
 
 	/**
 	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
@@ -494,10 +495,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot) {
+		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+				MS modelSlot) {
 			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
 				if (msInstance.getModelSlot() == modelSlot) {
-					return (ModelSlotInstance<?, RD>) msInstance;
+					return (ModelSlotInstance<MS, RD>) msInstance;
 				}
 			}
 			if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
@@ -506,7 +508,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				reflexiveModelSlotInstance.setModelSlot((VirtualModelModelSlot) modelSlot);
 				reflexiveModelSlotInstance.setAccessedResourceData(this);
 				addToModelSlotInstances(reflexiveModelSlotInstance);
-				return (ModelSlotInstance<?, RD>) reflexiveModelSlotInstance;
+				return (ModelSlotInstance<MS, RD>) reflexiveModelSlotInstance;
 			}
 			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
 			if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
