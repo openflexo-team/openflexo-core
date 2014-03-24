@@ -14,6 +14,7 @@ import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.filter.ElementFilter;
 import org.jdom2.output.Format;
 import org.jdom2.output.LineSeparator;
 import org.jdom2.output.XMLOutputter;
@@ -100,6 +101,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				hasBeenConverted = true;
 			}*/
 
+			
+			/*
+			 * Will be activitated when the convertion will be fully compliant
+			 */
+			//convertViewPoint16ToViewpoint17(returned);
+			
 			if (StringUtils.isEmpty(vpi.modelVersion)) {
 				returned.setModelVersion(new FlexoVersion("0.1"));
 			} else {
@@ -117,11 +124,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			returned.setServiceManager(serviceManager);
 
 			logger.fine("ViewPointResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
-
-			/*
-			 * Will be activitated when the convertion will be fully compliant
-			 */
-			// convertViewPoint16ToViewpoint17(returned);
 
 			// Now look for virtual models
 			returned.exploreVirtualModels();
@@ -383,8 +385,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 		File viewPointDirectory = viewPointResource.getDirectory();
 
-		List<Document> palettes = new ArrayList<Document>();
-		List<Document> exampleDiagrams = new ArrayList<Document>();
+		List<File> paletteFiles = new ArrayList<File>();
+		List<File> exampleDiagramFiles = new ArrayList<File>();
 		List<File> virtualModels = new ArrayList<File>();
 
 		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
@@ -398,45 +400,49 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					// Find palette files if any
 					for (File palette : f.listFiles()) {
 						if (palette.getName().endsWith(".palette")) {
-							palettes.add(XMLUtils.readXMLFile(palette));
+							paletteFiles.add(palette);
+							// Store the old file
+							FileUtils.copyFileToFile(palette, new File(f, palette.getName()+".old16"));
 						}
 					}
 					// Find diagram files if any
 					for (File exampleDiagram : f.listFiles()) {
 						if (exampleDiagram.getName().endsWith(".diagram")) {
-							exampleDiagrams.add(XMLUtils.readXMLFile(exampleDiagram));
+							exampleDiagramFiles.add(exampleDiagram);
+							// Store the old file
+							FileUtils.copyFileToFile(exampleDiagram, new File(f, exampleDiagram.getName()+".old16"));
 						}
 					}
 					// Find virtualmodels files if any
 					File virtualModelFile = new File(f, f.getName() + ".xml");
 					if (virtualModelFile.exists()) {
 						virtualModels.add(virtualModelFile);
+						// Store the old file
+						FileUtils.copyFileToFile(virtualModelFile, new File(f, virtualModelFile.getName()+".old16"));
 					}
 				}
 			}
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		/*
 		 *  Execute the convertion
 		 */
 		for (File virtualModelFile : virtualModels) {
-			convertVirtualModels16ToVirtualModels17(viewPointResource, virtualModelFile, palettes, exampleDiagrams);
+			convertVirtualModels16ToVirtualModels17(viewPointResource, virtualModelFile, paletteFiles, exampleDiagramFiles);
 		}
 
 	}
 
 	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource, File virtualModelFile,
-			List<Document> palettes, List<Document> exampleDiagrams) {
+			List<File> paletteFiles, List<File> exampleDiagramFiles) {
 		try {
 			Document d = XMLUtils.readXMLFile(virtualModelFile);
 			convertNames16ToNames17(d);
 			if (d.getRootElement().getName().equals("DiagramSpecification")) {
-				convertDiagramSpecification16ToVirtualModel17(virtualModelFile, d, palettes, exampleDiagrams);
+				convertDiagramSpecification16ToVirtualModel17(virtualModelFile, d, paletteFiles, exampleDiagramFiles,viewPointResource);
 				XMLUtils.saveXMLFile(d, virtualModelFile);
 			}
 			if (d.getRootElement().getName().equals("VirtualModel")) {
@@ -450,33 +456,113 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 	}
 
-	private static void convertDiagramSpecification16ToVirtualModel17(File file, Document diagram, List<Document> palettes,
-			List<Document> exampleDiagrams) {
-		// Create a new Virtual Model with a TypedDiagramModelSlot
-		convertOldNameToNewNames("DiagramSpecification", "VirtualModel", diagram);
+	private static void convertDiagramSpecification16ToVirtualModel17(File file, Document diagram, List<File> oldPaletteFiles,
+			List<File> oldExampleDiagramFiles,ViewPointResource viewPointResource) {
+		
+		// Create the diagram specification and a virtual model with a diagram typed model slot referencing this diagram specification
 
-		// Create the diagram specification
-		File diagramSpecificationFile = new File(file.getParentFile(), file.getName().replace(".xml", "") + ".diagramspecification");
-		Document diagramSpecification = new Document();
-		Element rootElement = new Element("DiagramSpecification");
-		diagramSpecification.addContent(rootElement);
+		try {
+			String diagramName = file.getName().replace(".xml", "");
+			// Create a folder that contains the diagram specification
+			File diagramSpecificationFolder = new File(file.getParentFile()+"/"+ diagramName + ".diagramspecification");
+			
+			// Create the diagram specificaion xml file
+			File diagramSpecificationFile = new File(diagramSpecificationFolder, file.getName());
+			Document diagramSpecification = new Document();
+			Element rootElement = new Element("DiagramSpecification");
+			Attribute name = new Attribute("name", diagramName);
+			Attribute uri = new Attribute("uri", "http://"+diagramName);
+			diagramSpecification.addContent(rootElement);
+			rootElement.getAttributes().add(name);
+			rootElement.getAttributes().add(uri);
+			
+			// Copy the palette files inside diagram specification repository
+			ArrayList<File> newPaletteFiles = new ArrayList<File>();
+			for(File paletteFile : oldPaletteFiles){
+				File newFile = new File(diagramSpecificationFolder +"/"+ paletteFile.getName());
+				FileUtils.rename(paletteFile, newFile);
+				newPaletteFiles.add(newFile);
+				convertNames16ToNames17(XMLUtils.readXMLFile(newFile));
+			}
+		
+			// Copy the example diagram files inside diagram specification repository
+			ArrayList<File> newExampleDiagramFiles = new ArrayList<File>();
+			for(File exampleDiagramFile : oldExampleDiagramFiles){
+				File newFile = new File(diagramSpecificationFolder +"/"+ exampleDiagramFile.getName());
+				FileUtils.rename(exampleDiagramFile, newFile);
+				newExampleDiagramFiles.add(newFile);
+				convertNames16ToNames17(XMLUtils.readXMLFile(newFile));
+			}
+			
+			// Create all example diagrams
+			/*for (Document exampleDiagram : exampleDiagrams) {
+				exampleDiagram.getRootElement().setName("Diagram");
+				rootElement.addContent(exampleDiagram.cloneContent());
+			}*/
+			
+			// Update the diagram name
+			convertOldNameToNewNames("DiagramSpecification", "VirtualModel", diagram);
+			
+			// Update the diagram palette element bindings
+			ArrayList<Element> paletteElementBindings = new ArrayList<Element>();
+			for (File paletteFile : newPaletteFiles){
+				Document palette= XMLUtils.readXMLFile(paletteFile);
+				String paletteUri = viewPointResource.getURI() + "/" + palette.getRootElement().getAttribute("name").getValue();
+			
+				for (Content content : rootElement.getDescendants()) {
+					if (content instanceof Element) {
+						Element element = (Element) content;
+						if (element.getName().equals("PaletteElement")) {
+							Attribute ep=null,ds=null;
+							if (element.getAttribute("editionPattern") != null) {
+								ep = element.getAttribute("editionPattern");
+							}
+							if (element.getAttribute("dropSchemeName") != null) {
+								ds = element.getAttribute("dropSchemeName");
+							}
+							Element paletteElementBinding = new Element("FMLDiagramPaletteElementBinding");
+							Attribute paletteElementId = new Attribute("paletteElementID", paletteUri+"#"+ep.getValue());
+							paletteElementBinding.getAttributes().add(paletteElementId);
+							//Find cooresponding dropscheme
+							for(Iterator<Element> iter = diagram.getDescendants(new ElementFilter("DropScheme")).iterator();iter.hasNext();){
+								Element dropScheme = (Element)iter.next();
+								if(dropScheme.getAttribute("name").equals(ds.getValue())){
+									paletteElementBinding.addContent(dropScheme);
+								}
+							}
+							paletteElementBindings.add(paletteElementBinding);
+						}
+					}
+				}
+			}
 
-		// Find all example diagrams
-		for (Document exampleDiagram : exampleDiagrams) {
-			exampleDiagram.getRootElement().setName("Diagram");
-			rootElement.addContent(exampleDiagram.cloneContent());
+		
+		// If adressed diagram model slot->this, change to this virtual model
+		// Add the Palette Element Bindings to the TypedDiagramModelSlot
+		for(Iterator<Element> iter =  diagram.getDescendants(new ElementFilter("AdressedDiagramModelSlot")).iterator();iter.hasNext();){
+			Element diagramModelSlot = (Element)iter.next();
+			if(diagramModelSlot.getAttribute("name").equals("this")){
+				diagramModelSlot.setName("ModelSlot_VirtualModelModelSlot");
+			}
 		}
-
-		// Create palettes
-		for (Document palette : palettes) {
-			rootElement.addContent(palette.cloneContent());
+				
+		
+		// Add the Palette Element Bindings to the TypedDiagramModelSlot
+		for(Iterator<Element> iter =  diagram.getDescendants(new ElementFilter("ModelSlot_TypeDiagramModelSlot")).iterator();iter.hasNext();){
+			Element diagramModelSlot = (Element)iter.next();
+			diagramModelSlot.addContent(paletteElementBindings);
 		}
-
-		// Find drop schemes
-
+		
 		// Save the file
 		XMLUtils.saveXMLFile(diagramSpecification, diagramSpecificationFile);
-
+		
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void convertVirtualModel16ToVirtualModel17(Document document) {
@@ -493,6 +579,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		// Pattern Roles
 		convertOldNameToNewNames("ContainedEditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
 		convertOldNameToNewNames("ContainedEMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
+		convertOldNameToNewNames("ContainedShapePatternRole", "ShapeRole", document);
+		convertOldNameToNewNames("ContainedConnectorPatternRole", "ConnectorRole", document);
 		// Model Slots
 		convertOldNameToNewNames("EMFModelSlot", "ModelSlot_EMFModelSlot", document);
 		convertOldNameToNewNames("XMLModelSlot", "ModelSlot_XMLModelSlot", document);
@@ -503,6 +591,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("SemanticsPowerpointModelSlot", "ModelSlot_SemanticsPowerpointModelSlot", document);
 		convertOldNameToNewNames("OWLModelSlot", "ModelSlot_OWLModelSlot", document);
 		convertOldNameToNewNames("VirtualModelModelSlot", "ModelSlot_VirtualModelModelSlot", document);
+		convertOldNameToNewNames("DiagramModelSlot", "ModelSlot_TypedDiagramModelSlot", document);
+		
+		// Palettes/ExampleDiagrams
+		convertOldNameToNewNames("Palette", "DiagramPalette", document);
+		convertOldNameToNewNames("PaletteElement", "DiagramPaletteElement", document);
+		convertOldNameToNewNames("Shema", "Diagram", document);
 
 		// Connection to ModelSlots
 		convertOldNameToNewNames("AddressedEMFModelSlot", "EMFModelSlot", document);
@@ -514,6 +608,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("AddressedSemanticsPowerpointModelSlot", "SemanticsPowerpointModelSlot", document);
 		convertOldNameToNewNames("AddressedOWLModelSlot", "OWLModelSlot", document);
 		convertOldNameToNewNames("AddressedVirtualModelModelSlot", "VirtualModelModelSlot", document);
+		convertOldNameToNewNames("AddressedDiagramModelSlot", "TypedDiagramModelSlot", document);
+		
 
 		// Actions
 		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);

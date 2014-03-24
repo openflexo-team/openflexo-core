@@ -49,6 +49,8 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResourceImpl;
@@ -86,7 +88,8 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @XMLElement
-@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(FlexoBehaviourParameters.class) })
+@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(FlexoBehaviourParameters.class),
+@Import(DeleteFlexoConceptInstanceParameter.class),@Import(AddFlexoConceptInstanceParameter.class)})
 public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<VirtualModelTechnologyAdapter> {
 

@@ -59,7 +59,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 	public void setIteratorName(String iteratorName);
 
 	@Getter(value = FETCH_REQUEST_KEY)
-	@XMLElement
+	@XMLElement(context = "FetchRequest_")
 	public FetchRequest<?, ?> getFetchRequest();
 
 	@Setter(FETCH_REQUEST_KEY)
