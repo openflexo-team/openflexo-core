@@ -533,10 +533,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public FlexoConcept getFlexoConcept(String flexoConceptId) {
 			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
-				if (flexoConcept.getName().equals(flexoConceptId)) {
+				if(flexoConcept.getName()!=null && flexoConcept.getName().equals(flexoConceptId)){
 					return flexoConcept;
 				}
-				if (flexoConcept.getURI().equals(flexoConceptId)) {
+				if (flexoConcept.getURI()!=null && flexoConcept.getURI().equals(flexoConceptId)) {
 					return flexoConcept;
 				}
 				// Special case to handle conversion from old VP version
