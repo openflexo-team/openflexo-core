@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -370,6 +372,41 @@ public abstract class TechnologyAdapter {
 			e.printStackTrace();
 			return repository.getRootFolder();
 		}
+	}
+
+	/**
+	 * Called when a resource has been looked-up by the {@link TechnologyAdapter}
+	 * 
+	 * @param resource
+	 * @param resourceCenter
+	 */
+	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+		if (resourceCenter instanceof ResourceRepository && resource instanceof FlexoFileResource) {
+			// Also register the resource in the ResourceCenter seen as a ResourceRepository
+			try {
+				File candidateFile = null;
+				if (resource instanceof DirectoryContainerResource) {
+					candidateFile = ((DirectoryContainerResource<?>) resource).getDirectory();
+				} else {
+					candidateFile = ((FlexoFileResource<?>) resource).getFile();
+				}
+				((ResourceRepository) resourceCenter).registerResource(resource,
+						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Called when a resource has been dereferenced by the {@link TechnologyAdapter}
+	 * 
+	 * @param resource
+	 * @param resourceCenter
+	 */
+	public void dereferenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+		// TODO
+		logger.warning("dereferenceResource() not implemented yet");
 	}
 
 }

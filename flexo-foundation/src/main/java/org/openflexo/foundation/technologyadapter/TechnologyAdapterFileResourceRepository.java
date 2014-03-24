@@ -19,6 +19,7 @@
  */
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FileResourceRepository;
@@ -46,8 +47,13 @@ public abstract class TechnologyAdapterFileResourceRepository<R extends Technolo
 	private FlexoResourceCenter<?> resourceCenter;
 
 	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
-		super(resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
-				.getRootDirectory() : null);
+		this(technologyAdapter, resourceCenter,
+				resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
+						.getRootDirectory() : null);
+	}
+
+	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+		super(resourceCenter, directory);
 		this.technologyAdapter = technologyAdapter;
 		this.resourceCenter = resourceCenter;
 		getRootFolder().setName(resourceCenter.getName());

@@ -2,6 +2,7 @@ package org.openflexo.foundation.view;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -112,6 +113,10 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		}
 		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+
+		assertNotNull(project.getResource(newView.getURI()));
+		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
+
 	}
 
 	/**
@@ -154,9 +159,11 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		log("testReloadProject()");
 
+		FlexoProject oldProject = project;
 		instanciateTestServiceManager();
 		editor = reloadProject(project.getDirectory());
 		project = editor.getProject();
+		assertNotSame(oldProject, project);
 		assertNotNull(editor);
 		assertNotNull(project);
 		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
@@ -165,6 +172,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		newViewResource.loadResourceData(null);
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
+
+		System.out.println("All resources=" + project.getAllResources());
+		assertNotNull(project.getResource(newView.getURI()));
 	}
 
 }

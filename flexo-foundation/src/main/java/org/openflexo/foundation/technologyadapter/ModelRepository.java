@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.File;
+
 import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceRepository;
@@ -37,6 +39,12 @@ public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA> & 
 
 	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
+		getRootFolder().setDescription(
+				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	}
+
+	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+		super(technologyAdapter, resourceCenter, directory);
 		getRootFolder().setDescription(
 				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}

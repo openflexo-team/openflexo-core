@@ -82,9 +82,14 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	public void addToResources(R resource) {
-		if (resources.contains(resource)) {
-			logger.warning("Resource already present in " + this + " : " + resource + ". Ignore it.");
+		/*if (getResourceRepository() instanceof FlexoProject) {
+			System.out.println("Je tiens mon truc !!!!!!");
 			Thread.dumpStack();
+			System.exit(-1);
+		}*/
+		if (resources.contains(resource)) {
+			// logger.warning("Resource already present in " + this + " : " + resource + ". Ignore it.");
+			// Thread.dumpStack();
 			return;
 		}
 		resources.add(resource);

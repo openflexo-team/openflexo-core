@@ -3,6 +3,7 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
@@ -87,8 +88,13 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject> objectClass) {
-		return IconLibrary.OPENFLEXO_NOTEXT_16;
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<VirtualModelTechnologyAdapter>> objectClass) {
+		if (ViewPoint.class.isAssignableFrom(objectClass)) {
+			return VPMIconLibrary.VIEWPOINT_ICON;
+		} else if (View.class.isAssignableFrom(objectClass)) {
+			return VEIconLibrary.VIEW_ICON;
+		}
+		return IconFactory.getImageIcon(VEIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
 	}
 
 	/**
@@ -116,9 +122,9 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
-	
+
 	@Override
-	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass)  {
+	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(VPMIconLibrary.ACTION_SCHEME_ICON);
 		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
