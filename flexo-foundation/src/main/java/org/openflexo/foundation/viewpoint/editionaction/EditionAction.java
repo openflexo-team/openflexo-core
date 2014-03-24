@@ -216,30 +216,20 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			if (action.getVirtualModelInstance() != null) {
 				VirtualModelInstance vmi = action.getVirtualModelInstance();
+				// Following line does not compile with Java7 (don't understand why)
+				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
+				// return (ModelSlotInstance<MS, ?>) action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
-				// return (ModelSlotInstance<MS, ?>) action.getVirtualModelInstance().getModelSlotInstance(getGenericModelSlot());
 			} else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}
 		}
 
+		// This method is used fix compile issue with Java7 (see above)
 		private <MS2 extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> MS2 getGenericModelSlot() {
 			return (MS2) getModelSlot();
-
 		}
-
-		/*private <MS2 extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<MS2, RD> _getModelSlotInstance(
-				FlexoBehaviourAction<?, ?, ?> action) {
-			if (action.getVirtualModelInstance() != null) {
-				VirtualModelInstance vmi = action.getVirtualModelInstance();
-				MS2 modelSlot = (MS2) getModelSlot();
-				return vmi.getModelSlotInstance(modelSlot);
-			} else {
-				logger.severe("Could not access virtual model instance for action " + action);
-				return null;
-			}
-		}*/
 
 		@Override
 		public boolean evaluateCondition(FlexoBehaviourAction action) {
