@@ -28,6 +28,7 @@ import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.foundation.view.ViewModelFactory;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -87,7 +88,6 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
-			returned.setProject(viewLibrary.getProject());
 			ViewInfo vpi = findViewInfo(viewDirectory);
 			if (vpi == null) {
 				// Unable to retrieve infos, just abort
@@ -96,7 +96,10 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setFile(xmlFile);
 			returned.setDirectory(viewDirectory);
 			returned.setName(vpi.name);
+
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + vpi.name);
+			returned.setProject(viewLibrary.getProject());
+
 			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
@@ -172,6 +175,14 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 	@Override
 	public Class<View> getResourceDataClass() {
 		return View.class;
+	}
+
+	@Override
+	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+		}
+		return null;
 	}
 
 	@Override

@@ -30,11 +30,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
@@ -174,9 +172,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		}
 
 		// Unregister the viewpoint resource from the viewpoint repository
+		VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter rc : resourceCenters) {
-			ViewPointRepository vpr = rc.getViewPointRepository();
+			ViewPointRepository vpr = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
 			if ((vpr != null) && (vpr.getAllResources().contains(vpRes))) {
 				vpr.unregisterResource(vpRes);
 			}
@@ -184,112 +183,6 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		setChanged();
 		return vpRes;
 	}
-
-	/*protected XMLMapping getViewPointModel() {
-		if (viewPointModel_1_0 == null) {
-			File viewPointModelFile = new FileResource("Models/ViewPointModel/viewpoint_model_1.0.xml");
-			try {
-				viewPointModel_1_0 = new XMLMapping(viewPointModelFile);
-			} catch (InvalidModelException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (IOException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			}
-		}
-		return viewPointModel_1_0;
-	}*/
-
-	// private XMLMapping VIEW_POINT_PALETTE_MODEL;
-
-	/*protected XMLMapping get_VIEW_POINT_PALETTE_MODEL() {
-		if (VIEW_POINT_PALETTE_MODEL == null) {
-			File calcPaletteModelFile = new FileResource("Models/ViewPointModel/ViewPointPaletteModel.xml");
-			try {
-				VIEW_POINT_PALETTE_MODEL = new XMLMapping(calcPaletteModelFile);
-			} catch (InvalidModelException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (IOException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			}
-		}
-		return VIEW_POINT_PALETTE_MODEL;
-	}*/
-
-	// private XMLMapping EXAMPLE_DRAWING_MODEL;
-
-	/*protected XMLMapping get_EXAMPLE_DRAWING_MODEL() {
-		if (EXAMPLE_DRAWING_MODEL == null) {
-			File calcDrawingModelFile = new FileResource("Models/ViewPointModel/ExampleDrawingModel.xml");
-			try {
-				EXAMPLE_DRAWING_MODEL = new XMLMapping(calcDrawingModelFile);
-			} catch (InvalidModelException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (IOException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
-				// Warns about the exception
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Exception raised: " + e.getClass().getName() + ". See console for details.");
-				}
-				e.printStackTrace();
-			}
-		}
-		return EXAMPLE_DRAWING_MODEL;
-	}*/
 
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
 		if (flexoConceptURI.indexOf("#") > -1) {
@@ -326,12 +219,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (caller instanceof FlexoResourceCenterService) {
-			if (notification instanceof ResourceCenterAdded) {
+			/*if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
 				newRC.initialize(this);
-			}
-			if (notification instanceof ResourceCenterRemoved) {
+			}*/
+			/*if (notification instanceof ResourceCenterRemoved) {
 				FileSystemBasedResourceCenter newRC = (FileSystemBasedResourceCenter) ((ResourceCenterRemoved) notification)
 						.getRemovedResourceCenter();
 
@@ -346,9 +239,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 				}
 				vpr.delete();
 
-				// TODO implement this
-				// logger.warning("TODO: Please implement resource center dereferencing in ViewPointLibrary");
-			}
+			}*/
 		}
 	}
 
@@ -366,12 +257,23 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return getServiceManager().getService(FlexoResourceCenterService.class);
 	}
 
+	public TechnologyAdapterService getTechnologyAdapterService() {
+		return getServiceManager().getService(TechnologyAdapterService.class);
+	}
+
 	@Override
 	public void initialize() {
 		if (getResourceCenterService() != null) {
 			// At initialization, initialize all already existing FlexoResourceCenter with this ViewPointLibrary
+			// Some FlexoResourceCenter may have already initialized, the goal is here to register in ViewPointLibrary any ViewPoint already
+			// found
+			VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 			for (FlexoResourceCenter rc : getResourceCenterService().getResourceCenters()) {
-				rc.initialize(this);
+				ViewPointRepository vpr = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
+				for (ViewPointResource vpRes : vpr.getAllResources()) {
+					vpRes.setViewPointLibrary(this);
+					registerViewPoint(vpRes);
+				}
 			}
 		}
 	}

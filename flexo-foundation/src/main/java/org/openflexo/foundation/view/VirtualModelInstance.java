@@ -38,7 +38,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
@@ -49,6 +49,7 @@ import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -77,7 +78,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @XMLElement
 public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData<VirtualModelInstance>,
-		FlexoModel<VirtualModelInstance, VirtualModel> {
+		FlexoModel<VirtualModelInstance, VirtualModel>, TechnologyObject<VirtualModelTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -144,7 +145,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot);
+	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot);
 
 	/**
 	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
@@ -152,7 +153,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
+	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
 
 	@Getter(NAME_KEY)
 	public String getName();
@@ -284,8 +285,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public TechnologyAdapter getTechnologyAdapter() {
-			// TODO
+		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+			if (getResource() != null) {
+				return getResource().getTechnologyAdapter();
+			}
 			return null;
 		}
 
@@ -491,7 +494,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot) {
+		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(ModelSlot<RD> modelSlot) {
 			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
 				if (msInstance.getModelSlot() == modelSlot) {
 					return (ModelSlotInstance<?, RD>) msInstance;
@@ -519,7 +522,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
+		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
 			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
 				if (msInstance.getModelSlot().getName().equals(modelSlotName)) {
 					return (ModelSlotInstance<?, RD>) msInstance;

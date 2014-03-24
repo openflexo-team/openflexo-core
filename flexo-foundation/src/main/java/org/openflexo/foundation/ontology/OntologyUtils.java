@@ -64,9 +64,9 @@ public class OntologyUtils {
 	 * 
 	 * @return
 	 */
-	public static Set<IFlexoOntologyClass<?>> getAllSuperClasses(IFlexoOntologyClass<?> aClass) {
-		Set<IFlexoOntologyClass<?>> returned = new HashSet<IFlexoOntologyClass<?>>();
-		for (IFlexoOntologyClass<?> c : aClass.getSuperClasses()) {
+	public static <TA extends TechnologyAdapter> Set<IFlexoOntologyClass<TA>> getAllSuperClasses(IFlexoOntologyClass<TA> aClass) {
+		Set<IFlexoOntologyClass<TA>> returned = new HashSet<IFlexoOntologyClass<TA>>();
+		for (IFlexoOntologyClass<TA> c : aClass.getSuperClasses()) {
 			returned.add(c);
 			returned.addAll(getAllSuperClasses(c));
 		}

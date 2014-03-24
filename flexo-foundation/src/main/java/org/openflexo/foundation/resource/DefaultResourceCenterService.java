@@ -120,6 +120,22 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter) {
 		performSuperRemover(RESOURCE_CENTERS, resourceCenter);
+
+		// TODO: dereference all resources registerd in this ResourceCenter
+
+		// The resource center must be been dereferenced
+
+		/*
+		ViewPointRepository vpr = newRC.getViewPointRepository();
+		for (ViewPointResource vpR : vpr.getAllResources()) {
+			if (((FileSystemBasedResourceCenter) vpr.getResourceCenter()).getResource(vpR.getURI()) != null) {
+				vpR.unloadResourceData();
+				unregisterViewPoint(vpR);
+				vpr.unregisterResource(vpR);
+			}
+		}
+		vpr.delete();*/
+
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, new ResourceCenterRemoved(resourceCenter));
 		}
@@ -203,9 +219,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		if (notification instanceof ProjectLoaded) {
+		/*if (notification instanceof ProjectLoaded) {
 			addToResourceCenters(((ProjectLoaded) notification).getProject());
-		}
+		}*/
 		if (notification instanceof WillWriteFileOnDiskNotification) {
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				if (rc instanceof FileSystemBasedResourceCenter) {

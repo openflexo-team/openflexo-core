@@ -27,9 +27,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FileResourceRepository;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 
 /**
@@ -53,7 +51,7 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 		super(project, getExpectedViewLibraryDirectory(project));
 		this.project = project;
 		getRootFolder().setName(project.getName());
-		exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
+		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -145,43 +143,6 @@ public class ViewLibrary extends FileResourceRepository<ViewResource> {
 		}
 		logger.warning("Cannot find VirtualModelInstance " + virtualModelInstanceURI);
 		return null;
-	}
-
-	/**
-	 * 
-	 * @param directory
-	 * @param folder
-	 * @param viewPointLibrary
-	 * @return a flag indicating if some View were found
-	 */
-	private boolean exploreDirectoryLookingForViews(File directory, RepositoryFolder<ViewResource> folder) {
-		boolean returned = false;
-		System.out.println("Exploring " + directory.getAbsolutePath());
-		logger.fine("Exploring " + directory);
-		if (directory.exists() && directory.isDirectory()) {
-			for (File f : directory.listFiles()) {
-				if (f.isDirectory() && f.getName().endsWith(".view")) {
-					ViewResource vRes;
-					vRes = ViewResourceImpl.retrieveViewResource(f, folder, this);
-					if (vRes != null) {
-						logger.info("Found and register view " + vRes.getURI() + " file=" + vRes.getFile().getAbsolutePath() + " folder="
-								+ folder + " path=" + folder.getFile());
-						// Not necessary, it has already been done
-						// registerResource(vRes, folder);
-						returned = true;
-					}
-				}
-				if (f.isDirectory() && !f.getName().equals("CVS")) {
-					RepositoryFolder<ViewResource> newFolder = new RepositoryFolder<ViewResource>(f.getName(), folder, this);
-					if (exploreDirectoryLookingForViews(f, newFolder)) {
-						returned = true;
-					} else {
-						folder.removeFromChildren(newFolder);
-					}
-				}
-			}
-		}
-		return returned;
 	}
 
 	@Override

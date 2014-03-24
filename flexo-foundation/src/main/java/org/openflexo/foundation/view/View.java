@@ -29,11 +29,14 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -57,7 +60,8 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @ImplementationClass(View.ViewImpl.class)
 @XMLElement
-public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View> {
+public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
+		TechnologyObject<VirtualModelTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -92,6 +96,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	@Setter(TITLE_KEY)
 	public void setTitle(String title);
 
+	@Override
 	public String getURI();
 
 	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST)
@@ -508,6 +513,14 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// Not applicable
 		@Override
 		public void setViewPointVersion(FlexoVersion viewPointVersion) {
+		}
+
+		@Override
+		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+			if (getResource() != null) {
+				return getResource().getTechnologyAdapter();
+			}
+			return null;
 		}
 
 	}

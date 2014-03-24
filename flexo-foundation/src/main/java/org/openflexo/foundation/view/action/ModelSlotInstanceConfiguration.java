@@ -25,6 +25,7 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -36,7 +37,8 @@ import org.openflexo.foundation.view.VirtualModelInstance;
  * @author sylvain
  * 
  */
-public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD>> extends DefaultFlexoObject {
+public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
+		DefaultFlexoObject {
 
 	private final CreateVirtualModelInstance action;
 	private final MS modelSlot;

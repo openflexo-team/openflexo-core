@@ -35,7 +35,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TypeAwareModelSlot.TypeAwareModelSlotImpl.class)
-public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> extends ModelSlot<M> {
+public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
+		extends ModelSlot<M> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String META_MODEL_URI_KEY = "metaModelURI";
@@ -90,8 +91,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM>, MM extends Flex
 	public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
 			AbstractCreationScheme creationScheme);
 
-	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> extends
-			ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
+	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
+			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlot.class.getPackage().getName());
 

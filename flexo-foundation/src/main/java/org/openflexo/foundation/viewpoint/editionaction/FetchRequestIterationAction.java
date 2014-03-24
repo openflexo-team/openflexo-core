@@ -81,7 +81,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("for (" + getIteratorName() + " in (", context);
-			out.append(getFetchRequest()!=null ? getFetchRequest().getFMLRepresentation():"Null fetch request", context);
+			out.append(getFetchRequest() != null ? getFetchRequest().getFMLRepresentation() : "Null fetch request", context);
 			out.append(")) {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			for (EditionAction action : getActions()) {

@@ -51,6 +51,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(1)
 	public void testCreateViewPoint() throws SaveResourceException {
+
+		log("testCreateViewPoint()");
+
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
 		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
@@ -73,6 +76,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(2)
 	public void testCreateProject() {
+
+		log("testCreateProject()");
+
 		editor = createProject("TestProject");
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
@@ -86,6 +92,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(3)
 	public void testCreateView() {
+
+		log("testCreateView()");
+
 		CreateView action = CreateView.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
@@ -111,6 +120,9 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(4)
 	public void testCreateVirtualModelInstance() {
+
+		log("testCreateVirtualModelInstance()");
+
 		CreateVirtualModelInstance action = CreateVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
 		action.setNewVirtualModelInstanceName("MyVirtualModelInstance");
 		action.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance");
@@ -139,6 +151,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(5)
 	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+
+		log("testReloadProject()");
 
 		instanciateTestServiceManager();
 		editor = reloadProject(project.getDirectory());

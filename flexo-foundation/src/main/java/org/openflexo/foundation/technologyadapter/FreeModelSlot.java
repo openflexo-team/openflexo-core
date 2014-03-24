@@ -23,14 +23,15 @@ import org.openflexo.toolbox.JavaUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FreeModelSlot.FreeModelSlotImpl.class)
-public abstract interface FreeModelSlot<RD extends ResourceData<RD>> extends ModelSlot<RD> {
+public abstract interface FreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlot<RD> {
 
 	public TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(View view, String filename, String modelUri);
 
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri);
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD>> extends ModelSlotImpl<RD> implements FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD> implements
+			FreeModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 

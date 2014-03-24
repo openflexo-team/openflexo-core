@@ -16,7 +16,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity
 @XMLElement
-public interface TechnologyAdapterResource<RD extends ResourceData<RD>, TA extends TechnologyAdapter> extends FlexoResource<RD> {
+public interface TechnologyAdapterResource<RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> extends
+		FlexoResource<RD> {
 	public static final String TECHNOLOGY_ADAPTER = "technologyAdapter";
 
 	@Getter(value = TECHNOLOGY_ADAPTER, ignoreType = true)

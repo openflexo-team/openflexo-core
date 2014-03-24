@@ -18,6 +18,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.LineSeparator;
 import org.jdom2.output.XMLOutputter;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -30,9 +31,9 @@ import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
@@ -45,11 +46,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
 	public static ViewPointResource makeViewPointResource(String name, String uri, File viewPointDirectory,
-			ViewPointLibrary viewPointLibrary) {
+			FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(ViewPointResource.class);
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
-			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - 10);
+			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - VIEWPOINT_SUFFIX.length());
 			File xmlFile = new File(viewPointDirectory, baseName + ".xml");
 			returned.setName(name);
 			returned.setURI(uri);
@@ -57,9 +58,14 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			returned.setModelVersion(new FlexoVersion("1.0"));
 			returned.setFile(xmlFile);
 			returned.setDirectory(viewPointDirectory);
-			returned.setViewPointLibrary(viewPointLibrary);
-			viewPointLibrary.registerViewPoint(returned);
-			returned.setServiceManager(viewPointLibrary.getServiceManager());
+
+			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			if (serviceManager.getViewPointLibrary() != null) {
+				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary().registerViewPoint(returned);
+			}
+
+			returned.setServiceManager(serviceManager);
 			returned.setFactory(new ViewPointModelFactory(returned));
 
 			return returned;
@@ -69,11 +75,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		return null;
 	}
 
-	public static ViewPointResource retrieveViewPointResource(File viewPointDirectory, ViewPointLibrary viewPointLibrary) {
+	public static ViewPointResource retrieveViewPointResource(File viewPointDirectory, FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(ViewPointResource.class);
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
-			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - 10);
+			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - VIEWPOINT_SUFFIX.length());
 			File xmlFile = new File(viewPointDirectory, baseName + ".xml");
 			ViewPointInfo vpi = findViewPointInfo(viewPointDirectory);
 			if (vpi == null) {
@@ -102,10 +108,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 			returned.setFactory(new ViewPointModelFactory(returned));
 
-			returned.setViewPointLibrary(viewPointLibrary);
-			viewPointLibrary.registerViewPoint(returned);
+			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			if (serviceManager.getViewPointLibrary() != null) {
+				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary().registerViewPoint(returned);
+			}
 
-			returned.setServiceManager(viewPointLibrary.getServiceManager());
+			returned.setServiceManager(serviceManager);
 
 			logger.fine("ViewPointResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
 
@@ -135,7 +144,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 							Document d = XMLUtils.readXMLFile(virtualModelFile);
 							if (d.getRootElement().getName().equals("VirtualModel")) {
 								VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(f,
-										virtualModelFile, this, getViewPointLibrary());
+										virtualModelFile, this, getServiceManager());
 								addToContents(virtualModelResource);
 							} /*else if (d.getRootElement().getName().equals("DiagramSpecification")) {
 								DiagramSpecificationResource diagramSpecificationResource = DiagramSpecificationResourceImpl
@@ -151,6 +160,14 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 		}
+	}
+
+	@Override
+	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+		}
+		return null;
 	}
 
 	@Override

@@ -37,7 +37,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoFileResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD>>
+public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoFileResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
 		extends FileResourceRepository<R> {
 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterFileResourceRepository.class.getPackage().getName());

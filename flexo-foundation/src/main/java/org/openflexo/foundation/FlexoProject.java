@@ -132,6 +132,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			e.printStackTrace();
 		}
 
+		// We add the newly created project as a ResourceCenter
+		serviceManager.getResourceCenterService().addToResourceCenters(project);
+
 		return editor;
 	}
 
@@ -154,7 +157,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			// project.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			// project.setCreationDate(new Date());
 			// TODO: Code to be Removed
-			//project.initJavaFormatter();
+			// project.initJavaFormatter();
 			/*try {
 				// This needs to be called to ensure the consistency of the
 				// project
@@ -174,6 +177,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			}
 			e.printStackTrace();
 		}
+
+		// We add the newly created project as a ResourceCenter
+		serviceManager.getResourceCenterService().addToResourceCenters(project);
 
 		return editor;
 	}
@@ -643,7 +649,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		setLastID(lastUniqueID);
 	}
 
-
 	// TODO Code to be Removed as no use for that
 	/*
 	public FlexoProjectFile getJavaFormatterSettings() {
@@ -656,7 +661,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	/**
  *
  */
-	
+
 	// TODO Code to be Removed as no use for that
 	/*
 	protected void initJavaFormatter() {

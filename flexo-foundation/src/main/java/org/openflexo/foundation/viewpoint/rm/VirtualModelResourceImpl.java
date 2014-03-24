@@ -11,6 +11,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -18,9 +19,9 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
@@ -34,22 +35,25 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
 	public static VirtualModelResource makeVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
-			ViewPointResource viewPointResource, ViewPointLibrary viewPointLibrary) {
+			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(VirtualModelResource.class);
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			returned.setName(virtualModelDirectory.getName());
 			returned.setDirectory(virtualModelDirectory);
 			returned.setFile(virtualModelXMLFile);
-			returned.setViewPointLibrary(viewPointLibrary);
+			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			/*if (serviceManager.getViewPointLibrary() != null) {
+				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
+			}*/
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
-			returned.setServiceManager(viewPointLibrary.getServiceManager());
+			returned.setServiceManager(serviceManager);
 			viewPointResource.addToContents(returned);
 			viewPointResource.notifyContentsAdded(returned);
 
 			// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(viewPointLibrary.getServiceManager().getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelModelFactory(serviceManager.getTechnologyAdapterService(), returned));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -59,7 +63,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}
 
 	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
-			ViewPointResource viewPointResource, ViewPointLibrary viewPointLibrary) {
+			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(VirtualModelResource.class);
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
@@ -78,18 +82,31 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				returned.setVersion(new FlexoVersion(vpi.version));
 			}
 			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
-			returned.setViewPointLibrary(viewPointLibrary);
-			returned.setServiceManager(viewPointLibrary.getServiceManager());
+
+			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			/*if (serviceManager.getViewPointLibrary() != null) {
+				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
+			}*/
+
+			returned.setServiceManager(serviceManager);
 
 			logger.fine("VirtualModelResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
 
 			// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(viewPointLibrary.getServiceManager().getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelModelFactory(serviceManager.getTechnologyAdapterService(), returned));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 		}
 		return null;
 	}

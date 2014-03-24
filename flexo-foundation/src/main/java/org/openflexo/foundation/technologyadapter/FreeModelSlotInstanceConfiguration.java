@@ -44,7 +44,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain, vincent
  * 
  */
-public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD>, MS extends FreeModelSlot<RD>> extends
+public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
 		ModelSlotInstanceConfiguration<MS, RD> {
 
 	private static final Logger logger = Logger.getLogger(FreeModelSlotInstanceConfiguration.class.getPackage().getName());

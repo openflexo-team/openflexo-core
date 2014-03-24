@@ -70,7 +70,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(VirtualModelModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD> {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
@@ -125,7 +125,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableEditionActionTypes();
 
 	public List<Class<? extends EditionAction<?, ?>>> getAvailableFetchRequestActionTypes();
-	
+
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
 	/**
@@ -192,7 +192,8 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD>> extends FlexoRoleImpl<RD> implements ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD> implements
+			ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -406,7 +407,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 			appendEditionActionTypes(availableEditionActionTypes, getClass());
 			return availableEditionActionTypes;
 		}
-		
+
 		private void appendEditionActionTypes(List<Class<? extends EditionAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
@@ -437,7 +438,7 @@ public interface ModelSlot<RD extends ResourceData<RD>> extends FlexoRole<RD> {
 			appendFetchRequestActionTypes(availableFetchRequestActionTypes, getClass());
 			return availableFetchRequestActionTypes;
 		}
-		
+
 		private void appendFetchRequestActionTypes(List<Class<? extends EditionAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);

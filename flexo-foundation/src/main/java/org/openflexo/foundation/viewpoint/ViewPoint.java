@@ -38,6 +38,8 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -57,7 +59,6 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -93,7 +94,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPoint.ViewPointImpl.class)
 @XMLElement(xmlTag = "ViewPoint")
-public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint> {
+public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>, FlexoMetaModel<ViewPoint>,
+		TechnologyObject<VirtualModelTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -193,12 +195,13 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		/**
 		 * Stores a chained collections of objects which are involved in validation
 		 */
-		private final ChainedCollection<ViewPointObject> validableObjects = null;
+		// private final ChainedCollection<ViewPointObject> validableObjects = null;
 
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
-			File viewpointDir = new File(containerDir, baseName + ".viewpoint");
-			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir, library);
+			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
+			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
+					library.getServiceManager());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
 			viewpoint.setResource(vpRes);
@@ -768,6 +771,14 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			}
 
 			return instanceType;
+		}
+
+		@Override
+		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+			if (getResource() != null) {
+				return getResource().getTechnologyAdapter();
+			}
+			return null;
 		}
 
 	}

@@ -57,6 +57,8 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 		@Override
 		public boolean isVisibleForSelection(RepositoryFolder object, Vector<FlexoObject> globalSelection) {
+			System.out.println("CreateView visible ? object=" + object + " of " + object.getClass());
+			System.out.println("repository=" + object.getResourceRepository());
 			return object.getResourceRepository() instanceof ViewLibrary;
 		}
 

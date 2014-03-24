@@ -37,14 +37,14 @@ import java.util.TimerTask;
  */
 public abstract class DirectoryWatcher extends TimerTask {
 
-	private NodeDirectoryWatcher rootDirectoryWatcher;
+	private final NodeDirectoryWatcher rootDirectoryWatcher;
 
 	private static class NodeDirectoryWatcher {
 
-		private DirectoryWatcher watcher;
-		private File directory;
-		private Map<File, Long> lastModified = new HashMap<File, Long>();
-		private Map<File, NodeDirectoryWatcher> subNodes = new HashMap<File, NodeDirectoryWatcher>();
+		private final DirectoryWatcher watcher;
+		private final File directory;
+		private final Map<File, Long> lastModified = new HashMap<File, Long>();
+		private final Map<File, NodeDirectoryWatcher> subNodes = new HashMap<File, NodeDirectoryWatcher>();
 
 		private NodeDirectoryWatcher(File directory, DirectoryWatcher watcher, boolean notifyAdding) {
 			// System.out.println("Init NodeDirectoryWatcher on " + directory);

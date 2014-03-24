@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointModelFactory;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -16,7 +18,10 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ViewPointResourceImpl.class)
 @XMLElement
-public interface ViewPointResource extends PamelaResource<ViewPoint, ViewPointModelFactory>, DirectoryContainerResource<ViewPoint> {
+public interface ViewPointResource extends PamelaResource<ViewPoint, ViewPointModelFactory>, DirectoryContainerResource<ViewPoint>,
+		TechnologyAdapterResource<ViewPoint, VirtualModelTechnologyAdapter> {
+
+	public static final String VIEWPOINT_SUFFIX = ".viewpoint";
 
 	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
 	public static final String DIRECTORY = "directory";

@@ -33,15 +33,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
+import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
@@ -62,7 +61,6 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private final File rootDirectory;
 
-	private ViewPointRepository viewPointRepository;
 	private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?>> modelRepositories = new HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?>>();
 	private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>>();
 
@@ -86,15 +84,19 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	@Override
 	public ViewPointRepository getViewPointRepository() {
-		return viewPointRepository;
+		if (technologyAdapterService != null) {
+			VirtualModelTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			return getRepository(ViewPointRepository.class, vmTA);
+		}
+		return null;
 	}
 
-	@Override
+	/*@Override
 	public void initialize(ViewPointLibrary viewPointLibrary) {
 		logger.info("Initializing ViewPointLibrary for " + this);
 		viewPointRepository = new ViewPointRepository(this, viewPointLibrary);
 		exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
-	}
+	}*/
 
 	/**
 	 * Retrieve (creates it when not existant) folder containing supplied file
@@ -119,7 +121,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param viewPointLibrary
 	 * @return a flag indicating if some ViewPoints were found
 	 */
-	private boolean exploreDirectoryLookingForViewPoints(File directory, ViewPointLibrary viewPointLibrary) {
+	/*private boolean exploreDirectoryLookingForViewPoints(File directory, ViewPointLibrary viewPointLibrary) {
 		boolean returned = false;
 		logger.fine("Exploring " + directory);
 		if (directory.exists() && directory.isDirectory() && directory.canRead()) {
@@ -133,7 +135,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 			}
 		}
 		return returned;
-	}
+	}*/
 
 	/**
 	 * 
@@ -142,7 +144,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * @param viewPointLibrary
 	 * @return a flag indicating if some ViewPoints were found
 	 */
-	private ViewPointResource analyseAsViewPoint(File candidateFile) {
+	/*private ViewPointResource analyseAsViewPoint(File candidateFile) {
 		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
 				&& candidateFile.getName().endsWith(".viewpoint")) {
 			ViewPointResource vpRes = ViewPointResourceImpl.retrieveViewPointResource(candidateFile,
@@ -166,16 +168,26 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 
 		return null;
-	}
+	}*/
 
 	@Override
 	public void initialize(TechnologyAdapterService technologyAdapterService) {
+
+		logger.info("*********** INITIALIZING new FileSystemBasedResourceCenter on " + getDirectory());
+
 		logger.info("Initializing " + technologyAdapterService);
 		this.technologyAdapterService = technologyAdapterService;
 		for (TechnologyAdapter technologyAdapter : technologyAdapterService.getTechnologyAdapters()) {
 			logger.info("Initializing resource center " + this + " with adapter " + technologyAdapter.getName());
 			technologyAdapter.initializeResourceCenter(this);
 		}
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		if (technologyAdapterService != null) {
+			return technologyAdapterService.getServiceManager();
+		}
+		return null;
 	}
 
 	@Override
@@ -253,7 +265,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	protected synchronized void fileAdded(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
-			analyseAsViewPoint(file);
+			// analyseAsViewPoint(file);
 			if (technologyAdapterService != null) {
 				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
 					logger.info("fileAdded " + file + " with adapter " + adapter.getName());
@@ -275,6 +287,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		willBeWrittenFiles.add(file);
 	}
 
+	@Override
 	public synchronized boolean isIgnorable(File file) {
 		if (file.getName().equals("CVS")) {
 			return true;

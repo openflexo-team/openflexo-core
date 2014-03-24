@@ -32,7 +32,6 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResour
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -42,10 +41,10 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
 /**
- * A {@link FlexoResourceCenter} is a symbolic repository storing {@link FlexoResource}
+ * A {@link FlexoResourceCenter} is a symbolic repository storing {@link FlexoResource} from artefacts of type I
  * 
  * @param <I>
- *            I is the type of iterable items this resource center stores
+ *            I is the type of iterable artefacts this resource center stores
  * 
  * @author sylvain
  * 
@@ -79,7 +78,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * 
 	 * @param technologyAdapterService
 	 */
-	public void initialize(ViewPointLibrary viewPointLibrary);
+	// public void initialize(ViewPointLibrary viewPointLibrary);
 
 	/**
 	 * Initialize the FlexoResourceCenter by matching contents of this {@link FlexoResourceCenter} with all available technologies.<br>
@@ -175,12 +174,20 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public ViewPointRepository getViewPointRepository();
 
 	/**
-	 * Returns an iterator over a set of elements of type I, which are iterables items this resource center stores
+	 * Returns an iterator over a set of elements of type I, which are iterables artefacts this resource center stores
 	 * 
 	 * @return an Iterator.
 	 */
 	@Override
 	public Iterator<I> iterator();
+
+	/**
+	 * Return flag indicating whether supplied artefact might be ignored
+	 * 
+	 * @param artefact
+	 * @return
+	 */
+	public boolean isIgnorable(I artefact);
 
 	/**
 	 * Retrieve repository matching supplied type and technology
@@ -211,4 +218,5 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public Collection<ResourceRepository<?>> getRegistedRepositories(TechnologyAdapter technologyAdapter);
 
 	public ResourceCenterEntry<?> getResourceCenterEntry();
+
 }
