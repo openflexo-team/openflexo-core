@@ -183,8 +183,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				vmi = action.getVirtualModelInstance();
 			}
 			if (vmi != null) {
-				System.out.println("Returning " + vmi.getEPInstances(getFlexoConceptType()));
-				return filterWithConditions(vmi.getEPInstances(getFlexoConceptType()), action);
+				System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
+				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), action);
 			} else {
 				logger.warning(getStringRepresentation()
 						+ " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");

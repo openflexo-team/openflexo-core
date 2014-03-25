@@ -34,6 +34,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -42,9 +43,9 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
@@ -142,8 +143,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	/**
-	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in the
-	 * context of its implementation of {@link BindingEvaluationContext}.<br>
+	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in
+	 * the context of its implementation of {@link BindingEvaluationContext}.<br>
 	 * Variable is initialized with supplied name and value
 	 * 
 	 * @param variableName
@@ -226,7 +227,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * graph of related {@link FlexoBehaviour}<br>
 	 * Recursively invoke {@link #performAction(EditionAction, Hashtable)}
 	 */
-	protected void applyEditionActions() {
+	protected void applyEditionActions() throws FlexoException {
 
 		for (FlexoBehaviourParameter param : parameterValues.keySet()) {
 			logger.info("Parameter " + param.getName() + " value=" + parameterValues.get(param));
@@ -265,8 +266,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
 	 * related {@link FlexoBehaviour}<br>
+	 * 
+	 * @throws FlexoException
 	 */
-	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) {
+	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
 		Object assignedObject = action.performAction(this);
 
 		if (assignedObject != null) {
@@ -287,6 +290,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 					logger.warning("Unexpected assignation issue, " + assignableAction.getAssignation() + " object=" + assignedObject
 							+ " exception: " + e);
 					e.printStackTrace();
+					throw new FlexoException(e);
 				}
 			}
 		}

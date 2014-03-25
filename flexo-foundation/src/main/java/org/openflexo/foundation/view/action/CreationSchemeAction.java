@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -88,7 +89,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	private FlexoConceptInstance flexoConceptInstance;
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
 		logger.info("Create FlexoConceptInstance using CreationScheme");
 		logger.info("getFlexoConcept()=" + getFlexoConcept());
 
@@ -113,8 +114,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	/**
 	 * Used when creation of FlexoConceptInstance initialization is beeing delegated to an other component.<br>
-	 * This happens for example in the case of VirtualModelInstance creation, where the creation of FlexoConceptInstance is performed in
-	 * the {@link CreateVirtualModelInstance} action
+	 * This happens for example in the case of VirtualModelInstance creation, where the creation of FlexoConceptInstance is performed in the
+	 * {@link CreateVirtualModelInstance} action
 	 * 
 	 * @param flexoConceptInstance
 	 */
@@ -188,7 +189,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	 * related {@link FlexoBehaviour}<br>
 	 */
 	@Override
-	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) {
+	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
 		Object assignedObject = super.performAction(action, performedActions);
 		if (assignedObject != null && action instanceof AssignableAction) {
 			AssignableAction assignableAction = (AssignableAction) action;
