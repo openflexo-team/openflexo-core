@@ -22,6 +22,7 @@ package org.openflexo.foundation.viewpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
 import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
@@ -91,6 +92,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		super(computeModelContext(taService));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+		addConverter(FGEUtils.POINT_CONVERTER);
+		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		if (virtualModelResource != null) {
 			this.virtualModelResource = virtualModelResource;
 			addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));

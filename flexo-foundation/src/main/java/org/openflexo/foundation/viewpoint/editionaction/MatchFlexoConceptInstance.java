@@ -174,7 +174,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					sb.append("(");
 				}
 				for (MatchingCriteria mc : matchingCriterias) {
-					sb.append(mc.getFlexoRole().getName() + "=" + mc.getValue().toString() + ";");
+					sb.append(mc.getFlexoRole().getName()!=null ? mc.getFlexoRole().getName() : "null" + "=" + mc.getValue().toString() + ";");
 				}
 				if (matchingCriterias.size() > 1) {
 					sb.append(")");
