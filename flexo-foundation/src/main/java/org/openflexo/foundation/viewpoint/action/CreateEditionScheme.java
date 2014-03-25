@@ -38,6 +38,7 @@ import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -112,7 +113,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	}
 
 	public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
-		if (modelSlot != null) {
+		if (modelSlot != null && !(modelSlot instanceof VirtualModelModelSlot)) {
 			return modelSlot.getAvailableFlexoBehaviourTypes();
 		}
 		return null;
