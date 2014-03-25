@@ -104,14 +104,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	@Remover(ACTOR_LIST_KEY)
 	public void removeFromActorList(ActorReference<?> aActorList);
 
-	/**
-	 * Sets the {@link VirtualModelInstance} where this object is declared and living
-	 * 
-	 * @return
-	 */
-	@Override
-	public void setVirtualModelInstance(VirtualModelInstance vmInstance);
-
 	// Debug method
 	public String debug();
 
@@ -485,7 +477,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			VirtualModelInstance container = getVirtualModelInstance();
 			if (container != null) {
-				container.removeFromFlexoConceptInstancesList(this);
+				container.removeFromFlexoConceptInstances(this);
 			}
 			// logger.warning("FlexoConceptInstance deletion !");
 			// deleted = true;

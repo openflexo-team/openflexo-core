@@ -10,7 +10,6 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
@@ -28,8 +27,7 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 	@PropertyIdentifier(type = FlexoObjectReference.class)
 	public static final String OBJECT_REFERENCE_KEY = "objectReference";
 
-	@Getter(value = OBJECT_REFERENCE_KEY)
-	@XMLAttribute
+	@Getter(value = OBJECT_REFERENCE_KEY, ignoreType = true)
 	public FlexoObjectReference getObjectReference();
 
 	@Setter(OBJECT_REFERENCE_KEY)

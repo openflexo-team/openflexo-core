@@ -148,18 +148,18 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
 		if (getVirtualModelInstance() != null) {
-			return getVirtualModelInstance().getEPInstances(ep);
+			return getVirtualModelInstance().getFlexoConceptInstances(ep);
 		} else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
-				returned.addAll(vmi.getEPInstances(ep));
+				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
 		} else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
 				for (VirtualModelInstance vmi : vr.getView().getVirtualModelInstances()) {
-					returned.addAll(vmi.getEPInstances(ep));
+					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}
 			return returned;

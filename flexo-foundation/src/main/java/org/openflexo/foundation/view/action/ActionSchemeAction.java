@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
@@ -70,7 +71,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	}
 
 	@Override
-	protected void doAction(Object context) {
+	protected void doAction(Object context) throws FlexoException {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Perform action " + actionType);
 		}

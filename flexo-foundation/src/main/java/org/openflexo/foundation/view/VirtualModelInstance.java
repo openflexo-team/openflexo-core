@@ -21,7 +21,6 @@
 package org.openflexo.foundation.view;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -88,8 +87,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 	@PropertyIdentifier(type = List.class)
 	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
-	@PropertyIdentifier(type = List.class)
-	public static final String FLEXO_CONCEPT_INSTANCES_LIST_KEY = "flexoConceptInstancesList";
+	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
+	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
 
 	@Getter(value = TITLE_KEY)
 	@XMLAttribute
@@ -122,18 +121,18 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@Remover(MODEL_SLOT_INSTANCES_KEY)
 	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
 
-	@Getter(value = FLEXO_CONCEPT_INSTANCES_LIST_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = FLEXO_CONCEPT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
-	public List<FlexoConceptInstance> getFlexoConceptInstancesList();
+	public List<FlexoConceptInstance> getFlexoConceptInstances();
 
-	@Setter(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void setFlexoConceptInstancesList(List<FlexoConceptInstance> flexoConceptInstancesList);
+	@Setter(FLEXO_CONCEPT_INSTANCES_KEY)
+	public void setFlexoConceptInstances(List<FlexoConceptInstance> someFlexoConceptInstances);
 
-	@Adder(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void addToFlexoConceptInstancesList(FlexoConceptInstance aFlexoConceptInstancesList);
+	@Adder(FLEXO_CONCEPT_INSTANCES_KEY)
+	public void addToFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
-	@Remover(FLEXO_CONCEPT_INSTANCES_LIST_KEY)
-	public void removeFromFlexoConceptInstancesList(FlexoConceptInstance aFlexoConceptInstancesList);
+	@Remover(FLEXO_CONCEPT_INSTANCES_KEY)
+	public void removeFromFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -175,11 +174,24 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 */
 	public Object getValueForVariable(BindingVariable variable);
 
-	public Collection<FlexoConceptInstance> getAllEPInstances();
+	/**
+	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
+	 * (this could be either the name or the uri of concept)
+	 * 
+	 * @param flexoConceptNameOrURI
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI);
 
-	public Collection<FlexoConceptInstance> getEPInstances(String epName);
+	/**
+	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the supplied FlexoConcept
+	 * 
+	 * @param flexoConcept
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept);
 
-	public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep);
+	public boolean hasNature(VirtualModelInstanceNature nature);
 
 	public static abstract class VirtualModelInstanceImpl extends FlexoConceptInstanceImpl implements VirtualModelInstance {
 
@@ -191,7 +203,9 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		// this.
 		private String title;
 
-		private Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
+		private final Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
+
+		// private final List<FlexoConceptInstance> orderedFlexoConceptInstances;
 
 		// TODO: move this code to the VirtualModelInstanceResource
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
@@ -222,6 +236,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
 			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>>();
+			// orderedFlexoConceptInstances = new ArrayList<FlexoConceptInstance>();
 		}
 
 		@Override
@@ -230,6 +245,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return getResource().getFactory();
 			}
 			return null;
+		}
+
+		@Override
+		public final boolean hasNature(VirtualModelInstanceNature nature) {
+			return nature.hasNature(this);
 		}
 
 		@Override
@@ -310,104 +330,82 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
-			returned.setVirtualModelInstance(this);
 			returned.setFlexoConcept(concept);
-			return registerFlexoConceptInstance(returned);
-		}
-
-		/**
-		 * Register an existing {@link FlexoConceptInstance} (used in deserialization)
-		 * 
-		 * @param epi
-		 * @return
-		 */
-		protected FlexoConceptInstance registerFlexoConceptInstance(FlexoConceptInstance epi) {
-			if (epi.getFlexoConcept() == null) {
-				logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + epi);
-				logger.warning("EPI: " + epi.debug());
-			} else {
-				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
-				if (hash == null) {
-					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(epi.getFlexoConcept(), hash);
-				}
-				hash.put(epi.getFlexoID(), epi);
-				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
-				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
-			}
-			return epi;
-		}
-
-		/**
-		 * Un-register an existing {@link FlexoConceptInstance}
-		 * 
-		 * @param epi
-		 * @return
-		 */
-		protected FlexoConceptInstance unregisterFlexoConceptInstance(FlexoConceptInstance epi) {
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(epi.getFlexoConcept());
-			if (hash == null) {
-				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(epi.getFlexoConcept(), hash);
-			}
-			hash.remove(epi.getFlexoID());
-			return epi;
-		}
-
-		// Do not use this since not efficient, used in deserialization only
-		@Override
-		public List<FlexoConceptInstance> getFlexoConceptInstancesList() {
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (Map<Long, FlexoConceptInstance> epMap : flexoConceptInstances.values()) {
-				for (FlexoConceptInstance epi : epMap.values()) {
-					returned.add(epi);
-				}
-			}
+			addToFlexoConceptInstances(returned);
 			return returned;
 		}
 
+		/**
+		 * Add a {@link FlexoConceptInstance}
+		 * 
+		 * @param fci
+		 * @return
+		 */
 		@Override
-		public void setFlexoConceptInstancesList(List<FlexoConceptInstance> epiList) {
-			for (FlexoConceptInstance epi : epiList) {
-				addToFlexoConceptInstancesList(epi);
+		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
+			if (fci.getFlexoConcept() == null) {
+				logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + fci);
+				logger.warning("EPI: " + fci.debug());
+			} else {
+				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConcept());
+				if (hash == null) {
+					hash = new Hashtable<Long, FlexoConceptInstance>();
+					flexoConceptInstances.put(fci.getFlexoConcept(), hash);
+				}
+				// We store here the FCI twice:
+				// - first in double-entries hash map
+				// - then in an ordered list (internally performed by PAMELA)
+				// We rely on PAMELA schemes to handle notifications
+				hash.put(fci.getFlexoID(), fci);
+
+				System.out.println("Et hop, on vient appeler le super adder, isModified=" + isModified());
+
+				performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+				// orderedFlexoConceptInstances.add(fci);
+				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
+				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
+
+				System.out.println("Et juste apres, isModified=" + isModified());
+
 			}
 		}
 
+		/**
+		 * Remove a {@link FlexoConceptInstance}
+		 * 
+		 * @param fci
+		 * @return
+		 */
 		@Override
-		public void addToFlexoConceptInstancesList(FlexoConceptInstance epi) {
-			registerFlexoConceptInstance(epi);
+		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
+			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConcept());
+			if (hash == null) {
+				hash = new Hashtable<Long, FlexoConceptInstance>();
+				flexoConceptInstances.put(fci.getFlexoConcept(), hash);
+			}
+			hash.remove(fci.getFlexoID());
+			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+			// orderedFlexoConceptInstances.remove(fci);
+			// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_INSTANCES_KEY, fci, null);
 		}
+
+		// Not required !!!
+		/*@Override
+		public List<FlexoConceptInstance> getFlexoConceptInstances() {
+			return (List<FlexoConceptInstance>)performSuperGetter(FLEXO_CONCEPT_INSTANCES_KEY);
+		}*/
 
 		@Override
-		public void removeFromFlexoConceptInstancesList(FlexoConceptInstance epi) {
-			unregisterFlexoConceptInstance(epi);
-		}
-
-		public Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> getFlexoConceptInstances() {
-			return flexoConceptInstances;
-		}
-
-		public void setFlexoConceptInstances(Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances) {
-			this.flexoConceptInstances = flexoConceptInstances;
-		}
-
-		// TODO: performance isssues
-		@Override
-		public Collection<FlexoConceptInstance> getAllEPInstances() {
-			return getFlexoConceptInstancesList();
-		}
-
-		@Override
-		public Collection<FlexoConceptInstance> getEPInstances(String epName) {
+		public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI) {
 			if (getVirtualModel() == null) {
 				return Collections.emptyList();
 			}
-			FlexoConcept ep = getVirtualModel().getFlexoConcept(epName);
-			return getEPInstances(ep);
+			FlexoConcept ep = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+			return getFlexoConceptInstances(ep);
 		}
 
 		@Override
-		public List<FlexoConceptInstance> getEPInstances(FlexoConcept ep) {
+		public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept ep) {
 			if (ep == null) {
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
@@ -420,15 +418,15 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			// TODO: performance issue here
 			List<FlexoConceptInstance> returned = new ArrayList(hash.values());
 			for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
-				returned.addAll(getEPInstances(childEP));
+				returned.addAll(getFlexoConceptInstances(childEP));
 			}
 			return returned;
 		}
 
 		// TODO: refactor this
-		@Deprecated
+		/*@Deprecated
 		public List<FlexoConceptInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
-			/*List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
+			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			Collection<FlexoConceptInstance> epis = getEPInstances(epName);
 			for (FlexoConceptInstance epi : epis) {
 				Object evaluate = epi.evaluate(epProperty);
@@ -436,9 +434,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					returned.add(epi);
 				}
 			}
-			return returned;*/
-			return null;
-		}
+			return returned;
+		}*/
 
 		@Override
 		public VirtualModelInstanceResource getResource() {

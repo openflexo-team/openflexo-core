@@ -88,8 +88,9 @@ import org.openflexo.toolbox.ToolBox;
 @ModelEntity
 @ImplementationClass(VirtualModel.VirtualModelImpl.class)
 @XMLElement
-@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(FlexoBehaviourParameters.class),
-@Import(DeleteFlexoConceptInstanceParameter.class),@Import(AddFlexoConceptInstanceParameter.class)})
+@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class),
+		@Import(FlexoBehaviourParameters.class), @Import(DeleteFlexoConceptInstanceParameter.class),
+		@Import(AddFlexoConceptInstanceParameter.class) })
 public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<VirtualModelTechnologyAdapter> {
 
@@ -170,10 +171,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 	 * 
-	 * @param flexoConceptId
+	 * @param flexoConceptNameOrURI
 	 * @return
 	 */
-	public FlexoConcept getFlexoConcept(String flexoConceptId);
+	public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI);
 
 	@Getter(value = MODEL_SLOTS_KEY, cardinality = Cardinality.LIST, inverse = ModelSlot.VIRTUAL_MODEL_KEY)
 	@XMLElement(context = "ModelSlot_", primary = true)
@@ -302,6 +303,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	public List<FlexoConcept> getAllRootFlexoConcepts();
 
+	public boolean hasNature(VirtualModelNature nature);
+
 	public static abstract class VirtualModelImpl extends FlexoConceptImpl implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
@@ -377,6 +380,11 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			}
 			// Ensure access to reflexive model slot
 			getReflexiveModelSlot();
+		}
+
+		@Override
+		public final boolean hasNature(VirtualModelNature nature) {
+			return nature.hasNature(this);
 		}
 
 		private VirtualModelModelSlot reflexiveModelSlot;
@@ -531,17 +539,17 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		@Override
-		public FlexoConcept getFlexoConcept(String flexoConceptId) {
+		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
-				if (flexoConcept.getName().equals(flexoConceptId)) {
+				if (flexoConcept.getName().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
-				if (flexoConcept.getURI().equals(flexoConceptId)) {
+				if (flexoConcept.getURI().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
 				// Special case to handle conversion from old VP version
 				// TODO: to be removed when all VP are up-to-date
-				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(flexoConceptId)) {
+				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
 			}

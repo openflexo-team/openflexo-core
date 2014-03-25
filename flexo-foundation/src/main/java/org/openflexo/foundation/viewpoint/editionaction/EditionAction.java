@@ -218,7 +218,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 				VirtualModelInstance vmi = action.getVirtualModelInstance();
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				// return (ModelSlotInstance<MS, ?>) action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
+				// return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
 			} else {
 				logger.severe("Could not access virtual model instance for action " + action);

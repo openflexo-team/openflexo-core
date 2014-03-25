@@ -23,6 +23,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -69,7 +70,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 	}
 
 	@Override
-	protected void doAction(Object context) {
+	protected void doAction(Object context) throws FlexoException {
 		logger.info("Perform navigation " + actionType);
 
 		if (evaluateCondition()) {

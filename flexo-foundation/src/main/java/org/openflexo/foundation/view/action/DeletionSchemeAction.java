@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.InvalidParametersException;
@@ -77,7 +78,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Delete FlexoConceptInstance using DeletionScheme");
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());
@@ -105,7 +106,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			if (vObject instanceof VirtualModelInstance) {
 				vmInstance = (VirtualModelInstance) getFocusedObject();
 			} else if (vObject instanceof FlexoConceptInstance) {
-				vmInstance = ((FlexoConceptInstance) vObject).getVirtualModelInstance();
+				vmInstance = vObject.getVirtualModelInstance();
 			}
 		}
 		return vmInstance;

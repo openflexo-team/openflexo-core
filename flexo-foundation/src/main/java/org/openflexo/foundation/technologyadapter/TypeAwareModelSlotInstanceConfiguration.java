@@ -109,8 +109,9 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			}
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
 			modelResource = createProjectSpecificEmptyModel(msInstance, getModelSlot(), view.getProject());
-			System.out.println("***** modelResource = " + modelResource);
-			System.out.println("***** model = " + modelResource.getModel());
+			// System.out.println("***** modelResource = " + modelResource);
+			// System.out.println("***** model = " + modelResource.getModel());
+			// System.out.println("***** modelResource2 = " + modelResource.getModel().getResource());
 			try {
 				modelResource.loadResourceData(null);
 			} catch (FileNotFoundException e) {
@@ -123,13 +124,16 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("***** model = " + modelResource.getModel());
+			// System.out.println("***** model = " + modelResource.getModel());
+			// System.out.println("***** model res = " + modelResource.getModel().getResource());
 			if (modelResource != null) {
 				msInstance.setAccessedResourceData(getModelResource().getModel());
 				msInstance.setModelURI(getModelResource().getURI());
-				System.out.println("***** Created model resource " + getModelResource());
-				System.out.println("***** Created model " + getModelResource().getModel());
-				System.out.println("***** Created model with uri=" + getModelResource().getModel().getURI());
+				// System.out.println("***** Created model resource " + getModelResource());
+				// System.out.println("***** Created model " + getModelResource().getModel());
+				// System.out.println("***** Created model with uri=" + getModelResource().getModel().getURI());
+				// System.out.println("msInstance.getResource()=" + msInstance.getResource());
+				// System.out.println("getModelResource().getModel().getResource()=" + getModelResource().getModel().getResource());
 			} else {
 				logger.warning("Could not create ProjectSpecificEmtpyModel for model slot " + getModelSlot());
 			}

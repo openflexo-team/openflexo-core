@@ -28,12 +28,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
@@ -78,7 +79,7 @@ public class SynchronizationSchemeAction extends
 	}
 
 	@Override
-	protected void doAction(Object context) {
+	protected void doAction(Object context) throws FlexoException {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Perform action " + actionType);
 		}
@@ -89,7 +90,7 @@ public class SynchronizationSchemeAction extends
 	}
 
 	@Override
-	protected void applyEditionActions() {
+	protected void applyEditionActions() throws FlexoException {
 		beginSynchronization();
 		super.applyEditionActions();
 		endSynchronization();
@@ -117,7 +118,7 @@ public class SynchronizationSchemeAction extends
 	public void beginSynchronization() {
 		System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
 		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
-		episToBeRemoved.addAll(getVirtualModelInstance().getAllEPInstances());
+		episToBeRemoved.addAll(getVirtualModelInstance().getFlexoConceptInstances());
 	}
 
 	public void endSynchronization() {
@@ -130,7 +131,7 @@ public class SynchronizationSchemeAction extends
 
 	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
 		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		for (FlexoConceptInstance epi : getVirtualModelInstance().getEPInstances(flexoConceptType)) {
+		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
 			for (FlexoRole pr : criterias.keySet()) {
 				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
