@@ -509,6 +509,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				XMLUtils.saveXMLFile(exampleDiagram, newFile);
 			}
 			
+			// Change class name for previews
+			Iterator<? extends Content> previewClassesElementIterator = diagram.getDescendants(new ElementFilter("ShapeGraphicalRepresentation").or(new ElementFilter("ConnectorGraphicalRepresentation")));
+			while(previewClassesElementIterator.hasNext()){
+				Element previewClassElement = (Element)previewClassesElementIterator.next();
+				previewClassElement.getAttribute("className").setValue("org.openflexo.technologyadapter.diagram.gui.widget.FlexoConceptPreviewRepresentation");
+			}
+			
 			// Retrieve diagram drop schemes
 			Iterator<Element> dropSchemeElements = diagram.getDescendants(new ElementFilter("DropScheme"));
 			List<Element> dropSchemes = IteratorUtils.toList(dropSchemeElements);
@@ -637,6 +644,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("Palette", "DiagramPalette", document);
 		convertOldNameToNewNames("PaletteElement", "DiagramPaletteElement", document);
 		convertOldNameToNewNames("Shema", "Diagram", document);
+		convertOldNameToNewNames("ContainedShape", "Shape", document);
+		convertOldNameToNewNames("ContainedConnector", "Connector", document);
+		convertOldNameToNewNames("FromShape", "StartShape", document);
+		convertOldNameToNewNames("ToShape", "EndShape", document);
+		convertOldNameToNewNames("Border", "ShapeBorder", document);
+		
+		
 		// Connection to ModelSlots
 		convertOldNameToNewNames("AddressedEMFModelSlot", "EMFModelSlot", document);
 		convertOldNameToNewNames("AddressedXMLModelSlot", "XMLModelSlot", document);
