@@ -81,7 +81,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 		public static final String SELECTED = "selected";
 
-		private FetchRequest fetchRequest;
+		//private FetchRequest fetchRequest;
 		private DataBinding<Boolean> condition;
 
 		public FetchRequestConditionImpl() {
@@ -90,8 +90,8 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getFetchRequest() != null) {
-				return getFetchRequest().getFlexoConcept();
+			if (getAction() != null) {
+				return getAction().getFlexoConcept();
 			}
 			return null;
 		}
@@ -108,18 +108,18 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 		protected BindingModel buildBindingModel() {
 			BindingModel returned;
-			if (getFetchRequest() != null) {
+			if (getAction() != null) {
 				/*returned = new BindingModel(getFetchRequest().getActionContainer() != null ? getFetchRequest().getActionContainer()
 						.getBindingModel() : getFetchRequest().getBindingModel());*/
-				if (getFetchRequest().getEmbeddingIteration() != null) {
-					returned = new BindingModel(getFetchRequest().getEmbeddingIteration().getBindingModel());
+				if (getAction().getEmbeddingIteration() != null) {
+					returned = new BindingModel(getAction().getEmbeddingIteration().getBindingModel());
 				} else {
-					returned = new BindingModel(getFetchRequest().getBindingModel());
+					returned = new BindingModel(getAction().getBindingModel());
 				}
 			} else {
 				returned = new BindingModel();
 			}
-			returned.addToBindingVariables(new BindingVariable(SELECTED, getFetchRequest().getFetchedType()) {
+			returned.addToBindingVariables(new BindingVariable(SELECTED, getAction().getFetchedType()) {
 				@Override
 				public Object getBindingValue(Object target, BindingEvaluationContext context) {
 					logger.info("What should i return for " + SELECTED + " ? target " + target + " context=" + context);
@@ -128,24 +128,24 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 				@Override
 				public Type getType() {
-					return getFetchRequest().getFetchedType();
+					return getAction().getFetchedType();
 				}
 			});
 			return returned;
 		}
 
-		public FetchRequest getFetchRequest() {
+		/*public FetchRequest getFetchRequest() {
 			return fetchRequest;
 		}
 
 		public void setFetchRequest(FetchRequest fetchRequest) {
 			this.fetchRequest = fetchRequest;
 			bindingModel = null;
-		}
+		}*/
 
 		@Override
 		public String getURI() {
-			return getFetchRequest().getURI() + "/Constraints_" + Integer.toHexString(hashCode());
+			return getAction().getURI() + "/Constraints_" + Integer.toHexString(hashCode());
 		}
 
 		@Override

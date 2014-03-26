@@ -114,11 +114,13 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			fetchRequest.setActionContainer(this);
 			fetchRequest.setEmbeddingIteration(this);
 			this.fetchRequest = fetchRequest;
+			/*
 			// Big hack to prevent XMLCoDe to also append FetchRequest to the list of embedded actions
 			// Should be removed either by the fixing of XMLCoDe or by the switch to PAMELA
 			if (getActions().contains(fetchRequest)) {
 				removeFromActions(fetchRequest);
 			}
+			*/
 		}
 
 		public Type getItemType() {
