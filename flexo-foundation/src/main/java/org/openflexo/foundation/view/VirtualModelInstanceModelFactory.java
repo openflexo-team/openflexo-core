@@ -44,10 +44,10 @@ public class VirtualModelInstanceModelFactory extends ModelFactory {
 
 	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource) throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
-		addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
+			addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
 			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
 		}
 	}
