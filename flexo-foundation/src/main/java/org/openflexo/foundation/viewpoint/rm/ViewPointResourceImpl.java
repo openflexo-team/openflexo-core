@@ -20,6 +20,7 @@ import org.jdom2.filter.ElementFilter;
 import org.jdom2.output.Format;
 import org.jdom2.output.LineSeparator;
 import org.jdom2.output.XMLOutputter;
+import org.jdom2.util.IteratorIterable;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
@@ -107,7 +108,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			/*
 			 * Will be activitated when the convertion will be fully compliant
 			 */
-			//convertViewPoint16ToViewpoint17(returned);
+			if(isAn16Viewpoint(returned)){
+				logger.fine("Converting viewpoint " + xmlFile.getAbsolutePath());
+				//convertViewPoint16ToViewpoint17(returned);
+			}
+			
 			
 			if (StringUtils.isEmpty(vpi.modelVersion)) {
 				returned.setModelVersion(new FlexoVersion("0.1"));
@@ -240,6 +245,67 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	@Override
 	public boolean isDeprecatedVersion() {
 		return getModelVersion().isLesserThan(new FlexoVersion("1.0"));
+	}
+	
+	public static boolean isAn16Viewpoint(ViewPointResource viewpointResource){
+		try {
+			for (File f : viewpointResource.getDirectory().listFiles()) {
+				if (f.isDirectory()) {
+					for (File file : f.listFiles()) {
+						if (file.getName().endsWith(".palette")) {
+							if(contains16Elements(XMLUtils.readXMLFile(file)))
+								return true;
+						}
+						if (file.getName().endsWith(".diagram")) {
+							if(contains16Elements(XMLUtils.readXMLFile(file)))
+								return true;
+						}
+						if (file.getName().endsWith(".xml")) {
+							if(contains16Elements(XMLUtils.readXMLFile(file)))
+								return true;
+						}
+					}
+				}
+			}
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private static boolean contains16Elements(Document document){
+		if(document.getDescendants(new ElementFilter("EditionPattern")
+							.or(new ElementFilter("ContainedEditionPatternInstancePatternRole")
+							.or(new ElementFilter("ContainedEMFObjectIndividualPatternRole")
+							.or(new ElementFilter("ContainedShapePatternRole")
+							.or(new ElementFilter("ContainedConnectorPatternRole")
+							.or(new ElementFilter("ContainedOWLIndividualPatternRole")
+							.or(new ElementFilter("ContainedExcelRowPatternRole")
+							.or(new ElementFilter("ContainedExcelCellPatternRole")
+							.or(new ElementFilter("ContainedExcelSheetPatternRole")
+							.or(new ElementFilter("EditionPatternInstanceParameter")
+							.or(new ElementFilter("MatchEditionPatternInstance")
+							.or(new ElementFilter("CreateEditionPatternInstanceParameter")
+							.or(new ElementFilter("Palette")
+							.or(new ElementFilter("PaletteElement")
+							.or(new ElementFilter("Shema")
+							.or(new ElementFilter("ContainedShape")
+							.or(new ElementFilter("ContainedConnector")
+							.or(new ElementFilter("FromShape")
+							.or(new ElementFilter("ToShape")
+							.or(new ElementFilter("Border")
+							.or(new ElementFilter("AddEditionPatternInstance")
+							.or(new ElementFilter("AddEditionPatternInstanceParameter")
+							.or(new ElementFilter("AddressedSelectEditionPatternInstance")
+							.or(new ElementFilter("AddressedSelectFlexoConceptInstance")
+							)))))))))))))))))))))))).hasNext()){
+			return true;
+		}
+		return false;
 	}
 
 	private static class ViewPointInfo {
@@ -513,8 +579,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			Iterator<? extends Content> previewClassesElementIterator = diagram.getDescendants(new ElementFilter("ShapeGraphicalRepresentation").or(new ElementFilter("ConnectorGraphicalRepresentation")));
 			while(previewClassesElementIterator.hasNext()){
 				Element previewClassElement = (Element)previewClassesElementIterator.next();
-				previewClassElement.getAttribute("className").setValue("org.openflexo.technologyadapter.diagram.gui.widget.FlexoConceptPreviewRepresentation");
+				previewClassElement.removeAttribute("className");
 			}
+			
+			removeNamedElements(diagram, "StartShapeGraphicalRepresentation");
+			removeNamedElements(diagram, "EndShapeGraphicalRepresentation");
+			removeNamedElements(diagram, "ArtifactFromShapeGraphicalRepresentation");
+			removeNamedElements(diagram, "ArtifactToShapeGraphicalRepresentation");
 			
 			// Retrieve diagram drop schemes
 			Iterator<Element> dropSchemeElements = diagram.getDescendants(new ElementFilter("DropScheme"));
@@ -522,32 +593,37 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			
 			// Retrieve Diagram Model slots references
 			Iterator<? extends Content> thisModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
-			List<Element> thisModelSlots = IteratorUtils.toList(thisModelSlotsIterator);
+			List<Element> thisModelSlots = IteratorUtils.toList(thisModelSlotsIterator);	
 			
 			// Retrieve the DiagramModelSlot (this), and transform it to a virtual model slot with a virtual model uri
 			int thisID=0;
 			String newThisUri = "http://cannot_retrieve_uri";
 			Element typedDiagramModelSlot = null;
+			boolean foundThis = false;
 			for(Element thisMs : thisModelSlots){
 				// Retriev the ID and URI of this DiagramModelSlot
-				if(thisMs.getAttribute("name")!=null && thisMs.getAttributeValue("name").equals("this")){
+				if(thisMs.getAttribute("name")!=null && thisMs.getAttributeValue("name").equals("this") && !foundThis){
 					// Store its ID and its URI
 					thisID = thisMs.getAttribute("id").getIntValue();
 					if(thisMs.getAttributeValue("virtualModelURI")!=null){
 						newThisUri = thisMs.getAttributeValue("virtualModelURI");
 						thisMs.removeAttribute("virtualModelURI");
+						thisMs.removeAttribute("name");
+						thisMs.getAttribute("id").setName("idref");
+						thisMs.setAttribute("idref", Integer.toString(thisID));
 					}
 					// Replace by a Typed model slot
 					typedDiagramModelSlot = new Element(MODELSLOT_TYPED_DIAGRAM_MODEL_SLOT);
 					typedDiagramModelSlot.setAttribute("metaModelURI", uri.getValue());
 					typedDiagramModelSlot.setAttribute("name", "typedDiagramModelSlot");
 					typedDiagramModelSlot.setAttribute("id", Integer.toString(computeNewID(diagram)));
+					foundThis=true;
 				}
 			}
 			// Replace the Diagram Model Slot by a Virtual Model Model slot
 			for(Element thisMs : thisModelSlots){
 				if(hasSameID(thisMs, thisID) && thisMs.getName().equals("DiagramModelSlot")){
-					thisMs.setName(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT);
+					thisMs.setName("VirtualModelModelSlot");
 					thisMs.getAttributes().add(new Attribute("virtualModelURI", newThisUri));
 					thisMs.getAttributes().add(new Attribute("name", "this"));
 					thisMs.getAttributes().add(new Attribute("id", Integer.toString(thisID)));
@@ -562,11 +638,31 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					diagramMs.setAttribute("id", typedDiagramModelSlot.getAttributeValue("id"));
 				}
 				if(diagramMs.getAttribute("idref")!=null){
-					diagramMs.setAttribute("idref", typedDiagramModelSlot.getAttributeValue("id"));
-					diagramMs.setName("TypedDiagramModelSlot");
+					// Change to TypedDiagramModelSlot
+					if(diagramMs.getParentElement().getName().equals("AddShape")||
+							diagramMs.getParentElement().getName().equals("AddConnector")||
+							diagramMs.getParentElement().getName().equals("ContainedShapePatternRole")||
+							diagramMs.getParentElement().getName().equals("ContainedConnectorPatternRole")){
+						diagramMs.setAttribute("idref", typedDiagramModelSlot.getAttributeValue("id"));
+						diagramMs.setName("TypedDiagramModelSlot");
+					}
+					else{
+						diagramMs.setName(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT);
+					}
 				}
 			}
 	
+			// Change all the "diagram" binding with "this"
+			for(Content content : diagram.getDescendants()){
+				if(content instanceof Element){
+					Element element = (Element) content;
+					for(Attribute attribute : element.getAttributes()){
+						if(attribute.getValue().startsWith("diagram")){
+							attribute.setValue(attribute.getValue().replace("diagram", "this"));
+						}
+					}
+				}
+			}
 			
 			// Update the diagram palette element bindings
 			ArrayList<Element> paletteElementBindings = new ArrayList<Element>();
@@ -616,18 +712,48 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
 		// Pattern Roles
 		convertOldNameToNewNames("ContainedEditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
-		convertOldNameToNewNames("ContainedEMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
-		convertOldNameToNewNames("ContainedShapePatternRole", "ShapeRole", document);
-		convertOldNameToNewNames("ContainedConnectorPatternRole", "ConnectorRole", document);
-		convertOldNameToNewNames("ContainedOWLIndividualPatternRole", "OWLIndividualPatternRole", document);
-		convertOldNameToNewNames("ContainedExcelRowPatternRole", "ExcelRowPatternRole", document);
-		convertOldNameToNewNames("ContainedExcelCellPatternRole", "ExcelCellPatternRole", document);
-		convertOldNameToNewNames("ContainedExcelSheetPatternRole", "ExcelSheetPatternRole", document);
+		convertOldNameToNewNames("EditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
 		
+		convertOldNameToNewNames("ContainedShapePatternRole", "ShapeRole", document);
+		convertOldNameToNewNames("ShapePatternRole", "ShapeRole", document);
+		
+		convertOldNameToNewNames("ContainedEMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
+		convertOldNameToNewNames("EMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
+		
+		convertOldNameToNewNames("ContainedConnectorPatternRole", "ConnectorRole", document);
+		convertOldNameToNewNames("ConnectorPatternRole", "ConnectorRole", document);
+		
+		convertOldNameToNewNames("ContainedOWLIndividualPatternRole", "OWLIndividualRole", document);
+		convertOldNameToNewNames("OWLIndividualPatternRole", "OWLIndividualRole", document);
+		
+		convertOldNameToNewNames("ContainedExcelCellPatternRole", "ExcelCellRole", document);
+		convertOldNameToNewNames("ExcelCellPatternRole", "ExcelCellRole", document);
+		
+		convertOldNameToNewNames("ContainedExcelSheetPatternRole", "ExcelSheetRole", document);
+		convertOldNameToNewNames("ExcelSheetPatternRole", "ExcelSheetRole", document);
+		
+		convertOldNameToNewNames("ContainedExcelRowPatternRole", "ExcelRowRole", document);
+		convertOldNameToNewNames("ExcelRowPatternRole", "ExcelRowRole", document);
+		
+		// Actions
 		convertOldNameToNewNames("EditionPatternInstanceParameter", "FlexoConceptInstanceParameter", document);
 		convertOldNameToNewNames("MatchEditionPatternInstance", "MatchFlexoConceptInstance", document);
 		convertOldNameToNewNames("CreateEditionPatternInstanceParameter", "CreateFlexoConceptInstanceParameter", document);
-		convertOldNameToNewNames("SelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
+		
+		//convertOldNameToNewNames("SelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
+		// Retrieve Fetch Actions
+		IteratorIterable<? extends Content> fetchElementsIterator = document.getDescendants(new ElementFilter("SelectEditionPatternInstance").or(new ElementFilter("AddressedSelectEditionPatternInstance")));
+		List<Element> fetchElements = IteratorUtils.toList(fetchElementsIterator);
+		for(Element fetchElement : fetchElements){
+			if(fetchElement.getParentElement().getName().equals("FetchRequestIterationAction")){
+				fetchElement.setName("FetchRequest_SelectFlexoConceptInstance");
+			}
+		}
+		
+		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);
+		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
+		convertOldNameToNewNames("AddressedSelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
+		convertOldNameToNewNames("AddressedSelectFlexoConceptInstance", "SelectFlexoConceptInstance", document);
 		
 		
 		// Model Slots
@@ -662,11 +788,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("AddressedOWLModelSlot", "OWLModelSlot", document);
 		convertOldNameToNewNames("AddressedVirtualModelModelSlot", "VirtualModelModelSlot", document);
 		convertOldNameToNewNames("AddressedDiagramModelSlot", "TypedDiagramModelSlot", document);
-		// Actions
-		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);
-		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
-		convertOldNameToNewNames("AddressedSelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
-		convertOldNameToNewNames("AddressedSelectFlexoConceptInstance", "SelectFlexoConceptInstance", document);
+		
 	}
 
 	private static void convertProperties16ToProperties17(Document document) {
@@ -676,8 +798,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "ContainedEditionPatternInstancePatternRole");
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "AddressedSelectEditionPatternInstance");
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "SelectEditionPatternInstance");
-		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "FlexoConceptInstanceParameter");
-		changePropertyName("parentEditionPattern", "parentFlexoConcept", document, "FlexoConcept");
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "EditionPatternInstanceParameter");
+		changePropertyName("parentEditionPattern", "parentFlexoConcept", document, "EditionPattern");
 		
 		
 		
