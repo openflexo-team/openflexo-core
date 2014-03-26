@@ -98,7 +98,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			throw new InvalidParameterException("No technology adapter supplied");
 		}
 
-		if (technologyAdapter instanceof VirtualModelTechnologyAdapter) {
+		/*if (technologyAdapter instanceof VirtualModelTechnologyAdapter) {
 			VirtualModelTechnologyAdapter virtualModelTechnologyAdapter = (VirtualModelTechnologyAdapter) technologyAdapter;
 			newModelSlot = virtualModelTechnologyAdapter.makeModelSlot(VirtualModelModelSlot.class, getFocusedObject());
 			newModelSlot.setName(modelSlotName);
@@ -107,7 +107,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			newModelSlot.setIsReadOnly(readOnly);
 			newModelSlot.setDescription(description);
 			getFocusedObject().addToModelSlots(newModelSlot);
-		}
+		}*/
 
 		if (technologyAdapter != null && getModelSlotClass() != null) {
 			// if (getFocusedObject() instanceof VirtualModel) {
@@ -118,6 +118,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof VirtualModelModelSlot) {
 				((VirtualModelModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+				
 			} else if (newModelSlot instanceof TypeAwareModelSlot) {
 				((TypeAwareModelSlot) newModelSlot).setMetaModelResource(mmRes);
 			}
