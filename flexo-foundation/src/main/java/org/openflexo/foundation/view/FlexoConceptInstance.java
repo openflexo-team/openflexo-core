@@ -20,7 +20,7 @@
 package org.openflexo.foundation.view;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -77,8 +77,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
-	@PropertyIdentifier(type = Vector.class)
-	public static final String ACTOR_LIST_KEY = "actorList";
+	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
+	public static final String ACTORS_KEY = "actors";
 
 	public FlexoConcept getFlexoConcept();
 
@@ -91,18 +91,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	@Setter(FLEXO_CONCEPT_URI_KEY)
 	public void setFlexoConceptURI(String flexoConceptURI);
 
-	@Getter(value = ACTOR_LIST_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.FLEXO_CONCEPT_INSTANCE_KEY)
+	@Getter(value = ACTORS_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.FLEXO_CONCEPT_INSTANCE_KEY)
 	@XMLElement
-	public List<ActorReference<?>> getActorList();
+	public List<ActorReference<?>> getActors();
 
-	@Setter(ACTOR_LIST_KEY)
-	public void setActorList(List<ActorReference<?>> actorList);
+	@Setter(ACTORS_KEY)
+	public void setActors(List<ActorReference<?>> actors);
 
-	@Adder(ACTOR_LIST_KEY)
-	public void addToActorList(ActorReference<?> aActorList);
+	@Adder(ACTORS_KEY)
+	public void addToActors(ActorReference<?> anActorReference);
 
-	@Remover(ACTOR_LIST_KEY)
-	public void removeFromActorList(ActorReference<?> aActorList);
+	@Remover(ACTORS_KEY)
+	public void removeFromActors(ActorReference<?> anActorReference);
 
 	// Debug method
 	public String debug();
@@ -125,10 +125,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		private FlexoConcept flexoConcept;
 		private String flexoConceptURI;
-		private final Hashtable<FlexoRole<?>, ActorReference<?>> actors;
-		private VirtualModelInstance vmInstance;
+		// This HashMap stores ActorReference associated with role name as String
+		private final HashMap<String, ActorReference<?>> actors;
 
-		private Vector<ActorReference<?>> deserializedActorList;
+		// private VirtualModelInstance vmInstance;
+
+		// private Vector<ActorReference<?>> deserializedActorList;
 
 		/**
 		 * Default constructor
@@ -139,7 +141,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				setProject(virtualModelInstance.getProject());
 			}
 			vmInstance = virtualModelInstance;*/
-			actors = new Hashtable<FlexoRole<?>, ActorReference<?>>();
+			actors = new HashMap<String, ActorReference<?>>();
 			// actorList = new Vector<ActorReference<?>>();
 			// initializeDeserialization(builder);
 		}
@@ -163,21 +165,21 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public <T> T getFlexoActor(FlexoRole<T> patternRole) {
-			if (patternRole == null) {
+		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
+			if (flexoRole == null) {
 				logger.warning("Unexpected null patternRole");
 				return null;
 			}
 			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
-			ActorReference<T> actorReference = (ActorReference<T>) actors.get(patternRole);
+			ActorReference<T> actorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
 			// Pragmatic attempt to fix "inheritance issue...."
 			for (FlexoConcept parentEP : this.getFlexoConcept().getParentFlexoConcepts()) {
 				while (actorReference == null && parentEP != null) {
 					if (parentEP != null) {
-						FlexoRole ppFlexoRole = parentEP.getFlexoRole(patternRole.getName());
-						if (ppFlexoRole == patternRole) {
-							patternRole = (FlexoRole<T>) this.getFlexoConcept().getFlexoRole(ppFlexoRole.getName());
-							actorReference = (ActorReference<T>) actors.get(patternRole);
+						FlexoRole ppFlexoRole = parentEP.getFlexoRole(flexoRole.getName());
+						if (ppFlexoRole == flexoRole) {
+							flexoRole = (FlexoRole<T>) this.getFlexoConcept().getFlexoRole(ppFlexoRole.getName());
+							actorReference = (ActorReference<T>) actors.get(flexoRole);
 						}
 					}
 					if (actorReference != null) {
@@ -204,7 +206,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> FlexoRole<T> getRoleForActor(T actor) {
-			for (FlexoRole<?> role : actors.keySet()) {
+			for (FlexoRole<?> role : getFlexoConcept().getFlexoRoles()) {
 				if (getFlexoActor(role) == actor) {
 					return (FlexoRole<T>) role;
 				}
@@ -213,11 +215,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public <T> void setObjectForFlexoRole(T object, FlexoRole<T> patternRole) {
+		public <T> void setObjectForFlexoRole(T object, FlexoRole<T> flexoRole) {
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>> For patternRole: " + patternRole + " set " + object + " was " + getFlexoActor(patternRole));
+				logger.fine(">>>>>>>> For patternRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
 			}
-			T oldObject = getFlexoActor(patternRole);
+			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
 				// Un-register last reference
 				if (oldObject instanceof FlexoProjectObject) {
@@ -230,15 +232,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 
 				if (object != null) {
-					ActorReference<T> actorReference = patternRole.makeActorReference(object, this);
-					actors.put(patternRole, actorReference);
+					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
+					addToActors(actorReference);
 				} else {
-					actors.remove(patternRole);
+					ActorReference<T> oldActorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
+					removeFromActors(oldActorReference);
 				}
 				setChanged();
-				notifyObservers(new FlexoActorChanged(this, patternRole, oldObject, object));
+				notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
 				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
-				getPropertyChangeSupport().firePropertyChange(patternRole.getRoleName(), oldObject, object);
+				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
 			}
 		}
 
@@ -247,7 +250,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			StringBuffer sb = new StringBuffer();
 			sb.append("FlexoConcept: " + (flexoConcept != null ? flexoConcept.getName() : getFlexoConceptURI() + "[NOT_FOUND]") + "\n");
 			sb.append("Instance: " + getFlexoID() + " hash=" + Integer.toHexString(hashCode()) + "\n");
-			for (FlexoRole<?> patternRole : actors.keySet()) {
+			for (FlexoRole<?> patternRole : getFlexoConcept().getFlexoRoles()) {
 				FlexoProjectObject object = actors.get(patternRole);
 				sb.append("Role: " + patternRole + " : " + object + "\n");
 			}
@@ -258,6 +261,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public FlexoConcept getFlexoConcept() {
 			if (getVirtualModelInstance() != null && flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
 				flexoConcept = getVirtualModelInstance().getVirtualModel().getFlexoConcept(flexoConceptURI);
+				if (flexoConcept == null) {
+					System.out.println("Could not find FlexoConcept with uri=" + flexoConceptURI);
+				}
 			}
 			return flexoConcept;
 		}
@@ -286,9 +292,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			this.flexoConceptURI = flexoConceptURI;
 		}
 
+		/*@Override
 		public Hashtable<FlexoRole<?>, ActorReference<?>> getActors() {
 			return actors;
-		}
+		}*/
 
 		/*public void setActors(Hashtable<FlexoRole<?>, ActorReference<?>> actors) {
 			this.actors = actors;
@@ -331,46 +338,62 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}*/
 
 		// WARNING: do no use outside context of serialization/deserialization (performance issues)
-		@Override
-		public Vector<ActorReference<?>> getActorList() {
+		/*@Override
+		public List<ActorReference<?>> getActors() {
 			return new Vector<ActorReference<?>>(actors.values());
-		}
+		}*/
 
 		// WARNING: do no use outside context of serialization/deserialization
-		public void setActorList(Vector<ActorReference<?>> deserializedActors) {
+		/*public void setActorList(Vector<ActorReference<?>> deserializedActors) {
 			for (ActorReference<?> ar : deserializedActors) {
 				addToActorList(ar);
 			}
-		}
+		}*/
 
-		// WARNING: do no use outside context of serialization/deserialization
 		@Override
-		public void addToActorList(ActorReference actorReference) {
-			actorReference.setFlexoConceptInstance(this);
+		public void addToActors(ActorReference<?> actorReference) {
+
+			if (actorReference.getRoleName() == null) {
+				logger.warning("Could not register ActorReference with null FlexoRole: " + actorReference);
+				return;
+			} else {
+				actors.put(actorReference.getRoleName(), actorReference);
+				performSuperAdder(ACTORS_KEY, actorReference);
+			}
+
+			/*actorReference.setFlexoConceptInstance(this);
 			if (actorReference.getFlexoRole() != null) {
-				actors.put(actorReference.getFlexoRole(), actorReference);
+				actors.put(actorReference.getFlexoRole().getRoleName(), actorReference);
 			} else {
 				if (deserializedActorList == null) {
 					deserializedActorList = new Vector<ActorReference<?>>();
 				}
 				deserializedActorList.add(actorReference);
-			}
+			}*/
 		}
 
-		// WARNING: do no use outside context of serialization/deserialization
 		@Override
-		public void removeFromActorList(ActorReference actorReference) {
+		public void removeFromActors(ActorReference<?> actorReference) {
+
+			if (actorReference.getRoleName() == null) {
+				logger.warning("Could not unregister ActorReference with null FlexoRole: " + actorReference);
+				return;
+			} else {
+				actors.remove(actorReference.getRoleName());
+				performSuperRemover(ACTORS_KEY, actorReference);
+			}
+
 			actorReference.setFlexoConceptInstance(null);
 			if (actorReference.getFlexoRole() != null) {
 				actors.remove(actorReference.getFlexoRole());
 			}
 		}
 
-		public void finalizeDeserialization() {
-			finalizeActorsDeserialization();
-		}
+		/*public void finalizeDeserialization() {
+			//finalizeActorsDeserialization();
+		}*/
 
-		private void finalizeActorsDeserialization() {
+		/*private void finalizeActorsDeserialization() {
 			if (getFlexoConcept() != null && deserializedActorList != null) {
 				for (ActorReference actorRef : deserializedActorList) {
 					// System.out.println("Actor: " + actorRef.getPatternRoleName() + " pattern role = " + actorRef.getPatternRole() +
@@ -381,7 +404,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 			}
-		}
+		}*/
 
 		public Object evaluate(String expression) {
 			DataBinding<Object> vpdb = new DataBinding<Object>(expression);
@@ -609,7 +632,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return getVirtualModelInstance();
 		}
 
-		@Override
+		/*@Override
 		public VirtualModelInstance getVirtualModelInstance() {
 			return vmInstance;
 		}
@@ -617,7 +640,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
 			this.vmInstance = vmInstance;
-		}
+		}*/
 
 		protected boolean hasValidRenderer() {
 			return getFlexoConcept() != null && getFlexoConcept().getInspector() != null

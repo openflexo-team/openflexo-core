@@ -59,7 +59,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectReference.class.getPackage().getName());
 
 	/**
-	 * Implemented by all classess managing a {@link FlexoObjectReference}
+	 * Implemented by all classes managing a {@link FlexoObjectReference}
 	 * 
 	 * @author sylvain
 	 * 
@@ -111,6 +111,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		return null;
 	}
 
+	private String projectIdentifier;
 	private String resourceIdentifier;
 	private String userIdentifier;
 	private String className;
@@ -180,7 +181,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		try {
 			int indexOf = modelObjectIdentifier.indexOf(PROJECT_SEPARATOR);
 			if (indexOf > 0) {
-				String enclosingProjectIdentifier = modelObjectIdentifier.substring(0, indexOf);
+				projectIdentifier = modelObjectIdentifier.substring(0, indexOf);
 				modelObjectIdentifier = modelObjectIdentifier.substring(indexOf + PROJECT_SEPARATOR.length());
 			}
 			String[] s = modelObjectIdentifier.split(SEPARATOR);
@@ -205,9 +206,9 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	public void delete(boolean notify) {
 		if (!deleted) {
 			deleted = true;
-			if (getReferringProject(true) != null) {
+			/*if (getReferringProject(true) != null) {
 				getReferringProject(true).removeObjectReferences(this);
-			}
+			}*/
 			// TODO: OLD FlexoResource scheme
 			/*if (getResource(false) instanceof FlexoXMLStorageResource) {
 				((FlexoXMLStorageResource) getResource(false)).removeResourceLoadingListener(this);
@@ -250,6 +251,9 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	}
 
 	public O getObject(boolean force) {
+
+		// System.out.println("modelObject=" + modelObject);
+		// System.out.println("owner=" + owner);
 		if (modelObject == null) {
 			modelObject = findObject(force);
 			if (modelObject != null) {
@@ -286,6 +290,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
 						EmbeddingType.CLOSURE);
 				for (Object temp : allObjects) {
+					System.out.println("> Cherchons pour " + temp);
 					if (temp instanceof FlexoObject) {
 						FlexoObject o = (FlexoObject) temp;
 						if (o.getFlexoID() == flexoID && o.getUserIdentifier().equals(userIdentifier)) {
@@ -310,48 +315,24 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 	}
 
 	private O findObject(boolean force) {
-		if (getReferringProject(force) != null) {
-			FlexoResource<?> res = getResource(force);
-			if (res == null) {
-				return null;
-			} else {
-				return findObjectInResource(res);
-			}
-			// TODO: OLD FlexoResource scheme
-			/*if (res instanceof FlexoXMLStorageResource) {
-				if (force && !res.isLoaded()) {
-					((FlexoXMLStorageResource) res).getXMLResourceData();
-				}
-				if (res.isLoaded() && !((FlexoXMLStorageResource) res).getIsLoading()) {
-					return (O) getEnclosingProject(force).findObject(userIdentifier, flexoID);
-				}
-			} else {
-				// TODO: New FlexoResource scheme
-				try {
-					res.getResourceData(null);
-					if (res.isLoaded()) {
-						return (O) getEnclosingProject(force).findObject(userIdentifier, flexoID);
-					}
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ResourceDependencyLoopException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
+		/*System.out.println("findObject()");
+		System.out.println("projectIdentifier=" + projectIdentifier);
+		System.out.println("resourceIdentifier=" + resourceIdentifier);
+		System.out.println("userIdentifier=" + userIdentifier);
+		System.out.println("flexoID=" + flexoID);
+		System.out.println("className=" + className);*/
+
+		FlexoResource<?> res = getResource(force);
+		if (res == null) {
+			return null;
+		} else {
+			// System.out.println("Found resource");
+			return findObjectInResource(res);
 		}
-		return null;
 	}
 
 	public FlexoResource<?> getResource(boolean force) {
-		if (getReferringProject(force) != null) {
+		/*if (getReferringProject(force) != null) {
 			// We are locating a resource located in a project
 			if (resource == null) {
 				FlexoProject enclosingProject = getReferringProject(force);
@@ -360,12 +341,12 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				}
 			}
 			return resource;
-		} else {
-			if (resource == null) {
-				resource = getOwner().getServiceManager().getResourceManager().getResource(resourceIdentifier);
-			}
-			return resource;
+		} else {*/
+		if (resource == null) {
+			resource = getOwner().getServiceManager().getResourceManager().getResource(resourceIdentifier);
 		}
+		return resource;
+		// }
 	}
 
 	public String getResourceIdentifier() {
@@ -376,14 +357,6 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		}
 	}
 
-	/*@Override
-	public Converter getConverter() {
-		if (getReferringProject(true) != null) {
-			return getReferringProject(true).getObjectReferenceConverter();
-		}
-		return null;
-	}*/
-
 	public long getFlexoID() {
 		return flexoID;
 	}
@@ -392,6 +365,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		if (modelObject instanceof FlexoProjectObject) {
 			return ((FlexoProjectObject) modelObject).getProject();
 		} else {
+			// TODO: lookup project using projectIdentifier
 			return null;
 		}
 	}
