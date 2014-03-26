@@ -43,7 +43,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceImpl.class.getPackage().getName());
 
-	private static VirtualModelInstanceModelFactory VIRTUAL_MODEL_INSTANCE_FACTORY;
+	/*private static VirtualModelInstanceModelFactory VIRTUAL_MODEL_INSTANCE_FACTORY;
 
 	static {
 		try {
@@ -51,18 +51,18 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	public static VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel, View view) {
 		try {
 			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
-			returned.setFactory(VIRTUAL_MODEL_INSTANCE_FACTORY);
 			String baseName = name;
 			File xmlFile = new File(((ViewResource) view.getResource()).getFile().getParentFile(), baseName
 					+ VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setProject(view.getProject());
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned));
 			returned.setName(name);
 			returned.setFile(xmlFile);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
@@ -85,11 +85,11 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
-			returned.setFactory(VIRTUAL_MODEL_INSTANCE_FACTORY);
 			String baseName = virtualModelInstanceFile.getName().substring(0,
 					virtualModelInstanceFile.getName().length() - VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX.length());
 			File xmlFile = new File(viewResource.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setProject(viewResource.getProject());
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned));
 			returned.setName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
 			returned.setFile(xmlFile);

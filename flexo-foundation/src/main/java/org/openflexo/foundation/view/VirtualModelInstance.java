@@ -203,7 +203,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		// this.
 		private String title;
 
-		private final Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
+		private final Hashtable<String, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
 
 		// private final List<FlexoConceptInstance> orderedFlexoConceptInstances;
 
@@ -235,7 +235,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		public VirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<FlexoConcept, Map<Long, FlexoConceptInstance>>();
+			flexoConceptInstances = new Hashtable<String, Map<Long, FlexoConceptInstance>>();
 			// orderedFlexoConceptInstances = new ArrayList<FlexoConceptInstance>();
 		}
 
@@ -343,14 +343,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
-			if (fci.getFlexoConcept() == null) {
-				logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + fci);
-				logger.warning("EPI: " + fci.debug());
+			if (fci.getFlexoConceptURI() == null) {
+				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
+				// logger.warning("EPI: " + fci.debug());
 			} else {
-				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConcept());
+				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConcept(), hash);
+					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
 				}
 				// We store here the FCI twice:
 				// - first in double-entries hash map
@@ -358,14 +358,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				// We rely on PAMELA schemes to handle notifications
 				hash.put(fci.getFlexoID(), fci);
 
-				System.out.println("Et hop, on vient appeler le super adder, isModified=" + isModified());
-
 				performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
 				// orderedFlexoConceptInstances.add(fci);
 				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
 				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
-
-				System.out.println("Et juste apres, isModified=" + isModified());
 
 			}
 		}
@@ -378,10 +374,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConcept());
+			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 			if (hash == null) {
 				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(fci.getFlexoConcept(), hash);
+				flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
 			}
 			hash.remove(fci.getFlexoID());
 			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
@@ -405,19 +401,19 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept ep) {
-			if (ep == null) {
+		public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept) {
+			if (flexoConcept == null) {
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(ep);
+			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(flexoConcept.getURI());
 			if (hash == null) {
 				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(ep, hash);
+				flexoConceptInstances.put(flexoConcept.getURI(), hash);
 			}
 			// TODO: performance issue here
 			List<FlexoConceptInstance> returned = new ArrayList(hash.values());
-			for (FlexoConcept childEP : ep.getChildFlexoConcepts()) {
+			for (FlexoConcept childEP : flexoConcept.getChildFlexoConcepts()) {
 				returned.addAll(getFlexoConceptInstances(childEP));
 			}
 			return returned;

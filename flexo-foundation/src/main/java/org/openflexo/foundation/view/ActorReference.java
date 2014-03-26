@@ -28,9 +28,10 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
 	public static final String FLEXO_CONCEPT_INSTANCE_KEY = "flexoConceptInstance";
-
 	@PropertyIdentifier(type = String.class)
 	public static final String ROLE_NAME_KEY = "roleName";
+	@PropertyIdentifier(type = Object.class)
+	public static final String MODELLING_ELEMENT_KEY = "modellingElement";
 
 	@Getter(value = ROLE_NAME_KEY)
 	@XMLAttribute
@@ -44,6 +45,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * 
 	 * @return
 	 */
+	@Getter(value = MODELLING_ELEMENT_KEY, ignoreType = true)
 	public T getModellingElement();
 
 	/**
@@ -51,6 +53,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * 
 	 * @param object
 	 */
+	@Setter(value = MODELLING_ELEMENT_KEY)
 	public void setModellingElement(T object);
 
 	/**
@@ -58,7 +61,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * 
 	 * @return
 	 */
-	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTOR_LIST_KEY)
+	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTORS_KEY)
 	public FlexoConceptInstance getFlexoConceptInstance();
 
 	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
@@ -72,7 +75,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
 		private FlexoRole<T> flexoRole;
-		private String patternRoleName;
+		private String flexoRoleName;
 		private ModelSlot modelSlot;
 		private FlexoConceptInstance epi;
 
@@ -112,8 +115,10 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public FlexoRole<T> getFlexoRole() {
-			if (flexoRole == null && epi != null && StringUtils.isNotEmpty(patternRoleName)) {
-				flexoRole = (FlexoRole<T>) epi.getFlexoConcept().getFlexoRole(patternRoleName);
+			if (flexoRole == null && epi != null && StringUtils.isNotEmpty(flexoRoleName)) {
+				System.out.println("epi=" + epi);
+				System.out.println("epi.getFlexoConcept()=" + epi.getFlexoConcept());
+				flexoRole = (FlexoRole<T>) epi.getFlexoConcept().getFlexoRole(flexoRoleName);
 			}
 			return flexoRole;
 		}
@@ -128,12 +133,12 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 			if (flexoRole != null) {
 				return flexoRole.getRoleName();
 			}
-			return patternRoleName;
+			return flexoRoleName;
 		}
 
 		@Override
 		public void setRoleName(String patternRoleName) {
-			this.patternRoleName = patternRoleName;
+			this.flexoRoleName = patternRoleName;
 		}
 
 		@Override

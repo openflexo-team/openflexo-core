@@ -36,17 +36,20 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public class VirtualModelInstanceModelFactory extends ModelFactory {
 
-	public VirtualModelInstanceModelFactory() throws ModelDefinitionException {
+	/*public VirtualModelInstanceModelFactory() throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-	}
+	}*/
 
 	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource) throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
-		addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+		if (virtualModelInstanceResource != null) {
+			addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
+			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
+		}
 	}
 
 }

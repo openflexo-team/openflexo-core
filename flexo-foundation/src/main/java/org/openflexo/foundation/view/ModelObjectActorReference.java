@@ -10,6 +10,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
@@ -27,50 +28,33 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 	@PropertyIdentifier(type = FlexoObjectReference.class)
 	public static final String OBJECT_REFERENCE_KEY = "objectReference";
 
-	@Getter(value = OBJECT_REFERENCE_KEY, ignoreType = true)
-	public FlexoObjectReference getObjectReference();
+	@Getter(value = OBJECT_REFERENCE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoObjectReference<T> getObjectReference();
 
 	@Setter(OBJECT_REFERENCE_KEY)
-	public void setObjectReference(FlexoObjectReference objectReference);
+	public void setObjectReference(FlexoObjectReference<T> objectReference);
 
 	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T> implements
 			ModelObjectActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
 
-		public T object;
-		public FlexoObjectReference objectReference;
-
-		/**
-		 * Default constructor
-		 */
-		public ModelObjectActorReferenceImpl() {
-			super();
-		}
-
-		/*public ModelObjectActorReferenceImpl(T o, FlexoRole aPatternRole, FlexoConceptInstance epi) {
-			super(epi.getProject());
-			setFlexoConceptInstance(epi);
-			setPatternRole(aPatternRole);
-			object = o;
-			objectReference = new FlexoObjectReference(o, o.getProject());
-		}*/
-
 		@Override
 		public void setModellingElement(T object) {
-			this.object = object;
-			objectReference = new FlexoObjectReference(object);
+			setObjectReference(new FlexoObjectReference<T>(object));
 		}
 
 		@Override
 		public T getModellingElement() {
-			if (object == null) {
-				object = (T) objectReference.getObject(true);
+			if (getObjectReference() != null) {
+				T returned = getObjectReference().getObject(true);
+				if (returned == null) {
+					logger.warning("Could not retrieve object " + getObjectReference());
+				}
+				return returned;
 			}
-			if (object == null) {
-				logger.warning("Could not retrieve object " + objectReference);
-			}
-			return object;
+			return null;
 		}
 
 	}
