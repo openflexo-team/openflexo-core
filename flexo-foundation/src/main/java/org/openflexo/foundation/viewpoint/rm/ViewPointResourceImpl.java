@@ -108,10 +108,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			/*
 			 * Will be activitated when the convertion will be fully compliant
 			 */
-			if(isAn16Viewpoint(returned)){
+			/*if(isAn16Viewpoint(returned)){
 				logger.fine("Converting viewpoint " + xmlFile.getAbsolutePath());
-				//convertViewPoint16ToViewpoint17(returned);
-			}
+				convertViewPoint16ToViewpoint17(returned);
+			}*/
 			
 			
 			if (StringUtils.isEmpty(vpi.modelVersion)) {
@@ -449,7 +449,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		return false;
 	}
 
-	private static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
+	public static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
 
 		File viewPointDirectory = viewPointResource.getDirectory();
 
@@ -546,10 +546,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			Document diagramSpecification = new Document();
 			Element rootElement = new Element("DiagramSpecification");
 			Attribute name = new Attribute("name", diagramName);
-			Attribute uri = new Attribute("uri", "http://"+diagramName);
+			Attribute diagramSpecificationURI = new Attribute("uri", "http://diagramspecification_"+diagramName);
 			diagramSpecification.addContent(rootElement);
 			rootElement.getAttributes().add(name);
-			rootElement.getAttributes().add(uri);
+			rootElement.getAttributes().add(diagramSpecificationURI);
 			XMLUtils.saveXMLFile(diagramSpecification, diagramSpecificationFile);
 			
 			// Copy the palette files inside diagram specification repository
@@ -570,7 +570,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				FileUtils.rename(exampleDiagramFile, newFile);
 				newExampleDiagramFiles.add(newFile);
 				Document exampleDiagram = XMLUtils.readXMLFile(newFile);
-				exampleDiagram.getRootElement().setAttribute("uri", uri.getValue()+"/"+exampleDiagram.getRootElement().getAttributeValue("name"));
+				exampleDiagram.getRootElement().setAttribute("uri", diagramSpecificationURI.getValue()+"/"+exampleDiagram.getRootElement().getAttributeValue("name"));
 				convertNames16ToNames17(exampleDiagram);
 				XMLUtils.saveXMLFile(exampleDiagram, newFile);
 			}
@@ -597,7 +597,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			
 			// Retrieve the DiagramModelSlot (this), and transform it to a virtual model slot with a virtual model uri
 			int thisID=0;
-			String newThisUri = "http://cannot_retrieve_uri";
+			String newThisUri = "http://"+diagramName;
 			Element typedDiagramModelSlot = null;
 			boolean foundThis = false;
 			for(Element thisMs : thisModelSlots){
@@ -614,7 +614,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					}
 					// Replace by a Typed model slot
 					typedDiagramModelSlot = new Element(MODELSLOT_TYPED_DIAGRAM_MODEL_SLOT);
-					typedDiagramModelSlot.setAttribute("metaModelURI", uri.getValue());
+					typedDiagramModelSlot.setAttribute("metaModelURI",diagramSpecificationURI.getValue());
 					typedDiagramModelSlot.setAttribute("name", "typedDiagramModelSlot");
 					typedDiagramModelSlot.setAttribute("id", Integer.toString(computeNewID(diagram)));
 					foundThis=true;
@@ -634,7 +634,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			Iterator<? extends Content> diagramModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
 			List<Element> thisDiagramModelSlots = IteratorUtils.toList(diagramModelSlotsIterator);
 			for(Element diagramMs :  thisDiagramModelSlots){
-				if(diagramMs.getAttribute("id")!=null){
+				if(diagramMs.getAttribute("id")!=null && typedDiagramModelSlot!=null){
 					diagramMs.setAttribute("id", typedDiagramModelSlot.getAttributeValue("id"));
 				}
 				if(diagramMs.getAttribute("idref")!=null){
@@ -678,8 +678,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 			// Add the Palette Element Bindings to the TypedDiagramModelSlot
-			typedDiagramModelSlot.addContent(paletteElementBindings);
-			diagram.getRootElement().addContent(typedDiagramModelSlot);
+			if(!paletteElementBindings.isEmpty()){
+				typedDiagramModelSlot.addContent(paletteElementBindings);	
+			}
+			if(typedDiagramModelSlot!=null){
+				diagram.getRootElement().addContent(typedDiagramModelSlot);
+			}
 			
 			// Remove elements
 			removeNamedElements(diagram, "PrimaryRepresentationConnectorPatternRole");
