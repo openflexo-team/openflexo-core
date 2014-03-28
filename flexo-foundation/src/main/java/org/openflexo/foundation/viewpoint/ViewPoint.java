@@ -167,7 +167,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	@Remover(VIRTUAL_MODELS_KEY)
 	public void removeFromVirtualModels(VirtualModel virtualModel);
 
-	public VirtualModel getVirtualModelNamed(String virtualModelName);
+	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
+
+	public boolean hasNature(ViewPointNature nature);
 
 	/**
 	 * Default implementation for {@link ViewPoint}
@@ -269,6 +271,11 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 					}
 				}
 			}*/
+		}
+
+		@Override
+		public final boolean hasNature(ViewPointNature nature) {
+			return nature.hasNature(this);
 		}
 
 		@Override
@@ -459,13 +466,13 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * @return
 		 */
 		@Override
-		public VirtualModel getVirtualModelNamed(String virtualModelName) {
+		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 			loadVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getVirtualModels()) {
-				if (vm.getName().equals(virtualModelName)) {
+				if (vm.getName().equals(virtualModelNameOrURI)) {
 					return vm;
 				}
-				if (vm.getURI().equals(virtualModelName)) {
+				if (vm.getURI().equals(virtualModelNameOrURI)) {
 					return vm;
 				}
 			}

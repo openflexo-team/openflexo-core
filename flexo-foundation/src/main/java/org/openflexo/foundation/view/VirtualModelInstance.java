@@ -59,6 +59,7 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
@@ -270,7 +271,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 		@Override
 		public VirtualModel getFlexoConcept() {
-			return (VirtualModel) super.getFlexoConcept();
+			// We override here getFlexoConcept() to retrieve matching VirtualModel
+			if (getView() != null && getView().getViewPoint() != null && flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
+				flexoConcept = getView().getViewPoint().getVirtualModelNamed(flexoConceptURI);
+			}
+			return (VirtualModel) flexoConcept;
 		}
 
 		public ViewPoint getViewPoint() {

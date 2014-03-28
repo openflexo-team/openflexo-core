@@ -99,12 +99,14 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 		} else*/if (notification instanceof InspectedObjectChanged) {
 			Object object = ((InspectedObjectChanged) notification).getInspectedObject();
 			if (object instanceof FlexoConceptInstance) {
-				String newTitle = ((FlexoConceptInstance) object).getFlexoConcept().getInspector().getInspectorTitle();
-				setTitle(newTitle);
+				if (((FlexoConceptInstance) object).getFlexoConcept() != null) {
+					String newTitle = ((FlexoConceptInstance) object).getFlexoConcept().getInspector().getInspectorTitle();
+					setTitle(newTitle);
+				}
 			} else if (object instanceof FlexoObject /*&& (object instanceof DiagramShape || object instanceof DiagramConnector)*/
 					&& ((FlexoObject) object).getFlexoConceptReferences().size() > 0) {
-				String newTitle = ((FlexoObject) object).getFlexoConceptReferences().get(0).getObject().getFlexoConcept()
-						.getInspector().getInspectorTitle();
+				String newTitle = ((FlexoObject) object).getFlexoConceptReferences().get(0).getObject().getFlexoConcept().getInspector()
+						.getInspectorTitle();
 				setTitle(newTitle);
 			} else if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null) {
 				setTitle(getInspectorPanel().getCurrentlyDisplayedInspector().getParameter("title"));

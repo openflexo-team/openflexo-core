@@ -123,8 +123,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
 
-		private FlexoConcept flexoConcept;
-		private String flexoConceptURI;
+		protected FlexoConcept flexoConcept;
+		protected String flexoConceptURI;
 		// This HashMap stores ActorReference associated with role name as String
 		private final HashMap<String, ActorReference<?>> actors;
 

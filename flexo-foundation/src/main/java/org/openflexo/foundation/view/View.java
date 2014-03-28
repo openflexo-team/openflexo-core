@@ -143,6 +143,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 	public ViewLibrary getViewLibrary();
 
+	public boolean hasNature(ViewNature nature);
+
 	public static abstract class ViewImpl extends ViewObjectImpl implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
@@ -213,6 +215,11 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 				return getResource().getURI();
 			}
 		}*/
+
+		@Override
+		public final boolean hasNature(ViewNature nature) {
+			return nature.hasNature(this);
+		}
 
 		@Override
 		public String getURI() {
