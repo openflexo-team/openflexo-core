@@ -19,7 +19,10 @@
  */
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -29,6 +32,8 @@ import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelInstanceNature;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -297,6 +302,40 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	public Resource getFIBPanelForClass(Class<?> aClass) {
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
+	}
+
+	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
+
+	public List<Class<? extends VirtualModelInstanceNature>> getAvailableVirtualModelInstanceNatures() {
+		if (availableVirtualModelInstanceNatures == null) {
+			availableVirtualModelInstanceNatures = computeAvailableVirtualModelInstanceNatures();
+		}
+		return availableVirtualModelInstanceNatures;
+	}
+
+	private List<Class<? extends VirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
+		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends VirtualModelInstanceNature>>();
+		Class<?> cl = getClass();
+		if (cl.isAnnotationPresent(DeclareVirtualModelInstanceNatures.class)) {
+			DeclareVirtualModelInstanceNatures allNatureDeclarations = cl.getAnnotation(DeclareVirtualModelInstanceNatures.class);
+			for (DeclareVirtualModelInstanceNature natureDeclaration : allNatureDeclarations.value()) {
+				availableVirtualModelInstanceNatures.add(natureDeclaration.nature());
+			}
+		}
+		return availableVirtualModelInstanceNatures;
+	}
+
+	public final boolean hasSpecificNatures(VirtualModelInstance vmi) {
+		return getSpecificNatures(vmi).size() > 0;
+	}
+
+	public List<? extends VirtualModelInstanceNature> getSpecificNatures(VirtualModelInstance vmInstance) {
+		return Collections.emptyList();
+	}
+
+	public ModuleView<VirtualModelInstance> createVirtualModelInstanceModuleViewForSpecificNature(VirtualModelInstance vmInstance,
+			VirtualModelInstanceNature nature, FlexoController controller, FlexoPerspective perspective) {
+		return null;
 	}
 
 }
