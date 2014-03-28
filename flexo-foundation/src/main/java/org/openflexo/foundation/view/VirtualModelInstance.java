@@ -144,7 +144,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param modelSlot
 	 * @return
 	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 			MS modelSlot);
 
 	/**
@@ -488,7 +488,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				MS modelSlot) {
 			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
 				if (msInstance.getModelSlot() == modelSlot) {
