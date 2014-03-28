@@ -45,7 +45,13 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 
 	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
 	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
+	
+	public FlexoConcept getFlexoConceptType();
+	
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
+	public VirtualModel getModelSlotVirtualModel() ;
+	
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
 			FlexoConceptInstanceParameter {
 
