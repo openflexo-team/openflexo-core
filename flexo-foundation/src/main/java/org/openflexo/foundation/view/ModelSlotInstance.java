@@ -53,7 +53,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
 @Imports({ @Import(FreeModelSlotInstance.class), @Import(TypeAwareModelSlotInstance.class), @Import(VirtualModelModelSlotInstance.class) })
-public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
+public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
 		VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = String.class)
