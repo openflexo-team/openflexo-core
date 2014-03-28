@@ -9,7 +9,7 @@
               <Children data="folder.children" name="subFolders" />
               <Children data="folder.resources" name="resources" />
             </BrowserElement>
-            <BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource" label="resource.name" icon="controller.iconForObject(resource)" isEditable="false" filtered="false" defaultVisible="true" name="resource" />
+            <BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource" label="resource.name" icon="controller.iconForObject(resource)" isEditable="false" filtered="false" defaultVisible="true" name="resource" enabled="resource.isLoaded" />
   </Browser>
   <LocalizedDictionary />
 </Panel>

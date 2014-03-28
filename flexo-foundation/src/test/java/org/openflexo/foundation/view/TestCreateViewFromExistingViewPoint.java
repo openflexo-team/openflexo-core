@@ -35,7 +35,7 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 	 */
 	@Test
 	@TestOrder(1)
-	public void testCreateViewPoint() {
+	public void testLoadViewPoint() {
 		instanciateTestServiceManager();
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 		assertNotNull(vpLib);

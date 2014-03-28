@@ -273,18 +273,21 @@ public interface FIBInspector extends FIBPanel {
 				}
 			}
 
-			if (ensureCreationOfTabForEPI(object.getFlexoConcept())) {
-				returned = true;
-			}
-			FIBTab tab = tabsForEPI.get(object.getFlexoConcept());
-			tab.setVisible(DataBinding.makeTrueBinding());
-			currentFlexoConcepts.add(object.getFlexoConcept());
+			if (object.getFlexoConcept() != null) {
 
-			// VERY IMPORTANT
-			// We MUST here redefine the type of inspected data
-			BindingVariable bv = getBindingModel().bindingVariableNamed("data");
-			if (bv != null && object != null) {
-				bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
+				if (ensureCreationOfTabForEPI(object.getFlexoConcept())) {
+					returned = true;
+				}
+				FIBTab tab = tabsForEPI.get(object.getFlexoConcept());
+				tab.setVisible(DataBinding.makeTrueBinding());
+				currentFlexoConcepts.add(object.getFlexoConcept());
+
+				// VERY IMPORTANT
+				// We MUST here redefine the type of inspected data
+				BindingVariable bv = getBindingModel().bindingVariableNamed("data");
+				if (bv != null && object != null) {
+					bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(object.getFlexoConcept()));
+				}
 			}
 
 			return returned;

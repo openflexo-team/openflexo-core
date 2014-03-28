@@ -162,7 +162,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<RD>, RD extends
 
 		@Override
 		public MS getModelSlot() {
-			if (getVirtualModelInstance() != null && modelSlot == null && StringUtils.isNotEmpty(modelSlotName)) {
+			if (getVirtualModelInstance() != null && getVirtualModelInstance().getVirtualModel() != null && modelSlot == null
+					&& StringUtils.isNotEmpty(modelSlotName)) {
 				modelSlot = (MS) getVirtualModelInstance().getVirtualModel().getModelSlot(modelSlotName);
 			}
 			return modelSlot;

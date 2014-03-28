@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.InvalidArgumentException;
@@ -57,36 +56,10 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  *            type of action, required to manage introspection for inheritance
  */
-public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelInstance, View, FlexoObject> implements FlexoObserver {
+public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelInstance<A>> extends FlexoAction<A, View, FlexoObject>
+		implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(CreateVirtualModelInstance.class.getPackage().getName());
-
-	public static FlexoActionType<CreateVirtualModelInstance, View, FlexoObject> actionType = new FlexoActionType<CreateVirtualModelInstance, View, FlexoObject>(
-			"instantiate_virtual_model", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
-
-		/**
-		 * Factory method
-		 */
-		@Override
-		public CreateVirtualModelInstance makeNewAction(View focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-			return new CreateVirtualModelInstance(focusedObject, globalSelection, editor);
-		}
-
-		@Override
-		public boolean isVisibleForSelection(View object, Vector<FlexoObject> globalSelection) {
-			return true;
-		}
-
-		@Override
-		public boolean isEnabledForSelection(View object, Vector<FlexoObject> globalSelection) {
-			return object != null;
-		}
-
-	};
-
-	static {
-		FlexoObjectImpl.addActionForClass(CreateVirtualModelInstance.actionType, View.class);
-	}
 
 	private VirtualModelInstance newVirtualModelInstance;
 
@@ -97,7 +70,8 @@ public class CreateVirtualModelInstance extends FlexoAction<CreateVirtualModelIn
 
 	public boolean skipChoosePopup = false;
 
-	public CreateVirtualModelInstance(View focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	protected CreateVirtualModelInstance(FlexoActionType<A, View, FlexoObject> actionType, View focusedObject,
+			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		modelSlotConfigurations = new Hashtable<ModelSlot<?>, ModelSlotInstanceConfiguration<?, ?>>();
 	}

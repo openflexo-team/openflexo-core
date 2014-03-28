@@ -38,6 +38,7 @@ import org.openflexo.foundation.action.SortFlexoProperties;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
@@ -992,6 +993,10 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 */
 		@Override
 		public boolean isValid(ValidationModel validationModel) {
+			if (validationModel == null) {
+				logger.warning("isValid() called with null validation model");
+				return true;
+			}
 			return validationModel.isValid(this);
 		}
 
