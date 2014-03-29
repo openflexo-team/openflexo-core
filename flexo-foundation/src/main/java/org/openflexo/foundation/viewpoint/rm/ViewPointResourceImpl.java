@@ -575,17 +575,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				XMLUtils.saveXMLFile(exampleDiagram, newFile);
 			}
 			
-			// Change class name for previews
-			Iterator<? extends Content> previewClassesElementIterator = diagram.getDescendants(new ElementFilter("ShapeGraphicalRepresentation").or(new ElementFilter("ConnectorGraphicalRepresentation")));
-			while(previewClassesElementIterator.hasNext()){
-				Element previewClassElement = (Element)previewClassesElementIterator.next();
-				previewClassElement.removeAttribute("className");
-			}
-			
 			removeNamedElements(diagram, "StartShapeGraphicalRepresentation");
 			removeNamedElements(diagram, "EndShapeGraphicalRepresentation");
 			removeNamedElements(diagram, "ArtifactFromShapeGraphicalRepresentation");
 			removeNamedElements(diagram, "ArtifactToShapeGraphicalRepresentation");
+			removeNamedElements(diagram, "PrimaryRepresentationConnectorPatternRole");
+			removeNamedElements(diagram, "PrimaryRepresentationShapePatternRole");
 			
 			// Retrieve diagram drop schemes
 			Iterator<Element> dropSchemeElements = diagram.getDescendants(new ElementFilter("DropScheme"));
@@ -684,10 +679,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			if(typedDiagramModelSlot!=null){
 				diagram.getRootElement().addContent(typedDiagramModelSlot);
 			}
-			
-			// Remove elements
-			removeNamedElements(diagram, "PrimaryRepresentationConnectorPatternRole");
-			removeNamedElements(diagram, "PrimaryRepresentationShapePatternRole");
 			
 			// Update names
 			convertNames16ToNames17(diagram);
@@ -805,11 +796,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "EditionPatternInstanceParameter");
 		changePropertyName("parentEditionPattern", "parentFlexoConcept", document, "EditionPattern");
 		
-		
-		
 		changePropertyName("editionPattern", "flexoConcept", document, "PaletteElement");
 		removeProperty("patternRole", document, "ContainedEMFObjectIndividualPatternRole");
 		removeProperty("patternRole", document, "ContainedEditionPatternInstancePatternRole");
+		removeProperty("className", document, "DrawingGraphicalRepresentation");
+		removeProperty("className", document, "ShapeGraphicalRepresentation");
+		removeProperty("className", document, "ConnectorGraphicalRepresentation");
+		
 	}
 
 	private static int computeNewID(Document document){
