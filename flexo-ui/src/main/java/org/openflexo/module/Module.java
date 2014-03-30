@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.drm.DocItem;
+import org.openflexo.drm.DocResourceManager;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.prefs.ModulePreferences;
@@ -202,19 +203,21 @@ public abstract class Module<M extends FlexoModule<M>> {
 	}
 
 	public String getHTMLDescription() {
-		Language language = getApplicationContext().getDocResourceManager().getLanguage(
-				getApplicationContext().getGeneralPreferences().getLanguage());
-		DocItem docItem = getApplicationContext().getDocResourceManager().getDocItem(getHelpTopic());
-		if (docItem != null) {
-			if (docItem.getLastApprovedActionForLanguage(language) != null) {
-				String returned = "<html>" + docItem.getLastApprovedActionForLanguage(language).getVersion().getFullHTMLDescription()
-						+ "</html>";
-				return returned;
-			}
-		}
+		DocResourceManager drm = getApplicationContext().getDocResourceManager();
+		if (drm != null){
+			Language language = drm.getLanguage(
+					getApplicationContext().getGeneralPreferences().getLanguage());
+			DocItem docItem = getApplicationContext().getDocResourceManager().getDocItem(getHelpTopic());
+			if (docItem != null) {
+				if (docItem.getLastApprovedActionForLanguage(language) != null) {
+					String returned = "<html>" + docItem.getLastApprovedActionForLanguage(language).getVersion().getFullHTMLDescription()
+							+ "</html>";
+					return returned;
+				}
+			}}
 
 		return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
-				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
+		+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
 	}
 
 	/**
