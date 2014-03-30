@@ -103,7 +103,12 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexodocresourcecenter</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 </project>
 
