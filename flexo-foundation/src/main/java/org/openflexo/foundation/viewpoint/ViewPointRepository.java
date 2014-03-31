@@ -40,7 +40,7 @@ public class ViewPointRepository extends FileResourceRepository<ViewPointResourc
 	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
 
 	private FlexoResourceCenter resourceCenter;
-	private final ViewPointLibrary viewPointLibrary;
+	private ViewPointLibrary viewPointLibrary;
 
 	public ViewPointRepository(FlexoResourceCenter resourceCenter, ViewPointLibrary vpLibrary) {
 		super(resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
@@ -60,6 +60,10 @@ public class ViewPointRepository extends FileResourceRepository<ViewPointResourc
 
 	public ViewPointLibrary getViewPointLibrary() {
 		return viewPointLibrary;
+	}
+	
+	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
+		this.viewPointLibrary = viewPointLibrary;
 	}
 
 	@Override
