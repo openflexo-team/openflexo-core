@@ -620,7 +620,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				if(hasSameID(thisMs, thisID) && thisMs.getName().equals("DiagramModelSlot")){
 					thisMs.setName("VirtualModelModelSlot");
 					thisMs.getAttributes().add(new Attribute("virtualModelURI", newThisUri));
-					thisMs.getAttributes().add(new Attribute("name", "this"));
+					thisMs.getAttributes().add(new Attribute("name", "virtualModelInstance"));
 					thisMs.getAttributes().add(new Attribute("id", Integer.toString(thisID)));
 					thisMs.removeAttribute("idref");
 				}
@@ -654,6 +654,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					for(Attribute attribute : element.getAttributes()){
 						if(attribute.getValue().startsWith("diagram")){
 							attribute.setValue(attribute.getValue().replace("diagram", "this"));
+						}
+						if(attribute.getValue().startsWith("this")){
+							if(element.getName().equals(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT)){
+								attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
+							}else{
+								attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
+							}
 						}
 					}
 				}
