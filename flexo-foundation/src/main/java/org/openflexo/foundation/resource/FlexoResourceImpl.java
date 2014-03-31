@@ -135,7 +135,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void notifyResourceModified() {
-		logger.info("notifyResourceModified(), resource=" + this);
+		// logger.info("notifyResourceModified(), resource=" + this);
 
 		ResourceModified notification = new ResourceModified(this, resourceData);
 		setChanged();
