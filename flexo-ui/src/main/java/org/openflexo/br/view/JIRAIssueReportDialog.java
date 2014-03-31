@@ -597,6 +597,10 @@ public class JIRAIssueReportDialog {
 		}
 	}
 
+	/*public Icon getIcon(JIRAProject project){
+		
+	}*/
+	
 	public List<JIRAComponent> getAvailableComponents() {
 		if (getIssue().getIssuetype() == null) {
 			return EMPTY_LIST;
