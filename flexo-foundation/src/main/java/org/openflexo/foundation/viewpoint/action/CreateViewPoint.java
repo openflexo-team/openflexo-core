@@ -215,6 +215,10 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 			errorMessage = "malformed_uri";
 			return false;
 		}
+		if (getViewPointLibrary() == null) {
+			errorMessage = "could_not_access_viewpoint_library";
+			return false;
+		}
 		if (getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
 			errorMessage = "already_existing_viewpoint_uri";
 			return false;

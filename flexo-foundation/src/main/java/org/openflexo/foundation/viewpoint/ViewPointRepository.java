@@ -21,10 +21,12 @@ package org.openflexo.foundation.viewpoint;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FileResourceRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.view.ViewRepository;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 
 /**
@@ -40,13 +42,13 @@ public class ViewPointRepository extends FileResourceRepository<ViewPointResourc
 	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
 
 	private FlexoResourceCenter resourceCenter;
-	private final ViewPointLibrary viewPointLibrary;
+	private final FlexoServiceManager serviceManager;
 
-	public ViewPointRepository(FlexoResourceCenter resourceCenter, ViewPointLibrary vpLibrary) {
+	public ViewPointRepository(FlexoResourceCenter resourceCenter, FlexoServiceManager serviceManager) {
 		super(resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
 				.getRootDirectory() : null);
 		this.resourceCenter = resourceCenter;
-		this.viewPointLibrary = vpLibrary;
+		this.serviceManager = serviceManager;
 		getRootFolder().setName(resourceCenter.getName());
 	}
 
@@ -59,7 +61,7 @@ public class ViewPointRepository extends FileResourceRepository<ViewPointResourc
 	}
 
 	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+		return serviceManager.getViewPointLibrary();
 	}
 
 	@Override

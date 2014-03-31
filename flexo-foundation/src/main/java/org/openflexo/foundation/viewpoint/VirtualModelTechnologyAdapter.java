@@ -255,8 +255,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 */
 	public ViewPointRepository createViewPointRepository(FlexoResourceCenter<?> resourceCenter) {
-		ViewPointRepository returned = new ViewPointRepository(resourceCenter, getTechnologyAdapterService().getServiceManager()
-				.getViewPointLibrary());
+		ViewPointRepository returned = new ViewPointRepository(resourceCenter, getTechnologyAdapterService().getServiceManager());
 		resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		return returned;
 	}
