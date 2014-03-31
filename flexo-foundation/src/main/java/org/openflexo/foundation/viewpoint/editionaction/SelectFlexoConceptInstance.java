@@ -164,7 +164,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 
 		@Override
 		public String getStringRepresentation() {
-			return getClass().getSimpleName() + (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
+			return getImplementedInterface().getSimpleName() + (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}
 

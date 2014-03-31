@@ -407,7 +407,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 		@Override
 		public String getStringRepresentation() {
-			return getClass().getSimpleName();
+			return getImplementedInterface().getSimpleName();
 		}
 
 		@Override
