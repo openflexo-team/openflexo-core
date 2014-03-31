@@ -94,7 +94,7 @@ import org.openflexo.toolbox.ToolBox;
 public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<VirtualModelTechnologyAdapter> {
 
-	public static final String REFLEXIVE_MODEL_SLOT_NAME = "this";
+	public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
 
 	public static final String RESOURCE = "resource";
 

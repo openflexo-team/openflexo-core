@@ -760,6 +760,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			if (getFlexoConcept() != null) {
 				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())));
+				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
