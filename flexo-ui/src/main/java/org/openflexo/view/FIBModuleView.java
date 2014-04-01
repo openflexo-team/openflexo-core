@@ -22,7 +22,6 @@ package org.openflexo.view;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -55,39 +54,38 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	// private FlexoController controller;
 	// private FIBView fibView;
 
-
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource) {
 		this(representedObject, controller, fibResource, false, controller.willLoad(fibResource));
 	}
-
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
 		this(representedObject, controller, fibResource, false, progress);
 	}
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller.willLoad(fibResource));
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller
+				.willLoad(fibResource));
 	}
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
 	}
-	// TODO : delete after debug
-/*
-	public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath) {
-		this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
-	}
-	public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-		this(representedObject, controller, fibResourcePath, false, progress);
-	}
 
-	public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
-	}
-	
-*/
-	
+	// TODO : delete after debug
+	/*
+		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath) {
+			this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
+		}
+		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
+			this(representedObject, controller, fibResourcePath, false, progress);
+		}
+
+		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
+				FlexoProgress progress) {
+			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
+		}
+		
+	*/
 
 	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
 			FlexoProgress progress) {
@@ -111,10 +109,17 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	@Override
 	public void willHide() {
+		// Override when required
 	}
 
 	@Override
 	public void willShow() {
+		// Override when required
+	}
+
+	@Override
+	public void show(FlexoController controller, FlexoPerspective perspective) {
+		// Override when required
 	}
 
 	@Override

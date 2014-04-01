@@ -70,10 +70,10 @@ import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.CheckboxParameter;
 import org.openflexo.foundation.viewpoint.ClassParameter;
 import org.openflexo.foundation.viewpoint.DataPropertyParameter;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourActionType;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.IndividualParameter;
 import org.openflexo.foundation.viewpoint.IntegerParameter;
 import org.openflexo.foundation.viewpoint.ListParameter;
@@ -545,6 +545,10 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		}
 
 		public boolean isValidable(FlexoBehaviourAction<?, ?, ?> action) {
+			if (action == null) {
+				// Called during initialization, don't care
+				return false;
+			}
 			return action.areRequiredParametersSetAndValid();
 		}
 

@@ -229,9 +229,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param controller
 	 * @param perspective
 	 */
-	public void notifyModuleViewDisplayed(ModuleView<?> moduleView, FlexoController controller, FlexoPerspective perspective) {
+	/*public void notifyModuleViewDisplayed(ModuleView<?> moduleView, FlexoController controller, FlexoPerspective perspective) {
 		System.out.println(">>>>>>> Will display module view for " + moduleView.getRepresentedObject());
-	}
+	}*/
 
 	/*public File getFIBPanelForObject(Object anObject) {
 	>>>>>>> branch '1.7' of ssh://git@github.com/openflexo-team/openflexo-core.git

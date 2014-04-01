@@ -28,9 +28,9 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class EmptyPanel<O extends FlexoObject> extends JPanel implements ModuleView<O> {
 
-	private FlexoController controller;
-	private FlexoPerspective perspective;
-	private O representedObject;
+	private final FlexoController controller;
+	private final FlexoPerspective perspective;
+	private final O representedObject;
 	private String title = "";
 
 	/**
@@ -81,6 +81,11 @@ public class EmptyPanel<O extends FlexoObject> extends JPanel implements ModuleV
 	@Override
 	public void willHide() {
 		deleteModuleView();
+	}
+
+	@Override
+	public void show(FlexoController controller, FlexoPerspective perspective) {
+		// Override when required
 	}
 
 	/**

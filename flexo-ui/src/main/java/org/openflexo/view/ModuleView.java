@@ -20,6 +20,7 @@
 package org.openflexo.view;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -52,6 +53,12 @@ public interface ModuleView<O extends FlexoObject> {
 	 * 
 	 */
 	public void willHide();
+
+	/**
+	 * This method is called when the module view is shown with a controller and perspective
+	 * 
+	 */
+	public void show(FlexoController controller, FlexoPerspective perspective);
 
 	/**
 	 * Returns flag indicating if this view is itself responsible for scroll management When not, Flexo will manage it's own scrollbar for

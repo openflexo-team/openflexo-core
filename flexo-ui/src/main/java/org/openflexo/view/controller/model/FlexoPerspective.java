@@ -126,9 +126,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		getPropertyChangeSupport().firePropertyChange(FOOTER, old, footer);
 	}
 
-	public void notifyModuleViewDisplayed(ModuleView<?> moduleView) {
-
-	}
+	/*public void notifyModuleViewDisplayed(ModuleView<?> moduleView) {
+	}*/
 
 	public JComponent getTopLeftView() {
 		return topLeftView;

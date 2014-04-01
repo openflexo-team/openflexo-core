@@ -84,6 +84,10 @@ public abstract class OntologyView<T extends FlexoObject & IFlexoOntology> exten
 	}
 
 	@Override
+	public void show(FlexoController controller, FlexoPerspective perspective) {
+	}
+
+	@Override
 	public T getRepresentedObject() {
 		return getOntology();
 	}

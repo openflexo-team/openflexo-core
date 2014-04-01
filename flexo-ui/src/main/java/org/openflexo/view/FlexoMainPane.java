@@ -331,7 +331,8 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 		repaint();
 		controller.getFlexoFrame().updateTitle();
 		if (moduleView != null) {
-			controller.getCurrentPerspective().notifyModuleViewDisplayed(moduleView);
+			moduleView.show(controller, controller.getCurrentPerspective());
+			// controller.getCurrentPerspective().notifyModuleViewDisplayed(moduleView);
 		}
 		if (controller.getFlexoFrame().isValid()) {
 			getController().getApplicationContext().getDocResourceManager().validateWindow(controller.getFlexoFrame());

@@ -44,15 +44,18 @@ public class DefaultModuleView<O extends FlexoObject> extends JPanel implements 
 	}
 
 	@Override
-	public void willShow() {
-		// TODO Auto-generated method stub
-
+	public void willHide() {
+		// Override when required
 	}
 
 	@Override
-	public void willHide() {
-		// TODO Auto-generated method stub
+	public void willShow() {
+		// Override when required
+	}
 
+	@Override
+	public void show(FlexoController controller, FlexoPerspective perspective) {
+		// Override when required
 	}
 
 	@Override
