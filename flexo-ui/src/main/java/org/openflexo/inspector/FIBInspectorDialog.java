@@ -116,12 +116,14 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 				if (icon != null) {
 					setIconImage(icon.getImage());
 				}
-				if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null
+				setTitle(((FlexoObject) object).getImplementedInterface().getSimpleName());
+
+				/*if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null
 						&& object.getClass() != getInspectorPanel().getCurrentlyDisplayedInspector().getDataClass()
 						&& !object.getClass().getSimpleName().contains("javassist")) {
 					setTitle(getInspectorPanel().getCurrentlyDisplayedInspector().getParameter("title") + " : "
 							+ object.getClass().getSimpleName());
-				}
+				}*/
 			}
 		}
 	}
