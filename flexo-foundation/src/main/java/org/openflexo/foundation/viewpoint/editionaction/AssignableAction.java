@@ -151,7 +151,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 		@Override
 		public String getStringRepresentation() {
-			return getClass().getSimpleName()
+			return getImplementedInterface().getSimpleName()
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}
 

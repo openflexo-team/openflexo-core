@@ -1,15 +1,15 @@
 {"expand": "projects",
 	"projects": [{
 		"expand": "issuetypes",
-		"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-		"id": "10206",
-		"key": "MODULES",
-		"name": "Openflexo_Modules",
+		"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+		"id": "10201",
+		"key": "DIANA",
+		"name": "Diana",
 		"avatarUrls": {
-			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 		},
 		"issuetypes": [{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/1",
@@ -101,9 +101,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -182,15 +182,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -206,9 +206,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -306,19 +306,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -456,9 +476,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -537,15 +557,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -561,9 +581,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -651,19 +671,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -791,9 +831,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -872,15 +912,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -896,9 +936,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -986,19 +1026,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -1126,9 +1186,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1207,15 +1267,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -1231,9 +1291,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1321,19 +1381,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -1470,9 +1550,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1551,15 +1631,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -1575,9 +1655,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1665,19 +1745,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -1815,9 +1915,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1896,15 +1996,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -1920,9 +2020,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2010,19 +2110,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -2170,9 +2290,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2251,15 +2371,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -2275,9 +2395,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2365,19 +2485,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -2514,9 +2654,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2595,15 +2735,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -2619,9 +2759,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2709,19 +2849,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -2858,9 +3018,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2939,15 +3099,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -2963,9 +3123,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3053,19 +3213,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -3202,9 +3382,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3283,15 +3463,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -3307,9 +3487,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3397,19 +3577,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {
@@ -3546,9 +3746,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3627,15 +3827,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/DIANA",
+						"id": "10201",
+						"key": "DIANA",
+						"name": "Diana",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10201&avatarId=10713",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10201&avatarId=10713",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10201&avatarId=10713",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10201&avatarId=10713"
 						}
 					}]
 				},
@@ -3651,9 +3851,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10411",
+						"id": "10411",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3741,19 +3941,39 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10412",
+						"id": "10412",
+						"name": "Diana API"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10413",
+						"id": "10413",
+						"name": "Diana Core"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10414",
+						"id": "10414",
+						"name": "Diana Drawing Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10415",
+						"id": "10415",
+						"name": "Diana Geom"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10416",
+						"id": "10416",
+						"name": "Diana Geom Edit"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10417",
+						"id": "10417",
+						"name": "Diana PPT Editor"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10418",
+						"id": "10418",
+						"name": "Diana Swing"
 					}]
 				},
 				"customfield_10104": {

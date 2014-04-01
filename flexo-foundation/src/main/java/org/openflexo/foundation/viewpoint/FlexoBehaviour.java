@@ -64,7 +64,7 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
 public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function {
 
-	public static final String THIS = "this";
+	public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
 	@PropertyIdentifier(type = FlexoConcept.class)
@@ -260,7 +260,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getClass().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {", context);
+			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			for (EditionAction action : getActions()) {
 				out.append(action.getFMLRepresentation(context), context, 1);
@@ -758,8 +758,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
-				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.THIS, FlexoConceptInstanceType
+				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())));
+				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));

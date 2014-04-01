@@ -102,7 +102,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
 			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
-		} else if (variable.getVariableName().equals(FlexoBehaviour.THIS)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
 			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);

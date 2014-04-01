@@ -1,15 +1,15 @@
 {"expand": "projects",
 	"projects": [{
 		"expand": "issuetypes",
-		"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-		"id": "10206",
-		"key": "MODULES",
-		"name": "Openflexo_Modules",
+		"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+		"id": "10205",
+		"key": "CORE",
+		"name": "Openflexo_Core",
 		"avatarUrls": {
-			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 		},
 		"issuetypes": [{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/1",
@@ -101,8 +101,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -182,15 +182,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -206,8 +206,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -306,19 +306,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -456,8 +451,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -537,15 +532,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -561,8 +556,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -651,19 +646,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -791,8 +781,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -872,15 +862,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -896,8 +886,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -986,19 +976,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -1126,8 +1111,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -1207,15 +1192,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -1231,8 +1216,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -1321,19 +1306,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -1470,8 +1450,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -1551,15 +1531,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -1575,8 +1555,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -1665,19 +1645,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -1815,8 +1790,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -1896,15 +1871,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -1920,8 +1895,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2010,19 +1985,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -2170,8 +2140,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2251,15 +2221,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -2275,8 +2245,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2365,19 +2335,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -2514,8 +2479,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2595,15 +2560,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -2619,8 +2584,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2709,19 +2674,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -2858,8 +2818,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -2939,15 +2899,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -2963,8 +2923,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -3053,19 +3013,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -3202,8 +3157,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -3283,15 +3238,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -3307,8 +3262,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -3397,19 +3352,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {
@@ -3546,8 +3496,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -3627,15 +3577,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CORE",
+						"id": "10205",
+						"key": "CORE",
+						"name": "Openflexo_Core",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10205&avatarId=10714",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10205&avatarId=10714",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10205&avatarId=10714",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10205&avatarId=10714"
 						}
 					}]
 				},
@@ -3651,8 +3601,8 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10408",
+						"id": "10408",
 						"name": "1.7",
 						"archived": false,
 						"released": false,
@@ -3741,19 +3691,14 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10409",
+						"id": "10409",
+						"name": "Flexo foundation"
 					},
 					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10410",
+						"id": "10410",
+						"name": "Flexo UI"
 					}]
 				},
 				"customfield_10104": {

@@ -1,15 +1,15 @@
 {"expand": "projects",
 	"projects": [{
 		"expand": "issuetypes",
-		"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-		"id": "10206",
-		"key": "MODULES",
-		"name": "Openflexo_Modules",
+		"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+		"id": "10204",
+		"key": "CONNIE",
+		"name": "Connie",
 		"avatarUrls": {
-			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+			"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+			"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+			"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+			"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 		},
 		"issuetypes": [{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/1",
@@ -101,9 +101,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -182,15 +182,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -206,9 +206,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -306,19 +306,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -456,9 +446,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -537,15 +527,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -561,9 +551,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -651,19 +641,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -791,9 +771,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -872,15 +852,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -896,9 +876,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -986,19 +966,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -1126,9 +1096,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1207,15 +1177,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -1231,9 +1201,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1321,19 +1291,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -1470,9 +1430,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1551,15 +1511,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -1575,9 +1535,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1665,19 +1625,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -1815,9 +1765,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -1896,15 +1846,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -1920,9 +1870,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2010,19 +1960,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -2170,9 +2110,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2251,15 +2191,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -2275,9 +2215,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2365,19 +2305,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -2514,9 +2444,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2595,15 +2525,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -2619,9 +2549,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2709,19 +2639,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -2858,9 +2778,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -2939,15 +2859,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -2963,9 +2883,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3053,19 +2973,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -3202,9 +3112,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3283,15 +3193,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -3307,9 +3217,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3397,19 +3307,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {
@@ -3546,9 +3446,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3627,15 +3527,15 @@
 					"name": "Projet",
 					"operations": ["set"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/project/MODULES",
-						"id": "10206",
-						"key": "MODULES",
-						"name": "Openflexo_Modules",
+						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
+						"id": "10204",
+						"key": "CONNIE",
+						"name": "Connie",
 						"avatarUrls": {
-							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10206&avatarId=10715",
-							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10206&avatarId=10715",
-							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10206&avatarId=10715",
-							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10206&avatarId=10715"
+							"16x16": "https://bugs.openflexo.org/secure/projectavatar?size=xsmall&pid=10204&avatarId=10710",
+							"24x24": "https://bugs.openflexo.org/secure/projectavatar?size=small&pid=10204&avatarId=10710",
+							"32x32": "https://bugs.openflexo.org/secure/projectavatar?size=medium&pid=10204&avatarId=10710",
+							"48x48": "https://bugs.openflexo.org/secure/projectavatar?pid=10204&avatarId=10710"
 						}
 					}]
 				},
@@ -3651,9 +3551,9 @@
 					"add",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/version/10407",
-						"id": "10407",
-						"name": "1.7",
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10405",
+						"id": "10405",
+						"name": "1.0",
 						"archived": false,
 						"released": false,
 						"startDate": "2014-01-01",
@@ -3741,19 +3641,9 @@
 					"set",
 					"remove"],
 					"allowedValues": [{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10400",
-						"id": "10400",
-						"name": "Free Modeling Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10402",
-						"id": "10402",
-						"name": "View Editor"
-					},
-					{
-						"self": "https://bugs.openflexo.org/rest/api/2/component/10401",
-						"id": "10401",
-						"name": "Viewpoint Modeler"
+						"self": "https://bugs.openflexo.org/rest/api/2/component/10411",
+						"id": "10411",
+						"name": "Connie Core"
 					}]
 				},
 				"customfield_10104": {

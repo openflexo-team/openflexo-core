@@ -62,6 +62,7 @@ import org.openflexo.model.factory.CloneableProxyObject;
 import org.openflexo.model.factory.DeletableProxyObject;
 import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.KeyValueCoding;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.HTMLUtils;
 
 /**
@@ -210,6 +211,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
 
 	public void unregisterFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
+	
+	public Class<?> getImplementedInterface();
 
 	@Deprecated
 	public void setChanged();
@@ -1179,6 +1182,16 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 					// TODO sets last id of resource ?
 				}
 			}
+		}
+		
+		public Class<?> getImplementedInterface() {
+			if (this instanceof InnerResourceData 
+					&& ((InnerResourceData) this).getResourceData() !=null
+					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
+			    ModelFactory f = ((PamelaResource) ((InnerResourceData) this).getResourceData().getResource()).getFactory();
+			    return f.getModelEntityForInstance(this).getImplementedInterface();
+			}
+			return getClass();
 		}
 
 	}
