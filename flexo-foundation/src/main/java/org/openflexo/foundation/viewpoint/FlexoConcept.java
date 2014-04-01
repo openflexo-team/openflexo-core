@@ -204,7 +204,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public boolean isRoot();
 
-	public <ES extends FlexoBehaviour> List<ES> getEditionSchemes(Class<ES> editionSchemeClass);
+	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
@@ -459,7 +459,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <ES extends FlexoBehaviour> List<ES> getEditionSchemes(Class<ES> editionSchemeClass) {
+		public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass) {
 			List<ES> returned = new ArrayList<ES>();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
@@ -471,12 +471,12 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public List<AbstractActionScheme> getAbstractActionSchemes() {
-			return getEditionSchemes(AbstractActionScheme.class);
+			return getFlexoBehaviours(AbstractActionScheme.class);
 		}
 
 		@Override
 		public List<ActionScheme> getActionSchemes() {
-			return getEditionSchemes(ActionScheme.class);
+			return getFlexoBehaviours(ActionScheme.class);
 		}
 
 		/**
@@ -496,22 +496,22 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public List<DeletionScheme> getDeletionSchemes() {
-			return getEditionSchemes(DeletionScheme.class);
+			return getFlexoBehaviours(DeletionScheme.class);
 		}
 
 		@Override
 		public List<NavigationScheme> getNavigationSchemes() {
-			return getEditionSchemes(NavigationScheme.class);
+			return getFlexoBehaviours(NavigationScheme.class);
 		}
 
 		@Override
 		public List<AbstractCreationScheme> getAbstractCreationSchemes() {
-			return getEditionSchemes(AbstractCreationScheme.class);
+			return getFlexoBehaviours(AbstractCreationScheme.class);
 		}
 
 		@Override
 		public List<CreationScheme> getCreationSchemes() {
-			return getEditionSchemes(CreationScheme.class);
+			return getFlexoBehaviours(CreationScheme.class);
 		}
 
 		@Override
