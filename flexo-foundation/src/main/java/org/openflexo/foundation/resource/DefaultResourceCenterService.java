@@ -8,7 +8,6 @@ import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -237,14 +236,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}
 			}
 		}
-		
-		if (caller instanceof ViewPointLibrary) {
+
+		/*if (caller instanceof ViewPointLibrary) {
 			if (notification instanceof ServiceRegistered) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
 					rc.getViewPointRepository().setViewPointLibrary((ViewPointLibrary)caller);
 				}
 			}
-		}
+		}*/
 	}
 
 }
