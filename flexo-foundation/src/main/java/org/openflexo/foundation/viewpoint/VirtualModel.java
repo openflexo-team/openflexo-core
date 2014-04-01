@@ -407,7 +407,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		protected VirtualModelModelSlot makeReflexiveModelSlot() {
-			if (getViewPoint().getViewPointLibrary().getServiceManager() != null
+			if (getViewPoint() != null && getViewPoint().getViewPointLibrary() != null
+					&& getViewPoint().getViewPointLibrary().getServiceManager() != null
 					&& getViewPoint().getViewPointLibrary().getServiceManager().getService(TechnologyAdapterService.class) != null) {
 				VirtualModelTechnologyAdapter builtInTA = getViewPoint().getViewPointLibrary().getServiceManager()
 						.getService(TechnologyAdapterService.class).getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
@@ -541,10 +542,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public FlexoConcept getFlexoConcept(String flexoConceptNameOrURI) {
 			for (FlexoConcept flexoConcept : getFlexoConcepts()) {
-				if (flexoConcept.getName()!=null && flexoConcept.getName().equals(flexoConceptNameOrURI)) {
+				if (flexoConcept.getName() != null && flexoConcept.getName().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
-				if (flexoConcept.getName()!=null && flexoConcept.getURI().equals(flexoConceptNameOrURI)) {
+				if (flexoConcept.getName() != null && flexoConcept.getURI().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
 				// Special case to handle conversion from old VP version
