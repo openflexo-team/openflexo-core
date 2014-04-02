@@ -1,6 +1,5 @@
 package org.openflexo.view.controller;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
@@ -21,17 +20,16 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
-import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
+import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
 
 /**
- * Represents a controller with basic ViewPoint edition facilities Extends FlexoFIBController by supporting features relative to ViewPoint
- * edirion
- * 
+ * Represents a controller with basic ViewPoint edition facilities<br>
+ * Extends FlexoFIBController by supporting features relative to ViewPoint edition
  * 
  * @author sylvain
  */
@@ -144,14 +142,12 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return newEditionScheme;
 	}
 
-	
 	public FlexoBehaviour createAdvancedScheme(FlexoConcept flexoConcept) {
 		CreateEditionScheme createEditionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createEditionScheme.doAction();
 		return createEditionScheme.getNewFlexoBehaviour();
 	}
-	
-	
+
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
 		CloningScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCloningScheme();
 		newEditionScheme.setName("clone");
@@ -170,7 +166,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		createEditionAction.doAction();
 		return createEditionAction.getNewEditionAction();
 	}
-	
+
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
 			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
