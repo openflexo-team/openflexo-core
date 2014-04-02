@@ -647,7 +647,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 	
-			// Change all the "diagram" binding with "this"
+			// Change all the "diagram" binding with "this", and "toplevel" with typedDiagramModelSlot.topLevel" in case of not DropSchemeAction
 			for(Content content : diagram.getDescendants()){
 				if(content instanceof Element){
 					Element element = (Element) content;
@@ -655,7 +655,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						if(attribute.getValue().startsWith("diagram")){
 							attribute.setValue(attribute.getValue().replace("diagram", "this"));
 						}
+						if(attribute.getValue().startsWith("topLevel")){
+							attribute.setValue(attribute.getValue().replace("topLevel", "typedDiagramModelSlot.topLevel"));
+						}
 					}
+					
 				}
 			}
 			
