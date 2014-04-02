@@ -655,13 +655,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						if(attribute.getValue().startsWith("diagram")){
 							attribute.setValue(attribute.getValue().replace("diagram", "this"));
 						}
-						if(attribute.getValue().startsWith("this")){
-							if(element.getName().equals(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT)){
-								attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
-							}else{
-								attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
-							}
-						}
 					}
 				}
 			}
@@ -790,6 +783,22 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("AddressedOWLModelSlot", "OWLModelSlot", document);
 		convertOldNameToNewNames("AddressedVirtualModelModelSlot", "VirtualModelModelSlot", document);
 		convertOldNameToNewNames("AddressedDiagramModelSlot", "TypedDiagramModelSlot", document);
+		
+		// Change all "this"
+		for(Content content : document.getDescendants()){
+			if(content instanceof Element){
+				Element element = (Element) content;
+				for(Attribute attribute : element.getAttributes()){
+					if(attribute.getValue().startsWith("this")){
+						if(element.getName().equals("ModelSlot_VirtualModelModelSlot")){
+							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
+						}else{
+							attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
+						}
+					}
+				}
+			}
+		}
 		
 	}
 
