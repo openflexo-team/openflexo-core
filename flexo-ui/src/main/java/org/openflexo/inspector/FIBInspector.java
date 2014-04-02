@@ -19,8 +19,10 @@
  */
 package org.openflexo.inspector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -104,12 +106,16 @@ public interface FIBInspector extends FIBPanel {
 		private final Vector<FlexoConcept> currentFlexoConcepts = new Vector<FlexoConcept>();
 		private final Hashtable<FlexoConcept, FIBTab> tabsForEPIReference = new Hashtable<FlexoConcept, FIBTab>();
 		private final Hashtable<FlexoConcept, FIBTab> tabsForEPI = new Hashtable<FlexoConcept, FIBTab>();
+		private final List<FIBInspector> superInspectorsWereAppened = new ArrayList<FIBInspector>();
 
 		@Override
 		public FIBModelFactory getFactory() {
 			return ModuleInspectorController.INSPECTOR_FACTORY;
 		}
 
+		
+		// Vincent: old content
+		/*
 		@Override
 		public FIBInspector getSuperInspector() {
 			return superInspector;
@@ -130,17 +136,57 @@ public interface FIBInspector extends FIBPanel {
 			}
 		}
 
-		@Override
-		public String toString() {
-			return "Inspector[" + getDataType() + "]";
-		}
-
 		protected void appendSuperInspector(FIBInspector superInspector) {
 			if (!superInspectorWereAppened) {
 				append((FIBInspector) superInspector.cloneObject());
 				superInspectorWereAppened = true;
 				// logger.info("< Appened " + superInspector + " to " + this);
 			}
+		}*/
+		
+		// Vincent: new content
+		@Override
+		public void appendSuperInspectors(ModuleInspectorController inspectorController) {
+			
+			if(!superInspectorWereAppened)
+			{
+				if (getDataType() == null) {
+					return;
+				}
+				if (getDataType() instanceof Class) {
+					FIBInspector superInspector = inspectorController.inspectorForClass(((Class) getDataType()).getSuperclass());
+					if (superInspector != null) {
+						superInspector.appendSuperInspectors(inspectorController);
+						appendSuperInspectors(superInspector);
+					}
+					
+					for(Class foundInterface : dataClass.getInterfaces()){
+						FIBInspector otherInspector = inspectorController.inspectorForClass(foundInterface);
+						if(otherInspector!=null){
+							otherInspector.appendSuperInspectors(inspectorController);
+							appendSuperInspectors(otherInspector);
+						}
+					}
+				}
+				
+				
+				superInspectorWereAppened= true;
+			}
+		}
+		
+		private void appendSuperInspectors(FIBInspector fibInspector){
+			if(fibInspector!=null && !superInspectorsWereAppened.contains(fibInspector)){
+				append((FIBInspector) fibInspector.cloneObject());
+				superInspectorsWereAppened.add(fibInspector);
+				System.out.println("< Appened " + fibInspector + " to " + this);
+			}
+		}
+		// End of new content
+		
+		
+		@Override
+		public String toString() {
+			return "Inspector[" + getDataType() + "]";
 		}
 
 		@Override
