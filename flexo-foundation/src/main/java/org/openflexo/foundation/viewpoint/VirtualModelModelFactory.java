@@ -264,6 +264,13 @@ public class VirtualModelModelFactory extends ModelFactory {
 	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter() {
 		return newInstance(FlexoConceptInstanceParameter.class);
 	}
+	
+	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter(VirtualModelModelSlot virtualModelModelSlot) {
+		FlexoConceptInstanceParameter returned = newInstance(FlexoConceptInstanceParameter.class);
+		returned.setModelSlot(virtualModelModelSlot);
+		return returned;
+	}
+
 
 	public FlexoBehaviourParameters newFlexoBehaviourParameters(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameters returned = newInstance(FlexoBehaviourParameters.class);
