@@ -21,8 +21,6 @@ package org.openflexo.inspector;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,8 +55,6 @@ import org.openflexo.view.controller.FlexoController;
 public class ModuleInspectorController extends Observable implements Observer {
 
 	private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
-
-	
 
 	static final Logger logger = Logger.getLogger(ModuleInspectorController.class.getPackage().getName());
 
@@ -115,9 +111,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Loading directory: " + dir);
 		}
-		if (dir != null){
+		if (dir != null) {
 			for (Resource f : dir.getContents(Pattern.compile(".*[.]inspector"))) {
-				
+
 				logger.fine("Loading: " + f.getURI());
 				FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
 				if (inspector != null) {
