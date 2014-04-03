@@ -30,7 +30,10 @@ import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.inspector.ModuleInspectorController.InspectedObjectChanged;
 import org.openflexo.swing.WindowSynchronizer;
 import org.openflexo.utils.WindowBoundsSaver;
@@ -111,7 +114,16 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 			} else if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null) {
 				setTitle(getInspectorPanel().getCurrentlyDisplayedInspector().getParameter("title"));
 			}
-			if (object instanceof FlexoObject) {
+			if (object instanceof FlexoResource) {
+				FlexoResource<?> resource = (FlexoResource<?>) object;
+				if (resource instanceof TechnologyAdapterResource) {
+					setIconImage(FlexoController.statelessIconForTechnologyAdapterResource((TechnologyAdapterResource<?, ?>) resource)
+							.getImage());
+				} else {
+					setIconImage(IconLibrary.OPENFLEXO_NOTEXT_16.getImage());
+				}
+				setTitle(resource.getResourceDataClass().getSimpleName() + " (unloaded)");
+			} else if (object instanceof FlexoObject) {
 				ImageIcon icon = FlexoController.statelessIconForObject(object);
 				if (icon != null) {
 					setIconImage(icon.getImage());
@@ -125,6 +137,9 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 							+ object.getClass().getSimpleName());
 				}*/
 			}
+
+			System.out.println("Title for " + object + " is now " + getTitle());
+
 		}
 	}
 
