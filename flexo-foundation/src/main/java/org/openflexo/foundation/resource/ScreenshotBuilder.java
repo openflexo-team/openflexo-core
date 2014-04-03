@@ -22,10 +22,8 @@ package org.openflexo.foundation.resource;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,12 +35,15 @@ import javax.swing.JFrame;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.FlexoSwingUtils;
 import org.openflexo.swing.ImageUtils;
 
 /**
- * Utility class used to manage screenshots
+ * Utility class used to manage screenshots<br>
+ * 
+ * This class should remain stateless and should avoid to reference data
  * 
  * @author sylvain
  * 
@@ -297,22 +298,25 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	 * @return
 	 */
 	private ScreenshotImage<T> getEmptyScreenshot() {
-		InputStream fis = ResourceLocator.locateResource(("LatexExtras/EmptyScreenshot.jpg")).openInputStream();
-		if (fis != null) {
-			try {
-				BufferedImage bi = ImageIO.read(fis);
-				ScreenshotImage<T> i = new ScreenshotImage<T>(null);
-				i.image = bi;
-				i.trimInfo = new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
-				return i;
-			} catch (IOException e) {
-				if (logger.isLoggable(Level.WARNING)) {
-					logger.warning("Error trying to read file (Resource) LatexExtras/EmptyScreenshot.jpg");
+		Resource r = ResourceLocator.locateResource(("Resources/EmptyScreenshot.jpg"));
+		if (r != null) {
+			InputStream fis = r.openInputStream();
+			if (fis != null) {
+				try {
+					BufferedImage bi = ImageIO.read(fis);
+					ScreenshotImage<T> i = new ScreenshotImage<T>(null);
+					i.image = bi;
+					i.trimInfo = new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
+					return i;
+				} catch (IOException e) {
+					if (logger.isLoggable(Level.WARNING)) {
+						logger.warning("Error trying to read file (Resource) Resources/EmptyScreenshot.jpg");
+					}
 				}
 			}
 		}
 		if (logger.isLoggable(Level.SEVERE)) {
-			logger.severe("Cannot find LatexExtras/EmptyScreenshot.jpg returning null");
+			logger.severe("Cannot find Resources/EmptyScreenshot.jpg returning null");
 		}
 		return null;
 	}
