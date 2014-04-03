@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(PropertyParameter.PropertyParameterImpl.class)
 @XMLElement
-@Imports({@Import(ObjectPropertyParameter.class),@Import(DataPropertyParameter.class)})
+@Imports({ @Import(ObjectPropertyParameter.class), @Import(DataPropertyParameter.class) })
 public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareModelSlot<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
@@ -60,6 +60,10 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 	@Setter(PARENT_PROPERTY_URI_KEY)
 	public void _setParentPropertyURI(String parentPropertyURI);
 
+	public IFlexoOntologyStructuralProperty<?> getParentProperty();
+
+	public void setParentProperty(IFlexoOntologyStructuralProperty<?> ontologyProperty);
+
 	@Getter(value = DOMAIN_URI_KEY)
 	@XMLAttribute(xmlTag = "domain")
 	public String _getDomainURI();
@@ -69,20 +73,20 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 
 	@Getter(value = DOMAIN_VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<IFlexoOntologyClass> getDomainValue();
+	public DataBinding<IFlexoOntologyClass<?>> getDomainValue();
 
 	@Setter(DOMAIN_VALUE_KEY)
-	public void setDomainValue(DataBinding<IFlexoOntologyClass> domainValue);
+	public void setDomainValue(DataBinding<IFlexoOntologyClass<?>> domainValue);
 
-	public IFlexoOntologyClass getDomain();
+	public IFlexoOntologyClass<?> getDomain();
 
-	public void setDomain(IFlexoOntologyClass c);
+	public void setDomain(IFlexoOntologyClass<?> c);
 
 	public boolean getIsDynamicDomainValue();
 
 	public void setIsDynamicDomainValue(boolean isDynamic);
 
-	public IFlexoOntologyClass evaluateDomainValue(BindingEvaluationContext parameterRetriever);
+	public IFlexoOntologyClass<?> evaluateDomainValue(BindingEvaluationContext parameterRetriever);
 
 	public static abstract class PropertyParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
 			PropertyParameter {
@@ -91,7 +95,7 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 		private String parentPropertyURI;
 		private boolean isDynamicDomainValueSet = false;
 
-		private DataBinding<IFlexoOntologyClass> domainValue;
+		private DataBinding<IFlexoOntologyClass<?>> domainValue;
 
 		public PropertyParameterImpl() {
 			super();
@@ -118,26 +122,26 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 		}
 
 		@Override
-		public IFlexoOntologyClass getDomain() {
+		public IFlexoOntologyClass<?> getDomain() {
 			return getVirtualModel().getOntologyClass(_getDomainURI());
 		}
 
 		@Override
-		public void setDomain(IFlexoOntologyClass c) {
+		public void setDomain(IFlexoOntologyClass<?> c) {
 			_setDomainURI(c != null ? c.getURI() : null);
 		}
 
 		@Override
-		public DataBinding<IFlexoOntologyClass> getDomainValue() {
+		public DataBinding<IFlexoOntologyClass<?>> getDomainValue() {
 			if (domainValue == null) {
-				domainValue = new DataBinding<IFlexoOntologyClass>(this, IFlexoOntologyClass.class, BindingDefinitionType.GET);
+				domainValue = new DataBinding<IFlexoOntologyClass<?>>(this, IFlexoOntologyClass.class, BindingDefinitionType.GET);
 				domainValue.setBindingName("domainValue");
 			}
 			return domainValue;
 		}
 
 		@Override
-		public void setDomainValue(DataBinding<IFlexoOntologyClass> domainValue) {
+		public void setDomainValue(DataBinding<IFlexoOntologyClass<?>> domainValue) {
 			if (domainValue != null) {
 				domainValue.setOwner(this);
 				domainValue.setBindingName("domainValue");
@@ -163,7 +167,7 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 		}
 
 		@Override
-		public IFlexoOntologyClass evaluateDomainValue(BindingEvaluationContext parameterRetriever) {
+		public IFlexoOntologyClass<?> evaluateDomainValue(BindingEvaluationContext parameterRetriever) {
 			if (getDomainValue().isValid()) {
 				try {
 					return getDomainValue().getBindingValue(parameterRetriever);
@@ -188,11 +192,13 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			this.parentPropertyURI = parentPropertyURI;
 		}
 
-		public IFlexoOntologyStructuralProperty getParentProperty() {
+		@Override
+		public IFlexoOntologyStructuralProperty<?> getParentProperty() {
 			return getVirtualModel().getOntologyProperty(_getParentPropertyURI());
 		}
 
-		public void setParentProperty(IFlexoOntologyStructuralProperty ontologyProperty) {
+		@Override
+		public void setParentProperty(IFlexoOntologyStructuralProperty<?> ontologyProperty) {
 			parentPropertyURI = ontologyProperty != null ? ontologyProperty.getURI() : null;
 		}
 

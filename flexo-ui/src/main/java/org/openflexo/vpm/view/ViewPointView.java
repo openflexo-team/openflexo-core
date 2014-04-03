@@ -61,4 +61,10 @@ public class ViewPointView extends FIBModuleView<ViewPoint> implements FIBMouseC
 		}
 	}
 
+	@Override
+	public void show(final FlexoController controller, FlexoPerspective perspective) {
+
+		controller.getControllerModel().setRightViewVisible(false);
+	}
+
 }

@@ -235,6 +235,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public void setModelVersion(FlexoVersion aVersion) {
+			if (getResource() != null) {
+				getResource().setModelVersion(aVersion);
+			}
 		}
 
 		// Used during deserialization, do not use it

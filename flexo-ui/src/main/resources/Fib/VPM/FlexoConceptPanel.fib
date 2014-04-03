@@ -28,8 +28,8 @@
     <CustomColumn componentClassName="org.openflexo.fib.utils.BindingSelector" customRendering="false" disableTerminateEditOnFocusLost="false" data="iterator.constraint" format="" title="constraint" columnWidth="80" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="value">
       <ColumnAssignment variable="component.bindable" value="data"/>
     </CustomColumn>
-    <AddAction method="controller.createConstraint(data)" isAvailable="" name="add_constraint"/>
-    <RemoveAction method="controller.deleteConstraint(data,selected)" isAvailable="" name="delete_constraint"/>
+    <AddAction method="controller.createConstraint(data)" name="add_constraint"/>
+    <RemoveAction method="controller.deleteConstraint(data,selected)" name="delete_constraint"/>
   </Table>
   <LocalizedDictionary>
     <Localized key="constraint" lang="English">Constraints</Localized>

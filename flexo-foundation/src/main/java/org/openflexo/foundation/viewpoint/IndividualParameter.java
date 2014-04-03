@@ -60,10 +60,10 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 
 	@Getter(value = CONCEPT_VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<IFlexoOntologyClass> getConceptValue();
+	public DataBinding<IFlexoOntologyClass<?>> getConceptValue();
 
 	@Setter(CONCEPT_VALUE_KEY)
-	public void setConceptValue(DataBinding<IFlexoOntologyClass> conceptValue);
+	public void setConceptValue(DataBinding<IFlexoOntologyClass<?>> conceptValue);
 
 	@Getter(value = RENDERER_KEY)
 	@XMLAttribute
@@ -72,11 +72,19 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 	@Setter(RENDERER_KEY)
 	public void setRenderer(String renderer);
 
+	public boolean getIsDynamicConceptValue();
+
+	public void setIsDynamicConceptValue(boolean isDynamic);
+
+	public IFlexoOntologyClass<?> getConcept();
+
+	public void setConcept(IFlexoOntologyClass<?> c);
+
 	public static abstract class IndividualParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
 			IndividualParameter {
 
 		private String conceptURI;
-		private DataBinding<IFlexoOntologyClass> conceptValue;
+		private DataBinding<IFlexoOntologyClass<?>> conceptValue;
 		private String renderer;
 		private boolean isDynamicConceptValueSet = false;
 
@@ -107,25 +115,27 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 			this.conceptURI = conceptURI;
 		}
 
-		public IFlexoOntologyClass getConcept() {
+		@Override
+		public IFlexoOntologyClass<?> getConcept() {
 			return getVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
-		public void setConcept(IFlexoOntologyClass c) {
+		@Override
+		public void setConcept(IFlexoOntologyClass<?> c) {
 			_setConceptURI(c != null ? c.getURI() : null);
 		}
 
 		@Override
-		public DataBinding<IFlexoOntologyClass> getConceptValue() {
+		public DataBinding<IFlexoOntologyClass<?>> getConceptValue() {
 			if (conceptValue == null) {
-				conceptValue = new DataBinding<IFlexoOntologyClass>(this, IFlexoOntologyClass.class, BindingDefinitionType.GET);
+				conceptValue = new DataBinding<IFlexoOntologyClass<?>>(this, IFlexoOntologyClass.class, BindingDefinitionType.GET);
 				conceptValue.setBindingName("conceptValue");
 			}
 			return conceptValue;
 		}
 
 		@Override
-		public void setConceptValue(DataBinding<IFlexoOntologyClass> conceptValue) {
+		public void setConceptValue(DataBinding<IFlexoOntologyClass<?>> conceptValue) {
 			if (conceptValue != null) {
 				conceptValue.setOwner(this);
 				conceptValue.setBindingName("conceptValue");
@@ -135,10 +145,12 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 			this.conceptValue = conceptValue;
 		}
 
+		@Override
 		public boolean getIsDynamicConceptValue() {
 			return getConceptValue().isSet() || isDynamicConceptValueSet;
 		}
 
+		@Override
 		public void setIsDynamicConceptValue(boolean isDynamic) {
 			if (isDynamic) {
 				isDynamicConceptValueSet = true;
@@ -148,7 +160,7 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 			}
 		}
 
-		public IFlexoOntologyClass evaluateConceptValue(BindingEvaluationContext parameterRetriever) {
+		public IFlexoOntologyClass<?> evaluateConceptValue(BindingEvaluationContext parameterRetriever) {
 			if (getConceptValue().isValid()) {
 				try {
 					return getConceptValue().getBindingValue(parameterRetriever);
