@@ -423,7 +423,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 					return returned;
 				}
 			}
-			logger.warning("Could not instanciate reflexive model slot");
 			return null;
 		}
 
