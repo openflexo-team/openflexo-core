@@ -24,7 +24,6 @@ import java.awt.Container;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -53,7 +52,6 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.FlexoModule;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -165,17 +163,17 @@ public class DocResourceManager extends FlexoServiceImpl {
 			if (drmResource instanceof FileResourceImpl) {
 				logger.info("Found DRM File : " + drmResource.getURI());
 				drmFile = ((FileResourceImpl) drmResource).getFile();
-			}
-			else if (drmResource == null) {
+			} else if (drmResource == null) {
 				logger.info("DRM File not found: " + drmResource.getURI());
 				try {
-					drmResource = new FileResourceImpl(new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(), "DocResourceCenter.xml"));
+					drmResource = new FileResourceImpl(new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(),
+							"DocResourceCenter.xml"));
 				} catch (Exception e) {
 					logger.severe("Unable to create DocResourceCenter files");
 					e.printStackTrace();
-				} 
-				drmFile = ((FileResourceImpl) drmResource).getFile();
 				}
+				drmFile = ((FileResourceImpl) drmResource).getFile();
+			}
 		}
 		if (drmFile != null && !drmFile.exists() && !isSaving) {
 			docResourceCenter = DocResourceCenter.createDefaultDocResourceCenter();
@@ -193,7 +191,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 			} catch (Exception e) {
 				logger.severe("Unable to find DocResourceCenterDirectory");
 				e.printStackTrace();
-			} 
+			}
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("Doc Resource Center Directory: " + drmDirectory.getURI());
 			}
@@ -494,11 +492,11 @@ public class DocResourceManager extends FlexoServiceImpl {
 		if (getDocResourceCenter() == null) {
 			return null;
 		}
-		if (itemIdentifier != null){
+		if (itemIdentifier != null) {
 			return getDocResourceCenter().getItemNamed(itemIdentifier);
-		}
-		else return null;
-		}
+		} else
+			return null;
+	}
 
 	public DocItem getDocItem(String itemIdentifier) {
 		return getDocItemWithId(itemIdentifier);
@@ -735,6 +733,9 @@ public class DocResourceManager extends FlexoServiceImpl {
 			parentItem = getFlexoToolSetItem();
 		}
 		logger.info("Create entry for " + identifier + " under " + parentItem);
+		if (parentItem == null) {
+			return null;
+		}
 		DocItem newEntry = DocItem.createDocItem(identifier, "", parentItem.getFolder(), false);
 		parentItem.addToEmbeddingChildItems(newEntry);
 		return newEntry;
