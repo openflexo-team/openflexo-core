@@ -126,7 +126,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 		}
 
 		public Type getItemType() {
-			if (getFetchRequest() != null) {
+			if (getFetchRequest()!=null&&getFetchRequest().getFetchedType() != null) {
 				return getFetchRequest().getFetchedType();
 			}
 			return Object.class;
