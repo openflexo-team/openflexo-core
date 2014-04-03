@@ -437,7 +437,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 */
 		@Override
 		public String getURI() {
-			return getViewPoint().getURI() + "/" + getName();
+			if(getViewPoint()!=null){
+				return getViewPoint().getURI() + "/" + getName();
+			}
+			return null;
 		}
 
 		@Override
@@ -550,9 +553,12 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 				// Special case to handle conversion from old VP version
 				// TODO: to be removed when all VP are up-to-date
-				if ((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(flexoConceptNameOrURI)) {
-					return flexoConcept;
+				if (getViewPoint()!=null && flexoConcept!=null){
+					if((getViewPoint().getURI() + "#" + flexoConcept.getName()).equals(flexoConceptNameOrURI)) {
+						return flexoConcept;
+					}
 				}
+					
 			}
 			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			return null;

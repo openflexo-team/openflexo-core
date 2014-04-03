@@ -77,7 +77,10 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public Type getType() {
-			return this.getViewPoint().getInstanceType(getFlexoConceptType());
+			if(getViewPoint()!=null&&getFlexoConceptType()!=null){
+				return getViewPoint().getInstanceType(getFlexoConceptType());
+			}
+			return Object.class;
 		}
 
 		@Override

@@ -108,8 +108,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
-				value.setBindingName(param.getName());
+				value = new DataBinding<Object>(this, getParam()!=null ? getParam().getType():Object.class, DataBinding.BindingDefinitionType.GET);
+				value.setBindingName(getParam()!=null ? getParam().getName():"param");
 			}
 			return value;
 		}
@@ -118,8 +118,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		public void setValue(DataBinding<Object> value) {
 			if (value != null) {
 				value.setOwner(this);
-				value.setBindingName(param != null ? param.getName() : "param");
-				value.setDeclaredType(param != null ? param.getType() : Object.class);
+				value.setBindingName(getParam()!=null?getParam().getName():"param");
+				value.setDeclaredType(getParam()!=null?getParam().getType():Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;
