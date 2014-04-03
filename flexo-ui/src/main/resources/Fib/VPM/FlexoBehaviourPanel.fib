@@ -81,6 +81,11 @@
               <BrowserRemoveAction method="selected.actionContainer.deleteAction(selected)" name="delete_action" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
             </BrowserElement>
+            <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.IterationAction" label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)" isEditable="false" filtered="false" defaultVisible="true" name="interationAction">
+              <Children data="interationAction.actions" name="children" />
+              <BrowserRemoveAction method="selected.actionContainer.deleteAction(selected)" name="delete_action" />
+              <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
+            </BrowserElement>
             <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.editionaction.EditionAction" label="editionAction.stringRepresentation" icon="controller.iconForObject(editionAction)" isEditable="false" filtered="false" defaultVisible="true" name="editionAction">
               <BrowserRemoveAction method="selected.actionContainer.deleteAction(selected)" name="delete_action" />
             </BrowserElement>

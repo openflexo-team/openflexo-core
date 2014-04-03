@@ -592,7 +592,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			
 			// Retrieve the DiagramModelSlot (this), and transform it to a virtual model slot with a virtual model uri
 			int thisID=0;
-			String newThisUri = "http://"+diagramName;
+			String newThisUri = viewPointResource.getURI()+"/"+diagramName;
 			Element typedDiagramModelSlot = null;
 			boolean foundThis = false;
 			for(Element thisMs : thisModelSlots){
@@ -656,10 +656,19 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 							attribute.setValue(attribute.getValue().replace("diagram", "this"));
 						}
 						if(attribute.getValue().startsWith("topLevel")){
-							attribute.setValue(attribute.getValue().replace("topLevel", "typedDiagramModelSlot.topLevel"));
+							boolean diagramScheme = false;
+							Element parentElement = element.getParentElement();
+							while(parentElement!=null){
+								if(parentElement.getName().equals("DropScheme") 
+										|| parentElement.getName().equals("LinkScheme") ){
+									diagramScheme = true;
+								}
+								parentElement = parentElement.getParentElement();
+							}
+							if(!diagramScheme)
+								attribute.setValue(attribute.getValue().replace("topLevel", "virtualModelInstance.typedDiagramModelSlot"));
 						}
-					}
-					
+					}		
 				}
 			}
 			
@@ -753,6 +762,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
 		convertOldNameToNewNames("AddressedSelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
 		convertOldNameToNewNames("AddressedSelectFlexoConceptInstance", "SelectFlexoConceptInstance", document);
+		convertOldNameToNewNames("SelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
 		
 		
 		// Model Slots
@@ -796,7 +806,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					if(attribute.getValue().startsWith("this")){
 						if(element.getName().equals("ModelSlot_VirtualModelModelSlot")){
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
-						}else{
+						}
+						if(attribute.getName().equals("virtualModelInstance")){
+							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
+						}
+						else {
 							attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
 						}
 					}
