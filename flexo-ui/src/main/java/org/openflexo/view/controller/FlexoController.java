@@ -1419,15 +1419,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 			logger.info("Resource " + object + " loaded=" + ((FlexoResource<?>) object).isLoaded());
 		}*/
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
-			try {
-				return (FlexoObject) ((FlexoResource<?>) object).getResourceData(null);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (ResourceLoadingCancelledException e) {
-				e.printStackTrace();
-			} catch (FlexoException e) {
-				e.printStackTrace();
-			}
+			return (FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData();
 		}
 		return object;
 	}
