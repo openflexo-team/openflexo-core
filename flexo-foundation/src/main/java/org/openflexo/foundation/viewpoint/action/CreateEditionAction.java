@@ -110,7 +110,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class);
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction.class);
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class);
-		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class);
+		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole.class);
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance.class);
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance.class);
 		builtInActions.add(org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance.class);
@@ -249,8 +249,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 				return factory.newRemoveFromListAction();
 			} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newExecutionAction();
-			} else if (org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class.isAssignableFrom(builtInActionClass)) {
-				return factory.newDeclarePatternRole();
+			} else if (org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newDeclareFlexoRole();
 			} else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddFlexoConceptInstance();
 			} else if (MatchFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {

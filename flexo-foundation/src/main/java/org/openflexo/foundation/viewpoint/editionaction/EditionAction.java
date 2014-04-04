@@ -70,7 +70,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 @Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class),
-		@Import(DeclarePatternRole.class), @Import(AssignationAction.class), @Import(ExecutionAction.class),
+		@Import(DeclareFlexoRole.class), @Import(AssignationAction.class), @Import(ExecutionAction.class),
 		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
 		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
@@ -487,8 +487,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 			return newAction;
 		}
 
-		public DeclarePatternRole createDeclarePatternRoleAction() {
-			DeclarePatternRole newAction = new DeclarePatternRole(null);
+		public DeclareFlexoRole createDeclarePatternRoleAction() {
+			DeclareFlexoRole newAction = new DeclareFlexoRole(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}

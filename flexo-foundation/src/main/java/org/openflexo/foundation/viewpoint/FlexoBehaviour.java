@@ -568,8 +568,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public DeclarePatternRole createDeclarePatternRoleAction() {
-			DeclarePatternRole newAction = new DeclarePatternRole(null);
+		public DeclareFlexoRole createDeclarePatternRoleAction() {
+			DeclareFlexoRole newAction = new DeclareFlexoRole(null);
 			addToActions(newAction);
 			return newAction;
 		}

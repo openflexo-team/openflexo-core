@@ -84,7 +84,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = List.class)
 	public static final String EDITION_SCHEMES_KEY = "editionSchemes";
 	@PropertyIdentifier(type = List.class)
-	public static final String PATTERN_ROLES_KEY = "patternRoles";
+	public static final String FLEXO_ROLES_KEY = "flexoRoles";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
@@ -135,23 +135,23 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Finder(collection = EDITION_SCHEMES_KEY, attribute = FlexoBehaviour.NAME_KEY)
 	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
 
-	@Getter(value = PATTERN_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	public List<FlexoRole<?>> getFlexoRoles();
 
-	@Setter(PATTERN_ROLES_KEY)
-	public void setPatternRoles(List<FlexoRole<?>> patternRoles);
+	@Setter(FLEXO_ROLES_KEY)
+	public void setFlexoRoles(List<FlexoRole<?>> patternRoles);
 
-	@Adder(PATTERN_ROLES_KEY)
-	public void addToPatternRoles(FlexoRole<?> aPatternRole);
+	@Adder(FLEXO_ROLES_KEY)
+	public void addToFlexoRoles(FlexoRole<?> aPatternRole);
 
-	@Remover(PATTERN_ROLES_KEY)
+	@Remover(FLEXO_ROLES_KEY)
 	public void removeFromFlexoRoles(FlexoRole<?> aPatternRole);
 
-	@Finder(collection = PATTERN_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
+	@Finder(collection = FLEXO_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
 	public FlexoRole<?> getFlexoRole(String patternRoleName);
 
-	public <R> List<R> getPatternRoles(Class<R> type);
+	public <R> List<R> getFlexoRoles(Class<R> type);
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
@@ -356,16 +356,16 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void setPatternRoles(List<FlexoRole<?>> somePatternRole) {
+		public void setFlexoRoles(List<FlexoRole<?>> somePatternRole) {
 			// patternRoles = somePatternRole;
-			performSuperSetter(PATTERN_ROLES_KEY, somePatternRole);
+			performSuperSetter(FLEXO_ROLES_KEY, somePatternRole);
 			availablePatternRoleNames = null;
 		}
 
 		@Override
-		public void addToPatternRoles(FlexoRole<?> aPatternRole) {
+		public void addToFlexoRoles(FlexoRole<?> aPatternRole) {
 			availablePatternRoleNames = null;
-			performSuperAdder(PATTERN_ROLES_KEY, aPatternRole);
+			performSuperAdder(FLEXO_ROLES_KEY, aPatternRole);
 			if (_bindingModel != null) {
 				updateBindingModel();
 			}
@@ -374,14 +374,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public void removeFromFlexoRoles(FlexoRole aFlexoRole) {
 			availablePatternRoleNames = null;
-			performSuperRemover(PATTERN_ROLES_KEY, aFlexoRole);
+			performSuperRemover(FLEXO_ROLES_KEY, aFlexoRole);
 			if (_bindingModel != null) {
 				updateBindingModel();
 			}
 		}
 
 		@Override
-		public <R> List<R> getPatternRoles(Class<R> type) {
+		public <R> List<R> getFlexoRoles(Class<R> type) {
 			List<R> returned = new ArrayList<R>();
 			for (FlexoRole<?> r : getFlexoRoles()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
@@ -393,12 +393,12 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public List<IndividualRole> getIndividualRoles() {
-			return getPatternRoles(IndividualRole.class);
+			return getFlexoRoles(IndividualRole.class);
 		}
 
 		@Override
 		public List<ClassRole> getClassRoles() {
-			return getPatternRoles(ClassRole.class);
+			return getFlexoRoles(ClassRole.class);
 		}
 
 		/*

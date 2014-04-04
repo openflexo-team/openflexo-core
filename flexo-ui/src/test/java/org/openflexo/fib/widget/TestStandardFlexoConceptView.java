@@ -35,7 +35,7 @@ import org.openflexo.foundation.viewpoint.action.CreateEditionSchemeParameter;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
-import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -147,17 +147,17 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction1.setBuiltInActionClass(DeclarePatternRole.class);
+		createEditionAction1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction1.doAction();
-		DeclarePatternRole action1 = (DeclarePatternRole) createEditionAction1.getNewEditionAction();
+		DeclareFlexoRole action1 = (DeclareFlexoRole) createEditionAction1.getNewEditionAction();
 		action1.setAssignation(new DataBinding<Object>("aString"));
 		action1.setObject(new DataBinding<Object>("'foo'"));
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
 		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction2.setBuiltInActionClass(DeclarePatternRole.class);
+		createEditionAction2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction2.doAction();
-		DeclarePatternRole action2 = (DeclarePatternRole) createEditionAction2.getNewEditionAction();
+		DeclareFlexoRole action2 = (DeclareFlexoRole) createEditionAction2.getNewEditionAction();
 		action2.setAssignation(new DataBinding<Object>("aBoolean"));
 		action2.setObject(new DataBinding<Object>("true"));
 
@@ -195,9 +195,9 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(conditional1, null, editor);
 		createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition1.setBuiltInActionClass(DeclarePatternRole.class);
+		createDeclarePatternRoleInCondition1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclarePatternRoleInCondition1.doAction();
-		DeclarePatternRole declarePatternRoleInCondition1 = (DeclarePatternRole) createDeclarePatternRoleInCondition1.getNewEditionAction();
+		DeclareFlexoRole declarePatternRoleInCondition1 = (DeclareFlexoRole) createDeclarePatternRoleInCondition1.getNewEditionAction();
 		declarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
 		declarePatternRoleInCondition1.setObject(new DataBinding<Object>("8"));
 
@@ -213,9 +213,9 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
 		createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition2.setBuiltInActionClass(DeclarePatternRole.class);
+		createDeclarePatternRoleInCondition2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclarePatternRoleInCondition2.doAction();
-		DeclarePatternRole declarePatternRoleInCondition2 = (DeclarePatternRole) createDeclarePatternRoleInCondition2.getNewEditionAction();
+		DeclareFlexoRole declarePatternRoleInCondition2 = (DeclareFlexoRole) createDeclarePatternRoleInCondition2.getNewEditionAction();
 		declarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
 		declarePatternRoleInCondition2.setObject(new DataBinding<Object>("12"));
 

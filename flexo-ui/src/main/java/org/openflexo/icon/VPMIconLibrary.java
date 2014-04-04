@@ -51,7 +51,7 @@ import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
@@ -206,7 +206,7 @@ public class VPMIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);
 			} else if (object instanceof RemoveFromListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-			} else if (object instanceof DeclarePatternRole) {
+			} else if (object instanceof DeclareFlexoRole) {
 				return DECLARE_PATTERN_ROLE_ICON;
 			} else if (object instanceof AssignationAction) {
 				return DECLARE_PATTERN_ROLE_ICON;

@@ -38,6 +38,7 @@ import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
+import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.ExecutionAction;
@@ -353,8 +354,8 @@ public class VirtualModelModelFactory extends ModelFactory {
 		return newInstance(MatchFlexoConceptInstance.class);
 	}
 
-	public org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole newDeclarePatternRole() {
-		return newInstance(org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole.class);
+	public DeclareFlexoRole newDeclareFlexoRole() {
+		return newInstance(DeclareFlexoRole.class);
 	}
 
 	public ExecutionAction newExecutionAction() {

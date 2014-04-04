@@ -365,7 +365,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			/*Class<?> cl = getClass();
 			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
 				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
-				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
+				for (DeclareFlexoRole patternRoleDeclaration : allPatternRoles.value()) {
 					availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
 				}
 			}

@@ -27,7 +27,7 @@ import org.openflexo.foundation.viewpoint.editionaction.AddIndividual;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.viewpoint.editionaction.DeclarePatternRole;
+import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
@@ -86,8 +86,8 @@ public class ViewPointValidationModel extends ValidationModel {
 		registerRule(new AddConnector.AddConnectorActionMustHaveAValidStartingShape());
 		registerRule(new AddConnector.AddConnectorActionMustHaveAValidEndingShape());*/
 
-		registerRule(new DeclarePatternRole.AssignationBindingIsRequiredAndMustBeValid());
-		registerRule(new DeclarePatternRole.ObjectBindingIsRequiredAndMustBeValid());
+		registerRule(new DeclareFlexoRole.AssignationBindingIsRequiredAndMustBeValid());
+		registerRule(new DeclareFlexoRole.ObjectBindingIsRequiredAndMustBeValid());
 
 		registerRule(new DeleteAction.ObjectToDeleteBindingIsRequiredAndMustBeValid());
 

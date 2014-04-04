@@ -299,7 +299,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	/*public static void main(String[] args) {
 		FlexoFIBController newController = new FlexoFIBController(null);
-		System.out.println("Result: " + newController.getFIBPanelForClass(DeclarePatternRole.class));
+		System.out.println("Result: " + newController.getFIBPanelForClass(DeclareFlexoRole.class));
 	}*/
 
 	public Resource getFIBPanelForClass(Class<?> aClass) {

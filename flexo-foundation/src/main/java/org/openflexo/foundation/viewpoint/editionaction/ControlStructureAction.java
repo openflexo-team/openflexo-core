@@ -232,8 +232,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public DeclarePatternRole createDeclarePatternRoleAction() {
-				DeclarePatternRole newAction = new DeclarePatternRole(null);
+			public DeclareFlexoRole createDeclarePatternRoleAction() {
+				DeclareFlexoRole newAction = new DeclareFlexoRole(null);
 				addToActions(newAction);
 				return newAction;
 			}

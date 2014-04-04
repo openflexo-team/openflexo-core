@@ -147,7 +147,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 			if (newFlexoRole != null) {
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setDescription(description);
-				getFlexoConcept().addToPatternRoles(newFlexoRole);
+				getFlexoConcept().addToFlexoRoles(newFlexoRole);
 			}
 		}
 

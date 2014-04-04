@@ -45,9 +45,9 @@ import org.openflexo.model.annotations.XMLElement;
 
 @FIBPanel("Fib/VPM/DeclarePatternRolePanel.fib")
 @ModelEntity
-@ImplementationClass(DeclarePatternRole.DeclarePatternRoleImpl.class)
+@ImplementationClass(DeclareFlexoRole.DeclareFlexoRoleImpl.class)
 @XMLElement
-public interface DeclarePatternRole extends AssignableAction<ModelSlot<?>, FlexoObject> {
+public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, FlexoObject> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -59,14 +59,14 @@ public interface DeclarePatternRole extends AssignableAction<ModelSlot<?>, Flexo
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<?> object);
 
-	public static abstract class DeclarePatternRoleImpl extends AssignableActionImpl<ModelSlot<?>, FlexoObject> implements
-			DeclarePatternRole {
+	public static abstract class DeclareFlexoRoleImpl extends AssignableActionImpl<ModelSlot<?>, FlexoObject> implements
+			DeclareFlexoRole {
 
-		private static final Logger logger = Logger.getLogger(DeclarePatternRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(DeclareFlexoRole.class.getPackage().getName());
 
 		private DataBinding<?> object;
 
-		public DeclarePatternRoleImpl() {
+		public DeclareFlexoRoleImpl() {
 			super();
 		}
 
@@ -127,25 +127,25 @@ public interface DeclarePatternRole extends AssignableAction<ModelSlot<?>, Flexo
 
 	}
 
-	public static class AssignationBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclarePatternRole> {
+	public static class AssignationBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclareFlexoRole> {
 		public AssignationBindingIsRequiredAndMustBeValid() {
-			super("'assign'_binding_is_not_valid", DeclarePatternRole.class);
+			super("'assign'_binding_is_not_valid", DeclareFlexoRole.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(DeclarePatternRole object) {
+		public DataBinding<?> getBinding(DeclareFlexoRole object) {
 			return object.getAssignation();
 		}
 
 	}
 
-	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclarePatternRole> {
+	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclareFlexoRole> {
 		public ObjectBindingIsRequiredAndMustBeValid() {
-			super("'object'_binding_is_not_valid", DeclarePatternRole.class);
+			super("'object'_binding_is_not_valid", DeclareFlexoRole.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(DeclarePatternRole object) {
+		public DataBinding<?> getBinding(DeclareFlexoRole object) {
 			return object.getObject();
 		}
 

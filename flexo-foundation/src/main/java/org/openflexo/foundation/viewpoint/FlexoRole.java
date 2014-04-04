@@ -64,7 +64,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Override
-	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.PATTERN_ROLES_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_ROLES_KEY)
 	public FlexoConcept getFlexoConcept();
 
 	@Setter(FLEXO_CONCEPT_KEY)
