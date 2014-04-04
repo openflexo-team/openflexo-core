@@ -101,6 +101,10 @@ public class VirtualModelModelFactory extends ModelFactory {
 			this.virtualModelResource = virtualModelResource;
 			addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
 		}
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			ta.initVirtualModelFactory(this);
+		}
+
 	}
 
 	public VirtualModelResource getVirtualModelResource() {
