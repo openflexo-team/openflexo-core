@@ -27,6 +27,8 @@ import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
 import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
 import org.openflexo.foundation.technologyadapter.DeclareFetchRequests;
+import org.openflexo.foundation.technologyadapter.DeclareFlexoBehaviour;
+import org.openflexo.foundation.technologyadapter.DeclareFlexoBehaviours;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -126,6 +128,12 @@ public class VirtualModelModelFactory extends ModelFactory {
 				if (prDeclarations != null) {
 					for (DeclarePatternRole prDeclaration : prDeclarations.value()) {
 						classes.add(prDeclaration.flexoRoleClass());
+					}
+				}
+				DeclareFlexoBehaviours fbDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviours.class);
+				if (fbDeclarations != null) {
+					for (DeclareFlexoBehaviour fbDeclaration : fbDeclarations.value()) {
+						classes.add(fbDeclaration.flexoBehaviourClass());
 					}
 				}
 				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
