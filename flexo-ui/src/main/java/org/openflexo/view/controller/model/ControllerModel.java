@@ -160,9 +160,9 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
-			if (object == null || !currentPerspective.hasModuleViewForObject(object, getController())) {
+			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
 				System.out.println("On passe la ");
-				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject(), getController());
+				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
 				System.out.println("object=" + object);
 			}
 		}
@@ -215,7 +215,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 					FlexoObject object = null;
 					if (getCurrentEditor() == null && currentEditor != null && currentEditor.getProject() != null
 							&& getCurrentPerspective() != null) {
-						object = getCurrentPerspective().getDefaultObject(currentEditor.getProject(), getController());
+						object = getCurrentPerspective().getDefaultObject(currentEditor.getProject());
 					}
 					setCurrentLocation(currentEditor, object, getCurrentPerspective());
 				}
@@ -247,12 +247,12 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// Little block to change the currentPerspective if the
 		// current perspective can't handle this object
 		FlexoPerspective perspective = getCurrentPerspective();
-		if (object != null && !perspective.hasModuleViewForObject(object, getController())) {
+		if (object != null && !perspective.hasModuleViewForObject(object)) {
 			for (FlexoPerspective p : getPerspectives()) {
 				if (p == null) {
 					continue;
 				}
-				if (p.hasModuleViewForObject(object, getController())) {
+				if (p.hasModuleViewForObject(object)) {
 					perspective = p;
 					break;
 				}
@@ -452,7 +452,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			if (evt.getPropertyName().equals(ProjectLoader.PROJECT_OPENED)) {
 				FlexoProject project = (FlexoProject) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
-					FlexoObject object = getCurrentPerspective().getDefaultObject(project, getController());
+					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
 				} else {
 					setCurrentProject(project);
