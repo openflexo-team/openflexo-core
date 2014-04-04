@@ -341,6 +341,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 					diagramSpecificationXMLFile, (ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);
+			viewPoint.addToVirtualModels(virtualModel);
 			vmRes.setResourceData(virtualModel);
 			virtualModel.setResource(vmRes);
 			((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
