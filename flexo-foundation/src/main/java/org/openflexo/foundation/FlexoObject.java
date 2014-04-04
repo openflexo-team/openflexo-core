@@ -211,7 +211,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
 
 	public void unregisterFlexoConceptReference(FlexoConceptInstance flexoConceptInstance);
-	
+
 	public Class<?> getImplementedInterface();
 
 	@Deprecated
@@ -1183,13 +1183,17 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 				}
 			}
 		}
-		
+
+		@Override
 		public Class<?> getImplementedInterface() {
-			if (this instanceof InnerResourceData 
-					&& ((InnerResourceData) this).getResourceData() !=null
+			if (this instanceof ResourceData && ((ResourceData) this).getResource() instanceof PamelaResource) {
+				ModelFactory f = ((PamelaResource) ((ResourceData) this).getResource()).getFactory();
+				return f.getModelEntityForInstance(this).getImplementedInterface();
+			}
+			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
 					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-			    ModelFactory f = ((PamelaResource) ((InnerResourceData) this).getResourceData().getResource()).getFactory();
-			    return f.getModelEntityForInstance(this).getImplementedInterface();
+				ModelFactory f = ((PamelaResource) ((InnerResourceData) this).getResourceData().getResource()).getFactory();
+				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			return getClass();
 		}
