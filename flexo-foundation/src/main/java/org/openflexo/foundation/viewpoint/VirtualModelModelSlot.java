@@ -152,6 +152,11 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		public Type getType() {
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
 		}
+		
+		@Override
+		public String getPreciseType() {
+			return "Virtual Model";
+		};
 
 		@Override
 		public String getVirtualModelURI() {
