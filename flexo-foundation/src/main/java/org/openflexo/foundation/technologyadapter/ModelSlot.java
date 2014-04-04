@@ -204,6 +204,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private VirtualModel virtualModel;
 
 		private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
+		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends EditionAction<?, ?>>> availableFetchRequestActionTypes;
 
@@ -425,6 +426,38 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			}
 		}
 
+		@Override
+		public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes() {
+			if (availableFlexoBehaviourTypes == null) {
+				availableFlexoBehaviourTypes = computeAvailableFlexoBehaviourTypes();
+			}
+			return availableFlexoBehaviourTypes;
+		}
+
+		private List<Class<? extends FlexoBehaviour>> computeAvailableFlexoBehaviourTypes() {
+			availableFlexoBehaviourTypes = new ArrayList<Class<? extends FlexoBehaviour>>();
+			appendFlexoBehaviourTypes(availableFlexoBehaviourTypes, getClass());
+			return availableFlexoBehaviourTypes;
+		}
+
+		private void appendFlexoBehaviourTypes(List<Class<? extends FlexoBehaviour>> aList, Class<?> cl) {
+			if (cl.isAnnotationPresent(DeclareFlexoBehaviours.class)) {
+				DeclareFlexoBehaviours allFlexoBehaviours = cl.getAnnotation(DeclareFlexoBehaviours.class);
+				for (DeclareFlexoBehaviour flexoBehaviourDeclaration : allFlexoBehaviours.value()) {
+					if (!availableFlexoBehaviourTypes.contains(flexoBehaviourDeclaration.flexoBehaviourClass())) {
+						availableFlexoBehaviourTypes.add(flexoBehaviourDeclaration.flexoBehaviourClass());
+					}
+				}
+			}
+			if (cl.getSuperclass() != null) {
+				appendFlexoBehaviourTypes(aList, cl.getSuperclass());
+			}
+			for (Class superInterface : cl.getInterfaces()) {
+				appendFlexoBehaviourTypes(aList, superInterface);
+			}
+		}
+
+		
 		@Override
 		public List<Class<? extends EditionAction<?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (availableFetchRequestActionTypes == null) {
