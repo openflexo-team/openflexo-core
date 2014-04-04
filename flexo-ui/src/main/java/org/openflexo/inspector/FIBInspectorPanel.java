@@ -208,7 +208,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		currentlyDisplayedInspector = newInspector;
 
 		FIBView<?, ?, ?> view = viewForInspector(newInspector);
-		FIBInspectorController controller = (FIBInspectorController) view.getController();
+		FlexoFIBController controller = (FlexoFIBController) view.getController();
 		controller.setFlexoController(inspectorController.getFlexoController());
 
 		if (updateEPTabs) {
