@@ -79,7 +79,9 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl, because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory which extends FGEModelFactory interface (required by DIANA).
+// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl, 
+// because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory 
+// which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
 public class VirtualModelModelFactory extends FGEModelFactoryImpl {
 
