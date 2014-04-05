@@ -117,7 +117,10 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 
 		@Override
 		public IFlexoOntologyClass<?> getConcept() {
-			return getVirtualModel().getOntologyClass(_getConceptURI());
+			if(getVirtualModel()!=null){
+				return getVirtualModel().getOntologyClass(_getConceptURI());
+			}
+			return null;
 		}
 
 		@Override
