@@ -118,7 +118,7 @@ public class SynchronizationSchemeAction extends
 	public void beginSynchronization() {
 		System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
 		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
-		episToBeRemoved.addAll(getVirtualModelInstance().getFlexoConceptInstances());
+		episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
 	}
 
 	public void endSynchronization() {
