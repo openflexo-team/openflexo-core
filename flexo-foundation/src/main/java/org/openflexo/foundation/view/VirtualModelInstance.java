@@ -655,6 +655,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
+		@Override
+		public VirtualModelInstance getVirtualModelInstance() {
+			return this;
+		}
 
 	}
 }
