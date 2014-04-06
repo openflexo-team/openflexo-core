@@ -409,4 +409,8 @@ public abstract class TechnologyAdapter {
 		logger.warning("dereferenceResource() not implemented yet");
 	}
 
+	// Override when required
+	public void initVirtualModelFactory(VirtualModelModelFactory virtualModelModelFactory) {
+	}
+
 }

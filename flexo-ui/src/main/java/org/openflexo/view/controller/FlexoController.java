@@ -915,7 +915,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		ModuleView<?> moduleView = viewsForLocation.get(location);
 		if (moduleView == null) {
 			moduleView = lookupViewForLocation(location);
-			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject(), this)) {
+			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
 				moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(), location.isEditable());
 				if (moduleView != null) {
 					FlexoObject representedObject = moduleView.getRepresentedObject();
@@ -993,7 +993,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 				logger.info("Creating module view for " + object + " in perspective " + perspective.getName()
 						+ (editable ? " (editable)" : " (read-only)"));
 			}
-			return perspective.createModuleViewForObject(object, this, editable);
+			return perspective.createModuleViewForObject(object, editable);
 		}
 	}
 
@@ -1489,7 +1489,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 				selectAndFocusObject(resourceData);
 			}
 		}
-		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object, this)) {
+		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
 			// Try to display object in view
 			selectAndFocusObject((FlexoObject) object);
 		}

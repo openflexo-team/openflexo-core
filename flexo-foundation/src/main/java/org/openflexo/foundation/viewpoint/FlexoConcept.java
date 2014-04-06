@@ -265,6 +265,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public String getAvailableEditionSchemeName(String baseName);
 
+	public boolean hasNature(FlexoConceptNature nature);
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -292,6 +294,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 * Stores a chained collections of objects which are involved in validation
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
+
+		@Override
+		public final boolean hasNature(FlexoConceptNature nature) {
+			return nature.hasNature(this);
+		}
 
 		@Override
 		public FlexoConceptInstanceType getInstanceType() {

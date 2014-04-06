@@ -22,6 +22,7 @@ package org.openflexo.foundation.viewpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
@@ -78,7 +79,11 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class VirtualModelModelFactory extends ModelFactory {
+// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl, 
+// because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory 
+// which extends FGEModelFactory interface (required by DIANA).
+// A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
+public class VirtualModelModelFactory extends FGEModelFactoryImpl {
 
 	private VirtualModelResource virtualModelResource;
 
@@ -92,7 +97,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	public VirtualModelModelFactory(TechnologyAdapterService taService, VirtualModelResource virtualModelResource)
 			throws ModelDefinitionException {
-		super(computeModelContext(taService));
+		super(allClassesForModelContext(taService));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
@@ -101,6 +106,10 @@ public class VirtualModelModelFactory extends ModelFactory {
 			this.virtualModelResource = virtualModelResource;
 			addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
 		}
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			ta.initVirtualModelFactory(this);
+		}
+
 	}
 
 	public VirtualModelResource getVirtualModelResource() {
@@ -115,7 +124,7 @@ public class VirtualModelModelFactory extends ModelFactory {
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModel.class);
 		/*classes.add(FlexoConceptStructuralFacet.class);
@@ -151,6 +160,19 @@ public class VirtualModelModelFactory extends ModelFactory {
 			}
 		}
 
+		return classes;
+	}
+
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = allClassesForModelContext(taService);
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}
 
