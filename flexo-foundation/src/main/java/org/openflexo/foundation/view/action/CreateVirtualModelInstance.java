@@ -37,6 +37,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.InvalidFileNameException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstance.VirtualModelInstanceImpl;
@@ -113,8 +114,10 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
 			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 			if (configuration.isValidConfiguration()) {
-				newVirtualModelInstance.addToModelSlotInstances(configuration.createModelSlotInstance(newVirtualModelInstance,
-						getFocusedObject()));
+				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance,
+						getFocusedObject());
+				msi.setVirtualModelInstance(newVirtualModelInstance);
+				newVirtualModelInstance.addToModelSlotInstances(msi);
 			} else {
 				throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot() + " configuration="
 						+ configuration);
