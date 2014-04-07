@@ -36,6 +36,7 @@ import org.openflexo.fge.swing.JDianaInteractiveEditor;
 import org.openflexo.fge.swing.control.SwingToolFactory;
 import org.openflexo.fge.swing.view.JFGEView;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.model.factory.EditingContext;
 import org.openflexo.toolbox.ToolBox;
 
 /**
@@ -144,11 +145,11 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	public static class ShowContextualMenuControl extends MouseClickControlImpl<SelectionManagingDianaEditor<?>> {
 
-		public ShowContextualMenuControl(FGEModelFactory factory) {
-			this(factory, false);
+		public ShowContextualMenuControl(EditingContext editingContext) {
+			this(editingContext, false);
 		}
 
-		public ShowContextualMenuControl(FGEModelFactory factory, boolean controlDown) {
+		public ShowContextualMenuControl(EditingContext editingContext, boolean controlDown) {
 			super("Show contextual menu", MouseButton.RIGHT, 1, new MouseClickControlActionImpl<SelectionManagingDianaEditor<?>>() {
 
 				@Override
@@ -194,7 +195,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 					selectionManager.getContextualMenuManager().showPopupMenuForObject(o, (Component) view, newPoint);
 					return true;
 				}
-			}, false, controlDown, false, false, factory);
+			}, false, controlDown, false, false, editingContext);
 		}
 
 	}
