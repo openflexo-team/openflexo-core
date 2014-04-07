@@ -24,7 +24,7 @@ public abstract class FlexoFileResourceImpl<RD extends ResourceData<RD>> extends
 
 	/**
 	 * This constant traduces the delay accepted for the File System to effectively write a file on disk after the date it was requested. If
-	 * file is written after this delay, the ResourceManager will interprete it as a concurrent file modification requiring to be handled
+	 * file is written after this delay, the FlexoEditingContext will interprete it as a concurrent file modification requiring to be handled
 	 * properly. In fact, this is not a big problem but resource management may be affected.
 	 */
 	public static final long ACCEPTABLE_FS_DELAY = 4000;

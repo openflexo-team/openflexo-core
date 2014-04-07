@@ -38,7 +38,7 @@ public class ResourceManagerDialog extends FIBDialog<ResourceManager> {
 
 	private static final Logger logger = FlexoLogger.getLogger(ResourceManagerDialog.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/ResourceManager.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FlexoEditingContext.fib");
 
 	public ResourceManagerDialog(ApplicationContext context) {
 		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), context.getResourceManager(), FlexoFrame.getActiveFrame(), true,

@@ -136,6 +136,7 @@ import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.SelectionManager;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
@@ -159,11 +160,12 @@ import com.google.common.collect.Multimap;
  * 
  * @author benoit, sylvain
  */
-public abstract class FlexoController implements PropertyChangeListener {
+public abstract class FlexoController implements PropertyChangeListener, HasPropertyChangeSupport {
 
 	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
 
 	public static final String DISPOSED = "disposed";
+	public static final String EDITOR = "editor";
 
 	private PropertyChangeSupport propertyChangeSupport;
 
@@ -237,6 +239,17 @@ public abstract class FlexoController implements PropertyChangeListener {
 		if (getApplicationContext().getGeneralPreferences() != null) {
 			getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+	}
+
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	protected abstract void initializePerspectives();
@@ -368,6 +381,7 @@ public abstract class FlexoController implements PropertyChangeListener {
 		if (to instanceof InteractiveFlexoEditor) {
 			((InteractiveFlexoEditor) to).registerControllerActionInitializer(getControllerActionInitializer());
 		}
+		getPropertyChangeSupport().firePropertyChange(EDITOR, from, to);
 	}
 
 	public abstract FlexoObject getDefaultObjectToSelect(FlexoProject project);

@@ -28,6 +28,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.logging.FlexoLogger;
@@ -52,6 +53,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	private Object _invoker;
 	private FlexoProgress _flexoProgress;
 	private FlexoEditor _editor;
+
+	private FlexoActionCompoundEdit compoundEdit;
 
 	public boolean delete() {
 		_editor = null;
@@ -371,4 +374,14 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	public boolean isValid() {
 		return true;
 	}
+
+	public FlexoActionCompoundEdit getCompoundEdit() {
+		return compoundEdit;
+	}
+
+	public void setCompoundEdit(FlexoActionCompoundEdit compoundEdit) {
+		this.compoundEdit = compoundEdit;
+		compoundEdit.setAction(this);
+	}
+
 }

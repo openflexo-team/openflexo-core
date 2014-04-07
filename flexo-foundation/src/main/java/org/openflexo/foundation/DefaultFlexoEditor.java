@@ -28,8 +28,7 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoUndoableAction;
-import org.openflexo.foundation.action.UndoManager;
+import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
@@ -69,18 +68,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	}
 
 	@Override
-	public void notifyObjectCreated(FlexoObject object) {
-	}
-
-	@Override
-	public void notifyObjectDeleted(FlexoObject object) {
-	}
-
-	@Override
-	public void notifyObjectChanged(FlexoObject object) {
-	}
-
-	@Override
 	public boolean performResourceScanning() {
 		return true;
 	}
@@ -107,7 +94,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	}
 
 	@Override
-	public UndoManager getUndoManager() {
+	public FlexoUndoManager getUndoManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -117,20 +104,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
 		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
 		return performAction(action, e);
-	}
-
-	@Override
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performUndoActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
-		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
-		return performUndoAction(action, e);
-	}
-
-	@Override
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performRedoActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
-		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
-		return performRedoAction(action, e);
 	}
 
 	@Override
@@ -148,28 +121,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		}
 		try {
 			return action.doActionInContext();
-		} catch (FlexoException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performUndoAction(A action,
-			EventObject e) {
-		try {
-			return action.undoActionInContext();
-		} catch (FlexoException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-	}
-
-	@Override
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performRedoAction(A action,
-			EventObject e) {
-		try {
-			return action.redoActionInContext();
 		} catch (FlexoException e1) {
 			e1.printStackTrace();
 			return null;

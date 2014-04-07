@@ -414,7 +414,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	}
 
 	/**
-	 * Save this project using ResourceManager scheme Additionnaly save all known resources related to this project
+	 * Save this project using FlexoEditingContext scheme Additionnaly save all known resources related to this project
 	 * 
 	 * Overrides
 	 * 
@@ -426,7 +426,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	}
 
 	/**
-	 * Save this project using ResourceManager scheme Additionally save all known resources related to this project
+	 * Save this project using FlexoEditingContext scheme Additionally save all known resources related to this project
 	 * 
 	 * Overrides
 	 * 
@@ -784,24 +784,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 	public void removeFromEditors(FlexoEditor editor) {
 		editors.remove(editor);
-	}
-
-	public void notifyObjectChanged(FlexoProjectObject object) {
-		for (FlexoEditor ed : editors) {
-			ed.notifyObjectChanged(object);
-		}
-	}
-
-	public void notifyObjectDeleted(FlexoProjectObject object) {
-		for (FlexoEditor ed : editors) {
-			ed.notifyObjectDeleted(object);
-		}
-	}
-
-	public void notifyObjectCreated(FlexoProjectObject object) {
-		for (FlexoEditor ed : editors) {
-			ed.notifyObjectCreated(object);
-		}
 	}
 
 	public ProjectLoadingHandler getLoadingHandler() {

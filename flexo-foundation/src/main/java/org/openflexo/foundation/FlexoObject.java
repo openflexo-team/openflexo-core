@@ -539,7 +539,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		/**
 		 * Mark the current object to be in 'modified' status<br>
 		 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be
-		 * modified. Also notify the {@link ResourceManager}
+		 * modified. Also notify the {@link FlexoEditingContext}
 		 */
 		public synchronized void setIsModified() {
 
@@ -565,7 +565,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			// Call the super implementation (PAMELA framework)
 			performSuperSetModified(true);
 
-			// If this object is a ResourceData, notify ResourceManager of related resource changing 'modified' status
+			// If this object is a ResourceData, notify FlexoEditingContext of related resource changing 'modified' status
 			if (this instanceof ResourceData) {
 				FlexoResource<?> resource = ((ResourceData<?>) this).getResource();
 				if (resource != null) {

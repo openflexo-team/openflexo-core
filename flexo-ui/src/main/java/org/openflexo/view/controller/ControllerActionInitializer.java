@@ -39,11 +39,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionRedoFinalizer;
-import org.openflexo.foundation.action.FlexoActionRedoInitializer;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoActionUndoFinalizer;
-import org.openflexo.foundation.action.FlexoActionUndoInitializer;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoActionizer;
 import org.openflexo.foundation.action.FlexoActionizer.EditorProvider;
@@ -179,42 +175,6 @@ public class ControllerActionInitializer implements EditorProvider {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
 		if (initializer != null) {
 			return initializer.getDefaultInitializer();
-		}
-		return null;
-	}
-
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionUndoFinalizer<A> getUndoFinalizerFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
-		if (initializer != null) {
-			return initializer.getDefaultUndoFinalizer();
-		}
-		return null;
-	}
-
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionUndoInitializer<A> getUndoInitializerFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
-		if (initializer != null) {
-			return initializer.getDefaultUndoInitializer();
-		}
-		return null;
-	}
-
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionRedoFinalizer<A> getRedoFinalizerFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
-		if (initializer != null) {
-			return initializer.getDefaultRedoFinalizer();
-		}
-		return null;
-	}
-
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionRedoInitializer<A> getRedoInitializerFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionType);
-		if (initializer != null) {
-			return initializer.getDefaultRedoInitializer();
 		}
 		return null;
 	}

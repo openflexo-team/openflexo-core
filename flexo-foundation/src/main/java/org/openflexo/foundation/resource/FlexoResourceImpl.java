@@ -209,7 +209,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Sets and register the service manager<br>
-	 * Also (VERY IMPORTANT) register the resource in the ResourceManager !!!
+	 * Also (VERY IMPORTANT) register the resource in the FlexoEditingContext !!!
 	 */
 	@Override
 	public void setServiceManager(FlexoServiceManager serviceManager) {

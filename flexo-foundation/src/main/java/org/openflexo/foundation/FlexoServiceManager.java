@@ -49,7 +49,7 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
  * @author sylvain
  * 
  */
-public abstract class FlexoServiceManager /*extends FlexoObject*/{
+public abstract class FlexoServiceManager {
 
 	protected static final Logger logger = Logger.getLogger(FlexoServiceManager.class.getPackage().getName());
 
@@ -104,6 +104,10 @@ public abstract class FlexoServiceManager /*extends FlexoObject*/{
 		return registeredServices;
 	}
 
+	public FlexoEditingContext getEditingContext() {
+		return getService(FlexoEditingContext.class);
+	}
+
 	public TechnologyAdapterService getTechnologyAdapterService() {
 		return getService(TechnologyAdapterService.class);
 	}
@@ -135,7 +139,7 @@ public abstract class FlexoServiceManager /*extends FlexoObject*/{
 	public class ServiceRegistered implements ServiceNotification {
 	}
 
-	// protected abstract XMLSerializationService createXMLSerializationService();
+	protected abstract FlexoEditingContext createEditingContext();
 
 	protected abstract FlexoEditor createApplicationEditor();
 

@@ -35,11 +35,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionRedoFinalizer;
-import org.openflexo.foundation.action.FlexoActionRedoInitializer;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoActionUndoFinalizer;
-import org.openflexo.foundation.action.FlexoActionUndoInitializer;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.module.FlexoModule;
@@ -178,42 +174,6 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * @return null
 	 */
 	protected Icon getDisabledIcon() {
-		return null;
-	}
-
-	/**
-	 * Please override if required Default implementation return null
-	 * 
-	 * @return null
-	 */
-	protected FlexoActionUndoInitializer<A> getDefaultUndoInitializer() {
-		return null;
-	}
-
-	/**
-	 * Please override if required Default implementation return null
-	 * 
-	 * @return null
-	 */
-	protected FlexoActionUndoFinalizer<A> getDefaultUndoFinalizer() {
-		return null;
-	}
-
-	/**
-	 * Please override if required Default implementation return null
-	 * 
-	 * @return null
-	 */
-	protected FlexoActionRedoInitializer<A> getDefaultRedoInitializer() {
-		return null;
-	}
-
-	/**
-	 * Please override if required Default implementation return null
-	 * 
-	 * @return null
-	 */
-	protected FlexoActionRedoFinalizer<A> getDefaultRedoFinalizer() {
 		return null;
 	}
 

@@ -31,7 +31,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
  * @author gpolet
  * 
  */
-public class SetPropertyAction extends FlexoUndoableAction<SetPropertyAction, FlexoObject, FlexoObject> {
+public class SetPropertyAction extends FlexoAction<SetPropertyAction, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(SetPropertyAction.class.getPackage().getName());
 
@@ -92,27 +92,6 @@ public class SetPropertyAction extends FlexoUndoableAction<SetPropertyAction, Fl
 	 */
 	protected SetPropertyAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-	}
-
-	/**
-	 * Overrides redoAction
-	 * 
-	 * @see org.openflexo.foundation.action.FlexoUndoableAction#redoAction(java.lang.Object)
-	 */
-	@Override
-	protected void redoAction(Object context) throws FlexoException {
-		doAction(context);
-	}
-
-	/**
-	 * Overrides undoAction
-	 * 
-	 * @see org.openflexo.foundation.action.FlexoUndoableAction#undoAction(java.lang.Object)
-	 */
-	@Override
-	protected void undoAction(Object context) throws FlexoException {
-		logger.info("Undo: set property from " + value + " to " + previousValue + " again");
-		getFocusedObject().setObjectForKey(previousValue, getKey());
 	}
 
 	/**

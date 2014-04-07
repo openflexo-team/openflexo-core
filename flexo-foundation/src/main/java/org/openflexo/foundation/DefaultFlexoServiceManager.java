@@ -42,8 +42,10 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 	public DefaultFlexoServiceManager() {
-		// XMLSerializationService xmlSerializationService = createXMLSerializationService();
-		// registerService(xmlSerializationService);
+
+		FlexoEditingContext editingContext = createEditingContext();
+		registerService(editingContext);
+
 		ResourceManager resourceManager = createResourceManager();
 		registerService(resourceManager);
 		FlexoProjectReferenceLoader projectReferenceLoader = createProjectReferenceLoader();
@@ -64,10 +66,10 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		registerService(viewPointLibrary);
 	}
 
-	/*@Override
-	protected XMLSerializationService createXMLSerializationService() {
-		return XMLSerializationService.createInstance();
-	}*/
+	@Override
+	protected FlexoEditingContext createEditingContext() {
+		return FlexoEditingContext.createInstance();
+	}
 
 	@Override
 	protected ResourceManager createResourceManager() {

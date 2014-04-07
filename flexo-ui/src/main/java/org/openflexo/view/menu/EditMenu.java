@@ -19,12 +19,6 @@
  */
 package org.openflexo.view.menu;
 
-/*
- * MenuFile.java
- * Project WorkflowEditor
- *
- * Created by benoit on Mar 10, 2004
- */
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -34,7 +28,7 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.action.UndoManager;
+import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
@@ -83,24 +77,38 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getSource() == _controller) {
+			if (evt.getSource() == _controller && evt.getPropertyName().equals(FlexoController.EDITOR)) {
+
+				System.out.println("?????????????? Received " + evt);
+
 				if (evt.getOldValue() != null) {
 					FlexoEditor old = (FlexoEditor) evt.getOldValue();
 					if (old.getUndoManager() != null) {
-						manager.removeListener(UndoManager.ACTION_HISTORY, this, old.getUndoManager());
-						manager.removeListener(UndoManager.ENABLED, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.ACTION_HISTORY, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.ENABLED, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.START_RECORDING, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.STOP_RECORDING, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.UNDONE, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.REDONE, this, old.getUndoManager());
 					}
 				}
 				if (evt.getNewValue() != null) {
 					FlexoEditor editor = (FlexoEditor) evt.getNewValue();
 					if (editor.getUndoManager() != null) {
-						manager.addListener(UndoManager.ACTION_HISTORY, this, editor.getUndoManager());
-						manager.addListener(UndoManager.ENABLED, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.ACTION_HISTORY, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.ENABLED, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.START_RECORDING, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.STOP_RECORDING, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.UNDONE, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.REDONE, this, editor.getUndoManager());
 					}
 					updateWithUndoManagerState();
 				}
 			} else {
-				if (evt.getPropertyName().equals(UndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(UndoManager.ENABLED)) {
+				if (evt.getPropertyName().equals(FlexoUndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(FlexoUndoManager.ENABLED)
+						|| evt.getPropertyName().equals(FlexoUndoManager.START_RECORDING)
+						|| evt.getPropertyName().equals(FlexoUndoManager.STOP_RECORDING)
+						|| evt.getPropertyName().equals(FlexoUndoManager.UNDONE) || evt.getPropertyName().equals(FlexoUndoManager.REDONE)) {
 					updateWithUndoManagerState();
 				}
 			}
@@ -108,10 +116,10 @@ public class EditMenu extends FlexoMenu {
 
 		private void updateWithUndoManagerState() {
 			if (_controller.getEditor().getUndoManager() != null) {
-				setEnabled(_controller.getEditor().getUndoManager().isUndoActive());
-				if (_controller.getEditor().getUndoManager().isUndoActive()) {
+				setEnabled(_controller.getEditor().getUndoManager().canUndo());
+				if (_controller.getEditor().getUndoManager().canUndo()) {
 					setText(FlexoLocalization.localizedForKey("undo") + " ("
-							+ _controller.getEditor().getUndoManager().getNextUndoAction().getLocalizedName() + ")");
+							+ _controller.getEditor().getUndoManager().getUndoPresentationName() + ")");
 				} else {
 					setText(FlexoLocalization.localizedForKey("undo"));
 				}
@@ -134,7 +142,14 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			_controller.getEditor().getUndoManager().undo();
+			if (_controller.getEditor().getUndoManager().canUndo()) {
+				System.out.println("Perform UNDO");
+				_controller.getEditor().getUndoManager().undo();
+			} else {
+				System.out.println("Cannot UNDO");
+				_controller.getEditor().getUndoManager().debug();
+			}
+
 		}
 
 	}
@@ -157,20 +172,31 @@ public class EditMenu extends FlexoMenu {
 				if (evt.getOldValue() != null) {
 					FlexoEditor old = (FlexoEditor) evt.getOldValue();
 					if (old.getUndoManager() != null) {
-						manager.removeListener(UndoManager.ACTION_HISTORY, this, old.getUndoManager());
-						manager.removeListener(UndoManager.ENABLED, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.ACTION_HISTORY, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.ENABLED, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.START_RECORDING, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.STOP_RECORDING, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.UNDONE, this, old.getUndoManager());
+						manager.removeListener(FlexoUndoManager.REDONE, this, old.getUndoManager());
 					}
 				}
 				if (evt.getNewValue() != null) {
 					FlexoEditor editor = (FlexoEditor) evt.getNewValue();
 					if (editor.getUndoManager() != null) {
-						manager.addListener(UndoManager.ACTION_HISTORY, this, editor.getUndoManager());
-						manager.addListener(UndoManager.ENABLED, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.ACTION_HISTORY, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.ENABLED, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.START_RECORDING, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.STOP_RECORDING, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.UNDONE, this, editor.getUndoManager());
+						manager.addListener(FlexoUndoManager.REDONE, this, editor.getUndoManager());
 					}
 					updateWithUndoManagerState();
 				}
 			} else {
-				if (evt.getPropertyName().equals(UndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(UndoManager.ENABLED)) {
+				if (evt.getPropertyName().equals(FlexoUndoManager.ACTION_HISTORY) || evt.getPropertyName().equals(FlexoUndoManager.ENABLED)
+						|| evt.getPropertyName().equals(FlexoUndoManager.START_RECORDING)
+						|| evt.getPropertyName().equals(FlexoUndoManager.STOP_RECORDING)
+						|| evt.getPropertyName().equals(FlexoUndoManager.UNDONE) || evt.getPropertyName().equals(FlexoUndoManager.REDONE)) {
 					updateWithUndoManagerState();
 				}
 			}
@@ -178,10 +204,10 @@ public class EditMenu extends FlexoMenu {
 
 		private void updateWithUndoManagerState() {
 			if (_controller.getEditor().getUndoManager() != null) {
-				setEnabled(_controller.getEditor().getUndoManager().isRedoActive());
-				if (_controller.getEditor().getUndoManager().isRedoActive()) {
+				setEnabled(_controller.getEditor().getUndoManager().canRedo());
+				if (_controller.getEditor().getUndoManager().canRedo()) {
 					setText(FlexoLocalization.localizedForKey("redo") + " ("
-							+ _controller.getEditor().getUndoManager().getNextRedoAction().getLocalizedName() + ")");
+							+ _controller.getEditor().getUndoManager().getRedoPresentationName() + ")");
 				} else {
 					setText(FlexoLocalization.localizedForKey("redo"));
 				}
@@ -200,7 +226,12 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			_controller.getEditor().getUndoManager().redo();
+			if (_controller.getEditor().getUndoManager().canRedo()) {
+				System.out.println("Perform REDO");
+				_controller.getEditor().getUndoManager().redo();
+			} else {
+				System.out.println("Cannot REDO");
+			}
 		}
 
 	}

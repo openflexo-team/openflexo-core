@@ -27,8 +27,7 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoUndoableAction;
-import org.openflexo.foundation.action.UndoManager;
+import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 
@@ -52,24 +51,12 @@ public interface FlexoEditor {
 
 	public void focusOn(FlexoObject object);
 
-	public UndoManager getUndoManager();
+	public FlexoUndoManager getUndoManager();
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
 			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
 
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performUndoActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
-
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performRedoActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
-
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e);
-
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performUndoAction(A action,
-			EventObject e);
-
-	public <A extends FlexoUndoableAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performRedoAction(A action,
-			EventObject e);
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
 			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection);
@@ -85,11 +72,5 @@ public interface FlexoEditor {
 
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
 			FlexoActionType<A, T1, T2> action);
-
-	public void notifyObjectCreated(FlexoObject object);
-
-	public void notifyObjectDeleted(FlexoObject object);
-
-	public void notifyObjectChanged(FlexoObject object);
 
 }

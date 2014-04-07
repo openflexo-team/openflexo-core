@@ -24,12 +24,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoUndoableAction;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 
-public class VECut extends FlexoUndoableAction<VECut, VirtualModelInstanceObject, VirtualModelInstanceObject> {
+public class VECut extends FlexoAction<VECut, VirtualModelInstanceObject, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(VECut.class.getPackage().getName());
 
@@ -67,18 +67,8 @@ public class VECut extends FlexoUndoableAction<VECut, VirtualModelInstanceObject
 
 	@Override
 	protected void doAction(Object context) {
-		// Not yet implemented in Foundation, but in WKF module
-		logger.info("CUT on VE");
-	}
-
-	@Override
-	protected void undoAction(Object context) {
-		logger.warning("UNDO CUT on VE not implemented yet !");
-	}
-
-	@Override
-	protected void redoAction(Object context) {
-		logger.warning("REDO CUT on VE not implemented yet !");
+		// TODO
+		logger.info("Perform CUT");
 	}
 
 }

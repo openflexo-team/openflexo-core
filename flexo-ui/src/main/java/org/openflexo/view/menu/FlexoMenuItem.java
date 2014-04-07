@@ -62,6 +62,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 	public FlexoMenuItem(FlexoController controller, String unlocalizedMenuName) {
 		super();
 		_controller = controller;
+		_controller.getPropertyChangeSupport().addPropertyChangeListener(this);
 		setText(FlexoLocalization.localizedForKey(unlocalizedMenuName, this));
 	}
 
@@ -69,6 +70,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 			boolean localizeActionName) {
 		super(action);
 		_controller = controller;
+		_controller.getPropertyChangeSupport().addPropertyChangeListener(this);
 		if (accelerator != null) {
 			setAccelerator(accelerator);
 			_controller.registerActionForKeyStroke(action, accelerator, flexoActionName);
