@@ -713,7 +713,10 @@ public interface FlexoConcept extends FlexoConceptObject {
 			for (FlexoRole pr : getFlexoRoles()) {
 				pr.notifyBindingModelChanged();
 			}
-			getInspector().notifyBindingModelChanged();
+			if(getInspector()!=null){
+				getInspector().notifyBindingModelChanged();
+			}
+			
 		}
 
 		/*

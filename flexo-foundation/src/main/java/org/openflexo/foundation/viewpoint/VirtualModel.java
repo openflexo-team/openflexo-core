@@ -492,6 +492,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public void setViewPoint(ViewPoint viewPoint) {
 			this.viewPoint = viewPoint;
+			updateBindingModel();
 		}
 
 		/*
