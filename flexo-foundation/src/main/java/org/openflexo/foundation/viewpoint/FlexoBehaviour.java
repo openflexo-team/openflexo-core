@@ -758,10 +758,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
-				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept())));
-				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
+				if(getFlexoConcept() instanceof VirtualModel){
+					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+							.getFlexoConceptInstanceType((VirtualModel)getFlexoConcept())));
+				}else{
+					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE, FlexoConceptInstanceType
+							.getFlexoConceptInstanceType(getFlexoConcept())));
+					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
+				}
+				
+				
 				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));

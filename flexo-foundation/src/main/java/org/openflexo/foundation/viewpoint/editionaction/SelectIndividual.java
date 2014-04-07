@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -67,6 +68,8 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 	public IFlexoOntologyClass getType();
 
 	public void setType(IFlexoOntologyClass ontologyClass);
+	
+	public FlexoMetaModel getMetaModelData();
 
 	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
 			FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
@@ -115,6 +118,15 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			} else {
 				typeURI = null;
 			}
+		}
+		
+		@Override
+		public FlexoMetaModel getMetaModelData() {
+			if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
+					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
+				return getModelSlot().getMetaModelResource().getMetaModelData();
+			}
+			return null;
 		}
 
 		@Override
