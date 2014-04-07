@@ -787,55 +787,14 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		IteratorIterable<? extends Content> fetchElementsIterator = document.getDescendants(new ElementFilter("FetchRequestIterationAction"));
 		List<Element> fetchElements = IteratorUtils.toList(fetchElementsIterator);
 		for(Element fetchElement : fetchElements){
-			if(fetchElement.getChildren("AddressedSelectEditionPatternInstance")!=null){
-				for(Element selectElement : fetchElement.getChildren("AddressedSelectEditionPatternInstance")){
-					selectElement.setName("FetchRequest_SelectEditionPatternInstance");
-				}
-			}
-			if(fetchElement.getChildren("SelectEditionPatternInstance")!=null){
-				for(Element selectElement : fetchElement.getChildren("SelectEditionPatternInstance")){
-					selectElement.setName("FetchRequest_SelectEditionPatternInstance");
-				}
-			}
-			if(fetchElement.getChildren("SelectEMFObjectIndividual")!=null){
-				for(Element selectElement : fetchElement.getChildren("SelectEMFObjectIndividual")){
-					selectElement.setName("FetchRequest_SelectEMFObjectIndividual");
-				}
-			}
-			if(fetchElement.getChildren("AddressedSelectEMFObjectIndividual")!=null){
-				for(Element selectElement : fetchElement.getChildren("AddressedSelectEMFObjectIndividual")){
-					selectElement.setName("FetchRequest_SelectEMFObjectIndividual");
-				}
-			}
-			if(fetchElement.getChildren("SelectExcelCell")!=null){
-				for(Element selectElement : fetchElement.getChildren("SelectExcelCell")){
-					selectElement.setName("FetchRequest_SelectExcelCell");
-				}
-			}
-			if(fetchElement.getChildren("AddressedSelectExcelCell")!=null){
-				for(Element selectElement : fetchElement.getChildren("AddressedSelectExcelCell")){
-					selectElement.setName("FetchRequest_SelectExcelCell");
-				}
-			}
-			if(fetchElement.getChildren("SelectExcelRow")!=null){
-				for(Element selectElement : fetchElement.getChildren("SelectExcelRow")){
-					selectElement.setName("FetchRequest_SelectExcelRow");
-				}
-			}
-			if(fetchElement.getChildren("AddressedSelectExcelRow")!=null){
-				for(Element selectElement : fetchElement.getChildren("AddressedSelectExcelRow")){
-					selectElement.setName("FetchRequest_SelectExcelRow");
-				}
-			}
-			if(fetchElement.getChildren("SelectExcelSheet")!=null){
-				for(Element selectElement : fetchElement.getChildren("SelectExcelSheet")){
-					selectElement.setName("FetchRequest_SelectExcelRow");
-				}
-			}
-			if(fetchElement.getChildren("AddressedSelectExcelSheet")!=null){
-				for(Element selectElement : fetchElement.getChildren("AddressedSelectExcelSheet")){
-					selectElement.setName("FetchRequest_SelectExcelSheet");
-				}
+			for(Element child : fetchElement.getChildren()){
+				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectEditionPatternInstance");
+				if(child.getName().equals("AddressedSelectEMFObjectIndividual"))child.setName("FetchRequest_SelectEMFObjectIndividual");
+				if(child.getName().equals("AddressedSelectIndividual"))child.setName("FetchRequest_SelectIndividual");
+				if(child.getName().equals("AddressedSelectExcelCell"))child.setName("FetchRequest_SelectExcelCell");
+				if(child.getName().equals("AddressedSelectExcelRow"))child.setName("FetchRequest_SelectExcelRow");
+				if(child.getName().equals("AddressedSelectExcelSheet"))child.setName("FetchRequest_SelectExcelSheet");
+				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectEditionPatternInstance");
 			}
 		}
 		
@@ -850,15 +809,35 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		
 		
 		// Model Slots
-		convertOldNameToNewNames("EMFModelSlot", "ModelSlot_EMFModelSlot", document);
-		convertOldNameToNewNames("XMLModelSlot", "ModelSlot_XMLModelSlot", document);
-		convertOldNameToNewNames("XSDModelSlot", "ModelSlot_XSDModelSlot", document);
-		convertOldNameToNewNames("BasicExcelModelSlot", "ModelSlot_BasicExcelModelSlot", document);
-		convertOldNameToNewNames("SemanticsExcelModelSlot", "ModelSlot_SemanticsExcelModelSlot", document);
-		convertOldNameToNewNames("BasicPowerpointModelSlot", "ModelSlot_BasicPowerpointModelSlot", document);
-		convertOldNameToNewNames("SemanticsPowerpointModelSlot", "ModelSlot_SemanticsPowerpointModelSlot", document);
-		convertOldNameToNewNames("OWLModelSlot", "ModelSlot_OWLModelSlot", document);
-		convertOldNameToNewNames("VirtualModelModelSlot", "ModelSlot_VirtualModelModelSlot", document);
+		for(Content content : document.getDescendants()){
+			if(content instanceof Element){
+				Element element = (Element) content;
+				if((element.getParentElement()!=null) && 
+						(element.getParentElement().getName().equals("DiagramSpecification")||element.getParentElement().getName().equals("VirtualModel"))){
+					if(element.getName().equals("EMFModelSlot"))element.setName("ModelSlot_EMFModelSlot");
+					else if(element.getName().equals("XMLModelSlot"))element.setName("ModelSlot_XMLModelSlot");
+					else if(element.getName().equals("XSDModelSlot"))element.setName("ModelSlot_XSDModelSlot");
+					else if(element.getName().equals("BasicExcelModelSlot"))element.setName("ModelSlot_BasicExcelModelSlot");
+					else if(element.getName().equals("SemanticsExcelModelSlot"))element.setName("ModelSlot_SemanticsExcelModelSlot");
+					else if(element.getName().equals("BasicPowerpointModelSlot"))element.setName("ModelSlot_SemanticsPowerpointModelSlot");
+					else if(element.getName().equals("OWLModelSlot"))element.setName("ModelSlot_OWLModelSlot");
+					else if(element.getName().equals("VirtualModelModelSlot"))element.setName("ModelSlot_VirtualModelModelSlot");
+				}
+				else{
+					if(element.getName().equals("AddressedEMFModelSlot"))element.setName("EMFModelSlot");
+					else if(element.getName().equals("AddressedXMLModelSlot"))element.setName("XMLModelSlot");
+					else if(element.getName().equals("AddressedXSDModelSlot"))element.setName("XSDModelSlot");
+					else if(element.getName().equals("AddressedBasicExcelModelSlot"))element.setName("BasicExcelModelSlot");
+					else if(element.getName().equals("AddressedSemanticsExcelModelSlot"))element.setName("SemanticsExcelModelSlot");
+					else if(element.getName().equals("AddressedBasicPowerpointModelSlot"))element.setName("BasicPowerpointModelSlot");
+					else if(element.getName().equals("AddressedSemanticsPowerpointModelSlot"))element.setName("SemanticsPowerpointModelSlot");
+					else if(element.getName().equals("AddressedOWLModelSlot"))element.setName("OWLModelSlot");
+					else if(element.getName().equals("AddressedDiagramModelSlot"))element.setName("TypedDiagramModelSlot");
+					else if(element.getName().equals("AddressedVirtualModelModelSlot"))element.setName("VirtualModelModelSlot");
+				}
+			}
+		}
+
 		// Palettes/ExampleDiagrams
 		convertOldNameToNewNames("Palette", "DiagramPalette", document);
 		convertOldNameToNewNames("PaletteElement", "DiagramPaletteElement", document);
@@ -868,19 +847,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("FromShape", "StartShape", document);
 		convertOldNameToNewNames("ToShape", "EndShape", document);
 		convertOldNameToNewNames("Border", "ShapeBorder", document);
-		
-		
-		// Connection to ModelSlots
-		convertOldNameToNewNames("AddressedEMFModelSlot", "EMFModelSlot", document);
-		convertOldNameToNewNames("AddressedXMLModelSlot", "XMLModelSlot", document);
-		convertOldNameToNewNames("AddressedXSDModelSlot", "XSDModelSlot", document);
-		convertOldNameToNewNames("AddressedBasicExcelModelSlot", "BasicExcelModelSlot", document);
-		convertOldNameToNewNames("AddressedSemanticsExcelModelSlot", "SemanticsExcelModelSlot", document);
-		convertOldNameToNewNames("AddressedBasicPowerpointModelSlot", "BasicPowerpointModelSlot", document);
-		convertOldNameToNewNames("AddressedSemanticsPowerpointModelSlot", "SemanticsPowerpointModelSlot", document);
-		convertOldNameToNewNames("AddressedOWLModelSlot", "OWLModelSlot", document);
-		convertOldNameToNewNames("AddressedVirtualModelModelSlot", "VirtualModelModelSlot", document);
-		convertOldNameToNewNames("AddressedDiagramModelSlot", "TypedDiagramModelSlot", document);
 		
 		removeNamedElements(document, "PrimaryConceptOWLIndividualPatternRole");
 		removeNamedElements(document, "StartShapeGraphicalRepresentation");
@@ -904,11 +870,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					if(attribute.getValue().startsWith("this")){
 						if(element.getName().equals("ModelSlot_VirtualModelModelSlot")){
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
-						}
-						if(attribute.getName().equals("virtualModelInstance")){
+						}if(element.getName().equals("VirtualModelModelSlot")){
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
-						}
-						else {
+						}if(attribute.getName().equals("virtualModelInstance")){
+							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
+						}else {
 							attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
 						}
 					}
