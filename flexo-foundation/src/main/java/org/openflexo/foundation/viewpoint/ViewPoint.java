@@ -383,9 +383,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
 				if (r instanceof VirtualModelResource) {
 					VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
-					if(!getVirtualModels().contains(vm)){
-						addToVirtualModels(vm);
-					}
 				}
 			}
 			isLoading = false;
