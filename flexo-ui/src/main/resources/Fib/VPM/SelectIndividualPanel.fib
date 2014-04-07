@@ -22,7 +22,7 @@
   </Custom>
   <Label label="ontology_class" align="right" index="6" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
   <Custom componentClassName="org.openflexo.components.widget.FIBClassSelector" localize="true" manageDynamicModel="true" index="7" data="data.type" constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" opaque="false">
-    <Assignment variable="component.context" value="data.getMetaModelData()" />
+    <Assignment variable="component.context" value="data.metaModelData" />
     <Dependancy componentName="AddIndividualAssignationCC" />
   </Custom>
   <Label label="conditions" index="10" constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />

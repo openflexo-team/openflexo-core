@@ -122,7 +122,11 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 		
 		@Override
 		public FlexoMetaModel getMetaModelData() {
-			return getModelSlot().getMetaModelResource().getMetaModelData();
+			if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
+					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
+				return getModelSlot().getMetaModelResource().getMetaModelData();
+			}
+			return null;
 		}
 
 		@Override
