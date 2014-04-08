@@ -25,13 +25,10 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.test.OrderedRunner;
 
 /**
  * Test instanciation of FIBModelFactory<br>
@@ -46,11 +43,11 @@ public class ViewPointModelFactoryTest {
 	public void testInstanciateViewPointModelFactory() {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
-			ViewPointModelFactory factory = new ViewPointModelFactory();
+			ViewPointModelFactory factory = new ViewPointModelFactory(null);
 			ModelContext modelContext = factory.getModelContext();
-			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext(); ) {
+			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();
-				System.out.println("> Found "+e.getImplementedInterface());
+				System.out.println("> Found " + e.getImplementedInterface());
 			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();

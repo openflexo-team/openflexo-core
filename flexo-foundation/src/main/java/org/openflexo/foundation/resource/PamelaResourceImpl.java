@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.undo.UndoableEdit;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -18,12 +20,16 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -109,6 +115,16 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			}
 		}
 
+		EditingContext editingContext = getServiceManager().getEditingContext();
+		IgnoreLoadingEdits ignoreHandler = null;
+		FlexoUndoManager undoManager = null;
+
+		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
+			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
+			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits());
+			System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
+		}
+
 		try {
 
 			FileInputStream fis = new FileInputStream(getFile());
@@ -132,7 +148,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			throw new InvalidModelDefinitionException(e);
 		} finally {
 			isLoading = false;
-			// isConverting = false;
+			if (ignoreHandler != null) {
+				undoManager.removeFromIgnoreHandlers(ignoreHandler);
+				System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
+			}
 		}
 	}
 
@@ -415,6 +434,27 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			return (Element) it.next();
 		} else {
 			return null;
+		}
+	}
+
+	/**
+	 * This handler allows to ignore edits raised during deserialization
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class IgnoreLoadingEdits implements IgnoreHandler {
+
+		@Override
+		public boolean isIgnorable(UndoableEdit edit) {
+			if (edit instanceof AtomicEdit) {
+				Object o = ((AtomicEdit) edit).getObject();
+				if (((AtomicEdit) edit).getModelFactory() == getFactory()) {
+					System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 

@@ -70,7 +70,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setDirectory(viewDirectory);
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
-			returned.setFactory(new ViewModelFactory(returned));
+			returned.setFactory(new ViewModelFactory(viewLibrary.getServiceManager().getEditingContext(), returned));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setServiceManager(viewLibrary.getServiceManager());
@@ -104,7 +104,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
-			returned.setFactory(new ViewModelFactory(returned));
+			returned.setFactory(new ViewModelFactory(viewLibrary.getServiceManager().getEditingContext(), returned));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setServiceManager(viewLibrary.getServiceManager());
