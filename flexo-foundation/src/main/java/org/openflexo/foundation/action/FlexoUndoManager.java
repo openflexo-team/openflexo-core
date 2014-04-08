@@ -200,7 +200,7 @@ public class FlexoUndoManager extends UndoManager {
 		if (getCurrentEdition() == null || getCurrentEdition().getPresentationName().equals(UNIDENTIFIED_RECORDING)) {
 			// We are on an unidentified recording
 			logger.warning("Received edit outside legal UNDO declaration: " + edit);
-			Thread.dumpStack();
+			// Thread.dumpStack();
 			/*if (edit instanceof SetCommand) {
 				if (((SetCommand) edit).getModelProperty().getPropertyIdentifier().equals("mouseClickControls")) {
 					System.out.println("Celui la je l'ignore");
