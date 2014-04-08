@@ -172,28 +172,34 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
 			ActorReference<T> actorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
-			// Pragmatic attempt to fix "inheritance issue...."
-			for (FlexoConcept parentEP : this.getFlexoConcept().getParentFlexoConcepts()) {
-				while (actorReference == null && parentEP != null) {
-					if (parentEP != null) {
-						FlexoRole ppFlexoRole = parentEP.getFlexoRole(flexoRole.getName());
-						if (ppFlexoRole == flexoRole) {
-							flexoRole = (FlexoRole<T>) this.getFlexoConcept().getFlexoRole(ppFlexoRole.getName());
-							actorReference = (ActorReference<T>) actors.get(flexoRole);
-						}
-					}
-					if (actorReference != null) {
-						break;
-					}
-
-				}
-			}
+			
 			if (actorReference != null) {
 				return actorReference.getModellingElement();
+			}
+			// Pragmatic attempt to fix "inheritance issue...."
+			else if (actorReference == null){
+				getParentActorReference(getFlexoConcept(),flexoRole);
 			}
 			return null;
 		}
 
+		private <T> ActorReference<T> getParentActorReference(FlexoConcept flexoConcept,FlexoRole<T> flexoRole){
+			ActorReference<T> actorReference;
+			for (FlexoConcept parentFlexoConcept : this.getFlexoConcept().getParentFlexoConcepts()) {
+				if (parentFlexoConcept != null) {
+					FlexoRole ppFlexoRole = parentFlexoConcept.getFlexoRole(flexoRole.getName());
+					if (ppFlexoRole == flexoRole) {
+						flexoRole = (FlexoRole<T>) this.getFlexoConcept().getFlexoRole(ppFlexoRole.getName());
+						actorReference = (ActorReference<T>) actors.get(flexoRole);
+						if (actorReference != null) {
+							return actorReference;
+						}
+					}
+				}
+			}
+			return null;
+		}
+		
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> patternRole) {
 			setObjectForFlexoRole(object, patternRole);

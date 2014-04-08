@@ -293,9 +293,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public Vector<CreateFlexoConceptInstanceParameter> getParameters() {
-			if(!updatingParameters){
+		//	if(!updatingParameters){
 				updateParameters();
-			}
+			//}
 			return parameters;
 		}
 
@@ -305,17 +305,17 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public void addToParameters(CreateFlexoConceptInstanceParameter parameter) {
-			if(parameter.getAction()!=this){
+			//if(parameter.getAction()!=this){
 				parameter.setAction(this);
-			}
+			//}
 			parameters.add(parameter);
 		}
 
 		@Override
 		public void removeFromParameters(CreateFlexoConceptInstanceParameter parameter) {
-			if(parameter.getAction()!=null){
+			//if(parameter.getAction()!=null){
 				parameter.setAction(null);
-			}
+			//}
 			parameters.remove(parameter);
 		}
 
@@ -329,7 +329,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		}
 
 		private void updateParameters() {
-			updatingParameters = true;
+			//updatingParameters = true;
 			Vector<CreateFlexoConceptInstanceParameter> parametersToRemove = new Vector<CreateFlexoConceptInstanceParameter>(parameters);
 			if (getCreationScheme() != null) {
 				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
@@ -344,7 +344,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			for (CreateFlexoConceptInstanceParameter removeThis : parametersToRemove) {
 				removeFromParameters(removeThis);
 			}
-			updatingParameters = false;
+			//updatingParameters = false;
 		}
 
 		@Override

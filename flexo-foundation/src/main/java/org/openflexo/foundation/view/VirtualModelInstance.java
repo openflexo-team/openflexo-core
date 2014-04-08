@@ -335,6 +335,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			returned.setVirtualModelInstance(this);
 			returned.setFlexoConcept(concept);
 			addToFlexoConceptInstances(returned);
 			return returned;

@@ -66,7 +66,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			CreateFlexoConceptInstanceParameter {
 
 		private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceParameter.class.getPackage().getName());
-		// MatchFlexoConceptInstance action;
+		MatchFlexoConceptInstance action;
 
 		private FlexoBehaviourParameter param;
 		String paramName;
@@ -170,7 +170,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			return null;
 		}
 
-		/*@Override
+		@Override
 		public MatchFlexoConceptInstance getAction() {
 			return action;
 		}
@@ -178,7 +178,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public void setAction(MatchFlexoConceptInstance action) {
 			this.action = action;
-		}*/
+		}
 
 		@Override
 		public FlexoBehaviourParameter getParam() {
