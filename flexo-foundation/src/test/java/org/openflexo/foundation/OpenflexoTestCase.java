@@ -66,6 +66,8 @@ public abstract class OpenflexoTestCase {
 	protected static DirectoryResourceCenter resourceCenter;
 	protected static FlexoServiceManager serviceManager;
 
+	protected static File testResourceCenterDirectory;
+
 	static {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.WARNING, null);
@@ -78,6 +80,11 @@ public abstract class OpenflexoTestCase {
 
 	@AfterClass
 	public static void tearDownClass() {
+		if (testResourceCenterDirectory != null) {
+			FileUtils.deleteDir(testResourceCenterDirectory);
+		}
+		resourceCenter = null;
+		serviceManager = null;
 
 	}
 
@@ -122,7 +129,7 @@ public abstract class OpenflexoTestCase {
 			protected FlexoResourceCenterService createResourceCenterService() {
 				try {
 					File tempFile = File.createTempFile("Temp", "");
-					File testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 					testResourceCenterDirectory.mkdirs();
 
 					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
