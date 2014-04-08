@@ -28,6 +28,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -40,6 +41,8 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -103,7 +106,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				convertViewPoint(viewPointDirectory, xmlFile);
 				hasBeenConverted = true;
 			}*/
-
 			
 			/*
 			 * Will be activitated when the convertion will be fully compliant
@@ -148,6 +150,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				if (f.isDirectory()) {
 					File virtualModelFile = new File(f, f.getName() + ".xml");
 					if (virtualModelFile.exists()) {
+						
+						// This directory should be append to resources to be looked-up, because of images.
+						FileSystemResourceLocatorImpl fsrl = (FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class);
+						fsrl.appendToDirectories(f.getPath());
+						ResourceLocator.appendDelegate(fsrl);
+						
 						// TODO: we must find something more efficient
 						try {
 							Document d = XMLUtils.readXMLFile(virtualModelFile);
