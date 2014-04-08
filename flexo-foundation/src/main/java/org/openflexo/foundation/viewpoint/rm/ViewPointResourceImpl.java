@@ -727,52 +727,68 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	private static void convertNames16ToNames17(Document document) {
-		// Convert properties
-		convertProperties16ToProperties17(document);
+		
+		// Convert common properties
+		addProperty("userID", "FLX", document, null);
+		
 		// Edition Patterns
+			// Edition patterns name
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
+			// Parent pattern role is no more an attribute but an element 
+		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
+		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
+		for(Element fc : fcElements){
+			if(fc.getAttribute("parentEditionPattern")!=null){
+				Element parentEp = new Element("ParentFlexoConcept");
+				Attribute parentIdRef = new Attribute("idref", getFlexoConceptID(document,fc.getAttributeValue("parentEditionPattern")));
+				parentEp.getAttributes().add(parentIdRef);
+				fc.removeAttribute("parentEditionPattern");
+				fc.addContent(parentEp);
+			}
+		}
+		
+		
 		// Pattern Roles
+			// Pattern roles properties
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "ContainedEditionPatternInstancePatternRole");
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "AddressedSelectEditionPatternInstance");
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "SelectEditionPatternInstance");
+		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "EditionPatternInstanceParameter");
+		changePropertyName("paletteElementID", "paletteElementId", document, "FMLDiagramPaletteElementBinding");
+		changePropertyName("editionPattern", "flexoConcept", document, "PaletteElement");
+		removeProperties("patternRole",  document);
+		removeProperty("className", document, "DrawingGraphicalRepresentation");
+		removeProperty("className", document, "ShapeGraphicalRepresentation");
+		removeProperty("className", document, "ConnectorGraphicalRepresentation");
+			// Pattern roles name
 		convertOldNameToNewNames("ContainedEditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
 		convertOldNameToNewNames("EditionPatternInstancePatternRole", "FlexoConceptInstanceRole", document);
-		
 		convertOldNameToNewNames("ContainedShapePatternRole", "ShapeRole", document);
 		convertOldNameToNewNames("ShapePatternRole", "ShapeRole", document);
 		convertOldNameToNewNames("ContextShapePatternRole", "ShapeRole", document);
 		convertOldNameToNewNames("ParentShapePatternRole", "ParentShapeRole", document);
-		
 		convertOldNameToNewNames("ContainedEMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
 		convertOldNameToNewNames("EMFObjectIndividualPatternRole", "EMFObjectIndividualRole", document);
-		
 		convertOldNameToNewNames("ContainedConnectorPatternRole", "ConnectorRole", document);
 		convertOldNameToNewNames("ConnectorPatternRole", "ConnectorRole", document);
-		
 		convertOldNameToNewNames("ContainedOWLIndividualPatternRole", "OWLIndividualRole", document);
 		convertOldNameToNewNames("OWLIndividualPatternRole", "OWLIndividualRole", document);
-		
 		convertOldNameToNewNames("ContainedObjectPropertyStatementPatternRole", "ObjectPropertyStatementRole", document);
 		convertOldNameToNewNames("ObjectPropertyStatementPatternRole", "ObjectPropertyStatementRole", document);
-		
 		convertOldNameToNewNames("ContainedDataPropertyStatementPatternRole", "DataPropertyStatementRole", document);
 		convertOldNameToNewNames("DataPropertyStatementPatternRole", "DataPropertyStatementRole", document);
-		
 		convertOldNameToNewNames("ContainedExcelCellPatternRole", "ExcelCellRole", document);
 		convertOldNameToNewNames("ExcelCellPatternRole", "ExcelCellRole", document);
-		
 		convertOldNameToNewNames("ContainedExcelSheetPatternRole", "ExcelSheetRole", document);
 		convertOldNameToNewNames("ExcelSheetPatternRole", "ExcelSheetRole", document);
-		
 		convertOldNameToNewNames("ContainedExcelRowPatternRole", "ExcelRowRole", document);
 		convertOldNameToNewNames("ExcelRowPatternRole", "ExcelRowRole", document);
-		
 		convertOldNameToNewNames("ContainedDiagramPatternRole", "DiagramRole", document);
 		convertOldNameToNewNames("DiagramPatternRole", "DiagramRole", document);
-		
 		convertOldNameToNewNames("ContainedXMLIndividualPatternRole", "XMLIndividualRole", document);
 		convertOldNameToNewNames("XMLIndividualPatternRole", "XMLIndividualRole", document);
-		
 		convertOldNameToNewNames("ContainedXSIndividualPatternRole", "XSIndividualRole", document);
 		convertOldNameToNewNames("XSIndividualPatternRole", "XSIndividualRole", document);
-		
 		convertOldNameToNewNames("ContainedXSClassPatternRole", "XSClassRole", document);
 		convertOldNameToNewNames("XSClassPatternRole", "XSClassRole", document);
 		
@@ -780,10 +796,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("EditionPatternInstanceParameter", "FlexoConceptInstanceParameter", document);
 		convertOldNameToNewNames("MatchEditionPatternInstance", "MatchFlexoConceptInstance", document);
 		convertOldNameToNewNames("CreateEditionPatternInstanceParameter", "CreateFlexoConceptInstanceParameter", document);
-		
-		//convertOldNameToNewNames("SelectEditionPatternInstance", "SelectFlexoConceptInstance", document);
 		// Retrieve Fetch Actions
-		
 		IteratorIterable<? extends Content> fetchElementsIterator = document.getDescendants(new ElementFilter("FetchRequestIterationAction"));
 		List<Element> fetchElements = IteratorUtils.toList(fetchElementsIterator);
 		for(Element fetchElement : fetchElements){
@@ -797,9 +810,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectEditionPatternInstance");
 			}
 		}
-		
-		
-		// Actions
+		// Built-in actions
 		convertOldNameToNewNames("DeclarePatternRole", "DeclareFlexoRole", document);
 		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);
 		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
@@ -881,27 +892,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 		}
-		
-	}
-
-	private static void convertProperties16ToProperties17(Document document) {
-		// All elements
-		addProperty("userID", "FLX", document, null);
-		// Pattern roles
-		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "ContainedEditionPatternInstancePatternRole");
-		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "AddressedSelectEditionPatternInstance");
-		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "SelectEditionPatternInstance");
-		changePropertyName("editionPatternTypeURI", "flexoConceptTypeURI", document, "EditionPatternInstanceParameter");
-		changePropertyName("parentEditionPattern", "parentFlexoConcept", document, "EditionPattern");
-		changePropertyName("paletteElementID", "paletteElementId", document, "FMLDiagramPaletteElementBinding");
-		
-		
-		changePropertyName("editionPattern", "flexoConcept", document, "PaletteElement");
-		removeProperties("patternRole",  document);
-		removeProperty("className", document, "DrawingGraphicalRepresentation");
-		removeProperty("className", document, "ShapeGraphicalRepresentation");
-		removeProperty("className", document, "ConnectorGraphicalRepresentation");
-		
 		
 	}
 
@@ -1042,4 +1032,36 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 	}
 
+	private static String retrieveVirtualModelInstanceURI(Document document){
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if(element.getName().equals("AddressedVirtualModelModelSlot") ||
+						element.getName().equals("VirtualModelModelSlot")){
+					if(element.getAttribute("name")!=null && 
+							(element.getAttributeValue("name").equals("this")||element.getAttributeValue("name").equals("virtualModelInstance"))
+							&& element.getAttribute("virtualModelURI")!=null ){
+						return element.getAttributeValue("virtualModelURI");
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private static String getFlexoConceptID(Document document,String flexoConceptUri){
+		String virtualModelInstanceUri = retrieveVirtualModelInstanceURI(document);
+		for (Content content : document.getDescendants()) {
+			if (content instanceof Element) {
+				Element element = (Element) content;
+				if(element.getName().equals("FlexoConcept")||element.getName().equals("EditionPattern")){
+					if((virtualModelInstanceUri+"#"+element.getAttributeValue("name")).equals(flexoConceptUri)){
+						return element.getAttributeValue("id");
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 }
