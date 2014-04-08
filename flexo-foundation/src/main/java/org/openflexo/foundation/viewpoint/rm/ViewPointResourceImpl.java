@@ -153,8 +153,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						
 						// This directory should be append to resources to be looked-up, because of images.
 						FileSystemResourceLocatorImpl fsrl = (FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class);
-						fsrl.appendToDirectories(f.getPath());
-						ResourceLocator.appendDelegate(fsrl);
+						if(fsrl!=null && f.getPath()!=null){
+							fsrl.appendToDirectories(f.getPath());
+							ResourceLocator.appendDelegate(fsrl);
+						}
+						
 						
 						// TODO: we must find something more efficient
 						try {
