@@ -46,7 +46,7 @@ public class VirtualModelModelFactoryTest {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
 			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
-			VirtualModelModelFactory factory = new VirtualModelModelFactory(taService);
+			VirtualModelModelFactory factory = new VirtualModelModelFactory(null, taService);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();

@@ -19,7 +19,11 @@
  */
 package org.openflexo.foundation.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+
+import javax.swing.undo.UndoableEdit;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.model.undo.CompoundEdit;
@@ -45,6 +49,32 @@ public class FlexoUndoManager extends UndoManager {
 	public static final String ACTION_HISTORY = "actionHistory";
 
 	private FlexoAction<?, ?, ?> actionBeeingCurrentlyExecuted;
+	private final List<IgnoreHandler> ignoreHandlers;
+
+	public FlexoUndoManager() {
+		ignoreHandlers = new ArrayList<IgnoreHandler>();
+	}
+
+	/**
+	 * Adds an {@link IgnoreHandler} to the set of ignore handlers for this object, provided that it is not the same as some
+	 * {@link IgnoreHandler} already in the set.
+	 * 
+	 * @param ignoreHandler
+	 *            an {@link IgnoreHandler} to be added.
+	 */
+	public void addToIgnoreHandlers(IgnoreHandler ignoreHandler) {
+		ignoreHandlers.add(ignoreHandler);
+	}
+
+	/**
+	 * Remove an {@link IgnoreHandler} to the set of ignore handlers for this object
+	 * 
+	 * @param ignoreHandler
+	 *            an {@link IgnoreHandler} to be removed.
+	 */
+	public void removeFromIgnoreHandlers(IgnoreHandler ignoreHandler) {
+		ignoreHandlers.remove(ignoreHandler);
+	}
 
 	/**
 	 * Called when a FlexoAction is about to be executed
@@ -159,6 +189,28 @@ public class FlexoUndoManager extends UndoManager {
 		return new FlexoActionCompoundEdit(actionBeeingCurrentlyExecuted, presentationName);
 	}
 
+	@Override
+	public boolean isIgnorable(UndoableEdit edit) {
+		for (IgnoreHandler ih : ignoreHandlers) {
+			if (ih.isIgnorable(edit)) {
+				return true;
+			}
+		}
+		// Debug
+		if (getCurrentEdition() == null || getCurrentEdition().getPresentationName().equals(UNIDENTIFIED_RECORDING)) {
+			// We are on an unidentified recording
+			logger.warning("Received edit outside legal UNDO declaration: " + edit);
+			Thread.dumpStack();
+			/*if (edit instanceof SetCommand) {
+				if (((SetCommand) edit).getModelProperty().getPropertyIdentifier().equals("mouseClickControls")) {
+					System.out.println("Celui la je l'ignore");
+					return true;
+				}
+			}*/
+		}
+		return false;
+	}
+
 	/**
 	 * An Openflexo-specific CompoundEdit wrapping all edits of a FlexoAction<br>
 	 * Note that at the creation of this {@link CompoundEdit}, the {@link FlexoAction} might be null and set later<br>
@@ -182,6 +234,25 @@ public class FlexoUndoManager extends UndoManager {
 
 		public void setAction(FlexoAction<?, ?, ?> action) {
 			this.action = action;
+		}
+	}
+
+	/**
+	 * Interface implemented by a delegate that filter undoable edits that should be ignored
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static interface IgnoreHandler {
+		public boolean isIgnorable(UndoableEdit edit);
+	}
+
+	// Try to avoid using it, since this might be really dangerous
+	@Deprecated
+	public static class IgnoreAll implements IgnoreHandler {
+		@Override
+		public boolean isIgnorable(UndoableEdit edit) {
+			return true;
 		}
 	}
 }

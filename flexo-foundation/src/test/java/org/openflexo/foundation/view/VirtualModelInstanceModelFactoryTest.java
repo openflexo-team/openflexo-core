@@ -42,7 +42,7 @@ public class VirtualModelInstanceModelFactoryTest {
 	public void testInstantiateVirtualModelModelFactory() {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
-			VirtualModelInstanceModelFactory factory = new VirtualModelInstanceModelFactory(null);
+			VirtualModelInstanceModelFactory factory = new VirtualModelInstanceModelFactory(null, null);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();

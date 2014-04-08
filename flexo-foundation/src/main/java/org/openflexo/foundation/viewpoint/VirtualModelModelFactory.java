@@ -70,6 +70,7 @@ import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
@@ -79,8 +80,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl, 
-// because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory 
+// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl,
+// because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
 public class VirtualModelModelFactory extends FGEModelFactoryImpl {
@@ -89,15 +90,16 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl {
 
 	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public VirtualModelModelFactory(TechnologyAdapterService taService) throws ModelDefinitionException {
-		this(taService, null);
+	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
+		this(editingContext, taService, null);
 	}
 
 	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public VirtualModelModelFactory(TechnologyAdapterService taService, VirtualModelResource virtualModelResource)
-			throws ModelDefinitionException {
+	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService,
+			VirtualModelResource virtualModelResource) throws ModelDefinitionException {
 		super(allClassesForModelContext(taService));
+		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);

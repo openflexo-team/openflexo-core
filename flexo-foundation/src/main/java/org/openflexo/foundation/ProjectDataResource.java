@@ -41,23 +41,14 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 	public static abstract class ProjectDataResourceImpl extends PamelaResourceImpl<ProjectData, ProjectDataFactory> implements
 			ProjectDataResource {
 
-		private static ProjectDataFactory PROJECT_DATA_FACTORY;
-
-		static {
-			try {
-				PROJECT_DATA_FACTORY = new ProjectDataFactory();
-			} catch (ModelDefinitionException e) {
-				e.printStackTrace();
-			}
-		}
-
 		public static ProjectDataResource makeProjectDataResource(FlexoProject project) {
 			try {
 				ModelFactory resourceFactory = new ModelFactory(ProjectDataResource.class);
 				ProjectDataResourceImpl returned = (ProjectDataResourceImpl) resourceFactory.newInstance(ProjectDataResource.class);
 				File xmlFile = new File(project.getProjectDirectory(), FILE_NAME);
 				returned.setProject(project);
-				returned.setFactory(PROJECT_DATA_FACTORY);
+				ProjectDataFactory projectDataFactory = new ProjectDataFactory(project.getServiceManager().getEditingContext());
+				returned.setFactory(projectDataFactory);
 				returned.setName(project.getProjectName() + "-data");
 				returned.setFile(xmlFile);
 				returned.setURI(project.getURI() + "/ProjectData");
