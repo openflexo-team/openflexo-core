@@ -23,7 +23,7 @@
       </ColSplit>
     </RowSplit>
     <Panel layout="border" border="rounded3d" borderTitle="" borderTop="2" borderBottom="2" borderRight="2" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" constraints="split(index=0;location=center;splitIdentifier=screenshot)">
-      <Custom componentClassName="org.openflexo.ve.widget.FIBParametersRetrieverWidget" localize="true" manageDynamicModel="true" name="ParametersRetriverWidget" data="data.creationSchemeAction" constraints="border(location=center)" visible="(CreationSchemeBrowser.selected != null)" />
+      <Custom componentClassName="org.openflexo.view.controller.FIBParametersRetrieverWidget" localize="true" manageDynamicModel="true" name="ParametersRetriverWidget" data="data.creationSchemeAction" constraints="border(location=center)" visible="(CreationSchemeBrowser.selected != null)" />
     </Panel>
     <Panel layout="border" border="rounded3d" borderTitle="" borderTop="2" borderBottom="2" borderRight="2" titleFont="Lucida Grande,0,11" darkLevel="0" index="0" constraints="split(splitIdentifier=description)">
       <Label label="label" align="center" data="CreationSchemeBrowser.selected.label" constraints="border(location=north)" font="SansSerif,1,12" localize="true" />

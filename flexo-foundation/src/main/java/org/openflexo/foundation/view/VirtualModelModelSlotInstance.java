@@ -86,8 +86,14 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<Virtual
 		@Override
 		public VirtualModelInstance getAccessedResourceData() {
 			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
-				VirtualModelInstanceResource vmiResource = getProject().getViewLibrary().getVirtualModelInstance(
-						getVirtualModelInstanceURI());
+				VirtualModelInstanceResource vmiResource;
+				if(getProject()!=null){
+					vmiResource = getProject().getViewLibrary().getVirtualModelInstance(
+							getVirtualModelInstanceURI());
+				} else {
+					vmiResource = getVirtualModelInstance().getView().getProject().getViewLibrary().getVirtualModelInstance(
+							getVirtualModelInstanceURI());
+				}
 				if (vmiResource != null) {
 					accessedResourceData = vmiResource.getVirtualModelInstance();
 					resource = vmiResource;

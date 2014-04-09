@@ -175,7 +175,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
-					vmi = modelSlotInstance.getResourceData();
+					vmi = (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();
 				} else {
 					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
 				}
