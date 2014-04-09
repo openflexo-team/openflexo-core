@@ -87,6 +87,14 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		setIcon(icon);
 	}
 
+	public FlexoMenuItem(FlexoActionType actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
+		this(actionType, controller);
+		setIcon(icon);
+		if (accelerator != null) {
+			setAccelerator(accelerator);
+		}
+	}
+
 	public FlexoMenuItem(FlexoActionType actionType, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);

@@ -22,6 +22,7 @@ package org.openflexo.view.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
@@ -40,6 +41,8 @@ import org.openflexo.view.controller.model.ControllerModel;
  * @author sguerin
  */
 public class EditMenu extends FlexoMenu {
+
+	static final Logger logger = Logger.getLogger(EditMenu.class.getPackage().getName());
 
 	public FlexoMenuItem undoItem;
 	public FlexoMenuItem redoItem;
@@ -61,6 +64,18 @@ public class EditMenu extends FlexoMenu {
 		add(redoItem = new RedoItem());
 		undoItem.setEnabled(false);
 		redoItem.setEnabled(false);
+
+		addSeparator();
+
+		add(copyItem = new CopyItem());
+		add(cutItem = new CutItem());
+		add(pasteItem = new PasteItem());
+		add(selectAllItem = new SelectAllItem());
+
+	}
+
+	public FlexoUndoManager getUndoManager() {
+		return _controller.getEditingContext().getUndoManager();
 	}
 
 	// ==============================================
@@ -78,8 +93,6 @@ public class EditMenu extends FlexoMenu {
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == _controller && evt.getPropertyName().equals(FlexoController.EDITOR)) {
-
-				System.out.println("?????????????? Received " + evt);
 
 				if (evt.getOldValue() != null) {
 					FlexoEditor old = (FlexoEditor) evt.getOldValue();
@@ -115,11 +128,10 @@ public class EditMenu extends FlexoMenu {
 		}
 
 		private void updateWithUndoManagerState() {
-			if (_controller.getEditor().getUndoManager() != null) {
-				setEnabled(_controller.getEditor().getUndoManager().canUndo());
-				if (_controller.getEditor().getUndoManager().canUndo()) {
-					setText(FlexoLocalization.localizedForKey("undo") + " ("
-							+ _controller.getEditor().getUndoManager().getUndoPresentationName() + ")");
+			if (getUndoManager() != null) {
+				setEnabled(getUndoManager().canUndo());
+				if (getUndoManager().canUndo()) {
+					setText(FlexoLocalization.localizedForKey("undo") + " (" + getUndoManager().getUndoPresentationName() + ")");
 				} else {
 					setText(FlexoLocalization.localizedForKey("undo"));
 				}
@@ -142,14 +154,19 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			if (_controller.getEditor().getUndoManager().canUndo()) {
-				System.out.println("Perform UNDO");
-				_controller.getEditor().getUndoManager().undo();
+			if (getUndoManager().canUndo()) {
+				logger.info("Undoing: " + getUndoManager().editToBeUndone().getPresentationName());
+				getUndoManager().undo();
+			} else if (getUndoManager().canUndoIfStoppingCurrentEdition()) {
+				getUndoManager().stopRecording(getUndoManager().getCurrentEdition());
+				if (getUndoManager().canUndo()) {
+					logger.info("Undoing: " + getUndoManager().editToBeUndone().getPresentationName());
+					getUndoManager().undo();
+				}
 			} else {
-				System.out.println("Cannot UNDO");
-				_controller.getEditor().getUndoManager().debug();
+				logger.info("Cannot UNDO");
+				getUndoManager().debug();
 			}
-
 		}
 
 	}
@@ -203,11 +220,10 @@ public class EditMenu extends FlexoMenu {
 		}
 
 		private void updateWithUndoManagerState() {
-			if (_controller.getEditor().getUndoManager() != null) {
-				setEnabled(_controller.getEditor().getUndoManager().canRedo());
-				if (_controller.getEditor().getUndoManager().canRedo()) {
-					setText(FlexoLocalization.localizedForKey("redo") + " ("
-							+ _controller.getEditor().getUndoManager().getRedoPresentationName() + ")");
+			if (getUndoManager() != null) {
+				setEnabled(getUndoManager().canRedo());
+				if (getUndoManager().canRedo()) {
+					setText(FlexoLocalization.localizedForKey("redo") + " (" + getUndoManager().getRedoPresentationName() + ")");
 				} else {
 					setText(FlexoLocalization.localizedForKey("redo"));
 				}
@@ -226,14 +242,61 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			if (_controller.getEditor().getUndoManager().canRedo()) {
+			if (getUndoManager().canRedo()) {
 				System.out.println("Perform REDO");
-				_controller.getEditor().getUndoManager().redo();
+				getUndoManager().redo();
 			} else {
 				System.out.println("Cannot REDO");
 			}
 		}
 
+	}
+
+	// ==============================================
+	// ================== Copy ======================
+	// ==============================================
+
+	public class CopyItem extends FlexoMenuItem {
+
+		public CopyItem() {
+			super(_controller.getEditingContext().getCopyActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_C, FlexoCst.META_MASK),
+					IconLibrary.COPY_ICON, _controller);
+		}
+	}
+
+	// ==============================================
+	// ================== Paste ======================
+	// ==============================================
+
+	public class PasteItem extends FlexoMenuItem {
+
+		public PasteItem() {
+			super(_controller.getEditingContext().getPasteActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_V, FlexoCst.META_MASK),
+					IconLibrary.PASTE_ICON, _controller);
+		}
+	}
+
+	// ==============================================
+	// ================== Cut ======================
+	// ==============================================
+
+	public class CutItem extends FlexoMenuItem {
+
+		public CutItem() {
+			super(_controller.getEditingContext().getCutActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_X, FlexoCst.META_MASK),
+					IconLibrary.CUT_ICON, _controller);
+		}
+	}
+
+	// ==============================================
+	// ================== SelectAll ======================
+	// ==============================================
+
+	public class SelectAllItem extends FlexoMenuItem {
+
+		public SelectAllItem() {
+			super(_controller.getEditingContext().getSelectAllActionType(), _controller);
+		}
 	}
 
 }

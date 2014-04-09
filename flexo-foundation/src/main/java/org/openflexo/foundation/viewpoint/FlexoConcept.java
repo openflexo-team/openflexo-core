@@ -48,6 +48,7 @@ import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
@@ -127,6 +128,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public void setFlexoBehaviours(List<FlexoBehaviour> flexoBehaviours);
 
 	@Adder(EDITION_SCHEMES_KEY)
+	@PastingPoint
 	public void addToFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
 	@Remover(EDITION_SCHEMES_KEY)
@@ -143,6 +145,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public void setFlexoRoles(List<FlexoRole<?>> patternRoles);
 
 	@Adder(FLEXO_ROLES_KEY)
+	@PastingPoint
 	public void addToFlexoRoles(FlexoRole<?> aPatternRole);
 
 	@Remover(FLEXO_ROLES_KEY)
@@ -194,6 +197,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public void setFlexoConceptConstraints(List<FlexoConceptConstraint> flexoConceptConstraints);
 
 	@Adder(FLEXO_CONCEPT_CONSTRAINTS_KEY)
+	@PastingPoint
 	public void addToFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
 
 	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
@@ -713,10 +717,10 @@ public interface FlexoConcept extends FlexoConceptObject {
 			for (FlexoRole pr : getFlexoRoles()) {
 				pr.notifyBindingModelChanged();
 			}
-			if(getInspector()!=null){
+			if (getInspector() != null) {
 				getInspector().notifyBindingModelChanged();
 			}
-			
+
 		}
 
 		/*

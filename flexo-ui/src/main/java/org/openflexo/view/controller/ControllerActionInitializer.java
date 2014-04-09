@@ -25,10 +25,15 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.openflexo.action.CopyActionInitializer;
+import org.openflexo.action.CutActionInitializer;
 import org.openflexo.action.ImportProjectInitializer;
+import org.openflexo.action.PasteActionInitializer;
 import org.openflexo.action.ProjectExcelExportInitializer;
 import org.openflexo.action.RemoveImportedProjectInitializer;
+import org.openflexo.action.SelectAllActionInitializer;
 import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -110,6 +115,10 @@ public class ControllerActionInitializer implements EditorProvider {
 		return _controller;
 	}
 
+	public FlexoEditingContext getEditingContext() {
+		return getController().getEditor().getServiceManager().getEditingContext();
+	}
+
 	public FlexoModule getModule() {
 		return getController().getModule();
 	}
@@ -120,6 +129,12 @@ public class ControllerActionInitializer implements EditorProvider {
 		new ImportProjectInitializer(this);
 		new RemoveImportedProjectInitializer(this);
 		new HelpActionizer(this);
+
+		// Registering copy/cut/paste/selectAll actions
+		new CopyActionInitializer(this);
+		new CutActionInitializer(this);
+		new PasteActionInitializer(this);
+		new SelectAllActionInitializer(this);
 
 		// TODO : To be re-written when Wysiwyg editor is re-written
 		// new SubmitDocumentationActionizer(this);

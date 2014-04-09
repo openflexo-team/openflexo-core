@@ -83,6 +83,7 @@ import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ConsistencyCheckDialog;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
+import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -1634,6 +1635,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public final FlexoEditor getEditor() {
 		return getControllerModel().getCurrentEditor();
+	}
+
+	public final FlexoEditingContext getEditingContext() {
+		if (getEditor() != null) {
+			return getEditor().getServiceManager().getEditingContext();
+		}
+		return null;
 	}
 
 	/**

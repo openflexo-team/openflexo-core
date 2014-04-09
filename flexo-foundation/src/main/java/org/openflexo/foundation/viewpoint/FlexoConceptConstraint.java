@@ -25,6 +25,8 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -52,6 +54,7 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_CONCEPT_CONSTRAINTS_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getFlexoConcept();
 
 	@Setter(FLEXO_CONCEPT_KEY)

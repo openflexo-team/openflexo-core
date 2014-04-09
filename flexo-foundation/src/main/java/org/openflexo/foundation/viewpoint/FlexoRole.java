@@ -29,6 +29,8 @@ import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -65,6 +67,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_ROLES_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getFlexoConcept();
 
 	@Setter(FLEXO_CONCEPT_KEY)

@@ -36,6 +36,8 @@ import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
@@ -88,6 +90,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.EDITION_SCHEMES_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getFlexoConcept();
 
 	@Setter(FLEXO_CONCEPT_KEY)
@@ -260,7 +263,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {", context);
+			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {",
+					context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			for (EditionAction action : getActions()) {
 				out.append(action.getFMLRepresentation(context), context, 1);
@@ -758,17 +762,16 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
 			if (getFlexoConcept() != null) {
-				if(getFlexoConcept() instanceof VirtualModel){
+				if (getFlexoConcept() instanceof VirtualModel) {
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType((VirtualModel)getFlexoConcept())));
-				}else{
-					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept())));
+				} else {
+					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE,
+							FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				}
-				
-				
+
 				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));

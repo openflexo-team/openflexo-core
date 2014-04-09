@@ -21,7 +21,13 @@ package org.openflexo.foundation;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.action.CopyAction.CopyActionType;
+import org.openflexo.foundation.action.CutAction.CutActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.action.PasteAction.PasteActionType;
+import org.openflexo.foundation.action.SelectAllAction.SelectAllActionType;
+import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EditingContextImpl;
 
@@ -38,14 +44,20 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	protected static final Logger logger = Logger.getLogger(FlexoEditingContext.class.getPackage().getName());
 
 	private FlexoServiceManager serviceManager;
-	private final FlexoUndoManager undoManager;
+	private FlexoUndoManager undoManager;
+
+	private CopyActionType copyActionType;
+	private CutActionType cutActionType;
+	private PasteActionType pasteActionType;
+	private SelectAllActionType selectAllActionType;
+
+	private Clipboard clipboard;
 
 	public static FlexoEditingContext createInstance() {
 		return new FlexoEditingContext();
 	}
 
 	private FlexoEditingContext() {
-		undoManager = new FlexoUndoManager();
 	}
 
 	@Override
@@ -56,6 +68,15 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoEditingContext...");
+		undoManager = new FlexoUndoManager();
+		copyActionType = new CopyActionType(this);
+		FlexoObjectImpl.addActionForClass(copyActionType, FlexoObject.class);
+		cutActionType = new CutActionType(this);
+		FlexoObjectImpl.addActionForClass(cutActionType, FlexoObject.class);
+		pasteActionType = new PasteActionType(this);
+		FlexoObjectImpl.addActionForClass(pasteActionType, FlexoObject.class);
+		selectAllActionType = new SelectAllActionType(this);
+		FlexoObjectImpl.addActionForClass(selectAllActionType, FlexoObject.class);
 	}
 
 	@Override
@@ -71,6 +92,30 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	public CopyActionType getCopyActionType() {
+		return copyActionType;
+	}
+
+	public CutActionType getCutActionType() {
+		return cutActionType;
+	}
+
+	public PasteActionType getPasteActionType() {
+		return pasteActionType;
+	}
+
+	public SelectAllActionType getSelectAllActionType() {
+		return selectAllActionType;
+	}
+
+	public Clipboard getClipboard() {
+		return clipboard;
+	}
+
+	public void setClipboard(Clipboard clipboard) {
+		this.clipboard = clipboard;
 	}
 
 }
