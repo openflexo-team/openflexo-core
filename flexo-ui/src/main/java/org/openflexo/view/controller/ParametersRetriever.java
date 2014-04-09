@@ -105,7 +105,9 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action) {
 		this.action = action;
-		action.retrieveDefaultParameters();
+		if(action!=null){
+			action.retrieveDefaultParameters();
+		}
 	}
 
 	public boolean isSkipable() {
