@@ -869,6 +869,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		convertOldNameToNewNames("FromShape", "StartShape", document);
 		convertOldNameToNewNames("ToShape", "EndShape", document);
 		convertOldNameToNewNames("Border", "ShapeBorder", document);
+		convertOldNameToNewNames("LineConnector","LineConnectorSpecification",document);
+		convertOldNameToNewNames("CurvedPolylinConnector","CurvedPolylinConnectorSpecification",document);
+		convertOldNameToNewNames("RectPolylinConnector","RectPolylinConnectorSpecification",document);
+		
 		
 		removeNamedElements(document, "PrimaryConceptOWLIndividualPatternRole");
 		removeNamedElements(document, "StartShapeGraphicalRepresentation");
