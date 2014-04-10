@@ -116,11 +116,23 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	public FlexoEditingContext getEditingContext() {
-		return getController().getEditor().getServiceManager().getEditingContext();
+		if (getController() != null) {
+			return getController().getEditingContext();
+		}
+		return null;
 	}
 
 	public FlexoModule getModule() {
 		return getController().getModule();
+	}
+
+	public void initClipboardActions() {
+		if (getEditingContext() != null) {
+			new CopyActionInitializer(this);
+			new CutActionInitializer(this);
+			new PasteActionInitializer(this);
+			new SelectAllActionInitializer(this);
+		}
 	}
 
 	public void initializeActions() {
@@ -131,10 +143,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		new HelpActionizer(this);
 
 		// Registering copy/cut/paste/selectAll actions
-		new CopyActionInitializer(this);
-		new CutActionInitializer(this);
-		new PasteActionInitializer(this);
-		new SelectAllActionInitializer(this);
+		initClipboardActions();
 
 		// TODO : To be re-written when Wysiwyg editor is re-written
 		// new SubmitDocumentationActionizer(this);

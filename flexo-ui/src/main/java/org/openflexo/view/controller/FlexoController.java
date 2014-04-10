@@ -211,8 +211,24 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		propertyChangeSupport = new PropertyChangeSupport(this);
 		manager.new PropertyChangeListenerRegistration(this, controllerModel);
 		flexoFrame = createFrame();
+
+		if (getModule().getModule().requireProject()) {
+			if (getModuleLoader().getLastActiveEditor() != null) {
+				controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
+			}
+		} else {
+			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
+		}
+
+		System.err.println("last active editor = " + getModuleLoader().getLastActiveEditor());
+
+		System.err.println("editor=" + getEditor());
+		// System.err.println("sm" + getEditor().getServiceManager());
+		// System.err.println("ec=" + getEditor().getServiceManager().getEditingContext());
+
 		controllerActionInitializer = createControllerActionInitializer();
 		registerShortcuts(controllerActionInitializer);
+
 		menuBar = createAndRegisterNewMenuBar();
 		selectionManager = createSelectionManager();
 		flexoFrame.setJMenuBar(menuBar);
@@ -230,16 +246,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		((JComponent) getFlexoFrame().getContentPane()).revalidate();
 		initInspectors();
 		initializePerspectives();
-		if (getModule().getModule().requireProject()) {
-			if (getModuleLoader().getLastActiveEditor() != null) {
-				controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
-			}
-		} else {
-			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
-		}
+
 		if (getApplicationContext().getGeneralPreferences() != null) {
 			getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+
+		// controllerActionInitializer = createControllerActionInitializer();
+		// registerShortcuts(controllerActionInitializer);
+
 	}
 
 	@Override
@@ -1638,10 +1652,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public final FlexoEditingContext getEditingContext() {
-		if (getEditor() != null) {
-			return getEditor().getServiceManager().getEditingContext();
-		}
-		return null;
+		return getApplicationContext().getEditingContext();
 	}
 
 	/**
