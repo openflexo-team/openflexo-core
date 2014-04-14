@@ -19,13 +19,18 @@
  */
 package org.openflexo.foundation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.CopyAction.CopyActionType;
 import org.openflexo.foundation.action.CutAction.CutActionType;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.action.PasteAction.DefaultPasteHandler;
 import org.openflexo.foundation.action.PasteAction.PasteActionType;
+import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.SelectAllAction.SelectAllActionType;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.EditingContext;
@@ -53,11 +58,15 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private Clipboard clipboard;
 
+	private final Map<Class<?>, PasteHandler<? extends FlexoObject>> pasteHandlers;
+
 	public static FlexoEditingContext createInstance() {
 		return new FlexoEditingContext();
 	}
 
 	private FlexoEditingContext() {
+		pasteHandlers = new HashMap<Class<?>, PasteHandler<? extends FlexoObject>>();
+		registerPasteHandler(FlexoObject.class, new DefaultPasteHandler());
 	}
 
 	@Override
@@ -118,4 +127,15 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		this.clipboard = clipboard;
 	}
 
+	public <T extends FlexoObject> void registerPasteHandler(Class<T> targetClass, PasteHandler<? extends T> pasteHandler) {
+		pasteHandlers.put(targetClass, pasteHandler);
+	}
+
+	public <T extends FlexoObject> void unregisterPasteHandler(Class<T> targetClass, PasteHandler<? extends T> pasteHandler) {
+		pasteHandlers.remove(targetClass);
+	}
+
+	public <T extends FlexoObject> PasteHandler<T> getPasteHandler(T focusedObject) {
+		return (PasteHandler<T>) TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
+	}
 }

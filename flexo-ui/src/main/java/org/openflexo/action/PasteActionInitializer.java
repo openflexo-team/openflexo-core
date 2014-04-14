@@ -30,7 +30,6 @@ import javax.swing.KeyStroke;
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -66,19 +65,7 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 			@Override
 			public boolean run(EventObject e, PasteAction action) {
 				logger.info("Paste finalizer");
-				// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionEnableCondition<PasteAction, FlexoObject, FlexoObject> getEnableCondition() {
-		return new FlexoActionEnableCondition<PasteAction, FlexoObject, FlexoObject>() {
-			@Override
-			public boolean isEnabled(FlexoActionType<PasteAction, FlexoObject, FlexoObject> actionType, FlexoObject object,
-					Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-				// return getControllerActionInitializer().getVESelectionManager().hasCopiedData();
+				getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
 				return true;
 			}
 		};

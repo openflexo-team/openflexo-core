@@ -136,7 +136,7 @@ import org.openflexo.module.ProjectLoader;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.selection.SelectionManager;
+import org.openflexo.selection.MouseSelectionManager;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.utils.CancelException;
@@ -182,7 +182,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	protected FlexoMenuBar menuBar;
 
-	protected SelectionManager selectionManager;
+	protected MouseSelectionManager selectionManager;
 
 	private final ControllerActionInitializer controllerActionInitializer;
 
@@ -273,7 +273,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return controllerModel;
 	}
 
-	protected abstract SelectionManager createSelectionManager();
+	protected abstract MouseSelectionManager createSelectionManager();
 
 	/**
 	 * Creates a new instance of MenuBar for the module this controller refers to
@@ -286,7 +286,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return new FlexoFrame(this);
 	}
 
-	public final SelectionManager getSelectionManager() {
+	public final MouseSelectionManager getSelectionManager() {
 		return selectionManager;
 	}
 
@@ -543,6 +543,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						System.out.println("actionPerformed() with " + entry.getKey());
 						FlexoObject focusedObject = getSelectionManager().getFocusedObject();
 						Vector<FlexoObject> globalSelection = getSelectionManager().getSelection();
 						FlexoActionType actionType = entry.getKey();

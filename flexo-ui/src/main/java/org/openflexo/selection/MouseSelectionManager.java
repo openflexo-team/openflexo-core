@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import org.openflexo.FlexoCst;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.controller.FlexoController;
 
@@ -42,7 +41,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 
 	private static final Logger logger = Logger.getLogger(MouseSelectionManager.class.getPackage().getName());
 
-	private PastingGraphicalContext _pastingGraphicalContext;
+	private final PastingGraphicalContext _pastingGraphicalContext;
 
 	// ==========================================================================
 	// ============================= Constructor ================================
@@ -57,15 +56,25 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	// ============================= MouseListenerInterface =====================
 	// ==========================================================================
 
-	public abstract void processMouseClicked(JComponent clickedContainer, Point clickedPoint, int clickCount, boolean isShiftDown);
+	// Override when required
+	public void processMouseClicked(JComponent clickedContainer, Point clickedPoint, int clickCount, boolean isShiftDown) {
+	}
 
-	public abstract void processMouseEntered(MouseEvent e);
+	// Override when required
+	public void processMouseEntered(MouseEvent e) {
+	}
 
-	public abstract void processMouseExited(MouseEvent e);
+	// Override when required
+	public void processMouseExited(MouseEvent e) {
+	}
 
-	public abstract void processMousePressed(MouseEvent e);
+	// Override when required
+	public void processMousePressed(MouseEvent e) {
+	}
 
-	public abstract void processMouseReleased(MouseEvent e);
+	// Override when required
+	public void processMouseReleased(MouseEvent e) {
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -158,7 +167,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	// ============================= Cut&Paste Management =======================
 	// ==========================================================================
 
-	@Override
+	/*@Override
 	public FlexoObject getPasteContext() {
 		return pasteContextForComponent(getLastClickedContainer());
 	}
@@ -168,7 +177,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	@Override
 	public PastingGraphicalContext getPastingGraphicalContext() {
 		return _pastingGraphicalContext;
-	}
+	}*/
 
 	// ===============================================================
 	// ================= Graphical utilities =========================
@@ -183,7 +192,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	}
 
 	public void setLastClickedPoint(Point aPoint) {
-		// logger.info("setLastClickedPoint="+aPoint);
+		logger.info("setLastClickedPoint=" + aPoint);
 		_pastingGraphicalContext.pastingLocation = aPoint;
 	}
 

@@ -19,17 +19,19 @@
  */
 package org.openflexo.foundation.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.fge.control.exceptions.PasteException;
-import org.openflexo.fge.geom.FGEPoint;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
 import org.openflexo.model.factory.Clipboard;
+import org.openflexo.model.factory.ClipboardOperationException;
 import org.openflexo.model.factory.ModelFactory;
 
 public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObject> {
@@ -57,13 +59,8 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject focusedObject, Vector<FlexoObject> globalSelection) {
 			return true;
-		}
-
-		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
-			return isPastable(retrievePastingContext(object, globalSelection));
 		}
 
 		/**
@@ -71,38 +68,50 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		 * 
 		 * @return
 		 */
-		public boolean isPastable(FlexoObject pastingContext) {
+		@Override
+		public boolean isEnabledForSelection(FlexoObject focusedObject, Vector<FlexoObject> globalSelection) {
 
-			// System.out.println("Is pastable in context: " + pastingContext + " ??");
+			if (focusedObject == null) {
+				logger.warning("Unexpected null focused object in PASTE");
+				return false;
+			}
 
 			if (editingContext == null) {
 				logger.warning("Unexpected null EditingContext in PASTE");
 				return false;
 			}
 
-			// System.out.println("clipboard:" + editingContext.getClipboard());
-
 			if (editingContext.getClipboard() == null) {
 				return false;
 			}
-			// System.out.println("clipboard:" + editingContext.getClipboard().debug());
+
+			PasteHandler<?> handler = editingContext.getPasteHandler(focusedObject);
+
+			FlexoObject pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard());
+
 			if (pastingContext == null) {
 				return false;
 			}
+
 			ModelFactory factory = editingContext.getClipboard().getModelFactory();
 
 			// System.out.println("returning: " + factory.isPastable(editingContext.getClipboard(), pastingContext));
 
-			return factory.isPastable(editingContext.getClipboard(), pastingContext);
+			try {
+				return factory.isPastable(editingContext.getClipboard(), pastingContext);
+			} catch (ClipboardOperationException e) {
+				return false;
+			}
 		}
 
-		public FlexoObject retrievePastingContext(FlexoObject object, Vector<FlexoObject> globalSelection) {
-			return object;
-		}
+		/*public FlexoObject retrievePastingContext(FlexoObject focusedObject, Vector<FlexoObject> globalSelection) {
+			return focusedObject;
+		}*/
 
 	};
 
 	private FlexoEditingContext editingContext;
+	private List<FlexoObject> pastedObjects = null;
 
 	PasteAction(PasteActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -113,7 +122,16 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		// TODO
 		logger.info("Perform PASTE");
 		try {
-			paste();
+			Object pasted = paste();
+			pastedObjects = new ArrayList<FlexoObject>();
+			if (pasted instanceof List) {
+				pastedObjects.addAll((List) pasted);
+			} else if (pasted instanceof FlexoObject) {
+				pastedObjects.add((FlexoObject) pasted);
+			} else {
+				logger.warning("Unexpected " + pasted);
+			}
+
 		} catch (PasteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,6 +145,10 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public List<FlexoObject> getPastedObjects() {
+		return pastedObjects;
 	}
 
 	@Override
@@ -145,67 +167,83 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	 */
 	private Object paste() throws PasteException, ModelExecutionException, ModelDefinitionException, CloneNotSupportedException {
 
+		if (editingContext == null) {
+			throw new PasteException("Unexpected null EditingContext in PASTE", null);
+		}
+
+		if (editingContext.getClipboard() == null) {
+			throw new PasteException("Unexpected null Clipboard in PASTE", null);
+		}
+
 		Clipboard clipboard = editingContext.getClipboard();
+		ModelFactory factory = clipboard.getModelFactory();
+
+		if (factory == null) {
+			throw new PasteException("Unexpected null ModelFactory in PASTE", null);
+		}
+
+		if (getFocusedObject() == null) {
+			throw new PasteException("Unexpected null focused object in PASTE", factory);
+		}
+
+		PasteHandler<FlexoObject> handler = editingContext.getPasteHandler(getFocusedObject());
+
+		System.out.println("PasteHandler=" + handler);
+
+		FlexoObject pastingContext = handler.retrievePastingContext(getFocusedObject(), getGlobalSelection(), clipboard);
+
+		if (pastingContext == null) {
+			throw new PasteException("Unexpected null pasting context in PASTE while using handler " + handler, factory);
+		}
+
+		handler.prepareClipboardForPasting(clipboard, pastingContext);
 
 		// System.out.println("===========================>>>>>>>>>>>>> OK, we perform paste now with clipboard: ");
 		// System.out.println(clipboard.debug());
-
-		FlexoObject pastingContext = getActionType().retrievePastingContext(getFocusedObject(), getGlobalSelection());
-
 		// System.out.println("Perform paste in pastingContext=" + pastingContext);
 
-		ModelFactory factory = editingContext.getClipboard().getModelFactory();
 		return factory.paste(editingContext.getClipboard(), pastingContext);
 
-		/*if (clipboard != null) {
-
-			// System.out.println("Pasting in " + pastingContext + " at "+pastingLocation);
-			FGEPoint p = FGEUtils.convertNormalizedPoint(getDrawing().getRoot(), pastingLocation, pastingContext);
-
-			// This point is valid for RootNode, but need to be translated in a ShapeNode
-			if (pastingContext instanceof ShapeNode) {
-				p.x = p.x * ((ShapeNode<?>) pastingContext).getWidth();
-				p.y = p.y * ((ShapeNode<?>) pastingContext).getHeight();
-			}
-
-			prepareClipboardForPasting(p);
-
-			// Prevent pastingContext to be changed
-			isSelectingAfterPaste = true;
-
-			// Do the paste
-			try {
-				Object pasted = getFactory().paste(clipboard, pastingContext.getDrawable());
-
-				// Try to select newly created objects
-				clearSelection();
-				if (clipboard.isSingleObject()) {
-					addToSelectedObjects(getDrawing().getDrawingTreeNode(pasted));
-				} else {
-					for (Object o : (List<?>) pasted) {
-						addToSelectedObjects(getDrawing().getDrawingTreeNode(o));
-					}
-				}
-			} catch (Throwable e) {
-				throw new PasteException(e, getFactory());
-			}
-
-			// OK, now we can track again new selection to set pastingContext
-			isSelectingAfterPaste = false;
-
-			pastingLocation.x = pastingLocation.x + PASTE_DELTA;
-			pastingLocation.y = pastingLocation.y + PASTE_DELTA;
-
-		}*/
 	}
 
 	/**
-	 * This is a hook to set and/or translate some properties of clipboard beeing pasted<br>
-	 * This is model-specific, and thus, default implementation does nothing. Please override this
+	 * An handler which is used to intercept and translate paste actions from/to the right context
 	 * 
-	 * @param proposedPastingLocation
+	 * @author sylvain
+	 * 
+	 * @param <T>
+	 *            type of target object where this handler applies
 	 */
-	protected void prepareClipboardForPasting(FGEPoint proposedPastingLocation) {
+	public static interface PasteHandler<T extends FlexoObject> {
+
+		public T retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard);
+
+		/**
+		 * This is a hook to set and/or translate some properties of clipboard beeing pasted
+		 * 
+		 */
+		public void prepareClipboardForPasting(Clipboard clipboard, T pastingContext);
+	}
+
+	/**
+	 * This is the default implementation of {@link PasteHandler}<br>
+	 * Pasting context is retrieved as focused object, and default paste is performed without any data translation
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static class DefaultPasteHandler implements PasteHandler<FlexoObject> {
+
+		@Override
+		public FlexoObject retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard) {
+			return focusedObject;
+		}
+
+		@Override
+		public void prepareClipboardForPasting(Clipboard clipboard, FlexoObject pastingContext) {
+			logger.info("prepareClipboardForPasting() called in DefaultPasteHandler");
+		}
+
 	}
 
 }

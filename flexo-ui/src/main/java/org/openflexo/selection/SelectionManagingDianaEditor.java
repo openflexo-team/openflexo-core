@@ -25,9 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.fge.Drawing;
 import org.openflexo.fge.Drawing.DrawingTreeNode;
 import org.openflexo.fge.FGEModelFactory;
+import org.openflexo.fge.FGEUtils;
 import org.openflexo.fge.control.MouseControlContext;
 import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
@@ -238,13 +241,23 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	@Override
 	public void setLastClickedPoint(FGEPoint lastClickedPoint, DrawingTreeNode<?, ?> node) {
 		super.setLastClickedPoint(lastClickedPoint, node);
+		FGEPoint unnormalizedPoint = FGEUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
 		if (_selectionManager instanceof MouseSelectionManager) {
-			((MouseSelectionManager) _selectionManager).setLastClickedPoint(new Point((int) lastClickedPoint.getX(), (int) lastClickedPoint
-					.getY()));
+			((MouseSelectionManager) _selectionManager).setLastClickedPoint(new Point((int) unnormalizedPoint.getX(),
+					(int) unnormalizedPoint.getY()));
 			if (node.getDrawable() instanceof FlexoObject) {
 				((MouseSelectionManager) _selectionManager).setLastSelectedObject((FlexoObject) node.getDrawable());
 			}
 		}
+		// SGU: Following code is used to force request focus when a click has been performed
+		// We do this to get keyboard accelerators to work again after having switched to an other component getting the focus
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				getDrawingView().requestFocus();
+				getDrawingView().requestFocusInWindow();
+			}
+		});
 	}
 
 }

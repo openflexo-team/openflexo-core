@@ -52,7 +52,7 @@ public abstract class SelectionManager extends Observable {
 
 	private static final Logger logger = Logger.getLogger(SelectionManager.class.getPackage().getName());
 
-	protected FlexoClipboard _clipboard;
+	// protected FlexoClipboard _clipboard;
 
 	private FlexoObject _inspectedObject;
 
@@ -347,8 +347,8 @@ public abstract class SelectionManager extends Observable {
 	 * 
 	 */
 	protected void fireSelectionBecomesEmpty() {
-		_clipboard.setCopyEnabled(false);
-		_clipboard.setCutEnabled(false);
+		// _clipboard.setCopyEnabled(false);
+		// _clipboard.setCutEnabled(false);
 	}
 
 	/**
@@ -356,8 +356,8 @@ public abstract class SelectionManager extends Observable {
 	 * 
 	 */
 	protected void fireSelectionIsNoMoreEmpty() {
-		_clipboard.setCopyEnabled(true);
-		_clipboard.setCutEnabled(true);
+		// _clipboard.setCopyEnabled(true);
+		// _clipboard.setCutEnabled(true);
 	}
 
 	/**
@@ -489,7 +489,7 @@ public abstract class SelectionManager extends Observable {
 	// =======================
 	// ==========================================================================
 
-	public boolean performSelectionCopy() {
+	/*public boolean performSelectionCopy() {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("performSelectionCopy in " + getClass().getName());
 		}
@@ -512,15 +512,15 @@ public abstract class SelectionManager extends Observable {
 
 	public boolean hasCopiedData() {
 		return _clipboard.hasCopiedData();
-	}
+	}*/
 
-	public abstract boolean performSelectionSelectAll();
+	// public abstract boolean performSelectionSelectAll();
 
-	public abstract FlexoObject getPasteContext();
+	// public abstract FlexoObject getPasteContext();
 
-	public PastingGraphicalContext getPastingGraphicalContext() {
+	/*public PastingGraphicalContext getPastingGraphicalContext() {
 		return null;
-	}
+	}*/
 
 	// ============================================================
 	// ======================= Inspector ==========================
