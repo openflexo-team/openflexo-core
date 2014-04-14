@@ -546,7 +546,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public void setLocalizedDictionary(LocalizedDictionary localizedDictionary) {
-			localizedDictionary.setOwner(this);
+			if (localizedDictionary != null) {
+				localizedDictionary.setOwner(this);
+			}
 			this.localizedDictionary = localizedDictionary;
 		}
 
