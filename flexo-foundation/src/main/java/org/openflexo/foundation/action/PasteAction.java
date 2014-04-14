@@ -186,7 +186,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			throw new PasteException("Unexpected null focused object in PASTE", factory);
 		}
 
-		PasteHandler<FlexoObject> handler = editingContext.getPasteHandler(getFocusedObject());
+		PasteHandler<FlexoObject> handler = (PasteHandler<FlexoObject>) editingContext.getPasteHandler(getFocusedObject());
 
 		System.out.println("PasteHandler=" + handler);
 

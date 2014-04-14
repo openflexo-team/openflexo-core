@@ -28,6 +28,9 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObj
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.Implementation;
@@ -46,6 +49,8 @@ public interface ActionContainer {
 	public static final String ACTIONS_KEY = "actions";
 
 	@Getter(value = ACTIONS_KEY, cardinality = Cardinality.LIST, inverse = EditionAction.ACTION_CONTAINER_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement
 	public List<EditionAction<?, ?>> getActions();
 

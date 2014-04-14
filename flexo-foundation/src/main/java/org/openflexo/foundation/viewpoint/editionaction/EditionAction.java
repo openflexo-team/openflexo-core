@@ -32,9 +32,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
@@ -49,6 +47,8 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -86,6 +86,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 
 	@Getter(value = ACTION_CONTAINER_KEY, inverse = ActionContainer.ACTIONS_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public ActionContainer getActionContainer();
 
 	@Setter(ACTION_CONTAINER_KEY)
@@ -218,8 +219,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 				VirtualModelInstance vmi = action.getVirtualModelInstance();
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				 return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
-				//return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
+				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
+				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
 			} else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;

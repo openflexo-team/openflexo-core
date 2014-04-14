@@ -32,15 +32,12 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.action.ValidateProject;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
@@ -304,6 +301,10 @@ public class FileMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+
+			Thread.dumpStack();
+			System.out.println("SaveProjectAction");
+
 			if (getController() == null || getController().getProject() == null) {
 				return;
 			}
@@ -369,7 +370,7 @@ public class FileMenu extends FlexoMenu {
 		}
 
 	}
-	
+
 	public class SaveAllProjectAction extends AbstractAction implements PropertyChangeListener {
 		public SaveAllProjectAction() {
 			super();

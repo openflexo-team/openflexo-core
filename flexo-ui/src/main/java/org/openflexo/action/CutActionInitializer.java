@@ -41,6 +41,8 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
+	public static KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_X, FlexoCst.META_MASK);
+
 	public CutActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(actionInitializer.getEditingContext().getCutActionType(), actionInitializer);
 	}
@@ -73,7 +75,7 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 
 	@Override
 	protected KeyStroke getShortcut() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_X, FlexoCst.META_MASK);
+		return ACCELERATOR;
 	}
 
 }

@@ -83,7 +83,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = List.class)
-	public static final String EDITION_SCHEMES_KEY = "editionSchemes";
+	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_ROLES_KEY = "flexoRoles";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
@@ -120,21 +120,21 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);
 
-	@Getter(value = EDITION_SCHEMES_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
 	public List<FlexoBehaviour> getFlexoBehaviours();
 
-	@Setter(EDITION_SCHEMES_KEY)
+	@Setter(FLEXO_BEHAVIOURS_KEY)
 	public void setFlexoBehaviours(List<FlexoBehaviour> flexoBehaviours);
 
-	@Adder(EDITION_SCHEMES_KEY)
+	@Adder(FLEXO_BEHAVIOURS_KEY)
 	@PastingPoint
 	public void addToFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
-	@Remover(EDITION_SCHEMES_KEY)
+	@Remover(FLEXO_BEHAVIOURS_KEY)
 	public void removeFromFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
-	@Finder(collection = EDITION_SCHEMES_KEY, attribute = FlexoBehaviour.NAME_KEY)
+	@Finder(collection = FLEXO_BEHAVIOURS_KEY, attribute = FlexoBehaviour.NAME_KEY)
 	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
 
 	@Getter(value = FLEXO_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
@@ -630,7 +630,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void setInspector(FlexoConceptInspector inspector) {
-			inspector.setFlexoConcept(this);
+			if (inspector != null) {
+				inspector.setFlexoConcept(this);
+			}
 			this.inspector = inspector;
 		}
 

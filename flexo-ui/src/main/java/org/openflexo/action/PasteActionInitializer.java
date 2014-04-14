@@ -43,6 +43,8 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
+	public static KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_V, FlexoCst.META_MASK);
+
 	public PasteActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(actionInitializer.getEditingContext().getPasteActionType(), actionInitializer);
 	}
@@ -78,7 +80,7 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 
 	@Override
 	protected KeyStroke getShortcut() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_V, FlexoCst.META_MASK);
+		return ACCELERATOR;
 	}
 
 	@Override

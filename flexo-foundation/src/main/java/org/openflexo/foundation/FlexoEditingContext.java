@@ -127,15 +127,15 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		this.clipboard = clipboard;
 	}
 
-	public <T extends FlexoObject> void registerPasteHandler(Class<T> targetClass, PasteHandler<? extends T> pasteHandler) {
+	public void registerPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
 		pasteHandlers.put(targetClass, pasteHandler);
 	}
 
-	public <T extends FlexoObject> void unregisterPasteHandler(Class<T> targetClass, PasteHandler<? extends T> pasteHandler) {
+	public void unregisterPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
 		pasteHandlers.remove(targetClass);
 	}
 
-	public <T extends FlexoObject> PasteHandler<T> getPasteHandler(T focusedObject) {
-		return (PasteHandler<T>) TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
+	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject) {
+		return TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
 	}
 }

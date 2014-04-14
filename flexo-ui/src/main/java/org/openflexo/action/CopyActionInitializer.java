@@ -39,6 +39,8 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
+	public static KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_C, FlexoCst.META_MASK);
+
 	public CopyActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(actionInitializer.getEditingContext().getCopyActionType(), actionInitializer);
 	}
@@ -83,7 +85,7 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 
 	@Override
 	protected KeyStroke getShortcut() {
-		return KeyStroke.getKeyStroke(KeyEvent.VK_C, FlexoCst.META_MASK);
+		return ACCELERATOR;
 	}
 
 }

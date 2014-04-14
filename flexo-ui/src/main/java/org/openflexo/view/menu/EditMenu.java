@@ -28,6 +28,9 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
+import org.openflexo.action.CopyActionInitializer;
+import org.openflexo.action.CutActionInitializer;
+import org.openflexo.action.PasteActionInitializer;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.icon.IconLibrary;
@@ -259,8 +262,8 @@ public class EditMenu extends FlexoMenu {
 	public class CopyItem extends FlexoMenuItem {
 
 		public CopyItem() {
-			super(_controller.getEditingContext().getCopyActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_C, FlexoCst.META_MASK),
-					IconLibrary.COPY_ICON, _controller);
+			super(_controller.getEditingContext().getCopyActionType(), CopyActionInitializer.ACCELERATOR, IconLibrary.COPY_ICON,
+					_controller);
 		}
 	}
 
@@ -271,8 +274,8 @@ public class EditMenu extends FlexoMenu {
 	public class PasteItem extends FlexoMenuItem {
 
 		public PasteItem() {
-			super(_controller.getEditingContext().getPasteActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_V, FlexoCst.META_MASK),
-					IconLibrary.PASTE_ICON, _controller);
+			super(_controller.getEditingContext().getPasteActionType(), PasteActionInitializer.ACCELERATOR, IconLibrary.PASTE_ICON,
+					_controller);
 		}
 	}
 
@@ -283,8 +286,7 @@ public class EditMenu extends FlexoMenu {
 	public class CutItem extends FlexoMenuItem {
 
 		public CutItem() {
-			super(_controller.getEditingContext().getCutActionType(), KeyStroke.getKeyStroke(KeyEvent.VK_X, FlexoCst.META_MASK),
-					IconLibrary.CUT_ICON, _controller);
+			super(_controller.getEditingContext().getCutActionType(), CutActionInitializer.ACCELERATOR, IconLibrary.CUT_ICON, _controller);
 		}
 	}
 

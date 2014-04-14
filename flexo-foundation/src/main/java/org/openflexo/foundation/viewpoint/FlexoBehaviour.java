@@ -89,7 +89,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String PARAMETERS_KEY = "parameters";
 
 	@Override
-	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.EDITION_SCHEMES_KEY)
+	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_BEHAVIOURS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getFlexoConcept();
 
@@ -298,7 +298,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		 */
 		@Override
 		public String getURI() {
-			return getFlexoConcept().getURI() + "." + getName();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getURI() + "." + getName();
+			}
+			return "null." + getName();
 		}
 
 		@Override
