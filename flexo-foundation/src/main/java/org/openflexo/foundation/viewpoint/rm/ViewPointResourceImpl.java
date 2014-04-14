@@ -680,6 +680,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				FileUtils.rename(paletteFile, newFile);
 				newPaletteFiles.add(newFile);
 				Document palette = XMLUtils.readXMLFile(newFile);
+				Attribute diagramSpecUri = new Attribute("diagramSpecificationURI",diagramSpecificationURI);
+				palette.getRootElement().getAttributes().add(diagramSpecUri);
 				convertNames16ToNames17(palette);
 				XMLUtils.saveXMLFile(palette, newFile);
 			}
@@ -691,6 +693,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				FileUtils.rename(exampleDiagramFile, newFile);
 				newExampleDiagramFiles.add(newFile);
 				Document exampleDiagram = XMLUtils.readXMLFile(newFile);
+				exampleDiagram.getRootElement().setAttribute("uri", diagramSpecificationURI+"/"+exampleDiagram.getRootElement().getAttributeValue("name"));
+				Attribute diagramSpecUri = new Attribute("diagramSpecificationURI",diagramSpecificationURI);
+				exampleDiagram.getRootElement().getAttributes().add(diagramSpecUri);
 				exampleDiagram.getRootElement().setAttribute("uri", diagramSpecificationURI+"/"+exampleDiagram.getRootElement().getAttributeValue("name"));
 				convertNames16ToNames17(exampleDiagram);
 				XMLUtils.saveXMLFile(exampleDiagram, newFile);
