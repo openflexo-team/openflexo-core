@@ -55,7 +55,10 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResourceImpl;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DeserializationFinalizer;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -63,6 +66,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
@@ -157,12 +161,15 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	@Getter(value = FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConcept.VIRTUAL_MODEL_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoConcept> getFlexoConcepts();
 
 	@Setter(FLEXO_CONCEPTS_KEY)
 	public void setFlexoConcepts(List<FlexoConcept> flexoConcepts);
 
 	@Adder(FLEXO_CONCEPTS_KEY)
+	@PastingPoint
 	public void addToFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	@Remover(FLEXO_CONCEPTS_KEY)
