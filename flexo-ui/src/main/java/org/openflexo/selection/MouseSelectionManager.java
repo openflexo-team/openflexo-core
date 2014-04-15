@@ -192,7 +192,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	}
 
 	public void setLastClickedPoint(Point aPoint) {
-		logger.info("setLastClickedPoint=" + aPoint);
+		// logger.info("setLastClickedPoint=" + aPoint);
 		_pastingGraphicalContext.pastingLocation = aPoint;
 	}
 
