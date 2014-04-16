@@ -19,7 +19,7 @@ import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * Default implementation for {@link TechnologyAdapterService}
+ * Default implementation for {@link ProjectNatureService}
  * 
  * @author sylvain
  * 

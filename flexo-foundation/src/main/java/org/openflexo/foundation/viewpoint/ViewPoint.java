@@ -447,7 +447,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public void addToVirtualModels(VirtualModel virtualModel) {
-			loadVirtualModelsWhenUnloaded();
+			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(this);
 			virtualModels.add(virtualModel);
 			setChanged();
@@ -456,7 +456,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public void removeFromVirtualModels(VirtualModel virtualModel) {
-			loadVirtualModelsWhenUnloaded();
+			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(null);
 			virtualModels.remove(virtualModel);
 			setChanged();

@@ -41,6 +41,8 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
+import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
@@ -93,8 +95,34 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 	protected static final Logger logger = Logger.getLogger(FlexoProject.class.getPackage().getName());
 
+	/**
+	 * This is the generic API to create a new FlexoProject without any specific ProjectNature
+	 * 
+	 * @param aProjectDirectory
+	 * @param editorFactory
+	 * @param serviceManager
+	 * @param progress
+	 * @return
+	 * @throws ProjectInitializerException
+	 */
 	public static FlexoEditor newProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException {
+		return newProject(aProjectDirectory, null, editorFactory, serviceManager, progress);
+	}
+
+	/**
+	 * This is the generic API to create a new FlexoProject
+	 * 
+	 * @param aProjectDirectory
+	 * @param nature
+	 * @param editorFactory
+	 * @param serviceManager
+	 * @param progress
+	 * @return
+	 * @throws ProjectInitializerException
+	 */
+	public static FlexoEditor newProject(File aProjectDirectory, ProjectNature nature, FlexoEditorFactory editorFactory,
+			FlexoServiceManager serviceManager, FlexoProgress progress) throws ProjectInitializerException {
 
 		if (aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory already exists: " + aProjectDirectory, aProjectDirectory);
@@ -113,6 +141,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			project.setCreationDate(new Date());
 			// TODO : Code to be removed, no more java Generation
 			// project.initJavaFormatter();
+
 			try {
 				// This needs to be called to ensure the consistency of the project
 				project.setGenerateSnapshot(false);
@@ -134,6 +163,11 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 		// We add the newly created project as a ResourceCenter
 		serviceManager.getResourceCenterService().addToResourceCenters(project);
+
+		// Now, if a nature has been supplied, gives this nature to the project
+		if (nature != null) {
+			nature.givesNature(project, editor);
+		}
 
 		return editor;
 	}
@@ -532,6 +566,67 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			logger.info("Closing project... DONE");
 		}
 
+	}
+
+	/**
+	 * Return boolean indicating if this project might be interpreted according to this project nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public final boolean hasNature(ProjectNature<?, ?> projectNature) {
+		return projectNature.hasNature(this);
+	}
+
+	/**
+	 * Return boolean indicating if this project might be interpreted according to this project nature (supplied as string representing full
+	 * class name)
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public final boolean hasNature(String projectNatureClassName) {
+		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
+		return projectNature.hasNature(this);
+	}
+
+	/**
+	 * Ensure this project has the supplied {@link ProjectNature}<br>
+	 * 
+	 * If the project already has this nature, do nothing<br>
+	 * If the project does't have this nature, perform nature giving using supplied {@link FlexoEditor}
+	 * 
+	 * @param projectNature
+	 * @param editor
+	 *            the editor to use to edit the project
+	 */
+	public final void givesNature(ProjectNature<?, ?> projectNature, FlexoEditor editor) {
+		if (!hasNature(projectNature)) {
+			projectNature.givesNature(this, editor);
+		}
+	}
+
+	/**
+	 * Return project wrapper object representing this project according to supplied nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public final <N extends ProjectNature<N, P>, P extends ProjectWrapper<N>> P asNature(N projectNature) {
+		return projectNature.getProjectWrapper(this);
+	}
+
+	/**
+	 * Return project wrapper object representing this project according to supplied nature
+	 * 
+	 * @param projectNature
+	 * @return
+	 */
+	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
+		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
+		System.out.println("Hop, je trouve la nature " + projectNature);
+		System.out.println("Et je retourne: " + projectNature.getProjectWrapper(this));
+		return projectNature.getProjectWrapper(this);
 	}
 
 	public ViewLibrary getViewLibrary() {

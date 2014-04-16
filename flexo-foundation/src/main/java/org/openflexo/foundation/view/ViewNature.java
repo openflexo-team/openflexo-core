@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.view;
 
-import org.openflexo.foundation.FlexoNature;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.viewpoint.ViewPointNature;
 
 /**

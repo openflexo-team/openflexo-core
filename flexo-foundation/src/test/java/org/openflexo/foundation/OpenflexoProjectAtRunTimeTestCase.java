@@ -33,6 +33,7 @@ import javax.naming.InvalidNameException;
 
 import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
@@ -73,9 +74,9 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		if (_project != null) {
 			_project.close();
 		}
-		if (_projectDirectory != null) {
+		/*if (_projectDirectory != null) {
 			FileUtils.deleteDir(_projectDirectory);
-		}
+		}*/
 		_editor = null;
 		_projectDirectory = null;
 		_project = null;
@@ -141,10 +142,14 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	}*/
 
 	protected FlexoEditor createProject(String projectName) {
+		return createProject(projectName, null);
+	}
+
+	protected FlexoEditor createProject(String projectName, ProjectNature nature) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createProject(projectName, serviceManager);
+		return createProject(projectName, nature, serviceManager);
 	}
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
@@ -165,7 +170,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		return null;
 	}
 
-	protected FlexoEditor createProject(String projectName, FlexoServiceManager serviceManager) {
+	protected FlexoEditor createProject(String projectName, ProjectNature nature, FlexoServiceManager serviceManager) {
 		FlexoLoggingManager.forceInitialize(-1, true, null, Level.INFO, null);
 		try {
 			File tempFile = File.createTempFile(projectName, "");
@@ -180,7 +185,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 		FlexoEditor reply;
 		try {
-			reply = FlexoProject.newProject(_projectDirectory, EDITOR_FACTORY, serviceManager, null);
+			reply = FlexoProject.newProject(_projectDirectory, nature, EDITOR_FACTORY, serviceManager, null);
 		} catch (ProjectInitializerException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());

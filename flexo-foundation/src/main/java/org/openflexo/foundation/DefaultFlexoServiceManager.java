@@ -20,6 +20,8 @@
 package org.openflexo.foundation;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
+import org.openflexo.foundation.nature.DefaultProjectNatureService;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -59,6 +61,9 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
 		registerService(technologyAdapterService);
 
+		ProjectNatureService projectNatureService = createProjectNatureService();
+		registerService(projectNatureService);
+
 		InformationSpace informationSpace = createInformationSpace();
 		registerService(informationSpace);
 
@@ -84,6 +89,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	@Override
 	protected TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
 		return DefaultTechnologyAdapterService.getNewInstance(resourceCenterService);
+	}
+
+	@Override
+	protected ProjectNatureService createProjectNatureService() {
+		return DefaultProjectNatureService.getNewInstance();
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import org.openflexo.toolbox.FlexoVersion;
 /**
  * The {@link InformationSpace} is a {@link FlexoService} providing access to modelling elements from their original technological context.<br>
  * The information space is obtained through two services from the {@link FlexoServiceManager}, and results from the merging of the
- * {@link FlexoResourceCenterService} and the {@link TechnologyAdapterService}.<br>
+ * {@link FlexoResourceCenterService} and the {@link ProjectNatureService}.<br>
  * For each {@link FlexoResourceCenter} and for each {@link TechnologyAdapter}, a repository of {@link FlexoModel} and
  * {@link FlexoMetaModel} are managed.
  * 

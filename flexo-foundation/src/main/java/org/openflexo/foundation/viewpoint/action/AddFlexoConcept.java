@@ -35,6 +35,7 @@ import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 
+// TODO: rename to CreateFlexoConcept !!!
 public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(AddFlexoConcept.class.getPackage().getName());

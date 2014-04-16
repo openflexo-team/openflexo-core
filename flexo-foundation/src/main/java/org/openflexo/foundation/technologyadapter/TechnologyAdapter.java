@@ -202,7 +202,7 @@ public abstract class TechnologyAdapter {
 	 */
 
 	/**
-	 * Returns applicable {@link TechnologyAdapterService}
+	 * Returns applicable {@link ProjectNatureService}
 	 * 
 	 * @return
 	 */
@@ -211,7 +211,7 @@ public abstract class TechnologyAdapter {
 	}
 
 	/**
-	 * Sets applicable {@link TechnologyAdapterService}
+	 * Sets applicable {@link ProjectNatureService}
 	 * 
 	 * @param technologyAdapterService
 	 */

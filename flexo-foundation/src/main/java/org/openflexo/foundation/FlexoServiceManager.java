@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceManager;
@@ -41,7 +42,7 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
  * 
  * Please note that this class provides the basic support for Information Space<br>
  * The Information Space is obtained through two services from the {@link FlexoServiceManager}, and results from the merging of the
- * {@link FlexoResourceCenterService} and the {@link TechnologyAdapterService}.<br>
+ * {@link FlexoResourceCenterService} and the {@link ProjectNatureService}.<br>
  * For each {@link FlexoResourceCenter} and for each {@link TechnologyAdapter}, a repository of {@link FlexoModel} and
  * {@link FlexoMetaModel} are managed.
  * 
@@ -116,6 +117,10 @@ public abstract class FlexoServiceManager {
 		return getService(FlexoResourceCenterService.class);
 	}
 
+	public ProjectNatureService getProjectNatureService() {
+		return getService(ProjectNatureService.class);
+	}
+
 	public ViewPointLibrary getViewPointLibrary() {
 		return getService(ViewPointLibrary.class);
 	}
@@ -148,6 +153,8 @@ public abstract class FlexoServiceManager {
 	protected abstract FlexoResourceCenterService createResourceCenterService();
 
 	protected abstract TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService flexoResourceCenterService);
+
+	protected abstract ProjectNatureService createProjectNatureService();
 
 	protected abstract ViewPointLibrary createViewPointLibraryService();
 

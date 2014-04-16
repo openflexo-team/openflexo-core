@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.viewpoint;
 
-import org.openflexo.foundation.FlexoNature;
+import org.openflexo.foundation.nature.FlexoNature;
 
 /**
  * Interface defining the nature of a {@link ViewPoint}<br>

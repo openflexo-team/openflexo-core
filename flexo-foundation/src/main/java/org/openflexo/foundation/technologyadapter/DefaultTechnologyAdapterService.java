@@ -23,7 +23,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * Default implementation for {@link TechnologyAdapterService}
+ * Default implementation for {@link ProjectNatureService}
  * 
  * @author sylvain
  * 

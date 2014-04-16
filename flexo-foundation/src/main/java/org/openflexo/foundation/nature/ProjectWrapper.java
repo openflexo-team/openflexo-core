@@ -17,20 +17,25 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation;
+package org.openflexo.foundation.nature;
+
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 
 /**
- * Generic super interface defining the nature of any concept<br>
+ * Represents a project with a specific {@link ProjectNature} <br>
  * 
- * A nature might be seen as an interpretation of a given concept.
+ * This class is a wrapper class above {@link FlexoProject} and provides a specific interpretation of a generic {@link FlexoProject}<br>
+ * Instances of {@link ProjectWrapper} are managed and should be retrieved from a specific {@link ProjectNature}.
+ * 
+ * @see FreeModelProjectNature
  * 
  * @author sylvain
  * 
- * @param <E>
- *            type of introspected concept
  */
-public interface FlexoNature<E extends FlexoObject> {
+public interface ProjectWrapper<N extends ProjectNature> extends FlexoObject {
 
-	public boolean hasNature(E concept);
+	public FlexoProject getProject();
 
+	public N getProjectNature();
 }

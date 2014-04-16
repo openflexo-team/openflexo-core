@@ -29,7 +29,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.ProjectNature;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -83,7 +83,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
 	/**
-	 * Returns applicable {@link TechnologyAdapterService}
+	 * Returns applicable {@link ProjectNatureService}
 	 * 
 	 * @return
 	 */
@@ -92,7 +92,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	/**
-	 * Sets applicable {@link TechnologyAdapterService}
+	 * Sets applicable {@link ProjectNatureService}
 	 * 
 	 * @param technologyAdapterService
 	 */

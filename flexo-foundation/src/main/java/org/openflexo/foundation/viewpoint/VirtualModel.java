@@ -131,7 +131,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public void setResource(FlexoResource<VirtualModel> aVirtualModelResource);
 
 	@Override
-	@Getter(value = VIEW_POINT_KEY, inverse = ViewPoint.VIRTUAL_MODELS_KEY)
+	@Getter(value = VIEW_POINT_KEY /*, inverse = ViewPoint.VIRTUAL_MODELS_KEY*/)
 	public ViewPoint getViewPoint();
 
 	@Setter(VIEW_POINT_KEY)

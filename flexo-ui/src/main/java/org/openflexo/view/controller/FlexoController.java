@@ -212,20 +212,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		manager.new PropertyChangeListenerRegistration(this, controllerModel);
 		flexoFrame = createFrame();
 
-		if (getModule().getModule().requireProject()) {
-			if (getModuleLoader().getLastActiveEditor() != null) {
-				controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
-			}
-		} else {
-			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
-		}
-
-		System.err.println("last active editor = " + getModuleLoader().getLastActiveEditor());
-
-		System.err.println("editor=" + getEditor());
-		// System.err.println("sm" + getEditor().getServiceManager());
-		// System.err.println("ec=" + getEditor().getServiceManager().getEditingContext());
-
 		controllerActionInitializer = createControllerActionInitializer();
 		registerShortcuts(controllerActionInitializer);
 
@@ -253,6 +239,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 		// controllerActionInitializer = createControllerActionInitializer();
 		// registerShortcuts(controllerActionInitializer);
+
+		if (getModule().getModule().requireProject()) {
+			if (getModuleLoader().getLastActiveEditor() != null) {
+				controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
+			}
+		} else {
+			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
+		}
 
 	}
 

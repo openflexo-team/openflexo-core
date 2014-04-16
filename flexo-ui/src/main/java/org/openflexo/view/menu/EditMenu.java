@@ -188,7 +188,7 @@ public class EditMenu extends FlexoMenu {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getSource() == _controller) {
+			if (evt.getSource() == _controller && evt.getPropertyName().equals(FlexoController.EDITOR)) {
 				if (evt.getOldValue() != null) {
 					FlexoEditor old = (FlexoEditor) evt.getOldValue();
 					if (old.getUndoManager() != null) {

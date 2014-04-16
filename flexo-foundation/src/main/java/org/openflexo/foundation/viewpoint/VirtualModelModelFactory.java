@@ -88,13 +88,13 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl {
 
 	private VirtualModelResource virtualModelResource;
 
-	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
 		this(editingContext, taService, null);
 	}
 
-	// TODO: the factory should be instantiated and managed by the TechnologyAdapterService, which should react to the registering
+	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService,
 			VirtualModelResource virtualModelResource) throws ModelDefinitionException {

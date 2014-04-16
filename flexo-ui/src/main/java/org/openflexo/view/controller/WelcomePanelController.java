@@ -6,6 +6,8 @@ import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -13,6 +15,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
+import org.openflexo.module.NatureSpecificModule;
 import org.openflexo.module.ProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
@@ -32,6 +35,10 @@ public class WelcomePanelController extends FlexoFIBController {
 
 	private ProjectLoader getProjectLoader() {
 		return getDataObject().getApplicationContext().getProjectLoader();
+	}
+
+	private ProjectNatureService getProjectNatureService() {
+		return getDataObject().getApplicationContext().getProjectNatureService();
 	}
 
 	public void exit() {
@@ -88,7 +95,13 @@ public class WelcomePanelController extends FlexoFIBController {
 		hide();
 		try {
 			getModuleLoader().switchToModule(module);
-			getProjectLoader().newProject(projectDirectory);
+
+			if (module instanceof NatureSpecificModule) {
+				ProjectNature<?, ?> nature = getProjectNatureService().getProjectNature(((NatureSpecificModule) module).getNatureClass());
+				getProjectLoader().newProject(projectDirectory, nature);
+			} else {
+				getProjectLoader().newProject(projectDirectory);
+			}
 			validateAndDispose();
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();

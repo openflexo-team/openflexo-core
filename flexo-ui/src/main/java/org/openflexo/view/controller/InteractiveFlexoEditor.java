@@ -128,7 +128,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A executeAction(
 			final A action, final EventObject event) {
 		final boolean progressIsShowing = ProgressWindow.hasInstance();
-		boolean confirmDoAction = runInitializer(action, event);
+		// If action is embedded and valid, we skip initializer
+		boolean confirmDoAction = action.isEmbedded() && action.isValid() ? true : runInitializer(action, event);
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
 			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
@@ -161,7 +162,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 										+ action.getLocalizedName(), e.getCause());
 							}
 						}
-						runFinalizer(action, event);
+						if (!action.isEmbedded()) {
+							runFinalizer(action, event);
+						}
 						if (!progressIsShowing) {
 							ProgressWindow.hideProgressWindow();
 						}
@@ -177,7 +180,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 						return null;
 					}
 				}
-				runFinalizer(action, event);
+				if (!action.isEmbedded()) {
+					runFinalizer(action, event);
+				}
 				if (!progressIsShowing) {
 					ProgressWindow.hideProgressWindow();
 				}
@@ -246,7 +251,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public FlexoUndoManager getUndoManager() {
-		return (FlexoUndoManager) applicationContext.getEditingContext().getUndoManager();
+		return applicationContext.getEditingContext().getUndoManager();
 	}
 
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void actionWillBePerformed(

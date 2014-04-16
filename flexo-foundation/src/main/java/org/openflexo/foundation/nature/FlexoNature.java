@@ -17,17 +17,28 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation;
+package org.openflexo.foundation.nature;
 
+import org.openflexo.foundation.FlexoObject;
 
 /**
- * Interface defining the nature of a {@link FlexoProject}<br>
+ * Generic super interface defining the nature of any concept<br>
  * 
- * A {@link ProjectNature} might be seen as an interpretation of a given {@link FlexoProject}
+ * A nature might be seen as an interpretation of a given concept.
  * 
  * @author sylvain
  * 
+ * @param <E>
+ *            type of introspected concept
  */
-public interface ProjectNature extends FlexoNature<FlexoProject> {
+public interface FlexoNature<E extends FlexoObject> {
+
+	/**
+	 * Return boolean indicating if supplied concept might be interpreted according to this nature
+	 * 
+	 * @param concept
+	 * @return
+	 */
+	public boolean hasNature(E concept);
 
 }

@@ -173,6 +173,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			newView.setTitle(viewTitle);
 
 			System.out.println("Et hop on sauve " + newViewResource.getFile());
+			System.out.println("uri=" + newViewResource.getURI());
 
 			// Save it
 			newViewResource.save(null);

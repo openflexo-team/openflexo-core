@@ -29,6 +29,7 @@ import org.junit.AfterClass;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -58,9 +59,9 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 
 	@AfterClass
 	public synchronized static void tearDownClass() {
-		 FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
-		 List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
-		for ( FlexoResourceCenter rc : listRC){
+		FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
+		List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
+		for (FlexoResourceCenter rc : listRC) {
 			if (rc instanceof DirectoryResourceCenter) {
 				File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
 				RCDirectory.deleteOnExit();
@@ -83,11 +84,11 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	}
 
 	@Override
-	protected FlexoEditor createProject(String projectName) {
+	protected FlexoEditor createProject(String projectName, ProjectNature nature) {
 		if (serviceManager == null) {
 			serviceManager = instanciateTestServiceManager();
 		}
-		return createProject(projectName, serviceManager);
+		return createProject(projectName, nature, serviceManager);
 	}
 
 }

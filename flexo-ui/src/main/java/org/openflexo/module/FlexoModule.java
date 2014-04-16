@@ -257,7 +257,9 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		logger.fine("ModuleLoader service received notification " + notification + " from " + caller);
 		if (notification instanceof ResourceModified || notification instanceof ResourceSaved || notification instanceof ResourceRegistered
 				|| notification instanceof ResourceUnregistered) {
-			getFlexoFrame().updateWindowModified();
+			if (getFlexoFrame() != null) {
+				getFlexoFrame().updateWindowModified();
+			}
 		}
 	}
 }

@@ -38,6 +38,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -186,6 +187,10 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	public FlexoEditor newProject(File projectDirectory) throws ProjectInitializerException {
+		return newProject(projectDirectory, null);
+	}
+
+	public FlexoEditor newProject(File projectDirectory, ProjectNature<?, ?> projectNature) throws ProjectInitializerException {
 		if (!ProgressWindow.hasInstance()) {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("building_new_project"), 10);
 		} else {
@@ -196,7 +201,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
 
 			preInitialization(projectDirectory);
-			FlexoEditor editor = FlexoProject.newProject(projectDirectory, getServiceManager(), getServiceManager(),
+			FlexoEditor editor = FlexoProject.newProject(projectDirectory, projectNature, getServiceManager(), getServiceManager(),
 					ProgressWindow.instance());
 			newEditor(editor);
 			addToRootProjects(editor.getProject());
