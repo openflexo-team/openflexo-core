@@ -57,6 +57,8 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	protected static final Pattern BAD_FILE_NAME_CHARACTERS_PATTERN = Pattern.compile(BAD_FILE_NAME_CHARACTERS_REG_EXP);
 
 	private static final String REPLACEMENT = "-";
+	
+	private boolean hasParent = false;
 
 	public abstract String getScreenshotName(T o);
 
@@ -83,6 +85,14 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 		return BAD_FILE_NAME_CHARACTERS_PATTERN.matcher(imageName).replaceAll(REPLACEMENT);
 	}
 
+	public boolean isHasParent() {
+		return hasParent;
+	}
+
+	public void setHasParent(boolean hasParent) {
+		this.hasParent = hasParent;
+	}
+	
 	public ScreenshotImage<T> getImage(T object) {
 		if (object == null) {
 			if (logger.isLoggable(Level.WARNING)) {
@@ -104,7 +114,7 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 			if (component == null) {
 				return getEmptyScreenshot();
 			}
-			ScreenshotImageRunnable runnable = new ScreenshotImageRunnable(component, object);
+			ScreenshotImageRunnable runnable = new ScreenshotImageRunnable(component, object , hasParent);
 			ScreenshotImage i = null;
 			try {
 				i = FlexoSwingUtils.syncRunInEDT(runnable);
@@ -158,15 +168,17 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 	private class ScreenshotImageRunnable implements Callable<ScreenshotImage<T>> {
 		private final T object;
 		private final JComponent component;
+		private final boolean hasParent;
 
-		protected ScreenshotImageRunnable(JComponent component, T object) {
+		protected ScreenshotImageRunnable(JComponent component, T object , boolean hasParent) {
 			this.component = component;
 			this.object = object;
+			this.hasParent = hasParent;
 		}
 
 		@Override
 		public ScreenshotImage<T> call() {
-			return createImageForComponent(object, component, true);
+			return createImageForComponent(object, component, hasParent, true);
 		}
 
 	}
@@ -190,18 +202,11 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 
 	public abstract JComponent getScreenshotComponent(T object);
 
-	private ScreenshotImage<T> createImageForComponent(T object, JComponent c, boolean trim) {
-		JFrame frame = new JFrame();
-		try {
-			BufferedImage bi = null;
-			c.setOpaque(true);
-			c.setBackground(Color.WHITE);
-			frame.setBackground(Color.WHITE);
-			frame.setUndecorated(true);
-			frame.getContentPane().add(c);
-			frame.pack();
-			bi = ImageUtils.createImageFromComponent(c);
-			ScreenshotImage<T> i;
+	private ScreenshotImage<T> createImageForComponent(T object, JComponent c, boolean hasParent, boolean trim) {
+		ScreenshotImage<T> i = null;
+		if(hasParent){
+			BufferedImage bi = ImageUtils.createImageFromComponent(getScreenshotComponent(object));
+			i = new ScreenshotImage<T>(object);
 			if (trim) {
 				i = trimImage(object, bi);
 			} else {
@@ -210,11 +215,32 @@ public abstract class ScreenshotBuilder<T extends FlexoObject> {
 				i.trimInfo = new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
 			}
 			return i;
-		} finally {
-			if (frame.getContentPane() != null) {
-				frame.getContentPane().removeAll();
+		}
+		else{
+			JFrame frame = new JFrame();
+			try {
+				BufferedImage bi = null;
+				c.setOpaque(true);
+				c.setBackground(Color.WHITE);
+				frame.setBackground(Color.WHITE);
+				frame.setUndecorated(true);
+				frame.getContentPane().add(c);
+				frame.pack();
+				bi = ImageUtils.createImageFromComponent(c);
+				if (trim) {
+					i = trimImage(object, bi);
+				} else {
+					i = new ScreenshotImage<T>(object);
+					i.image = bi;
+					i.trimInfo = new Rectangle(0, 0, bi.getWidth(), bi.getHeight());
+				}
+				return i;
+			} finally {
+				if (frame.getContentPane() != null) {
+					frame.getContentPane().removeAll();
+				}
+				frame.dispose();
 			}
-			frame.dispose();
 		}
 	}
 
