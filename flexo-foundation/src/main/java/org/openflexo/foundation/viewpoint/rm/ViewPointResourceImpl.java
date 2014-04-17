@@ -817,13 +817,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		List<Element> fetchElements = IteratorUtils.toList(fetchElementsIterator);
 		for(Element fetchElement : fetchElements){
 			for(Element child : fetchElement.getChildren()){
-				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectEditionPatternInstance");
+				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectFlexoConceptInstance");
 				if(child.getName().equals("AddressedSelectEMFObjectIndividual"))child.setName("FetchRequest_SelectEMFObjectIndividual");
 				if(child.getName().equals("AddressedSelectIndividual"))child.setName("FetchRequest_SelectIndividual");
 				if(child.getName().equals("AddressedSelectExcelCell"))child.setName("FetchRequest_SelectExcelCell");
 				if(child.getName().equals("AddressedSelectExcelRow"))child.setName("FetchRequest_SelectExcelRow");
 				if(child.getName().equals("AddressedSelectExcelSheet"))child.setName("FetchRequest_SelectExcelSheet");
-				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectEditionPatternInstance");
+				if(child.getName().equals("AddressedSelectEditionPatternInstance"))child.setName("FetchRequest_SelectFlexoConceptInstance");
 			}
 		}
 		// Built-in actions
