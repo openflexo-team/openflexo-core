@@ -47,6 +47,13 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			this.editingContext = editingContext;
 		}
 
+		// Override parent implementation by preventing check that this ActionType is registered in FlexoObject
+		// (This is to be assumed, as action type is here dynamic)
+		@Override
+		public boolean isEnabled(FlexoObject object, Vector<FlexoObject> globalSelection) {
+			return isEnabledForSelection(object, globalSelection);
+		}
+
 		/**
 		 * Factory method
 		 */

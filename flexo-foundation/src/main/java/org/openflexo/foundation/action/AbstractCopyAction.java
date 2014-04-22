@@ -58,6 +58,13 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 			this.editingContext = editingContext;
 		}
 
+		// Override parent implementation by preventing check that this ActionType is registered in FlexoObject
+		// (This is to be assumed, as action type is here dynamic)
+		@Override
+		public boolean isEnabled(FlexoObject object, Vector<FlexoObject> globalSelection) {
+			return isEnabledForSelection(object, globalSelection);
+		}
+
 		@Override
 		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
@@ -92,17 +99,22 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 			for (Object o : effectiveSelection) {
 				returned.add(o);
 				if (o instanceof InnerResourceData) {
-					FlexoResource<?> resource = ((InnerResourceData) o).getResourceData().getResource();
-					if (resource instanceof PamelaResource) {
-						if (pamelaResource == null) {
-							pamelaResource = (PamelaResource) resource;
-						} else if (pamelaResource == resource) {
-							// Nice, we are on the same resource
+					if (((InnerResourceData) o).getResourceData() != null) {
+						FlexoResource<?> resource = ((InnerResourceData) o).getResourceData().getResource();
+						if (resource instanceof PamelaResource) {
+							if (pamelaResource == null) {
+								pamelaResource = (PamelaResource) resource;
+							} else if (pamelaResource == resource) {
+								// Nice, we are on the same resource
+							} else {
+								throw new InvalidSelectionException(
+										"Incompatible global model context: found objects in many PamelaResources");
+							}
 						} else {
-							throw new InvalidSelectionException("Incompatible global model context: found objects in many PamelaResources");
+							throw new InvalidSelectionException("Incompatible global model context: could not access PamelaResource");
 						}
 					} else {
-						throw new InvalidSelectionException("Incompatible global model context: could not access PamelaResource");
+						throw new InvalidSelectionException("Incompatible global model context: could not access ResourceData");
 					}
 				}
 			}

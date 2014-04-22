@@ -20,11 +20,10 @@
 package org.openflexo.view.controller;
 
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
@@ -40,10 +39,17 @@ import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
+import org.openflexo.foundation.action.CopyAction;
+import org.openflexo.foundation.action.CopyAction.CopyActionType;
+import org.openflexo.foundation.action.CutAction;
+import org.openflexo.foundation.action.CutAction.CutActionType;
 import org.openflexo.foundation.action.ImportProject;
+import org.openflexo.foundation.action.PasteAction;
+import org.openflexo.foundation.action.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.RemoveImportedProject;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -284,7 +290,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 					String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
 					Resource fibPanelResource = ResourceLocator.locateResource(fibPanelName);
 					// System.out.println("fibPanelFile=" + fibPanel);
-					if (fibPanelResource != null ) {
+					if (fibPanelResource != null) {
 						// logger.info("Found " + fibPanel);
 						put(aClass, fibPanelResource);
 						return fibPanelResource;
@@ -305,6 +311,76 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public Resource getFIBPanelForClass(Class<?> aClass) {
 
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
+	}
+
+	@Override
+	public void performCopyAction(Object focused, List<?> selection) {
+		CopyActionType copyActionType = getEditor().getServiceManager().getEditingContext().getCopyActionType();
+		FlexoObject focusedObject = null;
+		if (focused instanceof FlexoObject) {
+			focusedObject = (FlexoObject) focused;
+		}
+		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		for (Object o : selection) {
+			if (o instanceof FlexoObject) {
+				globalSelection.add((FlexoObject) o);
+				if (focusedObject == null) {
+					focusedObject = (FlexoObject) o;
+				}
+			}
+		}
+		System.out.println("Alors... avec focused=" + focusedObject + " selection=" + globalSelection);
+		if (copyActionType.isEnabled(focusedObject, globalSelection)) {
+			System.out.println("Performing COPY");
+			CopyAction action = copyActionType.makeNewAction(focusedObject, globalSelection, getEditor());
+			action.doAction();
+		}
+	}
+
+	@Override
+	public void performCutAction(Object focused, List<?> selection) {
+		CutActionType cutActionType = getEditor().getServiceManager().getEditingContext().getCutActionType();
+		FlexoObject focusedObject = null;
+		if (focused instanceof FlexoObject) {
+			focusedObject = (FlexoObject) focused;
+		}
+		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		for (Object o : selection) {
+			if (o instanceof FlexoObject) {
+				globalSelection.add((FlexoObject) o);
+				if (focusedObject == null) {
+					focusedObject = (FlexoObject) o;
+				}
+			}
+		}
+		if (cutActionType.isEnabled(focusedObject, globalSelection)) {
+			System.out.println("Performing CUT");
+			CutAction action = cutActionType.makeNewAction(focusedObject, globalSelection, getEditor());
+			action.doAction();
+		}
+	}
+
+	@Override
+	public void performPasteAction(Object focused, List<?> selection) {
+		PasteActionType pasteActionType = getEditor().getServiceManager().getEditingContext().getPasteActionType();
+		FlexoObject focusedObject = null;
+		if (focused instanceof FlexoObject) {
+			focusedObject = (FlexoObject) focused;
+		}
+		Vector<FlexoObject> globalSelection = new Vector<FlexoObject>();
+		for (Object o : selection) {
+			if (o instanceof FlexoObject) {
+				globalSelection.add((FlexoObject) o);
+				if (focusedObject == null) {
+					focusedObject = (FlexoObject) o;
+				}
+			}
+		}
+		if (pasteActionType.isEnabled(focusedObject, globalSelection)) {
+			System.out.println("Performing PASTE");
+			PasteAction action = pasteActionType.makeNewAction(focusedObject, globalSelection, getEditor());
+			action.doAction();
+		}
 	}
 
 }
