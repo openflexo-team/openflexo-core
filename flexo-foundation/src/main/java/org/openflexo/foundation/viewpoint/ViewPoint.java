@@ -211,7 +211,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			library.registerViewPoint(vpRes);
 
 			viewpoint.init(baseName, library);
-			viewpoint.loadViewpointMetaModels();
 			try {
 				vpRes.save(null);
 			} catch (SaveResourceException e) {
@@ -219,10 +218,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			}
 
 			return viewpoint;
-		}
-
-		private void loadViewpointMetaModels() {
-			logger.warning("loadViewpointMetaModels() : not implemented yet");
 		}
 
 		@Override
@@ -262,8 +257,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 			setName(baseName);
 			_library = library;
-
-			loadViewpointMetaModels();
 
 			/*for (VirtualModel vm : getVirtualModels()) {
 				for (FlexoConcept ep : vm.getFlexoConcepts()) {
