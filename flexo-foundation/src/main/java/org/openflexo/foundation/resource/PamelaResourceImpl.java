@@ -122,7 +122,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
 			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits());
-			System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
+			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
 		}
 
 		try {
@@ -150,7 +150,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			isLoading = false;
 			if (ignoreHandler != null) {
 				undoManager.removeFromIgnoreHandlers(ignoreHandler);
-				System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
+				// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
 			}
 		}
 	}
@@ -162,7 +162,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @return
 	 */
 	protected void saveResourceData(boolean clearIsModified) throws SaveResourceException, SaveResourcePermissionDeniedException {
-		System.out.println("PamelaResourceImpl Saving " + getFile());
+		// System.out.println("PamelaResourceImpl Saving " + getFile());
 		if (!hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Permission denied : " + getFile().getAbsolutePath());
@@ -170,7 +170,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			throw new SaveResourcePermissionDeniedException(this);
 		}
 		if (resourceData != null) {
-			logger.warning("I think the SerializationHandler is no more necessary");
+			// Sylvain: I think the SerializationHandler is no more necessary
+			// Comment to be removed when we will be sure that this is no more necessary
 			_saveResourceData(/*new SerializationHandler() {
 								@Override
 								public void objectWillBeSerialized(XMLSerializable object) {
@@ -186,8 +187,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 								}
 								}
 								},*/clearIsModified);
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
 						+ " with date " + FileUtils.getDiskLastModifiedDate(getFile()));
 			}
 		}
@@ -450,7 +451,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			if (edit instanceof AtomicEdit) {
 				Object o = ((AtomicEdit) edit).getObject();
 				if (((AtomicEdit) edit).getModelFactory() == getFactory()) {
-					System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
+					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
 					return true;
 				}
 			}

@@ -624,8 +624,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 */
 	public final ProjectWrapper<?> asNature(String projectNatureClassName) {
 		ProjectNature<?, ?> projectNature = getServiceManager().getProjectNatureService().getProjectNature(projectNatureClassName);
-		System.out.println("Hop, je trouve la nature " + projectNature);
-		System.out.println("Et je retourne: " + projectNature.getProjectWrapper(this));
 		return projectNature.getProjectWrapper(this);
 	}
 

@@ -102,7 +102,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void notifyResourceLoaded() {
-		logger.info("notifyResourceLoaded(), resource=" + this);
+		logger.fine("notifyResourceLoaded(), resource=" + this);
 
 		ResourceLoaded notification = new ResourceLoaded(this, resourceData);
 		setChanged();
@@ -122,7 +122,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void notifyResourceSaved() {
-		logger.info("notifyResourceSaved(), resource=" + this);
+		logger.fine("notifyResourceSaved(), resource=" + this);
 
 		ResourceSaved notification = new ResourceSaved(this, resourceData);
 		setChanged();
@@ -153,7 +153,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void notifyContentsAdded(FlexoResource<?> resource) {
-		logger.info("notifyContentsAdded(), resource=" + this);
+		logger.fine("notifyContentsAdded(), resource=" + this);
 
 		ContentsAdded notification = new ContentsAdded(this, resource);
 		setChanged();
@@ -170,7 +170,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void notifyContentsRemoved(FlexoResource<?> resource) {
-		logger.info("notifyContentsRemoved(), resource=" + this);
+		logger.fine("notifyContentsRemoved(), resource=" + this);
 
 		ContentsRemoved notification = new ContentsRemoved(this, resource);
 		setChanged();

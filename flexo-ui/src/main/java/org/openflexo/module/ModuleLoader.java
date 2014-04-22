@@ -403,7 +403,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				logger.info("Switch to module " + module.getName());
 			}
 			FlexoModule moduleInstance = getModuleInstance(module);
-			System.out.println("ModuleInstance = " + moduleInstance);
 			if (moduleInstance != null) {
 				FlexoModule old = activeModule;
 				if (activeModule != null) {

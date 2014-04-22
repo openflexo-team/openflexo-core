@@ -180,13 +180,23 @@ public abstract class SelectionManager extends Observable {
 	 * Reset selection
 	 */
 	public void resetSelection() {
+		resetSelection(false);
+	}
+
+	/**
+	 * Reset selection<br>
+	 * When temporary set to true, skip inspector management
+	 */
+	public void resetSelection(boolean temporary) {
 		_selection.clear();
 		for (Enumeration<SelectionListener> e = _selectionListeners.elements(); e.hasMoreElements();) {
 			e.nextElement().fireResetSelection();
 		}
 		setLastSelectedObject(null);
 		fireSelectionBecomesEmpty();
-		updateInspectorManagement();
+		if (!temporary) {
+			updateInspectorManagement();
+		}
 	}
 
 	/**

@@ -619,7 +619,6 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 					}
 				}
 			} else if (evt.getPropertyName().equals(ControllerModel.CURRENT_EDITOR)) {
-				System.out.println("On est notifie par ici aussi");
 				tabbedPane.refreshTabHeaders();
 			}
 		} else if (evt.getSource() == controller.getCurrentPerspective()) {

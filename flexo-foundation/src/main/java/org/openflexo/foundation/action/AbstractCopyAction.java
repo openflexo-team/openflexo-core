@@ -77,7 +77,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 				prepareCopy(getGlobalSelectionAndFocusedObject(object, globalSelection));
 				return true;
 			} catch (InvalidSelectionException e) {
-				logger.info("Could not COPY for this selection");
+				// logger.info("Could not COPY for this selection");
 				return false;
 			}
 		}

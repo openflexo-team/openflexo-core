@@ -412,7 +412,6 @@ public final class FlexoFrame extends JFrame implements GraphicalFlexoObserver, 
 				if (newEditor != null && newEditor.getProject() != null) {
 					newEditor.getProject().addObserver(this);
 				}
-				System.out.println("La frame est notifiee et met a jour le titre");
 				updateTitle();
 			}
 		}
