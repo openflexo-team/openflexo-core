@@ -74,9 +74,9 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		if (_project != null) {
 			_project.close();
 		}
-		/*if (_projectDirectory != null) {
+		if (_projectDirectory != null) {
 			FileUtils.deleteDir(_projectDirectory);
-		}*/
+		}
 		_editor = null;
 		_projectDirectory = null;
 		_project = null;
