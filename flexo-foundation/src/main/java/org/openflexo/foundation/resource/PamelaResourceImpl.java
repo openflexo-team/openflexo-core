@@ -450,7 +450,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			if (edit instanceof AtomicEdit) {
 				Object o = ((AtomicEdit) edit).getObject();
 				if (((AtomicEdit) edit).getModelFactory() == getFactory()) {
-					System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
+					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
 					return true;
 				}
 			}
