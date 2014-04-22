@@ -329,9 +329,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 				}
 			}
 		}
-		System.out.println("Alors... avec focused=" + focusedObject + " selection=" + globalSelection);
 		if (copyActionType.isEnabled(focusedObject, globalSelection)) {
-			System.out.println("Performing COPY");
 			CopyAction action = copyActionType.makeNewAction(focusedObject, globalSelection, getEditor());
 			action.doAction();
 		}
@@ -354,7 +352,6 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			}
 		}
 		if (cutActionType.isEnabled(focusedObject, globalSelection)) {
-			System.out.println("Performing CUT");
 			CutAction action = cutActionType.makeNewAction(focusedObject, globalSelection, getEditor());
 			action.doAction();
 		}
@@ -377,7 +374,6 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			}
 		}
 		if (pasteActionType.isEnabled(focusedObject, globalSelection)) {
-			System.out.println("Performing PASTE");
 			PasteAction action = pasteActionType.makeNewAction(focusedObject, globalSelection, getEditor());
 			action.doAction();
 		}
