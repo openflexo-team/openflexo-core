@@ -61,11 +61,11 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 
 		@Override
 		public boolean isAvailable(T selected) {
-			System.out.println("browserView=" + browserView);
+			/*System.out.println("browserView=" + browserView);
 			System.out.println("browserView.getFIBController()=" + browserView.getFIBController());
 			System.out
 					.println("browserView.getFIBController().getFlexoController()=" + browserView.getFIBController().getFlexoController());
-			System.out.println("browserView.getFIBController().getEditor()=" + browserView.getFIBController().getEditor());
+			System.out.println("browserView.getFIBController().getEditor()=" + browserView.getFIBController().getEditor());*/
 
 			return browserView.getFIBController().getEditor().isActionVisible(actionType, selected, null)
 					&& browserView.getFIBController().getEditor().isActionEnabled(actionType, selected, null);
