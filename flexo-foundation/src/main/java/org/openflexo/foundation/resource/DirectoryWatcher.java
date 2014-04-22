@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 /**
  * Implements a timer task which recursively watch a directory looking for changes on file system
@@ -36,6 +37,8 @@ import java.util.TimerTask;
  * 
  */
 public abstract class DirectoryWatcher extends TimerTask {
+
+	protected static final Logger logger = Logger.getLogger(DirectoryWatcher.class.getPackage().getName());
 
 	private final NodeDirectoryWatcher rootDirectoryWatcher;
 
@@ -114,7 +117,7 @@ public abstract class DirectoryWatcher extends TimerTask {
 	public DirectoryWatcher(File directory) {
 		super();
 		rootDirectoryWatcher = new NodeDirectoryWatcher(directory, this, false);
-		System.out.println("Started DirectoryWatcher on " + directory + " ...");
+		logger.info("Started DirectoryWatcher on " + directory + " ...");
 	}
 
 	@Override
