@@ -162,7 +162,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @return
 	 */
 	protected void saveResourceData(boolean clearIsModified) throws SaveResourceException, SaveResourcePermissionDeniedException {
-		System.out.println("PamelaResourceImpl Saving " + getFile());
+		// System.out.println("PamelaResourceImpl Saving " + getFile());
 		if (!hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Permission denied : " + getFile().getAbsolutePath());
