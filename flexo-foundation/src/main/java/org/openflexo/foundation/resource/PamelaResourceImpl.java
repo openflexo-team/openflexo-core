@@ -187,8 +187,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 								}
 								}
 								},*/clearIsModified);
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
 						+ " with date " + FileUtils.getDiskLastModifiedDate(getFile()));
 			}
 		}
