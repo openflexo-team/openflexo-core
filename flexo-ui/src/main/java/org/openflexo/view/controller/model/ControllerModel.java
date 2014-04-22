@@ -332,7 +332,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 		Location old = currentLocation;
 
-		System.out.println("******* Adding location editor=" + editor + " object=" + object + " perspective=" + perspective);
+		// System.out.println("******* Adding location editor=" + editor + " object=" + object + " perspective=" + perspective);
 		currentLocation = addToLocations(new Location(editor, object, perspective));
 		notifyLocationChange(old, currentLocation);
 	}

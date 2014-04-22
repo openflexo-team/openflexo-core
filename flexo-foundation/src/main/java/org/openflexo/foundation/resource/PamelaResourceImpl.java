@@ -122,7 +122,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
 			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits());
-			System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
+			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
 		}
 
 		try {
@@ -150,7 +150,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			isLoading = false;
 			if (ignoreHandler != null) {
 				undoManager.removeFromIgnoreHandlers(ignoreHandler);
-				System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
+				// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
 			}
 		}
 	}
