@@ -170,7 +170,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			throw new SaveResourcePermissionDeniedException(this);
 		}
 		if (resourceData != null) {
-			logger.warning("I think the SerializationHandler is no more necessary");
+			// Sylvain: I think the SerializationHandler is no more necessary
+			// Comment to be removed when we will be sure that this is no more necessary
 			_saveResourceData(/*new SerializationHandler() {
 								@Override
 								public void objectWillBeSerialized(XMLSerializable object) {
