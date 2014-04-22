@@ -619,19 +619,32 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					}
 				}
 			}
-			
 			for(Content content : diagram.getDescendants()){
 				if(content instanceof Element){
 					Element element = (Element) content;
 					if(element.getName().equals("AddShape")||
 							element.getName().equals("AddConnector")||
 							element.getName().equals("AddDiagram")){
-						if(element.getChild("TypedDiagramModelSlot")==null){
+						if(element.getChild("TypedDiagramModelSlot")==null && 
+								element.getChild("AddressedDiagramModelSlot")==null){
 							Element adressedMsElement = new Element("TypedDiagramModelSlot");
 							Attribute newIdRefAttribute = new Attribute("idref",typedDiagramModelSlot.getAttributeValue("id"));
 							adressedMsElement.getAttributes().add(newIdRefAttribute);
 							element.addContent(adressedMsElement);
 						}
+					}
+				}
+			}
+			
+			// Update DiagramSpecification URI 
+			for(Content content : diagram.getDescendants()){
+				if(content instanceof Element){
+					Element element = (Element) content;
+					if(element.getAttribute("diagramSpecificationURI")!=null){
+						String oldDiagramSpecificationUri = element.getAttributeValue("diagramSpecificationURI");
+						String diagramSpecificationName = oldDiagramSpecificationUri.substring(oldDiagramSpecificationUri.lastIndexOf("/"));
+						String newDiagramSpecificationUri = oldDiagramSpecificationUri + diagramSpecificationName + ".diagramspecification";
+						element.getAttribute("diagramSpecificationURI").setValue(newDiagramSpecificationUri);
 					}
 				}
 			}
@@ -753,6 +766,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			// Parent pattern role is no more an attribute but an element 
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
 		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
+		
+		System.out.println(document.getRootElement().getAttributeValue("name"));
+		
 		for(Element fc : fcElements){
 			if(fc.getAttribute("parentEditionPattern")!=null){
 				Element parentEp = new Element("ParentFlexoConcept");
@@ -866,6 +882,50 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 
 		// Palettes/ExampleDiagrams
+			// Retrieve Connector GRs
+			IteratorIterable<? extends Content> connectorGRElementsIterator = document.getDescendants(new ElementFilter("ConnectorGraphicalRepresentation"));
+			List<Element> connectorGRElements = IteratorUtils.toList(connectorGRElementsIterator);
+			for(Element connectorGRElement : connectorGRElements){
+				Element grSpec=null;
+				if(connectorGRElement.getChild("RectPolylinConnector")!=null){
+					grSpec = connectorGRElement.getChild("RectPolylinConnector");
+				}else if(connectorGRElement.getChild("LineConnector")!=null){
+					grSpec = connectorGRElement.getChild("LineConnector");
+				}else if(connectorGRElement.getChild("CurvedPolylinConnector")!=null){
+					grSpec = connectorGRElement.getChild("CurvedPolylinConnector");
+				}
+				if(connectorGRElement.getAttribute("startSymbol")!=null){
+					Attribute startSymbol = new Attribute("startSymbol",connectorGRElement.getAttributeValue("startSymbol"));
+					grSpec.getAttributes().add(startSymbol);
+					connectorGRElement.removeAttribute("startSymbol");
+				}if(connectorGRElement.getAttribute("endSymbol")!=null){
+					Attribute endSymbol = new Attribute("endSymbol",connectorGRElement.getAttributeValue("endSymbol"));
+					grSpec.getAttributes().add(endSymbol);
+					connectorGRElement.removeAttribute("endSymbol");
+				}if(connectorGRElement.getAttribute("middleSymbol")!=null){
+					Attribute middleSymbol = new Attribute("middleSymbol",connectorGRElement.getAttributeValue("middleSymbol"));
+					grSpec.getAttributes().add(middleSymbol);
+					connectorGRElement.removeAttribute("middleSymbol");
+				}if(connectorGRElement.getAttribute("startSymbolSize")!=null){
+					Attribute startSymbolSize = new Attribute("startSymbolSize",connectorGRElement.getAttributeValue("startSymbolSize"));
+					grSpec.getAttributes().add(startSymbolSize);
+					connectorGRElement.removeAttribute("startSymbolSize");
+				}if(connectorGRElement.getAttribute("endSymbolSize")!=null){
+					Attribute endSymbolSize = new Attribute("endSymbolSize",connectorGRElement.getAttributeValue("endSymbolSize"));
+					grSpec.getAttributes().add(endSymbolSize);
+					connectorGRElement.removeAttribute("endSymbolSize");
+				}if(connectorGRElement.getAttribute("middleSymbolSize")!=null){
+					Attribute middleSymbolSize = new Attribute("middleSymbolSize",connectorGRElement.getAttributeValue("middleSymbolSize"));
+					grSpec.getAttributes().add(middleSymbolSize);
+					connectorGRElement.removeAttribute("middleSymbolSize");
+				}if(connectorGRElement.getAttribute("relativeMiddleSymbolLocation")!=null){
+					Attribute relativeMiddleSymbolLocation = new Attribute("relativeMiddleSymbolLocation",connectorGRElement.getAttributeValue("relativeMiddleSymbolLocation"));
+					grSpec.getAttributes().add(relativeMiddleSymbolLocation);
+					connectorGRElement.removeAttribute("relativeMiddleSymbolLocation");
+				}
+			}
+
+		
 		convertOldNameToNewNames("Palette", "DiagramPalette", document);
 		convertOldNameToNewNames("PaletteElement", "DiagramPaletteElement", document);
 		convertOldNameToNewNames("Shema", "Diagram", document);
@@ -1071,6 +1131,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	
 	private static String getFlexoConceptID(Document document,String flexoConceptUri){
 		String virtualModelInstanceUri = retrieveVirtualModelInstanceURI(document);
+		if(flexoConceptUri.equals(virtualModelInstanceUri)){
+			return document.getRootElement().getAttributeValue("id");
+		}
 		for (Content content : document.getDescendants()) {
 			if (content instanceof Element) {
 				Element element = (Element) content;
