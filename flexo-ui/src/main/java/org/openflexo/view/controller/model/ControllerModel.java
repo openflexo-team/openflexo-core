@@ -153,17 +153,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setCurrentPerspective(FlexoPerspective currentPerspective) {
 
-		System.out.println("currentLocation=" + currentLocation);
-		System.out.println("currentPerspective=" + currentLocation.getPerspective());
-		System.out.println("currentObject=" + getCurrentObject());
-		System.out.println(">>>>>>>> SWITCHING to " + currentPerspective);
+		// System.out.println("currentLocation=" + currentLocation);
+		// System.out.println("currentPerspective=" + currentLocation.getPerspective());
+		// System.out.println("currentObject=" + getCurrentObject());
+		// System.out.println(">>>>>>>> SWITCHING to " + currentPerspective);
 
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
 			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
-				System.out.println("On passe la ");
 				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
-				System.out.println("object=" + object);
 			}
 		}
 		setCurrentLocation(getCurrentEditor(), object, currentPerspective);
@@ -529,7 +527,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 			layout = context.getGeneralPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
 		}
 		if (layout != null) {
-			System.out.println("Parsing layout: " + layout);
+			// System.out.println("Parsing layout: " + layout);
 			return getLayoutFromString(layout);
 		} else {
 			return null;
