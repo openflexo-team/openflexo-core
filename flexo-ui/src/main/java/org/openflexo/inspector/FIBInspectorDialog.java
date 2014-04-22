@@ -138,8 +138,6 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 				}*/
 			}
 
-			System.out.println("Title for " + object + " is now " + getTitle());
-
 		}
 	}
 

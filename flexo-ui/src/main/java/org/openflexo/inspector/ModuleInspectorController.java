@@ -245,7 +245,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	protected void switchToEmptyContent() {
-		// System.out.println("switchToEmptyContent()");
+		//logger.info("switchToEmptyContent()");
 		currentInspectedObject = null;
 		currentInspector = null;
 		setChanged();
@@ -253,7 +253,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private void switchToMultipleSelection() {
-		// System.out.println("switchToEmptyContent()");
+		//logger.info("switchToMultipleSelection()");
 		currentInspectedObject = null;
 		currentInspector = null;
 		setChanged();
@@ -281,6 +281,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (object == currentInspectedObject) {
 			return false;
 		}
+
+		// logger.info("ModuleInspectorController: inspectObject with " + object);
+		// logger.info("currentInspectedObject=" + currentInspectedObject);
 
 		currentInspectedObject = object;
 

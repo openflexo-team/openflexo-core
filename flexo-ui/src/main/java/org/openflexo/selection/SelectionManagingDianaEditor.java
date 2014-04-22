@@ -90,7 +90,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	@Override
 	public void setSelectedObjects(List<? extends DrawingTreeNode<?, ?>> someSelectedObjects) {
 		if (_selectionManager != null) {
-			_selectionManager.resetSelection();
+			_selectionManager.resetSelection(true);
 		}
 		super.setSelectedObjects(someSelectedObjects);
 	}
