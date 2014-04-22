@@ -29,6 +29,9 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(OntologicObjectRole.OntologicObjectRoleImpl.class)
 public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends FlexoRole<T> {
 
+	@Override
+	public TypeAwareModelSlot<?, ?> getModelSlot();
+
 	public static abstract class OntologicObjectRoleImpl<T extends IFlexoOntologyObject> extends FlexoRoleImpl<T> implements
 			OntologicObjectRole<T> {
 
