@@ -129,7 +129,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			final A action, final EventObject event) {
 		final boolean progressIsShowing = ProgressWindow.hasInstance();
 		// If action is embedded and valid, we skip initializer
-		boolean confirmDoAction = action.isEmbedded() && action.isValid() ? true : runInitializer(action, event);
+		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? runInitializer(action, event) : true;
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
 			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
