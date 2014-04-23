@@ -25,6 +25,5 @@
     <Localized id="24" key="uri" lang="English">URI</Localized>
     <Localized id="25" key="concept_scheme" lang="English">concept_scheme</Localized>
   </LocalizedDictionary>
-  <OWLModelSlot id="26" isRequired="false" isReadOnly="false" metaModelURI="http://www.agilebirds.com/openflexo/ontologies/ScopeDefinition/OrganizationalUnitScopeDefinition.owl" name="owl" />
   <description>This viewpoint is intented to deal with the organizational structure</description>
 </ViewPoint>

@@ -28,6 +28,5 @@
     <Localized id="27" key="ConceptSpecialization" lang="en">Concept Specialization</Localized>
     <Localized id="28" key="ConceptToConceptSchemeRelationship" lang="en">'Top concept' relationship</Localized>
   </LocalizedDictionary>
-  <OWLModelSlot id="29" isRequired="false" isReadOnly="false" metaModelURI="http://www.w3.org/2004/02/skos/core" name="owl" />
   <description>This calc is intented to be used as a Basic Thesaurus editor, whose underlying used language is SKOS (Simple Knowlege Organization System) and which is an RDF vocabulary for describing the basic structure and content of concept schemes such as thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', other types of controlled vocabulary, and also concept schemes embedded in glossaries and terminologies.</description>
 </ViewPoint>

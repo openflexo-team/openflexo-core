@@ -611,8 +611,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 							diagramMs.getParentElement().getName().equals("ContainedShapePatternRole")||
 							diagramMs.getParentElement().getName().equals("ContainedConnectorPatternRole")||
 							diagramMs.getParentElement().getName().equals("ContainedDiagramPatternRole")){
-						diagramMs.setAttribute("idref", typedDiagramModelSlot.getAttributeValue("id"));
-						diagramMs.setName("TypedDiagramModelSlot");
+						if(typedDiagramModelSlot.getAttributeValue("id")!=null){
+							diagramMs.setAttribute("idref", typedDiagramModelSlot.getAttributeValue("id"));
+							diagramMs.setName("TypedDiagramModelSlot");
+						}
 					}
 					else{
 						diagramMs.setName(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT);
