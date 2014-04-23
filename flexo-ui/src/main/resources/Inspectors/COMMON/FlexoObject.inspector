@@ -8,10 +8,10 @@
       <Label label="dont_generate" index="23" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)" name="DontGenerateLabel" localize="true" /> -->
     </Tab>
     <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="4" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab">
-      <Label label="flexo_id" index="0" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="FlexoIDLabel" localize="true">
+      <Label label="flexo_id" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="FlexoIDLabel" localize="true">
         <Parameter name="visibleFor" value="SEMANTICSPLUS,ANALYST,DEVELOPER,MAINTAINER" />
       </Label>
-      <TextField index="1" data="data.flexoID.toString" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="FlexoID" readOnly="true" localize="true">
+      <TextField data="data.flexoID.toString" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="FlexoID" readOnly="true" localize="true">
         <Parameter name="visibleFor" value="ANALYST,MAINTAINER,DEVELOPER" />
       </TextField>
     </Tab>
