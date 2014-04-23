@@ -76,48 +76,66 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		FlexoObjectImpl.addActionForClass(CreateEditionScheme.actionType, FlexoConceptBehaviouralFacet.class);
 	}
 
-	public static enum CreateEditionSchemeChoice {
+	/*public static enum CreateEditionSchemeChoice {
 		BuiltInAction, ModelSlotSpecificBehaviour
-	}
+	}*/
 
 	private String flexoBehaviourName;
 	private String description;
 	private Class<? extends FlexoBehaviour> flexoBehaviourClass;
 
-	private final List<Class<? extends FlexoBehaviour>> builtInBehaviours;
-	public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
-	public ModelSlot modelSlot;
+	private final List<Class<? extends FlexoBehaviour>> behaviours;
+	//public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
+	//public ModelSlot modelSlot;
 
 	private FlexoBehaviour newFlexoBehaviour;
 
 	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		builtInBehaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
-		builtInBehaviours.add(org.openflexo.foundation.viewpoint.ActionScheme.class);
-		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
-		builtInBehaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
-		builtInBehaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
+		behaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
+		behaviours.add(org.openflexo.foundation.viewpoint.ActionScheme.class);
+		behaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
+		behaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
+		behaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
 		if (focusedObject != null && focusedObject instanceof VirtualModel) {
-			builtInBehaviours.add(org.openflexo.foundation.viewpoint.SynchronizationScheme.class);
+			behaviours.add(org.openflexo.foundation.viewpoint.SynchronizationScheme.class);
+			for(ModelSlot ms : ((VirtualModel)focusedObject).getModelSlots()){
+				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
+				for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
+					if(!behaviours.contains(behaviour)){
+						behaviours.add(behaviour);
+					}
+				}
+			}
+		}if(focusedObject != null && focusedObject instanceof FlexoConcept){
+			for(ModelSlot ms : focusedObject.getVirtualModel().getModelSlots()){
+				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
+				for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
+					if(!behaviours.contains(behaviour)){
+						behaviours.add(behaviour);
+					}
+				}
+			}
 		}
-		if (focusedObject.getVirtualModel() != null) {
+		
+		/*if (focusedObject.getVirtualModel() != null) {
 			if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
 				modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
 			}
-		}
+		}*/
 
 	}
 
-	public List<Class<? extends FlexoBehaviour>> getBuiltInBehaviours() {
-		return builtInBehaviours;
+	public List<Class<? extends FlexoBehaviour>> getBehaviours() {
+		return behaviours;
 	}
 
-	public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
+	/*public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
 		if (modelSlot != null && !(modelSlot instanceof VirtualModelModelSlot)) {
 			return modelSlot.getAvailableFlexoBehaviourTypes();
 		}
 		return null;
-	}
+	}*/
 
 	public FlexoConcept getFlexoConcept() {
 		if (getFocusedObject() != null) {
