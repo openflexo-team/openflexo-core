@@ -893,6 +893,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					grSpec = connectorGRElement.getChild("LineConnector");
 				}else if(connectorGRElement.getChild("CurvedPolylinConnector")!=null){
 					grSpec = connectorGRElement.getChild("CurvedPolylinConnector");
+				}else if(connectorGRElement.getChild("ArcConnector")!=null){
+					grSpec = connectorGRElement.getChild("ArcConnector");
 				}
 				if(connectorGRElement.getAttribute("startSymbol")!=null){
 					Attribute startSymbol = new Attribute("startSymbol",connectorGRElement.getAttributeValue("startSymbol"));
