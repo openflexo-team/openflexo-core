@@ -185,6 +185,13 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI);
 
 	/**
+	 * Return a new list of FlexoConcept, which are all concepts used in this VirtualModelInstance
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getUsedFlexoConcepts();
+
+	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the supplied FlexoConcept
 	 * 
 	 * @param flexoConcept
@@ -425,6 +432,21 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			return returned;
 		}
 
+		/**
+		 * Return a new list of FlexoConcept, which are all concepts used in this VirtualModelInstance
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getUsedFlexoConcepts() {
+			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
+			for (String s : flexoConceptInstances.keySet()) {
+				FlexoConcept c = getVirtualModel().getFlexoConcept(s);
+				returned.add(c);
+			}
+			return returned;
+		}
+
 		// TODO: refactor this
 		/*@Deprecated
 		public List<FlexoConceptInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
@@ -656,7 +678,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 		@Override
 		public VirtualModelInstance getVirtualModelInstance() {
 			return this;

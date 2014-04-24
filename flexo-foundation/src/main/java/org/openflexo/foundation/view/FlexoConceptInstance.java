@@ -172,18 +172,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
 			ActorReference<T> actorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
-			
+
 			if (actorReference != null) {
 				return actorReference.getModellingElement();
 			}
 			// Pragmatic attempt to fix "inheritance issue...."
-			else if (actorReference == null){
-				getParentActorReference(getFlexoConcept(),flexoRole);
+			else if (actorReference == null) {
+				getParentActorReference(getFlexoConcept(), flexoRole);
 			}
 			return null;
 		}
 
-		private <T> ActorReference<T> getParentActorReference(FlexoConcept flexoConcept,FlexoRole<T> flexoRole){
+		private <T> ActorReference<T> getParentActorReference(FlexoConcept flexoConcept, FlexoRole<T> flexoRole) {
 			ActorReference<T> actorReference;
 			for (FlexoConcept parentFlexoConcept : this.getFlexoConcept().getParentFlexoConcepts()) {
 				if (parentFlexoConcept != null) {
@@ -199,7 +199,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			return null;
 		}
-		
+
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> patternRole) {
 			setObjectForFlexoRole(object, patternRole);
