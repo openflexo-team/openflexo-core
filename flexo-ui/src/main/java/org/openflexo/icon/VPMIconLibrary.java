@@ -259,7 +259,7 @@ public class VPMIconLibrary extends IconLibrary {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificEditionScheme) object)
 						.getTechnologyAdapter());
 				if (tac != null) {
-					ImageIcon returned = tac.getIconForEditionAction((Class<? extends EditionAction<?, ?>>) object.getClass());
+					ImageIcon returned = tac.getIconForFlexoBehaviour((Class<? extends FlexoBehaviour>) object.getClass());
 					if (returned != null) {
 						return returned;
 					} else {

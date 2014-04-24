@@ -21,6 +21,7 @@ package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -31,14 +32,19 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.viewpoint.ActionScheme;
+import org.openflexo.foundation.viewpoint.CloningScheme;
+import org.openflexo.foundation.viewpoint.CreationScheme;
+import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
+import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -83,50 +89,66 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	private String flexoBehaviourName;
 	private String description;
 	private Class<? extends FlexoBehaviour> flexoBehaviourClass;
+	private final HashMap<Class<? extends FlexoBehaviour>,TechnologyAdapter> behaviourClassMap;
 
-	private final List<Class<? extends FlexoBehaviour>> behaviours;
-	//public CreateEditionSchemeChoice behaviourChoice = CreateEditionSchemeChoice.BuiltInAction;
-	//public ModelSlot modelSlot;
+	private List<Class<? extends FlexoBehaviour>> behaviours;
 
 	private FlexoBehaviour newFlexoBehaviour;
 
 	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		behaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
-		behaviours.add(org.openflexo.foundation.viewpoint.ActionScheme.class);
-		behaviours.add(org.openflexo.foundation.viewpoint.CloningScheme.class);
-		behaviours.add(org.openflexo.foundation.viewpoint.CreationScheme.class);
-		behaviours.add(org.openflexo.foundation.viewpoint.DeletionScheme.class);
-		if (focusedObject != null && focusedObject instanceof VirtualModel) {
-			behaviours.add(org.openflexo.foundation.viewpoint.SynchronizationScheme.class);
-			for(ModelSlot ms : ((VirtualModel)focusedObject).getModelSlots()){
-				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
-				for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
-					if(!behaviours.contains(behaviour)){
-						behaviours.add(behaviour);
-					}
-				}
-			}
-		}if(focusedObject != null && focusedObject instanceof FlexoConcept){
-			for(ModelSlot ms : focusedObject.getVirtualModel().getModelSlots()){
-				List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
-				for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
-					if(!behaviours.contains(behaviour)){
-						behaviours.add(behaviour);
-					}
+		
+		behaviourClassMap = new HashMap<Class<? extends FlexoBehaviour>,TechnologyAdapter>();
+		
+		if(focusedObject instanceof VirtualModel){
+			addVirtualModelFlexoBehaviours((VirtualModel)focusedObject);
+		}else if(focusedObject instanceof FlexoConcept){
+			addFlexoConceptFlexoBehaviours((FlexoConcept)focusedObject);
+		}
+	}
+	
+	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel){
+		behaviourClassMap.put(ActionScheme.class, virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class,virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(DeletionScheme.class, virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(SynchronizationScheme.class,virtualModel.getTechnologyAdapter());
+		for(ModelSlot<?> ms : virtualModel.getModelSlots()){
+			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
+			for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
+				if(!behaviourClassMap.containsKey(behaviour)){
+					behaviourClassMap.put(behaviour,ms.getTechnologyAdapter());
 				}
 			}
 		}
-		
-		/*if (focusedObject.getVirtualModel() != null) {
-			if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
-				modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
+	}
+	
+	private void addFlexoConceptFlexoBehaviours(FlexoConcept flexoConcept){
+		behaviourClassMap.put(ActionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class,flexoConcept.getVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CreationScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(DeletionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
+		for(ModelSlot<?> ms : flexoConcept.getVirtualModel().getModelSlots()){
+			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
+			for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
+				if(!behaviourClassMap.containsKey(behaviour)){
+					behaviourClassMap.put(behaviour,ms.getTechnologyAdapter());
+				}
 			}
-		}*/
-
+		}
+	}
+	
+	public TechnologyAdapter getBehaviourTechnologyAdapter(Class<? extends FlexoBehaviour> behaviourClass){
+		return behaviourClassMap.get(behaviourClass);
 	}
 
 	public List<Class<? extends FlexoBehaviour>> getBehaviours() {
+		if(behaviours==null){
+			behaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
+			for (Class<? extends FlexoBehaviour> mapKey : behaviourClassMap.keySet()) {
+				behaviours.add(mapKey);
+			}
+		}
 		return behaviours;
 	}
 
