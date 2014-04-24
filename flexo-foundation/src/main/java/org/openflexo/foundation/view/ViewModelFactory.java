@@ -19,6 +19,7 @@
  */
 package org.openflexo.foundation.view;
 
+import org.openflexo.foundation.DefaultFlexoModelFactory;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -35,7 +36,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends ModelFactory {
+public class ViewModelFactory extends DefaultFlexoModelFactory {
 
 	public ViewModelFactory(EditingContext editingContext, ViewResource viewResource) throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(View.class));

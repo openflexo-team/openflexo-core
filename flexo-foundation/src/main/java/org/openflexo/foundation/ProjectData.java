@@ -25,7 +25,6 @@ import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -204,7 +203,7 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 
 	}
 
-	public static class ProjectDataFactory extends ModelFactory {
+	public static class ProjectDataFactory extends DefaultFlexoModelFactory {
 
 		public ProjectDataFactory(EditingContext editingContext) throws ModelDefinitionException {
 			super(ModelContextLibrary.getModelContext(ProjectData.class));

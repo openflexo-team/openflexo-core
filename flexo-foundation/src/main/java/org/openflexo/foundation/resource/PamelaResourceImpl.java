@@ -15,6 +15,8 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
+import org.openflexo.foundation.FlexoModelFactory;
+import org.openflexo.foundation.FlexoModelFactory.ConcurrentDeserializationException;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
@@ -42,8 +44,8 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory> extends FlexoFileResourceImpl<RD> implements
-		PamelaResource<RD, F> {
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & FlexoModelFactory> extends
+		FlexoFileResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -89,9 +91,11 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			return resourceData;
 		}
 
-		/*if (getXMLSerializationService() == null) {
-			throw new FlexoException("XMLSerializationService not registered");
-		}*/
+		try {
+			getFactory().startDeserializing(this);
+		} catch (ConcurrentDeserializationException e) {
+			e.printStackTrace();
+		}
 
 		isLoading = true;
 		if (progress != null) {
@@ -152,7 +156,11 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				undoManager.removeFromIgnoreHandlers(ignoreHandler);
 				// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
 			}
+
+			getFactory().stopDeserializing(this);
+
 		}
+
 	}
 
 	/**
@@ -392,6 +400,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	/**
 	 * @return Returns the lastUniqueID.
 	 */
+	@Override
 	public long getLastID() {
 		if (lastUniqueIDHasBeenSet && lastID < 0) {
 			lastID = 0;
@@ -405,11 +414,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	@Override
 	public void setLastID(long lastUniqueID) {
-		System.out.println(">>>>>>>>>> setLastID with " + lastUniqueID);
 		if (lastUniqueID > lastID) {
 			lastID = lastUniqueID;
 			lastUniqueIDHasBeenSet = true;
-			System.out.println("Resource " + this + " lastID is now " + lastID);
+			logger.fine("Resource " + this + " lastID is now " + lastID);
 		}
 	}
 

@@ -1,13 +1,13 @@
 package org.openflexo.prefs;
 
+import org.openflexo.foundation.DefaultFlexoModelFactory;
 import org.openflexo.localization.converter.LanguageConverter;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.swing.converter.FlexoFontConverter;
 import org.openflexo.swing.converter.LookAndFeelConverter;
 
-public class FlexoPreferencesFactory extends ModelFactory {
+public class FlexoPreferencesFactory extends DefaultFlexoModelFactory {
 
 	public FlexoPreferencesFactory(ModelContext context) throws ModelDefinitionException {
 		super(context);

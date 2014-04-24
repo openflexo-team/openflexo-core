@@ -21,9 +21,13 @@ package org.openflexo.foundation.viewpoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
+import org.openflexo.foundation.FlexoModelFactory;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
 import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
@@ -84,7 +88,9 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class VirtualModelModelFactory extends FGEModelFactoryImpl {
+public class VirtualModelModelFactory extends FGEModelFactoryImpl implements FlexoModelFactory {
+
+	protected static final Logger logger = Logger.getLogger(VirtualModelModelFactory.class.getPackage().getName());
 
 	private VirtualModelResource virtualModelResource;
 
@@ -416,6 +422,36 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl {
 
 	public FetchRequestIterationAction newFetchRequestIterationAction() {
 		return newInstance(FetchRequestIterationAction.class);
+	}
+
+	private PamelaResource<?, ?> resourceBeeingDeserialized = null;
+
+	@Override
+	public synchronized void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException {
+		if (resourceBeeingDeserialized == null) {
+			resourceBeeingDeserialized = resource;
+		} else {
+			throw new ConcurrentDeserializationException(resource);
+		}
+	}
+
+	@Override
+	public synchronized void stopDeserializing(PamelaResource<?, ?> resource) {
+		if (resourceBeeingDeserialized == resource) {
+			resourceBeeingDeserialized = null;
+		}
+	}
+
+	@Override
+	public <I> void objectHasBeenDeserialized(I newlyCreatedObject, Class<I> implementedInterface) {
+		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
+		if (newlyCreatedObject instanceof FlexoObject) {
+			if (resourceBeeingDeserialized != null) {
+				resourceBeeingDeserialized.setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
+			} else {
+				logger.warning("Could not access resource beeing deserialized");
+			}
+		}
 	}
 
 }
