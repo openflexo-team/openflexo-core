@@ -115,8 +115,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
 			}
 		}
+		 getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 	}
-
+	
 	@Override
 	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter) {
 		performSuperRemover(RESOURCE_CENTERS, resourceCenter);
