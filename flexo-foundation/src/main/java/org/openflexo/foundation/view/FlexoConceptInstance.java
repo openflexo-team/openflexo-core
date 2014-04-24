@@ -265,7 +265,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getVirtualModelInstance() != null && flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
+			if (getVirtualModelInstance() != null && getVirtualModelInstance().getVirtualModel() != null && flexoConcept == null
+					&& StringUtils.isNotEmpty(flexoConceptURI)) {
 				flexoConcept = getVirtualModelInstance().getVirtualModel().getFlexoConcept(flexoConceptURI);
 				if (flexoConcept == null) {
 					System.out.println("Could not find FlexoConcept with uri=" + flexoConceptURI);
