@@ -137,7 +137,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 			// TODO compute closure and covering tree
 			objectsToBeCopied = returned;
 
-			System.out.println("DONE prepare copy");
+			// System.out.println("DONE prepare copy");
 
 		}
 
