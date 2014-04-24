@@ -290,7 +290,6 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 				List<Object> allObjects = ((PamelaResource<?, ?>) resource).getFactory().getEmbeddedObjects(resourceData,
 						EmbeddingType.CLOSURE);
 				for (Object temp : allObjects) {
-					System.out.println("> Cherchons pour " + temp);
 					if (temp instanceof FlexoObject) {
 						FlexoObject o = (FlexoObject) temp;
 						if (o.getFlexoID() == flexoID && o.getUserIdentifier().equals(userIdentifier)) {
