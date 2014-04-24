@@ -3,6 +3,7 @@ package org.openflexo.vpm.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.ActionScheme;
@@ -99,8 +100,12 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 			return VEIconLibrary.VIEW_ICON;
 		} else if (VirtualModel.class.isAssignableFrom(objectClass)) {
 			return VPMIconLibrary.VIRTUAL_MODEL_ICON;
+		} else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
+			return VPMIconLibrary.FLEXO_CONCEPT_ICON;
 		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
+			return VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(VEIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
 	}
