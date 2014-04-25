@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -53,6 +54,10 @@ public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends Inne
 		public WidgetType getWidget() {
 			return WidgetType.TECHNOLOGY_OBJECT;
 		}
-
+		
+		@Override
+		public List<ModelSlot> getAccessibleModelSlots(){
+			return  getVirtualModel().getModelSlots(ModelSlot.class);
+		}
 	}
 }

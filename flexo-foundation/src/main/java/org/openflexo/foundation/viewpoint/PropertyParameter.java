@@ -21,6 +21,7 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.DataBinding;
@@ -213,5 +214,10 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			return returned;
 		}
 
+		@SuppressWarnings("rawtypes")
+		@Override
+		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
+			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		}
 	}
 }
