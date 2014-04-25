@@ -125,6 +125,7 @@ public interface PrimitiveRole extends FlexoRole<Object> {
 		public ActorReference<Object> makeActorReference(Object object, FlexoConceptInstance fci) {
 			VirtualModelInstanceModelFactory factory = fci.getFactory();
 			PrimitiveActorReference returned = factory.newInstance(PrimitiveActorReference.class);
+			returned.setFlexoRole(this);
 			returned.setValue(object);
 			return returned;
 		}
