@@ -44,7 +44,7 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
 	
-	public List<MS> getAccessibleModelSlots();
+	public List<? extends ModelSlot> getAccessibleModelSlots();
 
 	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl implements
 			InnerModelSlotParameter<MS> {

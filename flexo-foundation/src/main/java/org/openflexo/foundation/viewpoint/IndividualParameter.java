@@ -21,6 +21,7 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.DataBinding;
@@ -30,6 +31,7 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -212,5 +214,10 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 			return null;
 		}
 
+		@SuppressWarnings("rawtypes")
+		@Override
+		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
+			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		}
 	}
 }

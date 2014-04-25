@@ -107,6 +107,12 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		public Type getType() {
 			return String.class;
 		}
+		
+		@SuppressWarnings("rawtypes")
+		@Override
+		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
+			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		}
 
 		@Override
 		public WidgetType getWidget() {
