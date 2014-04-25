@@ -245,7 +245,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	protected void switchToEmptyContent() {
-		//logger.info("switchToEmptyContent()");
+		// logger.info("switchToEmptyContent()");
 		currentInspectedObject = null;
 		currentInspector = null;
 		setChanged();
@@ -253,7 +253,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private void switchToMultipleSelection() {
-		//logger.info("switchToMultipleSelection()");
+		// logger.info("switchToMultipleSelection()");
 		currentInspectedObject = null;
 		currentInspector = null;
 		setChanged();
