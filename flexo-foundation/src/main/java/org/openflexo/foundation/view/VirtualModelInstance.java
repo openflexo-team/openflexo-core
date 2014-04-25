@@ -44,6 +44,7 @@ import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResourceImpl;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -200,6 +201,16 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept);
 
 	public boolean hasNature(VirtualModelInstanceNature nature);
+
+	/**
+	 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
+	 * This means that each {@link FlexoConceptInstance} is checked for any of its roles to see if the reference is the supplied object
+	 * 
+	 * @param object
+	 *            : the object to lookup
+	 * @return
+	 */
+	public ObjectLookupResult lookup(Object object);
 
 	public static abstract class VirtualModelInstanceImpl extends FlexoConceptInstanceImpl implements VirtualModelInstance {
 
@@ -684,5 +695,36 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			return this;
 		}
 
+		/**
+		 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
+		 * This means that each {@link FlexoConceptInstance} is checked for any of its roles to see if the reference is the supplied object
+		 * 
+		 * @param object
+		 *            : the object to lookup
+		 * @return
+		 */
+		@Override
+		public ObjectLookupResult lookup(Object object) {
+			// TODO: PERFS !!!
+			// @brutal mode
+			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
+				for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoRoles()) {
+					if (flexoConceptInstance.getFlexoActor(fr) == object) {
+						ObjectLookupResult answer = new ObjectLookupResult();
+						answer.flexoConceptInstance = flexoConceptInstance;
+						answer.role = fr;
+						return answer;
+					}
+				}
+			}
+			return null;
+		}
+
 	}
+
+	public class ObjectLookupResult {
+		public FlexoConceptInstance flexoConceptInstance;
+		public FlexoRole role;
+	}
+
 }
