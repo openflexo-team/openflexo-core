@@ -222,8 +222,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> void setObjectForFlexoRole(T object, FlexoRole<T> flexoRole) {
+
+			System.out.println(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
+					+ getFlexoActor(flexoRole));
+
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>> For patternRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
+				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
+						+ getFlexoActor(flexoRole));
 			}
 			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
@@ -240,6 +245,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				if (object != null) {
 					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
 					addToActors(actorReference);
+
+					System.out.println("Hop, je rajoute bien " + actorReference);
+
 				} else {
 					ActorReference<T> oldActorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
 					removeFromActors(oldActorReference);
@@ -359,6 +367,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void addToActors(ActorReference<?> actorReference) {
+
+			if (actorReference == null) {
+				System.out.println("Tiens, l'actor reference est null !!!");
+				System.out.println("On regarde ???");
+			}
 
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not register ActorReference with null FlexoRole: " + actorReference);

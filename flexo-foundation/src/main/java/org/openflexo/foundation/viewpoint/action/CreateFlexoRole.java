@@ -126,6 +126,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
+		logger.info("modelSlot = " + modelSlot);
 
 		if (flexoRoleClass != null) {
 			if (modelSlot != null) {
@@ -137,11 +138,13 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				if (isFlexoConceptInstance()) {
 					((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
-			} else if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
+			}
+			if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 				newFlexoRole.setModelSlot(getFocusedObject().getVirtualModel().getReflexiveModelSlot());
 				((PrimitiveRole) newFlexoRole).setPrimitiveType(primitiveType);
+				logger.info("Created " + newFlexoRole + " with " + primitiveType);
 			}
 
 			if (newFlexoRole != null) {

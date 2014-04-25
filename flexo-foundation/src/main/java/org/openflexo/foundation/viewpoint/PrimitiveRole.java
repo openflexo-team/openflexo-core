@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.view.PrimitiveActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
@@ -120,9 +122,11 @@ public interface PrimitiveRole extends FlexoRole<Object> {
 		}
 
 		@Override
-		public ActorReference<Object> makeActorReference(Object object, FlexoConceptInstance epi) {
-			logger.warning("Not implemented");
-			return null;
+		public ActorReference<Object> makeActorReference(Object object, FlexoConceptInstance fci) {
+			VirtualModelInstanceModelFactory factory = fci.getFactory();
+			PrimitiveActorReference returned = factory.newInstance(PrimitiveActorReference.class);
+			returned.setValue(object);
+			return returned;
 		}
 
 	}
