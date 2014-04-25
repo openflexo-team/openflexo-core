@@ -302,8 +302,7 @@ public class FileMenu extends FlexoMenu {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 
-			Thread.dumpStack();
-			System.out.println("SaveProjectAction");
+			// System.out.println("SaveProjectAction");
 
 			if (getController() == null || getController().getProject() == null) {
 				return;
