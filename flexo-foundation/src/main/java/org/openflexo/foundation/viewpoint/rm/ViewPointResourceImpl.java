@@ -769,8 +769,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
 		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
 		
-		System.out.println(document.getRootElement().getAttributeValue("name"));
-		
 		for(Element fc : fcElements){
 			if(fc.getAttribute("parentEditionPattern")!=null){
 				Element parentEp = new Element("ParentFlexoConcept");
