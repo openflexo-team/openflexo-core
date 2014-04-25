@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.view.FlexoConceptInstance;
@@ -133,6 +134,11 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 				return returned;
 			}
 			return null;
+		}
+		
+		@Override
+		public List<VirtualModelModelSlot> getAccessibleModelSlots(){
+			return getVirtualModel().getModelSlots(VirtualModelModelSlot.class);
 		}
 
 	}

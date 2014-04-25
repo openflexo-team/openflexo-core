@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import java.util.List;
+
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -41,6 +43,8 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
+	
+	public List<MS> getAccessibleModelSlots();
 
 	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl implements
 			InnerModelSlotParameter<MS> {
