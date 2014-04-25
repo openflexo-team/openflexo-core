@@ -31,6 +31,7 @@ import org.openflexo.fge.Drawing;
 import org.openflexo.fge.Drawing.DrawingTreeNode;
 import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.FGEUtils;
+import org.openflexo.fge.control.MouseClickControlAction;
 import org.openflexo.fge.control.MouseControlContext;
 import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
@@ -95,6 +96,37 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		super.setSelectedObjects(someSelectedObjects);
 	}
 
+	/**
+	 * Return the {@link FlexoObject} beeing represented through the supplied {@link DrawingTreeNode}.<br>
+	 * This hook allows to implement a disalignment between the representation and the represented object<br>
+	 * To do so, please override this method.<br>
+	 * 
+	 * Default representation just return the drawable associated with supplied {@link DrawingTreeNode}
+	 * 
+	 * @param node
+	 * @return
+	 */
+	protected FlexoObject getDrawableForDrawingTreeNode(DrawingTreeNode<?, ?> node) {
+		if (node.getDrawable() instanceof FlexoObject) {
+			return (FlexoObject) node.getDrawable();
+		}
+		return null;
+	}
+
+	/**
+	 * Return the {@link FlexoObject} which is used as drawable in DrawingTreeNode<br>
+	 * This hook allows to implement a disalignment between the representation and the represented object<br>
+	 * To do so, please override this method.<br>
+	 * 
+	 * Default representation just return supplied object
+	 * 
+	 * @param object
+	 * @return
+	 */
+	protected FlexoObject getRepresentedFlexoObject(FlexoObject object) {
+		return object;
+	}
+
 	@Override
 	public void addToSelectedObjects(DrawingTreeNode<?, ?> anObject) {
 		// logger.info("_selectionManager="+_selectionManager);
@@ -108,9 +140,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		}
 		super.addToSelectedObjects(anObject);
 		if (_selectionManager != null) {
-			if (anObject != null && anObject.getDrawable() instanceof FlexoObject) {
-				// logger.info("Je rajoute "+anObject.getDrawable()+" dans le SM");
-				_selectionManager.addToSelected((FlexoObject) anObject.getDrawable());
+			FlexoObject flexoObject = getDrawableForDrawingTreeNode(anObject);
+			if (flexoObject != null) {
+				_selectionManager.addToSelected(flexoObject);
 			}
 		}
 	}
@@ -126,8 +158,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		}
 		super.removeFromSelectedObjects(anObject);
 		if (_selectionManager != null) {
-			if (anObject.getDrawable() instanceof FlexoObject) {
-				_selectionManager.removeFromSelected((FlexoObject) anObject.getDrawable());
+			FlexoObject flexoObject = getDrawableForDrawingTreeNode(anObject);
+			if (flexoObject != null) {
+				_selectionManager.removeFromSelected(flexoObject);
 			}
 		}
 	}
@@ -153,7 +186,10 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		}
 
 		public ShowContextualMenuControl(EditingContext editingContext, boolean controlDown) {
-			super("Show contextual menu", MouseButton.RIGHT, 1, new MouseClickControlActionImpl<SelectionManagingDianaEditor<?>>() {
+
+			super("Show contextual menu", MouseButton.RIGHT, 1, null, false, controlDown, false, false, editingContext);
+
+			MouseClickControlAction<SelectionManagingDianaEditor<?>> action = new MouseClickControlActionImpl<SelectionManagingDianaEditor<?>>() {
 
 				@Override
 				public boolean handleClick(DrawingTreeNode<?, ?> node, SelectionManagingDianaEditor<?> controller,
@@ -165,7 +201,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 					controller.setLastClickedPoint(
 							node.convertLocalViewCoordinatesToRemoteNormalizedPoint(newPoint, node, controller.getScale()), node);
 
-					if (!(node.getDrawable() instanceof FlexoObject)) {
+					if (controller.getDrawableForDrawingTreeNode(node) == null) {
 						return false;
 					}
 					if (!(controller instanceof SelectionManagingDianaEditor)) {
@@ -173,7 +209,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 								+ " does not implement SelectionManagingDianaEditor");
 						return false;
 					}
-					FlexoObject o = (FlexoObject) node.getDrawable();
+					FlexoObject o = controller.getDrawableForDrawingTreeNode(node);
 					SelectionManager selectionManager = ((SelectionManagingDianaEditor) controller).getSelectionManager();
 					if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 						if (!selectionManager.selectionContains(o)) {
@@ -198,9 +234,11 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 					selectionManager.getContextualMenuManager().showPopupMenuForObject(o, (Component) view, newPoint);
 					return true;
 				}
-			}, false, controlDown, false, false, editingContext);
-		}
+			};
 
+			setControlAction(action);
+
+		}
 	}
 
 	@Override
@@ -221,15 +259,15 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	@Override
 	public void fireObjectDeselected(FlexoObject object) {
-		if (mayRepresent(object)) {
-			super.removeFromSelectedObjects(getDrawing().getDrawingTreeNode(object));
+		if (mayRepresent(getRepresentedFlexoObject(object))) {
+			super.removeFromSelectedObjects(getDrawing().getDrawingTreeNode(getRepresentedFlexoObject(object)));
 		}
 	}
 
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		if (mayRepresent(object)) {
-			super.addToSelectedObjects(getDrawing().getDrawingTreeNode(object));
+		if (mayRepresent(getRepresentedFlexoObject(object))) {
+			super.addToSelectedObjects(getDrawing().getDrawingTreeNode(getRepresentedFlexoObject(object)));
 		}
 	}
 
@@ -245,8 +283,8 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		if (_selectionManager instanceof MouseSelectionManager) {
 			((MouseSelectionManager) _selectionManager).setLastClickedPoint(new Point((int) unnormalizedPoint.getX(),
 					(int) unnormalizedPoint.getY()));
-			if (node.getDrawable() instanceof FlexoObject) {
-				((MouseSelectionManager) _selectionManager).setLastSelectedObject((FlexoObject) node.getDrawable());
+			if (getDrawableForDrawingTreeNode(node) != null) {
+				((MouseSelectionManager) _selectionManager).setLastSelectedObject(getDrawableForDrawingTreeNode(node));
 			}
 		}
 		// SGU: Following code is used to force request focus when a click has been performed
