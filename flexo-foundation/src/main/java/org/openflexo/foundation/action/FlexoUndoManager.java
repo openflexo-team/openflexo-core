@@ -95,10 +95,8 @@ public class FlexoUndoManager extends UndoManager {
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void actionHasBeenPerformed(A action,
 			boolean success) {
 		if (success) {
-			System.out.println(">>>>>>>>>>>>>>>>>>> OK, l'action s'est bien passe: " + action);
 			hasSuccessfullyDone(action);
 		} else {
-			System.out.println(">>>>>>>>>>>>>>>>>>> L'action ne s'est pas bien passe: " + action);
 			compensateFailedAction(action);
 		}
 	}
@@ -147,12 +145,14 @@ public class FlexoUndoManager extends UndoManager {
 	 *            : the FlexoAction that will be executed
 	 */
 	private void willDo(FlexoAction<?, ?, ?> action) {
-		if (action.getCompoundEdit() != null) {
-			// CompoundEdit has already been initialized
-		} else {
-			actionBeeingCurrentlyExecuted = action;
-			FlexoActionCompoundEdit compoundEdit = startRecording(action.getLocalizedName());
-			action.setCompoundEdit(compoundEdit);
+		if (!action.isEmbedded()) {
+			if (action.getCompoundEdit() != null) {
+				// CompoundEdit has already been initialized
+			} else {
+				actionBeeingCurrentlyExecuted = action;
+				FlexoActionCompoundEdit compoundEdit = startRecording(action.getLocalizedName());
+				action.setCompoundEdit(compoundEdit);
+			}
 		}
 	}
 
@@ -163,9 +163,11 @@ public class FlexoUndoManager extends UndoManager {
 	 *            : the FlexoAction that has just been successfully executed
 	 */
 	private void hasSuccessfullyDone(FlexoAction<?, ?, ?> action) {
-		stopRecording(getCurrentEdition());
-		actionBeeingCurrentlyExecuted = null;
-		getPropertyChangeSupport().firePropertyChange(ACTION_HISTORY, null, action);
+		if (!action.isEmbedded()) {
+			stopRecording(getCurrentEdition());
+			actionBeeingCurrentlyExecuted = null;
+			getPropertyChangeSupport().firePropertyChange(ACTION_HISTORY, null, action);
+		}
 	}
 
 	/**
@@ -175,12 +177,14 @@ public class FlexoUndoManager extends UndoManager {
 	 *            : the FlexoAction that has just been executed but returned with failure status
 	 */
 	private void compensateFailedAction(FlexoAction<?, ?, ?> action) {
-		CompoundEdit currentEdition = getCurrentEdition();
-		stopRecording(currentEdition);
-		actionBeeingCurrentlyExecuted = null;
-		if (canUndo()) {
-			undo();
-			currentEdition.die();
+		if (!action.isEmbedded()) {
+			CompoundEdit currentEdition = getCurrentEdition();
+			stopRecording(currentEdition);
+			actionBeeingCurrentlyExecuted = null;
+			if (canUndo()) {
+				undo();
+				currentEdition.die();
+			}
 		}
 	}
 
