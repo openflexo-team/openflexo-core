@@ -272,6 +272,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (this.flexoConcept != flexoConcept) {
 				FlexoConcept oldFlexoConcept = this.flexoConcept;
 				this.flexoConcept = flexoConcept;
+				if (getVirtualModelInstance() != null) {
+					getVirtualModelInstance().flexoConceptInstanceChangedFlexoConcept(this, oldFlexoConcept, flexoConcept);
+				}
 				getPropertyChangeSupport().firePropertyChange("FlexoConcept", oldFlexoConcept, flexoConcept);
 			}
 		}
@@ -537,11 +540,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 								this) {
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
-								System.out.println(" bindingValueChanged() detected for string representation of "
+								/*System.out.println(" bindingValueChanged() detected for string representation of "
 										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getInspector().getRenderer()
-										+ " with newValue=" + newValue + " source=" + source);
+										+ " with newValue=" + newValue + " source=" + source);*/
 								if (!isDeleted) {
-									System.out.println("OK, le rendu du FlexoConceptInstance a change");
+									// We have here detected that the string representation of this concept instance has changed
 									getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
 								}
 							}

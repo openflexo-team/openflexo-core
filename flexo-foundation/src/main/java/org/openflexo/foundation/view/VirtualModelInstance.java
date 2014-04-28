@@ -136,6 +136,15 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@Remover(FLEXO_CONCEPT_INSTANCES_KEY)
 	public void removeFromFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
+	/**
+	 * Called when supplied concept instance changed of FlexoConcept (mutation scheme)
+	 * 
+	 * @param fci
+	 * @param oldFlexoConcept
+	 * @param newFlexoConcept
+	 */
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
+
 	public void synchronize(FlexoEditor editor);
 
 	public boolean isSynchronizable();
@@ -357,6 +366,35 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			returned.setFlexoConcept(concept);
 			addToFlexoConceptInstances(returned);
 			return returned;
+		}
+
+		/**
+		 * Called when supplied concept instance changed of FlexoConcept (mutation scheme)
+		 * 
+		 * @param fci
+		 * @param oldFlexoConcept
+		 * @param newFlexoConcept
+		 */
+		@Override
+		public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
+				FlexoConcept newFlexoConcept) {
+			Map<Long, FlexoConceptInstance> hash = null;
+
+			if (oldFlexoConcept != null) {
+				hash = flexoConceptInstances.get(oldFlexoConcept.getURI());
+				if (hash != null) {
+					hash.remove(fci.getFlexoID());
+				}
+			}
+			if (newFlexoConcept != null) {
+				hash = flexoConceptInstances.get(newFlexoConcept.getURI());
+				if (hash == null) {
+					hash = new Hashtable<Long, FlexoConceptInstance>();
+					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+				}
+				hash.put(fci.getFlexoID(), fci);
+			}
+			System.out.println("OK, on a essaye de remettre bien les map");
 		}
 
 		/**
