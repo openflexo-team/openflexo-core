@@ -1,5 +1,6 @@
 package org.openflexo.foundation.view;
 
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.Getter;
@@ -73,6 +74,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	public ModelSlotInstance<?, ?> getModelSlotInstance();
 
+	public Class<? extends T> getActorClass();
+
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
 		private FlexoRole<T> flexoRole;
 		private String flexoRoleName;
@@ -116,8 +119,6 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		@Override
 		public FlexoRole<T> getFlexoRole() {
 			if (flexoRole == null && epi != null && StringUtils.isNotEmpty(flexoRoleName)) {
-				System.out.println("epi=" + epi);
-				System.out.println("epi.getFlexoConcept()=" + epi.getFlexoConcept());
 				flexoRole = (FlexoRole<T>) epi.getFlexoConcept().getFlexoRole(flexoRoleName);
 			}
 			return flexoRole;
@@ -155,6 +156,11 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 				return getVirtualModelInstance().getModelSlotInstance(getFlexoRole().getModelSlot());
 			}
 			return null;
+		}
+
+		@Override
+		public Class<? extends T> getActorClass() {
+			return (Class<? extends T>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), ActorReference.class, 0));
 		}
 
 	}

@@ -27,12 +27,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingFactory;
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.antar.binding.BindingValueChangeListener;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
+import org.openflexo.antar.binding.SettableBindingEvaluationContext;
 import org.openflexo.antar.expr.NotSettableContextException;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -70,7 +71,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
-public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, BindingEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, SettableBindingEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<emtpy>";
@@ -223,8 +224,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public <T> void setObjectForFlexoRole(T object, FlexoRole<T> flexoRole) {
 
-			System.out.println(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
-					+ getFlexoActor(flexoRole));
+			System.out.println(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set (as " + object.getClass() + ") " + object
+					+ " was " + getFlexoActor(flexoRole));
 
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
@@ -242,20 +243,28 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					((FlexoProjectObject) object).registerFlexoConceptReference(this);
 				}
 
-				if (object != null) {
+				// We manage here the ActorReference according to old and new objects
+
+				if (oldObject != null) {
+					ActorReference<T> actorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
+					if (object == null) {
+						removeFromActors(actorReference);
+					} else {
+						actorReference.setModellingElement(object);
+					}
+				} else /*if (object != null)*/{
+					// We are sure object is not null, becase oldObject is null and object != oldObject
 					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
 					addToActors(actorReference);
-
-					System.out.println("Hop, je rajoute bien " + actorReference);
-
-				} else {
-					ActorReference<T> oldActorReference = (ActorReference<T>) actors.get(flexoRole.getRoleName());
-					removeFromActors(oldActorReference);
 				}
+
 				setChanged();
 				notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
 				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
+
+				System.out.println("Fire property change " + flexoRole.getRoleName() + " from " + oldObject + " to " + object);
 				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
+				System.out.println("DONE Fire property change " + flexoRole.getRoleName() + " from " + oldObject + " to " + object);
 			}
 		}
 
@@ -482,8 +491,21 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (pr != null) {
 				return getFlexoActor(pr);
 			}
+			if (variable.getVariableName().equals("instance")) {
+				return FlexoConceptInstanceImpl.this;
+			}
 			logger.warning("Unexpected " + variable);
 			return null;
+		}
+
+		@Override
+		public void setValue(Object value, BindingVariable variable) {
+			FlexoRole pr = getFlexoConcept().getFlexoRole(variable.getVariableName());
+			if (pr != null) {
+				setFlexoActor(value, pr);
+			} else {
+				logger.warning("Unexpected " + variable);
+			}
 		}
 
 		// private boolean deleted = false;
@@ -668,21 +690,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					&& getFlexoConcept().getInspector().getRenderer().isValid();
 		}
 
+		private BindingValueChangeListener<String> rendererChangeListener = null;
+
 		@Override
 		public String getStringRepresentation() {
 			if (hasValidRenderer()) {
 				try {
 					// System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer() + " for " + this);
-					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(new BindingEvaluationContext() {
-						@Override
-						public Object getValue(BindingVariable variable) {
-							if (variable.getVariableName().equals("instance")) {
-								return FlexoConceptInstanceImpl.this;
+					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
+					if (rendererChangeListener == null) {
+						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getInspector().getRenderer(),
+								this) {
+							@Override
+							public void bindingValueChanged(Object source, String newValue) {
+								System.out.println(" bindingValueChanged() detected for string representation of "
+										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getInspector().getRenderer()
+										+ " with newValue=" + newValue + " source=" + source);
+								if (!isDeleted) {
+									System.out.println("OK, le rendu du FlexoConceptInstance a change");
+									getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
+								}
 							}
-							logger.warning("Unexpected variable " + variable);
-							return null;
-						}
-					});
+						};
+					}
 					if (obj instanceof String) {
 						return (String) obj;
 					} else {
@@ -691,6 +721,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						} else
 							return EMPTY_STRING;
 					}
+
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -698,6 +729,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
+
 			}
 			return extendedStringRepresentation();
 		}

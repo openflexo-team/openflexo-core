@@ -87,7 +87,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public void setModelSlot(ModelSlot<?> modelSlot);
 
 	@DeserializationFinalizer
-	public void finalizePatternRoleDeserialization();
+	public void finalizeFlexoRoleDeserialization();
 
 	public Type getType();
 
@@ -184,7 +184,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		public abstract String getPreciseType();
 
 		@Override
-		public void finalizePatternRoleDeserialization() {
+		public void finalizeFlexoRoleDeserialization() {
 		}
 
 		@Override

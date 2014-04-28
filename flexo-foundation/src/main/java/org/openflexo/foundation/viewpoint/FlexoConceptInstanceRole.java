@@ -128,8 +128,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public void finalizePatternRoleDeserialization() {
-			super.finalizePatternRoleDeserialization();
+		public void finalizeFlexoRoleDeserialization() {
+			super.finalizeFlexoRoleDeserialization();
 			if (flexoConceptType == null && _flexoConceptTypeURI != null && getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(_flexoConceptTypeURI);
 			}

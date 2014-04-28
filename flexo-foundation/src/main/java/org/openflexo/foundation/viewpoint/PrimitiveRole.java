@@ -21,7 +21,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
 @XMLElement
-public interface PrimitiveRole extends FlexoRole<Object> {
+public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 	public static enum PrimitiveType {
 		Boolean, String, LocalizedString, Integer, Float
@@ -37,7 +37,7 @@ public interface PrimitiveRole extends FlexoRole<Object> {
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(PrimitiveType primitiveType);
 
-	public static abstract class PrimitiveRoleImpl extends FlexoRoleImpl<Object> implements PrimitiveRole {
+	public static abstract class PrimitiveRoleImpl<T> extends FlexoRoleImpl<T> implements PrimitiveRole<T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(PrimitiveRole.class.getPackage().getName());
 
@@ -122,11 +122,11 @@ public interface PrimitiveRole extends FlexoRole<Object> {
 		}
 
 		@Override
-		public ActorReference<Object> makeActorReference(Object object, FlexoConceptInstance fci) {
+		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
 			VirtualModelInstanceModelFactory factory = fci.getFactory();
-			PrimitiveActorReference returned = factory.newInstance(PrimitiveActorReference.class);
+			PrimitiveActorReference<T> returned = factory.newInstance(PrimitiveActorReference.class);
 			returned.setFlexoRole(this);
-			returned.setValue(object);
+			returned.setModellingElement(object);
 			return returned;
 		}
 

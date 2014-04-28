@@ -381,7 +381,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
 				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
 					if (!availableFlexoRoleTypes.contains(patternRoleDeclaration.flexoRoleClass())) {
-						availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
+						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) patternRoleDeclaration.flexoRoleClass());
 					}
 				}
 			}
@@ -457,7 +457,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			}
 		}
 
-		
 		@Override
 		public List<Class<? extends EditionAction<?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (availableFetchRequestActionTypes == null) {

@@ -665,7 +665,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 				es.finalizeEditionSchemeDeserialization();
 			}
 			for (FlexoRole pr : getFlexoRoles()) {
-				pr.finalizePatternRoleDeserialization();
+				pr.finalizeFlexoRoleDeserialization();
 			}
 			updateBindingModel();
 		}

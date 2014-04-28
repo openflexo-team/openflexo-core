@@ -83,7 +83,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private String roleName;
 	private String description;
 	private ModelSlot<?> modelSlot;
-	private Class<? extends FlexoRole<?>> flexoRoleClass;
+	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
 	private PrimitiveType primitiveType = PrimitiveType.String;
@@ -274,11 +274,11 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		fireChanges(wasValid);
 	}
 
-	public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
+	public Class<? extends FlexoRole> getFlexoRoleClass() {
 		return flexoRoleClass;
 	}
 
-	public void setFlexoRoleClass(Class<? extends FlexoRole<?>> flexoRoleClass) {
+	public void setFlexoRoleClass(Class<? extends FlexoRole> flexoRoleClass) {
 		boolean wasValid = isValid();
 		this.flexoRoleClass = flexoRoleClass;
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);

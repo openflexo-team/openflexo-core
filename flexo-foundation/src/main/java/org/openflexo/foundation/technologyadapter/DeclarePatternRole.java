@@ -15,6 +15,6 @@ public @interface DeclarePatternRole {
 
 	public String FML();
 
-	public Class<? extends FlexoRole<?>> flexoRoleClass();
+	public Class<? extends FlexoRole> flexoRoleClass();
 
 }
