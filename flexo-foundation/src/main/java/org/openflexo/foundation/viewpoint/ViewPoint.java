@@ -443,8 +443,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(this);
 			virtualModels.add(virtualModel);
-			setChanged();
-			notifyObservers(new VirtualModelCreated(virtualModel));
+			//setChanged();
+			//notifyObservers(new VirtualModelCreated(virtualModel));
 		}
 
 		@Override
@@ -452,8 +452,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(null);
 			virtualModels.remove(virtualModel);
-			setChanged();
-			notifyObservers(new VirtualModelDeleted(virtualModel));
+			//setChanged();
+			//notifyObservers(new VirtualModelDeleted(virtualModel));
 		}
 
 		/**
