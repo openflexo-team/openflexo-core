@@ -237,6 +237,7 @@ public class MainPaneTopBar extends JMenuBar {
 
 	private void insertPerspective(final FlexoPerspective p) {
 		final JButton button = new BarButton(p.getActiveIcon());
+		button.setToolTipText(FlexoLocalization.localizedTooltipForKey(p.getName(), button));
 		if (forcePreferredSize) {
 			int size = Math.max(button.getIcon().getIconWidth() + 8, button.getIcon().getIconHeight() + 4);
 			button.setPreferredSize(new Dimension(size, size));
