@@ -186,6 +186,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
+			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		} else {
 			throw new InvalidParameterException("flexoBehaviourClass is null");
