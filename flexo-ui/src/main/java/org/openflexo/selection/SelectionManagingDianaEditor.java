@@ -194,6 +194,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 				@Override
 				public boolean handleClick(DrawingTreeNode<?, ?> node, SelectionManagingDianaEditor<?> controller,
 						MouseControlContext context) {
+
 					JFGEView<?, ?> view = controller.getDrawingView().viewForNode(node);
 
 					Point newPoint = getPointInView(node, controller, context);
@@ -210,6 +211,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 						return false;
 					}
 					FlexoObject o = controller.getDrawableForDrawingTreeNode(node);
+
 					SelectionManager selectionManager = ((SelectionManagingDianaEditor) controller).getSelectionManager();
 					if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
 						if (!selectionManager.selectionContains(o)) {
