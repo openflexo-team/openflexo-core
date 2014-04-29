@@ -95,5 +95,12 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 				return (Class<? extends T>) Object.class;
 			}
 		}
+
+		@Override
+		public String toString() {
+			return "PrimitiveActorReference [" + getRoleName() + "] " + Integer.toHexString(hashCode()) + " encodes "
+					+ getModellingElement() + "[type: " + (getFlexoRole() != null ? getFlexoRole().getPrimitiveType() : "null") + "]";
+		}
+
 	}
 }

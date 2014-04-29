@@ -19,7 +19,10 @@
  */
 package org.openflexo.foundation;
 
+import java.awt.Event;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -58,14 +61,14 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private Clipboard clipboard;
 
-	private final Map<Class<?>, PasteHandler<? extends FlexoObject>> pasteHandlers;
+	private final Map<Class<?>, List<PasteHandler<? extends FlexoObject>>> pasteHandlers;
 
 	public static FlexoEditingContext createInstance() {
 		return new FlexoEditingContext();
 	}
 
 	private FlexoEditingContext() {
-		pasteHandlers = new HashMap<Class<?>, PasteHandler<? extends FlexoObject>>();
+		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
 		registerPasteHandler(FlexoObject.class, new DefaultPasteHandler());
 	}
 
@@ -128,14 +131,60 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	}
 
 	public void registerPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
-		pasteHandlers.put(targetClass, pasteHandler);
+		System.out.println("%%%%%%%%% registerPasteHandler " + pasteHandler + " for " + targetClass);
+		List<PasteHandler<?>> handlersList = pasteHandlers.get(targetClass);
+		if (handlersList == null) {
+			handlersList = new ArrayList<PasteHandler<?>>();
+			pasteHandlers.put(targetClass, handlersList);
+		}
+		if (!handlersList.contains(pasteHandler)) {
+			handlersList.add(pasteHandler);
+		}
 	}
 
 	public void unregisterPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
-		pasteHandlers.remove(targetClass);
+		System.out.println("%%%%%%%%% unregisterPasteHandler " + pasteHandler);
+		for (Class c : pasteHandlers.keySet()) {
+			List<PasteHandler<?>> handlersList = pasteHandlers.get(c);
+			if (handlersList != null && handlersList.contains(pasteHandler)) {
+				handlersList.remove(pasteHandler);
+				if (handlersList.isEmpty()) {
+					pasteHandlers.remove(targetClass);
+				}
+			}
+		}
 	}
 
-	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject) {
-		return TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
+	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject, List<FlexoObject> globalSelection, Event event) {
+
+		/*System.out.println("On me demande le PasteHandler pour " + focusedObject);
+		System.out.println("J'ai ca:");
+		for (Class c : pasteHandlers.keySet()) {
+			System.out.println("* " + c);
+			List<PasteHandler<?>> hList = pasteHandlers.get(c);
+			for (PasteHandler<?> h : hList) {
+				System.out.println("> " + h);
+			}
+		}*/
+
+		for (List<PasteHandler<?>> hList : pasteHandlers.values()) {
+			for (PasteHandler<?> h : hList) {
+				if (h.declarePolymorphicPastingContexts()) {
+					Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, clipboard, event);
+					if (potentialPastingContext != null) {
+						// First one matches is returned
+						// TODO: handle multiples
+						System.out.println("Found PasteHandler " + h + " for " + focusedObject);
+						return h;
+					}
+				}
+			}
+		}
+		List<PasteHandler<?>> returned = TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
+		if (returned.size() > 0) {
+			System.out.println("Found default PasteHandler " + returned.get(0) + " for " + focusedObject);
+			return returned.get(0);
+		}
+		return null;
 	}
 }

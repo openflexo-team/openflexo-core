@@ -19,11 +19,14 @@
  */
 package org.openflexo.vpm.controller;
 
+import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
+import org.openflexo.foundation.action.PasteAction.PastingContext;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.model.factory.Clipboard;
@@ -42,17 +45,23 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public FlexoConcept retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard) {
+	public boolean declarePolymorphicPastingContexts() {
+		return false;
+	}
+
+	@Override
+	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+			Clipboard clipboard, Event event) {
 
 		if (!(focusedObject instanceof FlexoConceptObject)) {
 			return null;
 		}
 
-		return ((FlexoConceptObject) focusedObject).getFlexoConcept();
+		return new DefaultPastingContext<FlexoConcept>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, FlexoConcept pastingContext) {
+	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
 
 		// Translating names
 		if (clipboard.isSingleObject()) {
@@ -66,6 +75,11 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+		// Nothing to do
 	}
 
 	private String translateName(FlexoConceptObject object) {

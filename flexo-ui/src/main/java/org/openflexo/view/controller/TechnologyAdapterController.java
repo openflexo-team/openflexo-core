@@ -29,7 +29,9 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNature;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -121,6 +123,10 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	public void initialize() {
 
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return getTechnologyAdapter().getTechnologyAdapterService().getServiceManager();
 	}
 
 	/**

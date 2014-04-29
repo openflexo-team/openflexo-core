@@ -49,6 +49,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	public void initializeActions(ControllerActionInitializer actionInitializer) {
 		// Add paste handlers
 		actionInitializer.getEditingContext().registerPasteHandler(FlexoConceptObject.class, new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(VirtualModelInstance.class, new VirtualModelInstancePasteHandler());
 	}
 
 	@Override

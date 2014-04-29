@@ -36,8 +36,8 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 
 	public void setOntologicType(IFlexoOntologyClass ontologyClass);
 
-	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends
-			OntologicObjectRoleImpl<IFlexoOntologyClass> implements ClassRole<C> {
+	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends OntologicObjectRoleImpl<IFlexoOntologyClass>
+			implements ClassRole<C> {
 
 		public ClassRoleImpl() {
 			super();
@@ -89,6 +89,16 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 			conceptURI = ontologyClass != null ? ontologyClass.getURI() : null;
 		}
 
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Reference;
+		}
+
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
 			return false;
@@ -105,8 +115,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 	}
 
-	public static class ClassRoleMustDefineAValidConceptClass extends
-			ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole> {
+	public static class ClassRoleMustDefineAValidConceptClass extends ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole> {
 		public ClassRoleMustDefineAValidConceptClass() {
 			super(ClassRole.class, "pattern_role_must_define_a_valid_concept_class");
 		}

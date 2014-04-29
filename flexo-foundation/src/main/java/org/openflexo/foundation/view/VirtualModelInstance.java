@@ -51,10 +51,14 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
@@ -112,6 +116,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
 
 	@Setter(MODEL_SLOT_INSTANCES_KEY)
@@ -125,12 +131,15 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	@Getter(value = FLEXO_CONCEPT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoConceptInstance> getFlexoConceptInstances();
 
 	@Setter(FLEXO_CONCEPT_INSTANCES_KEY)
 	public void setFlexoConceptInstances(List<FlexoConceptInstance> someFlexoConceptInstances);
 
 	@Adder(FLEXO_CONCEPT_INSTANCES_KEY)
+	@PastingPoint
 	public void addToFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
 	@Remover(FLEXO_CONCEPT_INSTANCES_KEY)
@@ -405,6 +414,18 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
+
+			System.out.println(">>>>>>>>> addToFlexoConceptInstances " + fci);
+
+			System.out.println("Already storing: ");
+			for (FlexoConceptInstance i : getFlexoConceptInstances()) {
+				System.out.println("> " + i);
+			}
+
+			System.out.println("Adding " + fci);
+			System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
+			System.out.println("fci.getActors() = " + fci.getActors());
+
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
@@ -436,6 +457,9 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
+			System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
+			Thread.dumpStack();
+
 			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 			if (hash == null) {
 				hash = new Hashtable<Long, FlexoConceptInstance>();

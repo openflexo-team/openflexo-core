@@ -56,4 +56,10 @@ public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
 		}
 	}
 
+	@Override
+	public <I> void objectHasBeenCreated(I newlyCreatedObject, Class<I> implementedInterface) {
+		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
+		System.out.println("> objectHasBeenCreated: " + newlyCreatedObject + " for " + implementedInterface);
+	}
+
 }

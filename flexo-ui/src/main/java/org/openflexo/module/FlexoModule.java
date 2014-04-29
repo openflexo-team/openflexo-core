@@ -123,10 +123,13 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		if (getFlexoFrame() != null) {
 			getFlexoFrame().setRelativeVisible(false);
 		}
-		if (controller != null) {
-			if (controller.getConsistencyCheckWindow(false) != null) {
-				controller.getConsistencyCheckWindow(false).setVisible(false);
+		if (getFlexoController() != null) {
+			if (getFlexoController().getConsistencyCheckWindow(false) != null) {
+				getFlexoController().getConsistencyCheckWindow(false).setVisible(false);
 			}
+		}
+		if (getFlexoController().getCurrentModuleView() != null) {
+			getFlexoController().getCurrentModuleView().willHide();
 		}
 	}
 
@@ -135,6 +138,9 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	}
 
 	void setAsActiveModule() {
+
+		System.out.println("**************** setAsActiveModule()");
+
 		isActive = true;
 		int state = getFlexoFrame().getExtendedState();
 		state &= ~Frame.ICONIFIED;
@@ -170,7 +176,13 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				}
 			}
 			getFlexoController().getSelectionManager().fireUpdateSelection();
+
 		}
+
+		if (getFlexoController().getCurrentModuleView() != null) {
+			getFlexoController().getCurrentModuleView().willShow();
+		}
+
 	}
 
 	/**

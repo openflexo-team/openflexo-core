@@ -86,6 +86,9 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 		try {
 			clipboard = copy();
 			editingContext.setClipboard(clipboard);
+
+			//System.out.println(clipboard.debug());
+
 		} catch (CopyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,12 +113,17 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 
 		try {
 
+			//System.out.println("--------- START COPY");
+
 			clipboard = modelFactory.copy(objectsToBeCopied.toArray(new Object[objectsToBeCopied.size()]));
 			clipboard.setCopyContext(copyContext);
-			// System.out.println(clipboard.debug());
+			//System.out.println(clipboard.debug());
 			// System.out.println("copyContext=" + copyContext);
 			// TODO ?
 			// notifyObservers(new SelectionCopied(clipboard));
+
+			//System.out.println("--------- END COPY");
+
 			return clipboard;
 		} catch (Throwable e) {
 			throw new CopyException(e, modelFactory);
