@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
+import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptObject;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
@@ -48,6 +48,11 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviourOb
 
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
+		}
+		if ((focusedObject instanceof EditionAction)) {
+			if(((EditionAction<?,?>) focusedObject) instanceof ActionContainer){
+				return (EditionAction<?,?>) focusedObject;
+			}
 		}
 		return ((FlexoBehaviourObject) focusedObject).getFlexoBehaviour();
 	}
