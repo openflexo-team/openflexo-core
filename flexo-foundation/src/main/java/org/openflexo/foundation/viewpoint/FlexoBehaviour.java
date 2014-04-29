@@ -46,6 +46,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
@@ -157,6 +158,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public void setParameters(List<FlexoBehaviourParameter> parameters);
 
 	@Adder(PARAMETERS_KEY)
+	@PastingPoint
 	public void addToParameters(FlexoBehaviourParameter aParameter);
 
 	@Remover(PARAMETERS_KEY)

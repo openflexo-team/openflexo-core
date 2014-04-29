@@ -11,6 +11,8 @@ import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
@@ -48,7 +50,10 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	@Override
 	public void initializeActions(ControllerActionInitializer actionInitializer) {
 		// Add paste handlers
-		actionInitializer.getEditingContext().registerPasteHandler(FlexoConceptObject.class, new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoConcept.class, new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoRole.class, new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoBehaviour.class, new FlexoConceptPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoBehaviourParameter.class, new FlexoBehaviourPasteHandler());
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import org.openflexo.antar.binding.Function.FunctionArgument;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
+import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -42,6 +43,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -152,6 +154,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	public int getIndex();
 
 	@Getter(value = FLEXO_BEHAVIOUR_SCHEME_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoBehaviour getScheme();
 
 	@Setter(FLEXO_BEHAVIOUR_SCHEME_KEY)
