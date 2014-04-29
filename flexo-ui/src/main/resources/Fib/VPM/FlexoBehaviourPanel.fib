@@ -65,7 +65,7 @@
             </Button>
             <LocalizedDictionary />
           </Panel>
-          <Browser root="data" iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourObject" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" showFooter="true" rootVisible="true" showRootsHandle="false" localize="true" manageDynamicModel="true" name="EditionActionBrowser" constraints="border(location=center)" opaque="false">
+          <Browser root="data" iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviourObject" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" showFooter="true" rootVisible="true" showRootsHandle="false" localize="true" manageDynamicModel="true" name="EditionActionBrowser" constraints="border(location=center)" opaque="false" rightClickAction="controller.rightClick(EditionActionBrowser.selected,event)">
             <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)" isEditable="false" filtered="false" defaultVisible="true" name="flexoBehaviour">
               <Children data="flexoBehaviour.actions" name="children" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
