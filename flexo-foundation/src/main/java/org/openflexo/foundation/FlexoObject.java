@@ -38,7 +38,6 @@ import org.openflexo.foundation.action.SortFlexoProperties;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
@@ -47,6 +46,8 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -103,7 +104,17 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 	@Getter(value = FLEXO_ID_KEY, defaultValue = "0")
 	@XMLAttribute
+	// Here, we dont want to have the FlexoID duplicated (never a good idea for an ID !!!)
+	// We delegate here the computation of a new ID to the PamelaResource
+	@CloningStrategy(value = StrategyType.FACTORY, factory = "obtainNewFlexoID()")
 	public long getFlexoID();
+
+	/**
+	 * Obtain new flexoID by requesting it to the PamelaResource
+	 * 
+	 * @return
+	 */
+	public long obtainNewFlexoID();
 
 	@Setter(FLEXO_ID_KEY)
 	public void setFlexoID(long flexoID);
@@ -1158,10 +1169,23 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public long getFlexoID() {
 			if (flexoID < 0) {
-				if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-						&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-					flexoID = ((PamelaResource<?, ?>) ((InnerResourceData) this).getResourceData().getResource()).getNewFlexoID();
-				}
+				obtainNewFlexoID();
+			}
+			return flexoID;
+		}
+
+		/**
+		 * Obtain new flexoID by requesting it to the PamelaResource
+		 * 
+		 * @return
+		 */
+		@Override
+		public long obtainNewFlexoID() {
+			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
+					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
+				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData) this).getResourceData().getResource()).getNewFlexoID();
+			} else {
+				flexoID = -1;
 			}
 			return flexoID;
 		}
