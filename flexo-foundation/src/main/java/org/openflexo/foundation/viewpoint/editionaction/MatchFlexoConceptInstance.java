@@ -39,17 +39,15 @@ import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
+import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
+import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
-import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.URIParameter;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -136,8 +134,8 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends
-			AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance> implements MatchFlexoConceptInstance {
+	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
+			implements MatchFlexoConceptInstance {
 
 		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
 
@@ -146,8 +144,8 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		private String _creationSchemeURI;
 		private Vector<MatchingCriteria> matchingCriterias = new Vector<MatchingCriteria>();
 		private Vector<CreateFlexoConceptInstanceParameter> parameters = new Vector<CreateFlexoConceptInstanceParameter>();
-		private boolean updatingParameters = false;
-		
+		private final boolean updatingParameters = false;
+
 		public MatchFlexoConceptInstanceImpl() {
 			super();
 		}
@@ -158,12 +156,14 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
 			}
-			out.append(getClass().getSimpleName() + " as " + 
-					getFlexoConceptType()!=null ? getFlexoConceptType().getName() : "no type specified"+ " "
-					+ getMatchingCriteriasFMLRepresentation(context) + " using " + 
-					getCreationScheme() != null ? getCreationScheme().getFlexoConcept().getName() : "no creation scheme specified" + ":"
-					+ getCreationScheme() != null ? getCreationScheme().getName() : "no creation scheme specified" + 
-					"(" + getCreationSchemeParametersFMLRepresentation(context) + ")", context);
+			System.out.println("getFlexoConceptType()=" + getFlexoConceptType());
+
+			out.append(getClass().getSimpleName() + " as "
+					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "no type specified") + " "
+					+ getMatchingCriteriasFMLRepresentation(context) + " using "
+					+ (getCreationScheme() != null ? getCreationScheme().getFlexoConcept().getName() : "no creation scheme specified")
+					+ ":" + (getCreationScheme() != null ? getCreationScheme().getName() : "no creation scheme specified") + "("
+					+ getCreationSchemeParametersFMLRepresentation(context) + ")", context);
 			if (getAssignation().isSet()) {
 				out.append(")", context);
 			}
@@ -178,7 +178,8 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					sb.append("(");
 				}
 				for (MatchingCriteria mc : matchingCriterias) {
-					sb.append(mc.getFlexoRole().getName()!=null ? mc.getFlexoRole().getName() : "null" + "=" + mc.getValue().toString() + ";");
+					sb.append(mc.getFlexoRole().getName() != null ? mc.getFlexoRole().getName() : "null" + "=" + mc.getValue().toString()
+							+ ";");
 				}
 				if (matchingCriterias.size() > 1) {
 					sb.append(")");
@@ -293,9 +294,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public Vector<CreateFlexoConceptInstanceParameter> getParameters() {
-		//	if(!updatingParameters){
-				updateParameters();
-			//}
+			// if(!updatingParameters){
+			updateParameters();
+			// }
 			return parameters;
 		}
 
@@ -305,17 +306,17 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public void addToParameters(CreateFlexoConceptInstanceParameter parameter) {
-			//if(parameter.getAction()!=this){
-				parameter.setAction(this);
-			//}
+			// if(parameter.getAction()!=this){
+			parameter.setAction(this);
+			// }
 			parameters.add(parameter);
 		}
 
 		@Override
 		public void removeFromParameters(CreateFlexoConceptInstanceParameter parameter) {
-			//if(parameter.getAction()!=null){
-				parameter.setAction(null);
-			//}
+			// if(parameter.getAction()!=null){
+			parameter.setAction(null);
+			// }
 			parameters.remove(parameter);
 		}
 
@@ -329,7 +330,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		}
 
 		private void updateParameters() {
-			//updatingParameters = true;
+			// updatingParameters = true;
 			Vector<CreateFlexoConceptInstanceParameter> parametersToRemove = new Vector<CreateFlexoConceptInstanceParameter>(parameters);
 			if (getCreationScheme() != null) {
 				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
@@ -344,7 +345,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			for (CreateFlexoConceptInstanceParameter removeThis : parametersToRemove) {
 				removeFromParameters(removeThis);
 			}
-			//updatingParameters = false;
+			// updatingParameters = false;
 		}
 
 		@Override
@@ -457,11 +458,11 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					MatchFlexoConceptInstance action) {
 				if (action.getCreationScheme() == null) {
 					if (action.getFlexoConceptType() == null) {
-						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
-								this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
+						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
+								action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
 					} else {
-						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(
-								this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
+						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
+								action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
 					}
 				}
 				return null;
@@ -501,8 +502,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					} else if (issues.size() == 1) {
 						return issues.firstElement();
 					} else {
-						return new CompoundIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action,
-								issues);
+						return new CompoundIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action, issues);
 					}
 				}
 				return null;
