@@ -28,7 +28,10 @@ import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
@@ -38,7 +41,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoConcept> {
+public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourPasteHandler.class.getPackage().getName());
 
@@ -50,42 +53,41 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoConcept> {
 	}
 
 	@Override
-	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+	public PastingContext<FlexoBehaviour> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			Clipboard clipboard, Event event) {
-
-		if (focusedObject instanceof FlexoConcept) {
+		
+		/*if (focusedObject instanceof FlexoConcept) {
 			return new DefaultPastingContext<FlexoConcept>((FlexoConcept) focusedObject, event);
 		}
 		if (focusedObject instanceof FlexoBehaviour) {
 			return new DefaultPastingContext<FlexoConcept>(((FlexoBehaviour) focusedObject).getFlexoConcept(), event);
-		}
-
+		}*/
 		return null;
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
 
 		// Translating names
 		if (clipboard.isSingleObject()) {
-			if (clipboard.getSingleContents() instanceof FlexoConcept) {
-				translateName((FlexoConcept) clipboard.getSingleContents());
+			if (clipboard.getSingleContents() instanceof FlexoBehaviour) {
+				translateName((FlexoBehaviour) clipboard.getSingleContents());
 			}
 		} else {
 			for (Object o : clipboard.getMultipleContents()) {
-				if (o instanceof FlexoConcept) {
-					translateName((FlexoConcept) o);
+				if (o instanceof FlexoBehaviour) {
+					translateName((FlexoBehaviour) o);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
 		// nothing to do
 	}
 
-	private String translateName(FlexoConcept object) {
+	private String translateName(FlexoBehaviour object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;

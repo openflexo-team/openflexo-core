@@ -51,13 +51,9 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 
 		actionInitializer.getEditingContext().registerPasteHandler(FlexoConcept.class, new FlexoConceptPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(FlexoRole.class, new FlexoConceptPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(FlexoBehaviour.class, new FlexoBehaviourPasteHandler());
-		actionInitializer.getEditingContext()
-				.registerPasteHandler(FlexoBehaviourParameter.class, new FlexoBehaviourParameterPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(EditionAction.class, new FlexoActionPasteHandler());
-
-		actionInitializer.getEditingContext().registerPasteHandler(VirtualModelInstance.class, new VirtualModelInstancePasteHandler());
-
+		actionInitializer.getEditingContext().registerPasteHandler(EditionAction.class, new ActionContainerPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoBehaviour.class, new ActionContainerPasteHandler());
+		actionInitializer.getEditingContext().registerPasteHandler(FlexoBehaviourParameter.class, new FlexoBehaviourPasteHandler());
 	}
 
 	@Override

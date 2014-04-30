@@ -27,28 +27,32 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a FlexoBehaviourParameters
+ * Paste Handler suitable for pasting something into a FlexoAction
  * 
  * @author sylvain
  * 
  */
-public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBehaviourObject> {
+public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourObject> {
 
-	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterPasteHandler.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ActionContainerPasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
+
 	@Override
 	public boolean declarePolymorphicPastingContexts() {
+		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	public PastingContext<FlexoBehaviourObject> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			Clipboard clipboard, Event event) {
@@ -56,14 +60,24 @@ public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBe
 		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
+		} 
+		// Paste a flexo behaviour from a flexo behaviour
+		/*else if((focusedObject instanceof FlexoBehaviour)
+				&&(clipboard.getSingleContents() instanceof FlexoBehaviour)){
+			return ((FlexoBehaviourObject) focusedObject).getFlexoConcept();
+		} */
+		// Paste a Flexo Action in a Flexo Action Container
+		else if ((focusedObject instanceof ActionContainer)
+				&& (clipboard.getSingleContents() instanceof EditionAction<?,?>) ) {
+			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviourObject) focusedObject,event);
 		}
-
-		else if (focusedObject instanceof FlexoBehaviour) {
-			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviour) focusedObject, event);
+		// Paste a Flexo Action from a Flexo Action
+		else if ((focusedObject instanceof EditionAction<?,?>)
+				&& (clipboard.getSingleContents() instanceof EditionAction<?,?>) ) {
+			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviourObject)((EditionAction<?,?>) focusedObject).getActionContainer(),event);
 		}
-
-		// Paste on flexo behaviour parameters
-		return new DefaultPastingContext<FlexoBehaviourObject>(((FlexoBehaviourObject) focusedObject).getFlexoBehaviour(), event);
+		
+		return null;
 	}
 
 	@Override
@@ -81,11 +95,6 @@ public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBe
 				}
 			}
 		}
-	}
-
-	@Override
-	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoBehaviourObject> pastingContext) {
-		// nothing to do
 	}
 
 	private String translateName(FlexoBehaviourObject object) {
@@ -110,6 +119,13 @@ public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBe
 		System.out.println("translating name from " + oldName + " to " + newName);
 		object.setName(newName);
 		return newName;
+	}
+
+	@Override
+	public void finalizePasting(Clipboard clipboard,
+			PastingContext<FlexoBehaviourObject> pastingContext) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
