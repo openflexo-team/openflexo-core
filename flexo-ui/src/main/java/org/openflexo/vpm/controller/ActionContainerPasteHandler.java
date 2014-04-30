@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
@@ -53,18 +54,18 @@ public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourO
 
 	@Override
 	public PastingContext<FlexoBehaviourObject> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			Clipboard clipboard, Event event) {
+			FlexoClipboard clipboard, Event event) {
 
 		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
 		}
 		// Paste a Flexo Action in a Flexo Action Container
-		if ((focusedObject instanceof ActionContainer)){
+		if ((focusedObject instanceof ActionContainer)) {
 			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviourObject) focusedObject, event);
 		}
 		// Paste a Flexo Action from a Flexo Action
-		if ((focusedObject instanceof EditionAction<?, ?>)){
+		if ((focusedObject instanceof EditionAction<?, ?>)) {
 			return new DefaultPastingContext<FlexoBehaviourObject>(
 					(FlexoBehaviourObject) ((EditionAction<?, ?>) focusedObject).getActionContainer(), event);
 		}
@@ -73,15 +74,17 @@ public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourO
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoBehaviourObject> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FlexoBehaviourObject> pastingContext) {
+
+		Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 		// Translating names
-		if (clipboard.isSingleObject()) {
-			if (clipboard.getSingleContents() instanceof FlexoBehaviourObject) {
-				translateName((FlexoBehaviourObject) clipboard.getSingleContents());
+		if (leaderClipboard.isSingleObject()) {
+			if (leaderClipboard.getSingleContents() instanceof FlexoBehaviourObject) {
+				translateName((FlexoBehaviourObject) leaderClipboard.getSingleContents());
 			}
 		} else {
-			for (Object o : clipboard.getMultipleContents()) {
+			for (Object o : leaderClipboard.getMultipleContents()) {
 				if (o instanceof FlexoBehaviour) {
 					translateName((FlexoBehaviourObject) o);
 				}
@@ -114,7 +117,7 @@ public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourO
 	}
 
 	@Override
-	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoBehaviourObject> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoBehaviourObject> pastingContext) {
 		// TODO Auto-generated method stub
 
 	}

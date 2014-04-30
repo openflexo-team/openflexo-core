@@ -20,7 +20,9 @@
 package org.openflexo.foundation.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -49,13 +51,13 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 			FlexoActionType<A, FlexoObject, FlexoObject> {
 
 		protected final FlexoEditingContext editingContext;
-		protected List<Object> objectsToBeCopied;
-		protected PamelaResource<?, ?> pamelaResource;
-		protected Object copyContext;
+
+		protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
 
 		public AbstractCopyActionType(String actionName, FlexoEditingContext editingContext) {
 			super(actionName, FlexoActionType.editGroup);
 			this.editingContext = editingContext;
+			objectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
 		}
 
 		// Override parent implementation by preventing check that this ActionType is registered in FlexoObject
@@ -77,6 +79,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 				prepareCopy(getGlobalSelectionAndFocusedObject(object, globalSelection));
 				return true;
 			} catch (InvalidSelectionException e) {
+				// e.printStackTrace();
 				// logger.info("Could not COPY for this selection");
 				return false;
 			}
@@ -90,26 +93,21 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 		 */
 		public void prepareCopy(List<FlexoObject> effectiveSelection) throws InvalidSelectionException {
 
-			List<Object> returned = new ArrayList<Object>();
+			objectsToBeCopied.clear();
 
 			ModelFactory modelFactory = null;
 
-			pamelaResource = null;
-
-			for (Object o : effectiveSelection) {
-				returned.add(o);
+			for (FlexoObject o : effectiveSelection) {
 				if (o instanceof InnerResourceData) {
 					if (((InnerResourceData) o).getResourceData() != null) {
 						FlexoResource<?> resource = ((InnerResourceData) o).getResourceData().getResource();
 						if (resource instanceof PamelaResource) {
-							if (pamelaResource == null) {
-								pamelaResource = (PamelaResource) resource;
-							} else if (pamelaResource == resource) {
-								// Nice, we are on the same resource
-							} else {
-								throw new InvalidSelectionException(
-										"Incompatible global model context: found objects in many PamelaResources");
+							List<FlexoObject> objectsInResource = objectsToBeCopied.get(resource);
+							if (objectsInResource == null) {
+								objectsInResource = new ArrayList<FlexoObject>();
+								objectsToBeCopied.put((PamelaResource) resource, objectsInResource);
 							}
+							objectsInResource.add(o);
 						} else {
 							throw new InvalidSelectionException("Incompatible global model context: could not access PamelaResource");
 						}
@@ -119,23 +117,9 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 				}
 			}
 
-			if (pamelaResource == null) {
+			if (objectsToBeCopied.size() == 0) {
 				throw new InvalidSelectionException("Incompatible global model context: could not access any PamelaResource");
 			}
-
-			modelFactory = pamelaResource.getFactory();
-			if (modelFactory == null) {
-				throw new InvalidSelectionException("Incompatible global model context: could not access any model factory");
-			}
-
-			try {
-				copyContext = pamelaResource.getResourceData(null);
-			} catch (Exception e) {
-				throw new InvalidSelectionException("Unexpected exception", e);
-			}
-
-			// TODO compute closure and covering tree
-			objectsToBeCopied = returned;
 
 			// System.out.println("DONE prepare copy");
 

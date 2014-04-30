@@ -20,6 +20,7 @@
 package org.openflexo.foundation.action;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -28,8 +29,6 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ModelFactory;
 
 /**
  * Represents a Copy action (clipboard operation)<br>
@@ -62,19 +61,15 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 			CopyAction returned = new CopyAction(this, focusedObject, globalSelection, editor);
 			returned.editingContext = editingContext;
 			returned.objectsToBeCopied = objectsToBeCopied;
-			returned.pamelaResource = pamelaResource;
-			returned.copyContext = copyContext;
 			return returned;
 		}
 
 	};
 
 	private FlexoEditingContext editingContext;
-	private List<Object> objectsToBeCopied;
-	private PamelaResource<?, ?> pamelaResource;
-	private Object copyContext;
+	protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
 
-	private Clipboard clipboard;
+	private FlexoClipboard clipboard;
 
 	CopyAction(CopyActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -87,7 +82,7 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 			clipboard = copy();
 			editingContext.setClipboard(clipboard);
 
-			//System.out.println(clipboard.debug());
+			// System.out.println(clipboard.debug());
 
 		} catch (CopyException e) {
 			// TODO Auto-generated catch block
@@ -101,33 +96,10 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 	 * @throws CopyException
 	 * @throws InvalidSelectionException
 	 */
-	private Clipboard copy() throws CopyException, InvalidSelectionException {
+	private FlexoClipboard copy() throws CopyException, InvalidSelectionException {
 
-		ModelFactory modelFactory = pamelaResource.getFactory();
-
-		/*System.out.println("COPY");
-		System.out.println("pamelaResource=" + pamelaResource);
-		System.out.println("modelFactory=" + modelFactory);
-		System.out.println("copyContext=" + copyContext);
-		System.out.println("objectsToBeCopied=" + objectsToBeCopied);*/
-
-		try {
-
-			//System.out.println("--------- START COPY");
-
-			clipboard = modelFactory.copy(objectsToBeCopied.toArray(new Object[objectsToBeCopied.size()]));
-			clipboard.setCopyContext(copyContext);
-			//System.out.println(clipboard.debug());
-			// System.out.println("copyContext=" + copyContext);
-			// TODO ?
-			// notifyObservers(new SelectionCopied(clipboard));
-
-			//System.out.println("--------- END COPY");
-
-			return clipboard;
-		} catch (Throwable e) {
-			throw new CopyException(e, modelFactory);
-		}
+		clipboard = FlexoClipboard.copy(objectsToBeCopied, getFocusedObject(), null);
+		return clipboard;
 	}
 
 }

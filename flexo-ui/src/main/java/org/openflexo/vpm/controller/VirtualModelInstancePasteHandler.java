@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
@@ -62,7 +63,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 
 	@Override
 	public PastingContext<VirtualModelInstance> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			Clipboard clipboard, Event event) {
+			FlexoClipboard clipboard, Event event) {
 
 		if (focusedObject instanceof VirtualModelInstance) {
 			return new HeterogeneousPastingContext((VirtualModelInstance) focusedObject, event);
@@ -78,7 +79,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
 
 		System.out.println("********** prepareClipboardForPasting in " + pastingContext);
 
@@ -88,7 +89,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void finalizePasting(Clipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
 
 		System.out.println("Trying to notify.........");
 
@@ -129,24 +130,29 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	 */
 	public class HeterogeneousPastingContext extends DefaultPastingContext<VirtualModelInstance> {
 
-		private final Map<ModelSlotInstance<?, ?>, Clipboard> modelSlotClipboards;
+		// private final Map<ModelSlotInstance<?, ?>, Clipboard> modelSlotClipboards;
+
+		private FlexoClipboard clipboard;
 
 		public HeterogeneousPastingContext(VirtualModelInstance holder, Event event) {
 			super(holder, event);
-			modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
+			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}
 
-		public void prepareClipboardForPasting(Clipboard clipboard) {
+		public void prepareClipboardForPasting(FlexoClipboard clipboard) {
+
+			this.clipboard = clipboard;
+			Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 			// First put all FCI in a list
 			List<FlexoConceptInstance> fciList = new ArrayList<FlexoConceptInstance>();
 
-			if (clipboard.isSingleObject()) {
-				if (clipboard.getSingleContents() instanceof FlexoConceptInstance) {
-					fciList.add((FlexoConceptInstance) clipboard.getSingleContents());
+			if (leaderClipboard.isSingleObject()) {
+				if (leaderClipboard.getSingleContents() instanceof FlexoConceptInstance) {
+					fciList.add((FlexoConceptInstance) leaderClipboard.getSingleContents());
 				}
 			} else {
-				for (Object o : clipboard.getMultipleContents()) {
+				for (Object o : leaderClipboard.getMultipleContents()) {
 					if (o instanceof FlexoConceptInstance) {
 						fciList.add((FlexoConceptInstance) o);
 					}
@@ -159,18 +165,118 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 					System.out.println("Voyons pour le model slot " + msi);
 					if (msi.getAccessedResourceData() != null && msi.getAccessedResourceData().getResource() instanceof PamelaResource) {
 						System.out.println("Hop, je m'occupe de la resource " + msi.getResource());
-						PamelaResource resource = (PamelaResource) msi.getAccessedResourceData().getResource();
-						ModelFactory factory = resource.getFactory();
+						PamelaResource modelSlotInstanceResource = (PamelaResource) msi.getAccessedResourceData().getResource();
+						ModelFactory factory = modelSlotInstanceResource.getFactory();
+
+						Clipboard modelSlotInstanceClipboard = clipboard.getClipboard(modelSlotInstanceResource);
+
+						// Take care to not do it for the leader clipboard
+						// For him, the paste will be performed in PasteAction
+						if (modelSlotInstanceClipboard != null && modelSlotInstanceClipboard != clipboard.getLeaderClipboard()) {
+
+							// Some objects needs to be cloned in this model slot
+
+							// modelSlotClipboards.put(msi, modelSlotInstanceClipboard);
+
+							System.out.println("Pour la resource " + msi.getResource());
+							System.out.println("" + modelSlotInstanceClipboard.debug());
+
+							Object pastingPointHolder = getModelSlotSpecificPastingPointHolder(msi, this);
+
+							System.out.println("Pour le MS: " + msi);
+							System.out.println("pastingPointHolder=" + pastingPointHolder);
+							System.out.println("On est dans " + getClass());
+
+							if (factory.isPastable(modelSlotInstanceClipboard, pastingPointHolder)) {
+
+								prepareModelSlotSpecificClipboard(modelSlotInstanceClipboard, msi, this);
+
+								Map<Object, Object> copiedObjects = new HashMap<Object, Object>();
+
+								System.out.println("!!!!!!!!! JUSTE AVANT le paste dans " + modelSlotInstanceResource);
+								modelSlotInstanceClipboard.debug();
+
+								Object copy = factory.paste(modelSlotInstanceClipboard, pastingPointHolder);
+
+								System.out.println("les nouveaux objets: " + copy);
+
+								if (modelSlotInstanceClipboard.isSingleObject()) {
+									copiedObjects.put(modelSlotInstanceClipboard.getOriginalContents()[0], copy);
+									System.out.println("Pour " + modelSlotInstanceClipboard.getOriginalContents()[0] + " j'ai maintenant "
+											+ copy);
+								} else {
+									List copyList = (List) copy;
+									for (int i = 0; i < modelSlotInstanceClipboard.getOriginalContents().length; i++) {
+										copiedObjects.put(modelSlotInstanceClipboard.getOriginalContents()[i], copyList.get(i));
+										System.out.println("Pour " + modelSlotInstanceClipboard.getOriginalContents()[i]
+												+ " j'ai maintenant " + copyList.get(i));
+									}
+								}
+
+								// Now replace all ActorReferences !!!
+								for (FlexoConceptInstance fci : fciList) {
+									for (ActorReference actor : fci.getActors()) {
+										if (actor.getFlexoRole().getModelSlot() == msi.getModelSlot()
+												&& actor.getFlexoRole().getCloningStrategy() == RoleCloningStrategy.Clone
+												&& (!(actor.getFlexoRole() instanceof PrimitiveRole))) {
+											System.out.println("Maintenant, j'essaie de remplacer " + actor.getModellingElement());
+											System.out.println("Par: " + copiedObjects.get(actor.getModellingElement()));
+											actor.setModellingElement(copiedObjects.get(actor.getModellingElement()));
+										}
+									}
+								}
+
+							} else {
+								System.out
+										.println("Cannot paste " + modelSlotInstanceClipboard.getTypes()[0] + " in " + pastingPointHolder);
+							}
+
+						}
+
+						/*ModelFactory factory = resource.getFactory();
 						List<Object> objectsToClone = new ArrayList<Object>();
 						for (FlexoConceptInstance fci : fciList) {
 							for (ActorReference<?> actor : fci.getActors()) {
 								if (actor.getFlexoRole().getModelSlot() == msi.getModelSlot()
 										&& actor.getFlexoRole().getCloningStrategy() == RoleCloningStrategy.Clone
 										&& (!(actor.getFlexoRole() instanceof PrimitiveRole))) {
-									objectsToClone.add(actor.getModellingElement());
+									if (!objectsToClone.contains(actor.getModellingElement())) {
+										objectsToClone.add(actor.getModellingElement());
+									}
+								}
+							}
+						}*/
+
+						// Now add objects which were eventually in the original copy
+						// (may contains other objects that are not playing any role in any flexo concept instances
+						/*Clipboard originalClipboard = clipboard.getClipboard(resource);
+
+						System.out.println("ok, maintenant je regarde s'il n'y avait pas d'autres trucs...");
+						System.out.println("msi=" + msi);
+						System.out.println("resource=" + resource);
+						System.out.println("originalClipboard=" + originalClipboard);
+						System.out.println(originalClipboard.debug());
+
+						if (originalClipboard != null) {
+							if (originalClipboard.isSingleObject()) {
+								if (!objectsToClone.contains(originalClipboard.getSingleContents())) {
+									System.out.println("Yes, j'ai trouve un autre truc qui n'est pas federe, je le rajoute: "
+											+ originalClipboard.getSingleContents());
+									objectsToClone.add(originalClipboard.getSingleContents());
+								}
+							} else {
+								for (Object o : originalClipboard.getMultipleContents()) {
+									if (o instanceof FlexoConceptInstance) {
+										if (!objectsToClone.contains(o)) {
+											System.out.println("Yes, j'ai trouve un autre truc qui n'est pas federe, je le rajoute: " + o);
+											objectsToClone.add(o);
+											System.out.println("c'est un: " + o.getClass());
+										}
+									}
 								}
 							}
 						}
+
 						System.out.println("Pour la resource " + msi.getResource());
 						System.out.println("Je dois cloner tous ces objects:");
 
@@ -227,7 +333,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 								System.out.println("Zut, je ne peux pas paster " + modelSlotClipboard.getTypes()[0] + " dans "
 										+ pastingPointHolder);
 							}
-						}
+						}*/
 
 					} else {
 						if (msi.getAccessedResourceData() != null
@@ -250,7 +356,11 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 		}
 
 		public Clipboard getModelSlotClipboard(ModelSlotInstance<?, ?> msi) {
-			return modelSlotClipboards.get(msi);
+			if (msi.getAccessedResourceData() != null && msi.getAccessedResourceData().getResource() instanceof PamelaResource) {
+				PamelaResource<?, ?> modelSlotInstanceResource = (PamelaResource<?, ?>) msi.getAccessedResourceData().getResource();
+				return clipboard.getClipboard(modelSlotInstanceResource);
+			}
+			return null;
 		}
 	}
 }
