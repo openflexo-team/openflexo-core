@@ -45,6 +45,7 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DeserializationFinalizer;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -125,6 +126,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public List<FlexoBehaviour> getFlexoBehaviours();
 
 	@Setter(FLEXO_BEHAVIOURS_KEY)
@@ -142,6 +145,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Getter(value = FLEXO_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public List<FlexoRole<?>> getFlexoRoles();
 
 	@Setter(FLEXO_ROLES_KEY)
@@ -161,6 +166,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
@@ -194,6 +201,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Getter(value = FLEXO_CONCEPT_CONSTRAINTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoConceptConstraint.FLEXO_CONCEPT_KEY)
 	@XMLElement
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
 	public List<FlexoConceptConstraint> getFlexoConceptConstraints();
 
 	@Setter(FLEXO_CONCEPT_CONSTRAINTS_KEY)
