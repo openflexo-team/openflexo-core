@@ -37,22 +37,36 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class FlexoActionPasteHandler implements PasteHandler<FlexoBehaviourObject> {
+public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourObject> {
 
-	private static final Logger logger = Logger.getLogger(FlexoActionPasteHandler.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ActionContainerPasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
 	public FlexoBehaviourObject retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard) {
 
+		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
+		} 
+		// Paste a flexo behaviour from a flexo behaviour
+		/*else if((focusedObject instanceof FlexoBehaviour)
+				&&(clipboard.getSingleContents() instanceof FlexoBehaviour)){
+			return ((FlexoBehaviourObject) focusedObject).getFlexoConcept();
+		} */
+		// Paste a Flexo Action in a Flexo Action Container
+		else if ((focusedObject instanceof ActionContainer)
+				&& (clipboard.getSingleContents() instanceof EditionAction<?,?>) ) {
+			return (FlexoBehaviourObject) focusedObject;
 		}
-		if ((focusedObject instanceof ActionContainer)) {
-			return (EditionAction<?,?>) focusedObject;
+		// Paste a Flexo Action from a Flexo Action
+		else if ((focusedObject instanceof EditionAction<?,?>)
+				&& (clipboard.getSingleContents() instanceof EditionAction<?,?>) ) {
+			return (FlexoBehaviourObject)((EditionAction<?,?>) focusedObject).getActionContainer();
 		}
-		return ((FlexoBehaviourObject) focusedObject).getFlexoBehaviour();
+		
+		return null;
 	}
 
 	@Override

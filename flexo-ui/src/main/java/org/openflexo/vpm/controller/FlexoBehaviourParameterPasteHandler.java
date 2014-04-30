@@ -44,12 +44,15 @@ public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBe
 	@Override
 	public FlexoBehaviourObject retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard) {
 
+		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
 		}
-		if (focusedObject instanceof FlexoBehaviour) {
+		// Paste on a flexo behaviour
+		else if (focusedObject instanceof FlexoBehaviour) {
 			return (FlexoBehaviour)focusedObject;
 		}
+		// Paste on flexo behaviour parameters
 		return ((FlexoBehaviourObject) focusedObject).getFlexoBehaviour();
 	}
 
