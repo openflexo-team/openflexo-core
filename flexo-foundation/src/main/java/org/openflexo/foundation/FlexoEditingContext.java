@@ -184,7 +184,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}*/
 
 		// We will store all matching handlers in a map where the key is the pasting point holder type
-		Map<Class<?>, PasteHandler<?>> matchingHandlers = new HashMap<Class<?>, PasteHandler<?>>();
+		Map<Class<?>, List<PasteHandler<?>>> matchingHandlers = new HashMap<Class<?>, List<PasteHandler<?>>>();
 
 		ModelFactory factory = clipboard.getModelFactory();
 
@@ -208,10 +208,20 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 						// Pamela annotations generically allows a paste for such pasting point holder type
 						// Proceed...
 
+						// System.out.println("OK, this is pastable...");
+
 						Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, clipboard, event);
+
+						// System.out.println("potentialPastingContext=" + potentialPastingContext);
+
 						if (potentialPastingContext != null) {
 							// System.out.println("Found PasteHandler " + h + " for " + focusedObject);
-							matchingHandlers.put(h.getPastingPointHolderType(), h);
+							List<PasteHandler<?>> l = matchingHandlers.get(h.getPastingPointHolderType());
+							if (l == null) {
+								l = new ArrayList<PasteHandler<?>>();
+								matchingHandlers.put(h.getPastingPointHolderType(), l);
+							}
+							l.add(h);
 						}
 					}
 
@@ -225,20 +235,27 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}
 
 		if (matchingHandlers.size() == 1) {
-			// System.out.println("Found a unique paste handler: " + matchingHandlers.values().iterator().next());
-			// Return it
-			return matchingHandlers.values().iterator().next();
+			// System.out.println("Found paste handler: " + matchingHandlers.values().iterator().next());
+			List<PasteHandler<?>> l = matchingHandlers.values().iterator().next();
+			PasteHandler<?> returned = getMostSpecializedPasteHander(l);
+			if (returned != null) {
+				return returned;
+			}
 		} else if (matchingHandlers.size() > 0) {
 			// System.out.println("Found multiple paste handler:");
-			for (PasteHandler<?> h : matchingHandlers.values()) {
-				System.out.println("> " + h);
+			for (List<PasteHandler<?>> hList : matchingHandlers.values()) {
+				System.out.println("> " + hList);
 			}
 
 			Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(matchingHandlers.keySet());
 			// System.out.println("Select the one for class: " + mostSpecializedClass);
 
 			// Return most specialized one
-			return matchingHandlers.get(mostSpecializedClass);
+			List<PasteHandler<?>> l = matchingHandlers.get(mostSpecializedClass);
+			PasteHandler<?> returned = getMostSpecializedPasteHander(l);
+			if (returned != null) {
+				return returned;
+			}
 		}
 
 		// No matches
@@ -257,6 +274,26 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 			}
 		}
 
+		return null;
+	}
+
+	private PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
+		if (l.size() == 0) {
+			return null;
+		} else if (l.size() == 1) {
+			return l.get(0);
+		} else if (l.size() > 1) {
+			// In this case, this is not easy, we have to define a strategy
+			// Lets' try to return the most specialized class
+			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<Class<?>, PasteHandler<?>>();
+			for (PasteHandler<?> h : l) {
+				handlerClasses.put(h.getClass(), h);
+			}
+			Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(handlerClasses.keySet());
+			logger.warning("Multiple paste handler found: " + l + " returning most specialized one: "
+					+ handlerClasses.get(mostSpecializedClass));
+			return handlerClasses.get(mostSpecializedClass);
+		}
 		return null;
 	}
 }
