@@ -36,8 +36,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.prefs.PreferencesContainer;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.FlexoFont;
 import org.openflexo.swing.LookAndFeel;
 import org.openflexo.swing.converter.LookAndFeelConverter;
@@ -364,7 +364,7 @@ public interface AdvancedPrefs extends PreferencesContainer {
 
 	public void setDefaultLoggingLevel(Level l);
 
-	@Getter(value = LOGCOUNT, defaultValue = "0")
+	@Getter(value = LOGCOUNT, defaultValue = "-1")
 	@XMLAttribute
 	public int getMaxLogCount();
 
@@ -381,8 +381,6 @@ public interface AdvancedPrefs extends PreferencesContainer {
 	public abstract class AdvancedPrefsImpl extends PreferencesContainerImpl implements AdvancedPrefs {
 
 		private static final Logger logger = Logger.getLogger(GeneralPreferences.class.getPackage().getName());
-		
-		
 
 		private final LookAndFeelConverter LAF_CONVERTER = new LookAndFeelConverter();
 
