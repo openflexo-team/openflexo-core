@@ -256,7 +256,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	}
 
 	private boolean mayRepresent(FlexoObject o) {
-		return getDrawing().getDrawingTreeNode(o) != null;
+		return getDrawing().getDrawingTreeNode(getRepresentedFlexoObject(o)) != null;
 	}
 
 	@Override
