@@ -169,7 +169,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	 */
 	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject, List<FlexoObject> globalSelection, Event event) {
 
-		System.out.println("********* Requesting PasteHandler for " + focusedObject);
+		// System.out.println("********* Requesting PasteHandler for " + focusedObject);
 
 		// System.out.println("clipboard=");
 		// System.out.println(clipboard.debug());
@@ -225,17 +225,17 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}
 
 		if (matchingHandlers.size() == 1) {
-			System.out.println("Found a unique paste handler: " + matchingHandlers.values().iterator().next());
+			// System.out.println("Found a unique paste handler: " + matchingHandlers.values().iterator().next());
 			// Return it
 			return matchingHandlers.values().iterator().next();
 		} else if (matchingHandlers.size() > 0) {
-			System.out.println("Found multiple paste handler:");
+			// System.out.println("Found multiple paste handler:");
 			for (PasteHandler<?> h : matchingHandlers.values()) {
 				System.out.println("> " + h);
 			}
 
 			Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(matchingHandlers.keySet());
-			System.out.println("Select the one for class: " + mostSpecializedClass);
+			// System.out.println("Select the one for class: " + mostSpecializedClass);
 
 			// Return most specialized one
 			return matchingHandlers.get(mostSpecializedClass);
@@ -251,7 +251,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 				Object potentialPastingContext = defaultPasteHandler.retrievePastingContext(focusedObject, globalSelection, clipboard,
 						event);
 				if (potentialPastingContext != null) {
-					System.out.println("Returning default paste handler");
+					// System.out.println("Returning default paste handler");
 					return defaultPasteHandler;
 				}
 			}
