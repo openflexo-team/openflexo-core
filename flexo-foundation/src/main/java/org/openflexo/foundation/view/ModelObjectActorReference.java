@@ -57,5 +57,10 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 			return null;
 		}
 
+		@Override
+		public String toString() {
+			return "ModelObjectActorReference [" + getRoleName() + "] " + Integer.toHexString(hashCode()) + " references "
+					+ getModellingElement() + "[reference: " + getObjectReference() + "]";
+		}
 	}
 }

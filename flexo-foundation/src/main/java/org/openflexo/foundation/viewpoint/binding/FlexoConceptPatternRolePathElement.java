@@ -36,28 +36,32 @@ public class FlexoConceptPatternRolePathElement<PR extends FlexoRole<?>> extends
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptPatternRolePathElement.class.getPackage().getName());
 
-	private PR patternRole;
+	private final PR flexoRole;
 
-	public FlexoConceptPatternRolePathElement(BindingPathElement parent, PR patternRole) {
-		super(parent, patternRole.getRoleName(), patternRole.getType());
-		this.patternRole = patternRole;
+	public FlexoConceptPatternRolePathElement(BindingPathElement parent, PR flexoRole) {
+		super(parent, flexoRole.getRoleName(), flexoRole.getType());
+		this.flexoRole = flexoRole;
+	}
+
+	public PR getFlexoRole() {
+		return flexoRole;
 	}
 
 	@Override
 	public String getLabel() {
-		return patternRole.getRoleName();
+		return flexoRole.getRoleName();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return patternRole.getDescription();
+		return flexoRole.getDescription();
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance epi = (FlexoConceptInstance) target;
-			return epi.getFlexoActor((FlexoRole) patternRole);
+			return epi.getFlexoActor((FlexoRole) flexoRole);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
@@ -67,7 +71,7 @@ public class FlexoConceptPatternRolePathElement<PR extends FlexoRole<?>> extends
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
 			NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
-			((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) patternRole);
+			((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) flexoRole);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);

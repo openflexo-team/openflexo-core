@@ -27,20 +27,22 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.viewpoint.ActionContainer;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a FlexoBehaviourParameters
+ * Paste Handler suitable for pasting something into a FlexoAction
  * 
  * @author sylvain
  * 
  */
-public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBehaviourObject> {
+public class FlexoActionPasteHandler implements PasteHandler<FlexoBehaviourObject> {
 
-	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterPasteHandler.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoActionPasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
@@ -53,16 +55,12 @@ public class FlexoBehaviourParameterPasteHandler implements PasteHandler<FlexoBe
 	public PastingContext<FlexoBehaviourObject> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			Clipboard clipboard, Event event) {
 
-		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
 		}
-
-		else if (focusedObject instanceof FlexoBehaviour) {
-			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviour) focusedObject, event);
+		if ((focusedObject instanceof ActionContainer)) {
+			return new DefaultPastingContext<FlexoBehaviourObject>((EditionAction<?, ?>) focusedObject, event);
 		}
-
-		// Paste on flexo behaviour parameters
 		return new DefaultPastingContext<FlexoBehaviourObject>(((FlexoBehaviourObject) focusedObject).getFlexoBehaviour(), event);
 	}
 

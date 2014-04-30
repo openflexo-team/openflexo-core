@@ -77,7 +77,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public Type getType() {
-			if(getViewPoint()!=null&&getFlexoConceptType()!=null){
+			if (getViewPoint() != null && getFlexoConceptType() != null) {
 				return getViewPoint().getInstanceType(getFlexoConceptType());
 			}
 			return Object.class;
@@ -183,6 +183,16 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			if (creationScheme != null) {
 				_creationSchemeURI = creationScheme.getURI();
 			}
+		}
+
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Reference;
 		}
 
 		@Override

@@ -39,6 +39,7 @@ import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
@@ -64,6 +65,8 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = ModelSlot.class)
 	public static final String MODEL_SLOT_KEY = "modelSlot";
+	@PropertyIdentifier(type = RoleCloningStrategy.class)
+	public static final String CLONING_STRATEGY_KEY = "cloningStratgey";
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_ROLES_KEY)
@@ -92,6 +95,30 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public Type getType();
 
 	public String getPreciseType();
+
+	/**
+	 * Return cloning strategy to be applied for this role
+	 * 
+	 * @return
+	 */
+	@Getter(CLONING_STRATEGY_KEY)
+	@XMLAttribute
+	public RoleCloningStrategy getCloningStrategy();
+
+	/**
+	 * Sets cloning strategy to be applied for this role
+	 * 
+	 * @return
+	 */
+	@Setter(CLONING_STRATEGY_KEY)
+	public void setCloningStrategy(RoleCloningStrategy cloningStrategy);
+
+	/**
+	 * Encodes the default cloning strategy
+	 * 
+	 * @return
+	 */
+	public abstract RoleCloningStrategy defaultCloningStrategy();
 
 	/**
 	 * Encodes the default deletion strategy
@@ -192,9 +219,20 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			return getFlexoConcept().getBindingModel();
 		}
 
-		// public abstract boolean getIsPrimaryRole();
-
-		// public abstract void setIsPrimaryRole(boolean isPrimary);
+		/**
+		 * Return cloning strategy to be applied for this role
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy getCloningStrategy() {
+			RoleCloningStrategy returned = (RoleCloningStrategy) performSuperGetter(CLONING_STRATEGY_KEY);
+			if (returned == null) {
+				return defaultCloningStrategy();
+			} else {
+				return returned;
+			}
+		}
 
 		@Override
 		public abstract boolean defaultBehaviourIsToBeDeleted();
@@ -221,4 +259,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		}
 	}
 
+	public static enum RoleCloningStrategy {
+		Clone, Reference, Ignore, Factory
+	}
 }

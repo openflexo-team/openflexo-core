@@ -48,6 +48,9 @@ import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -94,6 +97,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	@Getter(value = ACTORS_KEY, cardinality = Cardinality.LIST, inverse = ActorReference.FLEXO_CONCEPT_INSTANCE_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<ActorReference<?>> getActors();
 
 	@Setter(ACTORS_KEY)
@@ -296,6 +301,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void addToActors(ActorReference<?> actorReference) {
+
+			//System.out.println("***** addToActors " + actorReference);
 
 			if (actorReference == null) {
 				logger.warning("Could not register null ActorReference");
@@ -533,8 +540,37 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String getStringRepresentation() {
 			if (hasValidRenderer()) {
 				try {
-					// System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer() + " for " + this);
 					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
+
+					/*if (obj == null) {
+						System.out.println("J'ai deja un premier probleme la");
+						System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer());
+						System.out.println("Getting " + obj);
+						FlexoConceptInstance value = (FlexoConceptInstance) getValue(new BindingVariable("instance",
+								FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
+						System.out.println("value="
+								+ (value != null ? value.getClass() + "/" + Integer.toHexString(value.hashCode()) : null));
+						System.out.println("this=" + Integer.toHexString(hashCode()));
+						DataBinding<String> db = getFlexoConcept().getInspector().getRenderer();
+						if (db.getExpression() instanceof BindingValue) {
+							BindingValue bv = (BindingValue) db.getExpression();
+							System.out.println("Binding: " + db);
+							System.out.println("BindingValue: " + bv);
+							System.out.println("BindingVariable: " + bv.getBindingVariable());
+							System.out.println("BindingPath: " + bv.getBindingPath());
+							if (bv.getBindingPath().get(0) instanceof FlexoConceptPatternRolePathElement) {
+								FlexoConceptPatternRolePathElement pathElement = (FlexoConceptPatternRolePathElement) bv.getBindingPath()
+										.get(0);
+								System.out.println("PathElement: " + pathElement);
+								System.out.println("FlexoRole: " + pathElement.getFlexoRole());
+								System.out.println("On devrait trouver: " + pathElement.getBindingValue(value, this));
+								System.out.println("Les actors: " + value.getActors());
+								FlexoRole role = value.getFlexoConcept().getFlexoRole("name");
+								System.out.println("role=" + role);
+								System.out.println("hop: " + value.getFlexoActor(role));
+							}
+						}
+					}*/
 					if (rendererChangeListener == null) {
 						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getInspector().getRenderer(),
 								this) {

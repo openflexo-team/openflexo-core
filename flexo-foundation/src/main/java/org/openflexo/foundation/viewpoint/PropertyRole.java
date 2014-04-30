@@ -49,8 +49,8 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 	public void setDomain(IFlexoOntologyClass c);
 
-	public abstract class PropertyRoleImpl<T extends IFlexoOntologyStructuralProperty> extends OntologicObjectRoleImpl<T>
-			implements PropertyRole<T> {
+	public abstract class PropertyRoleImpl<T extends IFlexoOntologyStructuralProperty> extends OntologicObjectRoleImpl<T> implements
+			PropertyRole<T> {
 
 		private String parentPropertyURI;
 		private String domainURI;
@@ -129,6 +129,16 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
+		}
+
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Reference;
 		}
 
 		@Override

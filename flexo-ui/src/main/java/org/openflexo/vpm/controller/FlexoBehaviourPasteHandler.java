@@ -19,13 +19,18 @@
  */
 package org.openflexo.vpm.controller;
 
+import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
+import org.openflexo.foundation.action.PasteAction.PastingContext;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
@@ -43,19 +48,25 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public FlexoBehaviour retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, Clipboard clipboard) {
+	public boolean declarePolymorphicPastingContexts() {
+		return false;
+	}
 
-		if (focusedObject instanceof FlexoBehaviourParameter) {
-			return ((FlexoBehaviourParameter)focusedObject).getFlexoBehaviour();
-		} 
-		else if (focusedObject instanceof EditionAction<?,?>) {
-			return ((EditionAction<?,?>)focusedObject).getFlexoBehaviour();
-		} 
+	@Override
+	public PastingContext<FlexoBehaviour> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+			Clipboard clipboard, Event event) {
+		
+		/*if (focusedObject instanceof FlexoConcept) {
+			return new DefaultPastingContext<FlexoConcept>((FlexoConcept) focusedObject, event);
+		}
+		if (focusedObject instanceof FlexoBehaviour) {
+			return new DefaultPastingContext<FlexoConcept>(((FlexoBehaviour) focusedObject).getFlexoConcept(), event);
+		}*/
 		return null;
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, FlexoBehaviour pastingContext) {
+	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
 
 		// Translating names
 		if (clipboard.isSingleObject()) {
@@ -69,6 +80,11 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 				}
 			}
 		}
+	}
+
+	@Override
+	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
+		// nothing to do
 	}
 
 	private String translateName(FlexoBehaviour object) {

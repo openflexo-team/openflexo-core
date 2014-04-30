@@ -37,8 +37,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 
 	public void setOntologicType(IFlexoOntologyClass ontologyClass);
 
-	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual> extends OntologicObjectRoleImpl<I>
-			implements IndividualRole<I> {
+	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual> extends OntologicObjectRoleImpl<I> implements
+			IndividualRole<I> {
 
 		public IndividualRoleImpl() {
 			super();
@@ -50,6 +50,16 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 			out.append("FlexoRole " + getName() + " as Individual conformTo " + getPreciseType() + " from " + getModelSlot().getName()
 					+ " ;", context);
 			return out.toString();
+		}
+
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Clone;
 		}
 
 		@Override
@@ -117,8 +127,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 		}
 
 		@Override
-		public ValidationIssue<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole patternRole) {
+		public ValidationIssue<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
 				return new ValidationError<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
 						"pattern_role_does_not_define_any_concept_class");

@@ -593,6 +593,16 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			return getClass().getSimpleName();
 		}
 
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Reference;
+		}
+
 	}
 
 }

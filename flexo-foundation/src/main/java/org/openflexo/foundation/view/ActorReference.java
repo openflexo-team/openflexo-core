@@ -3,6 +3,8 @@ package org.openflexo.foundation.view;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -36,6 +38,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@Getter(value = ROLE_NAME_KEY)
 	@XMLAttribute
+	@CloningStrategy(StrategyType.CLONE)
 	public String getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
@@ -47,6 +50,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * @return
 	 */
 	@Getter(value = MODELLING_ELEMENT_KEY, ignoreType = true)
+	@CloningStrategy(StrategyType.REFERENCE)
 	public T getModellingElement();
 
 	/**
@@ -62,7 +66,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	 * 
 	 * @return
 	 */
-	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY, inverse = FlexoConceptInstance.ACTORS_KEY)
+	@Getter(value = FLEXO_CONCEPT_INSTANCE_KEY /*, inverse = FlexoConceptInstance.ACTORS_KEY*/)
+	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConceptInstance getFlexoConceptInstance();
 
 	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
@@ -80,7 +85,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		private FlexoRole<T> flexoRole;
 		private String flexoRoleName;
 		private ModelSlot modelSlot;
-		private FlexoConceptInstance epi;
+		private FlexoConceptInstance flexoConceptInstance;
 
 		public ModelSlot getModelSlot() {
 			return modelSlot;
@@ -108,18 +113,19 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public FlexoConceptInstance getFlexoConceptInstance() {
-			return epi;
+			return flexoConceptInstance;
 		}
 
 		@Override
-		public void setFlexoConceptInstance(FlexoConceptInstance epi) {
-			this.epi = epi;
+		public void setFlexoConceptInstance(FlexoConceptInstance fci) {
+			this.flexoConceptInstance = fci;
 		}
 
 		@Override
 		public FlexoRole<T> getFlexoRole() {
-			if (flexoRole == null && epi != null && StringUtils.isNotEmpty(flexoRoleName)) {
-				flexoRole = (FlexoRole<T>) epi.getFlexoConcept().getFlexoRole(flexoRoleName);
+			if (flexoRole == null && flexoConceptInstance != null && flexoConceptInstance.getFlexoConcept() != null
+					&& StringUtils.isNotEmpty(flexoRoleName)) {
+				flexoRole = (FlexoRole<T>) flexoConceptInstance.getFlexoConcept().getFlexoRole(flexoRoleName);
 			}
 			return flexoRole;
 		}

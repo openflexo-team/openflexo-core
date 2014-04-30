@@ -116,6 +116,16 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			// Not relevant
 		}*/
 
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Clone;
+		}
+
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
 			return true;
