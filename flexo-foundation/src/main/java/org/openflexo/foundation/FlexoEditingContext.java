@@ -66,13 +66,15 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private final Map<Class<?>, List<PasteHandler<? extends FlexoObject>>> pasteHandlers;
 
+	private final PasteHandler<?> defaultPasteHandler;
+
 	public static FlexoEditingContext createInstance() {
 		return new FlexoEditingContext();
 	}
 
 	private FlexoEditingContext() {
 		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
-		registerPasteHandler(new DefaultPasteHandler());
+		defaultPasteHandler = new DefaultPasteHandler();
 	}
 
 	@Override
@@ -184,12 +186,13 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		// We will store all matching handlers in a map where the key is the pasting point holder type
 		Map<Class<?>, PasteHandler<?>> matchingHandlers = new HashMap<Class<?>, PasteHandler<?>>();
 
+		ModelFactory factory = clipboard.getModelFactory();
+
 		// Iterate on all available handlers
 		for (List<PasteHandler<?>> hList : pasteHandlers.values()) {
 			for (PasteHandler<?> h : hList) {
 
 				// System.out.println("Examining Paste handler: " + h + " pastingPointHolderType=" + h.getPastingPointHolderType());
-				ModelFactory factory = clipboard.getModelFactory();
 
 				ModelEntity<?> pastingPointHolderEntity = factory.getModelContext().getModelEntity(h.getPastingPointHolderType());
 
@@ -236,6 +239,22 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 			// Return most specialized one
 			return matchingHandlers.get(mostSpecializedClass);
+		}
+
+		// No matches
+		// Try with default one
+
+		ModelEntity<?> pastingPointHolderEntity = factory.getModelContext().getModelEntity(focusedObject.getImplementedInterface());
+		if (pastingPointHolderEntity != null) {
+			// Entity was found in this ModelFactory, we can proceed
+			if (ProxyMethodHandler.isPastable(clipboard, pastingPointHolderEntity)) {
+				Object potentialPastingContext = defaultPasteHandler.retrievePastingContext(focusedObject, globalSelection, clipboard,
+						event);
+				if (potentialPastingContext != null) {
+					System.out.println("Returning default paste handler");
+					return defaultPasteHandler;
+				}
+			}
 		}
 
 		return null;
