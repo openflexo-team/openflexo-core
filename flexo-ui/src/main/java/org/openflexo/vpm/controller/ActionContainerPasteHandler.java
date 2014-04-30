@@ -59,17 +59,12 @@ public class ActionContainerPasteHandler implements PasteHandler<FlexoBehaviourO
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
 			return null;
 		}
-		// Paste a flexo behaviour from a flexo behaviour
-		/*else if((focusedObject instanceof FlexoBehaviour)
-				&&(clipboard.getSingleContents() instanceof FlexoBehaviour)){
-			return ((FlexoBehaviourObject) focusedObject).getFlexoConcept();
-		} */
 		// Paste a Flexo Action in a Flexo Action Container
-		else if ((focusedObject instanceof ActionContainer) && (clipboard.getSingleContents() instanceof EditionAction<?, ?>)) {
+		if ((focusedObject instanceof ActionContainer)){
 			return new DefaultPastingContext<FlexoBehaviourObject>((FlexoBehaviourObject) focusedObject, event);
 		}
 		// Paste a Flexo Action from a Flexo Action
-		else if ((focusedObject instanceof EditionAction<?, ?>) && (clipboard.getSingleContents() instanceof EditionAction<?, ?>)) {
+		if ((focusedObject instanceof EditionAction<?, ?>)){
 			return new DefaultPastingContext<FlexoBehaviourObject>(
 					(FlexoBehaviourObject) ((EditionAction<?, ?>) focusedObject).getActionContainer(), event);
 		}
