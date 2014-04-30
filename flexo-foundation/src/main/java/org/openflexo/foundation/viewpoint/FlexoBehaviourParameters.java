@@ -68,12 +68,18 @@ public interface FlexoBehaviourParameters extends FlexoBehaviourObject, FlexoFac
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			return getFlexoConcept().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
+			}
+			return null;
 		}
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			return getFlexoBehaviour().getFlexoConcept();
+			if (getFlexoBehaviour() != null) {
+				return getFlexoBehaviour().getFlexoConcept();
+			}
+			return null;
 		}
 	}
 }
