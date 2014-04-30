@@ -45,8 +45,8 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public boolean declarePolymorphicPastingContexts() {
-		return false;
+	public Class<FlexoConcept> getPastingPointHolderType() {
+		return FlexoConcept.class;
 	}
 
 	@Override

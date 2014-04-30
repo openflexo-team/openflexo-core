@@ -97,6 +97,12 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 			PasteHandler<?> handler = editingContext.getPasteHandler(focusedObject, globalSelection, null);
 
+			if (handler == null) {
+				System.out.println("Could not find any PasteHandler for focused=" + focusedObject + " and clipboard type: "
+						+ editingContext.getClipboard().getTypes()[0]);
+				return false;
+			}
+
 			PastingContext pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
 					null);
 
@@ -247,12 +253,19 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	public static interface PasteHandler<T extends FlexoObject> {
 
 		/**
+		 * Return the type of pasting point holder this paste handler might handle
+		 * 
+		 * @return
+		 */
+		public Class<T> getPastingPointHolderType();
+
+		/**
 		 * When returning true, indicates that complex pasting strategies might be handled by this {@link PasteHandler} (this means that
 		 * paste is not only possible on declared PastingPoint type, but can be accessible from a more complex way)
 		 * 
 		 * @return
 		 */
-		public boolean declarePolymorphicPastingContexts();
+		// public boolean declarePolymorphicPastingContexts();
 
 		/**
 		 * Return a {@link PastingContext} if current selection and clipboard allows it.<br>
@@ -370,8 +383,8 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	public static class DefaultPasteHandler implements PasteHandler<FlexoObject> {
 
 		@Override
-		public boolean declarePolymorphicPastingContexts() {
-			return false;
+		public Class<FlexoObject> getPastingPointHolderType() {
+			return FlexoObject.class;
 		}
 
 		@Override

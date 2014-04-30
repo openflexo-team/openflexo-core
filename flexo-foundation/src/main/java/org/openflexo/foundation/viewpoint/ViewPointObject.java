@@ -28,6 +28,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationError;
@@ -95,7 +96,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		}
 
 		@Override
-		public ViewPoint getResourceData() {
+		public ResourceData getResourceData() {
 			return getViewPoint();
 		}
 

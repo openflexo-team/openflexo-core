@@ -56,8 +56,8 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public boolean declarePolymorphicPastingContexts() {
-		return true;
+	public Class<VirtualModelInstance> getPastingPointHolderType() {
+		return VirtualModelInstance.class;
 	}
 
 	@Override

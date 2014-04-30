@@ -69,6 +69,12 @@ public interface FlexoConceptObject extends NamedViewPointObject {
 				return getFlexoConcept().getViewPoint();
 			}
 			return null;
+
+		}
+
+		@Override
+		public VirtualModel getResourceData() {
+			return getVirtualModel();
 		}
 
 		@Override

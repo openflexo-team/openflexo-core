@@ -35,9 +35,12 @@ import org.openflexo.foundation.action.PasteAction.DefaultPasteHandler;
 import org.openflexo.foundation.action.PasteAction.PasteActionType;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.SelectAllAction.SelectAllActionType;
+import org.openflexo.model.ModelEntity;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EditingContextImpl;
+import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.model.factory.ProxyMethodHandler;
 
 /**
  * The {@link FlexoEditingContext} represents the {@link EditingContext} for the whole application<br>
@@ -69,7 +72,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private FlexoEditingContext() {
 		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
-		registerPasteHandler(FlexoObject.class, new DefaultPasteHandler());
+		registerPasteHandler(new DefaultPasteHandler());
 	}
 
 	@Override
@@ -130,35 +133,46 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		this.clipboard = clipboard;
 	}
 
-	public void registerPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
-		System.out.println("%%%%%%%%% registerPasteHandler " + pasteHandler + " for " + targetClass);
-		List<PasteHandler<?>> handlersList = pasteHandlers.get(targetClass);
+	public void registerPasteHandler(PasteHandler<?> pasteHandler) {
+		logger.info("%%%%%%%%% registerPasteHandler " + pasteHandler + " for " + pasteHandler.getPastingPointHolderType());
+		List<PasteHandler<?>> handlersList = pasteHandlers.get(pasteHandler.getPastingPointHolderType());
 		if (handlersList == null) {
 			handlersList = new ArrayList<PasteHandler<?>>();
-			pasteHandlers.put(targetClass, handlersList);
+			pasteHandlers.put(pasteHandler.getPastingPointHolderType(), handlersList);
 		}
 		if (!handlersList.contains(pasteHandler)) {
 			handlersList.add(pasteHandler);
 		}
 	}
 
-	public void unregisterPasteHandler(Class<?> targetClass, PasteHandler<?> pasteHandler) {
-		System.out.println("%%%%%%%%% unregisterPasteHandler " + pasteHandler);
-		for (Class c : pasteHandlers.keySet()) {
-			List<PasteHandler<?>> handlersList = pasteHandlers.get(c);
-			if (handlersList != null && handlersList.contains(pasteHandler)) {
-				handlersList.remove(pasteHandler);
-				if (handlersList.isEmpty()) {
-					pasteHandlers.remove(targetClass);
-				}
+	public void unregisterPasteHandler(PasteHandler<?> pasteHandler) {
+		logger.info("%%%%%%%%% unregisterPasteHandler " + pasteHandler);
+		List<PasteHandler<?>> handlersList = pasteHandlers.get(pasteHandler.getPastingPointHolderType());
+		if (handlersList != null && handlersList.contains(pasteHandler)) {
+			handlersList.remove(pasteHandler);
+			if (handlersList.isEmpty()) {
+				pasteHandlers.remove(pasteHandler.getPastingPointHolderType());
 			}
 		}
 	}
 
+	/**
+	 * Implements PasteHandler lookup<br>
+	 * The lookup is performed relatively to the current selection and focused object, and the type of objects stored in Clipboard.
+	 * 
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param event
+	 * @return
+	 */
 	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject, List<FlexoObject> globalSelection, Event event) {
 
-		/*System.out.println("On me demande le PasteHandler pour " + focusedObject);
-		System.out.println("J'ai ca:");
+		System.out.println("********* Requesting PasteHandler for " + focusedObject);
+
+		// System.out.println("clipboard=");
+		// System.out.println(clipboard.debug());
+
+		/*System.out.println("Available paste handlers");
 		for (Class c : pasteHandlers.keySet()) {
 			System.out.println("* " + c);
 			List<PasteHandler<?>> hList = pasteHandlers.get(c);
@@ -167,24 +181,63 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 			}
 		}*/
 
+		// We will store all matching handlers in a map where the key is the pasting point holder type
+		Map<Class<?>, PasteHandler<?>> matchingHandlers = new HashMap<Class<?>, PasteHandler<?>>();
+
+		// Iterate on all available handlers
 		for (List<PasteHandler<?>> hList : pasteHandlers.values()) {
 			for (PasteHandler<?> h : hList) {
-				if (h.declarePolymorphicPastingContexts()) {
-					Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, clipboard, event);
-					if (potentialPastingContext != null) {
-						// First one matches is returned
-						// TODO: handle multiples
-						System.out.println("Found PasteHandler " + h + " for " + focusedObject);
-						return h;
+
+				// System.out.println("Examining Paste handler: " + h + " pastingPointHolderType=" + h.getPastingPointHolderType());
+				ModelFactory factory = clipboard.getModelFactory();
+
+				ModelEntity<?> pastingPointHolderEntity = factory.getModelContext().getModelEntity(h.getPastingPointHolderType());
+
+				// System.out.println("factory=" + factory);
+				// System.out.println("pastingPointHolderEntity=" + pastingPointHolderEntity);
+
+				if (pastingPointHolderEntity != null) {
+					// Entity was found in this ModelFactory, we can proceed
+
+					// System.out.println("Found entity " + pastingPointHolderEntity);
+
+					if (ProxyMethodHandler.isPastable(clipboard, pastingPointHolderEntity)) {
+						// Pamela annotations generically allows a paste for such pasting point holder type
+						// Proceed...
+
+						Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, clipboard, event);
+						if (potentialPastingContext != null) {
+							// System.out.println("Found PasteHandler " + h + " for " + focusedObject);
+							matchingHandlers.put(h.getPastingPointHolderType(), h);
+						}
 					}
+
+					else {
+						// Sorry, cannot proceed to paste for pastingPointHolderEntity
+						// System.out.println("Sorry, cannot paste for " + pastingPointHolderEntity + " (handler=" + h + ")");
+					}
+
 				}
 			}
 		}
-		List<PasteHandler<?>> returned = TypeUtils.objectForClass(focusedObject.getClass(), pasteHandlers);
-		if (returned.size() > 0) {
-			System.out.println("Found default PasteHandler " + returned.get(0) + " for " + focusedObject);
-			return returned.get(0);
+
+		if (matchingHandlers.size() == 1) {
+			System.out.println("Found a unique paste handler: " + matchingHandlers.values().iterator().next());
+			// Return it
+			return matchingHandlers.values().iterator().next();
+		} else if (matchingHandlers.size() > 0) {
+			System.out.println("Found multiple paste handler:");
+			for (PasteHandler<?> h : matchingHandlers.values()) {
+				System.out.println("> " + h);
+			}
+
+			Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(matchingHandlers.keySet());
+			System.out.println("Select the one for class: " + mostSpecializedClass);
+
+			// Return most specialized one
+			return matchingHandlers.get(mostSpecializedClass);
 		}
+
 		return null;
 	}
 }

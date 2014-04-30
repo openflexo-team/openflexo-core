@@ -24,14 +24,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
@@ -48,14 +43,14 @@ public class FlexoBehaviourPasteHandler implements PasteHandler<FlexoBehaviour> 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public boolean declarePolymorphicPastingContexts() {
-		return false;
+	public Class<FlexoBehaviour> getPastingPointHolderType() {
+		return FlexoBehaviour.class;
 	}
 
 	@Override
 	public PastingContext<FlexoBehaviour> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			Clipboard clipboard, Event event) {
-		
+
 		/*if (focusedObject instanceof FlexoConcept) {
 			return new DefaultPastingContext<FlexoConcept>((FlexoConcept) focusedObject, event);
 		}
