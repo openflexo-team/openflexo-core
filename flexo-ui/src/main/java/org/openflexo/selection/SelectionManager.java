@@ -206,7 +206,7 @@ public abstract class SelectionManager extends Observable {
 	 *            : the object to add to selection
 	 */
 	public void addToSelected(FlexoObject object) {
-		logger.info(">>>>>>> addToSelected: " + object);
+		// logger.info(">>>>>>> addToSelected: " + object);
 		internallyAddToSelected(object, true);
 		updateInspectorManagement();
 	}
@@ -218,7 +218,7 @@ public abstract class SelectionManager extends Observable {
 	 *            : the object to remove from selection
 	 */
 	public void removeFromSelected(FlexoObject object) {
-		logger.info(">>>>>>>> removeFromSelected: " + object);
+		// logger.info(">>>>>>>> removeFromSelected: " + object);
 		internallyRemoveFromSelected(object);
 		updateInspectorManagement();
 	}
