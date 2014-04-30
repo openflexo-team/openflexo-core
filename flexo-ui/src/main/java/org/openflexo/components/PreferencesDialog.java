@@ -91,9 +91,15 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 
 			if (prefs == null) {
 				return null;
+			} 
+			
+			if(getFIBPanelForObject(prefs)!=null){
+				return getFIBPanelForObject(prefs);
 			}
 
-			ModelEntity<?> prefsEntity = prefs.getFlexoPreferencesFactory().getModelEntityForInstance(prefs);
+			return null;
+			
+			/*ModelEntity<?> prefsEntity = prefs.getFlexoPreferencesFactory().getModelEntityForInstance(prefs);
 
 			if (prefsEntity != null) {
 
@@ -109,7 +115,7 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 				}
 			}
 
-			return null;
+			return null;*/
 		}
 	}
 
