@@ -522,6 +522,30 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return returned;
 		}
 
+		// Override PAMELA internal call by providing custom notification support
+		@Override
+		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
+			performSuperAdder(FLEXO_CONCEPTS_KEY, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
+			if (aFlexoConcept.getParentFlexoConcepts() != null) {
+				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
+					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
+				}
+			}
+		}
+
+		// Override PAMELA internal call by providing custom notification support
+		@Override
+		public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept) {
+			performSuperRemover(FLEXO_CONCEPTS_KEY, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", aFlexoConcept, null);
+			if (aFlexoConcept.getParentFlexoConcepts() != null) {
+				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
+					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
+				}
+			}
+		}
+
 		/**
 		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
 		 * 
