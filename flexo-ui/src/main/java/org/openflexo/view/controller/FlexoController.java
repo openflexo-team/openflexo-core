@@ -514,9 +514,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public void showInspector() {
 		getModuleInspectorController().getInspectorDialog().setVisible(true);
 	}
+	
+	public void hideInspector() {
+		getModuleInspectorController().getInspectorDialog().setVisible(false);;
+	}
 
 	public void resetInspector() {
-
 		getModuleInspectorController().resetInspector();
 	}
 

@@ -223,13 +223,18 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 	}
 
 	public class InspectorWindowAction extends AbstractAction {
+
 		public InspectorWindowAction() {
 			super();
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			getController().showInspector();
+			if (getController().getModuleInspectorController().getInspectorDialog().isVisible()) {
+				getController().hideInspector();
+			} else {
+				getController().showInspector();
+			}
 		}
 
 	}

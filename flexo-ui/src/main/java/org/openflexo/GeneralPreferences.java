@@ -148,7 +148,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 	@Setter(SYNCHRONIZED_BROWSER)
 	public void setSynchronizedBrowser(boolean synchronizedBrowser);
 
-	@Getter(value = INSPECTOR_VISIBLE, defaultValue = "true")
+	@Getter(value = INSPECTOR_VISIBLE, defaultValue = "false")
 	@XMLAttribute
 	public boolean getInspectorVisible();
 

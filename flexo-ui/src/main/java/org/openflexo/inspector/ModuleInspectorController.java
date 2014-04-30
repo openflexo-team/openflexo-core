@@ -95,7 +95,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(true);
+				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(false);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			};
 		});
