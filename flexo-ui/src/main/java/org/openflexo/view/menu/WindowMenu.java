@@ -216,7 +216,7 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			setAction(action);
 			KeyStroke accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_I, FlexoCst.META_MASK);
 			setAccelerator(accelerator);
-			getController().registerActionForKeyStroke(action, accelerator, "inspect");
+			getController().registerActionForKeyStroke(action, accelerator, "inspectFromMenu");
 			setText(FlexoLocalization.localizedForKey("inspector", this));
 		}
 
@@ -230,11 +230,11 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (getController().getModuleInspectorController().getInspectorDialog().isVisible()) {
+			/*if (getController().getModuleInspectorController().getInspectorDialog().isVisible()) {
 				getController().hideInspector();
-			} else {
+			} else {*/
 				getController().showInspector();
-			}
+			//}
 		}
 
 	}
