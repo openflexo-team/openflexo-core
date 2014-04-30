@@ -137,8 +137,9 @@ public class FlexoClipboard {
 				System.out.println("We had: " + objectsToBeCopied.get(pamelaResource));
 				System.out.println("We have now: " + extendedObjectsToBeCopied.get(pamelaResource));
 
-				clipboard = modelFactory.copy(extendedObjectsToBeCopied.get(pamelaResource).toArray(
-						new Object[extendedObjectsToBeCopied.size()]));
+				List<FlexoObject> objectsToCopyInThisResource = extendedObjectsToBeCopied.get(pamelaResource);
+
+				clipboard = modelFactory.copy(objectsToCopyInThisResource.toArray(new Object[objectsToCopyInThisResource.size()]));
 				clipboard.setCopyContext(copyContext);
 				// System.out.println(clipboard.debug());
 				// System.out.println("copyContext=" + copyContext);
