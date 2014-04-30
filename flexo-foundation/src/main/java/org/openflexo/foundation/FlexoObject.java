@@ -1222,6 +1222,11 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			return getClass();
 		}
 
+		@Override
+		public String toString() {
+			return getImplementedInterface().getSimpleName() + "[ID=" + getFlexoID() + "]" + "@" + Integer.toHexString(hashCode());
+		}
+
 	}
 
 }
