@@ -133,8 +133,12 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 
 	public FlexoObjectReference(O object) {
 		this.modelObject = object;
-		this.modelObject.addToReferencers(this);
+
+		if (this.modelObject != null) {
+			this.modelObject.addToReferencers(this);
+		}
 		this.status = ReferenceStatus.RESOLVED;
+
 		/**
 		 * We also initialize the string representation for the following reason: Let's say the user creates a reference to the given
 		 * <code>object</code> and then later on, the user deletes that <code>object</code> but the reference owner does not remove its

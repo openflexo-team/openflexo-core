@@ -415,7 +415,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
 
-			System.out.println(">>>>>>>>> addToFlexoConceptInstances " + fci);
+			logger.info(">>>>>>>>> addToFlexoConceptInstances " + fci);
 
 			System.out.println("Already storing: ");
 			for (FlexoConceptInstance i : getFlexoConceptInstances()) {

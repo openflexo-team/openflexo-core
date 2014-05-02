@@ -20,6 +20,7 @@
 package org.openflexo.foundation.action;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -28,8 +29,6 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ModelFactory;
 
 public class CutAction extends AbstractCopyAction<CutAction> {
 
@@ -54,18 +53,14 @@ public class CutAction extends AbstractCopyAction<CutAction> {
 			CutAction returned = new CutAction(this, focusedObject, globalSelection, editor);
 			returned.editingContext = editingContext;
 			returned.objectsToBeCopied = objectsToBeCopied;
-			returned.pamelaResource = pamelaResource;
-			returned.copyContext = copyContext;
 			return returned;
 		}
 	};
 
 	private FlexoEditingContext editingContext;
-	private List<Object> objectsToBeCopied;
-	private PamelaResource<?, ?> pamelaResource;
-	private Object copyContext;
+	protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
 
-	private Clipboard clipboard;
+	private FlexoClipboard clipboard;
 
 	CutAction(CutActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -89,28 +84,10 @@ public class CutAction extends AbstractCopyAction<CutAction> {
 	 * @throws CopyException
 	 * @throws InvalidSelectionException
 	 */
-	private Clipboard cut() throws CopyException, InvalidSelectionException {
+	private FlexoClipboard cut() throws CopyException, InvalidSelectionException {
 
-		ModelFactory modelFactory = pamelaResource.getFactory();
-
-		/*System.out.println("CUT");
-		System.out.println("pamelaResource=" + pamelaResource);
-		System.out.println("modelFactory=" + modelFactory);
-		System.out.println("copyContext=" + copyContext);
-		System.out.println("objectsToBeCopied=" + objectsToBeCopied);*/
-
-		try {
-
-			clipboard = modelFactory.cut(objectsToBeCopied.toArray(new Object[objectsToBeCopied.size()]));
-			clipboard.setCopyContext(copyContext);
-			// System.out.println(clipboard.debug());
-			// System.out.println("copyContext=" + copyContext);
-			// TODO ?
-			// notifyObservers(new SelectionCopied(clipboard));
-			return clipboard;
-		} catch (Throwable e) {
-			throw new CopyException(e, modelFactory);
-		}
+		clipboard = FlexoClipboard.cut(objectsToBeCopied, getFocusedObject(), null);
+		return clipboard;
 	}
 
 }

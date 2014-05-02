@@ -68,7 +68,10 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			return getFlexoConcept().getVirtualModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
+			}
+			return null;
 		}
 	}
 }

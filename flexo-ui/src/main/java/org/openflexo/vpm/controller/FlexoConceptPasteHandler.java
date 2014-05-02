@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
@@ -51,7 +52,7 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 
 	@Override
 	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			Clipboard clipboard, Event event) {
+			FlexoClipboard clipboard, Event event) {
 
 		if (!(focusedObject instanceof FlexoConceptObject)) {
 			return null;
@@ -61,15 +62,17 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 	}
 
 	@Override
-	public void prepareClipboardForPasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+
+		Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 		// Translating names
-		if (clipboard.isSingleObject()) {
-			if (clipboard.getSingleContents() instanceof FlexoConceptObject) {
-				translateName((FlexoConceptObject) clipboard.getSingleContents());
+		if (leaderClipboard.isSingleObject()) {
+			if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
+				translateName((FlexoConceptObject) leaderClipboard.getSingleContents());
 			}
 		} else {
-			for (Object o : clipboard.getMultipleContents()) {
+			for (Object o : leaderClipboard.getMultipleContents()) {
 				if (o instanceof FlexoConceptObject) {
 					translateName((FlexoConceptObject) o);
 				}
@@ -78,7 +81,7 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 	}
 
 	@Override
-	public void finalizePasting(Clipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
 		// Nothing to do
 	}
 

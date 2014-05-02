@@ -302,7 +302,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public void addToActors(ActorReference<?> actorReference) {
 
-			//System.out.println("***** addToActors " + actorReference);
+			// System.out.println("***** addToActors " + actorReference);
 
 			if (actorReference == null) {
 				logger.warning("Could not register null ActorReference");
@@ -624,8 +624,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public String toString() {
-			return getClass().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "_"
-					+ getFlexoID() + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
+			return getImplementedInterface().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null")
+					+ "[ID=" + getFlexoID() + "]" + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
 		}
 
 	}
