@@ -324,6 +324,30 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return parameterToDelete;
 	}
 
+	public void actionFirst(EditionAction<?,?> action){
+		if(action.getActionContainer()!=null){
+			action.getActionContainer().actionFirst(action);
+		}
+	}
+	
+	public void actionUp(EditionAction<?,?> action){
+		if(action.getActionContainer()!=null){
+			action.getActionContainer().actionUp(action);
+		}
+	}
+	
+	public void actionDown(EditionAction<?,?> action){
+		if(action.getActionContainer()!=null){
+			action.getActionContainer().actionDown(action);
+		}
+	}
+	
+	public void actionLast(EditionAction<?,?> action){
+		if(action.getActionContainer()!=null){
+			action.getActionContainer().actionLast(action);
+		}
+	}
+	
 	public boolean isFlexoBehaviour(Object selectedObject, FlexoBehaviour context) {
 		return selectedObject == null || selectedObject == context;
 	}

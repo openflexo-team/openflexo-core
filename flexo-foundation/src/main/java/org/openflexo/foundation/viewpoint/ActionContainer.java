@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.annotations.Adder;
@@ -44,7 +43,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActionContainer.ActionContainerImpl.class)
-public interface ActionContainer {
+public interface ActionContainer extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String ACTIONS_KEY = "actions";
@@ -88,30 +87,33 @@ public interface ActionContainer {
 	public EditionAction<?, ?> deleteAction(EditionAction<?, ?> anAction);
 
 	public void variableAdded(AssignableAction action);
+	
+	public boolean isALastAction(EditionAction<?, ?> a);
+	
+	public boolean isAFirstAction(EditionAction<?, ?> a);
 
 	@Implementation
-	public abstract class ActionContainerImpl extends FlexoBehaviourObjectImpl implements ActionContainer {
+	public static abstract class ActionContainerImpl extends FlexoBehaviourObjectImpl implements ActionContainer {
 		@Override
 		public int getIndex(EditionAction<?, ?> action) {
 			return getActions().indexOf(action);
 		}
-
+		
+		
+		/* 
 		@Override
 		public void insertActionAtIndex(EditionAction<?, ?> action, int index) {
 			// action.setScheme(getEditionScheme());
 			action.setActionContainer(this);
 			getActions().add(index, action);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, getActions());
+			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		@Override
 		public void actionFirst(EditionAction<?, ?> a) {
 			getActions().remove(a);
 			getActions().add(0, a);
-			setChanged();
-			notifyChange("actions", null, getActions());
+			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		@Override
@@ -120,19 +122,17 @@ public interface ActionContainer {
 			if (index > 0) {
 				getActions().remove(a);
 				getActions().add(index - 1, a);
-				setChanged();
-				notifyChange("actions", null, getActions());
+				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 			}
 		}
 
 		@Override
 		public void actionDown(EditionAction<?, ?> a) {
 			int index = getActions().indexOf(a);
-			if (index > 0) {
+			if (index > -1) {
 				getActions().remove(a);
 				getActions().add(index + 1, a);
-				setChanged();
-				notifyChange("actions", null, getActions());
+				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 			}
 		}
 
@@ -140,9 +140,42 @@ public interface ActionContainer {
 		public void actionLast(EditionAction<?, ?> a) {
 			getActions().remove(a);
 			getActions().add(a);
-			setChanged();
-			notifyChange("actions", null, getActions());
+			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
+		}*/
+		
+		@Override
+		public boolean isALastAction(EditionAction<?, ?> a){
+			boolean isLast = false;
+			if(a!=null){
+				if(getIndex(a)==-1){
+					for(EditionAction<?,?> ea : getActions()){
+						if(ea instanceof ActionContainer){
+							isLast = ((ActionContainer)ea).isALastAction(a);
+						}
+					}
+				}else if(getActions().size()<getIndex(a)){
+					isLast=false;
+				}
+			}
+			return isLast;
 		}
-
+		
+		@Override
+		public boolean isAFirstAction(EditionAction<?, ?> a){
+			boolean isFirst = false;
+			if(a!=null){
+				if(getIndex(a)==-1){
+					for(EditionAction<?,?> ea : getActions()){
+						if(ea instanceof ActionContainer){
+							isFirst = ((ActionContainer)ea).isAFirstAction(a);
+						}
+					}
+				}else if(getIndex(a)==0){
+					isFirst = true;
+				}
+			}
+			return isFirst;
+		}
+		
 	}
 }

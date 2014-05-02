@@ -421,6 +421,40 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			notifyChange("actions", null, actions);
 		}
 		*/
+		
+		@Override
+		public void actionFirst(EditionAction<?, ?> a) {
+			getActions().remove(a);
+			getActions().add(0, a);
+			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
+		}
+
+		@Override
+		public void actionUp(EditionAction<?, ?> a) {
+			int index = getActions().indexOf(a);
+			if (index > 0) {
+				getActions().remove(a);
+				getActions().add(index - 1, a);
+				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
+			}
+		}
+
+		@Override
+		public void actionDown(EditionAction<?, ?> a) {
+			int index = getActions().indexOf(a);
+			if (index > -1) {
+				getActions().remove(a);
+				getActions().add(index + 1, a);
+				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
+			}
+		}
+
+		@Override
+		public void actionLast(EditionAction<?, ?> a) {
+			getActions().remove(a);
+			getActions().add(a);
+			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
+		}
 
 		/*	@Override
 			public Vector<FlexoBehaviourParameter> getParameters() {
