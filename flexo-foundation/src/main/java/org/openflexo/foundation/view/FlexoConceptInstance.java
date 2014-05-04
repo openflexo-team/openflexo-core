@@ -388,14 +388,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-			FlexoRole pr = getFlexoConcept().getFlexoRole(variable.getVariableName());
-			if (pr != null) {
-				return getFlexoActor(pr);
+			if (getFlexoConcept() != null) {
+				FlexoRole pr = getFlexoConcept().getFlexoRole(variable.getVariableName());
+				if (pr != null) {
+					return getFlexoActor(pr);
+				}
+				if (variable.getVariableName().equals("instance")) {
+					return FlexoConceptInstanceImpl.this;
+				}
+				logger.warning("Unexpected " + variable);
 			}
-			if (variable.getVariableName().equals("instance")) {
-				return FlexoConceptInstanceImpl.this;
-			}
-			logger.warning("Unexpected " + variable);
 			return null;
 		}
 
