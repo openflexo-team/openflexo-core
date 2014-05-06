@@ -160,7 +160,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		assertNotNull(actionScheme);
 
 		CreateEditionSchemeParameter createParameter = CreateEditionSchemeParameter.actionType.makeNewAction(actionScheme, null, editor);
-		createParameter.flexoBehaviourParameterClass = CheckboxParameter.class;
+		createParameter.setFlexoBehaviourParameterClass(CheckboxParameter.class);
 		createParameter.setParameterName("aFlag");
 		createParameter.doAction();
 		FlexoBehaviourParameter param = createParameter.getNewParameter();

@@ -89,7 +89,7 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	private String flexoBehaviourName;
 	private String description;
 	private Class<? extends FlexoBehaviour> flexoBehaviourClass;
-	private final HashMap<Class<? extends FlexoBehaviour>,TechnologyAdapter> behaviourClassMap;
+	private final HashMap<Class<? extends FlexoBehaviour>, TechnologyAdapter> behaviourClassMap;
 
 	private List<Class<? extends FlexoBehaviour>> behaviours;
 
@@ -97,53 +97,53 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 
 	CreateEditionScheme(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		
-		behaviourClassMap = new HashMap<Class<? extends FlexoBehaviour>,TechnologyAdapter>();
-		
-		if(focusedObject instanceof VirtualModel){
-			addVirtualModelFlexoBehaviours((VirtualModel)focusedObject);
-		}else if(focusedObject instanceof FlexoConcept){
-			addFlexoConceptFlexoBehaviours((FlexoConcept)focusedObject);
+
+		behaviourClassMap = new HashMap<Class<? extends FlexoBehaviour>, TechnologyAdapter>();
+
+		if (focusedObject instanceof VirtualModel) {
+			addVirtualModelFlexoBehaviours((VirtualModel) focusedObject);
+		} else if (focusedObject instanceof FlexoConcept) {
+			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
 		}
 	}
-	
-	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel){
+
+	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel) {
 		behaviourClassMap.put(ActionScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(CloningScheme.class,virtualModel.getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(CreationScheme.class, virtualModel.getTechnologyAdapter());
 		behaviourClassMap.put(DeletionScheme.class, virtualModel.getTechnologyAdapter());
-		behaviourClassMap.put(SynchronizationScheme.class,virtualModel.getTechnologyAdapter());
-		for(ModelSlot<?> ms : virtualModel.getModelSlots()){
+		behaviourClassMap.put(SynchronizationScheme.class, virtualModel.getTechnologyAdapter());
+		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
 			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
-			for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
-				if(!behaviourClassMap.containsKey(behaviour)){
-					behaviourClassMap.put(behaviour,ms.getTechnologyAdapter());
+			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
+				if (!behaviourClassMap.containsKey(behaviour)) {
+					behaviourClassMap.put(behaviour, ms.getTechnologyAdapter());
 				}
 			}
 		}
 	}
-	
-	private void addFlexoConceptFlexoBehaviours(FlexoConcept flexoConcept){
+
+	private void addFlexoConceptFlexoBehaviours(FlexoConcept flexoConcept) {
 		behaviourClassMap.put(ActionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(CloningScheme.class,flexoConcept.getVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(CreationScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
 		behaviourClassMap.put(DeletionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		for(ModelSlot<?> ms : flexoConcept.getVirtualModel().getModelSlots()){
+		for (ModelSlot<?> ms : flexoConcept.getVirtualModel().getModelSlots()) {
 			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
-			for(Class<? extends FlexoBehaviour> behaviour : msBehaviours){
-				if(!behaviourClassMap.containsKey(behaviour)){
-					behaviourClassMap.put(behaviour,ms.getTechnologyAdapter());
+			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
+				if (!behaviourClassMap.containsKey(behaviour)) {
+					behaviourClassMap.put(behaviour, ms.getTechnologyAdapter());
 				}
 			}
 		}
 	}
-	
-	public TechnologyAdapter getBehaviourTechnologyAdapter(Class<? extends FlexoBehaviour> behaviourClass){
+
+	public TechnologyAdapter getBehaviourTechnologyAdapter(Class<? extends FlexoBehaviour> behaviourClass) {
 		return behaviourClassMap.get(behaviourClass);
 	}
 
 	public List<Class<? extends FlexoBehaviour>> getBehaviours() {
-		if(behaviours==null){
+		if (behaviours == null) {
 			behaviours = new ArrayList<Class<? extends FlexoBehaviour>>();
 			for (Class<? extends FlexoBehaviour> mapKey : behaviourClassMap.keySet()) {
 				behaviours.add(mapKey);
@@ -198,29 +198,29 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 		return newFlexoBehaviour;
 	}
 
-	private String validityMessage = EMPTY_NAME;
+	private String errorMessage = EMPTY_NAME;
 
 	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
 	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_behaviour_must_have_an_non_empty_and_unique_name");
 	private static final String EMPTY_FLEXO_BEHAVIOUR_TYPE = FlexoLocalization.localizedForKey("a_flexo_behaviour_type_must_be_selected");
 
-	public String getValidityMessage() {
-		return validityMessage;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
 	@Override
 	public boolean isValid() {
 		if (getFlexoBehaviourName() == null) {
-			validityMessage = EMPTY_NAME;
+			errorMessage = EMPTY_NAME;
 			return false;
 		} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
-			validityMessage = DUPLICATED_NAME;
+			errorMessage = DUPLICATED_NAME;
 			return false;
 		} else if (flexoBehaviourClass == null) {
-			validityMessage = EMPTY_FLEXO_BEHAVIOUR_TYPE;
+			errorMessage = EMPTY_FLEXO_BEHAVIOUR_TYPE;
 			return false;
 		} else {
-			validityMessage = "";
+			errorMessage = "";
 			return true;
 		}
 	}
@@ -230,7 +230,11 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	}
 
 	public void setDescription(String description) {
+		boolean wasValid = isValid();
 		this.description = description;
+		getPropertyChangeSupport().firePropertyChange("description", null, description);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
 	public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
@@ -238,6 +242,10 @@ public class CreateEditionScheme extends FlexoAction<CreateEditionScheme, FlexoC
 	}
 
 	public void setFlexoBehaviourClass(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
+		boolean wasValid = isValid();
 		this.flexoBehaviourClass = flexoBehaviourClass;
+		getPropertyChangeSupport().firePropertyChange("flexoBehaviourClass", null, flexoBehaviourClass);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 }

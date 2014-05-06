@@ -70,8 +70,8 @@ public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchem
 	}
 
 	private String parameterName;
-	public String description;
-	public Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass;
+	private String description;
+	private Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass;
 
 	private FlexoBehaviourParameter newParameter;
 
@@ -116,26 +116,46 @@ public class CreateEditionSchemeParameter extends FlexoAction<CreateEditionSchem
 		return newParameter;
 	}
 
-	private String validityMessage = EMPTY_NAME;
+	private String errorMessage = EMPTY_NAME;
 
 	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_scheme_must_have_an_non_empty_and_unique_name");
+	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_behaviour_must_have_an_non_empty_and_unique_name");
 
-	public String getValidityMessage() {
-		return validityMessage;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
-			validityMessage = EMPTY_NAME;
+			errorMessage = EMPTY_NAME;
 			return false;
 		} else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
-			validityMessage = DUPLICATED_NAME;
+			errorMessage = DUPLICATED_NAME;
 			return false;
 		} else {
-			validityMessage = "";
+			errorMessage = "";
 			return true;
 		}
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Class<? extends FlexoBehaviourParameter> getFlexoBehaviourParameterClass() {
+		return flexoBehaviourParameterClass;
+	}
+
+	public void setFlexoBehaviourParameterClass(Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass) {
+		boolean wasValid = isValid();
+		this.flexoBehaviourParameterClass = flexoBehaviourParameterClass;
+		getPropertyChangeSupport().firePropertyChange("flexoBehaviourParameterClass", null, flexoBehaviourParameterClass);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 }
