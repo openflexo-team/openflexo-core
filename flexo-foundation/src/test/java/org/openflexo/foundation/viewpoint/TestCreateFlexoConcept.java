@@ -17,8 +17,8 @@ import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
-import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
-import org.openflexo.foundation.viewpoint.action.CreateEditionSchemeParameter;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.AssignationAction;
 import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
@@ -254,7 +254,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(10)
 	public void testCreateACreationSchemeInConceptA() throws SaveResourceException {
 
-		CreateEditionScheme createCreationScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
 		createCreationScheme.doAction();
 		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
@@ -293,14 +293,14 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(11)
 	public void testCreateAnActionSchemeInConceptA() throws SaveResourceException {
 
-		CreateEditionScheme createActionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createActionScheme.setFlexoBehaviourClass(ActionScheme.class);
 		createActionScheme.doAction();
 		ActionScheme actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
-		CreateEditionSchemeParameter createParameter = CreateEditionSchemeParameter.actionType.makeNewAction(actionScheme, null, editor);
-		createParameter.flexoBehaviourParameterClass = CheckboxParameter.class;
+		CreateFlexoBehaviourParameter createParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(actionScheme, null, editor);
+		createParameter.setFlexoBehaviourParameterClass(CheckboxParameter.class);
 		createParameter.setParameterName("aFlag");
 		createParameter.doAction();
 		FlexoBehaviourParameter param = createParameter.getNewParameter();

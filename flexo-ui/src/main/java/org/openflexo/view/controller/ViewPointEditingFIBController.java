@@ -19,7 +19,7 @@ import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
-import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
@@ -143,9 +143,9 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviour createAdvancedScheme(FlexoConcept flexoConcept) {
-		CreateEditionScheme createEditionScheme = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null, getEditor());
-		createEditionScheme.doAction();
-		return createEditionScheme.getNewFlexoBehaviour();
+		CreateFlexoBehaviour createFlexoBehaviour = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createFlexoBehaviour.doAction();
+		return createFlexoBehaviour.getNewFlexoBehaviour();
 	}
 
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {

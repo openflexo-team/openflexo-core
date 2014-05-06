@@ -36,7 +36,7 @@ import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.action.CreateEditionScheme;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
@@ -992,7 +992,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 			@Override
 			protected void fixAction() {
-				CreateEditionScheme action = CreateEditionScheme.actionType.makeNewAction(flexoConcept, null);
+				CreateFlexoBehaviour action = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null);
 				action.setFlexoBehaviourClass(DeletionScheme.class);
 				action.doAction();
 				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();
