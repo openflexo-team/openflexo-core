@@ -55,4 +55,15 @@ public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFact
 	 */
 	public FlexoVersion latestVersion();
 
+	/**
+	 * Internally used to notify factory that a deserialization process has started<br>
+	 * This hook allows to handle FlexoID and ignore of edits raised during deserialization process
+	 */
+	public void startDeserializing();
+
+	/**
+	 * Internally used to notify factory that a deserialization process has finished<br>
+	 */
+	public void stopDeserializing();
+
 }

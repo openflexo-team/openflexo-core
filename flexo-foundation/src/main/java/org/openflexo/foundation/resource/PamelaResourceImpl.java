@@ -22,14 +22,12 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.InvalidDataException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
@@ -74,6 +72,48 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 	}
 
+	private boolean isDeserializing = false;
+
+	/**
+	 * Internally used to notify factory that a deserialization process has started<br>
+	 * This hook allows to handle FlexoID and ignore of edits raised during deserialization process
+	 */
+	@Override
+	public void startDeserializing() {
+		// Sometimes, multiple invokation of startDeserializing may raise, ignore extra
+		if (isDeserializing) {
+			return;
+		}
+		try {
+			isDeserializing = true;
+			getFactory().startDeserializing(this);
+		} catch (ConcurrentDeserializationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Internally used to notify factory that a deserialization process has finished<br>
+	 */
+	@Override
+	public void stopDeserializing() {
+		if (!isDeserializing) {
+			return;
+		}
+		isDeserializing = false;
+		getFactory().stopDeserializing(this);
+		if (getLoadedResourceData() != null) {
+			getLoadedResourceData().clearIsModified();
+		} else {
+			logger.warning("Could not access loaded resource data");
+		}
+	}
+
+	@Override
+	public boolean isDeserializing() {
+		return isDeserializing;
+	}
+
 	/**
 	 * Load resource data by applying a special scheme handling XML versionning, ie to find right XML version of current resource file.<br>
 	 * If version of stored file is not conform to latest declared version, convert resource file and update it to latest version.
@@ -91,11 +131,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			return resourceData;
 		}
 
-		try {
-			getFactory().startDeserializing(this);
-		} catch (ConcurrentDeserializationException e) {
-			e.printStackTrace();
-		}
+		startDeserializing();
 
 		isLoading = true;
 		if (progress != null) {
@@ -119,15 +155,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			}
 		}
 
-		EditingContext editingContext = getServiceManager().getEditingContext();
+		/*EditingContext editingContext = getServiceManager().getEditingContext();
 		IgnoreLoadingEdits ignoreHandler = null;
 		FlexoUndoManager undoManager = null;
 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
-			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits());
+			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(this));
 			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + getURI());
-		}
+		}*/
 
 		try {
 
@@ -152,12 +188,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			throw new InvalidModelDefinitionException(e);
 		} finally {
 			isLoading = false;
-			if (ignoreHandler != null) {
+			/*if (ignoreHandler != null) {
 				undoManager.removeFromIgnoreHandlers(ignoreHandler);
 				// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + getURI());
-			}
+			}*/
 
-			getFactory().stopDeserializing(this);
+			stopDeserializing();
 
 		}
 
@@ -452,13 +488,19 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 * @author sylvain
 	 * 
 	 */
-	public class IgnoreLoadingEdits implements IgnoreHandler {
+	public static class IgnoreLoadingEdits implements IgnoreHandler {
+
+		private final PamelaResource<?, ?> resource;
+
+		public IgnoreLoadingEdits(PamelaResource<?, ?> resource) {
+			this.resource = resource;
+		}
 
 		@Override
 		public boolean isIgnorable(UndoableEdit edit) {
 			if (edit instanceof AtomicEdit) {
 				Object o = ((AtomicEdit) edit).getObject();
-				if (((AtomicEdit) edit).getModelFactory() == getFactory()) {
+				if (((AtomicEdit) edit).getModelFactory() == resource.getFactory()) {
 					// System.out.println("PAMELA RESOURCE LOADING : Ignore edit " + edit);
 					return true;
 				}

@@ -2,9 +2,12 @@ package org.openflexo.foundation;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
@@ -26,6 +29,8 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 	}
 
 	private PamelaResource<?, ?> resourceBeeingDeserialized = null;
+	private IgnoreLoadingEdits ignoreHandler = null;
+	private FlexoUndoManager undoManager = null;
 
 	@Override
 	public synchronized void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException {
@@ -34,6 +39,15 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 		} else {
 			throw new ConcurrentDeserializationException(resource);
 		}
+
+		EditingContext editingContext = resource.getServiceManager().getEditingContext();
+
+		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
+			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
+			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(resource));
+			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + resource.getURI());
+		}
+
 	}
 
 	@Override
@@ -41,6 +55,12 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 		if (resourceBeeingDeserialized == resource) {
 			resourceBeeingDeserialized = null;
 		}
+
+		if (ignoreHandler != null) {
+			undoManager.removeFromIgnoreHandlers(ignoreHandler);
+			// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + resource.getURI());
+		}
+
 	}
 
 	@Override

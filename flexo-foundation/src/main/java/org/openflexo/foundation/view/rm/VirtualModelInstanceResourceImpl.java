@@ -180,11 +180,23 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 	public VirtualModelInstance loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException,
 			InvalidXMLException, InconsistentDataException, InvalidModelDefinitionException {
 		VirtualModelInstance returned = super.loadResourceData(progress);
+		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
+		// UndoManager
+		boolean containerWasDeserializing = getContainer().isDeserializing();
+		if (!containerWasDeserializing) {
+			getContainer().startDeserializing();
+		}
+		startDeserializing();
+		getContainer().getView().addToVirtualModelInstances(returned);
+		returned.clearIsModified();
 		if (returned.isSynchronizable()) {
 			returned.synchronize(null);
 		}
-		getContainer().getView().addToVirtualModelInstances(returned);
-		returned.clearIsModified();
+		// And, we notify a deserialization stop
+		stopDeserializing();
+		if (!containerWasDeserializing) {
+			getContainer().stopDeserializing();
+		}
 		return returned;
 	}
 

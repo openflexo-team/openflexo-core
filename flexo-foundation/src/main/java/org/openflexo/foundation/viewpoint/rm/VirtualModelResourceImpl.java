@@ -19,6 +19,7 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
@@ -162,9 +163,29 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 		VirtualModel returned = super.loadResourceData(progress);
+		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
+		// UndoManager
+		boolean containerWasDeserializing = getContainer().isDeserializing();
+		if (!containerWasDeserializing) {
+			getContainer().startDeserializing();
+		}
+		startDeserializing();
 		getContainer().getViewPoint().addToVirtualModels(returned);
 		returned.clearIsModified();
+		// And, we notify a deserialization stop
+		stopDeserializing();
+		if (!containerWasDeserializing) {
+			getContainer().stopDeserializing();
+		}
 		return returned;
+	}
+
+	@Override
+	public void stopDeserializing() {
+		for (FlexoConcept fc : getLoadedResourceData().getFlexoConcepts()) {
+			fc.finalizeFlexoConceptDeserialization();
+		}
+		super.stopDeserializing();
 	}
 
 	private static class VirtualModelInfo {
