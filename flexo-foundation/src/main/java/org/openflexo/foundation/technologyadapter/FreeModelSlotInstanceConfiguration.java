@@ -137,11 +137,21 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	private TechnologyAdapterResource<RD, ?> createProjectSpecificEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
-		return modelSlot.createProjectSpecificEmptyResource(msInstance.getView(), getFilename(), getResourceUri());
+		return modelSlot.createProjectSpecificEmptyResource(getView(msInstance), getFilename(), getResourceUri());
 	}
 
 	private TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FreeModelSlotInstance<RD, MS> msInstance, MS modelSlot) {
 		return modelSlot.createSharedEmptyResource(getResourceCenter(), getRelativePath(), getFilename(), getResourceUri());
+	}
+
+	private View getView(FreeModelSlotInstance<RD, MS> msInstance) {
+		View view = null;
+		if (msInstance.getView() != null) {
+			view = msInstance.getView();
+		} else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
+			view = msInstance.getVirtualModelInstance().getView();
+		}
+		return view;
 	}
 
 	public FlexoResourceCenter getResourceCenter() {
