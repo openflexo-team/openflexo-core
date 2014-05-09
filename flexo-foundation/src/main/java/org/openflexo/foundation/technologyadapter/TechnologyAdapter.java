@@ -22,9 +22,12 @@ package org.openflexo.foundation.technologyadapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -411,6 +414,24 @@ public abstract class TechnologyAdapter {
 
 	// Override when required
 	public void initVirtualModelFactory(VirtualModelModelFactory virtualModelModelFactory) {
+	}
+
+	/**
+	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * technology as supplied by {@link TechnologyAdapter} parameter
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public List<ResourceRepository<?>> getAllRepositories() {
+		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters()) {
+			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(this);
+			if (repCollection != null) {
+				returned.addAll(repCollection);
+			}
+		}
+		return returned;
 	}
 
 }

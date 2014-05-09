@@ -9,6 +9,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResource;

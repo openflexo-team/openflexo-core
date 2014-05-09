@@ -514,9 +514,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public void showInspector() {
 		getModuleInspectorController().getInspectorDialog().setVisible(true);
 	}
-	
+
 	public void hideInspector() {
-		getModuleInspectorController().getInspectorDialog().setVisible(false);;
+		getModuleInspectorController().getInspectorDialog().setVisible(false);
+		;
 	}
 
 	public void resetInspector() {
@@ -1179,7 +1180,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
-	public abstract String getWindowTitleforObject(FlexoObject object);
+	public final String getWindowTitleforObject(FlexoObject object) {
+		if (getCurrentPerspective() != null) {
+			return getCurrentPerspective().getWindowTitleforObject(object, this);
+		}
+		return object.toString();
+	}
 
 	public String getWindowTitle() {
 		String projectTitle = getModule().getModule().requireProject() && getProject() != null ? " - " + getProject().getProjectName()

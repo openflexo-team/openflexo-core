@@ -23,7 +23,6 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -71,10 +70,11 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		this(representedObject, controller, fibResource, false, progress);
 	}
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar,
+			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
 	}
-	
+
 	// Removed as we should only use Resource everywhere
 	/*
 	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {

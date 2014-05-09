@@ -8,7 +8,7 @@ import org.openflexo.rm.ResourceLocator;
 public class TestCommonFlexoFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateFIBTestCaseClass(((FileResourceImpl ) ResourceLocator.locateResource("Fib")).getFile(), "Fib/"));
+		System.out.println(generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib")).getFile(), "Fib/"));
 	}
 
 	@Test
@@ -19,22 +19,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescriptionWidget() {
 		validateFIB("Fib/DescriptionWidget.fib");
-	}
-
-	/*
-	@Test
-	public void testDocGenerationChooser() {
-		validateFIB("Fib/DocGenerationChooser.fib");
-	}
-*/
-	@Test
-	public void testFlexoConceptInstanceSelector() {
-		validateFIB("Fib/FlexoConceptInstanceSelector.fib");
-	}
-
-	@Test
-	public void testFlexoConceptSelector() {
-		validateFIB("Fib/FlexoConceptSelector.fib");
 	}
 
 	@Test
@@ -88,6 +72,21 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFIBTechnologyBrowser() {
+		validateFIB("Fib/FIBTechnologyBrowser.fib");
+	}
+
+	@Test
+	public void testFlexoConceptInstanceSelector() {
+		validateFIB("Fib/FlexoConceptInstanceSelector.fib");
+	}
+
+	@Test
+	public void testFlexoConceptSelector() {
+		validateFIB("Fib/FlexoConceptSelector.fib");
+	}
+
+	@Test
 	public void testInstallDefaultPackagedResourceCenterDirectory() {
 		validateFIB("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
 	}
@@ -122,12 +121,15 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 		validateFIB("Fib/ModelSelector.fib");
 	}
 
-	/*
+	/*@Test
+	public void testOntologyView() {
+		validateFIB("Fib/OntologyView.fib");
+	}*/
+
 	@Test
-	public void testNewServerProject() {
-		validateFIB("Fib/NewServerProject.fib");
+	public void testPreferences() {
+		validateFIB("Fib/Preferences.fib");
 	}
-	*/
 
 	@Test
 	public void testProjectSelector() {
@@ -150,30 +152,15 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testPreferences() {
-		validateFIB("Fib/Preferences.fib");
-	}
-
-	@Test
 	public void testResourceSelector() {
 		validateFIB("Fib/ResourceSelector.fib");
-	}
-
-	@Test
-	public void testReviewUnsavedDialog() {
-		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}
 
 	@Test
 	public void testSaveProjects() {
 		validateFIB("Fib/SaveProjects.fib");
 	}
-/*
-	@Test
-	public void testServerClientModelView() {
-		validateFIB("Fib/ServerClientModelView.fib");
-	}
-*/
+
 	@Test
 	public void testViewFolderSelector() {
 		validateFIB("Fib/ViewFolderSelector.fib");
@@ -195,16 +182,14 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testVirtualModelInstanceView() {
+		validateFIB("Fib/VirtualModelInstanceView.fib");
+	}
+
+	@Test
 	public void testVirtualModelSelector() {
 		validateFIB("Fib/VirtualModelSelector.fib");
 	}
-
-	/*
-	@Test
-	public void testWebServiceURLDialog() {
-		validateFIB("Fib/WebServiceURLDialog.fib");
-	}
-	*/
 
 	@Test
 	public void testWelcomePanel() {

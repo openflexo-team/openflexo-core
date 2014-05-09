@@ -475,4 +475,19 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
+	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<FlexoController, TechnologyPerspective<TA>>();
+
+	public TechnologyPerspective<TA> getTechnologyPerspective(FlexoController controller) {
+		TechnologyPerspective<TA> returned = technologyPerspectives.get(controller);
+		if (returned == null) {
+			returned = new TechnologyPerspective<TA>(getTechnologyAdapter(), controller);
+			technologyPerspectives.put(controller, returned);
+		}
+		return returned;
+	}
+
+	public void installTechnologyPerspective(FlexoController controller) {
+		controller.addToPerspectives(getTechnologyPerspective(controller));
+	}
+
 }

@@ -19,7 +19,6 @@
  */
 package org.openflexo.view;
 
-import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -60,10 +59,12 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	}
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller.willLoad(fibResource));
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller
+				.willLoad(fibResource));
 	}
 
-	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
+	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar,
+			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
 	}
 
@@ -81,8 +82,8 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
 	}
-*/
-	
+	*/
+
 	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
 			FlexoProgress progress) {
 		super(representedObject, controller, fibComponent, addScrollBar, progress);

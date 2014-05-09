@@ -588,4 +588,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		return null;
 	}
 
+	public abstract String getWindowTitleforObject(FlexoObject object, FlexoController controller);
+
 }
