@@ -658,6 +658,20 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				}
 			}*/
 
+		@Override
+		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
+			if (super.getFlexoActor(flexoRole) != null) {
+				return super.getFlexoActor(flexoRole);
+			}
+			if (flexoRole instanceof ModelSlot) {
+				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot<?>) flexoRole);
+				if (modelSlotInstance != null) {
+					return (T) modelSlotInstance.getAccessedResourceData();
+				}
+			}
+			return null;
+		}
+
 		/**
 		 * Return a set of all meta models (load them when unloaded) used in this {@link VirtualModelInstance}
 		 * 
