@@ -114,8 +114,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
 			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 			if (configuration.isValidConfiguration()) {
-				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance,
-						getFocusedObject());
+				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getFocusedObject());
 				msi.setVirtualModelInstance(newVirtualModelInstance);
 				newVirtualModelInstance.addToModelSlotInstances(msi);
 			} else {
@@ -229,6 +228,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 					modelSlotConfigurations.put(ms, ms.createConfiguration(this));
 				}
 			}
+			setChanged();
+			notifyObservers(new DataModification("isActionValidable", false, true));
 		}
 	}
 
