@@ -120,11 +120,11 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 
 	protected JPanel mainPane;
 
-	private MouseAdapter mouseListener = new MouseAdapter() {
+	private final MouseAdapter mouseListener = new MouseAdapter() {
 
 	};
 
-	private FocusListener focusListener = new FocusListener() {
+	private final FocusListener focusListener = new FocusListener() {
 
 		@Override
 		public void focusLost(FocusEvent e) {
@@ -171,6 +171,7 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 		}
 		// logger.info("Build progress max="+steps);
 		setFocusable(false);
+		setAlwaysOnTop(true);
 		mainProgress = 0;
 		secondaryProgress = 0;
 		mainProgressBar = new JProgressBar(0, Math.max(1, steps));

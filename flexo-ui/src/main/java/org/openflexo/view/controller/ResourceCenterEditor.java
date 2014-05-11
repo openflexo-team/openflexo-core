@@ -1,12 +1,10 @@
 package org.openflexo.view.controller;
 
-import java.awt.Window;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.components.ResourceCenterEditorDialog;
+import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.AskResourceCenterDirectory;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
@@ -25,9 +23,10 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 
 	public static final String RESOURCE_CENTER_EDITOR_FIB_NAME = "Fib/ResourceCenterEditor.fib";
 
-	private PropertyChangeSupport _pcSupport;
+	private final PropertyChangeSupport _pcSupport;
 
-	private FlexoResourceCenterService rcService;
+	private final FlexoResourceCenterService rcService;
+
 	public ResourceCenterEditor(FlexoResourceCenterService rcService) {
 		_pcSupport = new PropertyChangeSupport(this);
 		this.rcService = rcService;
@@ -55,26 +54,41 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
 			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory());
+			showProgress("scanning_resources");
 			rcService.addToResourceCenters(newRC);
+			hideProgress();
 		}
 	}
 
 	public void removeResourceCenter(FlexoResourceCenter rc) {
-		System.out.println("Remove resource center " + rc);
+		System.out.println("Removing resources" + rc);
 		if (rc instanceof DirectoryResourceCenter) {
+			showProgress("removing_resources");
 			rcService.removeFromResourceCenters(rc);
+			hideProgress();
 		}
 	}
 
 	public void refreshResourceCenter(FlexoResourceCenter rc) {
 		if (rc != null) {
-			System.out.println("Refresh resource center " + rc);
+			System.out.println("Scanning resources " + rc);
 			try {
+				showProgress("scanning_resources");
 				rc.update();
+				hideProgress();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void showProgress(String stepname) {
+		ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey(stepname), 1);
+		ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey(stepname));
+	}
+
+	private void hideProgress() {
+		ProgressWindow.hideProgressWindow();
 	}
 
 	public void saveResourceCenters() {
