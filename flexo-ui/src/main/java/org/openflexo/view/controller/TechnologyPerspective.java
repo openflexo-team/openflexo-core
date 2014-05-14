@@ -67,6 +67,7 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 		return getController().iconForObject(technologyAdapter);
 	}
 
+	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object instanceof TechnologyObject) {
 			TechnologyAdapter ta = ((TechnologyObject) object).getTechnologyAdapter();
@@ -82,6 +83,17 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 		}
 		logger.warning("Unexpected null object here");
 		return null;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean hasModuleViewForObject(FlexoObject object) {
+		if (object instanceof TechnologyObject) {
+			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+			TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(technologyAdapter);
+			return tac.hasModuleViewForObject((TechnologyObject<TA>) object, getController());
+		}
+		return false;
 	}
 
 }
