@@ -106,13 +106,17 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 					String newTitle = ((FlexoConceptInstance) object).getFlexoConcept().getInspector().getInspectorTitle();
 					setTitle(newTitle);
 				}
-			} else if (object instanceof FlexoObject /*&& (object instanceof DiagramShape || object instanceof DiagramConnector)*/
-					&& ((FlexoObject) object).getFlexoConceptReferences().size() > 0) {
-				String newTitle = ((FlexoObject) object).getFlexoConceptReferences().get(0).getObject().getFlexoConcept().getInspector()
-						.getInspectorTitle();
-				setTitle(newTitle);
-			} else if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null) {
+			} /*else if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null) {
 				setTitle(getInspectorPanel().getCurrentlyDisplayedInspector().getParameter("title"));
+				}*/else if (object instanceof FlexoResource) {
+				FlexoResource<?> resource = (FlexoResource<?>) object;
+				setTitle(resource.getResourceDataClass().getSimpleName() + " (unloaded)");
+			} else if (object instanceof FlexoObject /*&& (object instanceof DiagramShape || object instanceof DiagramConnector)*/
+			/*&& ((FlexoObject) object).getFlexoConceptReferences().size() > 0*/) {
+				// String newTitle = ((FlexoObject) object).getFlexoConceptReferences().get(0).getObject().getFlexoConcept().getInspector()
+				// .getInspectorTitle();
+				// setTitle(newTitle);
+				setTitle(((FlexoObject) object).getImplementedInterface().getSimpleName());
 			}
 			if (object instanceof FlexoResource) {
 				FlexoResource<?> resource = (FlexoResource<?>) object;
@@ -122,13 +126,11 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 				} else {
 					setIconImage(IconLibrary.OPENFLEXO_NOTEXT_16.getImage());
 				}
-				setTitle(resource.getResourceDataClass().getSimpleName() + " (unloaded)");
 			} else if (object instanceof FlexoObject) {
 				ImageIcon icon = FlexoController.statelessIconForObject(object);
 				if (icon != null) {
 					setIconImage(icon.getImage());
 				}
-				setTitle(((FlexoObject) object).getImplementedInterface().getSimpleName());
 
 				/*if (getInspectorPanel() != null && getInspectorPanel().getCurrentlyDisplayedInspector() != null
 						&& object.getClass() != getInspectorPanel().getCurrentlyDisplayedInspector().getDataClass()
