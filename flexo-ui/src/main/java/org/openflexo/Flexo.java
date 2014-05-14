@@ -53,11 +53,7 @@ import org.openflexo.application.FlexoApplication;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
 import org.openflexo.components.WelcomeDialog;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.InstallDefaultPackagedResourceCenterDirectory;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -301,7 +297,8 @@ public class Flexo {
 			FlexoLoggingFormatter.logDate = false;
 		}
 
-		if (applicationContext.defaultPackagedResourceCenterIsToBeInstalled()) {
+		// Disable default resource center installation
+		/*if (applicationContext.defaultPackagedResourceCenterIsToBeInstalled()) {
 			FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(
 					InstallDefaultPackagedResourceCenterDirectory.FIB_FILE, true);
 			InstallDefaultPackagedResourceCenterDirectory installRC = new InstallDefaultPackagedResourceCenterDirectory();
@@ -310,7 +307,7 @@ public class Flexo {
 			if (dialog.getStatus() == Status.VALIDATED) {
 				installRC.installDefaultPackagedResourceCenter(applicationContext.getResourceCenterService());
 			}
-		}
+		}*/
 
 		if (fileNameToOpen == null) {
 			showWelcomDialog(applicationContext, splashWindow);
