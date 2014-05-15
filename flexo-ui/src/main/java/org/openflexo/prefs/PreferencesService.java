@@ -55,10 +55,10 @@ import org.openflexo.view.FlexoFrame;
  */
 public class PreferencesService extends FlexoServiceImpl implements FlexoService, HasPropertyChangeSupport {
 
-	private static final Logger logger = Logger.getLogger(PreferencesService.class.getPackage().getName());
+	private static final Logger			logger	= Logger.getLogger(PreferencesService.class.getPackage().getName());
 
-	private FlexoPreferencesFactory preferencesFactory;
-	private FlexoPreferencesResource resource;
+	private FlexoPreferencesFactory		preferencesFactory;
+	private FlexoPreferencesResource	resource;
 
 	@Override
 	public ApplicationContext getServiceManager() {
@@ -157,7 +157,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				}
 			}
 		} else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
-			outputDir = new File("user.home", ".openflexo/logs");
+			outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
 		}
 		return outputDir;
 	}
