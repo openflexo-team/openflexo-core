@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
@@ -48,7 +50,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapter {
+public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapter.class.getPackage().getName());
 
@@ -277,7 +279,9 @@ public abstract class TechnologyAdapter {
 	 * 
 	 * @param newResourceCenter
 	 */
-	public void resourceCenterAdded(FlexoResourceCenter newResourceCenter) {
+	public void resourceCenterAdded(FlexoResourceCenter<?> newResourceCenter) {
+		setChanged();
+		notifyObservers(new DataModification(null, newResourceCenter));
 	}
 
 	/**
@@ -285,7 +289,9 @@ public abstract class TechnologyAdapter {
 	 * 
 	 * @param newResourceCenter
 	 */
-	public void resourceCenterRemoved(FlexoResourceCenter removedResourceCenter) {
+	public void resourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
+		setChanged();
+		notifyObservers(new DataModification(removedResourceCenter, null));
 	}
 
 	/**
@@ -432,6 +438,12 @@ public abstract class TechnologyAdapter {
 			}
 		}
 		return returned;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
