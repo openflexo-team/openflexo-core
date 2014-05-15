@@ -36,7 +36,6 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-//TODO: rename as CreateFlexoBehaviourParameter
 public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourParameter.class.getPackage().getName());
@@ -71,6 +70,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 	private String parameterName;
 	private String description;
+	private String defaultParameterValue;
 	private Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass;
 
 	private FlexoBehaviourParameter newParameter;
