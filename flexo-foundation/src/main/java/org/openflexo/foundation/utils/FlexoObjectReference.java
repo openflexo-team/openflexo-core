@@ -155,9 +155,11 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		} else {
 			logger.warning("object " + modelObject + " has no resource data !");
 		}
-		this.userIdentifier = modelObject.getUserIdentifier();
-		this.flexoID = modelObject.getFlexoID();
-		this.className = modelObject.getClass().getName();
+		if (modelObject != null) {
+			this.userIdentifier = modelObject.getUserIdentifier();
+			this.flexoID = modelObject.getFlexoID();
+			this.className = modelObject.getClass().getName();
+		}
 
 		if (object instanceof FlexoProjectObject) {
 			setOwner(((FlexoProjectObject) object).getProject());

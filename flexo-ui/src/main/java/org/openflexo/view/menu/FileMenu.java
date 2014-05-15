@@ -38,12 +38,14 @@ import org.openflexo.FlexoCst;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.NatureSpecificModule;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.print.PrintManagingController;
 import org.openflexo.toolbox.ToolBox;
@@ -184,7 +186,13 @@ public class FileMenu extends FlexoMenu {
 			File projectDirectory = NewProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
 				try {
-					getController().getProjectLoader().newProject(projectDirectory);
+					if (getController().getModule().getModule() instanceof NatureSpecificModule) {
+						ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
+								.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
+						getProjectLoader().newProject(projectDirectory, nature);
+					} else {
+						getProjectLoader().newProject(projectDirectory);
+					}
 				} catch (ProjectInitializerException e) {
 					e.printStackTrace();
 					FlexoController.notify(e.getMessage());
