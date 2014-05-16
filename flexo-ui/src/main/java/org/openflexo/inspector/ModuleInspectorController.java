@@ -196,8 +196,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 		if (object instanceof FlexoConceptInstance) {
-			System.out.println("On cherche l'inspecteur de ConceptInstance pour " + ((FlexoConceptInstance) object).getFlexoConcept());
 			return inspectorForFlexoConceptInstance(((FlexoConceptInstance) object).getFlexoConcept());
+
 		}
 		return inspectorForClass(object.getClass());
 	}
@@ -208,16 +208,15 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 		FIBInspector returned = flexoConceptInspectors.get(concept);
 		if (returned != null) {
-			System.out.println("C'est trouve pour " + concept);
-			System.out.println("Je retourne " + returned);
 			return returned;
 		} else {
-			System.out.println("Je cree un inspecteur de concept instance pour " + concept);
 			returned = inspectorForClass(FlexoConceptInstance.class);
 			returned = (FIBInspector) returned.cloneObject();
+			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
+			// System.out.println("basicTab=" + basicTab);
+			// returned.removeFromSubComponents(basicTab);
 			returned.appendFlexoConceptInspectors(concept);
 			flexoConceptInspectors.put(concept, returned);
-			System.out.println("Je retourne " + returned);
 			return returned;
 		}
 	}

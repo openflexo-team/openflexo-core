@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.components.widget.FIBIndividualSelector;
 import org.openflexo.components.widget.FIBPropertySelector;
@@ -44,6 +45,7 @@ import org.openflexo.fib.model.TwoColsLayoutConstraints;
 import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
@@ -587,6 +589,14 @@ public interface FIBInspector extends FIBPanel {
 		private FIBTab makeFIBTab(FlexoConcept flexoConcept) {
 			// logger.info("makeFIBTab " + refIndex + " for " + ep);
 			FIBTab newTab = createFIBTabForFlexoConcept(flexoConcept);
+
+			// VERY IMPORTANT
+			// We MUST here redefine the type of inspected data
+			BindingVariable bv = getBindingModel().bindingVariableNamed("data");
+			if (bv != null && flexoConcept != null) {
+				bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+			}
+
 			appendInspectorEntries(flexoConcept, newTab);
 			newTab.finalizeDeserialization();
 			return newTab;
@@ -608,8 +618,14 @@ public interface FIBInspector extends FIBPanel {
 				newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 				FIBWidget widget = makeWidget(entry, newTab);
 				widget.setBindingFactory(entry.getBindingFactory());
-				widget.setData(new DataBinding<Object>(entry.getData().toString()));
+				widget.setData(new DataBinding<Object>("data." + entry.getData().toString()));
 				widget.setReadOnly(entry.getIsReadOnly());
+				/*System.out.println("Widget " + widget + " data=" + entry.getData());
+				System.out.println("valid:" + entry.getData().isValid());
+				System.out.println("reason=" + entry.getData().invalidBindingReason());
+				System.out.println("Widget data " + widget.getData());
+				System.out.println("valid:" + widget.getData().isValid());
+				System.out.println("reason=" + widget.getData().invalidBindingReason());*/
 			}
 		}
 
