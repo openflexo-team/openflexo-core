@@ -102,4 +102,8 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 		return clipboard;
 	}
 
+	public FlexoClipboard getClipboard() {
+		return clipboard;
+	}
+
 }

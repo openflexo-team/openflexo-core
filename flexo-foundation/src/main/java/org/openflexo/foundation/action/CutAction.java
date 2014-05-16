@@ -90,4 +90,8 @@ public class CutAction extends AbstractCopyAction<CutAction> {
 		return clipboard;
 	}
 
+	public FlexoClipboard getClipboard() {
+		return clipboard;
+	}
+
 }

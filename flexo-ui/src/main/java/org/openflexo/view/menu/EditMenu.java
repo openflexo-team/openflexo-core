@@ -158,15 +158,20 @@ public class EditMenu extends FlexoMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			if (getUndoManager().canUndo()) {
-				logger.info("Undoing: " + getUndoManager().editToBeUndone().getPresentationName());
+				String presentationName = getUndoManager().editToBeUndone().getPresentationName();
+				logger.info("Undoing: " + presentationName);
 				getUndoManager().undo();
+				_controller.setInfoMessage("Undone " + presentationName, true);
 			} else if (getUndoManager().canUndoIfStoppingCurrentEdition()) {
 				getUndoManager().stopRecording(getUndoManager().getCurrentEdition());
 				if (getUndoManager().canUndo()) {
-					logger.info("Undoing: " + getUndoManager().editToBeUndone().getPresentationName());
+					String presentationName = getUndoManager().editToBeUndone().getPresentationName();
+					logger.info("Undoing: " + presentationName);
 					getUndoManager().undo();
+					_controller.setInfoMessage("Undone " + presentationName, true);
 				}
 			} else {
+				_controller.setInfoMessage("Cannot UNDO", true);
 				logger.info("Cannot UNDO");
 				getUndoManager().debug();
 			}
@@ -246,10 +251,12 @@ public class EditMenu extends FlexoMenu {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			if (getUndoManager().canRedo()) {
-				System.out.println("Perform REDO");
+				String presentationName = getUndoManager().editToBeRedone().getPresentationName();
+				logger.info("Redoing: " + presentationName);
 				getUndoManager().redo();
+				_controller.setInfoMessage("Redone " + presentationName, true);
 			} else {
-				System.out.println("Cannot REDO");
+				_controller.setInfoMessage("Cannot REDO", true);
 			}
 		}
 

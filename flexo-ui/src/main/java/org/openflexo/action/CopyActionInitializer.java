@@ -51,16 +51,6 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 			@Override
 			public boolean run(EventObject e, CopyAction action) {
 				logger.info("Copy initializer");
-				/*EditMenu editMenu = getController().getMenuBar().getEditMenu(getController());
-				System.out.println("editMenu=" + editMenu);
-				editMenu.setVisible(true);
-				editMenu.setArmed(true);
-				editMenu.setSelected(true);
-				FlexoMenuItem copyItem = editMenu.copyItem;
-				System.out.println("copyItem=" + copyItem);
-				copyItem.setVisible(true);
-				copyItem.setArmed(true);
-				copyItem.setSelected(true);*/
 				return true;
 			}
 		};
@@ -72,7 +62,8 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 			@Override
 			public boolean run(EventObject e, CopyAction action) {
 				logger.info("Copy finalizer");
-				// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
+				getControllerActionInitializer().getController().setInfoMessage(
+						"Copied " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
 				return true;
 			}
 		};

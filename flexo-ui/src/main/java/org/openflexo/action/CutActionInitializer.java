@@ -62,7 +62,8 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 		return new FlexoActionFinalizer<CutAction>() {
 			@Override
 			public boolean run(EventObject e, CutAction action) {
-				// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
+				getControllerActionInitializer().getController().setInfoMessage(
+						"Cut " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
 				return true;
 			}
 		};

@@ -37,7 +37,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -86,7 +85,7 @@ public class FlexoCst extends ColorCst {
 
 	public static URL cssUrl() {
 		if (_cssURL == null) {
-				_cssURL = ((BasicResourceImpl) ResourceLocator.locateResource("Config/FlexoMasterStyle.css")).getURL();
+			_cssURL = ((BasicResourceImpl) ResourceLocator.locateResource("Config/FlexoMasterStyle.css")).getURL();
 		}
 		return _cssURL;
 	}
@@ -147,4 +146,6 @@ public class FlexoCst extends ColorCst {
 	public static Color otherLineColor = new Color(232, 237, 215);
 
 	public static final int LOADING_PROGRESS_STEPS = 26;
+
+	public static final int TEMPORARY_MESSAGE_PERSISTENCY = 2000;
 }

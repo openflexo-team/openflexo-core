@@ -1544,7 +1544,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * File moved to Resource
 	public FlexoProgress willLoad(File fibFile) {
 
-		
+
 		if (!FIBLibrary.instance().componentIsLoaded(fibFile)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1579,7 +1579,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		return null;
 	}
-	*/
+	 */
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -1851,4 +1851,72 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		return false;
 	}
+
+	private String infoMessage;
+	private String tempInfoMessage;
+	private int temporaryThreadCount = 0;
+	private final List<JLabel> infoLabels = new ArrayList<JLabel>();
+
+	public JLabel makeInfoLabel() {
+		JLabel returned = new JLabel(getInfoMessage());
+		returned.setFont(FlexoCst.SMALL_FONT);
+		infoLabels.add(returned);
+		return returned;
+	}
+
+	public String getInfoMessage() {
+		if (tempInfoMessage != null) {
+			return tempInfoMessage;
+		}
+		if (infoMessage == null) {
+			return getModule().getName();
+		}
+		return infoMessage;
+	}
+
+	public void setInfoMessage(String infoMessage) {
+		setInfoMessage(infoMessage, false);
+	}
+
+	public void setInfoMessage(final String infoMessage, boolean temporary) {
+		final String oldInfoMessage = this.infoMessage;
+		if (!infoMessage.equals(oldInfoMessage)) {
+
+			if (temporary) {
+				this.tempInfoMessage = infoMessage;
+				final Thread t = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						String localTempInfoMessage = infoMessage;
+						System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+						try {
+							Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						temporaryThreadCount--;
+						System.out.println("END " + tempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+						if (temporaryThreadCount == 0) {
+							System.out.println("OK on revient a " + infoMessage);
+							tempInfoMessage = null;
+							for (JLabel label : infoLabels) {
+								System.out.println("Je remet le label a " + getInfoMessage());
+								label.setText(getInfoMessage());
+							}
+						}
+					}
+				});
+				temporaryThreadCount++;
+				t.start();
+			} else {
+				System.out.println("REALLY set infoMessage to " + infoMessage);
+				this.infoMessage = infoMessage;
+			}
+			for (JLabel label : infoLabels) {
+				label.setText(getInfoMessage());
+			}
+		}
+	}
+
 }
