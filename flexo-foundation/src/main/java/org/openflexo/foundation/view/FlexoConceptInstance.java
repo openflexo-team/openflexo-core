@@ -216,14 +216,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
 				// Un-register last reference
-				if (oldObject instanceof FlexoProjectObject) {
+				/*if (oldObject instanceof FlexoProjectObject) {
 					((FlexoProjectObject) oldObject).unregisterFlexoConceptReference(this);
-				}
+				}*/
 
 				// Un-register last reference
-				if (object instanceof FlexoProjectObject) {
+				/*if (object instanceof FlexoProjectObject) {
 					((FlexoProjectObject) object).registerFlexoConceptReference(this);
-				}
+				}*/
 
 				// We manage here the ActorReference according to old and new objects
 

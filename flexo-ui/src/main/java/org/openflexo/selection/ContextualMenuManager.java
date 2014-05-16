@@ -46,13 +46,10 @@ import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.ActionMenu;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
-import org.openflexo.foundation.view.action.NavigationSchemeActionType;
 import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.viewpoint.ActionScheme;
-import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.action.EditionAction;
 
@@ -227,7 +224,7 @@ public class ContextualMenuManager {
 								_selectionManager != null ? _selectionManager.getSelection() : null)) {
 					contextualMenu.putAction(next);
 				}
-				if (focusedObject instanceof FlexoObject) {
+				/*if (focusedObject instanceof FlexoObject) {
 					if (focusedObject.getFlexoConceptReferences() != null) {
 						for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
 							FlexoConceptInstance epi = ref.getObject();
@@ -246,7 +243,7 @@ public class ContextualMenuManager {
 							}
 						}
 					}
-				}
+				}*/
 				if (focusedObject instanceof FlexoConceptInstance) {
 					FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
 					if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {

@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
@@ -39,9 +38,6 @@ import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
-import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.binding.FlexoConceptInstanceBindingVariable;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -71,14 +67,14 @@ public class ViewPointEditingFIBInspectorController extends ViewPointEditingFIBC
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable instanceof FlexoConceptInstanceBindingVariable) {
+		/*if (variable instanceof FlexoConceptInstanceBindingVariable) {
 			if (getDataObject() instanceof FlexoObject) {
 				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
 				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
 					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
 				}
 			}
-		}
+		}*/
 		return super.getValue(variable);
 	}
 

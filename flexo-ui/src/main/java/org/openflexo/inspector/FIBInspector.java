@@ -20,14 +20,10 @@
 package org.openflexo.inspector;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.components.widget.FIBIndividualSelector;
 import org.openflexo.components.widget.FIBPropertySelector;
@@ -46,12 +42,8 @@ import org.openflexo.fib.model.FIBTextField;
 import org.openflexo.fib.model.FIBWidget;
 import org.openflexo.fib.model.TwoColsLayoutConstraints;
 import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.LocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
@@ -86,14 +78,16 @@ public interface FIBInspector extends FIBPanel {
 
 	public void appendSuperInspectors(ModuleInspectorController inspectorController);
 
-	public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object);
+	// public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object);
 
-	public boolean updateFlexoObjectInspector(FlexoObject object);
+	// public boolean updateFlexoObjectInspector(FlexoObject object);
 
 	public String getXMLRepresentation();
 
 	@Override
 	public FIBModelFactory getFactory();
+
+	public void appendFlexoConceptInspectors(FlexoConcept concept);
 
 	public abstract class FIBInspectorImpl extends FIBPanelImpl implements FIBInspector {
 
@@ -104,8 +98,8 @@ public interface FIBInspector extends FIBPanel {
 		private FIBInspector superInspector;
 
 		private final Vector<FlexoConcept> currentFlexoConcepts = new Vector<FlexoConcept>();
-		private final Hashtable<FlexoConcept, FIBTab> tabsForEPIReference = new Hashtable<FlexoConcept, FIBTab>();
-		private final Hashtable<FlexoConcept, FIBTab> tabsForEPI = new Hashtable<FlexoConcept, FIBTab>();
+		// private final Hashtable<FlexoConcept, FIBTab> tabsForEPIReference = new Hashtable<FlexoConcept, FIBTab>();
+		// private final Hashtable<FlexoConcept, FIBTab> tabsForEPI = new Hashtable<FlexoConcept, FIBTab>();
 		private final List<FIBInspector> appendedSuperInspectors = new ArrayList<FIBInspector>();
 
 		@Override
@@ -183,7 +177,7 @@ public interface FIBInspector extends FIBPanel {
 
 		@Override
 		public String toString() {
-			return "Inspector[" + getDataType() + "]";
+			return "Inspector[" + getDataType() + "]@" + Integer.toHexString(hashCode());
 		}
 
 		@Override
@@ -199,7 +193,31 @@ public interface FIBInspector extends FIBPanel {
 			return getFactory().stringRepresentation(this);
 		}
 
-		private boolean ensureCreationOfTabForEPIReference(FlexoConcept ep) {
+		@Override
+		public void appendFlexoConceptInspectors(FlexoConcept concept) {
+			FIBTab newTab = makeFIBTab(concept);
+			getTabPanel().addToSubComponents(newTab, null, 0);
+
+			/*try {
+				logger.info("Getting this "
+						+ XMLCoder.encodeObjectWithMapping(this, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
+			} catch (InvalidObjectSpecificationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (AccessorInvocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DuplicateSerializationIdentifierException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+
+		}
+
+		/*private boolean ensureCreationOfTabForEPIReference(FlexoConcept ep) {
 			FIBTab returned = tabsForEPIReference.get(ep);
 			if (returned == null) {
 				// System.out.println("Creating FIBTab for " + ep);
@@ -210,9 +228,9 @@ public interface FIBInspector extends FIBPanel {
 				return true;
 			}
 			return false;
-		}
+		}*/
 
-		private boolean ensureCreationOfTabForEPI(FlexoConcept ep) {
+		/*private boolean ensureCreationOfTabForEPI(FlexoConcept ep) {
 			FIBTab returned = tabsForEPI.get(ep);
 			if (returned == null) {
 				// System.out.println("Creating FIBTab for " + ep);
@@ -223,7 +241,7 @@ public interface FIBInspector extends FIBPanel {
 				return true;
 			}
 			return false;
-		}
+		}*/
 
 		/**
 		 * This method looks after object's FlexoConcept references to know if we need to structurally change inspector by adding or
@@ -234,7 +252,7 @@ public interface FIBInspector extends FIBPanel {
 		 * @param object
 		 * @return a boolean indicating if a new tab was created
 		 */
-		@Override
+		/*@Override
 		public boolean updateFlexoObjectInspector(FlexoObject object) {
 
 			boolean returned = false;
@@ -261,38 +279,38 @@ public interface FIBInspector extends FIBPanel {
 					currentFlexoConcepts.add(epi.getFlexoConcept());
 				}
 				// updateBindingModel();
-			}
-
-			/*for (FIBComponent c : getTabPanel().getSubComponents()) {
-				System.out.println("> Tab: " + c + " visible=" + c.getVisible());
-				if (StringUtils.isNotEmpty(c.getVisible().toString())) {
-					FIBWidget w = (FIBWidget) ((FIBContainer) c).getSubComponents().get(1);
-					try {
-						logger.info("Getting this "
-								+ XMLCoder.encodeObjectWithMapping(w, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
-					} catch (InvalidObjectSpecificationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InvalidModelException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (AccessorInvocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (DuplicateSerializationIdentifierException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println("data=" + w.getData());
-					BindingValue v = (BindingValue) w.getData().getBinding();
-					System.out.println("bv=" + v);
-					System.out.println("0:" + v.getBindingPathElementAtIndex(0) + " of " + v.getBindingPathElementAtIndex(0).getClass());
-					System.out.println("1:" + v.getBindingPathElementAtIndex(1) + " of " + v.getBindingPathElementAtIndex(1).getClass());
-				}
 			}*/
 
-			return returned;
-		}
+		/*for (FIBComponent c : getTabPanel().getSubComponents()) {
+			System.out.println("> Tab: " + c + " visible=" + c.getVisible());
+			if (StringUtils.isNotEmpty(c.getVisible().toString())) {
+				FIBWidget w = (FIBWidget) ((FIBContainer) c).getSubComponents().get(1);
+				try {
+					logger.info("Getting this "
+							+ XMLCoder.encodeObjectWithMapping(w, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
+				} catch (InvalidObjectSpecificationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (AccessorInvocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DuplicateSerializationIdentifierException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("data=" + w.getData());
+				BindingValue v = (BindingValue) w.getData().getBinding();
+				System.out.println("bv=" + v);
+				System.out.println("0:" + v.getBindingPathElementAtIndex(0) + " of " + v.getBindingPathElementAtIndex(0).getClass());
+				System.out.println("1:" + v.getBindingPathElementAtIndex(1) + " of " + v.getBindingPathElementAtIndex(1).getClass());
+			}
+		}*/
+
+		/*		return returned;
+			}*/
 
 		/**
 		 * This method looks after object's FlexoConcept references to know if we need to structurally change inspector by adding or
@@ -303,7 +321,7 @@ public interface FIBInspector extends FIBPanel {
 		 * @param object
 		 * @return a boolean indicating if a new tab was created
 		 */
-		@Override
+		/*@Override
 		public boolean updateFlexoConceptInstanceInspector(FlexoConceptInstance object) {
 
 			boolean returned = false;
@@ -334,7 +352,7 @@ public interface FIBInspector extends FIBPanel {
 			}
 
 			return returned;
-		}
+		}*/
 
 		/*@Override
 		protected void createBindingModel() {
@@ -566,17 +584,17 @@ public interface FIBInspector extends FIBPanel {
 
 		}
 
-		private FIBTab makeFIBTab(FlexoConcept ep, String epIdentifier) {
+		private FIBTab makeFIBTab(FlexoConcept flexoConcept) {
 			// logger.info("makeFIBTab " + refIndex + " for " + ep);
-			FIBTab newTab = createFIBTabForFlexoConcept(ep);
-			appendInspectorEntries(ep, epIdentifier, newTab);
+			FIBTab newTab = createFIBTabForFlexoConcept(flexoConcept);
+			appendInspectorEntries(flexoConcept, newTab);
 			newTab.finalizeDeserialization();
 			return newTab;
 		}
 
-		protected void appendInspectorEntries(FlexoConcept ep, String epIdentifier, FIBTab newTab) {
+		private void appendInspectorEntries(FlexoConcept ep, FIBTab newTab) {
 			for (FlexoConcept parentEP : ep.getParentFlexoConcepts()) {
-				appendInspectorEntries(parentEP, epIdentifier, newTab);
+				appendInspectorEntries(parentEP, newTab);
 			}
 			LocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
 			for (final InspectorEntry entry : ep.getInspector().getEntries()) {
@@ -590,13 +608,13 @@ public interface FIBInspector extends FIBPanel {
 				newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 				FIBWidget widget = makeWidget(entry, newTab);
 				widget.setBindingFactory(entry.getBindingFactory());
-				widget.setData(new DataBinding<Object>(epIdentifier + "." + entry.getData().toString()));
+				widget.setData(new DataBinding<Object>(entry.getData().toString()));
 				widget.setReadOnly(entry.getIsReadOnly());
 			}
 		}
 
 		protected FIBTab createFIBTabForFlexoConcept(FlexoConcept ep) {
-			String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
+			// String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
 			FIBTab newTab = getFactory().newFIBTab();
 			newTab.setTitle(ep.getInspector().getInspectorTitle());
 			newTab.setLayout(Layout.twocols);
@@ -604,17 +622,17 @@ public interface FIBInspector extends FIBPanel {
 			// newTab.setDataClass(FlexoConceptInstance.class);
 			// newTab.setData(new DataBinding("data.flexoConceptReferences.get["+refIndex+"].flexoConceptInstance"));
 			// newTab.setData(new DataBinding("data.flexoConceptReferences.firstElement.flexoConceptInstance"));
-			newTab.setName(epIdentifier + "Panel");
+			newTab.setName(ep.getName() + "Panel");
 			return newTab;
 		}
 
-		protected String getFlexoConceptIdentifierForEPIReference(FlexoConcept ep) {
+		/*protected String getFlexoConceptIdentifierForEPIReference(FlexoConcept ep) {
 			// Instead of just referencing ep name, reference the URI (in case of in same VP, many EP have same name)
 			return "data.getFlexoConceptInstance(\"" + ep.getURI() + "\")";
 		}
 
 		protected String getFlexoConceptIdentifierForEPI(FlexoConcept ep) {
 			return "data";
-		}
+		}*/
 	}
 }

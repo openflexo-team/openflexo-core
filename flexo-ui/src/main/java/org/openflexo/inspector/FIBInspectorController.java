@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
@@ -39,9 +38,6 @@ import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
-import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.binding.FlexoConceptInstanceBindingVariable;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -71,14 +67,14 @@ public class FIBInspectorController extends FlexoFIBController {
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable instanceof FlexoConceptInstanceBindingVariable) {
+		/*if (variable instanceof FlexoConceptInstanceBindingVariable) {
 			if (getDataObject() instanceof FlexoObject) {
 				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
 				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
 					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
 				}
 			}
-		}
+		}*/
 		return super.getValue(variable);
 	}
 
@@ -89,7 +85,7 @@ public class FIBInspectorController extends FlexoFIBController {
 			FIBInspector current = (FIBInspector) component;
 			while (current != null) {
 				Resource inspectorResource = current.getDefinitionFile();
-				if (!inspectorResource.isReadOnly()){
+				if (!inspectorResource.isReadOnly()) {
 
 					File inspectorFile = ((FileResourceImpl) inspectorResource).getFile();
 					// System.out.println("> " + inspectorFile);
@@ -97,8 +93,8 @@ public class FIBInspectorController extends FlexoFIBController {
 						JMenuItem menuItem = new JMenuItem(inspectorFile.getName());
 						// We dont use existing inspector which is already
 						// aggregated !!!
-						final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(inspectorFile, false,
-								ModuleInspectorController.INSPECTOR_FACTORY);
+						final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(inspectorFile,
+								false, ModuleInspectorController.INSPECTOR_FACTORY);
 						menuItem.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {

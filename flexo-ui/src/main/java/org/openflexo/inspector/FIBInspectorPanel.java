@@ -199,7 +199,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		repaint();
 	}
 
-	private void switchToInspector(FIBInspector newInspector, boolean updateEPTabs) {
+	private void switchToInspector(FIBInspector newInspector/*, boolean updateEPTabs*/) {
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("switchToInspector " + newInspector + " for " + this);
@@ -211,10 +211,10 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		FlexoFIBController controller = (FlexoFIBController) view.getController();
 		controller.setFlexoController(inspectorController.getFlexoController());
 
-		if (updateEPTabs) {
-			FIBTabPanelView tabPanelView = (FIBTabPanelView) controller.viewForComponent(newInspector.getTabPanel());
-			tabPanelView.updateLayout();
-		}
+		/*	if (updateEPTabs) {
+				FIBTabPanelView tabPanelView = (FIBTabPanelView) controller.viewForComponent(newInspector.getTabPanel());
+				tabPanelView.updateLayout();
+			}*/
 
 		if (tabPanelView != null) {
 			tabPanelView.getJComponent().removeChangeListener(this);
@@ -267,7 +267,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		} else if (notification instanceof MultipleSelectionActivated) {
 			switchToMultipleSelection();
 		} else if (notification instanceof InspectorSwitching) {
-			switchToInspector(((InspectorSwitching) notification).getNewInspector(), ((InspectorSwitching) notification).updateEPTabs());
+			switchToInspector(((InspectorSwitching) notification).getNewInspector()/*, ((InspectorSwitching) notification).updateEPTabs()*/);
 		} else if (notification instanceof InspectedObjectChanged) {
 			switchToObject(((InspectedObjectChanged) notification).getInspectedObject());
 		}

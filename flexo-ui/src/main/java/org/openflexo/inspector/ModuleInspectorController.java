@@ -38,8 +38,8 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.fib.model.FIBWidget;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -62,6 +62,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 	private final FlexoController flexoController;
 
+	private final Map<FlexoConcept, FIBInspector> flexoConceptInspectors;
 	private final Map<Class<?>, FIBInspector> inspectors;
 
 	private FIBInspector currentInspector = null;
@@ -80,6 +81,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	public ModuleInspectorController(final FlexoController flexoController) {
 		this.flexoController = flexoController;
 		inspectors = new Hashtable<Class<?>, FIBInspector>();
+		flexoConceptInspectors = new Hashtable<FlexoConcept, FIBInspector>();
 		inspectorDialog = new FIBInspectorDialog(this);
 		Boolean visible = null;
 		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
@@ -193,7 +195,31 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (object == null) {
 			return null;
 		}
+		if (object instanceof FlexoConceptInstance) {
+			System.out.println("On cherche l'inspecteur de ConceptInstance pour " + ((FlexoConceptInstance) object).getFlexoConcept());
+			return inspectorForFlexoConceptInstance(((FlexoConceptInstance) object).getFlexoConcept());
+		}
 		return inspectorForClass(object.getClass());
+	}
+
+	protected FIBInspector inspectorForFlexoConceptInstance(FlexoConcept concept) {
+		if (concept == null) {
+			return null;
+		}
+		FIBInspector returned = flexoConceptInspectors.get(concept);
+		if (returned != null) {
+			System.out.println("C'est trouve pour " + concept);
+			System.out.println("Je retourne " + returned);
+			return returned;
+		} else {
+			System.out.println("Je cree un inspecteur de concept instance pour " + concept);
+			returned = inspectorForClass(FlexoConceptInstance.class);
+			returned = (FIBInspector) returned.cloneObject();
+			returned.appendFlexoConceptInspectors(concept);
+			flexoConceptInspectors.put(concept, returned);
+			System.out.println("Je retourne " + returned);
+			return returned;
+		}
 	}
 
 	protected FIBInspector inspectorForClass(Class<?> aClass) {
@@ -260,10 +286,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 		notifyObservers(new MultipleSelectionActivated());
 	}
 
-	private void switchToInspector(FIBInspector newInspector, boolean updateEPTabs) {
+	private void switchToInspector(FIBInspector newInspector/*, boolean updateEPTabs*/) {
 		currentInspector = newInspector;
 		setChanged();
-		notifyObservers(new InspectorSwitching(newInspector, updateEPTabs));
+		notifyObservers(new InspectorSwitching(newInspector/*, updateEPTabs*/));
 	}
 
 	private void displayObject(Object object) {
@@ -293,14 +319,14 @@ public class ModuleInspectorController extends Observable implements Observer {
 			logger.warning("No inspector for " + object);
 			switchToEmptyContent();
 		} else {
-			boolean updateEPTabs = false;
+			/*boolean updateEPTabs = false;
 			if (object instanceof FlexoConceptInstance) {
 				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
 			} else if (object instanceof FlexoObject) {
 				updateEPTabs = newInspector.updateFlexoObjectInspector((FlexoObject) object);
-			}
-			if (newInspector != currentInspector || updateEPTabs) {
-				switchToInspector(newInspector, updateEPTabs);
+			}*/
+			if (newInspector != currentInspector /*|| updateEPTabs*/) {
+				switchToInspector(newInspector/*, updateEPTabs*/);
 			}
 			displayObject(object);
 		}
@@ -343,17 +369,17 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	public static class InspectorSwitching {
-		private final boolean updateEPTabs;
+		// private final boolean updateEPTabs;
 		private final FIBInspector newInspector;
 
-		public InspectorSwitching(FIBInspector newInspector, boolean updateEPTabs) {
+		public InspectorSwitching(FIBInspector newInspector/*, boolean updateEPTabs*/) {
 			this.newInspector = newInspector;
-			this.updateEPTabs = updateEPTabs;
+			// this.updateEPTabs = updateEPTabs;
 		}
 
-		public boolean updateEPTabs() {
+		/*public boolean updateEPTabs() {
 			return updateEPTabs;
-		}
+		}*/
 
 		public FIBInspector getNewInspector() {
 			return newInspector;
