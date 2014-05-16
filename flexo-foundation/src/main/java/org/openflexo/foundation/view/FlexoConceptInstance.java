@@ -235,7 +235,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						actorReference.setModellingElement(object);
 					}
 				} else /*if (object != null)*/{
-					// We are sure object is not null, becase oldObject is null and object != oldObject
+					// We are sure object is not null, because oldObject is null and object != oldObject
 					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
 					addToActors(actorReference);
 				}
@@ -245,6 +245,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternRole() actors="+actors);
 
 				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
+
 			}
 		}
 
