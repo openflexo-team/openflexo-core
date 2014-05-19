@@ -127,11 +127,9 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 
 		for (FIBBrowserElement el : browser.getElements()) {
 			if (el.getDataClass() != null) {
-				System.out.println("> On s'occupe de " + el.getDataClass());
 				if (FlexoObject.class.isAssignableFrom(el.getDataClass())) {
 					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl.getActionList((Class<? extends FlexoObject>) el
 							.getDataClass());
-					System.out.println("actions: " + actionList);
 					for (FlexoActionType<?, ?, ?> actionType : actionList) {
 						el.addToActions(FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this));
 					}
