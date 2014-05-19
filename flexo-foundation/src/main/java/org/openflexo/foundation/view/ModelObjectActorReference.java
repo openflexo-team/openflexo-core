@@ -40,20 +40,28 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 
 		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
 
+		private boolean isLoading = false;
+
 		@Override
 		public void setModellingElement(T object) {
 			setObjectReference(new FlexoObjectReference<T>(object));
 		}
 
 		@Override
-		public T getModellingElement() {
+		public synchronized T getModellingElement() {
+			if (isLoading) {
+				return null;
+			}
+			isLoading = true;
 			if (getObjectReference() != null) {
 				T returned = getObjectReference().getObject(true);
 				if (returned == null) {
 					logger.warning("Could not retrieve object " + getObjectReference());
 				}
+				isLoading = false;
 				return returned;
 			}
+			isLoading = false;
 			return null;
 		}
 
