@@ -33,6 +33,11 @@ public interface ModuleView<O extends FlexoObject> {
 
 	public O getRepresentedObject();
 
+	/**
+	 * Delete the ModuleView
+	 * 
+	 * VERY IMPORTANT: in all implementations, DO NOT FORGET TO CALL {@link FlexoController.removeModuleView(this)}
+	 */
 	public void deleteModuleView();
 
 	/**
