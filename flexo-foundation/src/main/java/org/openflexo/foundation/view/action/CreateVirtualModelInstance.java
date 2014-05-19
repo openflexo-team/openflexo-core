@@ -263,6 +263,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	 * @return
 	 */
 	public boolean isActionValidable() {
+
 		if (!isValid()) {
 			return false;
 		}
@@ -310,6 +311,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	public void setCreationScheme(CreationScheme creationScheme) {
+		boolean wasValidable = isActionValidable();
 		this.creationScheme = creationScheme;
 		if (creationScheme != null) {
 			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(null, null, this);
@@ -318,6 +320,9 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		} else {
 			creationSchemeAction = null;
 		}
+		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);
+		getPropertyChangeSupport().firePropertyChange("isActionValidable", wasValidable, isActionValidable());
+
 	}
 
 	@Override
