@@ -422,9 +422,9 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				System.out.println("> " + i);
 			}
 
-			System.out.println("Adding " + fci);
-			System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
-			System.out.println("fci.getActors() = " + fci.getActors());
+			// System.out.println("Adding " + fci);
+			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
+			// System.out.println("fci.getActors() = " + fci.getActors());
 
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
