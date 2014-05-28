@@ -457,8 +457,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
-			System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
-			Thread.dumpStack();
+			// System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
+			// Thread.dumpStack();
 
 			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 			if (hash == null) {
