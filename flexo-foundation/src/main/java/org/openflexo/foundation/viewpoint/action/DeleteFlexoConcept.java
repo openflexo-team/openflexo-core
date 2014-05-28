@@ -48,7 +48,7 @@ public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoCon
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
-			return object != null && object.getClass().equals(FlexoConcept.class);
+			return object != null;
 		}
 
 		@Override
