@@ -22,6 +22,7 @@ import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
+import org.openflexo.foundation.viewpoint.action.DeleteVirtualModel;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
@@ -184,6 +185,18 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return null;
 	}
 
+	public FlexoConcept deleteFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+					getEditor());
+			deleteVirtualModel.doAction();
+		} else if (flexoConcept != null) {
+			flexoConcept.getVirtualModel().removeFromChildFlexoConcepts(flexoConcept);
+			flexoConcept.delete();
+		}
+		return flexoConcept;
+	}
+
 	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newURIParameter();
 		newParameter.setName("uri");
@@ -324,30 +337,30 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return parameterToDelete;
 	}
 
-	public void actionFirst(EditionAction<?,?> action){
-		if(action.getActionContainer()!=null){
+	public void actionFirst(EditionAction<?, ?> action) {
+		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionFirst(action);
 		}
 	}
-	
-	public void actionUp(EditionAction<?,?> action){
-		if(action.getActionContainer()!=null){
+
+	public void actionUp(EditionAction<?, ?> action) {
+		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionUp(action);
 		}
 	}
-	
-	public void actionDown(EditionAction<?,?> action){
-		if(action.getActionContainer()!=null){
+
+	public void actionDown(EditionAction<?, ?> action) {
+		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionDown(action);
 		}
 	}
-	
-	public void actionLast(EditionAction<?,?> action){
-		if(action.getActionContainer()!=null){
+
+	public void actionLast(EditionAction<?, ?> action) {
+		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionLast(action);
 		}
 	}
-	
+
 	public boolean isFlexoBehaviour(Object selectedObject, FlexoBehaviour context) {
 		return selectedObject == null || selectedObject == context;
 	}
