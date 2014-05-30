@@ -22,6 +22,7 @@ import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
+import org.openflexo.foundation.viewpoint.action.DeleteFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.DeleteVirtualModel;
 import org.openflexo.foundation.viewpoint.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
@@ -191,8 +192,8 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 					getEditor());
 			deleteVirtualModel.doAction();
 		} else if (flexoConcept != null) {
-			flexoConcept.getVirtualModel().removeFromChildFlexoConcepts(flexoConcept);
-			flexoConcept.delete();
+			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
+			deleteFlexoConcept.doAction();
 		}
 		return flexoConcept;
 	}
