@@ -150,7 +150,13 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		@Override
 		public String getURI() {
-			return getFlexoConcept().getURI() + "." + getRoleName();
+			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
+			if (getFlexoConcept() != null){
+				return getFlexoConcept().getURI() + "." + getRoleName();
+			}
+			else {
+				return null;
+			}
 		}
 
 		@Override

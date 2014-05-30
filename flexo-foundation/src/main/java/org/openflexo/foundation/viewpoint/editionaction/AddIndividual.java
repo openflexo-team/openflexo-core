@@ -130,7 +130,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
 	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
-			AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
+	AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
@@ -227,9 +227,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
 				if (getFlexoRole() instanceof IndividualRole) {
-					if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
-						ontologyClassURI = ontologyClass.getURI();
-					} else {
+					if (getFlexoRole().getOntologicType() != null){
+						if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
+							ontologyClassURI = ontologyClass.getURI();
+						} else {
+							getFlexoRole().setOntologicType(ontologyClass);
+						}
+					}
+					else {
 						getFlexoRole().setOntologicType(ontologyClass);
 					}
 				} else {
@@ -359,7 +364,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	}
 
 	public static class AddIndividualActionMustDefineAnOntologyClass extends
-			ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
+	ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
 		public AddIndividualActionMustDefineAnOntologyClass() {
 			super(AddIndividual.class, "add_individual_action_must_define_an_ontology_class");
 		}
