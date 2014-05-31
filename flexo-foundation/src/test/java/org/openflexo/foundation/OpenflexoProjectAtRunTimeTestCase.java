@@ -221,16 +221,16 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
-			FlexoEditor _editor = null;
-			assertNotNull(_editor = FlexoProject.openProject(prjDir, EDITOR_FACTORY,
+			FlexoEditor _anEditor = null;
+			assertNotNull(_anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY,
 			/*new DefaultProjectLoadingHandler(),*/serviceManager, null));
 			// The next line is really a trouble maker and eventually causes more problems than solutions. FlexoProject can't be renamed on
 			// the fly
 			// without having a severe impact on many resources and importer projects. I therefore now comment this line which made me lost
 			// hundreds of hours
 			// _editor.getProject().setProjectName(_editor.getProject().getProjectName() + new Random().nextInt());
-			_project = _editor.getProject();
-			return _editor;
+			_project = _anEditor.getProject();
+			return _anEditor;
 		} catch (ProjectInitializerException e) {
 			e.printStackTrace();
 			fail();

@@ -229,7 +229,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 				if (getFlexoRole() instanceof IndividualRole) {
 					if (getFlexoRole().getOntologicType() != null){
 						if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
-							ontologyClassURI = ontologyClass.getURI();
 						} else {
 							getFlexoRole().setOntologicType(ontologyClass);
 						}
@@ -237,13 +236,12 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 					else {
 						getFlexoRole().setOntologicType(ontologyClass);
 					}
-				} else {
-					ontologyClassURI = ontologyClass.getURI();
 				}
+				ontologyClassURI = ontologyClass.getURI();
 			} else {
 				ontologyClassURI = null;
 			}
-			System.out.println("ontologyClassURI=" + ontologyClassURI);
+			// System.out.println("ontologyClassURI=" + ontologyClassURI);
 		}
 
 		@Override
