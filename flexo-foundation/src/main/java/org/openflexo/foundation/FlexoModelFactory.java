@@ -13,9 +13,9 @@ import org.openflexo.model.factory.ModelFactory;
  */
 public interface FlexoModelFactory {
 
-    public void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException;
+    void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException;
 
-    public void stopDeserializing(PamelaResource<?, ?> resource);
+    void stopDeserializing(PamelaResource<?, ?> resource);
 
     public static class ConcurrentDeserializationException extends Exception {
         public ConcurrentDeserializationException(PamelaResource<?, ?> resource) {
