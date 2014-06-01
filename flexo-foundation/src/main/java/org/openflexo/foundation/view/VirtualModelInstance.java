@@ -422,9 +422,9 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				System.out.println("> " + i);
 			}
 
-			System.out.println("Adding " + fci);
-			System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
-			System.out.println("fci.getActors() = " + fci.getActors());
+			// System.out.println("Adding " + fci);
+			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
+			// System.out.println("fci.getActors() = " + fci.getActors());
 
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
@@ -457,8 +457,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
-			System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
-			Thread.dumpStack();
+			// System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
+			// Thread.dumpStack();
 
 			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 			if (hash == null) {

@@ -31,6 +31,7 @@ import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.listener.FIBSelectionListener;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.rm.Resource;
@@ -102,10 +103,14 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 		setDataObject(obj);
 	}
 
-	@Override
-	protected void initializeFIBComponent() {
-		super.initializeFIBComponent();
-		FIBBrowser browser = retrieveFIBBrowser((FIBContainer) getFIBComponent());
+	/**
+	 * Internally called to automatically add actions to a FIBBrowser.<br>
+	 * Bind "click" actions to controller.<br>
+	 * Also add all relevant {@link FlexoAction} to each FIBBrowserElement regarding its type
+	 * 
+	 * @param browser
+	 */
+	protected void bindFlexoActionsToBrowser(FIBBrowser browser) {
 		if (browser == null) {
 			logger.warning("Could not retrieve FIBBrowser for component " + getFIBComponent());
 			return;
@@ -133,13 +138,38 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 		}
 	}
 
-	private static FIBBrowser retrieveFIBBrowser(FIBContainer component) {
+	@Override
+	protected void initializeFIBComponent() {
+		super.initializeFIBComponent();
+
+		FIBBrowser browser = retrieveFIBBrowser((FIBContainer) getFIBComponent());
+
+		if (browser != null) {
+			bindFlexoActionsToBrowser(browser);
+		}
+
+	}
+
+	protected static FIBBrowser retrieveFIBBrowser(FIBContainer component) {
 		if (component == null) {
 			return null;
 		}
 		List<FIBComponent> listComponent = component.getAllSubComponents();
 		for (FIBComponent c : listComponent) {
 			if (c instanceof FIBBrowser) {
+				return (FIBBrowser) c;
+			}
+		}
+		return null;
+	}
+
+	protected static FIBBrowser retrieveFIBBrowserNamed(FIBContainer component, String name) {
+		if (component == null) {
+			return null;
+		}
+		List<FIBComponent> listComponent = component.getAllSubComponents();
+		for (FIBComponent c : listComponent) {
+			if ((c instanceof FIBBrowser) && (c.getName() != null) && (c.getName().equals(name))) {
 				return (FIBBrowser) c;
 			}
 		}

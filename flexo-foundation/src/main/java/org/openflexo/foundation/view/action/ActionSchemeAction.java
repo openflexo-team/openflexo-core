@@ -35,86 +35,88 @@ import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
 public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
 
-	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
+    private static final Logger          logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
 
-	private final ActionSchemeActionType actionType;
+    private final ActionSchemeActionType actionType;
 
-	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
-			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
+    public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
+            Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+        super(actionType, focusedObject, globalSelection, editor);
+        this.actionType = actionType;
+    }
 
-	public AbstractActionScheme getActionScheme() {
-		if (actionType != null) {
-			return actionType.getActionScheme();
-		}
-		return null;
-	}
+    public AbstractActionScheme getActionScheme() {
+        if (actionType != null) {
+            return actionType.getActionScheme();
+        }
+        return null;
+    }
 
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * 
-	 * @return
-	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
-	}
+    /**
+     * Return the {@link FlexoConceptInstance} on which this
+     * {@link FlexoBehaviour} is applied.<br>
+     * 
+     * @return
+     */
+    @Override
+    public FlexoConceptInstance getFlexoConceptInstance() {
+        if (actionType != null) {
+            return actionType.getFlexoConceptInstance();
+        }
+        return null;
+    }
 
-	@Override
-	public AbstractActionScheme getEditionScheme() {
-		return getActionScheme();
-	}
+    @Override
+    public AbstractActionScheme getEditionScheme() {
+        return getActionScheme();
+    }
 
-	@Override
-	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
-		}
+    @Override
+    protected void doAction(Object context) throws FlexoException {
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info("Perform action " + actionType);
+        }
 
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
-			applyEditionActions();
-		}
-	}
+        if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
+            applyEditionActions();
+        }
+    }
 
-	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
-		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getFlexoConceptInstance();
-		}
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
-		return null;
-	}
+    @Override
+    public VirtualModelInstance retrieveVirtualModelInstance() {
+        /*if (getFocusedObject() instanceof DiagramElement<?>) {
+        	return ((DiagramElement<?>) getFocusedObject()).getDiagram();
+        }*/
+        if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
+            return (VirtualModelInstance) getFlexoConceptInstance();
+        }
+        if (getFlexoConceptInstance() != null) {
+            return getFlexoConceptInstance().getVirtualModelInstance();
+        }
+        /*if (getFocusedObject() instanceof DiagramElement<?>) {
+        	return ((DiagramElement<?>) getFocusedObject()).getDiagram();
+        }*/
+        return null;
+    }
 
-	@Override
-	public Object getValue(BindingVariable variable) {
-		if (variable instanceof PatternRoleBindingVariable) {
-			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
-		} else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
-			return getFlexoConceptInstance();
-		}
-		return super.getValue(variable);
-	}
+    @Override
+    public Object getValue(BindingVariable variable) {
+        if (variable instanceof PatternRoleBindingVariable) {
+            return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
+        }
+        else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
+            return getFlexoConceptInstance();
+        }
+        return super.getValue(variable);
+    }
 
-	@Override
-	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof PatternRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
-			return;
-		}
-		super.setValue(value, variable);
-	}
+    @Override
+    public void setValue(Object value, BindingVariable variable) {
+        if (variable instanceof PatternRoleBindingVariable) {
+            getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
+            return;
+        }
+        super.setValue(value, variable);
+    }
 
 }

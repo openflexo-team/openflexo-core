@@ -200,7 +200,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 			return new StandardFlexoConceptView(concept, controller, this);
 		}
 		if (object instanceof TechnologyObject) {
-			return createModuleViewForTechnologyObject((TechnologyObject<?>) object);
+			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
 		return new EmptyPanel<FlexoObject>(controller, this, object);
 	}
@@ -265,10 +265,13 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @param object
 	 * @return
 	 */
-	public final <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForTechnologyObject(TechnologyObject<TA> object) {
+	public final <TA extends TechnologyAdapter> ModuleView<?> getModuleViewForTechnologyObject(TechnologyObject<TA> object) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
-		return tac.createModuleViewForObject(object, controller, this);
+		if (tac != null) {
+			return tac.createModuleViewForObject(object, controller, this);
+		}
+		return null;
 	}
 
 	/**

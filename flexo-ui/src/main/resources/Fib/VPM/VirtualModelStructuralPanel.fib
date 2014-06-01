@@ -14,15 +14,17 @@
       <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
         <Children data="data.allRootFlexoConcepts" visible="data.flexoConcepts!=null" cast="" name="children" />
         <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
+        <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
       </BrowserElement>
       <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
         <Children data="flexoConcept.childFlexoConcepts" visible="" cast="" name="children" />
         <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
+        <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
       </BrowserElement>
     </Browser>
     <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoRole" visibleRowCount="3" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoRoleTable" index="0" data="data.flexoRoles" constraints="split(index=0;location=north;splitIdentifier=structural)" visible="">
       <IconColumn data="controller.iconForObject(iterator)" format="" title="icon" columnWidth="25" resizable="false" displayTitle="false" color="" bgColor="" tooltip="" valueChangedAction="" name="icon" />
-      <TextFieldColumn isEditable="" data="iterator.roleName" format="" title="pattern_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" />
+      <TextFieldColumn isEditable="" data="iterator.roleName" format="" title="flexo_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" />
       <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
       <LabelColumn data="iterator.preciseType" format="" title="type" columnWidth="200" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
       <RemoveAction method="controller.deleteFlexoRole(data,selected)" isAvailable="" name="delete" />

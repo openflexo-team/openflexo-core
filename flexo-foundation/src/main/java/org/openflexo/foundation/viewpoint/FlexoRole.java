@@ -150,7 +150,13 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		@Override
 		public String getURI() {
-			return getFlexoConcept().getURI() + "." + getRoleName();
+			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
+			if (getFlexoConcept() != null){
+				return getFlexoConcept().getURI() + "." + getRoleName();
+			}
+			else {
+				return null;
+			}
 		}
 
 		@Override
@@ -177,8 +183,17 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
+			FlexoConcept concept = getFlexoConcept();
+			
+			if (concept != null) {
+				if (concept instanceof VirtualModel) {
+					// the role belongs to a FlexoConcept that is a VirtualModel
+					return (VirtualModel) concept;
+				}
+				else {
+					// the role belongs to a FlexoConcept that belongs to a VirtualModel
+					return getFlexoConcept().getVirtualModel();
+				}
 			}
 			return null;
 		}

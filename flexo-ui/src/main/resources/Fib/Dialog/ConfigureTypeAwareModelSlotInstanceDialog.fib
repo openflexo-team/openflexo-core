@@ -62,7 +62,8 @@
       <Label label="resource_center" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
       <Custom componentClassName="org.openflexo.components.widget.FIBResourceCenterSelector" localize="true" manageDynamicModel="true" name="ResourceCenterSelector3" data="CreateSharedNewModelPanel.data.resourceCenter" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
         <Assignment variable="component.resourceCenterService" value="data.action.virtualModel.viewPoint.viewPointLibrary.serviceManager.resourceCenterService" />
-        <Assignment variable="component.project" value="data.action.editor.project" />
+        <!-- commented out as there is no project into CreatedSharedModelPanel -->
+        <!-- <Assignment variable="component.project" value="data.action.editor.project" /> -->
         <Assignment variable="component.selectableCondition" />
       </Custom>
       <Label label="model_uri" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />

@@ -44,8 +44,6 @@ import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
-import org.openflexo.foundation.viewpoint.dm.VirtualModelCreated;
-import org.openflexo.foundation.viewpoint.dm.VirtualModelDeleted;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
@@ -373,9 +371,11 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 				return;
 			}
 			isLoading = true;
-			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-				if (r instanceof VirtualModelResource) {
-					VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
+			if (getResource() != null) {
+				for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
+					if (r instanceof VirtualModelResource) {
+						VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
+					}
 				}
 			}
 			isLoading = false;
@@ -443,8 +443,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(this);
 			virtualModels.add(virtualModel);
-			//setChanged();
-			//notifyObservers(new VirtualModelCreated(virtualModel));
+			// setChanged();
+			// notifyObservers(new VirtualModelCreated(virtualModel));
 		}
 
 		@Override
@@ -452,8 +452,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(null);
 			virtualModels.remove(virtualModel);
-			//setChanged();
-			//notifyObservers(new VirtualModelDeleted(virtualModel));
+			// setChanged();
+			// notifyObservers(new VirtualModelDeleted(virtualModel));
 		}
 
 		/**

@@ -8,7 +8,7 @@
       <Children data="viewPointFolder.children" visible="" cast="" name="subFolders" />
       <Children data="viewPointFolder.resources" visible="" cast="" name="resource" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource" label="resource.name" icon="controller.iconForObject(resource)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="resource" />
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource" label="resource.name" icon="controller.iconForObject(resource)" tooltip="" enabled="resource.isLoaded" visible="!(resource.isDeleted)" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="resource" />
   </Browser>
   <LocalizedDictionary />
 </Panel>
