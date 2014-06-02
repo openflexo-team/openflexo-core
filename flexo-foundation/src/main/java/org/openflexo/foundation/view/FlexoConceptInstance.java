@@ -539,41 +539,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		private BindingValueChangeListener<String> rendererChangeListener = null;
 
+		private boolean isComputingRenderer = false;
+
 		@Override
 		public String getStringRepresentation() {
-			if (hasValidRenderer()) {
+
+			// We avoid here to enter in an infinite loop while protecting the computation of toString()
+			// (Could happen while extensively logging)
+
+			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
+					isComputingRenderer = true;
+					// System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer());
 					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
 
-					/*if (obj == null) {
-						System.out.println("J'ai deja un premier probleme la");
-						System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer());
-						System.out.println("Getting " + obj);
-						FlexoConceptInstance value = (FlexoConceptInstance) getValue(new BindingVariable("instance",
-								FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
-						System.out.println("value="
-								+ (value != null ? value.getClass() + "/" + Integer.toHexString(value.hashCode()) : null));
-						System.out.println("this=" + Integer.toHexString(hashCode()));
-						DataBinding<String> db = getFlexoConcept().getInspector().getRenderer();
-						if (db.getExpression() instanceof BindingValue) {
-							BindingValue bv = (BindingValue) db.getExpression();
-							System.out.println("Binding: " + db);
-							System.out.println("BindingValue: " + bv);
-							System.out.println("BindingVariable: " + bv.getBindingVariable());
-							System.out.println("BindingPath: " + bv.getBindingPath());
-							if (bv.getBindingPath().get(0) instanceof FlexoConceptPatternRolePathElement) {
-								FlexoConceptPatternRolePathElement pathElement = (FlexoConceptPatternRolePathElement) bv.getBindingPath()
-										.get(0);
-								System.out.println("PathElement: " + pathElement);
-								System.out.println("FlexoRole: " + pathElement.getFlexoRole());
-								System.out.println("On devrait trouver: " + pathElement.getBindingValue(value, this));
-								System.out.println("Les actors: " + value.getActors());
-								FlexoRole role = value.getFlexoConcept().getFlexoRole("name");
-								System.out.println("role=" + role);
-								System.out.println("hop: " + value.getFlexoActor(role));
-							}
-						}
-					}*/
 					if (rendererChangeListener == null) {
 						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getInspector().getRenderer(),
 								this) {
@@ -589,6 +568,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							}
 						};
 					}
+
+					isComputingRenderer = false;
+
 					if (obj instanceof String) {
 						return (String) obj;
 					} else {

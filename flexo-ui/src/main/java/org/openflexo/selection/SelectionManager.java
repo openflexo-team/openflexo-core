@@ -172,6 +172,11 @@ public abstract class SelectionManager extends Observable {
 	 *            : the object to add to selection
 	 */
 	public void setSelectedObject(FlexoObject object) {
+		if (getSelectionSize() == 1 && getSelection().get(0) == object) {
+			// No need, return
+			return;
+		}
+		// System.out.println("Switch from " + getSelection() + " to " + object);
 		resetSelection();
 		addToSelected(object);
 	}
@@ -386,7 +391,6 @@ public abstract class SelectionManager extends Observable {
 	 * Add supplied object to current selection
 	 * 
 	 * @param isNewFocusedObject
-	 *            TODO
 	 * 
 	 * @param object
 	 *            : the object to add to selection
