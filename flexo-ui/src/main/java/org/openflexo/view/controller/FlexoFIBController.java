@@ -60,6 +60,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.SelectionManager;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.view.FIBBrowserActionAdapter;
 
 /**
@@ -110,6 +111,9 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public void delete() {
 		if (getDataObject() instanceof FlexoObservable) {
 			((FlexoObservable) getDataObject()).deleteObserver(this);
+		}
+		if (getDataObject() instanceof HasPropertyChangeSupport) {
+			((HasPropertyChangeSupport) getDataObject()).getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.delete();
 	}

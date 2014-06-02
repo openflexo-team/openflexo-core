@@ -38,111 +38,116 @@ import org.openflexo.model.factory.ModelFactory;
 /**
  * Represents abstraction for Copy and Cut action (clipboard operation)<br>
  * 
- * Note that clipboard operations are managed at very low level using PAMELA framework
+ * Note that clipboard operations are managed at very low level using PAMELA
+ * framework
  * 
  * @author sylvain
  * 
  */
 public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extends FlexoAction<A, FlexoObject, FlexoObject> {
 
-	private static final Logger logger = Logger.getLogger(AbstractCopyAction.class.getPackage().getName());
+    private static final Logger logger = Logger.getLogger(AbstractCopyAction.class.getPackage().getName());
 
-	public static abstract class AbstractCopyActionType<A extends AbstractCopyAction<A>> extends
-			FlexoActionType<A, FlexoObject, FlexoObject> {
+    public static abstract class AbstractCopyActionType<A extends AbstractCopyAction<A>> extends
+            FlexoActionType<A, FlexoObject, FlexoObject> {
 
-		protected final FlexoEditingContext editingContext;
+        protected final FlexoEditingContext                    editingContext;
 
-		protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
+        protected Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied;
 
-		public AbstractCopyActionType(String actionName, FlexoEditingContext editingContext) {
-			super(actionName, FlexoActionType.editGroup);
-			this.editingContext = editingContext;
-			objectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
-		}
+        public AbstractCopyActionType(String actionName, FlexoEditingContext editingContext) {
+            super(actionName, FlexoActionType.editGroup);
+            this.editingContext = editingContext;
+            objectsToBeCopied = new HashMap<PamelaResource<?, ?>, List<FlexoObject>>();
+        }
 
-		// Override parent implementation by preventing check that this ActionType is registered in FlexoObject
-		// (This is to be assumed, as action type is here dynamic)
-		@Override
-		public boolean isEnabled(FlexoObject object, Vector<FlexoObject> globalSelection) {
-			return isEnabledForSelection(object, globalSelection);
-		}
+        // Override parent implementation by preventing check that this
+        // ActionType is registered in FlexoObject
+        // (This is to be assumed, as action type is here dynamic)
+        @Override
+        public boolean isEnabled(FlexoObject object, Vector<FlexoObject> globalSelection) {
+            return isEnabledForSelection(object, globalSelection);
+        }
 
-		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
-			return true;
-		}
+        @Override
+        public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
+            return true;
+        }
 
-		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
+        @Override
+        public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 
-			try {
-				prepareCopy(getGlobalSelectionAndFocusedObject(object, globalSelection));
-				return true;
-			} catch (InvalidSelectionException e) {
-				// e.printStackTrace();
-				// logger.info("Could not COPY for this selection");
-				return false;
-			}
-		}
+            try {
+                prepareCopy(getGlobalSelectionAndFocusedObject(object, globalSelection));
+                return true;
+            } catch (InvalidSelectionException e) {
+                // e.printStackTrace();
+                // logger.info("Could not COPY for this selection");
+                return false;
+            }
+        }
 
-		/**
-		 * Return boolean indicating if the current selection is suitable for a COPY action
-		 * 
-		 * @return
-		 * @throws InvalidSelectionException
-		 */
-		public void prepareCopy(List<FlexoObject> effectiveSelection) throws InvalidSelectionException {
+        /**
+         * Return boolean indicating if the current selection is suitable for a
+         * COPY action
+         * 
+         * @return
+         * @throws InvalidSelectionException
+         */
+        public void prepareCopy(List<FlexoObject> effectiveSelection) throws InvalidSelectionException {
 
-			objectsToBeCopied.clear();
+            objectsToBeCopied.clear();
 
-			ModelFactory modelFactory = null;
+            ModelFactory modelFactory = null;
 
-			for (FlexoObject o : effectiveSelection) {
-				if (o instanceof InnerResourceData) {
-					if (((InnerResourceData) o).getResourceData() != null) {
-						FlexoResource<?> resource = ((InnerResourceData) o).getResourceData().getResource();
-						if (resource instanceof PamelaResource) {
-							List<FlexoObject> objectsInResource = objectsToBeCopied.get(resource);
-							if (objectsInResource == null) {
-								objectsInResource = new ArrayList<FlexoObject>();
-								objectsToBeCopied.put((PamelaResource) resource, objectsInResource);
-							}
-							objectsInResource.add(o);
-						} else {
-							throw new InvalidSelectionException("Incompatible global model context: could not access PamelaResource");
-						}
-					} else {
-						throw new InvalidSelectionException("Incompatible global model context: could not access ResourceData");
-					}
-				}
-			}
+            for (FlexoObject o : effectiveSelection) {
+                if (o instanceof InnerResourceData) {
+                    if (((InnerResourceData) o).getResourceData() != null) {
+                        FlexoResource<?> resource = ((InnerResourceData) o).getResourceData().getResource();
+                        if (resource instanceof PamelaResource) {
+                            List<FlexoObject> objectsInResource = objectsToBeCopied.get(resource);
+                            if (objectsInResource == null) {
+                                objectsInResource = new ArrayList<FlexoObject>();
+                                objectsToBeCopied.put((PamelaResource) resource, objectsInResource);
+                            }
+                            objectsInResource.add(o);
+                        }
+                        else {
+                            throw new InvalidSelectionException("Incompatible global model context: could not access PamelaResource");
+                        }
+                    }
+                    else {
+                        throw new InvalidSelectionException("Incompatible global model context: could not access ResourceData");
+                    }
+                }
+            }
 
-			if (objectsToBeCopied.size() == 0) {
-				throw new InvalidSelectionException("Incompatible global model context: could not access any PamelaResource");
-			}
+            if (objectsToBeCopied.size() == 0) {
+                throw new InvalidSelectionException("Incompatible global model context: could not access any PamelaResource");
+            }
 
-			// System.out.println("DONE prepare copy");
+            // System.out.println("DONE prepare copy");
 
-		}
+        }
 
-	};
+    };
 
-	AbstractCopyAction(AbstractCopyActionType<A> actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection,
-			FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-	}
+    AbstractCopyAction(AbstractCopyActionType<A> actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection,
+            FlexoEditor editor) {
+        super(actionType, focusedObject, globalSelection, editor);
+    }
 
-	@SuppressWarnings("serial")
-	public static class InvalidSelectionException extends FlexoException {
+    @SuppressWarnings("serial")
+    public static class InvalidSelectionException extends FlexoException {
 
-		public InvalidSelectionException(String message) {
-			super(message);
-		}
+        public InvalidSelectionException(String message) {
+            super(message);
+        }
 
-		public InvalidSelectionException(String message, Exception cause) {
-			super(message, cause);
-		}
+        public InvalidSelectionException(String message, Exception cause) {
+            super(message, cause);
+        }
 
-	}
+    }
 
 }

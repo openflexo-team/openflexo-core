@@ -119,8 +119,8 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 		super(new BorderLayout());
 
 		this.controller = controller;
-		this.centerLayout = new MultiSplitLayout(false, MSL_FACTORY);
-		this.centerLayout.setLayoutMode(MultiSplitLayout.NO_MIN_SIZE_LAYOUT);
+		this.centerLayout = new MultiSplitLayout(true, MSL_FACTORY);
+		this.centerLayout.setLayoutMode(MultiSplitLayout.DEFAULT_LAYOUT);
 		registrationManager = new PropertyChangeListenerRegistrationManager();
 		registrationManager.new PropertyChangeListenerRegistration(ControllerModel.LOCATIONS, this, controller.getControllerModel());
 		registrationManager.new PropertyChangeListenerRegistration(ControllerModel.CURRENT_LOCATION, this, controller.getControllerModel());

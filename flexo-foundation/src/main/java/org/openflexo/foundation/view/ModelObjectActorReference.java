@@ -51,9 +51,8 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 		public synchronized T getModellingElement() {
 			if (isLoading) {
 				return null;
-			}
-			isLoading = true;
-			if (getObjectReference() != null) {
+			} else if (getObjectReference() != null) {
+				isLoading = true;
 				T returned = getObjectReference().getObject(true);
 				if (returned == null) {
 					logger.warning("Could not retrieve object " + getObjectReference());

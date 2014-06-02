@@ -30,6 +30,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	static final Logger logger = Logger.getLogger(FlexoResourceImpl.class.getPackage().getName());
 
 	private FlexoServiceManager serviceManager = null;
+	private boolean isLoading = false;
 	protected RD resourceData = null;
 
 	/**
@@ -63,15 +64,40 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
+	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
 			FileNotFoundException, FlexoException {
+
+		if (isLoading()) {
+			logger.warning("trying to load a resource data from itself, please investigate");
+			return null;
+		}
 		if (resourceData == null && isLoadable()) {
 			// The resourceData is null, we try to load it
+			setLoading(true);
 			resourceData = loadResourceData(progress);
+			setLoading(false);
 			// That's fine, resource is loaded, now let's notify the loading of the resources
 			notifyResourceLoaded();
 		}
 		return resourceData;
+	}
+
+	/**
+	 * Return flag indicating if this resource is being loaded
+	 * 
+	 * @return
+	 */
+	public boolean isLoading() {
+		return isLoading;
+	}
+
+	/**
+	 * Set a flag indicating if this resource is being loaded
+	 * 
+	 * @return
+	 */
+	public void setLoading(boolean isLoading) {
+		this.isLoading = isLoading;
 	}
 
 	/**

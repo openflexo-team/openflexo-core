@@ -37,75 +37,75 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ImplementationClass(AbstractActionScheme.AbstractActionSchemeImpl.class)
 public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONDITIONAL_KEY = "conditional";
+    @PropertyIdentifier(type = DataBinding.class)
+    public static final String CONDITIONAL_KEY = "conditional";
 
-	@Getter(value = CONDITIONAL_KEY)
-	@XMLAttribute
-	public DataBinding<Boolean> getConditional();
+    @Getter(value = CONDITIONAL_KEY)
+    @XMLAttribute
+    public DataBinding<Boolean> getConditional();
 
-	@Setter(CONDITIONAL_KEY)
-	public void setConditional(DataBinding<Boolean> conditional);
+    @Setter(CONDITIONAL_KEY)
+    public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
+    public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
-	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
+    public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
-		private DataBinding<Boolean> conditional;
+        private DataBinding<Boolean> conditional;
 
-		public AbstractActionSchemeImpl() {
-			super();
-		}
+        public AbstractActionSchemeImpl() {
+            super();
+        }
 
-		@Override
-		public DataBinding<Boolean> getConditional() {
-			if (conditional == null) {
-				conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
-				conditional.setBindingName("conditional");
-			}
-			return conditional;
-		}
+        @Override
+        public DataBinding<Boolean> getConditional() {
+            if (conditional == null) {
+                conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+                conditional.setBindingName("conditional");
+            }
+            return conditional;
+        }
 
-		@Override
-		public void setConditional(DataBinding<Boolean> conditional) {
-			if (conditional != null) {
-				conditional.setOwner(this);
-				conditional.setDeclaredType(Boolean.class);
-				conditional.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				conditional.setBindingName("conditional");
-			}
-			this.conditional = conditional;
-		}
+        @Override
+        public void setConditional(DataBinding<Boolean> conditional) {
+            if (conditional != null) {
+                conditional.setOwner(this);
+                conditional.setDeclaredType(Boolean.class);
+                conditional.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+                conditional.setBindingName("conditional");
+            }
+            this.conditional = conditional;
+        }
 
-		@Override
-		public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) {
-			if (getConditional().isSet() && getConditional().isValid()) {
-				try {
-					Boolean returned = getConditional().getBindingValue(flexoConceptInstance);
-					return returned;
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
-			return true;
-		}
+        @Override
+        public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance) {
+            if (getConditional().isSet() && getConditional().isValid()) {
+                try {
+                    Boolean returned = getConditional().getBindingValue(flexoConceptInstance);
+                    return returned;
+                } catch (TypeMismatchException e) {
+                    e.printStackTrace();
+                } catch (NullReferenceException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+            return true;
+        }
 
-		@Override
-		protected void appendContextualBindingVariables(BindingModel bindingModel) {
-			super.appendContextualBindingVariables(bindingModel);
-			/*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
-					this));*/
-		}
+        @Override
+        protected void appendContextualBindingVariables(BindingModel bindingModel) {
+            super.appendContextualBindingVariables(bindingModel);
+            /*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
+            		this));*/
+        }
 
-		@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			super.setFlexoConcept(flexoConcept);
-			updateBindingModels();
-		}
+        @Override
+        public void setFlexoConcept(FlexoConcept flexoConcept) {
+            super.setFlexoConcept(flexoConcept);
+            updateBindingModels();
+        }
 
-	}
+    }
 }
