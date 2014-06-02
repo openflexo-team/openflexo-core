@@ -189,15 +189,43 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		startDeserializing();
 		getContainer().getView().addToVirtualModelInstances(returned);
 		returned.clearIsModified();
-		if (returned.isSynchronizable()) {
+		/*if (returned.isSynchronizable()) {
 			returned.synchronize(null);
-		}
+		}*/
 		// And, we notify a deserialization stop
 		stopDeserializing();
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
 		}
+
+		/*if (!getContainer().isDeserializing()) {
+			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
+				getLoadedResourceData().synchronize(null);
+			}
+		}*/
+
+		// CAUTION: entering HACKING area
+		/*SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
+					getLoadedResourceData().synchronize(null);
+				}
+			}
+		});*/
+
 		return returned;
+	}
+
+	@Override
+	public void setLoading(boolean isLoading) {
+		super.setLoading(isLoading);
+		// Just after the loading occurs, apply synchronization.
+		if (!isLoading()) {
+			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
+				getLoadedResourceData().synchronize(null);
+			}
+		}
 	}
 
 	@Override
