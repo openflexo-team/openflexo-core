@@ -318,7 +318,9 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 		@Override
 		public List<VirtualModelInstance> getVirtualModelInstances() {
-			loadVirtualModelInstancesWhenUnloaded();
+			if (getResource() != null && !getResource().isDeserializing()) {
+				loadVirtualModelInstancesWhenUnloaded();
+			}
 			return (List<VirtualModelInstance>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
 		}
 
