@@ -187,18 +187,21 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	}
 
 	public void singleClick(Object object) {
+		// System.out.println("singleClick with " + object);
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasClicked(object);
 		}
 	}
 
 	public void doubleClick(Object object) {
+		// System.out.println("doubleClick with " + object);
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasDoubleClicked(object);
 		}
 	}
 
 	public void rightClick(Object object, MouseEvent e) {
+		// System.out.println("rightClick with " + object);
 		if (getFlexoController() != null) {
 			getFlexoController().objectWasRightClicked(object, e);
 		}
