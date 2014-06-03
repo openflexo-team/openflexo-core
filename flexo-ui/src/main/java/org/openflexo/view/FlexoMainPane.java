@@ -120,7 +120,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 		this.controller = controller;
 		this.centerLayout = new MultiSplitLayout(true, MSL_FACTORY);
-		this.centerLayout.setLayoutMode(MultiSplitLayout.DEFAULT_LAYOUT);
+		this.centerLayout.setLayoutMode(MultiSplitLayout.NO_MIN_SIZE_LAYOUT);
 		registrationManager = new PropertyChangeListenerRegistrationManager();
 		registrationManager.new PropertyChangeListenerRegistration(ControllerModel.LOCATIONS, this, controller.getControllerModel());
 		registrationManager.new PropertyChangeListenerRegistration(ControllerModel.CURRENT_LOCATION, this, controller.getControllerModel());
@@ -419,7 +419,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 			centerPanel.add(toAdd, position.name());
 			// boolean wasVisible = centerLayout.getNodeForName(position.name()).isVisible();
 			boolean visible = next != null;
-			centerLayout.displayNode(position.name(), visible);
+			centerLayout.displayNode(position.name(), visible, isExistingPreferenceForCurrentPerspective());
 			Node node = centerLayout.getNodeForName(position.name());
 			Split parent = node.getParent();
 			if (parent != centerLayout.getNodeForName(LayoutColumns.CENTER.name())) {
@@ -433,6 +433,15 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 			}
 			*/
 			centerPanel.revalidate();
+		}
+	}
+
+	// Return true if there is an existing
+	private boolean isExistingPreferenceForCurrentPerspective() {
+		if (getController().getControllerModel().getLayoutForPerspective(perspective) == null) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -562,11 +571,11 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 			if (componentForNode instanceof EmptyPanel) {
 				// EmptyPanel means that there is nothing to display/hide here
 			} else {
-				centerLayout.displayNode(((Leaf) root).getName(), visible);
+				centerLayout.displayNode(((Leaf) root).getName(), visible, isExistingPreferenceForCurrentPerspective());
 			}
 		} else if (root instanceof Split) {
 			Split<?> split = (Split) root;
-			centerLayout.displayNode(split.getName(), visible);
+			centerLayout.displayNode(split.getName(), visible, isExistingPreferenceForCurrentPerspective());
 			for (Node child : split.getChildren()) {
 				updateVisibility(child, visible);
 			}
