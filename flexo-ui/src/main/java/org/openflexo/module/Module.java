@@ -63,7 +63,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 	private final ImageIcon mediumIcon;
 	private final ImageIcon mediumIconWithHover;
 	private final ImageIcon bigIcon;
-	private final boolean requiresProject;
 
 	private ModuleLoader moduleLoader;
 
@@ -71,7 +70,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 
 	public Module(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
 			String relativeDirectory, String jiraComponentID, String helpTopic, ImageIcon smallIcon, ImageIcon mediumIcon,
-			ImageIcon mediumIconWithHover, ImageIcon bigIcon, boolean requiresProject) {
+			ImageIcon mediumIconWithHover, ImageIcon bigIcon) {
 		super();
 		this.name = name;
 		this.shortName = shortName;
@@ -84,7 +83,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 		this.mediumIcon = mediumIcon;
 		this.mediumIconWithHover = mediumIconWithHover;
 		this.bigIcon = bigIcon;
-		this.requiresProject = requiresProject;
 		constructor = lookupConstructor();
 	}
 
@@ -144,10 +142,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 		return bigIcon;
 	}
 
-	public boolean requireProject() {
-		return requiresProject;
-	}
-
 	public boolean isNotFoundNotified() {
 		return notFoundNotified;
 	}
@@ -204,9 +198,8 @@ public abstract class Module<M extends FlexoModule<M>> {
 
 	public String getHTMLDescription() {
 		DocResourceManager drm = getApplicationContext().getDocResourceManager();
-		if (drm != null){
-			Language language = drm.getLanguage(
-					getApplicationContext().getGeneralPreferences().getLanguage());
+		if (drm != null) {
+			Language language = drm.getLanguage(getApplicationContext().getGeneralPreferences().getLanguage());
 			DocItem docItem = getApplicationContext().getDocResourceManager().getDocItem(getHelpTopic());
 			if (docItem != null) {
 				if (docItem.getLastApprovedActionForLanguage(language) != null) {
@@ -214,10 +207,11 @@ public abstract class Module<M extends FlexoModule<M>> {
 							+ "</html>";
 					return returned;
 				}
-			}}
+			}
+		}
 
 		return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
-		+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
+				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
 	}
 
 	/**

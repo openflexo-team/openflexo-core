@@ -36,10 +36,9 @@ public abstract class NatureSpecificModule<M extends FlexoModule<M>, N extends P
 
 	public NatureSpecificModule(String name, String shortName, Class<M> moduleClass,
 			Class<? extends ModulePreferences<M>> preferencesClass, String relativeDirectory, String jiraComponentID, String helpTopic,
-			ImageIcon smallIcon, ImageIcon mediumIcon, ImageIcon mediumIconWithHover, ImageIcon bigIcon, boolean requiresProject,
-			Class<N> natureClass) {
+			ImageIcon smallIcon, ImageIcon mediumIcon, ImageIcon mediumIconWithHover, ImageIcon bigIcon, Class<N> natureClass) {
 		super(name, shortName, moduleClass, preferencesClass, relativeDirectory, jiraComponentID, helpTopic, smallIcon, mediumIcon,
-				mediumIconWithHover, bigIcon, requiresProject);
+				mediumIconWithHover, bigIcon);
 		this.natureClass = natureClass;
 	}
 

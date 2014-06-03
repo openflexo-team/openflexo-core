@@ -70,44 +70,40 @@ public class FileMenu extends FlexoMenu {
 	protected FlexoController _controller;
 
 	protected FileMenu(FlexoController controller) {
-		this(controller, true);
-	}
-
-	protected FileMenu(FlexoController controller, boolean insertCommonItems) {
 		super("file", controller);
 		_controller = controller;
-		if (insertCommonItems) {
-			add(new NewProjectItem());
-			add(new OpenProjectItem());
-			add(recentProjectMenu = new JMenu());
-			recentProjectMenu.setText(FlexoLocalization.localizedForKey("recent_projects", recentProjectMenu));
-			add(new ImportProjectMenuItem());
-			add(new SaveProjectItem());
-			add(new SaveAllProjectItem());
-			add(new SaveAsProjectItem());
-			// TODO: repair reload project. this includes to also support close project.
-			// add(reloadProjectItem = new ReloadProjectItem());
-			addSeparator();
-			if (addImportItems()) {
-				add(importMenu);
-			}
-			if (addExportItems()) {
-				add(exportMenu);
-			}
-			if (importMenu != null || exportMenu != null) {
-				addSeparator();
-			}
+
+		add(new NewProjectItem());
+		add(new OpenProjectItem());
+		add(recentProjectMenu = new JMenu());
+		recentProjectMenu.setText(FlexoLocalization.localizedForKey("recent_projects", recentProjectMenu));
+		add(new ImportProjectMenuItem());
+		add(new SaveProjectItem());
+		add(new SaveAllProjectItem());
+		add(new SaveAsProjectItem());
+		// TODO: repair reload project. this includes to also support close project.
+		// add(reloadProjectItem = new ReloadProjectItem());
+		addSeparator();
+		if (addImportItems()) {
+			add(importMenu);
 		}
+		if (addExportItems()) {
+			add(exportMenu);
+		}
+		if (importMenu != null || exportMenu != null) {
+			addSeparator();
+		}
+
 		addSpecificItems();
-		if (insertCommonItems) {
-			add(new InspectProjectItem());
-			if (controller instanceof PrintManagingController) {
-				addSeparator();
-				addPrintItems();
-				add(new PageSetUpItem());
-			}
+
+		add(new InspectProjectItem());
+		if (controller instanceof PrintManagingController) {
 			addSeparator();
+			addPrintItems();
+			add(new PageSetUpItem());
 		}
+		addSeparator();
+
 		add(new QuitItem());
 
 		updateRecentProjectMenu();

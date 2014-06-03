@@ -414,10 +414,10 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				}
 				activeModule = moduleInstance;
 				moduleInstance.setAsActiveModule();
-				if (activeModule.getModule().requireProject()) {
-					activeModule.getController().getControllerModel().getPropertyChangeSupport()
-							.addPropertyChangeListener(ControllerModel.CURRENT_EDITOR, activeEditorListener);
-				}
+				// if (activeModule.getModule().requireProject()) {
+				activeModule.getController().getControllerModel().getPropertyChangeSupport()
+						.addPropertyChangeListener(ControllerModel.CURRENT_EDITOR, activeEditorListener);
+				// }
 				getPropertyChangeSupport().firePropertyChange(ACTIVE_MODULE, old, activeModule);
 				getServiceManager().notify(this, new ModuleActivated(activeModule));
 				return moduleInstance;

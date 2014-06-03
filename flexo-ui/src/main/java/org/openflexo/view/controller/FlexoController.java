@@ -154,6 +154,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
+
 // import javax.ws.rs.WebApplicationException;
 
 /**
@@ -240,10 +241,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
         // controllerActionInitializer = createControllerActionInitializer();
         // registerShortcuts(controllerActionInitializer);
 
-        if (getModule().getModule().requireProject()) {
-            if (getModuleLoader().getLastActiveEditor() != null) {
-                controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
-            }
+        // if (getModule().getModule().requireProject()) {
+        if (getModuleLoader().getLastActiveEditor() != null) {
+            controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
+            // }
         }
         else {
             controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
@@ -1060,7 +1061,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
         if (isDisposed()) {
             return false;
         }
-        return !getModule().getModule().requireProject() || !(object instanceof FlexoProjectObject)
+        return /*!getModule().getModule().requireProject() ||*/!(object instanceof FlexoProjectObject)
                 || ((FlexoProjectObject) object).getProject() == getProject();
     }
 
@@ -1226,7 +1227,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
     }
 
     public String getWindowTitle() {
-        String projectTitle = getModule().getModule().requireProject() && getProject() != null ? " - " + getProject().getProjectName()
+        String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null ? " - " + getProject().getProjectName()
                 + " - " + getProjectDirectory().getAbsolutePath() : "";
         if (getCurrentModuleView() != null) {
             return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
@@ -1746,7 +1747,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
     public ImageIcon iconForObject(Object object) {
         ImageIcon iconForObject = statelessIconForObject(object);
         if (iconForObject != null) {
-            if (getModule().getModule().requireProject() && object instanceof FlexoProjectObject && getProject() != null
+            if (/*getModule().getModule().requireProject() &&*/object instanceof FlexoProjectObject && getProject() != null
                     && ((FlexoProjectObject) object).getProject() != getProject() && ((FlexoProjectObject) object).getProject() != null
                     && (!(object instanceof FlexoProject) || !getProjectLoader().getRootProjects().contains(object))) {
                 iconForObject = IconFactory.getImageIcon(iconForObject, new IconMarker[] { IconLibrary.IMPORT });
@@ -1766,7 +1767,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
                 return tac.getIconForTechnologyObject((Class<TechnologyObject<TA>>) object.getClass());
             }
             else {
-                logger.warning("Could not find TechnologyAdapterController for technology " + object.getTechnologyAdapter());
+                logger.warning("Could not find TechnologyAdapterController for technology "
+                        + ((TechnologyAdapterResource<?, ?>) object).getTechnologyAdapter());
             }
         }
         return null;
