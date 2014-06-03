@@ -71,9 +71,9 @@ public class MainPaneTopBar extends JMenuBar {
 		right.setOpaque(false);
 		initLeftRightViewVisibilityControls();
 		initModules();
-		if (controller.getModule().getModule().requireProject()) {
-			initProjectSelector();
-		}
+		// if (controller.getModule().getModule().requireProject()) {
+		initProjectSelector();
+		// }
 		// initNavigationControls();
 		initPerspectives();
 	}

@@ -192,16 +192,17 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	 ***********/
 
 	public FlexoEditor getCurrentEditor() {
-		if (requiresProject()) {
+		// if (requiresProject()) {
+		if (currentLocation.getEditor() != null) {
 			return currentLocation.getEditor();
 		} else {
 			return context.getApplicationEditor();
 		}
 	}
 
-	public boolean requiresProject() {
+	/*public boolean requiresProject() {
 		return module.getModule().requireProject();
-	}
+	}*/
 
 	public void setCurrentEditor(FlexoEditor currentEditor) {
 		if (currentEditor != getCurrentEditor()) {

@@ -219,7 +219,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		selectionManager = createSelectionManager();
 		flexoFrame.setJMenuBar(menuBar);
 		flexoFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-		.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
 		flexoFrame.getRootPane().getActionMap().put("escape", new AbstractAction() {
 
 			@Override
@@ -240,10 +240,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		// controllerActionInitializer = createControllerActionInitializer();
 		// registerShortcuts(controllerActionInitializer);
 
-		if (getModule().getModule().requireProject()) {
-			if (getModuleLoader().getLastActiveEditor() != null) {
-				controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
-			}
+		// if (getModule().getModule().requireProject()) {
+		if (getModuleLoader().getLastActiveEditor() != null) {
+			controllerModel.setCurrentEditor(getModuleLoader().getLastActiveEditor());
+			// }
 		} else {
 			controllerModel.setCurrentEditor(getApplicationContext().getApplicationEditor());
 		}
@@ -472,7 +472,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public static boolean confirmWithWarning(String msg) throws HeadlessException {
 		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.localizedForKey("information"),
 				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[] { FlexoLocalization.localizedForKey("yes"),
-			FlexoLocalization.localizedForKey("no") }, FlexoLocalization.localizedForKey("no")) == JOptionPane.YES_OPTION;
+						FlexoLocalization.localizedForKey("no") }, FlexoLocalization.localizedForKey("no")) == JOptionPane.YES_OPTION;
 	}
 
 	public static boolean confirm(String msg) throws HeadlessException {
@@ -595,7 +595,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (accelerator.getKeyCode() == FlexoCst.DELETE_KEY_CODE) {
 			int keyCode = FlexoCst.BACKSPACE_DELETE_KEY_CODE;
 			getFlexoFrame().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-			.put(KeyStroke.getKeyStroke(keyCode, accelerator.getModifiers()), key);
+					.put(KeyStroke.getKeyStroke(keyCode, accelerator.getModifiers()), key);
 		}
 	}
 
@@ -750,7 +750,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (window != null && window.isVisible()) {
 			maxDim = new Dimension(Math.min(dialog.getWidth(), window.getGraphicsConfiguration().getDevice().getDefaultConfiguration()
 					.getBounds().width), Math.min(dialog.getHeight(), window.getGraphicsConfiguration().getDevice()
-							.getDefaultConfiguration().getBounds().height));
+					.getDefaultConfiguration().getBounds().height));
 		} else {
 			maxDim = new Dimension(Math.min(dialog.getWidth(), Toolkit.getDefaultToolkit().getScreenSize().width), Math.min(
 					dialog.getHeight(), Toolkit.getDefaultToolkit().getScreenSize().height));
@@ -1029,7 +1029,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (isDisposed()) {
 			return false;
 		}
-		return !getModule().getModule().requireProject() || !(object instanceof FlexoProjectObject)
+		return /*!getModule().getModule().requireProject() ||*/!(object instanceof FlexoProjectObject)
 				|| ((FlexoProjectObject) object).getProject() == getProject();
 	}
 
@@ -1188,17 +1188,17 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public String getWindowTitle() {
-		String projectTitle = getModule().getModule().requireProject() && getProject() != null ? " - " + getProject().getProjectName()
+		String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null ? " - " + getProject().getProjectName()
 				+ " - " + getProjectDirectory().getAbsolutePath() : "";
-				if (getCurrentModuleView() != null) {
-					return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
-				} else {
-					if (getModule() == null) {
-						return FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + projectTitle;
-					} else {
-						return FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + " - " + getModule().getName() + projectTitle;
-					}
-				}
+		if (getCurrentModuleView() != null) {
+			return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
+		} else {
+			if (getModule() == null) {
+				return FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + projectTitle;
+			} else {
+				return FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + " - " + getModule().getName() + projectTitle;
+			}
+		}
 	}
 
 	public void cancelCurrentAction() {
@@ -1402,7 +1402,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 			}
-		 */
+			*/
 		if (e.getCause() instanceof ConnectException) {
 			return FlexoController.confirm(FlexoLocalization.localizedForKey("connection_error")
 					+ (e.getCause().getMessage() != null ? " (" + e.getCause().getMessage() + ")" : "") + "\n"
@@ -1426,7 +1426,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		} else {
 			if (e.getMessage() != null && e.getMessage().indexOf("Content is not allowed in prolog") > -1) {
 				FlexoController
-				.notify("Check your connection url in FlexoPreferences > Advanced.\n It seems wrong.\nsee logs for details.");
+						.notify("Check your connection url in FlexoPreferences > Advanced.\n It seems wrong.\nsee logs for details.");
 				return false;
 			} else {
 				return FlexoController
@@ -1474,7 +1474,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (object instanceof FlexoObject) {
 			FlexoObject relevantObject = getRelevantObject((FlexoObject) object);
 			getSelectionManager().getContextualMenuManager()
-			.showPopupMenuForObject(relevantObject, (Component) e.getSource(), e.getPoint());
+					.showPopupMenuForObject(relevantObject, (Component) e.getSource(), e.getPoint());
 		}
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
@@ -1685,7 +1685,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public ImageIcon iconForObject(Object object) {
 		ImageIcon iconForObject = statelessIconForObject(object);
 		if (iconForObject != null) {
-			if (getModule().getModule().requireProject() && object instanceof FlexoProjectObject && getProject() != null
+			if (/*getModule().getModule().requireProject() &&*/object instanceof FlexoProjectObject && getProject() != null
 					&& ((FlexoProjectObject) object).getProject() != getProject() && ((FlexoProjectObject) object).getProject() != null
 					&& (!(object instanceof FlexoProject) || !getProjectLoader().getRootProjects().contains(object))) {
 				iconForObject = IconFactory.getImageIcon(iconForObject, new IconMarker[] { IconLibrary.IMPORT });
@@ -1697,8 +1697,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyObject(TechnologyObject<TA> object) {
-		//prevent NPE
-		if (object != null){
+		// prevent NPE
+		if (object != null) {
 			TechnologyAdapterController<TA> tac = getTechnologyAdapterController(object.getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForTechnologyObject((Class<TechnologyObject<TA>>) object.getClass());
