@@ -19,9 +19,16 @@
  */
 package org.openflexo.foundation.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.technologyadapter.DeclareActorReference;
+import org.openflexo.foundation.technologyadapter.DeclareActorReferences;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
-import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathFileConverter;
@@ -44,9 +51,9 @@ public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
 		addConverter(new FlexoVersionConverter());
 	}*/
 
-	public VirtualModelInstanceModelFactory(EditingContext editingContext, VirtualModelInstanceResource virtualModelInstanceResource)
-			throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
+	public VirtualModelInstanceModelFactory(EditingContext editingContext, TechnologyAdapterService taService,
+			VirtualModelInstanceResource virtualModelInstanceResource) throws ModelDefinitionException {
+		super(allClassesForModelContext(taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
@@ -56,4 +63,30 @@ public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
 		}
 	}
 
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(VirtualModelInstance.class);
+
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				classes.add(modelSlotClass);
+				DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
+				if (arDeclarations != null) {
+					for (DeclareActorReference arDeclaration : arDeclarations.value()) {
+						classes.add(arDeclaration.actorReferenceClass());
+					}
+				}
+			}
+		}
+
+		return classes;
+	}
 }
