@@ -125,6 +125,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 
 		if (creationSchemeAction != null) {
 			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
+			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
 		}
 
