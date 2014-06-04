@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.antar.annotations.NotificationUnsafe;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.Module;
 
@@ -46,6 +47,7 @@ public class ApplicationData {
 		return applicationContext;
 	}
 
+	@NotificationUnsafe
 	public List<Module<?>> getAvailableModules() {
 		return applicationContext.getModuleLoader().getKnownModules();
 	}
