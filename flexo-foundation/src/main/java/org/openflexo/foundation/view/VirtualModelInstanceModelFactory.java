@@ -74,14 +74,15 @@ public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
 	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModelInstance.class);
-
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
-				classes.add(modelSlotClass);
-				DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
-				if (arDeclarations != null) {
-					for (DeclareActorReference arDeclaration : arDeclarations.value()) {
-						classes.add(arDeclaration.actorReferenceClass());
+		if (taService != null) {
+			for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+					classes.add(modelSlotClass);
+					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
+					if (arDeclarations != null) {
+						for (DeclareActorReference arDeclaration : arDeclarations.value()) {
+							classes.add(arDeclaration.actorReferenceClass());
+						}
 					}
 				}
 			}
