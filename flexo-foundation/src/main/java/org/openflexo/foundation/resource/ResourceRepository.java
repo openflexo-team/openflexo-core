@@ -151,6 +151,10 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 * @param parentFolder
 	 */
 	public void registerResource(R resource, RepositoryFolder<R> parentFolder) {
+		if (resource == null) {
+			logger.warning("Trying to register a null resource");
+			return;
+		}
 		resources.put(resource.getURI(), resource);
 		parentFolder.addToResources(resource);
 	}
