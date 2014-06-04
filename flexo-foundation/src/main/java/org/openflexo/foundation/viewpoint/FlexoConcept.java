@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -217,6 +218,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@DeserializationFinalizer
 	public void finalizeFlexoConceptDeserialization();
+
+	public void updateBindingModel();
 
 	public boolean isRoot();
 
@@ -709,10 +712,12 @@ public interface FlexoConcept extends FlexoConceptObject {
 			return _bindingModel;
 		}
 
+		@Override
 		public void updateBindingModel() {
 			logger.fine("updateBindingModel()");
 			_bindingModel = null;
 			createBindingModel();
+			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, _bindingModel);
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.updateBindingModels();
 			}

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -374,6 +375,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		@Override
 		public void rebuildInferedBindingModel() {
 			inferedBindingModel = buildInferedBindingModel();
+			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, inferedBindingModel);
 		}
 
 		protected BindingModel buildInferedBindingModel() {
