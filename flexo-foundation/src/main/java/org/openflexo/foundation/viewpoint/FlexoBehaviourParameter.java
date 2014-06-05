@@ -34,6 +34,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -43,7 +44,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -57,7 +57,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(CheckboxParameter.class), @Import(DropDownParameter.class), @Import(FloatParameter.class),
 		@Import(IntegerParameter.class), @Import(ListParameter.class), @Import(TextAreaParameter.class), @Import(TextFieldParameter.class),
 		@Import(FlexoConceptInstanceParameter.class), @Import(ClassParameter.class), @Import(IndividualParameter.class),
-		@Import(PropertyParameter.class),@Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
+		@Import(PropertyParameter.class), @Import(URIParameter.class), @Import(TechnologyObjectParameter.class) })
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument {
 
 	public static enum WidgetType {
@@ -159,7 +159,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	@Setter(FLEXO_BEHAVIOUR_SCHEME_KEY)
 	public void setScheme(FlexoBehaviour scheme);
-	
+
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
@@ -209,6 +209,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return DEFAULT_VALUE;
 		}
 
+		@Override
 		public void setScheme(FlexoBehaviour scheme) {
 			_scheme = scheme;
 		}
@@ -218,6 +219,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return _scheme;
 		}
 
+		@Override
 		public FlexoBehaviour getScheme() {
 			return getFlexoBehaviour();
 		}
@@ -274,7 +276,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public int getIndex() {
-			if(getScheme()!=null){
+			if (getScheme() != null) {
 				return getScheme().getParameters().indexOf(this);
 			}
 			return -1;
