@@ -151,10 +151,9 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		@Override
 		public String getURI() {
 			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
-			if (getFlexoConcept() != null){
+			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getRoleName();
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -184,13 +183,12 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		@Override
 		public VirtualModel getVirtualModel() {
 			FlexoConcept concept = getFlexoConcept();
-			
+
 			if (concept != null) {
 				if (concept instanceof VirtualModel) {
 					// the role belongs to a FlexoConcept that is a VirtualModel
 					return (VirtualModel) concept;
-				}
-				else {
+				} else {
 					// the role belongs to a FlexoConcept that belongs to a VirtualModel
 					return getFlexoConcept().getVirtualModel();
 				}
@@ -206,6 +204,17 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		@Override
 		public void setRoleName(String patternRoleName) {
 			setName(patternRoleName);
+		}
+
+		@Override
+		public void setName(String name) {
+			if (requireChange(getName(), name)) {
+				super.setName(name);
+				// When name of role has changed, we needs to update the BindingModel
+				if (getFlexoConcept() != null) {
+					getFlexoConcept().updateBindingModel();
+				}
+			}
 		}
 
 		@Override

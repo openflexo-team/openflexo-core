@@ -25,6 +25,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.Function;
 import org.openflexo.antar.binding.TypeUtils;
@@ -421,7 +422,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			notifyChange("actions", null, actions);
 		}
 		*/
-		
+
 		@Override
 		public void actionFirst(EditionAction<?, ?> a) {
 			getActions().remove(a);
@@ -745,6 +746,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			logger.fine("updateBindingModels()");
 			_bindingModel = null;
 			createBindingModel();
+			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, _bindingModel);
 			rebuildActionsBindingModel();
 			recursivelyUpdateInferedBindingModels(this);
 		}

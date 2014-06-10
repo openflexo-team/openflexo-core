@@ -67,9 +67,11 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 			@Override
 			public boolean run(EventObject e, PasteAction action) {
 				logger.info("Paste finalizer");
-				getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
-				getControllerActionInitializer().getController().setInfoMessage("Pasted " + action.getPastedObjects().size() + " objects",
-						true);
+				if (action.getPastedObjects() != null) {
+					getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
+					getControllerActionInitializer().getController().setInfoMessage(
+							"Pasted " + action.getPastedObjects().size() + " objects", true);
+				}
 				return true;
 			}
 		};

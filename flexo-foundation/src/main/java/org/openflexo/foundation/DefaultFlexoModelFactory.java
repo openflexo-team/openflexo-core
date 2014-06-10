@@ -1,11 +1,15 @@
 package org.openflexo.foundation;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.model.ModelContext;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -26,6 +30,15 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 
 	public DefaultFlexoModelFactory(ModelContext modelContext) {
 		super(modelContext);
+	}
+
+	public DefaultFlexoModelFactory(Collection<Class<?>> classes) throws ModelDefinitionException {
+		super(ModelContextLibrary.getCompoundModelContext(appendGRClasses(classes)));
+	}
+
+	private static Class<?>[] appendGRClasses(final Collection<Class<?>> classes) {
+		final Set<Class<?>> returned = new HashSet<Class<?>>(classes);
+		return returned.toArray(new Class<?>[returned.size()]);
 	}
 
 	private PamelaResource<?, ?> resourceBeeingDeserialized = null;

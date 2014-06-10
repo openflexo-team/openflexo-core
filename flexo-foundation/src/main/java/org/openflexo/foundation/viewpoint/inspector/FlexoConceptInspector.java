@@ -132,6 +132,8 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public void entryLast(InspectorEntry p);
 
+	public FlexoConceptFormatter getFormatter();
+
 	public static abstract class FlexoConceptInspectorImpl extends FlexoConceptObjectImpl implements FlexoConceptInspector {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInspector.class.getPackage().toString());
@@ -155,7 +157,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		public FlexoConceptInspectorImpl() {
 			super();
 			entries = new Vector<InspectorEntry>();
-			formatter = new FlexoConceptFormatter();
+			formatter = new FlexoConceptFormatterImpl();
 		}
 
 		@Override
@@ -163,6 +165,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return null;
 		}
 
+		@Override
 		public FlexoConceptFormatter getFormatter() {
 			return formatter;
 		}
@@ -416,9 +419,10 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			notifiedBindingChanged(this.renderer);
 		}
 
-		private class FlexoConceptFormatter implements Bindable {
+		public class FlexoConceptFormatterImpl implements FlexoConceptFormatter {
 			private BindingModel formatterBindingModel = null;
 
+			@Override
 			public void notifiedBindingModelRecreated() {
 				createFormatterBindingModel();
 			}
@@ -464,4 +468,10 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		}
 
 	}
+
+	public interface FlexoConceptFormatter extends Bindable {
+
+		public void notifiedBindingModelRecreated();
+	}
+
 }
