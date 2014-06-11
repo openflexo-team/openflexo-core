@@ -29,6 +29,7 @@
 package org.openflexo.foundation.ontology;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 
 /**
  * Concept of Data Property.
@@ -36,6 +37,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author gbesancon
  * 
  */
+@FIBPanel("Fib/FIBOntologyDataPropertyEditor.fib")
 public interface IFlexoOntologyDataProperty<TA extends TechnologyAdapter> extends IFlexoOntologyStructuralProperty<TA> {
 	/**
 	 * Range of property.
