@@ -31,6 +31,7 @@ package org.openflexo.foundation.ontology;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 
 /**
  * Concept of Class.
@@ -38,6 +39,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author gbesancon
  * 
  */
+@FIBPanel("Fib/FIBOntologyClassEditor.fib")
 public interface IFlexoOntologyClass<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Super Classes of Class.

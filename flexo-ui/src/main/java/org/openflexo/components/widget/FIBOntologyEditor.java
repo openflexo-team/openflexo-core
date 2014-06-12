@@ -40,6 +40,7 @@ import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
+import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.rm.Resource;
@@ -387,6 +388,14 @@ public abstract class FIBOntologyEditor extends SelectionSynchronizedFIBView {
 		}
 		// System.out.println("Returned: (" + returned.size() + ") " + returned);
 		return returned;
+	}
+
+	public Resource getFibForOntologyObject(IFlexoOntologyObject object) {
+		if (object == null) {
+			return null;
+		}
+		// No specific TechnologyAdapter, lookup in generic libraries
+		return getFIBController().getFIBPanelForObject(object);
 	}
 
 	public FIBBrowser getFIBBrowser() {

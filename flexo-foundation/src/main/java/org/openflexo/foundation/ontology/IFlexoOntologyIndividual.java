@@ -31,6 +31,7 @@ package org.openflexo.foundation.ontology;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 
 /**
  * Concept of Individual.
@@ -38,6 +39,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author gbesancon
  * 
  */
+@FIBPanel("Fib/FIBOntologyIndividualEditor.fib")
 public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Return types of Individual.
