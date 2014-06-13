@@ -318,6 +318,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(null, null, this);
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
+			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
 		} else {
 			creationSchemeAction = null;
 		}
