@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-component</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
 	</parent>
 	<version>1.7-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
@@ -12,14 +12,14 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.0-SNAPSHOT</gina.version>
-		<connie.version>1.0-SNAPSHOT</connie.version>
-		<pamela.version>1.0-SNAPSHOT</pamela.version>
-		<diana.version>1.0-SNAPSHOT</diana.version>
-		<flexohelp.version>1.0-SNAPSHOT</flexohelp.version>
+		<gina.version>1.0</gina.version>
+		<connie.version>1.0</connie.version>
+		<pamela.version>1.0</pamela.version>
+		<diana.version>1.0</diana.version>
+		<flexohelp.version>1.0</flexohelp.version>
 	</properties>
 	<scm>
-		<connection>scm:git:ssh://git@github.com:openflexo-team/openflexo-core.git</connection>
+		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
 	</scm>
 	<modules>
