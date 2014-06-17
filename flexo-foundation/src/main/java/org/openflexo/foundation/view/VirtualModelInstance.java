@@ -784,12 +784,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			// TODO: PERFS !!!
 			// @brutal mode
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
-				for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoRoles()) {
-					if (flexoConceptInstance.getFlexoActor(fr) == object) {
-						ObjectLookupResult answer = new ObjectLookupResult();
-						answer.flexoConceptInstance = flexoConceptInstance;
-						answer.role = fr;
-						return answer;
+				if (flexoConceptInstance.getFlexoConcept() != null) {
+					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoRoles()) {
+						if (flexoConceptInstance.getFlexoActor(fr) == object) {
+							ObjectLookupResult answer = new ObjectLookupResult();
+							answer.flexoConceptInstance = flexoConceptInstance;
+							answer.role = fr;
+							return answer;
+						}
 					}
 				}
 			}
