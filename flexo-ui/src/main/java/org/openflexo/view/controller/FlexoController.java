@@ -1987,7 +1987,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
                     @Override
                     public void run() {
                         String localTempInfoMessage = infoMessage;
-                        System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+                        //System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
                         try {
                             Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);
                         } catch (InterruptedException e) {
@@ -1995,12 +1995,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
                             e.printStackTrace();
                         }
                         temporaryThreadCount--;
-                        System.out.println("END " + tempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+                        //System.out.println("END " + tempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
                         if (temporaryThreadCount == 0) {
-                            System.out.println("OK on revient a " + infoMessage);
+                            //System.out.println("Back to " + infoMessage);
                             tempInfoMessage = null;
                             for (JLabel label : infoLabels) {
-                                System.out.println("Je remet le label a " + getInfoMessage());
+                                //System.out.println("Setting again label to " + getInfoMessage());
                                 label.setText(getInfoMessage());
                             }
                         }
@@ -2010,7 +2010,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
                 t.start();
             }
             else {
-                System.out.println("REALLY set infoMessage to " + infoMessage);
+                //System.out.println("REALLY set infoMessage to " + infoMessage);
                 this.infoMessage = infoMessage;
             }
             for (JLabel label : infoLabels) {
