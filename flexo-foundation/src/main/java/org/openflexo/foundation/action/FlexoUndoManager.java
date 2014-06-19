@@ -19,15 +19,24 @@
  */
 package org.openflexo.foundation.action;
 
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javax.swing.undo.UndoableEdit;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.model.ModelProperty;
+import org.openflexo.model.undo.AddCommand;
+import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.model.undo.RemoveCommand;
+import org.openflexo.model.undo.SetCommand;
 import org.openflexo.model.undo.UndoManager;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * An Openflexo-infrastructure specific UndoManager which manage undo though FlexoAction wrapping.<br>
@@ -215,6 +224,70 @@ public class FlexoUndoManager extends UndoManager {
 		return false;
 	}
 
+	@Override
+	protected void fireAddEdit(UndoableEdit anEdit) {
+		getPropertyChangeSupport().firePropertyChange("canUndo()", !canUndo(), canUndo());
+		getPropertyChangeSupport().firePropertyChange("canRedo()", !canRedo(), canRedo());
+		getPropertyChangeSupport().firePropertyChange("edits", null, anEdit);
+		if (editToBeUndone() instanceof FlexoActionCompoundEdit) {
+			((FlexoActionCompoundEdit) editToBeUndone()).fireActiveStatusChange();
+		}
+		int index = getEdits().indexOf(editToBeUndone());
+		if (index > 0 && index < getEdits().size()) {
+			UndoableEdit previousEdit = getEdits().get(index - 1);
+			if (previousEdit instanceof FlexoActionCompoundEdit) {
+				((FlexoActionCompoundEdit) previousEdit).fireActiveStatusChange();
+			}
+		}
+	}
+
+	@Override
+	protected void fireUndo() {
+
+		super.fireUndo();
+
+		// We override here the default behaviour of UndoManager by notifying all
+		// was is required for GUI to correctely react to this new status. This includes
+		// result of canUndo() and canRedo(), as well as 'isActive' status for each concerned FlexoActionCompoundEdit
+
+		getPropertyChangeSupport().firePropertyChange("canUndo()", !canUndo(), canUndo());
+		getPropertyChangeSupport().firePropertyChange("canRedo()", !canRedo(), canRedo());
+
+		if (editToBeUndone() instanceof FlexoActionCompoundEdit) {
+			((FlexoActionCompoundEdit) editToBeUndone()).fireActiveStatusChange();
+		}
+		if (editToBeRedone() instanceof FlexoActionCompoundEdit) {
+			((FlexoActionCompoundEdit) editToBeRedone()).fireActiveStatusChange();
+		}
+	}
+
+	@Override
+	protected void fireRedo() {
+
+		super.fireRedo();
+
+		// We override here the default behaviour of UndoManager by notifying all
+		// was is required for GUI to correctely react to this new status. This includes
+		// result of canUndo() and canRedo(), as well as 'isActive' status for each concerned FlexoActionCompoundEdit
+
+		getPropertyChangeSupport().firePropertyChange("canUndo()", !canUndo(), canUndo());
+		getPropertyChangeSupport().firePropertyChange("canRedo()", !canRedo(), canRedo());
+		// getPropertyChangeSupport().firePropertyChange("edits", null, getEdits());
+		if (editToBeUndone() instanceof FlexoActionCompoundEdit) {
+			((FlexoActionCompoundEdit) editToBeUndone()).fireActiveStatusChange();
+		}
+		if (editToBeRedone() instanceof FlexoActionCompoundEdit) {
+			((FlexoActionCompoundEdit) editToBeRedone()).fireActiveStatusChange();
+		}
+		int index = getEdits().indexOf(editToBeUndone());
+		if (index > 0 && index < getEdits().size()) {
+			UndoableEdit previousEdit = getEdits().get(index - 1);
+			if (previousEdit instanceof FlexoActionCompoundEdit) {
+				((FlexoActionCompoundEdit) previousEdit).fireActiveStatusChange();
+			}
+		}
+	}
+
 	/**
 	 * An Openflexo-specific CompoundEdit wrapping all edits of a FlexoAction<br>
 	 * Note that at the creation of this {@link CompoundEdit}, the {@link FlexoAction} might be null and set later<br>
@@ -223,13 +296,41 @@ public class FlexoUndoManager extends UndoManager {
 	 * @author sylvain
 	 * 
 	 */
-	public class FlexoActionCompoundEdit extends CompoundEdit {
+	public class FlexoActionCompoundEdit extends CompoundEdit implements HasPropertyChangeSupport {
 
 		private FlexoAction<?, ?, ?> action;
+		private final PropertyChangeSupport pcSupport;
+
+		private final StackTraceElement[] stackTrace;
 
 		public FlexoActionCompoundEdit(FlexoAction<?, ?, ?> action, String presentationName) {
 			super(action != null ? action.getLocalizedName() : presentationName);
 			this.action = action;
+			pcSupport = new PropertyChangeSupport(this);
+			stackTrace = new Exception().getStackTrace();
+		}
+
+		@Override
+		public PropertyChangeSupport getPropertyChangeSupport() {
+			return pcSupport;
+		}
+
+		@Override
+		public String getDeletedProperty() {
+			return null;
+		}
+
+		@Override
+		public String getPresentationName() {
+			return super.getPresentationName() + "-" + Integer.toHexString(hashCode()) + (isActive() ? "[ACTIVE]" : "");
+		}
+
+		/**
+		 * Fire 'isActive' status notification
+		 */
+		public void fireActiveStatusChange() {
+			getPropertyChangeSupport().firePropertyChange("isActive", !isActive(), isActive());
+			getPropertyChangeSupport().firePropertyChange("presentationName", null, getPresentationName());
 		}
 
 		public FlexoAction<?, ?, ?> getAction() {
@@ -239,6 +340,71 @@ public class FlexoUndoManager extends UndoManager {
 		public void setAction(FlexoAction<?, ?, ?> action) {
 			this.action = action;
 		}
+
+		public boolean isActive() {
+			return FlexoUndoManager.this.editToBeUndone() == this;
+		}
+
+		public ModelProperty<?> getProperty(AtomicEdit<?> edit) {
+			if (edit instanceof SetCommand) {
+				return ((SetCommand<?>) edit).getModelProperty();
+			} else if (edit instanceof AddCommand) {
+				return ((AddCommand<?>) edit).getModelProperty();
+			} else if (edit instanceof RemoveCommand) {
+				return ((RemoveCommand<?>) edit).getModelProperty();
+			}
+			return null;
+		}
+
+		public Object getOldValue(AtomicEdit<?> edit) {
+			if (edit instanceof SetCommand) {
+				return ((SetCommand<?>) edit).getOldValue();
+			} else if (edit instanceof AddCommand) {
+				return null;
+			} else if (edit instanceof RemoveCommand) {
+				return ((RemoveCommand<?>) edit).getRemovedValue();
+			}
+			return null;
+		}
+
+		public Object getNewValue(AtomicEdit<?> edit) {
+			if (edit instanceof SetCommand) {
+				return ((SetCommand<?>) edit).getNewValue();
+			} else if (edit instanceof AddCommand) {
+				return ((AddCommand<?>) edit).getAddedValue();
+			} else if (edit instanceof RemoveCommand) {
+				return null;
+			}
+			return null;
+		}
+
+		public String getStackTraceAsString() {
+			if (_stackTraceAsString != null) {
+				return _stackTraceAsString;
+			} else if (stackTrace != null) {
+				StringBuilder returned = new StringBuilder();
+				int beginAt;
+				beginAt = 6;
+				for (int i = beginAt; i < stackTrace.length; i++) {
+					// returned += ("\tat " + stackTrace[i] + "\n");
+					returned.append("\t").append("at ").append(stackTrace[i]).append('\n');
+				}
+				return returned.toString();
+			} else {
+				return "StackTrace not available";
+			}
+		}
+
+		private String _stackTraceAsString;
+
+		public void printStackTrace() {
+			System.err.println("Stack trace for '" + this + "':");
+			StringTokenizer st = new StringTokenizer(getStackTraceAsString(), StringUtils.LINE_SEPARATOR);
+			while (st.hasMoreTokens()) {
+				System.err.println("\t" + st.nextToken());
+			}
+		}
+
 	}
 
 	/**

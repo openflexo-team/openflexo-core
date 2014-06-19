@@ -38,6 +38,7 @@ import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ResourceCenterEditorDialog;
+import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.components.validation.ConsistencyCheckDialog;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.fib.utils.FlexoLoggingViewer;
@@ -77,6 +78,8 @@ public class ToolsMenu extends FlexoMenu {
 
 	public JMenuItem loggingItem;
 
+	public JMenuItem undoManagerItem;
+
 	public JMenuItem localizedEditorItem;
 
 	public JMenuItem rmItem;
@@ -96,6 +99,7 @@ public class ToolsMenu extends FlexoMenu {
 		add(loggingItem = new LoggingItem());
 		add(localizedEditorItem = new LocalizedEditorItem());
 		add(rmItem = new ResourceManagerItem());
+		add(undoManagerItem = new UndoManagerItem());
 		addSeparator();
 		add(submitBug = new SubmitBugItem());
 		if (getModuleLoader().allowsDocSubmission()) {
@@ -156,6 +160,29 @@ public class ToolsMenu extends FlexoMenu {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), getController().getFlexoFrame());
+		}
+	}
+
+	// ===============================================================
+	// ======================= UndoManager ===========================
+	// ===============================================================
+
+	public class UndoManagerItem extends FlexoMenuItem {
+
+		public UndoManagerItem() {
+			super(new UndoManagerAction(), "undo_manager", KeyStroke.getKeyStroke(KeyEvent.VK_U, FlexoCst.META_MASK), getController(), true);
+		}
+
+	}
+
+	public class UndoManagerAction extends AbstractAction {
+		public UndoManagerAction() {
+			super();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			UndoManagerDialog.showUndoManagerDialog(getController().getApplicationContext(), getController().getFlexoFrame());
 		}
 	}
 

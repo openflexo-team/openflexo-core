@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -303,6 +305,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	private FlexoAction<?, ?, ?> ownerAction;
+	private final List<FlexoAction<?, ?, ?>> embeddedActions = new ArrayList<FlexoAction<?, ?, ?>>();
 
 	public FlexoAction<?, ?, ?> getOwnerAction() {
 		return ownerAction;
@@ -310,6 +313,18 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	protected void setOwnerAction(FlexoAction<?, ?, ?> ownerAction) {
 		this.ownerAction = ownerAction;
+	}
+
+	public List<FlexoAction<?, ?, ?>> getEmbeddedActions() {
+		return embeddedActions;
+	}
+
+	protected void addToEmbeddedActions(FlexoAction<?, ?, ?> embeddedAction) {
+		embeddedActions.add(embeddedAction);
+	}
+
+	protected void removeFromEmbeddedActions(FlexoAction<?, ?, ?> embeddedAction) {
+		embeddedActions.remove(embeddedAction);
 	}
 
 	public boolean isEmbedded() {

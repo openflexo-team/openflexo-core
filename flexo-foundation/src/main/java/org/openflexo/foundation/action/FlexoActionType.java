@@ -238,9 +238,10 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 	 *            TODO
 	 * @return
 	 */
-	public A makeNewEmbeddedAction(T1 focusedObject, Vector<T2> globalSelection, FlexoAction ownerAction) {
+	public A makeNewEmbeddedAction(T1 focusedObject, Vector<T2> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
 		A returned = makeNewAction(focusedObject, globalSelection, ownerAction.getEditor());
 		returned.setOwnerAction(ownerAction);
+		ownerAction.addToEmbeddedActions(returned);
 		return returned;
 	}
 

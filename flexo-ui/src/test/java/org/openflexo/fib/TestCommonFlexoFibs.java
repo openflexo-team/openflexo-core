@@ -162,6 +162,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testUndoManager() {
+		validateFIB("Fib/UndoManager.fib");
+	}
+
+	@Test
 	public void testViewFolderSelector() {
 		validateFIB("Fib/ViewFolderSelector.fib");
 	}
