@@ -347,7 +347,7 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 			}
 			return resource;
 		} else {*/
-		if (resource == null) {
+		if (resource == null && getOwner() != null && getOwner().getServiceManager() != null) {
 			resource = getOwner().getServiceManager().getResourceManager().getResource(resourceIdentifier);
 		}
 		return resource;
