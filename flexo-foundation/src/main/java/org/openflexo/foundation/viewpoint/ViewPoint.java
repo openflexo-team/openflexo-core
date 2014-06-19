@@ -530,10 +530,12 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public LocalizedDictionary getLocalizedDictionary() {
-			if (localizedDictionary == null && getResource() != null && getResource().getFactory() != null) {
+			// localized dictionnary is no longer created at this point
+			// this is now managed in the ViewPointModelFactory
+			/*if (localizedDictionary == null && getResource() != null && getResource().getFactory() != null) {
 				localizedDictionary = getResource().getFactory().newInstance(LocalizedDictionary.class);
 				localizedDictionary.setOwner(this);
-			}
+			}*/
 			return localizedDictionary;
 		}
 

@@ -52,4 +52,27 @@ public class ViewPointModelFactory extends DefaultFlexoModelFactory {
 		addConverter(new FlexoVersionConverter());
 		addConverter(new RelativePathFileConverter(viewPointResource.getDirectory()));
 	}
+
+	/**
+	 * Deserialized object are always set with basic controls
+	 */
+	@Override
+	public <I> void objectHasBeenDeserialized(final I newlyCreatedObject, final Class<I> implementedInterface) {
+		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
+		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+			// Always set a LocalizedDictionary for a ViewPoint
+			LocalizedDictionary localizedDictionary = newInstance(LocalizedDictionary.class);
+			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		}
+	}
+
+	@Override
+	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
+		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
+		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+			// Always set a LocalizedDictionary for a ViewPoint
+			LocalizedDictionary localizedDictionary = newInstance(LocalizedDictionary.class);
+			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		}
+	}
 }
