@@ -15,25 +15,34 @@ import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * A {@link ModelFactory} providing automatic FlexoId management
+ * Default implementation for {@link PamelaResourceModelFactory} A {@link DefaultPamelaResourceModelFactory} provides automatic FlexoId
+ * management
  * 
  * @author sylvain
  * 
  */
-public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModelFactory {
+public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> extends ModelFactory implements
+		PamelaResourceModelFactory<R> {
 
-	protected static final Logger logger = Logger.getLogger(DefaultFlexoModelFactory.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(DefaultPamelaResourceModelFactory.class.getPackage().getName());
 
-	public DefaultFlexoModelFactory(Class<?> baseClass) throws ModelDefinitionException {
+	private final R resource;
+	private IgnoreLoadingEdits ignoreHandler = null;
+	private FlexoUndoManager undoManager = null;
+
+	public DefaultPamelaResourceModelFactory(R resource, Class<?> baseClass) throws ModelDefinitionException {
 		super(baseClass);
+		this.resource = resource;
 	}
 
-	public DefaultFlexoModelFactory(ModelContext modelContext) {
+	public DefaultPamelaResourceModelFactory(R resource, ModelContext modelContext) {
 		super(modelContext);
+		this.resource = resource;
 	}
 
-	public DefaultFlexoModelFactory(Collection<Class<?>> classes) throws ModelDefinitionException {
+	public DefaultPamelaResourceModelFactory(R resource, Collection<Class<?>> classes) throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(appendGRClasses(classes)));
+		this.resource = resource;
 	}
 
 	private static Class<?>[] appendGRClasses(final Collection<Class<?>> classes) {
@@ -41,18 +50,13 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 		return returned.toArray(new Class<?>[returned.size()]);
 	}
 
-	private PamelaResource<?, ?> resourceBeeingDeserialized = null;
-	private IgnoreLoadingEdits ignoreHandler = null;
-	private FlexoUndoManager undoManager = null;
+	@Override
+	public R getResource() {
+		return resource;
+	}
 
 	@Override
-	public synchronized void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException {
-		if (resourceBeeingDeserialized == null) {
-			resourceBeeingDeserialized = resource;
-		} else {
-			throw new ConcurrentDeserializationException(resource);
-		}
-
+	public synchronized void startDeserializing() {
 		EditingContext editingContext = resource.getServiceManager().getEditingContext();
 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
@@ -64,11 +68,7 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 	}
 
 	@Override
-	public synchronized void stopDeserializing(PamelaResource<?, ?> resource) {
-		if (resourceBeeingDeserialized == resource) {
-			resourceBeeingDeserialized = null;
-		}
-
+	public synchronized void stopDeserializing() {
 		if (ignoreHandler != null) {
 			undoManager.removeFromIgnoreHandlers(ignoreHandler);
 			// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + resource.getURI());
@@ -80,8 +80,8 @@ public class DefaultFlexoModelFactory extends ModelFactory implements FlexoModel
 	public <I> void objectHasBeenDeserialized(I newlyCreatedObject, Class<I> implementedInterface) {
 		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
 		if (newlyCreatedObject instanceof FlexoObject) {
-			if (resourceBeeingDeserialized != null) {
-				resourceBeeingDeserialized.setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
+			if (getResource() != null) {
+				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
 			} else {
 				logger.warning("Could not access resource beeing deserialized");
 			}

@@ -22,7 +22,7 @@ package org.openflexo.foundation.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.technologyadapter.DeclareActorReference;
 import org.openflexo.foundation.technologyadapter.DeclareActorReferences;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -43,7 +43,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
+public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModelFactory<VirtualModelInstanceResource> {
 
 	/*public VirtualModelInstanceModelFactory() throws ModelDefinitionException {
 		super(ModelContextLibrary.getModelContext(VirtualModelInstance.class));
@@ -51,9 +51,9 @@ public class VirtualModelInstanceModelFactory extends DefaultFlexoModelFactory {
 		addConverter(new FlexoVersionConverter());
 	}*/
 
-	public VirtualModelInstanceModelFactory(EditingContext editingContext, TechnologyAdapterService taService,
-			VirtualModelInstanceResource virtualModelInstanceResource) throws ModelDefinitionException {
-		super(allClassesForModelContext(taService));
+	public VirtualModelInstanceModelFactory(VirtualModelInstanceResource virtualModelInstanceResource, EditingContext editingContext,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
+		super(virtualModelInstanceResource, allClassesForModelContext(taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());

@@ -1,16 +1,16 @@
 package org.openflexo.prefs;
 
-import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.localization.converter.LanguageConverter;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.swing.converter.FlexoFontConverter;
 import org.openflexo.swing.converter.LookAndFeelConverter;
 
-public class FlexoPreferencesFactory extends DefaultFlexoModelFactory {
+public class FlexoPreferencesFactory extends DefaultPamelaResourceModelFactory<FlexoPreferencesResource> {
 
-	public FlexoPreferencesFactory(ModelContext context) throws ModelDefinitionException {
-		super(context);
+	public FlexoPreferencesFactory(FlexoPreferencesResource resource, ModelContext context) throws ModelDefinitionException {
+		super(resource, context);
 		addConverter(new LanguageConverter());
 		addConverter(new FlexoFontConverter());
 		addConverter(new LookAndFeelConverter());

@@ -28,6 +28,8 @@ import java.util.logging.Logger;
 import javax.swing.undo.UndoableEdit;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.PamelaResourceModelFactory;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.ModelProperty;
 import org.openflexo.model.undo.AddCommand;
 import org.openflexo.model.undo.AtomicEdit;
@@ -162,6 +164,11 @@ public class FlexoUndoManager extends UndoManager {
 				FlexoActionCompoundEdit compoundEdit = startRecording(action.getLocalizedName());
 				action.setCompoundEdit(compoundEdit);
 			}
+		} else {
+			// embedded action
+			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
+				((FlexoActionCompoundEdit) getCurrentEdition()).willDoEmbeddedAction(action);
+			}
 		}
 	}
 
@@ -176,6 +183,11 @@ public class FlexoUndoManager extends UndoManager {
 			stopRecording(getCurrentEdition());
 			actionBeeingCurrentlyExecuted = null;
 			getPropertyChangeSupport().firePropertyChange(ACTION_HISTORY, null, action);
+		} else {
+			// embedded action
+			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
+				((FlexoActionCompoundEdit) getCurrentEdition()).hasDoneEmbeddedAction(action);
+			}
 		}
 	}
 
@@ -303,11 +315,25 @@ public class FlexoUndoManager extends UndoManager {
 
 		private final StackTraceElement[] stackTrace;
 
+		private FlexoActionCompoundEdit owner = null;
+		private final List<FlexoActionCompoundEdit> embeddedFlexoActionCompoundEdits;
+		private FlexoActionCompoundEdit currentEmbeddedFlexoActionCompoundEdit = null;
+
 		public FlexoActionCompoundEdit(FlexoAction<?, ?, ?> action, String presentationName) {
 			super(action != null ? action.getLocalizedName() : presentationName);
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
+			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+		}
+
+		public FlexoActionCompoundEdit(FlexoActionCompoundEdit owner, FlexoAction<?, ?, ?> action) {
+			super(action.getLocalizedName());
+			this.action = action;
+			pcSupport = new PropertyChangeSupport(this);
+			stackTrace = new Exception().getStackTrace();
+			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+			this.owner = owner;
 		}
 
 		@Override
@@ -320,9 +346,50 @@ public class FlexoUndoManager extends UndoManager {
 			return null;
 		}
 
+		/**
+		 * Called when an embedded FlexoAction is about to be executed
+		 * 
+		 * @param action
+		 *            : the FlexoAction that will be executed
+		 */
+		private void willDoEmbeddedAction(FlexoAction<?, ?, ?> action) {
+			if (action.getOwnerAction() == getAction()) {
+				System.out.println("OK, j'execute bien " + action + " au sein de " + getAction());
+				currentEmbeddedFlexoActionCompoundEdit = new FlexoActionCompoundEdit(this, action);
+			}
+		}
+
+		/**
+		 * Called when an embedded FlexoAction has been executed
+		 * 
+		 * @param action
+		 *            : the FlexoAction that will be executed
+		 */
+		private void hasDoneEmbeddedAction(FlexoAction<?, ?, ?> action) {
+			if (action.getOwnerAction() == getAction()) {
+				System.out.println("OK, j'ai fini d'executer " + action + " au sein de " + getAction());
+				embeddedFlexoActionCompoundEdits.add(currentEmbeddedFlexoActionCompoundEdit);
+				currentEmbeddedFlexoActionCompoundEdit = null;
+			}
+		}
+
 		@Override
-		public String getPresentationName() {
-			return super.getPresentationName() + "-" + Integer.toHexString(hashCode()) + (isActive() ? "[ACTIVE]" : "");
+		public boolean addEdit(UndoableEdit anEdit) {
+			// Always aggreate edits in root
+			boolean returned = super.addEdit(anEdit);
+			// But also store edits in embedded FlexoActionCompoundEdit
+			if (currentEmbeddedFlexoActionCompoundEdit != null) {
+				currentEmbeddedFlexoActionCompoundEdit.addEdit(anEdit);
+			}
+			return returned;
+		}
+
+		public List<FlexoActionCompoundEdit> getEmbeddedFlexoActionCompoundEdits() {
+			return embeddedFlexoActionCompoundEdits;
+		}
+
+		public FlexoActionCompoundEdit getCurrentEmbeddedFlexoActionCompoundEdit() {
+			return currentEmbeddedFlexoActionCompoundEdit;
 		}
 
 		/**
@@ -341,8 +408,22 @@ public class FlexoUndoManager extends UndoManager {
 			this.action = action;
 		}
 
+		public boolean isEmbedded() {
+			return owner != null;
+		}
+
 		public boolean isActive() {
+			if (isEmbedded()) {
+				return owner.isActive();
+			}
 			return FlexoUndoManager.this.editToBeUndone() == this;
+		}
+
+		public PamelaResource<?, ?> getResource(AtomicEdit<?> edit) {
+			if (edit.getModelFactory() instanceof PamelaResourceModelFactory) {
+				return ((PamelaResourceModelFactory<?>) edit.getModelFactory()).getResource();
+			}
+			return null;
 		}
 
 		public ModelProperty<?> getProperty(AtomicEdit<?> edit) {

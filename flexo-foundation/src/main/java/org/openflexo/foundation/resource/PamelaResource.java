@@ -2,7 +2,7 @@ package org.openflexo.foundation.resource;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.openflexo.foundation.FlexoModelFactory;
+import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
@@ -19,7 +19,7 @@ import org.openflexo.toolbox.FlexoVersion;
  */
 @ModelEntity
 @XMLElement
-public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & FlexoModelFactory> extends FlexoFileResource<RD> {
+public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoFileResource<RD> {
 
 	public static final String MODEL_VERSION = "modelVersion";
 	public static final String FACTORY = "factory";

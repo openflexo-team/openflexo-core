@@ -54,8 +54,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(serviceManager.getEditingContext(), serviceManager
-					.getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
+					.getTechnologyAdapterService()));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -96,8 +96,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(serviceManager.getEditingContext(), serviceManager
-					.getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
+					.getTechnologyAdapterService()));
 
 			return returned;
 		} catch (ModelDefinitionException e) {

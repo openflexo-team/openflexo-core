@@ -25,10 +25,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
-import org.openflexo.foundation.FlexoModelFactory;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
@@ -90,22 +89,24 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class VirtualModelModelFactory extends FGEModelFactoryImpl implements FlexoModelFactory {
+public class VirtualModelModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(VirtualModelModelFactory.class.getPackage().getName());
 
 	private VirtualModelResource virtualModelResource;
+	private IgnoreLoadingEdits ignoreHandler = null;
+	private FlexoUndoManager undoManager = null;
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
+	/*public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
 		this(editingContext, taService, null);
-	}
+	}*/
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService,
-			VirtualModelResource virtualModelResource) throws ModelDefinitionException {
+	public VirtualModelModelFactory(VirtualModelResource virtualModelResource, EditingContext editingContext,
+			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(allClassesForModelContext(taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
@@ -120,6 +121,11 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Fle
 			ta.initVirtualModelFactory(this);
 		}
 
+	}
+
+	@Override
+	public VirtualModelResource getResource() {
+		return getVirtualModelResource();
 	}
 
 	public VirtualModelResource getVirtualModelResource() {
@@ -426,34 +432,20 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Fle
 		return newInstance(FetchRequestIterationAction.class);
 	}
 
-	private PamelaResource<?, ?> resourceBeeingDeserialized = null;
-	private IgnoreLoadingEdits ignoreHandler = null;
-	private FlexoUndoManager undoManager = null;
-
 	@Override
-	public synchronized void startDeserializing(PamelaResource<?, ?> resource) throws ConcurrentDeserializationException {
-		if (resourceBeeingDeserialized == null) {
-			resourceBeeingDeserialized = resource;
-		} else {
-			throw new ConcurrentDeserializationException(resource);
-		}
-
-		EditingContext editingContext = resource.getServiceManager().getEditingContext();
+	public synchronized void startDeserializing() {
+		EditingContext editingContext = getResource().getServiceManager().getEditingContext();
 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
-			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(resource));
+			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(getResource()));
 			// System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " + resource.getURI());
 		}
 
 	}
 
 	@Override
-	public synchronized void stopDeserializing(PamelaResource<?, ?> resource) {
-		if (resourceBeeingDeserialized == resource) {
-			resourceBeeingDeserialized = null;
-		}
-
+	public synchronized void stopDeserializing() {
 		if (ignoreHandler != null) {
 			undoManager.removeFromIgnoreHandlers(ignoreHandler);
 			// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + resource.getURI());
@@ -464,12 +456,12 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Fle
 	@Override
 	public <I> void objectHasBeenDeserialized(I newlyCreatedObject, Class<I> implementedInterface) {
 		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof FlexoObject) {
-			if (resourceBeeingDeserialized != null) {
-				resourceBeeingDeserialized.setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
-			} else {
-				logger.warning("Could not access resource beeing deserialized");
+		if (getResource() != null) {
+			if (newlyCreatedObject instanceof FlexoObject) {
+				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
 			}
+		} else {
+			logger.warning("Could not access resource beeing deserialized");
 		}
 	}
 

@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.viewpoint;
 
-import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -36,21 +36,16 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewPointModelFactory extends DefaultFlexoModelFactory {
+public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<ViewPointResource> {
 
-	public ViewPointModelFactory(EditingContext editingContext) throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(ViewPoint.class));
+	public ViewPointModelFactory(ViewPointResource viewPointResource, EditingContext editingContext) throws ModelDefinitionException {
+		super(viewPointResource, ModelContextLibrary.getModelContext(ViewPoint.class));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-	}
-
-	public ViewPointModelFactory(EditingContext editingContext, ViewPointResource viewPointResource) throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(ViewPoint.class));
-		setEditingContext(editingContext);
-		addConverter(new DataBindingConverter());
-		addConverter(new FlexoVersionConverter());
-		addConverter(new RelativePathFileConverter(viewPointResource.getDirectory()));
+		if (viewPointResource != null) {
+			addConverter(new RelativePathFileConverter(viewPointResource.getDirectory()));
+		}
 	}
 
 	/**
