@@ -224,6 +224,19 @@ public class ContextualMenuManager {
 								_selectionManager != null ? _selectionManager.getSelection() : null)) {
 					contextualMenu.putAction(next);
 				}
+			}
+			if (focusedObject instanceof FlexoConceptInstance) {
+				FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
+				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
+					contextualMenu
+							.putAction(new SynchronizationSchemeActionType(epi.getFlexoConcept().getSynchronizationScheme(), epi));
+				}
+				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
+					for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
+						contextualMenu.putAction(new ActionSchemeActionType(as, epi));
+					}
+				}
+			}
 				/*if (focusedObject instanceof FlexoObject) {
 					if (focusedObject.getFlexoConceptReferences() != null) {
 						for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
@@ -244,7 +257,7 @@ public class ContextualMenuManager {
 						}
 					}
 				}*/
-				if (focusedObject instanceof FlexoConceptInstance) {
+				/*if (focusedObject instanceof FlexoConceptInstance) {
 					FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
 					if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
 						contextualMenu
@@ -255,8 +268,8 @@ public class ContextualMenuManager {
 							contextualMenu.putAction(new ActionSchemeActionType(as, epi));
 						}
 					}
-				}
-			}
+				}*/
+			//}
 			_popupMenu = contextualMenu.makePopupMenu(focusedObject);
 		} else {
 			_popupMenu = new JPopupMenu();
