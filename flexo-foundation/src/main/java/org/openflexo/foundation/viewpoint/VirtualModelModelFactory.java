@@ -457,7 +457,9 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	public <I> void objectHasBeenDeserialized(I newlyCreatedObject, Class<I> implementedInterface) {
 		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
 		if (getResource() != null) {
-			getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
+			if (newlyCreatedObject instanceof FlexoObject) {
+				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
+			}
 		} else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
