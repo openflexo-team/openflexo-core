@@ -146,9 +146,15 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			this.typeURI = ontologyClassURI;
 		}
 
-		@Override
+		/*@Override
 		public String getStringRepresentation() {
 			return getClass().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
+					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
+		}*/
+		
+		@Override
+		public String getStringRepresentation() {
+			return getImplementedInterface().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}
 	}
