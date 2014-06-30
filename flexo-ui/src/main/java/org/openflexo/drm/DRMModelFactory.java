@@ -19,7 +19,7 @@
  */
 package org.openflexo.drm;
 
-import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -31,9 +31,9 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class DRMModelFactory extends DefaultFlexoModelFactory {
+public class DRMModelFactory extends DefaultPamelaResourceModelFactory {
 
 	public DRMModelFactory() throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(DocResourceCenter.class));
+		super(null, ModelContextLibrary.getModelContext(DocResourceCenter.class));
 	}
 }

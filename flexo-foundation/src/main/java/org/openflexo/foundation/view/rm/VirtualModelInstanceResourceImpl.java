@@ -62,8 +62,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			File xmlFile = new File(((ViewResource) view.getResource()).getFile().getParentFile(), baseName
 					+ VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setProject(view.getProject());
-			returned.setFactory(new VirtualModelInstanceModelFactory(view.getProject().getServiceManager().getEditingContext(), view
-					.getProject().getServiceManager().getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getProject().getServiceManager().getEditingContext(),
+					view.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.setName(name);
 			returned.setFile(xmlFile);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
@@ -90,8 +90,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 					virtualModelInstanceFile.getName().length() - VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX.length());
 			File xmlFile = new File(viewResource.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setProject(viewResource.getProject());
-			returned.setFactory(new VirtualModelInstanceModelFactory(viewResource.getProject().getServiceManager().getEditingContext(),
-					viewResource.getProject().getServiceManager().getTechnologyAdapterService(), returned));
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager()
+					.getEditingContext(), viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.setName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
 			returned.setFile(xmlFile);

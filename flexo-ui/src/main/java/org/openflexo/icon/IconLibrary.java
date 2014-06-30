@@ -195,9 +195,9 @@ public class IconLibrary {
 
 	// Markers
 	public static final IconMarker POSITIVE_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
+			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 8);
 	public static final IconMarker NEGATIVE_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Minus.png")), 0, 0);
+			ResourceLocator.locateResource("Icons/Utils/Markers/Minus.png")), 8, 8);
 	public static final IconMarker WARNING = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Warning.gif")), 0, 9);
 	public static final IconMarker IMPORT = new IconMarker(new ImageIconResource(
@@ -213,7 +213,7 @@ public class IconLibrary {
 	public static final IconMarker DELETE = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Delete.png")), 8, 8);
 	public static final IconMarker DUPLICATE = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 8);
+			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
 	public static final IconMarker LOCKED = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Locked.png")), 0, 5);
 	public static final IconMarker SYNC = new IconMarker(new ImageIconResource(

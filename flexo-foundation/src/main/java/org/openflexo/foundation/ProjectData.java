@@ -203,10 +203,10 @@ public interface ProjectData extends FlexoProjectObject, AccessibleProxyObject, 
 
 	}
 
-	public static class ProjectDataFactory extends DefaultFlexoModelFactory {
+	public static class ProjectDataFactory extends DefaultPamelaResourceModelFactory<ProjectDataResource> {
 
-		public ProjectDataFactory(EditingContext editingContext) throws ModelDefinitionException {
-			super(ModelContextLibrary.getModelContext(ProjectData.class));
+		public ProjectDataFactory(ProjectDataResource resource, EditingContext editingContext) throws ModelDefinitionException {
+			super(resource, ModelContextLibrary.getModelContext(ProjectData.class));
 			setEditingContext(editingContext);
 			addConverter(new FlexoVersionConverter());
 		}

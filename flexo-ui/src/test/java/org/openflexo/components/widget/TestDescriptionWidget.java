@@ -37,7 +37,7 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	@Test
 	public void test1InstanciateWidget() throws ModelDefinitionException {
 
-		ModelFactory factory = new ViewPointModelFactory(null);
+		ModelFactory factory = new ViewPointModelFactory(null, null);
 		ViewPoint anObject = factory.newInstance(ViewPoint.class);
 		FIBDescriptionWidget descriptionWidget = new FIBDescriptionWidget(anObject);
 		gcDelegate.addTab("FIBDescriptionWidget", descriptionWidget.getController());
@@ -66,7 +66,7 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	public static void main(String[] args) {
 		ModelFactory factory = null;
 		try {
-			factory = new ViewPointModelFactory(null);
+			factory = new ViewPointModelFactory(null, null);
 		} catch (ModelDefinitionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -20,8 +20,6 @@
 package org.openflexo.prefs;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.AdvancedPrefs;
@@ -37,8 +35,6 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -55,10 +51,9 @@ import org.openflexo.view.FlexoFrame;
  */
 public class PreferencesService extends FlexoServiceImpl implements FlexoService, HasPropertyChangeSupport {
 
-	private static final Logger			logger	= Logger.getLogger(PreferencesService.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(PreferencesService.class.getPackage().getName());
 
-	private FlexoPreferencesFactory		preferencesFactory;
-	private FlexoPreferencesResource	resource;
+	private FlexoPreferencesResource resource;
 
 	@Override
 	public ApplicationContext getServiceManager() {
@@ -85,12 +80,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 
 	@Override
 	public void initialize() {
-		try {
-			initPreferencesFactory();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager(), getPreferencesFactory());
+		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager());
 		managePreferences(GeneralPreferences.class, getFlexoPreferences());
 		managePreferences(AdvancedPrefs.class, getFlexoPreferences());
 		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
@@ -131,7 +121,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	}
 
 	public FlexoPreferencesFactory getPreferencesFactory() {
-		return preferencesFactory;
+		return resource.getFactory();
 	}
 
 	public File getLogDirectory() {
@@ -160,19 +150,6 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 			outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
 		}
 		return outputDir;
-	}
-
-	private void initPreferencesFactory() throws ModelDefinitionException {
-		List<Class<?>> classes = new ArrayList<Class<?>>();
-		classes.add(FlexoPreferences.class);
-		classes.add(GeneralPreferences.class);
-		classes.add(AdvancedPrefs.class);
-		classes.add(ResourceCenterPreferences.class);
-		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
-			classes.add(m.getPreferencesClass());
-		}
-		preferencesFactory = new FlexoPreferencesFactory(ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes
-				.size()])));
 	}
 
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType) {

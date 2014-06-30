@@ -1,10 +1,13 @@
 package org.openflexo.prefs;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
 import org.openflexo.GeneralPreferences;
+import org.openflexo.ResourceCenterPreferences;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -14,11 +17,13 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.module.Module;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
 
@@ -47,8 +52,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 
 		private static final String FLEXO_PREFS_FILE_NAME = "Flexo.prefs";
 
-		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext,
-				FlexoPreferencesFactory factory) {
+		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
 				ModelFactory resourceFactory = new ModelFactory(FlexoPreferencesResource.class);
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
@@ -58,7 +62,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				returned.setName("OpenflexoPreferences");
 				returned.setURI("http://www.openflexo.org/OpenflexoPreferences");
 				returned.setFile(preferencesFile);
-				returned.setFactory(factory);
+				returned.setFactory(makePreferencesFactory(returned, applicationContext));
 				returned.setServiceManager(applicationContext);
 
 				if (preferencesFile.exists()) {
@@ -85,6 +89,20 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				e.printStackTrace();
 			}
 			return null;
+		}
+
+		private static FlexoPreferencesFactory makePreferencesFactory(FlexoPreferencesResource resource,
+				ApplicationContext applicationContext) throws ModelDefinitionException {
+			List<Class<?>> classes = new ArrayList<Class<?>>();
+			classes.add(FlexoPreferences.class);
+			classes.add(GeneralPreferences.class);
+			classes.add(AdvancedPrefs.class);
+			classes.add(ResourceCenterPreferences.class);
+			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
+				classes.add(m.getPreferencesClass());
+			}
+			return new FlexoPreferencesFactory(resource, ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes
+					.size()])));
 		}
 
 		@Override

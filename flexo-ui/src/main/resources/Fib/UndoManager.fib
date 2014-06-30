@@ -34,10 +34,10 @@
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.action.FlexoUndoManager$FlexoActionCompoundEdit"
-				label="flexoAction.presentationName" icon="controller.iconForObject(flexoAction)"
+				label="flexoAction.presentationName + (flexoAction.isActive ? &quot; [active]&quot; : &quot;&quot;)" icon="controller.iconForObject(flexoAction)"
 				isEditable="false" filtered="false" defaultVisible="true" name="flexoAction"
 				enabled="flexoAction.isActive">
-				<Children data="flexoAction.action.embeddedActions" name="embeddedActions" />
+				<Children data="flexoAction.embeddedFlexoActionCompoundEdits" name="embeddedActions" />
 			</BrowserElement>
 			<BrowserElement dataClassName="org.openflexo.model.undo.CompoundEdit"
 				label="compoundEdit.presentationName" icon="controller.iconForObject(compoundEdit)"
@@ -46,10 +46,6 @@
 			<BrowserElement dataClassName="javax.swing.undo.UndoableEdit"
 				label="undoableEdit.presentationName" icon="controller.iconForObject(undoableEdit)"
 				isEditable="false" filtered="false" defaultVisible="true" name="undoableEdit">
-			</BrowserElement>
-			<BrowserElement dataClassName="org.openflexo.foundation.action.FlexoAction"
-				label="action.class.simpleName" icon="controller.iconForObject(action)"
-				isEditable="false" filtered="false" defaultVisible="true" name="action">
 			</BrowserElement>
 		</Browser>
 		<Table iteratorClassName="org.openflexo.model.undo.AtomicEdit"
@@ -61,22 +57,26 @@
 			backgroundNonSelectionColor="255,255,255" localize="true"
 		    manageDynamicModel="true" name="AtomicEditTable"
 			index="0" data="ActionsBrowser.selected.edits" constraints="split(index=0;location=east;splitIdentifier=edits)"
-			opaque="false" visible="ActionsBrowser.selected != null">
+			opaque="false">
 			<IconColumn data="controller.iconForObject(iterator)"
-				title="icon" columnWidth="18" resizable="false" displayTitle="false"
+				title="icon" columnWidth="25" resizable="false" displayTitle="false"
 				name="icon" />
 			<LabelColumn data="iterator.type" title="edit"
 				columnWidth="60" resizable="true" displayTitle="true" name="edit" />
-			<LabelColumn data="iterator.object" title="object"
+			<LabelColumn
+				data="ActionsBrowser.selected.getResource(iterator).name"
+				title="resource" columnWidth="100" resizable="true" displayTitle="true"
+				name="resource" />
+			<LabelColumn data="iterator.object.toString" title="object"
 				columnWidth="150" resizable="true" displayTitle="true" name="object" />
 			<LabelColumn
 				data="ActionsBrowser.selected.getProperty(iterator).propertyIdentifier"
 				title="property" columnWidth="100" resizable="true" displayTitle="true"
 				name="property" />
-			<LabelColumn data="ActionsBrowser.selected.getOldValue(iterator)"
+			<LabelColumn data="ActionsBrowser.selected.getOldValue(iterator).toString"
 				title="old_value" columnWidth="100" resizable="true" displayTitle="true"
 				name="oldValue" />
-			<LabelColumn data="ActionsBrowser.selected.getNewValue(iterator)"
+			<LabelColumn data="ActionsBrowser.selected.getNewValue(iterator).toString"
 				title="new_value" columnWidth="100" resizable="true" displayTitle="true"
 				name="newValue" />
 			<LocalizedDictionary />
@@ -90,6 +90,13 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				localize="true" columns="7" text="TextField"
 				data="ActionsBrowser.selected.action.class.simpleName" />
+			<Label label="edits number" align="center"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				localize="true" />
+			<TextField
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				localize="true" columns="7" text="TextField"
+				data="ActionsBrowser.selected.edits.size.toString" readOnly="true"/>
 			<Label label="stacktrace"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				localize="true" />

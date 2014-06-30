@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.view;
 
-import org.openflexo.foundation.DefaultFlexoModelFactory;
+import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -36,10 +36,10 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends DefaultFlexoModelFactory {
+public class ViewModelFactory extends DefaultPamelaResourceModelFactory<ViewResource> {
 
-	public ViewModelFactory(EditingContext editingContext, ViewResource viewResource) throws ModelDefinitionException {
-		super(ModelContextLibrary.getModelContext(View.class));
+	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext) throws ModelDefinitionException {
+		super(viewResource, ModelContextLibrary.getModelContext(View.class));
 		setEditingContext(editingContext);
 		addConverter(new RelativePathFileConverter(viewResource.getDirectory()));
 		addConverter(new DataBindingConverter());

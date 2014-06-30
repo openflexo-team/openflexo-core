@@ -89,6 +89,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.ProjectData;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -1750,16 +1751,20 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		else if (object instanceof AtomicEdit) {
+			ImageIcon baseIcon = IconLibrary.QUESTION_ICON;
+			if (((AtomicEdit) object).getModelFactory() instanceof PamelaResourceModelFactory) {
+				baseIcon = statelessIconForObject(((PamelaResourceModelFactory) ((AtomicEdit) object).getModelFactory()).getResource());
+			}
 			if (object instanceof CreateCommand) {
-				return IconLibrary.SMALL_PLUS_ICON;
+				return IconFactory.getImageIcon(baseIcon, IconLibrary.DUPLICATE);
 			} else if (object instanceof SetCommand) {
-				return IconLibrary.SMALL_SET_ICON;
+				return IconFactory.getImageIcon(baseIcon, IconLibrary.SYNC);
 			} else if (object instanceof DeleteCommand) {
-				return IconLibrary.SMALL_DELETE_ICON;
+				return IconFactory.getImageIcon(baseIcon, IconLibrary.DELETE);
 			} else if (object instanceof AddCommand) {
-				return IconLibrary.SMALL_PLUS_ICON;
+				return IconFactory.getImageIcon(baseIcon, IconLibrary.POSITIVE_MARKER);
 			} else if (object instanceof RemoveCommand) {
-				return IconLibrary.SMALL_MINUS_ICON;
+				return IconFactory.getImageIcon(baseIcon, IconLibrary.NEGATIVE_MARKER);
 			}
 		}
 
