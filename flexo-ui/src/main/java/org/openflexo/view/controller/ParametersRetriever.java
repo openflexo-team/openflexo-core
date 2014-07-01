@@ -192,12 +192,19 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
 			epiSelector.setComponentClass(FIBFlexoConceptInstanceSelector.class);
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));
+					new DataBinding<Object>("data.editor.project"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
 					new DataBinding<Object>("data.view"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
 					"component.flexoConcept"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
 					+ ".flexoConceptType"), true));
+			// extra informations.
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
+					"component.virtualModel"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
+					+ ".modelSlotVirtualModel"), true));
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.viewpointLibrary"),
+					new DataBinding<Object>("data.serviceManager.viewpointLibrary"), true));
+			
 			return registerWidget(epiSelector, parameter, panel, index);
 		} else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();
