@@ -25,7 +25,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
@@ -334,13 +334,13 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	}
 
 	private void appendOntologyContents(IFlexoOntology<TA> o, IFlexoOntologyObject<TA> parent) {
-		List<IFlexoOntologyStructuralProperty<TA>> properties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
-		List<IFlexoOntologyIndividual<TA>> individuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayList<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayList<IFlexoOntologyIndividual<TA>>();
 		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>>();
 		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>>();
-		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
-		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new Vector<IFlexoOntologyIndividual<TA>>();
-		List<IFlexoOntologyClass<TA>> storageClasses = new Vector<IFlexoOntologyClass<TA>>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayList<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayList<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayList<IFlexoOntologyClass<TA>>();
 		properties = retrieveDisplayableProperties(o);
 		individuals = retrieveDisplayableIndividuals(o);
 
@@ -419,7 +419,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 		if (roots != null) {
 			roots.clear();
 		} else {
-			roots = new Vector<IFlexoOntologyObject<TA>>();
+			roots = new ArrayList<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
@@ -491,7 +491,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	private void addChildren(IFlexoOntologyObject<TA> parent, IFlexoOntologyObject<TA> child) {
 		List<FlexoOntologyObjectImpl<TA>> v = structure.get(parent);
 		if (v == null) {
-			v = new Vector<FlexoOntologyObjectImpl<TA>>();
+			v = new ArrayList<FlexoOntologyObjectImpl<TA>>();
 			structure.put((FlexoOntologyObjectImpl<TA>) parent, v);
 		}
 		if (!v.contains(child)) {
@@ -506,7 +506,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 		if (roots != null) {
 			roots.clear();
 		} else {
-			roots = new Vector<IFlexoOntologyObject<TA>>();
+			roots = new ArrayList<IFlexoOntologyObject<TA>>();
 		}
 		if (structure != null) {
 			structure.clear();
@@ -514,14 +514,14 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 			structure = new Hashtable<FlexoOntologyObjectImpl<TA>, List<FlexoOntologyObjectImpl<TA>>>();
 		}
 
-		List<IFlexoOntologyStructuralProperty<TA>> properties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyStructuralProperty<TA>> properties = new ArrayList<IFlexoOntologyStructuralProperty<TA>>();
 		Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>> storedProperties = new Hashtable<IFlexoOntologyStructuralProperty<TA>, List<IFlexoOntologyClass<TA>>>();
-		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new Vector<IFlexoOntologyStructuralProperty<TA>>();
-		List<IFlexoOntologyClass<TA>> storageClasses = new Vector<IFlexoOntologyClass<TA>>();
+		List<IFlexoOntologyStructuralProperty<TA>> unstoredProperties = new ArrayList<IFlexoOntologyStructuralProperty<TA>>();
+		List<IFlexoOntologyClass<TA>> storageClasses = new ArrayList<IFlexoOntologyClass<TA>>();
 
-		List<IFlexoOntologyIndividual<TA>> individuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyIndividual<TA>> individuals = new ArrayList<IFlexoOntologyIndividual<TA>>();
 		Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>> storedIndividuals = new Hashtable<IFlexoOntologyIndividual<TA>, IFlexoOntologyClass<TA>>();
-		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new Vector<IFlexoOntologyIndividual<TA>>();
+		List<IFlexoOntologyIndividual<TA>> unstoredIndividuals = new ArrayList<IFlexoOntologyIndividual<TA>>();
 
 		if (getContext() == null) {
 			return;
@@ -568,7 +568,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 		}
 
 		if (getShowClasses()) {
-			List<IFlexoOntologyClass<TA>> classes = new Vector<IFlexoOntologyClass<TA>>();
+			List<IFlexoOntologyClass<TA>> classes = new ArrayList<IFlexoOntologyClass<TA>>();
 			if (strictMode) {
 				classes = retrieveDisplayableClasses(getContext());
 			} else {
@@ -716,7 +716,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	}
 
 	private List<IFlexoOntologyConcept<TA>> retrieveDisplayableObjects(IFlexoOntology<TA> ontology) {
-		Vector<IFlexoOntologyConcept<TA>> returned = new Vector<IFlexoOntologyConcept<TA>>();
+		ArrayList<IFlexoOntologyConcept<TA>> returned = new ArrayList<IFlexoOntologyConcept<TA>>();
 		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -824,7 +824,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	}*/
 
 	private List<IFlexoOntologyClass<TA>> retrieveDisplayableClasses(IFlexoOntology<TA> ontology) {
-		Vector<IFlexoOntologyClass<TA>> returned = new Vector<IFlexoOntologyClass<TA>>();
+		ArrayList<IFlexoOntologyClass<TA>> returned = new ArrayList<IFlexoOntologyClass<TA>>();
 		for (IFlexoOntologyClass<TA> c : ontology.getClasses()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -838,7 +838,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	}
 
 	private List<IFlexoOntologyIndividual<TA>> retrieveDisplayableIndividuals(IFlexoOntology<TA> ontology) {
-		Vector<IFlexoOntologyIndividual<TA>> returned = new Vector<IFlexoOntologyIndividual<TA>>();
+		ArrayList<IFlexoOntologyIndividual<TA>> returned = new ArrayList<IFlexoOntologyIndividual<TA>>();
 		for (IFlexoOntologyIndividual<TA> c : ontology.getIndividuals()) {
 			if (isDisplayable(c)) {
 				returned.add(c);
@@ -848,7 +848,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> extends Observab
 	}
 
 	private List<IFlexoOntologyStructuralProperty<TA>> retrieveDisplayableProperties(IFlexoOntology<TA> ontology) {
-		Vector<IFlexoOntologyStructuralProperty<TA>> returned = new Vector<IFlexoOntologyStructuralProperty<TA>>();
+		ArrayList<IFlexoOntologyStructuralProperty<TA>> returned = new ArrayList<IFlexoOntologyStructuralProperty<TA>>();
 		for (IFlexoOntologyStructuralProperty<TA> p : ontology.getObjectProperties()) {
 			if (isDisplayable(p)) {
 				returned.add(p);
