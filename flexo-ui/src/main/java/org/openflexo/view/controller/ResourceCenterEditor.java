@@ -60,7 +60,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
     }
 
     public void removeResourceCenter(FlexoResourceCenter rc) {
-        System.out.println("Removing resources" + rc);
+        logger.info("Removing resources" + rc);
         if (rc instanceof DirectoryResourceCenter) {
             showProgress("removing_resources");
             rcService.removeFromResourceCenters(rc);
@@ -70,7 +70,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 
     public void refreshResourceCenter(FlexoResourceCenter rc) {
         if (rc != null) {
-            System.out.println("Scanning resources " + rc);
+            logger.info("Scanning resources " + rc);
             try {
                 showProgress("scanning_resources");
                 rc.update();
@@ -91,7 +91,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
     }
 
     public void saveResourceCenters() {
-        System.out.println("Save resource centers");
+        logger.info("Save resource centers");
         rcService.storeDirectoryResourceCenterLocations();
     }
 

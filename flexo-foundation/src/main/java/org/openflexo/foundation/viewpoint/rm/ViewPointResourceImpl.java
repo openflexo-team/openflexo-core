@@ -154,7 +154,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 								.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class);
 						if (fsrl != null && f.getPath() != null) {
 							fsrl.appendToDirectories(f.getPath());
-							ResourceLocator.appendDelegate(fsrl);
 						}
 
 						// TODO: we must find something more efficient
