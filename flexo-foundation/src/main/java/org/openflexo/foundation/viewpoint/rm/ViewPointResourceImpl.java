@@ -53,7 +53,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
-    private static XMLRootElementReader reader = new XMLRootElementReader();
+	private static XMLRootElementReader reader = new XMLRootElementReader();
 
 	public static ViewPointResource makeViewPointResource(String name, String uri, File viewPointDirectory,
 			FlexoServiceManager serviceManager) {
@@ -147,9 +147,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	private void exploreVirtualModels() {
-         XMLRootElementInfo result = null;
+		XMLRootElementInfo result = null;
 
-	    if (getDirectory().exists() && getDirectory().isDirectory()) {
+		if (getDirectory().exists() && getDirectory().isDirectory()) {
 			for (File f : getDirectory().listFiles()) {
 				if (f.isDirectory()) {
 					File virtualModelFile = new File(f, f.getName() + ".xml");
@@ -164,9 +164,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 						try {
 
-						    result = reader.readRootElement(virtualModelFile);
-						      
-						    if (result.getName().equals("VirtualModel")) {
+							result = reader.readRootElement(virtualModelFile);
+
+							if (result.getName().equals("VirtualModel")) {
 								VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(f,
 										virtualModelFile, this, getServiceManager());
 								addToContents(virtualModelResource);
@@ -219,7 +219,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	 */
 	@Override
 	public ViewPoint loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	InconsistentDataException, InvalidModelDefinitionException {
 
 		ViewPointImpl returned = (ViewPointImpl) super.loadResourceData(progress);
 
@@ -250,7 +250,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 		super.stopDeserializing();
 	}
-	
+
 	@Override
 	public Class<ViewPoint> getResourceDataClass() {
 		return ViewPoint.class;
@@ -310,17 +310,17 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				.getDescendants(
 						new ElementFilter("EditionPattern").or(new ElementFilter("ContainedEditionPatternInstancePatternRole").or(new ElementFilter(
 								"ContainedEMFObjectIndividualPatternRole").or(new ElementFilter("ContainedShapePatternRole").or(new ElementFilter(
-								"ContainedConnectorPatternRole").or(new ElementFilter("ContainedOWLIndividualPatternRole").or(new ElementFilter(
-								"ContainedExcelRowPatternRole").or(new ElementFilter("ContainedExcelCellPatternRole").or(new ElementFilter(
-								"ContainedExcelSheetPatternRole").or(new ElementFilter("EditionPatternInstanceParameter")
-								.or(new ElementFilter("MatchEditionPatternInstance").or(new ElementFilter(
-										"CreateEditionPatternInstanceParameter").or(new ElementFilter("Palette").or(new ElementFilter(
-										"PaletteElement").or(new ElementFilter("Shema").or(new ElementFilter("ContainedShape")
-										.or(new ElementFilter("ContainedConnector").or(new ElementFilter("FromShape").or(new ElementFilter(
-												"ToShape").or(new ElementFilter("Border").or(new ElementFilter("AddEditionPatternInstance")
-												.or(new ElementFilter("AddEditionPatternInstanceParameter").or(new ElementFilter(
-														"AddressedSelectEditionPatternInstance").or(new ElementFilter(
-														"AddressedSelectFlexoConceptInstance"))))))))))))))))))))))))).hasNext()) {
+										"ContainedConnectorPatternRole").or(new ElementFilter("ContainedOWLIndividualPatternRole").or(new ElementFilter(
+												"ContainedExcelRowPatternRole").or(new ElementFilter("ContainedExcelCellPatternRole").or(new ElementFilter(
+														"ContainedExcelSheetPatternRole").or(new ElementFilter("EditionPatternInstanceParameter")
+														.or(new ElementFilter("MatchEditionPatternInstance").or(new ElementFilter(
+																"CreateEditionPatternInstanceParameter").or(new ElementFilter("Palette").or(new ElementFilter(
+																		"PaletteElement").or(new ElementFilter("Shema").or(new ElementFilter("ContainedShape")
+																		.or(new ElementFilter("ContainedConnector").or(new ElementFilter("FromShape").or(new ElementFilter(
+																				"ToShape").or(new ElementFilter("Border").or(new ElementFilter("AddEditionPatternInstance")
+																				.or(new ElementFilter("AddEditionPatternInstanceParameter").or(new ElementFilter(
+																						"AddressedSelectEditionPatternInstance").or(new ElementFilter(
+																								"AddressedSelectFlexoConceptInstance"))))))))))))))))))))))))).hasNext()) {
 			return true;
 		}
 		return false;
@@ -565,7 +565,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 			// Retrieve Diagram Model slots references
 			Iterator<? extends Content> thisModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot")
-					.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
+			.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
 			List<Element> thisModelSlots = IteratorUtils.toList(thisModelSlotsIterator);
 
 			// Retrieve the DiagramModelSlot (this), and transform it to a virtual model slot with a virtual model uri
@@ -606,7 +606,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 			// Update ids for all model slots
 			Iterator<? extends Content> diagramModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot")
-					.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
+			.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
 			List<Element> thisDiagramModelSlots = IteratorUtils.toList(diagramModelSlotsIterator);
 			for (Element diagramMs : thisDiagramModelSlots) {
 				if (diagramMs.getAttribute("id") != null && typedDiagramModelSlot != null) {
@@ -1168,7 +1168,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						element.getAttribute(oldPropertyName).setName(newPropertyName);
 					}
 				}
-			}
+			} 
 		}
 	}
 
