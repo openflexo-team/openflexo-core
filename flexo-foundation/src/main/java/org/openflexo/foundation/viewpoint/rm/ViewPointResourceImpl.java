@@ -46,10 +46,14 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
+import org.openflexo.xml.XMLRootElementInfo;
+import org.openflexo.xml.XMLRootElementReader;
 
 public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint, ViewPointModelFactory> implements ViewPointResource {
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
+
+    private static XMLRootElementReader reader = new XMLRootElementReader();
 
 	public static ViewPointResource makeViewPointResource(String name, String uri, File viewPointDirectory,
 			FlexoServiceManager serviceManager) {
@@ -143,7 +147,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	private void exploreVirtualModels() {
-		if (getDirectory().exists() && getDirectory().isDirectory()) {
+         XMLRootElementInfo result = null;
+
+	    if (getDirectory().exists() && getDirectory().isDirectory()) {
 			for (File f : getDirectory().listFiles()) {
 				if (f.isDirectory()) {
 					File virtualModelFile = new File(f, f.getName() + ".xml");
@@ -156,10 +162,11 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 							fsrl.appendToDirectories(f.getPath());
 						}
 
-						// TODO: we must find something more efficient
 						try {
-							Document d = XMLUtils.readXMLFile(virtualModelFile);
-							if (d.getRootElement().getName().equals("VirtualModel")) {
+
+						    result = reader.readRootElement(virtualModelFile);
+						      
+						    if (result.getName().equals("VirtualModel")) {
 								VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(f,
 										virtualModelFile, this, getServiceManager());
 								addToContents(virtualModelResource);
@@ -168,8 +175,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 										.retrieveDiagramSpecificationResource(f, virtualModelFile, this, getViewPointLibrary());
 								addToContents(diagramSpecificationResource);
 								}*/
-						} catch (JDOMException e) {
-							e.printStackTrace();
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
