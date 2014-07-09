@@ -21,6 +21,7 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -34,6 +35,7 @@ public interface IntegerParameter extends FlexoBehaviourParameter {
 
 		public IntegerParameterImpl() {
 			super();
+			setDefaultValue(new DataBinding<String>("0"));
 		}
 
 		@Override
