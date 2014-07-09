@@ -125,6 +125,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
+		private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();
 
 		public AddFlexoConceptInstanceImpl() {
 			super();
@@ -226,12 +227,28 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		@Override
 		public List<AddFlexoConceptInstanceParameter> getParameters() {
 			// Comment this because of an infinite loop with  updateParameters() method
-			//updateParameters();
-			return (List<AddFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
+			updateParameters();
+			return parameters;
+		}
+		
+		public void setParameters(Vector<AddFlexoConceptInstanceParameter> parameters) {
+			this.parameters = parameters;
+		}
+
+		@Override
+		public void addToParameters(AddFlexoConceptInstanceParameter parameter) {
+			parameter.setAction(this);
+			parameters.add(parameter);
+		}
+
+		@Override
+		public void removeFromParameters(AddFlexoConceptInstanceParameter parameter) {
+			parameter.setAction(null);
+			parameters.remove(parameter);
 		}
 
 		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
-			for (AddFlexoConceptInstanceParameter addEPParam : getParameters()) {
+			for (AddFlexoConceptInstanceParameter addEPParam : parameters) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
 				}
@@ -240,7 +257,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		}
 
 		private void updateParameters() {
-			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(getParameters());
+			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
 			if (getCreationScheme() != null) {
 				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
