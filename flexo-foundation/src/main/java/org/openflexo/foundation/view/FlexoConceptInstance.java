@@ -114,6 +114,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	public <T> T getFlexoActor(FlexoRole<T> patternRole);
+	
+	public <T> T getFlexoActor(String flexoRoleName);
 
 	public <T> void setFlexoActor(T object, FlexoRole<T> patternRole);
 
@@ -153,7 +155,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
 			if (flexoRole == null) {
-				logger.warning("Unexpected null patternRole");
+				logger.warning("Unexpected null flexoRole");
 				return null;
 			}
 			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
@@ -165,6 +167,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// Pragmatic attempt to fix "inheritance issue...."
 			else if (actorReference == null) {
 				getParentActorReference(getFlexoConcept(), flexoRole);
+			}
+			return null;
+		}
+		
+		public <T> T getFlexoActor(String flexoRoleName) {
+			if (flexoRoleName == null) {
+				logger.warning("Unexpected null flexoRole name");
+				return null;
+			}
+			ActorReference<T> actorReference = (ActorReference<T>) actors.get(flexoRoleName);
+			if (actorReference != null) {
+				return actorReference.getModellingElement();
 			}
 			return null;
 		}
