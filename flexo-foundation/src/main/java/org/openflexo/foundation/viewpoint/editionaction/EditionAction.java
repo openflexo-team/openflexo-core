@@ -79,8 +79,6 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	@PropertyIdentifier(type = ActionContainer.class)
 	public static final String ACTION_CONTAINER_KEY = "actionContainer";
-	@PropertyIdentifier(type = String.class)
-	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 	@PropertyIdentifier(type = ModelSlot.class)
@@ -92,15 +90,6 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	@Setter(ACTION_CONTAINER_KEY)
 	public void setActionContainer(ActionContainer actionContainer);
-
-	@Override
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLElement
-	public String getDescription();
-
-	@Override
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
 
 	@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
@@ -135,7 +124,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
 	 * @return
 	 */
-	public void finalizePerformAction(FlexoBehaviourAction<?, ?, ?> action, T initialContext);
+	public void finalizePerformAction(FlexoBehaviourAction<?,?,?> action, T initialContext);
 
 	public BindingModel getInferedBindingModel();
 
