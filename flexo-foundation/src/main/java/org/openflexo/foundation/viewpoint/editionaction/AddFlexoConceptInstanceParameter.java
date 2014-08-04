@@ -69,7 +69,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());
 
-		// AddFlexoConceptInstance action;
+		AddFlexoConceptInstance action;
 
 		private FlexoBehaviourParameter param;
 		String paramName;
@@ -108,8 +108,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getParam()!=null ? getParam().getType():Object.class, DataBinding.BindingDefinitionType.GET);
-				value.setBindingName(getParam()!=null ? getParam().getName():"param");
+				value = new DataBinding<Object>(this, param!=null ? param.getType():Object.class, DataBinding.BindingDefinitionType.GET);
+				value.setBindingName(param!=null ? param.getName():"param");
 			}
 			return value;
 		}
@@ -118,8 +118,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		public void setValue(DataBinding<Object> value) {
 			if (value != null) {
 				value.setOwner(this);
-				value.setBindingName(getParam()!=null?getParam().getName():"param");
-				value.setDeclaredType(getParam()!=null?getParam().getType():Object.class);
+				value.setBindingName(param!=null?param.getName():"param");
+				value.setDeclaredType(param!=null?param.getType():Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;
@@ -173,7 +173,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 			return null;
 		}
 
-		/*@Override
+		@Override
 		public AddFlexoConceptInstance getAction() {
 			return action;
 		}
@@ -181,7 +181,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		@Override
 		public void setAction(AddFlexoConceptInstance action) {
 			this.action = action;
-		}*/
+		}
 
 		@Override
 		public FlexoBehaviourParameter getParam() {
