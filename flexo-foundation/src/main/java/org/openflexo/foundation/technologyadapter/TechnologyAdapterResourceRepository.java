@@ -22,15 +22,14 @@ package org.openflexo.foundation.technologyadapter;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.FileResourceRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
-import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 
 /**
- * A {@link TechnologyAdapterFileResourceRepository} stores all resources storing resources relative to a given technology<br>
+ * A {@link TechnologyAdapterResourceRepository} stores all resources storing resources relative to a given technology<br>
  * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
  * 
  * @author sylvain
@@ -38,27 +37,27 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoFileResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
-		extends FileResourceRepository<R> {
+public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
+		extends ResourceRepository<R> {
 
-	private static final Logger logger = Logger.getLogger(TechnologyAdapterFileResourceRepository.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
 
 	private final TA technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 
-	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
+	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
 		this(technologyAdapter, resourceCenter,
 				resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
 						.getRootDirectory() : null);
 	}
 
-	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
-		super(resourceCenter, directory);
+	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+		super(resourceCenter);
 		this.technologyAdapter = technologyAdapter;
 		this.resourceCenter = resourceCenter;
 		getRootFolder().setName(resourceCenter.getName());
 		getRootFolder().setDescription(
-				"FileResource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+				"Resource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}
 
 	public TA getTechnologyAdapter() {
