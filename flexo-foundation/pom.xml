@@ -41,11 +41,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Third Party -->
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.7.1</version>
-		</dependency>
 
 	</dependencies>
 </project>
