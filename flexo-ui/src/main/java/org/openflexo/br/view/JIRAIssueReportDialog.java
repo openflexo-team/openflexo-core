@@ -193,9 +193,9 @@ public class JIRAIssueReportDialog {
 					}
 				}
 			}
-			
-			/*report.setFlexoProject(project);
-			//report.setServiceManager(serviceManager);
+			report.setFlexoProject(project);
+			report.setServiceManager(serviceManager);
+			/*
 			if (module != null) {
 				if (report.getIssue().getIssuetype().getComponentField() != null
 						&& report.getIssue().getIssuetype().getComponentField().getAllowedValues() != null) {
