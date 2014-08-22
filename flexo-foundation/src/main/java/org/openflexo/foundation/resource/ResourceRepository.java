@@ -313,7 +313,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 
 	// TODO : a Repository might not contain only files but also Resources that are note files!!
 	public RepositoryFolder<R> getRepositoryFolder(File aFile, boolean createWhenNonExistent) throws IOException {
-		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile,false)) {
+		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile,true)) {
 			// System.out.println("Searching folder for file " + aFile + "root folder = " + getRootFolder().getFile());
 			List<String> pathTo = new ArrayList<String>();
 			File f = aFile.getParentFile().getCanonicalFile();

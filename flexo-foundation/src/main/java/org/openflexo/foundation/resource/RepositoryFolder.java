@@ -108,8 +108,9 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return resourceRepository;
 	}
 
+	// TODO : might be an issue here, while create a File systematically when it is not a FileResourceRepository?
 	public File getFile() {
-		if (isRootFolder()) {
+		if (isRootFolder()) {			
 			if (getResourceRepository() instanceof FileResourceRepository) {
 				return ((FileResourceRepository) getResourceRepository()).getDirectory();
 			}
