@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import java.util.zip.Deflater;
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationVersion;
 import org.openflexo.Flexo;
+import org.openflexo.br.BugReportService;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
@@ -438,24 +440,26 @@ public class JIRAIssueReportDialog {
 
 			if (getIssue().getIssuetype().getVersionField() != null) {
 				List<JIRAVersion> allowedValues = getIssue().getIssuetype().getVersionField().getAllowedValues();
-				FlexoVersion flexoVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
-				FlexoVersion simpleVersion = new FlexoVersion(flexoVersion.major, flexoVersion.minor, flexoVersion.patch, -1, false, false);
-				JIRAVersion selected = null;
+				//FlexoVersion flexoVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
+				//FlexoVersion simpleVersion = new FlexoVersion(flexoVersion.major, flexoVersion.minor, flexoVersion.patch, -1, false, false);
+				FlexoVersion version = serviceManager.getBugReportService().getProjectVersion(project);
+				getIssue().setVersion(findClosedVersion(version, allowedValues));
+				/*JIRAVersion selected = null;
 				for (JIRAVersion version : allowedValues) {
-					if (flexoVersion.equals(version.getName())) {
+					if (serviceManager.getBugReportService().getGinaVersion().equals(version.getName())) {
 						selected = version;
 						break;
 					}
 				}
 				if (selected == null) {
 					for (JIRAVersion version : allowedValues) {
-						if (simpleVersion.equals(version.getName())) {
+						if (serviceManager.getBugReportService().getGinaVersion().equals(version.getName())) {
 							selected = version;
 							break;
 						}
 					}
-				}
-				getIssue().setVersion(selected);
+				}*/
+				//getIssue().setVersion(selected);
 			} else {
 				getIssue().setVersion(null);
 			}
@@ -676,4 +680,38 @@ public class JIRAIssueReportDialog {
 		return getIssue() != null && getIssue().getIssuetype() != null && StringUtils.isNotEmpty(getIssue().getSummary())
 				&& StringUtils.isNotEmpty(getIssue().getDescription());
 	}
+	
+	private JIRAVersion findClosedVersion(FlexoVersion version, List<JIRAVersion> allowedValues){
+		
+		JIRAVersion closedJiraVersion = null;
+		
+		// Prepare allowed versions from jira
+		List<FlexoVersion> flexoVersions = new ArrayList<FlexoVersion>();
+		for (JIRAVersion value : allowedValues) {
+			flexoVersions.add(new FlexoVersion(value.getName()));
+		}
+		Collections.sort(flexoVersions);
+		
+		// Compare with patch
+		closedJiraVersion = retrieveJiraVersion(allowedValues,version, true);
+		// Compare without patch
+		if(closedJiraVersion==null){
+			closedJiraVersion =  retrieveJiraVersion(allowedValues,version, false);
+		}
+		// Otherwise get the one of the allowed versions
+		if(closedJiraVersion == null && !allowedValues.isEmpty()){
+			closedJiraVersion = allowedValues.get(allowedValues.size()-1);
+		}
+		return closedJiraVersion;
+	}
+	
+	private JIRAVersion retrieveJiraVersion(List<JIRAVersion> allowedValues,FlexoVersion version, boolean withPatch){
+		for(JIRAVersion jiraVersion :allowedValues){
+			if(jiraVersion.getName().equals(version.toString(withPatch))){
+				return jiraVersion;
+			}
+		}
+		return null;
+	}
+	
 }
