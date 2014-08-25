@@ -1,10 +1,6 @@
 package org.openflexo.br;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -17,10 +13,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ClassUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationVersion;
-import org.openflexo.fib.editor.test.LoadedClassesInfo.PackageInfo;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
