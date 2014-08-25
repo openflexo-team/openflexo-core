@@ -1,4 +1,5 @@
-{"expand": "projects",
+{
+	"expand": "projects",
 	"projects": [{
 		"expand": "issuetypes",
 		"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -14,9 +15,9 @@
 		"issuetypes": [{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/1",
 			"id": "1",
-			"description": "Problème altérant ou compromettant les fonctions du produit.",
+			"description": "A problem which impairs or prevents the functions of the product.",
 			"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/bug.png",
-			"name": "Bogue",
+			"name": "Bug",
 			"subtask": false,
 			"expand": "fields",
 			"fields": {
@@ -26,7 +27,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -35,7 +36,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -45,14 +46,14 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/1",
 						"id": "1",
-						"description": "Problème altérant ou compromettant les fonctions du produit.",
+						"description": "A problem which impairs or prevents the functions of the product.",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/bug.png",
-						"name": "Bogue",
+						"name": "Bug",
 						"subtask": false
 					}]
 				},
@@ -63,7 +64,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -75,7 +76,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -86,7 +87,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -96,7 +97,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -105,12 +106,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -169,7 +181,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -179,7 +191,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -201,7 +213,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -210,12 +222,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -224,7 +247,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -233,36 +256,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -272,7 +295,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"customfield_10001": {
@@ -291,7 +314,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -301,7 +324,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -359,9 +382,9 @@
 		{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/2",
 			"id": "2",
-			"description": "Nouvelle fonctionnalité du produit, qui doit encore être développée.",
+			"description": "A new feature of the product, which has yet to be developed.",
 			"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/newfeature.png",
-			"name": "Nouvelle fonctionnalité",
+			"name": "New Feature",
 			"subtask": false,
 			"expand": "fields",
 			"fields": {
@@ -371,7 +394,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -380,7 +403,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -390,14 +413,14 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/2",
 						"id": "2",
-						"description": "Nouvelle fonctionnalité du produit, qui doit encore être développée.",
+						"description": "A new feature of the product, which has yet to be developed.",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/newfeature.png",
-						"name": "Nouvelle fonctionnalité",
+						"name": "New Feature",
 						"subtask": false
 					}]
 				},
@@ -408,7 +431,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -420,7 +443,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -431,7 +454,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -441,7 +464,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -450,12 +473,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -514,7 +548,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -524,7 +558,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -546,7 +580,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -555,12 +589,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -569,7 +614,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -578,36 +623,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -617,7 +662,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -626,7 +671,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -636,7 +681,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -684,9 +729,9 @@
 		{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/3",
 			"id": "3",
-			"description": "Tâche qui doit être effectuée.",
+			"description": "A task that needs to be done.",
 			"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/task.png",
-			"name": "Tâche",
+			"name": "Task",
 			"subtask": false,
 			"expand": "fields",
 			"fields": {
@@ -696,7 +741,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -705,7 +750,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -715,14 +760,14 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/3",
 						"id": "3",
-						"description": "Tâche qui doit être effectuée.",
+						"description": "A task that needs to be done.",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/task.png",
-						"name": "Tâche",
+						"name": "Task",
 						"subtask": false
 					}]
 				},
@@ -733,7 +778,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -745,7 +790,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -756,7 +801,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -766,7 +811,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -775,12 +820,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -839,7 +895,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -849,7 +905,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -871,7 +927,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -880,12 +936,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -894,7 +961,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -903,36 +970,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -942,7 +1009,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -951,7 +1018,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -961,7 +1028,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -1009,9 +1076,9 @@
 		{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/4",
 			"id": "4",
-			"description": "Amélioration ou perfectionnement apporté à une fonction ou tâche existante.",
+			"description": "An improvement or enhancement to an existing feature or task.",
 			"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/improvement.png",
-			"name": "Amélioration",
+			"name": "Improvement",
 			"subtask": false,
 			"expand": "fields",
 			"fields": {
@@ -1021,7 +1088,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -1030,7 +1097,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -1040,14 +1107,14 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/4",
 						"id": "4",
-						"description": "Amélioration ou perfectionnement apporté à une fonction ou tâche existante.",
+						"description": "An improvement or enhancement to an existing feature or task.",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/improvement.png",
-						"name": "Amélioration",
+						"name": "Improvement",
 						"subtask": false
 					}]
 				},
@@ -1058,7 +1125,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -1070,7 +1137,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -1081,7 +1148,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -1091,7 +1158,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1100,12 +1167,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -1164,7 +1242,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -1174,7 +1252,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -1196,7 +1274,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1205,12 +1283,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -1219,7 +1308,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -1228,36 +1317,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -1267,7 +1356,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -1276,7 +1365,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -1286,7 +1375,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -1334,9 +1423,9 @@
 		{
 			"self": "https://bugs.openflexo.org/rest/api/2/issuetype/5",
 			"id": "5",
-			"description": "Sous-tâche de la demande",
+			"description": "The sub-task of the issue",
 			"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/subtask_alternate.png",
-			"name": "Sous-tâche",
+			"name": "Sub-task",
 			"subtask": true,
 			"expand": "fields",
 			"fields": {
@@ -1346,7 +1435,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -1355,7 +1444,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -1365,14 +1454,14 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/5",
 						"id": "5",
-						"description": "Sous-tâche de la demande",
+						"description": "The sub-task of the issue",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/issuetypes/subtask_alternate.png",
-						"name": "Sous-tâche",
+						"name": "Sub-task",
 						"subtask": true
 					}]
 				},
@@ -1383,7 +1472,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -1404,7 +1493,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -1415,7 +1504,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -1425,7 +1514,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1434,12 +1523,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -1498,7 +1598,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -1508,7 +1608,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -1530,7 +1630,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1539,12 +1639,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -1553,7 +1664,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -1562,36 +1673,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -1601,7 +1712,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -1610,7 +1721,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -1620,7 +1731,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -1680,7 +1791,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"customfield_10102": {
@@ -1699,7 +1810,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -1709,7 +1820,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/6",
@@ -1727,7 +1838,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -1739,7 +1850,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -1750,7 +1861,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -1760,7 +1871,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1769,12 +1880,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -1833,7 +1955,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -1843,7 +1965,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -1865,7 +1987,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -1874,12 +1996,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -1888,7 +2021,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -1897,36 +2030,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -1936,7 +2069,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -1945,7 +2078,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -1955,7 +2088,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -2025,7 +2158,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"customfield_10102": {
@@ -2044,7 +2177,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -2054,7 +2187,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/7",
@@ -2072,7 +2205,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -2084,7 +2217,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -2095,7 +2228,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -2105,7 +2238,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2114,12 +2247,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -2178,7 +2322,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -2188,7 +2332,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -2210,7 +2354,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2219,12 +2363,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -2233,7 +2388,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -2242,36 +2397,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -2281,7 +2436,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -2290,7 +2445,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -2300,7 +2455,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -2360,7 +2515,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -2369,7 +2524,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -2379,7 +2534,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/8",
@@ -2397,7 +2552,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -2418,7 +2573,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -2429,7 +2584,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -2439,7 +2594,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2448,12 +2603,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -2512,7 +2678,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -2522,7 +2688,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -2544,7 +2710,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2553,12 +2719,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -2567,7 +2744,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -2576,36 +2753,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -2615,7 +2792,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -2624,7 +2801,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -2634,7 +2811,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -2694,7 +2871,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -2703,7 +2880,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -2713,7 +2890,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/9",
@@ -2731,7 +2908,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -2752,7 +2929,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -2763,7 +2940,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -2773,7 +2950,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2782,12 +2959,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -2846,7 +3034,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -2856,7 +3044,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -2878,7 +3066,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -2887,12 +3075,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -2901,7 +3100,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -2910,36 +3109,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -2949,7 +3148,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -2958,7 +3157,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -2968,7 +3167,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -3028,7 +3227,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -3037,7 +3236,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -3047,7 +3246,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/10",
@@ -3065,7 +3264,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -3086,7 +3285,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -3097,7 +3296,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -3107,7 +3306,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -3116,12 +3315,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -3180,7 +3390,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -3190,7 +3400,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -3212,7 +3422,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -3221,12 +3431,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -3235,7 +3456,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -3244,36 +3465,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -3283,7 +3504,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -3292,7 +3513,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -3302,7 +3523,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
@@ -3362,7 +3583,7 @@
 						"type": "string",
 						"system": "summary"
 					},
-					"name": "Résumé",
+					"name": "Summary",
 					"operations": ["set"]
 				},
 				"timetracking": {
@@ -3371,7 +3592,7 @@
 						"type": "timetracking",
 						"system": "timetracking"
 					},
-					"name": "Suivi temporel",
+					"name": "Time Tracking",
 					"operations": ["set",
 					"edit"]
 				},
@@ -3381,7 +3602,7 @@
 						"type": "issuetype",
 						"system": "issuetype"
 					},
-					"name": "Type de demande",
+					"name": "Issue Type",
 					"operations": [],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/issuetype/11",
@@ -3399,7 +3620,7 @@
 						"items": "string",
 						"system": "labels"
 					},
-					"name": "Étiquettes",
+					"name": "Labels",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/1.0/labels/suggest?query=",
 					"operations": ["add",
 					"set",
@@ -3420,7 +3641,7 @@
 						"type": "user",
 						"system": "assignee"
 					},
-					"name": "Attribution",
+					"name": "Assignee",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/assignable/search?issueKey=null&username=",
 					"operations": ["set"]
 				},
@@ -3431,7 +3652,7 @@
 						"items": "attachment",
 						"system": "attachment"
 					},
-					"name": "Pièce jointe",
+					"name": "Attachment",
 					"operations": []
 				},
 				"fixVersions": {
@@ -3441,7 +3662,7 @@
 						"items": "version",
 						"system": "fixVersions"
 					},
-					"name": "Version(s) corrigée(s)",
+					"name": "Fix Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -3450,12 +3671,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"customfield_10200": {
@@ -3514,7 +3746,7 @@
 						"type": "user",
 						"system": "reporter"
 					},
-					"name": "Rapporteur",
+					"name": "Reporter",
 					"autoCompleteUrl": "https://bugs.openflexo.org/rest/api/latest/user/search?username=",
 					"operations": ["set"]
 				},
@@ -3524,7 +3756,7 @@
 						"type": "project",
 						"system": "project"
 					},
-					"name": "Projet",
+					"name": "Project",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/project/CONNIE",
@@ -3546,7 +3778,7 @@
 						"items": "version",
 						"system": "versions"
 					},
-					"name": "Affecte la/les version(s)",
+					"name": "Affects Version/s",
 					"operations": ["set",
 					"add",
 					"remove"],
@@ -3555,12 +3787,23 @@
 						"id": "10405",
 						"name": "1.0",
 						"archived": false,
-						"released": false,
+						"released": true,
 						"startDate": "2014-01-01",
-						"releaseDate": "2014-02-15",
+						"releaseDate": "2014-06-15",
+						"userStartDate": "01/Jan/14",
+						"userReleaseDate": "15/Jun/14"
+					},
+					{
+						"self": "https://bugs.openflexo.org/rest/api/2/version/10607",
+						"id": "10607",
+						"name": "1.1",
+						"archived": false,
+						"released": false,
+						"startDate": "2014-06-16",
+						"releaseDate": "2014-08-14",
 						"overdue": true,
-						"userStartDate": "01/janv./14",
-						"userReleaseDate": "15/févr./14"
+						"userStartDate": "16/Jun/14",
+						"userReleaseDate": "14/Aug/14"
 					}]
 				},
 				"environment": {
@@ -3569,7 +3812,7 @@
 						"type": "string",
 						"system": "environment"
 					},
-					"name": "Environnement",
+					"name": "Environment",
 					"operations": ["set"]
 				},
 				"priority": {
@@ -3578,36 +3821,36 @@
 						"type": "priority",
 						"system": "priority"
 					},
-					"name": "Priorité",
+					"name": "Priority",
 					"operations": ["set"],
 					"allowedValues": [{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/1",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/blocker.png",
-						"name": "Blocage",
+						"name": "Blocker",
 						"id": "1"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/2",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/critical.png",
-						"name": "Critique",
+						"name": "Critical",
 						"id": "2"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/3",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/major.png",
-						"name": "Important",
+						"name": "Major",
 						"id": "3"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/4",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/minor.png",
-						"name": "Mineur",
+						"name": "Minor",
 						"id": "4"
 					},
 					{
 						"self": "https://bugs.openflexo.org/rest/api/2/priority/5",
 						"iconUrl": "https://bugs.openflexo.org/images/icons/priorities/trivial.png",
-						"name": "Simple",
+						"name": "Trivial",
 						"id": "5"
 					}]
 				},
@@ -3617,7 +3860,7 @@
 						"type": "string",
 						"system": "description"
 					},
-					"name": "Descriptif",
+					"name": "Description",
 					"operations": ["set"]
 				},
 				"duedate": {
@@ -3626,7 +3869,7 @@
 						"type": "date",
 						"system": "duedate"
 					},
-					"name": "Date d'échéance",
+					"name": "Due Date",
 					"operations": ["set"]
 				},
 				"components": {
@@ -3636,7 +3879,7 @@
 						"items": "component",
 						"system": "components"
 					},
-					"name": "Composants",
+					"name": "Component/s",
 					"operations": ["add",
 					"set",
 					"remove"],
