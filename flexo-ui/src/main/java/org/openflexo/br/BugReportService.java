@@ -14,14 +14,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ClassUtils;
 import org.openflexo.ApplicationContext;
+import org.openflexo.ApplicationVersion;
+import org.openflexo.fib.editor.test.LoadedClassesInfo.PackageInfo;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.ws.jira.JIRAGson;
 import org.openflexo.ws.jira.model.JIRAProject;
 import org.openflexo.ws.jira.model.JIRAProjectList;
@@ -47,6 +52,12 @@ public class BugReportService extends FlexoServiceImpl {
 	private static final Resource CORE_FILE = ResourceLocator.locateResource("Config/jira_core_project.json");
 	private static final Resource GINA_FILE = ResourceLocator.locateResource("Config/jira_gina_project.json");
 
+	private FlexoVersion ginaVersion;
+	private FlexoVersion dianaVersion;
+	private FlexoVersion pamelaVersion;
+	private FlexoVersion connieVersion;
+	private FlexoVersion distributionVersion;
+	
 	private static final String MODULES_KEY = "MODULES";
 	private static final String TA_KEY = "TA";
 	private static final String DIANA_KEY = "DIANA";
@@ -137,6 +148,8 @@ public class BugReportService extends FlexoServiceImpl {
 			userProjectFiles.put(CORE_KEY,CORE_FILE);
 			userProjectFiles.put(GINA_KEY,GINA_FILE);
 		}
+		
+		loadProjectVersions();
 
 		try {
 			Map<String, String> headers = new HashMap<String, String>();
@@ -186,6 +199,56 @@ public class BugReportService extends FlexoServiceImpl {
 				loadProjectsFromFile(file);
 			}
 		}
+		
+		
 	}
+	
+	/**
+	 * Load the version of the current project software components
+	 */
+	private void loadProjectVersions(){
+		Properties prop = new Properties();
+		try {
+			if(ResourceLocator.locateResource("gina.properties")!=null){
+				prop.load(ResourceLocator.locateResource("gina.properties").openInputStream());
+				ginaVersion = new FlexoVersion(prop.getProperty("gina.version"));
+			}
+			if(ResourceLocator.locateResource("diana.properties")!=null){
+				prop.load(ResourceLocator.locateResource("diana.properties").openInputStream());
+				dianaVersion = new FlexoVersion(prop.getProperty("diana.version"));
+			}
+			if(ResourceLocator.locateResource("connie.properties")!=null){
+				prop.load(ResourceLocator.locateResource("connie.properties").openInputStream());
+				connieVersion = new FlexoVersion(prop.getProperty("connie.version"));
+			}
+			if(ResourceLocator.locateResource("pamela.properties")!=null){
+				prop.load(ResourceLocator.locateResource("pamela.properties").openInputStream());
+				pamelaVersion = new FlexoVersion(prop.getProperty("pamela.version"));
+			}
+			distributionVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public FlexoVersion getProjectVersion(JIRAProject project) {
+		FlexoVersion returned = null;
+		if (project.getKey().equals(DIANA_KEY)) {
+			returned = dianaVersion;
+		} else if (project.getKey().equals(CONNIE_KEY)) {
+			returned = connieVersion;
+		}else if (project.getKey().equals(PAMELA_KEY)) {
+			returned = pamelaVersion;
+		}else if (project.getKey().equals(GINA_KEY)) {
+			returned = ginaVersion;
+		}
+		if(returned==null){
+			returned = new FlexoVersion(distributionVersion.major, distributionVersion.minor, distributionVersion.patch, -1, false, false);
+		}
+		return returned;
+	}
+
+
 
 }
