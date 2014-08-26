@@ -164,6 +164,9 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 				}
 			}
 		}
+		
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	/**
