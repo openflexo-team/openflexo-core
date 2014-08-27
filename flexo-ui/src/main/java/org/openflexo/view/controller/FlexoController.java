@@ -1670,7 +1670,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public final FlexoEditingContext getEditingContext() {
-		return getApplicationContext().getEditingContext();
+		if(getApplicationContext()!=null){
+			return getApplicationContext().getEditingContext();
+		}
+		return null;
 	}
 
 	/**

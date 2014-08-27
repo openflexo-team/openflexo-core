@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
@@ -116,7 +117,7 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 
 	protected boolean isSecondaryProgressIndeterminate = true;
 	ImageIcon icon;
-	protected Frame initOwner;
+	protected Window initOwner;
 
 	protected JPanel mainPane;
 
@@ -151,10 +152,10 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 		return _instance;
 	}
 
-	private ProgressWindow(Frame frameOwner, String title, int steps) {
-		super(frameOwner = FlexoFrame.getOwner(frameOwner));
+	private ProgressWindow(Window window, String title, int steps) {
+		super(window);
 		setUndecorated(true);
-		initOwner = frameOwner;
+		initOwner = window;
 		if (initOwner != null) {
 			initOwner.addComponentListener(new ComponentAdapter() {
 
@@ -171,7 +172,7 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 		}
 		// logger.info("Build progress max="+steps);
 		setFocusable(false);
-		setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
 		mainProgress = 0;
 		secondaryProgress = 0;
 		mainProgressBar = new JProgressBar(0, Math.max(1, steps));
@@ -273,7 +274,7 @@ public class ProgressWindow extends JDialog implements FlexoProgress {
 		showProgressWindow(getActiveModuleFrame(), title, steps);
 	}
 
-	public synchronized static void showProgressWindow(Frame owner, String title, int steps) {
+	public synchronized static void showProgressWindow(Window owner, String title, int steps) {
 		if (_instance != null) {
 			logger.warning("Try to open another ProgressWindow !!!!");
 		} else {

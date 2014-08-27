@@ -20,7 +20,6 @@
 package org.openflexo.components;
 
 import java.awt.Window;
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
@@ -84,9 +83,8 @@ public class ResourceCenterEditorDialog extends FIBDialog<ResourceCenterEditor> 
 
 		super(FIBLibrary.instance().retrieveFIBComponent(RESOURCE_CENTER_EDITOR_FIB,true), getResourceCenterEditor(serviceManager), parent,
 				true, FlexoLocalization.getMainLocalizer());
-
+		getData().setOwner(this);
 		setTitle("Resource Center Editor");
-
 	}
 
 }
