@@ -1,6 +1,8 @@
 package org.openflexo.view.controller;
 
+import java.awt.Window;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -26,6 +28,16 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 	private final PropertyChangeSupport _pcSupport;
 
 	private final FlexoResourceCenterService rcService;
+	
+	private Window owner;
+
+	public Window getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Window owner) {
+		this.owner = owner;
+	}
 
 	public ResourceCenterEditor(FlexoResourceCenterService rcService) {
 		_pcSupport = new PropertyChangeSupport(this);
@@ -83,7 +95,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 	}
 
 	private void showProgress(String stepname) {
-		ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey(stepname), 1);
+		ProgressWindow.showProgressWindow(owner,FlexoLocalization.localizedForKey(stepname), 1);
 		ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey(stepname));
 	}
 
