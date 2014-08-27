@@ -29,7 +29,6 @@ import org.openflexo.action.CopyActionInitializer;
 import org.openflexo.action.CutActionInitializer;
 import org.openflexo.action.ImportProjectInitializer;
 import org.openflexo.action.PasteActionInitializer;
-import org.openflexo.action.ProjectExcelExportInitializer;
 import org.openflexo.action.RemoveImportedProjectInitializer;
 import org.openflexo.action.SelectAllActionInitializer;
 import org.openflexo.antar.binding.TypeUtils;
@@ -148,7 +147,10 @@ public class ControllerActionInitializer implements EditorProvider {
 		// TODO : To be re-written when Wysiwyg editor is re-written
 		// new SubmitDocumentationActionizer(this);
 		// new UploadProjectInitializer(this);
-		new ProjectExcelExportInitializer(this);
+		
+		// Remove sinc it is unused now
+		// new ProjectExcelExportInitializer(this);
+		
 		new LoadAllImportedProjectInitializer(this);
 
 		new AddRepositoryFolderInitializer(this);

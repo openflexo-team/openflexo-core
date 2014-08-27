@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -219,11 +220,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (caller instanceof FlexoResourceCenterService) {
-			/*if (notification instanceof ResourceCenterAdded) {
+			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
-				newRC.initialize(this);
-			}*/
+				//newRC.initialize(this);
+				
+				getPropertyChangeSupport().firePropertyChange("getResourceCenters()", null, newRC);
+			}
 			/*if (notification instanceof ResourceCenterRemoved) {
 				FileSystemBasedResourceCenter newRC = (FileSystemBasedResourceCenter) ((ResourceCenterRemoved) notification)
 						.getRemovedResourceCenter();
@@ -261,6 +264,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return getServiceManager().getService(TechnologyAdapterService.class);
 	}
 
+	public List<FlexoResourceCenter> getResourceCenters(){
+		return getResourceCenterService().getResourceCenters();
+	}
+	
 	@Override
 	public void initialize() {
 		if (getResourceCenterService() != null) {
@@ -268,7 +275,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			// Some FlexoResourceCenter may have already initialized, the goal is here to register in ViewPointLibrary any ViewPoint already
 			// found
 			VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
-			for (FlexoResourceCenter rc : getResourceCenterService().getResourceCenters()) {
+			for (FlexoResourceCenter rc : getResourceCenters()) {
 				ViewPointRepository vpr = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
 				for (ViewPointResource vpRes : vpr.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
