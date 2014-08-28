@@ -51,6 +51,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public FlexoMetaModelResource<M, MM, ?> getMetaModelResource();
 
 	public void setMetaModelResource(FlexoMetaModelResource<M, MM, ?> metaModelResource);
+	
+	public Class<? extends FlexoMetaModel<?>> getMetaModelClass();
 
 	public FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
 			FlexoMetaModelResource<M, MM, ?> metaModelResource);
@@ -267,6 +269,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 * 
 		 * @return
 		 */
+		@Override
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoMetaModel<?>> getMetaModelClass() {
 			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
