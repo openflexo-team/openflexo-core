@@ -59,10 +59,10 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 	public static final String OBJECT_KEY = "object";
 
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.OBJECT_ASSERTIONS_KEY)
-	public AddIndividual<?, ?> getAction();
+	public AssignableAction<?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(AddIndividual<?, ?> action);
+	public void setAction(AssignableAction<?, ?> action);
 
 	@Getter(value = OBJECT_PROPERTY_URI_KEY)
 	@XMLAttribute
