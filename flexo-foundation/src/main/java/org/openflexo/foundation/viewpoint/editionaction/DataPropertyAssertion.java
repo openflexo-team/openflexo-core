@@ -54,10 +54,10 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 	public static final String VALUE_KEY = "value";
 
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.DATA_ASSERTIONS_KEY)
-	public AddIndividual<?, ?> getAction();
+	public AssignableAction<?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(AddIndividual<?, ?> action);
+	public void setAction(AssignableAction<?, ?> action);
 
 	@Getter(value = DATA_PROPERTY_URI_KEY)
 	@XMLAttribute
