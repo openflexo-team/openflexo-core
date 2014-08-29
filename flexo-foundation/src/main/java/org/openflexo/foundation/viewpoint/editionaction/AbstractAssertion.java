@@ -26,11 +26,10 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -56,7 +55,7 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 
 	public static abstract class AbstractAssertionImpl extends FlexoBehaviourObjectImpl implements AbstractAssertion {
 
-		private AddIndividual _action;
+		private AssignableAction _action;
 		private DataBinding<Boolean> conditional;
 
 		public AbstractAssertionImpl() {
@@ -68,11 +67,11 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 			return null;
 		}
 
-		public void setAction(AddIndividual action) {
+		public void setAction(AssignableAction action) {
 			_action = action;
 		}
 
-		public AddIndividual getAction() {
+		public AssignableAction getAction() {
 			return _action;
 		}
 
