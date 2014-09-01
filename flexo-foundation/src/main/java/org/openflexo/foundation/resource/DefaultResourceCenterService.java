@@ -140,6 +140,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		if (getServiceManager() != null) {
 			getServiceManager().notify(this, new ResourceCenterRemoved(resourceCenter));
 		}
+		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 	}
 
 	/**

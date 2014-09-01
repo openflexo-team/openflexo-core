@@ -31,6 +31,7 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -222,6 +223,12 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				// A new resource center has just been referenced, initialize it related to viewpoint exploring
+				//newRC.initialize(this);
+				
+				getPropertyChangeSupport().firePropertyChange("getResourceCenters()", null, newRC);
+			}if (notification instanceof ResourceCenterRemoved) {
+				FlexoResourceCenter newRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
 				//newRC.initialize(this);
 				
