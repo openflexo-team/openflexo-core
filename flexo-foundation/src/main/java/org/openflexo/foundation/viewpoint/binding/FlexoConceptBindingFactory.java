@@ -39,6 +39,7 @@ import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.antar.expr.Constant.StringConstant;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.view.ViewObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
@@ -108,9 +109,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (pType instanceof TechnologySpecificCustomType) {
 			TechnologySpecificCustomType parentType = (TechnologySpecificCustomType) pType;
 			TechnologyAdapter ta = parentType.getTechnologyAdapter();
-			if (ta != null && ta.getTechnologyAdapterBindingFactory().handleType(parentType)) {
-				List<? extends SimplePathElement> returned = ta.getTechnologyAdapterBindingFactory()
-						.getAccessibleSimplePathElements(parent);
+			TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
+			if (ta != null  && bf != null && bf.handleType(parentType)) {
+				List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
 				Collections.sort(returned, BindingPathElement.COMPARATOR);
 				return returned;
 			}
