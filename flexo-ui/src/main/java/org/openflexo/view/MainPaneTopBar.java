@@ -110,8 +110,15 @@ public class MainPaneTopBar extends JMenuBar {
 
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
+					
 					button.setIcon(model.getModuleLoader().isLoaded(module) ? module.getMediumIconWithHover() : module.getMediumIcon());
 					button.setSelected(model.getModuleLoader().isActive(module));
+					if(controller.getModule()!=null && controller.getModule().getModule().equals(module)){
+						button.setSelected(true);
+					}else{
+						button.setSelected(false);
+					}
+					
 				}
 			};
 			registrationManager.new PropertyChangeListenerRegistration(ModuleLoader.ACTIVE_MODULE, listener, model.getModuleLoader());
