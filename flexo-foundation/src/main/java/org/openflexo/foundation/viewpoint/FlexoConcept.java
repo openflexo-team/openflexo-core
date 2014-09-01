@@ -84,8 +84,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
-	@PropertyIdentifier(type = String.class)
-	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = List.class)
@@ -115,15 +113,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Override
 	@Setter(NAME_KEY)
 	public void setName(String name);
-
-	@Override
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLElement
-	public String getDescription();
-
-	@Override
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
 
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
