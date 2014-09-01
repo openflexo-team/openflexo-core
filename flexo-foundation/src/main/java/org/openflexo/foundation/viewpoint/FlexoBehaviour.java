@@ -142,14 +142,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(HEIGHT_KEY)
 	public void setHeight(int height);
 
-	@Override
+	/*@Override
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLElement
 	public String getDescription();
 
 	@Override
 	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
+	public void setDescription(String description);*/
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_SCHEME_KEY)
 	@XMLElement
@@ -207,7 +207,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		private String name;
 		private String label;
-		private String description;
+		//private String description;
 		// private Vector<EditionAction<?, ?>> actions;
 		// private Vector<FlexoBehaviourParameter> parameters;
 		private boolean skipConfirmationPanel = false;
