@@ -135,7 +135,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
-			implements MatchFlexoConceptInstance {
+	implements MatchFlexoConceptInstance {
 
 		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
 
@@ -178,8 +178,12 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 					sb.append("(");
 				}
 				for (MatchingCriteria mc : matchingCriterias) {
-					sb.append(mc.getFlexoRole().getName() != null ? mc.getFlexoRole().getName() : "null" + "=" + mc.getValue().toString()
-							+ ";");
+					FlexoRole<?> role = mc.getFlexoRole();
+					DataBinding<?> val = mc.getValue();
+					if (role != null && val != null) {
+						sb.append(mc.getFlexoRole().getName() != null ? mc.getFlexoRole().getName() : "null" + "=" + mc.getValue().toString()
+								+ ";");
+					}
 				}
 				if (matchingCriterias.size() > 1) {
 					sb.append(")");
@@ -448,7 +452,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		}
 
 		public static class MatchFlexoConceptInstanceMustAddressACreationScheme extends
-				ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
+		ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
 			public MatchFlexoConceptInstanceMustAddressACreationScheme() {
 				super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
 			}
@@ -470,7 +474,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		}
 
 		public static class MatchFlexoConceptInstanceParametersMustBeValid extends
-				ValidationRule<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
+		ValidationRule<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
 			public MatchFlexoConceptInstanceParametersMustBeValid() {
 				super(MatchFlexoConceptInstance.class, "match_flexo_concept_parameters_must_be_valid");
 			}
@@ -510,7 +514,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 		}
 
 		public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-				BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
+		BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
 			public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
 				super("'virtual_model_instance'_binding_is_not_valid", MatchFlexoConceptInstance.class);
 			}
