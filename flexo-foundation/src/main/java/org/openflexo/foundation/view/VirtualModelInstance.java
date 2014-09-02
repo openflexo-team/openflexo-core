@@ -417,10 +417,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 			logger.info(">>>>>>>>> addToFlexoConceptInstances " + fci);
 
-			System.out.println("Already storing: ");
-			for (FlexoConceptInstance i : getFlexoConceptInstances()) {
-				System.out.println("> " + i);
-			}
+			//System.out.println("Already storing: ");
+			//for (FlexoConceptInstance i : getFlexoConceptInstances()) {
+			//	System.out.println("> " + i);
+			// }
 
 			// System.out.println("Adding " + fci);
 			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
