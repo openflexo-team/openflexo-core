@@ -31,6 +31,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.action.CopyActionInitializer;
 import org.openflexo.action.CutActionInitializer;
 import org.openflexo.action.PasteActionInitializer;
+import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.icon.IconLibrary;
@@ -78,7 +79,11 @@ public class EditMenu extends FlexoMenu {
 	}
 
 	public FlexoUndoManager getUndoManager() {
-		return _controller.getEditingContext().getUndoManager();
+		if (_controller != null) {
+			FlexoEditingContext ec = _controller.getEditingContext();
+			if (ec != null)	return ec.getUndoManager();
+		}
+		return null;
 	}
 
 	// ==============================================
