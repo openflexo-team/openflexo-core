@@ -129,27 +129,12 @@ public class SynchronizationSchemeAction extends
 		}
 	}
 
-	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
-		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
-			boolean allCriteriasMatching = true;
-			for (FlexoRole pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
-					allCriteriasMatching = false;
-				}
-			}
-			if (allCriteriasMatching) {
-				return epi;
-			}
-		}
-		return null;
-	}
-
+	@Override
 	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
 		System.out.println("FOUND matching : " + matchingFlexoConceptInstance);
 		episToBeRemoved.remove(matchingFlexoConceptInstance);
 	}
-
+	@Override
 	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
 		System.out.println("NEW EPI : " + newFlexoConceptInstance);
 

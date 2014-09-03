@@ -36,6 +36,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -46,6 +47,7 @@ import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
@@ -263,6 +265,47 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	}
 
+	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
+	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	 * 
+	 * @param matchingFlexoConceptInstance
+	 */
+	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
+		return;
+	}
+
+	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
+	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	 * 
+	 * @param newFlexoConceptInstance
+	 */
+	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
+		System.out.println("NEW EPI : " + newFlexoConceptInstance);
+
+	}
+
+	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
+	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	 * 
+	 * @param matchingFlexoConceptInstance
+	 */
+	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
+		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
+		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
+			boolean allCriteriasMatching = true;
+			for (FlexoRole pr : criterias.keySet()) {
+				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
+					allCriteriasMatching = false;
+				}
+			}
+			if (allCriteriasMatching) {
+				return epi;
+			}
+		}
+		return null;
+	}
+
+	
 	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
 	 * related {@link FlexoBehaviour}<br>

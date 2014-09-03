@@ -37,7 +37,6 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -414,12 +413,12 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				System.out.println("Pour " + mc.getFlexoRole().getRoleName() + " value is " + value);
 			}
 			logger.info("On s'arrete pour regarder ");
-			FlexoConceptInstance matchingFlexoConceptInstance = ((SynchronizationSchemeAction) action).matchFlexoConceptInstance(
+			FlexoConceptInstance matchingFlexoConceptInstance = ((FlexoBehaviourAction) action).matchFlexoConceptInstance(
 					getFlexoConceptType(), criterias);
 
 			if (matchingFlexoConceptInstance != null) {
 				// A matching FlexoConceptInstance was found
-				((SynchronizationSchemeAction) action).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+				((FlexoBehaviourAction) action).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
 			} else {
 
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
@@ -438,7 +437,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				if (creationSchemeAction.hasActionExecutionSucceeded()) {
 					logger.info("Successfully performed performAddFlexoConcept " + action);
 					matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
-					((SynchronizationSchemeAction) action).newFlexoConceptInstance(matchingFlexoConceptInstance);
+					((FlexoBehaviourAction) action).newFlexoConceptInstance(matchingFlexoConceptInstance);
 				} else {
 					logger.warning("Could not create FlexoConceptInstance for " + action);
 				}
