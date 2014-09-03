@@ -17,8 +17,8 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationVersion;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.ws.jira.JIRAGson;
@@ -79,16 +79,6 @@ public class BugReportService extends FlexoServiceImpl {
 		}
 		return null;
 	}
-
-	/*private File copyOriginalToUserFile(File projectFile) {
-		try {
-			FileUtils.copyFileToFile(projectFile, userProjectFile);
-			return userProjectFile;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}*/
 
 	public void loadProjectsFromFile(Resource file) {
 		try {
@@ -151,17 +141,12 @@ public class BugReportService extends FlexoServiceImpl {
 					&& getServiceManager().getAdvancedPrefs().getBugReportUser().trim().length() > 0
 					&& getServiceManager().getAdvancedPrefs().getBugReportPassword() != null
 					&& getServiceManager().getAdvancedPrefs().getBugReportPassword().trim().length() > 0) {
-				try {
 					headers.put(
 							"Authorization",
 							"Basic "
 									+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
 											.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
-				} 
-				catch (UnsupportedEncodingException e) 
-				{
-					
-				}
+				} 	
 
 				for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 					String key = entry.getKey();
@@ -176,17 +161,13 @@ public class BugReportService extends FlexoServiceImpl {
 					}
 				}
 
-
-
-			}
-		} catch (MalformedURLException e) {
+			} 
+		catch (MalformedURLException e) {
 			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			logger.warning("Encoding error in a bug service request.");
 		}
-		/*project = loadProjectsFromFile(userProjectFile);
-		if (project == null) {
-			copyOriginalToUserFile();
-			project = loadProjectsFromFile(PROJECT_FILE);
-		}*/
 		if(!userProjectFiles.isEmpty()){
 			for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 				Resource file = entry.getValue();
@@ -221,8 +202,7 @@ public class BugReportService extends FlexoServiceImpl {
 			}
 			distributionVersion = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warning("Unable to identify a flexo component version.");
 		}
 	}
 

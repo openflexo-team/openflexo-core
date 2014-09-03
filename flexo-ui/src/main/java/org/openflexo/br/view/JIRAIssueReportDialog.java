@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.zip.Deflater;
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationVersion;
 import org.openflexo.Flexo;
-import org.openflexo.br.BugReportService;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
@@ -28,7 +28,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
-import org.openflexo.module.Module;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.ImageUtils;
@@ -229,9 +228,12 @@ public class JIRAIssueReportDialog {
 						}
 						ok = dialog.getData().send();
 					} catch (MalformedURLException e1) {
-						FlexoController.showError(FlexoLocalization.localizedForKey("could_not_send_bug_report") + " " + e.getMessage());
-					} catch (UnauthorizedJIRAAccessException e1) {
-						if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
+						FlexoController.showError(FlexoLocalization.localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
+					} catch (UnknownHostException e1){
+						FlexoController.showError(FlexoLocalization.localizedForKey("could_not_send_bug_report") + " " + e1.getMessage());
+						ok = true;
+					}
+					catch (UnauthorizedJIRAAccessException e1) {	if (JIRAURLCredentialsDialog.askLoginPassword(serviceManager)) {
 							continue;
 						} else {
 							break;
@@ -372,7 +374,16 @@ public class JIRAIssueReportDialog {
 						if (submit) {
 							client.setTimeout(client.getTimeout() * 2);// Let's increase time out
 						}
-					} else {
+					} else if (target.getException() instanceof UnknownHostException) {
+						submit = FlexoController.confirm(FlexoLocalization.localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again")
+								+ "? ");
+						// If the user want to stop, quit, otherwise clean the exception and try again
+						if(submit == false){
+							throw target.getException();
+						}else{
+							target.exception = null;
+						}
+					}else {
 						throw target.getException();
 					}
 				} else {
@@ -570,7 +581,11 @@ public class JIRAIssueReportDialog {
 						}
 					}
 				}
-			} catch (IOException e) {
+			} 
+			catch (UnknownHostException e) {
+				logger.severe("Not able to connect to URL " + serviceManager.getAdvancedPrefs().getBugReportUrl() + ". Please check your internet connection.");
+				this.exception = e;
+			}catch (IOException e) {
 				e.printStackTrace();
 				this.exception = e;
 			} catch (JIRAException e) {
