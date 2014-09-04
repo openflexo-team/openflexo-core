@@ -175,13 +175,16 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		if (StringUtils.isEmpty(getRoleName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
+		}
+		else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
-		} else if (modelSlot == null) {
+		}
+		else if (modelSlot == null) {
 			validityMessage = NO_MODEL_SLOT;
 			return false;
-		} else {
+		}
+		else {
 			validityMessage = "";
 			return true;
 		}
@@ -213,7 +216,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	public List<ModelSlot<?>> getAvailableModelSlots() {
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
 			return getFocusedObject().getVirtualModel().getModelSlots();
 		}
 		return null;
@@ -222,7 +226,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private ModelSlot<?> retrieveDefaultModelSlot() {
 		if (getFocusedObject() instanceof VirtualModel && ((VirtualModel) getFocusedObject()).getModelSlots().size() > 0) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots().get(0);
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
 				&& getFocusedObject().getVirtualModel().getModelSlots().size() > 0) {
 			return getFocusedObject().getVirtualModel().getModelSlots().get(0);
 		}
@@ -261,10 +266,12 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		boolean wasValid = isValid();
 		this.modelSlot = modelSlot;
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
+		getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			} else {
+			}
+			else {
 				setFlexoRoleClass(null);
 			}
 		}
