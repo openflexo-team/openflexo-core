@@ -143,7 +143,6 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 		private List<?> fetchItems(FlexoBehaviourAction action) {
 			if (getFetchRequest() != null) {
-				System.out.println("Pour choper mes items, je lance " + getFetchRequest());
 				return getFetchRequest().performAction(action);
 			}
 			return Collections.emptyList();
@@ -151,9 +150,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 		@Override
 		public Object performAction(FlexoBehaviourAction action) {
-			System.out.println("Perform FetchRequestIterationAction for " + getFetchRequest());
 			List<?> items = fetchItems(action);
-			System.out.println("Items=" + items);
 			if (items != null) {
 				for (Object item : items) {
 					action.declareVariable(getIteratorName(), item);
