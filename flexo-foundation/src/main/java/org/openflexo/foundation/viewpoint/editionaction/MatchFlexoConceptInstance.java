@@ -155,8 +155,6 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 			if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
 			}
-			System.out.println("getFlexoConceptType()=" + getFlexoConceptType());
-
 			out.append(getClass().getSimpleName() + " as "
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "no type specified") + " "
 					+ getMatchingCriteriasFMLRepresentation(context) + " using "
@@ -416,9 +414,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				if (value != null) {
 					criterias.put(mc.getFlexoRole(), value);
 				}
-				System.out.println("Pour " + mc.getFlexoRole().getRoleName() + " value is " + value);
 			}
-			logger.info("On s'arrete pour regarder ");
 			FlexoConceptInstance matchingFlexoConceptInstance = action.matchFlexoConceptInstance(getFlexoConceptType(), criterias);
 
 			if (matchingFlexoConceptInstance != null) {
@@ -433,15 +429,12 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 				for (CreateFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
 					Object value = p.evaluateParameterValue(action);
-					logger.info("For parameter " + param + " value is " + value);
 					if (value != null) {
 						creationSchemeAction.setParameterValue(p.getParam(), p.evaluateParameterValue(action));
 					}
 				}
-				logger.info(">> Creating a new EPI in " + vmInstance);
 				creationSchemeAction.doAction();
 				if (creationSchemeAction.hasActionExecutionSucceeded()) {
-					logger.info("Successfully performed performAddFlexoConcept " + action);
 					matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
 					action.newFlexoConceptInstance(matchingFlexoConceptInstance);
 				}
