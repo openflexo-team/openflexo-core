@@ -71,7 +71,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 		private String iteratorName = "item";
 
-		//private FetchRequest fetchRequest;
+		// private FetchRequest fetchRequest;
 
 		public FetchRequestIterationActionImpl() {
 			super();
@@ -104,29 +104,20 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			rebuildInferedBindingModel();
 		}
 
-		/*@Override
-		public FetchRequest<?, ?> getFetchRequest() {
-			return fetchRequest;
-		}*/
-
 		@Override
 		public void setFetchRequest(FetchRequest<?, ?> fetchRequest) {
 			performSuperSetter(FETCH_REQUEST_KEY, fetchRequest);
-			fetchRequest.setActionContainer(this);
-			fetchRequest.setEmbeddingIteration(this);
-			
-			//this.fetchRequest = fetchRequest;
-			/*
-			// Big hack to prevent XMLCoDe to also append FetchRequest to the list of embedded actions
-			// Should be removed either by the fixing of XMLCoDe or by the switch to PAMELA
-			if (getActions().contains(fetchRequest)) {
-				removeFromActions(fetchRequest);
+			if (fetchRequest != null) {
+				fetchRequest.setActionContainer(this);
+				fetchRequest.setEmbeddingIteration(this);
 			}
-			*/
+			else {
+				logger.warning("INVESTIGATE : Setting a Null FetchRequest");
+			}
 		}
 
 		public Type getItemType() {
-			if (getFetchRequest()!=null&&getFetchRequest().getFetchedType() != null) {
+			if (getFetchRequest() != null && getFetchRequest().getFetchedType() != null) {
 				return getFetchRequest().getFetchedType();
 			}
 			return Object.class;
