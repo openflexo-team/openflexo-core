@@ -344,7 +344,9 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 						parametersToRemove.remove(existingParam);
 					}
 					else {
-						addToParameters(getVirtualModelFactory().newCreateFlexoConceptInstanceParameter(p));
+						if(getVirtualModelFactory()!=null){
+							addToParameters(getVirtualModelFactory().newCreateFlexoConceptInstanceParameter(p));
+						}
 					}
 				}
 			}
