@@ -123,6 +123,9 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 					getPropertyChangeSupport().firePropertyChange(dataBinding.getBindingName(), null, dataBinding);
 				}
 			}
+			if(getResourceData() != null){
+				getResourceData().setIsModified();
+			}
 		}
 
 		@Override

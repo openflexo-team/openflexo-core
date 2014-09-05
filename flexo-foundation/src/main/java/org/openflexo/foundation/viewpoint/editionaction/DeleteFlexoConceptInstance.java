@@ -20,7 +20,6 @@
 package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -37,13 +36,11 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -227,14 +224,14 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 
 		private void updateParameters() {
-			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<DeleteFlexoConceptInstanceParameter>(
-					getParameters());
+			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
 			if (getDeletionScheme() != null) {
 				for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
 					DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
-					} else {
+					}
+					else {
 						addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
 					}
 				}
@@ -304,7 +301,8 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance>(this,
 							action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");
-				} else {
+				}
+				else {
 					return new ValidationError<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance>(this,
 							action, "delete_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
@@ -333,11 +331,13 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 							DataBinding<String> uri = ((URIParameter) param).getBaseURI();
 							if (param instanceof URIParameter && uri.isSet() && uri.isValid()) {
 								// Special case, we will find a way to manage this
-							} else {
+							}
+							else {
 								issues.add(new ValidationError<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
 										this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 							}
-						} else if (!p.getValue().isValid()) {
+						}
+						else if (!p.getValue().isValid()) {
 							DeleteFlexoConceptInstanceImpl.logger.info("Binding NOT valid: " + p.getValue() + " for "
 									+ p.getParam().getName() + " object=" + p.getAction() + ". Reason: "
 									+ p.getValue().invalidBindingReason());
@@ -348,9 +348,11 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				}
 				if (issues.size() == 0) {
 					return null;
-				} else if (issues.size() == 1) {
+				}
+				else if (issues.size() == 1) {
 					return issues.firstElement();
-				} else {
+				}
+				else {
 					return new CompoundIssue<DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance>(
 							action, issues);
 				}
