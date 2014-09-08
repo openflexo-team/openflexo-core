@@ -20,31 +20,45 @@
 package org.openflexo.components.wizard;
 
 import java.awt.Image;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
+import org.openflexo.logging.FlexoLogger;
+
+/**
+ * Abstract generic class used to encodes a wizard in Openflexo GUI environment.<br>
+ * 
+ * A {@link FlexoWizard} is composed of some {@link WizardStep} which are sequentially executed.
+ * 
+ * @author guillaume, sylvain
+ * 
+ */
 public abstract class FlexoWizard {
 
-	private Vector<IWizardPage> pages;
+	private static final Logger logger = FlexoLogger.getLogger(FlexoWizard.class.getPackage().getName());
 
-	private IWizardPage currentPage;
+	private final List<WizardStep> steps;
+
+	private WizardStep currentStep;
 
 	public FlexoWizard() {
-		pages = new Vector<IWizardPage>();
+		steps = new ArrayList<WizardStep>();
 	}
 
-	public void addPage(IWizardPage page) {
-		if (page == null) {
+	public void addStep(WizardStep step) {
+		if (step == null) {
 			return;
 		}
-		pages.add(page);
-		if (pages.size() == 1) {
-			currentPage = page;
+		steps.add(step);
+		if (steps.size() == 1) {
+			currentStep = step;
 		}
 	}
 
 	public boolean canFinish() {
-		for (IWizardPage page : pages) {
-			if (!page.isPageComplete()) {
+		for (WizardStep page : steps) {
+			if (!page.isValid()) {
 				return false;
 			}
 		}
@@ -52,48 +66,44 @@ public abstract class FlexoWizard {
 	}
 
 	public boolean needsPreviousAndNext() {
-		return pages.size() > 1;
+		return steps.size() > 1;
 	}
 
 	public boolean isPreviousEnabled() {
-		return getPreviousPage(currentPage) != null;
+		return getPreviousStep(currentStep) != null;
 	}
 
-	public IWizardPage getCurrentPage() {
-		return currentPage;
+	public WizardStep getCurrentStep() {
+		return currentStep;
 	}
 
-	public void setCurrentPage(IWizardPage currentPage) {
-		this.currentPage = currentPage;
+	public void setCurrentStep(WizardStep currentPage) {
+		this.currentStep = currentPage;
 	}
 
-	public IWizardPage getPreviousPage(IWizardPage page) {
-		if (page.getPreviousPage() != null) {
-			return page.getPreviousPage();
-		} else if (page.isPreviousEnabled() && pages.indexOf(page) > 0) {
-			return pages.get(pages.indexOf(page) - 1);
+	public WizardStep getPreviousStep(WizardStep page) {
+		if (page.isPreviousEnabled() && steps.indexOf(page) > 0) {
+			return steps.get(steps.indexOf(page) - 1);
 		} else {
 			return null;
 		}
 	}
 
 	public boolean isNextEnabled() {
-		return getNextPage(currentPage) != null && currentPage.isPageComplete();
+		return getNextPage(currentStep) != null && currentStep.isValid();
 	}
 
-	public IWizardPage getNextPage(IWizardPage page) {
-		if (page.getNextPage() != null) {
-			return page.getNextPage();
-		} else if (page.isNextEnabled() && pages.indexOf(page) > -1 && pages.indexOf(page) < pages.size() - 1) {
-			return pages.get(pages.indexOf(page) + 1);
+	public WizardStep getNextPage(WizardStep page) {
+		if (page.isNextEnabled() && steps.indexOf(page) > -1 && steps.indexOf(page) < steps.size() - 1) {
+			return steps.get(steps.indexOf(page) + 1);
 		} else {
 			return null;
 		}
 	}
 
 	public Image getPageImage() {
-		if (currentPage.getPageImage() != null) {
-			return currentPage.getPageImage();
+		if (currentStep.getPageImage() != null) {
+			return currentStep.getPageImage();
 		} else {
 			return getDefaultPageImage();
 		}
@@ -101,7 +111,9 @@ public abstract class FlexoWizard {
 
 	public abstract String getWizardTitle();
 
-	public abstract Image getDefaultPageImage();
+	public Image getDefaultPageImage() {
+		return null;
+	}
 
 	public abstract void performFinish();
 
