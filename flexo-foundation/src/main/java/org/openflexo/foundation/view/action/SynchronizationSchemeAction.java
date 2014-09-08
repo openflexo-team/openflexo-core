@@ -20,7 +20,6 @@
 package org.openflexo.foundation.view.action;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -29,13 +28,10 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
@@ -124,42 +120,22 @@ public class SynchronizationSchemeAction extends
 	public void endSynchronization() {
 		System.out.println("END synchronization on " + getVirtualModelInstance());
 		for (FlexoConceptInstance epi : episToBeRemoved) {
-			System.out.println("Deleting " + epi);
 			epi.delete();
+			getVirtualModelInstance().removeFromFlexoConceptInstances(epi);
 		}
 	}
 
-	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
-		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
-		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
-			boolean allCriteriasMatching = true;
-			for (FlexoRole pr : criterias.keySet()) {
-				if (!FlexoObjectImpl.areSameValue(epi.getFlexoActor(pr), criterias.get(pr))) {
-					allCriteriasMatching = false;
-				}
-			}
-			if (allCriteriasMatching) {
-				return epi;
-			}
-		}
-		return null;
-	}
-
+	@Override
 	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
-		System.out.println("FOUND matching : " + matchingFlexoConceptInstance);
 		episToBeRemoved.remove(matchingFlexoConceptInstance);
-	}
-
-	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
-		System.out.println("NEW EPI : " + newFlexoConceptInstance);
-
 	}
 
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable instanceof PatternRoleBindingVariable) {
 			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
-		} else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
 			return getFlexoConceptInstance();
 		}
 		return super.getValue(variable);

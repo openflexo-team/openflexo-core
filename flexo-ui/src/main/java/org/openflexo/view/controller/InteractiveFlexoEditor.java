@@ -110,19 +110,33 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	@Override
 	public <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(
 			final A action, final EventObject e) {
-		if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
-			return null;
-		}
-		if (!(action instanceof FlexoGUIAction<?, ?, ?>) && (action.getFocusedObject() instanceof FlexoProjectObject)
-				&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Cannot execute action because focused object is within another project than the one of this editor");
-			}
-			return null;
-		}
+		// NPE Protection
+		if (action != null ){
+			FlexoActionType<A, T1, T2> at = action.getActionType();
+			if (at != null){
+				if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
+					return null;
+				}
+				if (!(action instanceof FlexoGUIAction<?, ?, ?>) && (action.getFocusedObject() instanceof FlexoProjectObject)
+						&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
+					if (logger.isLoggable(Level.INFO)) {
+						logger.info("Cannot execute action because focused object is within another project than the one of this editor");
+					}
+					return null;
+				}
 
-		executeAction(action, e);
-		return action;
+				executeAction(action, e);
+				return action;
+			}
+			else {
+				logger.warning("Action Type was NULL!");
+				return null;
+			}
+		}
+		else{
+			logger.warning("Action was NULL!");
+			return null;
+		}
 	}
 
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A executeAction(

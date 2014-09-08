@@ -417,10 +417,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 			logger.info(">>>>>>>>> addToFlexoConceptInstances " + fci);
 
-			System.out.println("Already storing: ");
-			for (FlexoConceptInstance i : getFlexoConceptInstances()) {
-				System.out.println("> " + i);
-			}
+			// System.out.println("Already storing: ");
+			// for (FlexoConceptInstance i : getFlexoConceptInstances()) {
+			// System.out.println("> " + i);
+			// }
 
 			// System.out.println("Adding " + fci);
 			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
@@ -429,7 +429,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
-			} else {
+			}
+			else {
 				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -738,7 +739,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			} else {
+			}
+			else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
@@ -783,6 +785,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		public ObjectLookupResult lookup(Object object) {
 			// TODO: PERFS !!!
 			// @brutal mode
+			if (object == null)
+				return null;
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
 				if (flexoConceptInstance.getFlexoConcept() != null) {
 					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoRoles()) {
