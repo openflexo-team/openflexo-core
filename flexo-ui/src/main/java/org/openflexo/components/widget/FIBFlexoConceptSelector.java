@@ -19,7 +19,6 @@
  */
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
@@ -27,8 +26,8 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select an FlexoConcept
@@ -90,7 +89,11 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewPoint(ViewPoint viewPoint) {
-		this.viewPoint = viewPoint;
+		if (this.viewPoint != viewPoint) {
+			FlexoObject oldRoot = getRootObject();
+			this.viewPoint = viewPoint;
+			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
+		}
 	}
 
 	private VirtualModel virtualModel;
@@ -101,7 +104,11 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setVirtualModel(VirtualModel virtualModel) {
-		this.virtualModel = virtualModel;
+		if (this.virtualModel != virtualModel) {
+			FlexoObject oldRoot = getRootObject();
+			this.virtualModel = virtualModel;
+			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
+		}
 	}
 
 	public FlexoObject getRootObject() {

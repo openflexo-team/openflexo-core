@@ -35,8 +35,8 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -237,12 +237,19 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
 
+		FB es = getEditionScheme();
+
 		// Perform actions
-		for (EditionAction action : getEditionScheme().getActions()) {
-			if (action.evaluateCondition(this)) {
-				performAction(action, performedActions);
+		if (es != null) {
+			for (EditionAction action : es.getActions()) {
+				if (action.evaluateCondition(this)) {
+					performAction(action, performedActions);
+				}
 			}
 			// Otherwise, we just ignore the action
+		}
+		else {
+			logger.warning("Trying to execute an Action with null Behaviour");
 		}
 
 		// Finalize actions
@@ -265,8 +272,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	}
 
-	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
-	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	/**
+	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
+	 * schemes than only synchronization.
 	 * 
 	 * @param matchingFlexoConceptInstance
 	 */
@@ -274,8 +282,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return;
 	}
 
-	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
-	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	/**
+	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
+	 * schemes than only synchronization.
 	 * 
 	 * @param newFlexoConceptInstance
 	 */
@@ -284,8 +293,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	}
 
-	/** This has been moved from SynchronizationSchemeAction to this super-class so that 
-	 * MatchFlexoConceptInstance can be used in other schemes than only synchronization.
+	/**
+	 * This has been moved from SynchronizationSchemeAction to this super-class so that MatchFlexoConceptInstance can be used in other
+	 * schemes than only synchronization.
 	 * 
 	 * @param matchingFlexoConceptInstance
 	 */
@@ -305,7 +315,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return null;
 	}
 
-	
 	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
 	 * related {@link FlexoBehaviour}<br>
@@ -345,9 +354,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public Object getValue(BindingVariable variable) {
 		if (variable.getVariableName().equals("parameters")) {
 			return getParametersValues();
-		} else if (variable.getVariableName().equals("parametersDefinitions")) {
+		}
+		else if (variable.getVariableName().equals("parametersDefinitions")) {
 			return getEditionScheme().getParameters();
-		} else if (variable.getVariableName().equals(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE)) {
 			return getVirtualModelInstance();
 		} /*else if (variable.getVariableName().equals(DiagramEditionScheme.DIAGRAM)) {
 			return getVirtualModelInstance();
