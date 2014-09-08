@@ -57,15 +57,16 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 
 	@AfterClass
 	public synchronized static void tearDownClass() {
-		 FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
-		 List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
-		for ( FlexoResourceCenter rc : listRC){
-			if (rc instanceof DirectoryResourceCenter) {
-				File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
-				RCDirectory.deleteOnExit();
+		if (serviceManager != null) {
+			FlexoResourceCenterService RCService = serviceManager.getResourceCenterService();
+			List<FlexoResourceCenter> listRC = RCService.getResourceCenters();
+			for (FlexoResourceCenter rc : listRC) {
+				if (rc instanceof DirectoryResourceCenter) {
+					File RCDirectory = ((DirectoryResourceCenter) rc).getDirectory();
+					RCDirectory.deleteOnExit();
+				}
 			}
 		}
-
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
