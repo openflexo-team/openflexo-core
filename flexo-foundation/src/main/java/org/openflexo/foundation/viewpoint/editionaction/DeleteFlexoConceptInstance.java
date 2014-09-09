@@ -251,26 +251,28 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 			try {
 				FlexoConceptInstance objectToDelete = (FlexoConceptInstance) getObject().getBindingValue(action);
 				// if VmInstance is null, use the one of the EPI
-				vmInstance = objectToDelete.getVirtualModelInstance();
+				if (objectToDelete != null) {
+					vmInstance = objectToDelete.getVirtualModelInstance();
 
-				logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
-				logger.info("VirtualModelInstance: " + vmInstance);
-				deletionSchemeAction.setFlexoConceptInstanceToDelete(objectToDelete);
-				deletionSchemeAction.setVirtualModelInstance(vmInstance);
-				deletionSchemeAction.setDeletionScheme(getDeletionScheme());
+					logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
+					logger.info("VirtualModelInstance: " + vmInstance);
+					deletionSchemeAction.setFlexoConceptInstanceToDelete(objectToDelete);
+					deletionSchemeAction.setVirtualModelInstance(vmInstance);
+					deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
-				for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
-					FlexoBehaviourParameter param = p.getParam();
-					Object value = p.evaluateParameterValue(action);
-					logger.info("For parameter " + param + " value is " + value);
-					if (value != null) {
-						deletionSchemeAction.setParameterValue(p.getParam(), p.evaluateParameterValue(action));
+					for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
+						FlexoBehaviourParameter param = p.getParam();
+						Object value = p.evaluateParameterValue(action);
+						logger.info("For parameter " + param + " value is " + value);
+						if (value != null) {
+							deletionSchemeAction.setParameterValue(p.getParam(), p.evaluateParameterValue(action));
+						}
 					}
+					logger.info("Performing action");
+					deletionSchemeAction.doAction();
+					// Finally delete the FlexoConcept
+					objectToDelete.delete();
 				}
-				logger.info("Performing action");
-				deletionSchemeAction.doAction();
-				// Finally delete the FlexoConcept
-				objectToDelete.delete();
 
 			} catch (TypeMismatchException e1) {
 				e1.printStackTrace();
