@@ -1,7 +1,5 @@
 package org.openflexo.components.widget;
 
-import java.io.File;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,6 +14,7 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointModelFactory;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
@@ -88,8 +87,8 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 			}
 
 			@Override
-			public File getFIBFile() {
-				return ResourceLocator.retrieveResourceAsFile(FIBDescriptionWidget.FIB_FILE);
+			public Resource getFIBResource() {
+				return ResourceLocator.locateSourceCodeResource(FIBDescriptionWidget.FIB_FILE);
 			}
 
 			@Override

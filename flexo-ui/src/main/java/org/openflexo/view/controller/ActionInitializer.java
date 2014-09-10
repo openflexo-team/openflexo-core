@@ -19,8 +19,6 @@
  */
 package org.openflexo.view.controller;
 
-import java.io.File;
-
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
@@ -77,12 +75,12 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		}
 	}
 
-	public boolean instanciateAndShowDialog(Object object, File fibResource) {
+	/*public boolean instanciateAndShowDialog(Object object, File fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
-	}
+	}*/
 
 	public boolean instanciateAndShowDialog(Object object, Resource fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
@@ -91,12 +89,12 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
-	public Status instanciateShowDialogAndReturnStatus(Object object, File fibResource) {
+	/*public Status instanciateShowDialogAndReturnStatus(Object object, File fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
 		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
 				new FlexoFIBController(fibComponent, getController()));
 		return dialog.getStatus();
-	}
+	}*/
 
 	public Status instanciateShowDialogAndReturnStatus(Object object, Resource fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);

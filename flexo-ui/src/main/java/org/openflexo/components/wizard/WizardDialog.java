@@ -19,164 +19,30 @@
  */
 package org.openflexo.components.wizard;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import org.openflexo.fib.FIBLibrary;
+import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.view.FlexoDialog;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.view.FlexoFrame;
 
-public class WizardDialog extends FlexoDialog implements ActionListener {
+/**
+ * Component displaying a FlexoWizard<br>
+ * Use GINA technology (component is declared in a FIB)
+ * 
+ * @author sylvain
+ */
+public class WizardDialog extends FIBDialog<FlexoWizard> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WizardDialog.class.getPackage().getName());
 
-	protected FlexoWizard wizard;
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WizardPanel.fib");
 
-	private JLabel pageTitle;
-
-	private JPanel northPanel;
-	private JPanel controlPanel;
-
-	private JPanel mainPanel;
-	private BorderLayout mainPanelLayout;
-
-	private JButton previous;
-	private JButton next;
-
-	private JButton cancel;
-	private JButton finish;
-
-	public WizardDialog(Frame owner, FlexoWizard wizard) {
-		super(owner, true);
-		setTitle(wizard.getWizardTitle());
-		this.wizard = wizard;
-		init();
-	}
-
-	private void init() {
-		pageTitle = new JLabel();
-
-		northPanel = new JPanel() {
-			@Override
-			public void paint(Graphics g) {
-				if (wizard.getPageImage() != null) {
-					g.drawImage(wizard.getPageImage(), 0, 0, getWidth(), getHeight(), null);
-				}
-				super.paint(g);
-			}
-		};
-		northPanel.add(pageTitle);
-
-		controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-
-		// init the content pane;
-		mainPanel = new JPanel(mainPanelLayout = new BorderLayout()) {
-
-			@Override
-			protected void processMouseEvent(MouseEvent e) {
-				super.processMouseEvent(e);
-				updateControls();
-			}
-
-			@Override
-			protected void processKeyEvent(KeyEvent e) {
-				super.processKeyEvent(e);
-				updateControls();
-			}
-		};
-		mainPanel.add(northPanel, BorderLayout.NORTH);
-		mainPanel.add(controlPanel, BorderLayout.SOUTH);
-		mainPanel.validate();
-
-		cancel = new JButton();
-		cancel.setText(FlexoLocalization.localizedForKey("cancel", cancel));
-		cancel.addActionListener(this);
-		finish = new JButton();
-		finish.setText(FlexoLocalization.localizedForKey("finish", finish));
-
-		controlPanel.add(cancel);
-		controlPanel.add(finish);
-		// init the buttons
-		if (wizard.needsPreviousAndNext()) {
-			previous = new JButton();
-			previous.setText(FlexoLocalization.localizedForKey("previous", previous));
-			next = new JButton();
-			next.setText(FlexoLocalization.localizedForKey("next", next));
-			controlPanel.add(next);
-			controlPanel.add(previous);
-		}
-		// We add the main panel first
-		add(mainPanel);
-		// Then we update the central panel, so that the window of the mainpanel is set.
-		updateCurrentPage();
-		validate();
-	}
-
-	private void updateCurrentPage() {
-		if (mainPanelLayout.getLayoutComponent(BorderLayout.CENTER) != null) {
-			mainPanel.remove(mainPanelLayout.getLayoutComponent(BorderLayout.CENTER));
-		}
-		if (wizard.getCurrentPage().getUserInterface() == null) {
-			wizard.getCurrentPage().initUserInterface(mainPanel);
-		}
-		mainPanel.add(wizard.getCurrentPage().getUserInterface());
-		pageTitle.setText(wizard.getCurrentPage().getTitle());
-		updateControls();
-	}
-
-	protected void updateControls() {
-		if (wizard.needsPreviousAndNext()) {
-			if (previous != null) {
-				previous.setEnabled(wizard.isPreviousEnabled());
-			} else if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("FlexoWizard.needsPreviousAndNext() returned true but previous button is not initialized");
-			}
-			if (next != null) {
-				next.setEnabled(wizard.isNextEnabled());
-			} else if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("FlexoWizard.needsPreviousAndNext() returned true but next button is not initialized");
-			}
-		}
-		finish.setEnabled(wizard.canFinish());
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == null) {
-			return;
-		}
-		if (e.getSource() == cancel) {
-			wizard.performCancel();
-			dispose();
-			return;
-		} else if (e.getSource() == finish) {
-			wizard.performFinish();
-			dispose();
-			return;
-		} else if (e.getSource() == next) {
-			IWizardPage nextPage = wizard.getNextPage(wizard.getCurrentPage());
-			if (nextPage != null) {
-				wizard.setCurrentPage(nextPage);
-				updateCurrentPage();
-			}
-		} else if (e.getSource() == previous) {
-			IWizardPage previousPage = wizard.getPreviousPage(wizard.getCurrentPage());
-			if (previousPage != null) {
-				wizard.setCurrentPage(previousPage);
-				updateCurrentPage();
-			}
-		}
+	public WizardDialog(FlexoWizard wizard) {
+		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), wizard, FlexoFrame.getActiveFrame(), true, FlexoLocalization
+				.getMainLocalizer());
 	}
 }
