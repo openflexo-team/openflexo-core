@@ -61,7 +61,8 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				}
 			}
 			setType(flexoBehaviour.getReturnType());
-		} else {
+		}
+		else {
 			logger.warning("Inconsistent data: null FlexoBehaviour");
 		}
 	}
@@ -123,14 +124,14 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 				}
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
-					logger.info("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + epi);
+					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + epi);
 					return actionSchemeAction.getFlexoConceptInstance();
 				}
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
 		} catch (IllegalArgumentException e) {
-			StringBuffer warningMessage = new StringBuffer("While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: "
-					+ e.getMessage());
+			StringBuffer warningMessage = new StringBuffer("While evaluating edition scheme " + getFlexoBehaviour()
+					+ " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
 			for (i = 0; i < getFunction().getArguments().size(); i++) {
 				warningMessage.append(", arg[" + i + "] = " + args[i]);

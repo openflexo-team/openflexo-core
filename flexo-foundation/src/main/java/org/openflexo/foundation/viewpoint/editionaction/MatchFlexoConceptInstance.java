@@ -344,7 +344,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 						parametersToRemove.remove(existingParam);
 					}
 					else {
-						if(getVirtualModelFactory()!=null){
+						if (getVirtualModelFactory() != null) {
 							addToParameters(getVirtualModelFactory().newCreateFlexoConceptInstanceParameter(p));
 						}
 					}
@@ -407,9 +407,8 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 		@Override
 		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
-			logger.info("Perform perform MatchFlexoConceptInstance " + action);
+			logger.fine("Perform perform MatchFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
-			logger.info("VirtualModelInstance: " + vmInstance);
 			Hashtable<FlexoRole, Object> criterias = new Hashtable<FlexoRole, Object>();
 			for (MatchingCriteria mc : getMatchingCriterias()) {
 				Object value = mc.evaluateCriteriaValue(action);
