@@ -128,7 +128,11 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 				@Override
 				public Type getType() {
-					return getAction().getFetchedType();
+					if(getAction()!=null){
+						return getAction().getFetchedType();
+					}else{
+						return null;
+					}
 				}
 			});
 			return returned;
