@@ -230,4 +230,9 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	public abstract boolean isURIEditable();
+
+	@Override
+	public FlexoModelResource<M, MM, ?> getResource() {
+		return getModelResource();
+	}
 }

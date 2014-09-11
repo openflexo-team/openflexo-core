@@ -110,4 +110,9 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 		return false;
 	}
 
+	@Override
+	public VirtualModelInstanceResource getResource() {
+		return getAddressedVirtualModelInstanceResource();
+	}
+
 }

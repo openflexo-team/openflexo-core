@@ -24,8 +24,11 @@ import java.util.List;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -116,6 +119,13 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		return modelSlot;
 	}
 
+	public FlexoMetaModelResource<?, ?, ?> getMetaModelResource() {
+		if (getModelSlot() instanceof TypeAwareModelSlot) {
+			return ((TypeAwareModelSlot) getModelSlot()).getMetaModelResource();
+		}
+		return null;
+	}
+
 	public ModelSlotInstanceConfigurationOption getOption() {
 		return option;
 	}
@@ -147,4 +157,6 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		isValidConfiguration();
 		return errorMessage;
 	}
+
+	public abstract TechnologyAdapterResource<RD, ?> getResource();
 }
