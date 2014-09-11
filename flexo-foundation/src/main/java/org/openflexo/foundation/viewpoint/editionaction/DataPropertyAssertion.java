@@ -129,7 +129,10 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getFlexoBehaviour().getBindingModel();
+			if (getFlexoBehaviour() != null) {
+				return getFlexoBehaviour().getBindingModel();
+			}
+			return null;
 		}
 
 		@Override
