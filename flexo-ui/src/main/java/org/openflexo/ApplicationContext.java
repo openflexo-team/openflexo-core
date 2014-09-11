@@ -64,8 +64,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
-		BugReportService bugReportService = createBugReportService();
-		registerService(bugReportService);
+		//BugReportService bugReportService = createBugReportService();
+		//registerService(bugReportService);
 		DocResourceManager docResourceManager = createDocResourceManager();
 		registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
@@ -96,6 +96,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	public BugReportService getBugReportService() {
+		if(getService(BugReportService.class)==null){
+			BugReportService bugReportService = createBugReportService();
+			registerService(bugReportService);
+		}
 		return getService(BugReportService.class);
 	}
 
