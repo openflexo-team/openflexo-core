@@ -31,6 +31,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
+import org.openflexo.antar.binding.DefaultBindable;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
@@ -419,7 +420,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			notifiedBindingChanged(this.renderer);
 		}
 
-		public class FlexoConceptFormatterImpl implements FlexoConceptFormatter {
+		public class FlexoConceptFormatterImpl extends DefaultBindable implements FlexoConceptFormatter {
 			private BindingModel formatterBindingModel = null;
 
 			@Override
