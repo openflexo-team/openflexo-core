@@ -33,7 +33,6 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.FlexoConceptObject.FlexoConceptObjectImpl;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -81,7 +80,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 		public static final String SELECTED = "selected";
 
-		//private FetchRequest fetchRequest;
+		// private FetchRequest fetchRequest;
 		private DataBinding<Boolean> condition;
 
 		public FetchRequestConditionImpl() {
@@ -107,7 +106,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		}
 
 		protected BindingModel buildBindingModel() {
-			BindingModel returned;
+			BindingModel returned = null;
 			if (getAction() != null) {
 				/*returned = new BindingModel(getFetchRequest().getActionContainer() != null ? getFetchRequest().getActionContainer()
 						.getBindingModel() : getFetchRequest().getBindingModel());*/
@@ -116,21 +115,21 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 				} else {
 					returned = new BindingModel(getAction().getBindingModel());
 				}
-			} else {
-				returned = new BindingModel();
-			}
-			returned.addToBindingVariables(new BindingVariable(SELECTED, getAction().getFetchedType()) {
-				@Override
-				public Object getBindingValue(Object target, BindingEvaluationContext context) {
-					logger.info("What should i return for " + SELECTED + " ? target " + target + " context=" + context);
-					return super.getBindingValue(target, context);
-				}
+				returned.addToBindingVariables(new BindingVariable(SELECTED, getAction().getFetchedType()) {
+					@Override
+					public Object getBindingValue(Object target, BindingEvaluationContext context) {
+						logger.info("What should i return for " + SELECTED + " ? target " + target + " context=" + context);
+						return super.getBindingValue(target, context);
+					}
 
-				@Override
-				public Type getType() {
-					return getAction().getFetchedType();
-				}
-			});
+					@Override
+					public Type getType() {
+						return getAction().getFetchedType();
+					}
+				});
+			} /* else {
+				returned = new BindingModel();
+				}*/
 			return returned;
 		}
 
