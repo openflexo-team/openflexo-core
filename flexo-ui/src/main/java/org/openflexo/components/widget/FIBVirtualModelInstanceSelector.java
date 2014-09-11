@@ -138,6 +138,13 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 		return super.isAcceptableValue(o);
 	}
 
+	public boolean isConformedToVirtualModel(VirtualModelInstanceResource vmiResource){
+		if (((VirtualModelInstanceResource) vmiResource).getVirtualModelResource() != null && getVirtualModel()!=null) {
+			return ((VirtualModelInstanceResource) vmiResource).getVirtualModelResource().getVirtualModel() == getVirtualModel();
+		}
+		return false;
+	}
+	
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)

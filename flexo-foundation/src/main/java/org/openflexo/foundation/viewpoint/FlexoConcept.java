@@ -361,7 +361,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "#" + getName();
-			} else {
+			}
+			else {
 				return "null#" + getName();
 			}
 		}
@@ -587,12 +588,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			newDeletionScheme.setName("deletion");
 			Vector<FlexoRole> rolesToDelete = new Vector<FlexoRole>();
 			for (FlexoRole pr : getFlexoRoles()) {
-				if (/* pr instanceof GraphicalElementPatternRole || */pr instanceof IndividualRole /*
-																											* ||
-																											* pr
-																											* instanceof
-																											* StatementPatternRole
-																											*/) {
+				if (pr.defaultBehaviourIsToBeDeleted()) {
 					rolesToDelete.add(pr);
 				}
 			}

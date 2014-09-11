@@ -264,7 +264,9 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						addToParameters(getVirtualModelFactory().newAddFlexoConceptInstanceParameter(p));
+						if(getVirtualModelFactory()!=null){
+							addToParameters(getVirtualModelFactory().newAddFlexoConceptInstanceParameter(p));
+						}	
 					}
 				}
 			}

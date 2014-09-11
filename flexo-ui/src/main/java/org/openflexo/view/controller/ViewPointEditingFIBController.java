@@ -175,7 +175,8 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			return addFlexoConcept.getNewFlexoConcept();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null, getEditor());
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
@@ -191,7 +192,8 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			deleteVirtualModel.doAction();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 			deleteFlexoConcept.doAction();
 		}
@@ -345,8 +347,11 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public void actionUp(EditionAction<?, ?> action) {
-		if (action.getActionContainer() != null) {
+		if (action != null && action.getActionContainer() != null) {
 			action.getActionContainer().actionUp(action);
+		}
+		if (action == null) {
+			logger.warning("actionUp was called with null parameter");
 		}
 	}
 
@@ -377,7 +382,8 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		if (action.getModelSlot() == null) {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
-		} else {
+		}
+		else {
 			TechnologyAdapter technologyAdapter = action.getModelSlot().getTechnologyAdapter();
 			TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 			return taController.getFIBPanelForObject(action);

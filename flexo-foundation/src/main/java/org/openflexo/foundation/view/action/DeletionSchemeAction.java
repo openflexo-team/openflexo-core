@@ -35,6 +35,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
 
 public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
@@ -96,7 +97,10 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	 */
 	@Override
 	public final FlexoConceptInstance getFlexoConceptInstance() {
-		return getFocusedObject();
+		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
+			flexoConceptInstanceToDelete = getFocusedObject();
+		}
+		return flexoConceptInstanceToDelete;
 	}
 
 	@Override
@@ -105,7 +109,8 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			FlexoConceptInstance vObject = getFocusedObject();
 			if (vObject instanceof VirtualModelInstance) {
 				vmInstance = (VirtualModelInstance) getFocusedObject();
-			} else if (vObject instanceof FlexoConceptInstance) {
+			}
+			else if (vObject instanceof FlexoConceptInstance) {
 				vmInstance = vObject.getVirtualModelInstance();
 			}
 		}
@@ -152,12 +157,23 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable instanceof PatternRoleBindingVariable) {
-			return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
-		} else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
-			return getFlexoConceptInstance();
+		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
+		if (fci != null && variable != null) {
+			if (variable instanceof PatternRoleBindingVariable) {
+				FlexoRole role = ((PatternRoleBindingVariable) variable).getFlexoRole();
+				if (role != null) {
+					return fci.getFlexoActor(role);
+				}
+				else {
+					logger.warning("Trying to delete a null actor for : " + fci.getFlexoConceptURI() + "/" + variable.toString());
+				}
+			}
+			else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
+				return getFlexoConceptInstance();
+			}
+			return super.getValue(variable);
 		}
-		return super.getValue(variable);
+		return null;
 	}
 
 	@Override
