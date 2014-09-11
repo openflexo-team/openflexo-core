@@ -309,7 +309,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public BindingModel getBindingModel() {
-			return getScheme().getBindingModel();
+			if (getScheme() != null) {
+				return getScheme().getBindingModel();
+			}
+			return null;
 		}
 
 		@Override
