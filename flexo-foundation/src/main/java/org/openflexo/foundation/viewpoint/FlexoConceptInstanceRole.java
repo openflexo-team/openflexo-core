@@ -119,11 +119,11 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					setCreationScheme(null);
 				}
-				if (getFlexoConcept() != null) {
+				/*if (getFlexoConcept() != null) {
 					for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 						s.updateBindingModels();
 					}
-				}
+				}*/
 			}
 		}
 
@@ -147,9 +147,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void _setCreationSchemeURI(String uri) {
 			if (getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(uri);
-				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
+				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
-				}
+				}*/
 			}
 			_creationSchemeURI = uri;
 		}

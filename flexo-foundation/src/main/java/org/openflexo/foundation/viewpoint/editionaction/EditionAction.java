@@ -27,8 +27,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -48,6 +46,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.foundation.viewpoint.binding.EditionActionBindingModel;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -124,11 +123,11 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
 	 * @return
 	 */
-	public void finalizePerformAction(FlexoBehaviourAction<?,?,?> action, T initialContext);
+	public void finalizePerformAction(FlexoBehaviourAction<?, ?, ?> action, T initialContext);
 
-	public BindingModel getInferedBindingModel();
+	// public BindingModel getInferedBindingModel();
 
-	public void rebuildInferedBindingModel();
+	// public void rebuildInferedBindingModel();
 
 	public int getIndex();
 
@@ -137,6 +136,9 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots();
 
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
+
+	@Override
+	public EditionActionBindingModel getBindingModel();
 
 	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBehaviourObjectImpl implements
 			EditionAction<MS, T> {
@@ -149,7 +151,9 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 		// private ActionContainer actionContainer;
 
-		private BindingModel inferedBindingModel = null;
+		// private BindingModel inferedBindingModel = null;
+
+		private EditionActionBindingModel bindingModel;
 
 		public EditionActionImpl() {
 			super();
@@ -346,36 +350,40 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		}
 
 		@Override
-		public final BindingModel getBindingModel() {
-			if (getActionContainer() != null) {
-				return getActionContainer().getInferedBindingModel();
+		public final EditionActionBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new EditionActionBindingModel(this);
 			}
-			return null;
+			return bindingModel;
 		}
 
-		@Override
+		/*protected EditionActionBindingModel makeBindingModel() {
+			return new EditionActionBindingModel(this);
+		}*/
+
+		/*@Override
 		public final BindingModel getInferedBindingModel() {
 			if (inferedBindingModel == null) {
 				rebuildInferedBindingModel();
 			}
 			return inferedBindingModel;
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public void rebuildInferedBindingModel() {
 			inferedBindingModel = buildInferedBindingModel();
 			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, inferedBindingModel);
-		}
+		}*/
 
-		protected BindingModel buildInferedBindingModel() {
+		/*protected BindingModel buildInferedBindingModel() {
 			BindingModel returned;
-			if (getActionContainer() == null || isDeserializing()/* Prevent StackOverflow !!! */) {
+			if (getActionContainer() == null || isDeserializing()) {
 				returned = new BindingModel();
 			} else {
 				returned = new BindingModel(getActionContainer().getInferedBindingModel());
 			}
 			return returned;
-		}
+		}*/
 
 		@Override
 		public DataBinding<Boolean> getConditional() {
@@ -412,12 +420,12 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 			return actionContainer;
 		}*/
 
-		@Override
+		/*@Override
 		public void setActionContainer(ActionContainer actionContainer) {
 			// this.actionContainer = actionContainer;
 			performSuperSetter(ACTION_CONTAINER_KEY, actionContainer);
 			rebuildInferedBindingModel();
-		}
+		}*/
 
 		private void insertActionAtCurrentIndex(EditionAction<?, ?> editionAction) {
 			if (getActionContainer() != null) {

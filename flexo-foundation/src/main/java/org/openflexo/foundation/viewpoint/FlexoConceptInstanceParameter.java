@@ -46,13 +46,13 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 
 	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
 	public void _setFlexoConceptTypeURI(String flexoConceptTypeURI);
-	
+
 	public FlexoConcept getFlexoConceptType();
-	
+
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public VirtualModel getModelSlotVirtualModel() ;
-	
+	public VirtualModel getModelSlotVirtualModel();
+
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<VirtualModelModelSlot> implements
 			FlexoConceptInstanceParameter {
 
@@ -89,22 +89,26 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 			this.flexoConceptTypeURI = flexoConceptURI;
 		}
 
+		@Override
 		public FlexoConcept getFlexoConceptType() {
 			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlotVirtualModel() != null) {
 				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
+				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
-				}
+				}*/
 			}
 			return flexoConceptType;
 		}
 
+		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != this.flexoConceptType) {
+				FlexoConcept oldValue = this.flexoConceptType;
 				this.flexoConceptType = flexoConceptType;
-				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
+				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
-				}
+				}*/
+				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
 			}
 		}
 
@@ -115,6 +119,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 			notifyObservers(new DataModification("modelSlotVirtualModel", null, modelSlot));
 		}
 
+		@Override
 		public VirtualModel getModelSlotVirtualModel() {
 			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
 				return getModelSlot().getVirtualModelResource().getVirtualModel();
@@ -135,9 +140,9 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 			}
 			return null;
 		}
-		
+
 		@Override
-		public List<VirtualModelModelSlot> getAccessibleModelSlots(){
+		public List<VirtualModelModelSlot> getAccessibleModelSlots() {
 			return getVirtualModel().getModelSlots(VirtualModelModelSlot.class);
 		}
 

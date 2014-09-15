@@ -31,6 +31,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.View;
+import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.ViewType;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelInstanceType;
@@ -42,7 +43,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelInstanceType;
  * Provides access to the {@link View}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link View}
+ * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link VirtualModelInstance}
  * 
  * 
  * @author sylvain

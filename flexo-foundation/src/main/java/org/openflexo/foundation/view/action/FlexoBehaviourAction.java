@@ -50,6 +50,10 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
+import org.openflexo.foundation.viewpoint.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.toolbox.StringUtils;
@@ -247,8 +251,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				}
 			}
 			// Otherwise, we just ignore the action
-		}
-		else {
+		} else {
 			logger.warning("Trying to execute an Action with null Behaviour");
 		}
 
@@ -352,21 +355,24 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable.getVariableName().equals("parameters")) {
+		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
-		}
-		else if (variable.getVariableName().equals("parametersDefinitions")) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getEditionScheme().getParameters();
+		} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+			return getVirtualModelInstance();
+		} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+			return getFlexoConceptInstance();
+		} else if (variable instanceof FlexoRoleBindingVariable) {
+			return getFlexoConceptInstance().getFlexoActor(((FlexoRoleBindingVariable) variable).getFlexoRole());
 		}
-		else if (variable.getVariableName().equals(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE)) {
-			return getVirtualModelInstance();
-		} /*else if (variable.getVariableName().equals(DiagramEditionScheme.DIAGRAM)) {
-			return getVirtualModelInstance();
-			} else if (variable.getVariableName().equals(DiagramEditionScheme.TOP_LEVEL)) {
-			if (getVirtualModelInstance() instanceof Diagram) {
-				return ((Diagram) getVirtualModelInstance()).getRootPane();
-			}
-			}*/
+		/*else if (variable.getVariableName().equals(DiagramEditionScheme.DIAGRAM)) {
+					return getVirtualModelInstance();
+					} else if (variable.getVariableName().equals(DiagramEditionScheme.TOP_LEVEL)) {
+					if (getVirtualModelInstance() instanceof Diagram) {
+						return ((Diagram) getVirtualModelInstance()).getRootPane();
+					}
+					}*/
 
 		if (getEditionScheme().getVirtualModel().handleVariable(variable)) {
 			return getVirtualModelInstance().getValueForVariable(variable);

@@ -112,6 +112,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
 
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
+			System.out.println("*** ModelSlot: " + ms);
 			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 			if (configuration.isValidConfiguration()) {
 				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getFocusedObject());

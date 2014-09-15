@@ -19,15 +19,12 @@
  */
 package org.openflexo.foundation.viewpoint.editionaction;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.ActionContainer;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction.EditionActionImpl;
+import org.openflexo.foundation.viewpoint.binding.ControlStructureActionBindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
@@ -39,6 +36,8 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			ControlStructureAction {
 
 		private static final Logger logger = Logger.getLogger(ControlStructureAction.class.getPackage().getName());
+
+		private ControlStructureActionBindingModel controlGraphBindingModel;
 
 		// private Vector<EditionAction<?, ?>> actions;
 
@@ -52,16 +51,16 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			return getFlexoConcept().getPatternRoles();
 		}*/
 
-		@Override
+		/*@Override
 		public void rebuildInferedBindingModel() {
 			super.rebuildInferedBindingModel();
 			for (EditionAction<?, ?> action : getActions()) {
 				action.rebuildInferedBindingModel();
 			}
 
-		}
+		}*/
 
-		@Override
+		/*@Override
 		protected BindingModel buildInferedBindingModel() {
 			BindingModel returned = super.buildInferedBindingModel();
 			for (final EditionAction<?, ?> a : getActions()) {
@@ -76,11 +75,23 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 				}
 			}
 			return returned;
+		}*/
+
+		@Override
+		public ControlStructureActionBindingModel getControlGraphBindingModel() {
+			if (controlGraphBindingModel == null) {
+				controlGraphBindingModel = makeControlGraphBindingModel();
+			}
+			return controlGraphBindingModel;
+		}
+
+		protected ControlStructureActionBindingModel makeControlGraphBindingModel() {
+			return new ControlStructureActionBindingModel(this);
 		}
 
 		@Override
 		public void variableAdded(AssignableAction action) {
-			rebuildInferedBindingModel();
+			// rebuildInferedBindingModel();
 		}
 
 		@Override
@@ -116,7 +127,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			getActions().add(a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
-		
+
 		/*@Override
 		public Vector<EditionAction<?, ?>> getActions() {
 			return actions;

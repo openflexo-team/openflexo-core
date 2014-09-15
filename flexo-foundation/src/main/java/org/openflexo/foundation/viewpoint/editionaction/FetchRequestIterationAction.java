@@ -24,13 +24,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.viewpoint.binding.FetchRequestIterationActionBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -64,6 +62,8 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 	@Setter(FETCH_REQUEST_KEY)
 	public void setFetchRequest(FetchRequest<?, ?> fetchRequest);
+
+	public Type getItemType();
 
 	public static abstract class FetchRequestIterationActionImpl extends ControlStructureActionImpl implements FetchRequestIterationAction {
 
@@ -100,8 +100,12 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 		@Override
 		public void setIteratorName(String iteratorName) {
-			this.iteratorName = iteratorName;
-			rebuildInferedBindingModel();
+			if (!this.iteratorName.equals(iteratorName)) {
+				String oldValue = this.iteratorName;
+				this.iteratorName = iteratorName;
+				// rebuildInferedBindingModel();
+				getPropertyChangeSupport().firePropertyChange(ITERATOR_NAME_KEY, oldValue, iteratorName);
+			}
 		}
 
 		@Override
@@ -110,12 +114,12 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			if (fetchRequest != null) {
 				fetchRequest.setActionContainer(this);
 				fetchRequest.setEmbeddingIteration(this);
-			}
-			else {
+			} else {
 				logger.warning("INVESTIGATE : Setting a Null FetchRequest");
 			}
 		}
 
+		@Override
 		public Type getItemType() {
 			if (getFetchRequest() != null && getFetchRequest().getFetchedType() != null) {
 				return getFetchRequest().getFetchedType();
@@ -123,7 +127,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			return Object.class;
 		}
 
-		@Override
+		/*@Override
 		protected BindingModel buildInferedBindingModel() {
 			BindingModel returned = super.buildInferedBindingModel();
 			returned.addToBindingVariables(new BindingVariable(getIteratorName(), getItemType()) {
@@ -139,7 +143,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 				}
 			});
 			return returned;
-		}
+		}*/
 
 		private List<?> fetchItems(FlexoBehaviourAction action) {
 			if (getFetchRequest() != null) {
@@ -185,6 +189,16 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 			}
 			return super.getStringRepresentation();
 		}
+
+		@Override
+		protected FetchRequestIterationActionBindingModel makeControlGraphBindingModel() {
+			return new FetchRequestIterationActionBindingModel(this);
+		}
+
+		/*@Override
+		protected FetchRequestIterationActionBindingModel makeBindingModel() {
+			return new FetchRequestIterationActionBindingModel(this);
+		}*/
 
 	}
 }

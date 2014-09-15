@@ -109,8 +109,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			FlexoConceptInstance vObject = getFocusedObject();
 			if (vObject instanceof VirtualModelInstance) {
 				vmInstance = (VirtualModelInstance) getFocusedObject();
-			}
-			else if (vObject instanceof FlexoConceptInstance) {
+			} else if (vObject instanceof FlexoConceptInstance) {
 				vmInstance = vObject.getVirtualModelInstance();
 			}
 		}
@@ -163,13 +162,9 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return fci.getFlexoActor(role);
-				}
-				else {
+				} else {
 					logger.warning("Trying to delete a null actor for : " + fci.getFlexoConceptURI() + "/" + variable.toString());
 				}
-			}
-			else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
-				return getFlexoConceptInstance();
 			}
 			return super.getValue(variable);
 		}

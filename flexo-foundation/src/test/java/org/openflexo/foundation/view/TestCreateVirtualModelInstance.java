@@ -139,11 +139,14 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(newVirtualModelInstance.getResource());
 		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
 		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());
-		VirtualModelModelSlotInstance reflexiveMSInstance = (VirtualModelModelSlotInstance) newVirtualModelInstance.getModelSlotInstances()
-				.get(0);
-		assertNotNull(reflexiveMSInstance);
-		assertEquals(newVirtualModelInstance, reflexiveMSInstance.getAccessedResourceData());
+
+		// Not relevant anymore since reflexive model slot has disappeared from 1.7.0-beta to 1.7.0 version
+		// assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());
+		// VirtualModelModelSlotInstance reflexiveMSInstance = (VirtualModelModelSlotInstance)
+		// newVirtualModelInstance.getModelSlotInstances()
+		// .get(0);
+		// assertNotNull(reflexiveMSInstance);
+		// assertEquals(newVirtualModelInstance, reflexiveMSInstance.getAccessedResourceData());
 
 		assertEquals(newVirtualModel, newVirtualModelInstance.getFlexoConcept());
 		assertEquals(newVirtualModel, newVirtualModelInstance.getVirtualModel());

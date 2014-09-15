@@ -26,11 +26,10 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
-import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -93,7 +92,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 				out.append(getAssignation().toString() + " = (", context);
 			}
 			out.append(getClass().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
-					+ (getFlexoConceptType()!=null ? getFlexoConceptType().getName():"No Type Specified")
+					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			if (getAssignation().isSet()) {
 				out.append(")", context);
@@ -155,16 +154,19 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (flexoConceptType != this.flexoConceptType) {
+				FlexoConcept oldValue = this.flexoConceptType;
 				this.flexoConceptType = flexoConceptType;
-				for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
+				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 					s.updateBindingModels();
-				}
+				}*/
+				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, oldValue);
 			}
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName() + (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
+			return getImplementedInterface().getSimpleName()
+					+ (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}
 

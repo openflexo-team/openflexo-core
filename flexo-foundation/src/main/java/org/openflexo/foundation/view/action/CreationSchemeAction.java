@@ -203,11 +203,6 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable instanceof FlexoRoleBindingVariable) {
-			return getFlexoConceptInstance().getFlexoActor(((FlexoRoleBindingVariable) variable).getFlexoRole());
-		} else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
-			return getFlexoConceptInstance();
-		}
 		return super.getValue(variable);
 	}
 

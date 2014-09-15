@@ -25,14 +25,13 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingModelChanged;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.Function;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.ActionContainerBindingModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
@@ -68,8 +67,8 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
 public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function {
 
-	public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
-	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
+	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
+	// public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
@@ -171,7 +170,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@DeserializationFinalizer
 	public void finalizeEditionSchemeDeserialization();
 
-	public void updateBindingModels();
+	// public void updateBindingModels();
 
 	public FlexoBehaviourType getFlexoBehaviourType();
 
@@ -198,9 +197,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	public void parameterLast(FlexoBehaviourParameter p);
 
+	@Override
+	public FlexoBehaviourBindingModel getBindingModel();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
-		protected BindingModel _bindingModel;
+		protected FlexoBehaviourBindingModel bindingModel;
+
+		// protected BindingModel _bindingModel;
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
@@ -329,12 +333,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return _flexoConcept;
 		}*/
 
-		@Override
+		/*@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
 			performSuperSetter(FLEXO_CONCEPT_KEY, flexoConcept);
 			// _flexoConcept = flexoConcept;
-			updateBindingModels();
-		}
+			//updateBindingModels();
+		}*/
 
 		/*@Override
 		public Vector<EditionAction<?, ?>> getActions() {
@@ -461,7 +465,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				return parameters;
 			}*/
 
-		@Override
+		/*@Override
 		public void setParameters(List<FlexoBehaviourParameter> someParameters) {
 			performSuperSetter(PARAMETERS_KEY, someParameters);
 			updateBindingModels();
@@ -471,16 +475,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public void addToParameters(FlexoBehaviourParameter parameter) {
 			performSuperAdder(PARAMETERS_KEY, parameter);
 			updateBindingModels();
-			/*for (FlexoBehaviourParameter p : getParameters()) {
-				p.notifyBindingModelChanged();
-			}*/
 		}
 
 		@Override
 		public void removeFromParameters(FlexoBehaviourParameter parameter) {
 			performSuperRemover(PARAMETERS_KEY, parameter);
 			updateBindingModels();
-		}
+		}*/
 
 		@Override
 		public void parameterFirst(FlexoBehaviourParameter p) {
@@ -705,7 +706,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		@Override
 		public void finalizeEditionSchemeDeserialization() {
-			updateBindingModels();
+			// updateBindingModels();
 		}
 
 		@Override
@@ -719,58 +720,62 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			if (isRebuildingBindingModel) {
+		public ActionContainerBindingModel getControlGraphBindingModel() {
+			return getBindingModel();
+		}
+
+		@Override
+		public final FlexoBehaviourBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new FlexoBehaviourBindingModel(this);
+				appendContextualBindingVariables(bindingModel);
+			}
+			return bindingModel;
+			/*if (isRebuildingBindingModel) {
 				return _bindingModel;
 			}
 			if (_bindingModel == null) {
 				createBindingModel();
 			}
-			return _bindingModel;
+			return _bindingModel;*/
 		}
 
-		@Override
+		/*@Override
 		public BindingModel getInferedBindingModel() {
 			return getBindingModel();
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public void updateBindingModels() {
 			if (isDeserializing()) {
 				return;
 			}
-			/*if (getName().equals("synchronization")) {
-				System.out.println("******* updateBindingModels() for " + this + " " + getName() + " and ep=" + getFlexoConcept());
-			}*/
 			logger.fine("updateBindingModels()");
 			_bindingModel = null;
 			createBindingModel();
 			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, _bindingModel);
 			rebuildActionsBindingModel();
 			recursivelyUpdateInferedBindingModels(this);
-		}
+		}*/
 
-		private void recursivelyUpdateInferedBindingModels(ActionContainer container) {
-			/*if (getName().equals("synchronization")) {
-				System.out.println("    > recursivelyUpdateInferedBindingModels for " + container + " bindingModel=" + getBindingModel());
-			}*/
+		/*private void recursivelyUpdateInferedBindingModels(ActionContainer container) {
 			for (EditionAction action : container.getActions()) {
 				action.rebuildInferedBindingModel();
 				if (action instanceof ActionContainer) {
 					recursivelyUpdateInferedBindingModels((ActionContainer) action);
 				}
 			}
-		}
+		}*/
 
-		protected void rebuildActionsBindingModel() {
+		/*protected void rebuildActionsBindingModel() {
 			for (EditionAction action : getActions()) {
 				action.rebuildInferedBindingModel();
 			}
-		}
+		}*/
 
-		private boolean isRebuildingBindingModel = false;
+		// private boolean isRebuildingBindingModel = false;
 
-		private final void createBindingModel() {
+		/*private final void createBindingModel() {
 			_bindingModel = new BindingModel();
 			isRebuildingBindingModel = true;
 			_bindingModel.addToBindingVariables(new BindingVariable("parameters", getFlexoBehaviourParametersValuesType()));
@@ -796,12 +801,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			}
 			// notifyBindingModelChanged();
 			isRebuildingBindingModel = false;
-		}
+		}*/
 
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
-			if (getFlexoConcept() != null) {
+			/*if (getFlexoConcept() != null) {
 				if (getFlexoConcept() instanceof VirtualModel) {
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept())));
@@ -810,22 +815,22 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 							FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-				}
-
-				/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
-					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-				} 
-				if(getFlexoConcept() instanceof DiagramSpecification){
-					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType(getFlexoConcept())));
-					bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
-				}
-				else {
-					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				}*/
+
+			/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
+				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
+						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
+			} 
+			if(getFlexoConcept() instanceof DiagramSpecification){
+				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
+						.getFlexoConceptInstanceType(getFlexoConcept())));
+				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
 			}
+			else {
+				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
+						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
+			}*/
+			// }
 			// if (this instanceof DiagramEditionScheme) {
 			/*if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
@@ -834,7 +839,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		@Override
 		public void variableAdded(AssignableAction action) {
-			updateBindingModels();
+			// updateBindingModels();
 		}
 
 		@Override

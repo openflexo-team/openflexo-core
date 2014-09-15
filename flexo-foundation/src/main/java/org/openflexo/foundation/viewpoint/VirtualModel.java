@@ -658,26 +658,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		// ===============================
 		// ==========================================================================
 
-		/*
-		 * @Override public void setModelSlots(List<ModelSlot<?>> modelSlots) {
-		 * this.modelSlots = modelSlots; }
-		 * 
-		 * @Override public List<ModelSlot<?>> getModelSlots() { //
-		 * System.out.println("getModelSlots=" + modelSlots); return modelSlots;
-		 * }
-		 * 
-		 * @Override public void addToModelSlots(ModelSlot modelSlot) { //
-		 * System.out.println("Add to model slots " + modelSlot);
-		 * modelSlots.add(modelSlot); modelSlot.setVirtualModel(this);
-		 * setChanged(); notifyObservers(new ModelSlotAdded(modelSlot, this)); }
-		 * 
-		 * @Override public void removeFromModelSlots(ModelSlot modelSlot) { //
-		 * System.out.println("Remove from model slots " + modelSlot);
-		 * modelSlots.remove(modelSlot); modelSlot.setVirtualModel(null);
-		 * setChanged(); notifyObservers(new ModelSlotRemoved(modelSlot, this));
-		 * }
-		 */
-
 		@Override
 		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
 			List<MS> returned = new ArrayList<MS>();
@@ -687,6 +667,17 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		@Deprecated
+		public void addToModelSlots(ModelSlot<?> aModelSlot) {
+			if (aModelSlot != null && aModelSlot.getName().equals("virtualModelInstance")) {
+				// Temporary hack to ignore reflexive model slot being inherited from 1.7-beta version
+				logger.warning("Reflexive model slot being inherited from 1.7-beta version are ignored now");
+				return;
+			}
+			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
 		}
 
 		/*

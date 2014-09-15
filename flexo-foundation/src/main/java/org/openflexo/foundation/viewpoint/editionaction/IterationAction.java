@@ -25,19 +25,15 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.viewpoint.binding.IterationActionBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -71,6 +67,8 @@ public interface IterationAction extends ControlStructureAction {
 
 	@Setter(ITERATOR_NAME_KEY)
 	public void setIteratorName(String iteratorName);
+
+	public Type getItemType();
 
 	public static abstract class IterationActionImpl extends ControlStructureActionImpl implements IterationAction {
 
@@ -116,16 +114,16 @@ public interface IterationAction extends ControlStructureAction {
 				iteration.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.iteration = iteration;
-			rebuildInferedBindingModel();
+			// rebuildInferedBindingModel();
 		}
 
-		@Override
+		/*@Override
 		public void notifiedBindingChanged(DataBinding<?> binding) {
 			super.notifiedBindingChanged(binding);
 			if (binding == iteration) {
 				rebuildInferedBindingModel();
 			}
-		}
+		}*/
 
 		@Override
 		public String getIteratorName() {
@@ -134,13 +132,18 @@ public interface IterationAction extends ControlStructureAction {
 
 		@Override
 		public void setIteratorName(String iteratorName) {
-			this.iteratorName = iteratorName;
-			rebuildInferedBindingModel();
+			if (!this.iteratorName.equals(iteratorName)) {
+				String oldValue = this.iteratorName;
+				this.iteratorName = iteratorName;
+				// rebuildInferedBindingModel();
+				getPropertyChangeSupport().firePropertyChange(ITERATOR_NAME_KEY, oldValue, iteratorName);
+			}
 		}
 
+		@Override
 		public Type getItemType() {
-			if (getIteration() != null && getIteration().isSet()) {
-				Type accessedType = getIteration().getAnalyzedType();
+			if (iteration != null && iteration.isSet()) {
+				Type accessedType = iteration.getAnalyzedType();
 				if (accessedType instanceof ParameterizedType && ((ParameterizedType) accessedType).getActualTypeArguments().length > 0) {
 					return ((ParameterizedType) accessedType).getActualTypeArguments()[0];
 				}
@@ -148,7 +151,7 @@ public interface IterationAction extends ControlStructureAction {
 			return Object.class;
 		}
 
-		@Override
+		/*@Override
 		protected BindingModel buildInferedBindingModel() {
 			BindingModel returned = super.buildInferedBindingModel();
 			returned.addToBindingVariables(new BindingVariable(getIteratorName(), getItemType()) {
@@ -164,7 +167,7 @@ public interface IterationAction extends ControlStructureAction {
 				}
 			});
 			return returned;
-		}
+		}*/
 
 		public List<?> evaluateIteration(FlexoBehaviourAction action) {
 			if (getIteration().isValid()) {
@@ -203,6 +206,21 @@ public interface IterationAction extends ControlStructureAction {
 			return super.getStringRepresentation();
 		}
 
+		@Override
+		protected IterationActionBindingModel makeControlGraphBindingModel() {
+			return new IterationActionBindingModel(this);
+		}
+
+		/*@Override
+		protected IterationActionBindingModel makeBindingModel() {
+			return new IterationActionBindingModel(this);
+		}
+
+		@Override
+		public ControlStructureActionBindingModel getControlGraphBindingModel() {
+			// TODO Auto-generated method stub
+			return super.getControlGraphBindingModel();
+		}*/
 	}
 
 	public static class IterationBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<IterationAction> {

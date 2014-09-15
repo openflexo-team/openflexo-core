@@ -22,9 +22,6 @@ package org.openflexo.foundation.viewpoint.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -207,7 +204,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 			}*/
 		}
 
-		@Override
+		/*@Override
 		protected final BindingModel buildInferedBindingModel() {
 			BindingModel returned = super.buildInferedBindingModel();
 			if (getIsVariableDeclaration()) {
@@ -225,7 +222,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 				});
 			}
 			return returned;
-		}
+		}*/
 
 	}
 

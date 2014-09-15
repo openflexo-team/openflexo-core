@@ -29,9 +29,10 @@ import java.util.Map;
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.view.View;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 
@@ -42,7 +43,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
  * Provides access to the {@link VirtualModelInstance}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link View}
+ * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoConceptInstance}
  * 
  * 
  * @author sylvain
@@ -57,8 +58,12 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	private final Map<FlexoRole<?>, FlexoRoleBindingVariable> roleVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
 
+	private BindingVariable flexoConceptInstanceBindingVariable;
+
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
+
 	public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
+	public static final String FLEXO_CONCEPT_INSTANCE_PROPERTY = "flexoConceptInstance";
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a FlexoConcept<br>
@@ -71,10 +76,9 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		this(flexoConcept.getVirtualModel() != null ? flexoConcept.getVirtualModel().getBindingModel() : null, flexoConcept);
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
-		/*virtualModelInstanceBindingVariable = new BindingVariable(VIRTUAL_MODEL_INSTANCE_PROPERTY,
-				flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType.getFlexoConceptInstanceType(flexoConcept
-						.getVirtualModel()) : VirtualModelInstance.class);
-		addToBindingVariables(virtualModelInstanceBindingVariable);*/
+		flexoConceptInstanceBindingVariable = new BindingVariable(FLEXO_CONCEPT_INSTANCE_PROPERTY,
+				FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+		addToBindingVariables(flexoConceptInstanceBindingVariable);
 	}
 
 	/**
@@ -102,6 +106,10 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	 */
 	public BindingVariable getReflexiveAccessBindingVariable() {
 		return reflexiveAccessBindingVariable;
+	}
+
+	public BindingVariable getFlexoConceptInstanceBindingVariable() {
+		return flexoConceptInstanceBindingVariable;
 	}
 
 	public FlexoConcept getFlexoConcept() {
