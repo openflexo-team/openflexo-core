@@ -49,15 +49,15 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 	protected VirtualModelModelSlotInstanceConfiguration(VirtualModelModelSlot ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
-		if (ms.isReflexiveModelSlot()) {
+		/*if (ms.isReflexiveModelSlot()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.Autoconfigure);
-		} else {
-			options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-			options.add(DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel);
-			if (!ms.getIsRequired()) {
-				options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
-			}
+		} else {*/
+		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
+		options.add(DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel);
+		if (!ms.getIsRequired()) {
+			options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
 		}
+		// }
 	}
 
 	@Override
@@ -72,15 +72,15 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
-		if (getModelSlot().isReflexiveModelSlot()) {
+		/*if (getModelSlot().isReflexiveModelSlot()) {
 			returned.setAccessedResourceData(vmInstance);
+		} else {*/
+		if (getAddressedVirtualModelInstanceResource() != null) {
+			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
 		} else {
-			if (getAddressedVirtualModelInstanceResource() != null) {
-				returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
-			} else {
-				logger.warning("Addressed virtual model instance is null");
-			}
+			logger.warning("Addressed virtual model instance is null");
 		}
+		// }
 		return returned;
 	}
 
@@ -94,9 +94,9 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 
 	@Override
 	public boolean isValidConfiguration() {
-		if (getModelSlot().isReflexiveModelSlot()) {
+		/*if (getModelSlot().isReflexiveModelSlot()) {
 			return true;
-		}
+		}*/
 		if (!super.isValidConfiguration()) {
 			return false;
 		}

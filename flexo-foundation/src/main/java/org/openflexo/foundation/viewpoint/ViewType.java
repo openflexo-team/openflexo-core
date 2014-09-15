@@ -23,48 +23,60 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.antar.binding.CustomType;
+
 /**
- * Represent the type of a DiagramInstance of a given Diagram
+ * Represent the type of a View of a given ViewPoint
  * 
  * @author sylvain
  * 
  */
-public class VirtualModelInstanceType extends FlexoConceptInstanceType {
+public class ViewType implements CustomType {
 
-	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
-		super(aVirtualModel);
-		this.flexoConcept = aVirtualModel;
+	protected ViewPoint viewPoint;
+
+	public ViewType(ViewPoint aViewPoint) {
+		this.viewPoint = aViewPoint;
 	}
 
-	public VirtualModel getVirtualModel() {
-		return (VirtualModel) flexoConcept;
+	public ViewPoint getViewPoint() {
+		return viewPoint;
+	}
+
+	@Override
+	public Class getBaseClass() {
+		return ViewPoint.class;
 	}
 
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-		if (aType instanceof VirtualModelInstanceType) {
-			// TODO: Permissive for now!
-			return true;
+		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
+		if (aType instanceof ViewType) {
+			return viewPoint == ((ViewType) aType).getViewPoint();
 		}
 		return false;
 	}
 
 	@Override
 	public String simpleRepresentation() {
-		return "VirtualModel" + ":" + flexoConcept;
+		return "ViewType" + ":" + viewPoint.getName();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "VirtualModel" + ":" + flexoConcept;
+		return "ViewType" + ":" + viewPoint.getURI();
 	}
 
-	public static Type getVirtualModelInstanceType(VirtualModel aVirtualModel) {
-		if (aVirtualModel != null && aVirtualModel.getViewPoint() != null) {
-			return aVirtualModel.getViewPoint().getInstanceType(aVirtualModel);
+	@Override
+	public String toString() {
+		return simpleRepresentation();
+	}
+
+	public static Type getViewType(ViewPoint viewPoint) {
+		if (viewPoint != null) {
+			return viewPoint.getViewType();
 		} else {
 			return null;
 		}
 	}
-
 }

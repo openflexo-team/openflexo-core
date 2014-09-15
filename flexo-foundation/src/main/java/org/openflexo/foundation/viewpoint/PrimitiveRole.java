@@ -61,7 +61,11 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public void setPrimitiveType(PrimitiveType primitiveType) {
-			this.primitiveType = primitiveType;
+			if (requireChange(getPrimitiveType(), primitiveType)) {
+				PrimitiveType oldValue = this.primitiveType;
+				this.primitiveType = primitiveType;
+				notifyChange(PRIMITIVE_TYPE_KEY, oldValue, primitiveType);
+			}
 		}
 
 		@Override
@@ -96,7 +100,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			case LocalizedString:
 				return String.class;
 			case Boolean:
-				return Boolean.class;
+				return Boolean.TYPE;
 			case Integer:
 				return Integer.TYPE;
 			case Float:

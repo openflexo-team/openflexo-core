@@ -86,7 +86,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public void setAddressedVirtualModel(VirtualModel aVirtualModel);
 
-	public boolean isReflexiveModelSlot();
+	// public boolean isReflexiveModelSlot();
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
@@ -152,7 +152,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		public Type getType() {
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
 		}
-		
+
 		@Override
 		public String getPreciseType() {
 			return "Virtual Model";
@@ -194,11 +194,11 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * 
 		 * @return
 		 */
-		@Override
+		/*@Override
 		public boolean isReflexiveModelSlot() {
 			return getName() != null && getName().equals(VirtualModel.REFLEXIVE_MODEL_SLOT_NAME)
 					&& getVirtualModelResource() == getVirtualModel().getResource();
-		}
+		}*/
 
 		/**
 		 * 
@@ -225,7 +225,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 		@Override
 		public String getModelSlotDescription() {
-			return "Virtual Model conform to " + getVirtualModelURI() + (isReflexiveModelSlot() ? " [reflexive]" : "");
+			return "Virtual Model conform to " + getVirtualModelURI() /*+ (isReflexiveModelSlot() ? " [reflexive]" : "")*/;
 		}
 
 	}

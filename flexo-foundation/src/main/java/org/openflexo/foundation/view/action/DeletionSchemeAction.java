@@ -36,7 +36,7 @@ import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
 
 public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
@@ -159,8 +159,8 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	public Object getValue(BindingVariable variable) {
 		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
 		if (fci != null && variable != null) {
-			if (variable instanceof PatternRoleBindingVariable) {
-				FlexoRole role = ((PatternRoleBindingVariable) variable).getFlexoRole();
+			if (variable instanceof FlexoRoleBindingVariable) {
+				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return fci.getFlexoActor(role);
 				}
@@ -178,8 +178,8 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof PatternRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
+		if (variable instanceof FlexoRoleBindingVariable) {
+			getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
 			return;
 		}
 		super.setValue(value, variable);

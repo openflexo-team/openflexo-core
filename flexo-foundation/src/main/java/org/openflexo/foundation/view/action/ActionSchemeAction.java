@@ -31,7 +31,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceObject;
 import org.openflexo.foundation.viewpoint.AbstractActionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
 
 public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
 
@@ -101,8 +101,8 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 
     @Override
     public Object getValue(BindingVariable variable) {
-        if (variable instanceof PatternRoleBindingVariable) {
-            return getFlexoConceptInstance().getFlexoActor(((PatternRoleBindingVariable) variable).getFlexoRole());
+        if (variable instanceof FlexoRoleBindingVariable) {
+            return getFlexoConceptInstance().getFlexoActor(((FlexoRoleBindingVariable) variable).getFlexoRole());
         }
         else if (variable.getVariableName().equals(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE)) {
             return getFlexoConceptInstance();
@@ -112,8 +112,8 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 
     @Override
     public void setValue(Object value, BindingVariable variable) {
-        if (variable instanceof PatternRoleBindingVariable) {
-            getFlexoConceptInstance().setFlexoActor(value, ((PatternRoleBindingVariable) variable).getFlexoRole());
+        if (variable instanceof FlexoRoleBindingVariable) {
+            getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
             return;
         }
         super.setValue(value, variable);

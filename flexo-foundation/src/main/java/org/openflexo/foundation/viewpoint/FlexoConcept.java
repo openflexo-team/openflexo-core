@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -38,7 +36,7 @@ import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
-import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.logging.FlexoLogger;
@@ -149,9 +147,39 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Remover(FLEXO_ROLES_KEY)
 	public void removeFromFlexoRoles(FlexoRole<?> aPatternRole);
 
-	@Finder(collection = FLEXO_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
-	public FlexoRole<?> getFlexoRole(String patternRoleName);
+	/**
+	 * Return declared roles for this {@link FlexoConcept}<br>
+	 * Declared roles are those returned by getFlexoRoles() method
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole<?>> getDeclaredRoles();
 
+	/**
+	 * Build and return all roles for this {@link FlexoConcept}<br>
+	 * This returned {@link List} includes all declared roles for this FlexoConcept, augmented with all roles of parent {@link FlexoConcept}
+	 * 
+	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole<?>> getAllRoles();
+
+	/**
+	 * Return {@link FlexoRole} identified by supplied name
+	 * 
+	 * @param flexoRoleName
+	 * @return
+	 */
+	@Finder(collection = FLEXO_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
+	public FlexoRole<?> getFlexoRole(String flexoRoleName);
+
+	/**
+	 * Build and return the list of {@link FlexoRole} with supplied type
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public <R> List<R> getFlexoRoles(Class<R> type);
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
@@ -208,7 +236,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@DeserializationFinalizer
 	public void finalizeFlexoConceptDeserialization();
 
-	public void updateBindingModel();
+	// public void updateBindingModel();
 
 	public boolean isRoot();
 
@@ -241,18 +269,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public boolean hasNavigationScheme();
 
-	/*public CreationScheme createCreationScheme();
-
-	public CloningScheme createCloningScheme();
-
-	public ActionScheme createActionScheme();
-
-	public NavigationScheme createNavigationScheme();
-
-	public DeletionScheme createDeletionScheme();*/
-
-	// public FlexoBehaviour deleteEditionScheme(FlexoBehaviour editionScheme);
-
 	public DeletionScheme getDefaultDeletionScheme();
 
 	public DeletionScheme generateDefaultDeletionScheme();
@@ -274,6 +290,28 @@ public interface FlexoConcept extends FlexoConceptObject {
 	public String getAvailableEditionSchemeName(String baseName);
 
 	public boolean hasNature(FlexoConceptNature nature);
+
+	@Override
+	public FlexoConceptBindingModel getBindingModel();
+
+	/**
+	 * Return declared parent FlexoConcept for this {@link FlexoConcept}<br>
+	 * Declared parent FlexoConcept are those returned by getParentFlexoConcepts() method
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getDeclaredParentFlexoConcepts();
+
+	/**
+	 * Build and return all parent FlexoConcept for this {@link FlexoConcept}<br>
+	 * This returned {@link List} includes all declared parent concepts for this FlexoConcept, augmented with all parents of parent
+	 * {@link FlexoConcept} (recursive)
+	 * 
+	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAllParentFlexoConcepts();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
@@ -302,6 +340,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 * Stores a chained collections of objects which are involved in validation
 		 */
 		private final ChainedCollection<ViewPointObject> validableObjects = null;
+
+		private FlexoConceptBindingModel bindingModel;
 
 		@Override
 		public final boolean hasNature(FlexoConceptNature nature) {
@@ -336,6 +376,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public boolean delete() {
+			if (bindingModel != null) {
+				bindingModel.delete();
+			}
 			if (getVirtualModel() != null) {
 				getVirtualModel().removeFromFlexoConcepts(this);
 			}
@@ -361,8 +404,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "#" + getName();
-			}
-			else {
+			} else {
 				return "null#" + getName();
 			}
 		}
@@ -373,6 +415,41 @@ public interface FlexoConcept extends FlexoConceptObject {
 				// We prevent ',' so that we can use it as a delimiter in tags.
 				super.setName(name.replace(",", ""));
 			}
+		}
+
+		/**
+		 * Return declared roles for this {@link FlexoConcept}<br>
+		 * Declared roles are those returned by getFlexoRoles() method
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole<?>> getDeclaredRoles() {
+			return getFlexoRoles();
+		}
+
+		/**
+		 * Build and return all roles for this {@link FlexoConcept}<br>
+		 * This returned {@link List} includes all declared roles for this FlexoConcept, augmented with all roles of parent
+		 * {@link FlexoConcept}
+		 * 
+		 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole<?>> getAllRoles() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return getDeclaredRoles();
+			}
+
+			List<FlexoRole<?>> returned = new ArrayList<FlexoRole<?>>();
+			returned.addAll(getDeclaredRoles());
+			for (FlexoConcept concept : getParentFlexoConcepts()) {
+				returned.addAll(concept.getAllRoles());
+			}
+
+			return returned;
 		}
 
 		@Override
@@ -386,18 +463,18 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public void addToFlexoRoles(FlexoRole<?> aPatternRole) {
 			availablePatternRoleNames = null;
 			performSuperAdder(FLEXO_ROLES_KEY, aPatternRole);
-			if (_bindingModel != null) {
+			/*if (_bindingModel != null) {
 				updateBindingModel();
-			}
+			}*/
 		}
 
 		@Override
 		public void removeFromFlexoRoles(FlexoRole aFlexoRole) {
 			availablePatternRoleNames = null;
 			performSuperRemover(FLEXO_ROLES_KEY, aFlexoRole);
-			if (_bindingModel != null) {
+			/*if (_bindingModel != null) {
 				updateBindingModel();
-			}
+			}*/
 		}
 
 		@Override
@@ -647,7 +724,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void setVirtualModel(VirtualModel virtualModel) {
-			this.virtualModel = virtualModel;
+			if (this.virtualModel != virtualModel) {
+				VirtualModel oldVirtualModel = this.virtualModel;
+				this.virtualModel = virtualModel;
+				getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODEL_KEY, oldVirtualModel, virtualModel);
+			}
 		}
 
 		@Override
@@ -657,14 +738,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void finalizeFlexoConceptDeserialization() {
-			createBindingModel();
+			// createBindingModel();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeEditionSchemeDeserialization();
 			}
 			for (FlexoRole pr : getFlexoRoles()) {
 				pr.finalizeFlexoRoleDeserialization();
 			}
-			updateBindingModel();
+			// updateBindingModel();
 		}
 
 		/*
@@ -687,185 +768,70 @@ public interface FlexoConcept extends FlexoConceptObject {
 			}
 		}
 
-		private BindingModel _bindingModel;
-
 		@Override
-		public BindingModel getBindingModel() {
-			if (_bindingModel == null) {
-				createBindingModel();
+		public FlexoConceptBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				// createBindingModel();
+				bindingModel = new FlexoConceptBindingModel(this);
 			}
-			return _bindingModel;
+			return bindingModel;
 		}
-
-		@Override
-		public void updateBindingModel() {
-			logger.fine("updateBindingModel()");
-			_bindingModel = null;
-			createBindingModel();
-			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, _bindingModel);
-			for (FlexoBehaviour es : getFlexoBehaviours()) {
-				es.updateBindingModels();
-			}
-		}
-
-		private void createBindingModel() {
-			_bindingModel = new BindingModel();
-			for (FlexoRole role : getFlexoRoles()) {
-				_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
-			}
-			notifyBindingModelChanged();
-		}
-
-		@Override
-		public void notifyBindingModelChanged() {
-			super.notifyBindingModelChanged();
-			// SGU: as all pattern roles share the flexo concept binding
-			// model, they should
-			// all notify change of their binding models
-			for (FlexoRole pr : getFlexoRoles()) {
-				pr.notifyBindingModelChanged();
-			}
-			if (getInspector() != null) {
-				getInspector().notifyBindingModelChanged();
-			}
-
-		}
-
-		/*
-		 * public OntologicObjectRole getDefaultPrimaryConceptRole() {
-		 * List<OntologicObjectRole> roles =
-		 * getPatternRoles(OntologicObjectRole.class); if (roles.size() >
-		 * 0) { return roles.get(0); } return null; }
-		 */
-
-		/*
-		 * public GraphicalElementPatternRole
-		 * getDefaultPrimaryRepresentationRole() {
-		 * List<GraphicalElementPatternRole> roles =
-		 * getPatternRoles(GraphicalElementPatternRole.class); if (roles.size()
-		 * > 0) { return roles.get(0); } return null; }
-		 */
-
-		/*
-		 * public OntologicObjectRole getPrimaryConceptRole() { if
-		 * (primaryConceptRole == null) { return getDefaultPrimaryConceptRole();
-		 * } return primaryConceptRole; }
-		 * 
-		 * public void setPrimaryConceptRole(OntologicObjectRole
-		 * primaryConceptRole) { this.primaryConceptRole = primaryConceptRole; }
-		 * 
-		 * public GraphicalElementPatternRole getPrimaryRepresentationRole() {
-		 * if (primaryRepresentationRole == null) { return
-		 * getDefaultPrimaryRepresentationRole(); } return
-		 * primaryRepresentationRole; }
-		 * 
-		 * public void setPrimaryRepresentationRole(GraphicalElementPatternRole
-		 * primaryRepresentationRole) { this.primaryRepresentationRole =
-		 * primaryRepresentationRole; }
-		 */
-
-		/*
-		 * @Override public String simpleRepresentation() { return
-		 * "FlexoConcept:" +
-		 * FlexoLocalization.localizedForKey(getLocalizedDictionary(),
-		 * getName()); }
-		 * 
-		 * @Override public String fullQualifiedRepresentation() { return
-		 * simpleRepresentation(); }
-		 * 
-		 * @Override public Class getBaseClass() { return FlexoConcept.class;
-		 * }
-		 * 
-		 * @Override public boolean isTypeAssignableFrom(Type aType, boolean
-		 * permissive) { if (aType instanceof FlexoConcept) { return
-		 * isAssignableFrom((FlexoConcept) aType); } return aType == this; }
-		 */
 
 		@Override
 		public boolean isRoot() {
 			return getParentFlexoConcepts().size() == 0;
 		}
 
-		/*
-		 * private String parentFlexoConceptURI;
-		 * 
-		 * @Override public String getParentFlexoConceptURI() { if
-		 * (getParentFlexoConcept() != null) { return
-		 * getParentFlexoConcept().getURI(); } return parentFlexoConceptURI;
-		 * }
-		 * 
-		 * @Override public void _setParentFlexoConceptURI(String
-		 * aParentFlexoConceptURI) { parentFlexoConceptURI =
-		 * aParentFlexoConceptURI; }
-		 * 
-		 * @Override public FlexoConcept getParentFlexoConcept() { if
-		 * (parentFlexoConcept == null &&
-		 * StringUtils.isNotEmpty(parentFlexoConceptURI)) { if
-		 * (getVirtualModel() != null) {
-		 * setParentFlexoConcept(getVirtualModel(
-		 * ).getFlexoConcept(parentFlexoConceptURI)); } } return
-		 * parentFlexoConcept; }
-		 * 
-		 * public void setParentFlexoConcept(FlexoConcept aParentEP) { if
-		 * (this.parentFlexoConcept != aParentEP) { if (aParentEP == null) {
-		 * this.parentFlexoConcept.childFlexoConcepts.remove(this);
-		 * this.parentFlexoConcept = aParentEP; if (this.parentFlexoConcept
-		 * != null) { this.parentFlexoConcept.setChanged();
-		 * this.parentFlexoConcept.notifyObservers(new
-		 * FlexoConceptHierarchyChanged(this));
-		 * this.parentFlexoConcept.notifyChange("childFlexoConcepts", null,
-		 * getChildFlexoConcepts()); } } else {
-		 * aParentEP.childFlexoConcepts.add(this); this.parentFlexoConcept =
-		 * aParentEP; aParentEP.setChanged(); aParentEP.notifyObservers(new
-		 * FlexoConceptHierarchyChanged(this));
-		 * aParentEP.notifyChange("childFlexoConcepts", null,
-		 * getChildFlexoConcepts()); } if (getVirtualModel() != null) {
-		 * getVirtualModel().setChanged(); getVirtualModel().notifyObservers(new
-		 * FlexoConceptHierarchyChanged(this));
-		 * getVirtualModel().notifyChange("allRootFlexoConcepts", null,
-		 * getVirtualModel().getAllRootFlexoConcepts()); } } }
-		 */
-
 		@Override
 		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) {
 			performSuperSetter(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcepts);
-			/*
-			 * if (getVirtualModel() != null) { getVirtualModel().setChanged();
-			 * getVirtualModel().notifyObservers(new
-			 * FlexoConceptHierarchyChanged(this));
-			 * getVirtualModel().notifyChange("allRootFlexoConcepts", null,
-			 * getVirtualModel().getAllRootFlexoConcepts()); }
-			 */
 		}
 
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
-			/*
-			 * parentFlexoConcept.setChanged();
-			 * parentFlexoConcept.notifyObservers(new
-			 * FlexoConceptHierarchyChanged(this));
-			 * parentFlexoConcept.notifyChange("childFlexoConcepts", null,
-			 * getChildFlexoConcepts());
-			 */
 		}
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+			System.out.println("On enleve " + parentFlexoConcept + " de " + this);
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
-			/*
-			 * parentFlexoConcept.setChanged();
-			 * parentFlexoConcept.notifyObservers(new
-			 * FlexoConceptHierarchyChanged(this));
-			 * parentFlexoConcept.notifyChange("childFlexoConcepts", null,
-			 * getChildFlexoConcepts());
-			 */
 		}
 
-		/*
-		 * @Override public Vector<FlexoConcept> getChildFlexoConcepts() {
-		 * return childFlexoConcepts; }
+		/**
+		 * Return declared parent FlexoConcept for this {@link FlexoConcept}<br>
+		 * Declared parent FlexoConcept are those returned by getParentFlexoConcepts() method
+		 * 
+		 * @return
 		 */
+		@Override
+		public List<FlexoConcept> getDeclaredParentFlexoConcepts() {
+			return getParentFlexoConcepts();
+		}
+
+		/**
+		 * Build and return all parent FlexoConcept for this {@link FlexoConcept}<br>
+		 * This returned {@link List} includes all declared parent concepts for this FlexoConcept, augmented with all parents of parent
+		 * {@link FlexoConcept}
+		 * 
+		 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllParentFlexoConcepts() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return getDeclaredParentFlexoConcepts();
+			}
+
+			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
+			returned.addAll(getDeclaredParentFlexoConcepts());
+			for (FlexoConcept concept : getParentFlexoConcepts()) {
+				returned.addAll(concept.getAllParentFlexoConcepts());
+			}
+
+			return returned;
+		}
 
 		@Override
 		public boolean isAssignableFrom(FlexoConcept flexoConcept) {

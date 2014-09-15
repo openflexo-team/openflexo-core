@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingFactory;
-import org.openflexo.antar.binding.BindingModelChanged;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -63,7 +62,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 	public String getStringRepresentation();
 
-	public void notifyBindingModelChanged();
+	// public void notifyBindingModelChanged();
 
 	public LocalizedDictionary getLocalizedDictionary();
 
@@ -123,7 +122,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 					getPropertyChangeSupport().firePropertyChange(dataBinding.getBindingName(), null, dataBinding);
 				}
 			}
-			if(getResourceData() != null){
+			if (getResourceData() != null) {
 				getResourceData().setIsModified();
 			}
 		}
@@ -147,10 +146,10 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public void notifyBindingModelChanged() {
 			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, null);
-		}
+		}*/
 
 		@Override
 		public LocalizedDictionary getLocalizedDictionary() {

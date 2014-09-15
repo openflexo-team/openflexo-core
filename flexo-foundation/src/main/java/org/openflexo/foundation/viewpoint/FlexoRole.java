@@ -206,16 +206,16 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			setName(patternRoleName);
 		}
 
-		@Override
+		/*@Override
 		public void setName(String name) {
 			if (requireChange(getName(), name)) {
 				super.setName(name);
 				// When name of role has changed, we needs to update the BindingModel
-				if (getFlexoConcept() != null) {
-					getFlexoConcept().updateBindingModel();
-				}
+				//if (getFlexoConcept() != null) {
+				//	getFlexoConcept().updateBindingModel();
+				//}
 			}
-		}
+		}*/
 
 		@Override
 		public String toString() {

@@ -23,7 +23,6 @@ package org.openflexo.foundation.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
@@ -87,12 +86,11 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<Virtual
 		public VirtualModelInstance getAccessedResourceData() {
 			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
 				VirtualModelInstanceResource vmiResource;
-				if(getProject()!=null){
-					vmiResource = getProject().getViewLibrary().getVirtualModelInstance(
-							getVirtualModelInstanceURI());
+				if (getProject() != null) {
+					vmiResource = getProject().getViewLibrary().getVirtualModelInstance(getVirtualModelInstanceURI());
 				} else {
-					vmiResource = getVirtualModelInstance().getView().getProject().getViewLibrary().getVirtualModelInstance(
-							getVirtualModelInstanceURI());
+					vmiResource = getVirtualModelInstance().getView().getProject().getViewLibrary()
+							.getVirtualModelInstance(getVirtualModelInstanceURI());
 				}
 				if (vmiResource != null) {
 					accessedResourceData = vmiResource.getVirtualModelInstance();
@@ -100,13 +98,13 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<Virtual
 				}
 			}
 			// Special case to handle reflexive model slots
-			if (accessedResourceData == null && getVirtualModelInstance() != null
+			/*if (accessedResourceData == null && getVirtualModelInstance() != null
 					&& getModelSlot().equals(getVirtualModelInstance().getVirtualModel().getReflexiveModelSlot())) {
 				accessedResourceData = getVirtualModelInstance();
 				if (accessedResourceData != null) {
 					resource = (TechnologyAdapterResource<VirtualModelInstance, ?>) accessedResourceData.getResource();
 				}
-			}
+			}*/
 			if (accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
 				logger.warning("Cannot find virtual model instance " + getVirtualModelInstanceURI());
 			}

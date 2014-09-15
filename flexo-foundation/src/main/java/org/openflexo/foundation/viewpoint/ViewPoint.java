@@ -27,15 +27,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -44,6 +41,7 @@ import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
+import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
@@ -135,10 +133,16 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public void setLocalizedDictionary(LocalizedDictionary localizedDictionary);
 
 	/**
-	 * Retrieves the right type given the FlexoConcept
+	 * Retrieves the right type given the {@link FlexoConcept}<br>
+	 * If flexoConcept is an instance of {@link VirtualModel}, return a {@link VirtualModelInstanceType} otherwise, return a
+	 * {@link FlexoConceptInstanceType}
 	 */
+	public FlexoConceptInstanceType getInstanceType(FlexoConcept flexoConcept);
 
-	public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept);
+	/**
+	 * Retrieves the type of a View conform to this ViewPoint
+	 */
+	public ViewType getViewType();
 
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
@@ -157,7 +161,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public List<VirtualModel> getVirtualModels();
 
 	@Setter(VIRTUAL_MODELS_KEY)
-	public void setVirtualModels(Vector<VirtualModel> virtualModels);
+	public void setVirtualModels(List<VirtualModel> virtualModels);
 
 	@Adder(VIRTUAL_MODELS_KEY)
 	public void addToVirtualModels(VirtualModel virtualModel);
@@ -168,6 +172,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public boolean hasNature(ViewPointNature nature);
+
+	@Override
+	public ViewPointBindingModel getBindingModel();
 
 	/**
 	 * Default implementation for {@link ViewPoint}
@@ -184,13 +191,15 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		// private List<ModelSlot> modelSlots;
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
-		private BindingModel bindingModel;
+		private ViewPointBindingModel bindingModel;
 		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
 		// Maps to reference all the FlexoConceptInstanceType, DiagramType, VirtualModelType used in this context
 
 		private final Map<FlexoConcept, FlexoConceptInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, FlexoConceptInstanceType>();
 		private final Map<FlexoConcept, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<FlexoConcept, VirtualModelInstanceType>();
+
+		private ViewType viewType = null;
 
 		/**
 		 * Stores a chained collections of objects which are involved in validation
@@ -433,7 +442,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public void setVirtualModels(Vector<VirtualModel> virtualModels) {
+		public void setVirtualModels(List<VirtualModel> virtualModels) {
 			loadVirtualModelsWhenUnloaded();
 			this.virtualModels = virtualModels;
 		}
@@ -580,25 +589,25 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
+		public ViewPointBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				createBindingModel();
+				bindingModel = new ViewPointBindingModel(this);
 			}
 			return bindingModel;
 		}
 
-		public void updateBindingModel() {
+		/*public void updateBindingModel() {
 			logger.fine("updateBindingModel()");
 			bindingModel = null;
 			createBindingModel();
-		}
+		}*/
 
-		private void createBindingModel() {
-			bindingModel = new BindingModel();
+		/*private void createBindingModel() {
+			bindingModel = new ViewPointBindingModel(this);
 			for (VirtualModel vm : getVirtualModels()) {
 				bindingModel.addToBindingVariables(new BindingVariable(vm.getName(), Object.class));
 			}
-		}
+		}*/
 
 		@Override
 		public FlexoConceptBindingFactory getBindingFactory() {
@@ -746,6 +755,10 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 				getViewPointLibrary().unregisterViewPoint(getResource());
 			}
 
+			if (bindingModel != null) {
+				bindingModel.delete();
+			}
+
 			// Delete viewpoint
 			super.delete();
 
@@ -779,6 +792,17 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			}
 
 			return instanceType;
+		}
+
+		/**
+		 * Retrieves the type of a View conform to this ViewPoint
+		 */
+		@Override
+		public ViewType getViewType() {
+			if (viewType == null) {
+				viewType = new ViewType(this);
+			}
+			return viewType;
 		}
 
 		@Override

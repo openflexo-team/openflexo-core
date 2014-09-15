@@ -32,7 +32,7 @@ import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.binding.PatternRoleBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.logging.FlexoLogger;
@@ -202,12 +202,11 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		protected BindingModel _bindingModel;
 
-		//
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
 		private String name;
 		private String label;
-		//private String description;
+		// private String description;
 		// private Vector<EditionAction<?, ?>> actions;
 		// private Vector<FlexoBehaviourParameter> parameters;
 		private boolean skipConfirmationPanel = false;
@@ -472,9 +471,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public void addToParameters(FlexoBehaviourParameter parameter) {
 			performSuperAdder(PARAMETERS_KEY, parameter);
 			updateBindingModels();
-			for (FlexoBehaviourParameter p : getParameters()) {
+			/*for (FlexoBehaviourParameter p : getParameters()) {
 				p.notifyBindingModelChanged();
-			}
+			}*/
 		}
 
 		@Override
@@ -781,7 +780,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			appendContextualBindingVariables(_bindingModel);
 			if (getFlexoConcept() != null) {
 				for (final FlexoRole role : getFlexoConcept().getFlexoRoles()) {
-					_bindingModel.addToBindingVariables(new PatternRoleBindingVariable(role));
+					_bindingModel.addToBindingVariables(new FlexoRoleBindingVariable(role));
 				}
 			}
 			for (final EditionAction a : getActions()) {
@@ -795,7 +794,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 					});
 				}
 			}
-			notifyBindingModelChanged();
+			// notifyBindingModelChanged();
 			isRebuildingBindingModel = false;
 		}
 

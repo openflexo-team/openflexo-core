@@ -108,6 +108,7 @@ public abstract interface NamedViewPointObject extends ViewPointObject {
 				this.name = name;
 				setChanged();
 				notifyObservers(new NameChanged(oldName, name));
+				// getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 			}
 		}
 	}

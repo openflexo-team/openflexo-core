@@ -324,7 +324,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return entry;
 		}
 
-		@Override
+		/*@Override
 		public void notifyBindingModelChanged() {
 			super.notifyBindingModelChanged();
 			// SGU: as all entries share the flexo concept binding model, they
@@ -333,7 +333,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			for (InspectorEntry entry : getEntries()) {
 				entry.notifyBindingModelChanged();
 			}
-		}
+		}*/
 
 		@Override
 		public final BindingModel getBindingModel() {

@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -42,13 +41,13 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
@@ -98,7 +97,7 @@ import org.openflexo.toolbox.ToolBox;
 public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<VirtualModelTechnologyAdapter> {
 
-	public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
+	// public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
 
 	public static final String RESOURCE = "resource";
 
@@ -292,7 +291,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
-	public VirtualModelModelSlot getReflexiveModelSlot();
+	// Not used anymore, but supported implicitely
+	// public VirtualModelModelSlot getReflexiveModelSlot();
 
 	/**
 	 * Return flag indicating if supplied BindingVariable is set at runtime
@@ -312,6 +312,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 	public boolean hasNature(VirtualModelNature nature);
 
+	@Override
+	public VirtualModelBindingModel getBindingModel();
+
 	public static abstract class VirtualModelImpl extends FlexoConceptImpl implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
@@ -319,7 +322,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		private ViewPoint viewPoint;
 		// private Vector<FlexoConcept> flexoConcepts;
 		// private List<ModelSlot<?>> modelSlots;
-		private BindingModel bindingModel;
+		private VirtualModelBindingModel bindingModel;
 		private VirtualModelResource resource;
 		private LocalizedDictionary localizedDictionary;
 
@@ -351,7 +354,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			viewPoint.addToVirtualModels(virtualModel);
 			vmRes.setResourceData(virtualModel);
 			virtualModel.setResource(vmRes);
-			((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
+			// ((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
 			virtualModel.getResource().save(null);
 			return virtualModel;
 		}
@@ -372,6 +375,14 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
+		public boolean delete() {
+			if (bindingModel != null) {
+				bindingModel.delete();
+			}
+			return super.delete();
+		}
+
+		@Override
 		public VirtualModelModelFactory getVirtualModelFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
@@ -387,7 +398,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				ep.finalizeFlexoConceptDeserialization();
 			}
 			// Ensure access to reflexive model slot
-			getReflexiveModelSlot();
+			// getReflexiveModelSlot();
 		}
 
 		@Override
@@ -395,7 +406,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return nature.hasNature(this);
 		}
 
-		private VirtualModelModelSlot reflexiveModelSlot;
+		// private VirtualModelModelSlot reflexiveModelSlot;
 
 		/**
 		 * Return reflexive model slot<br>
@@ -403,7 +414,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * 
 		 * @return
 		 */
-		@Override
+		/*@Override
 		public VirtualModelModelSlot getReflexiveModelSlot() {
 			if (reflexiveModelSlot == null) {
 				reflexiveModelSlot = (VirtualModelModelSlot) getModelSlot(REFLEXIVE_MODEL_SLOT_NAME);
@@ -412,9 +423,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 			return reflexiveModelSlot;
-		}
+		}*/
 
-		protected VirtualModelModelSlot makeReflexiveModelSlot() {
+		/*protected VirtualModelModelSlot makeReflexiveModelSlot() {
 			if (getViewPoint() != null && getViewPoint().getViewPointLibrary() != null
 					&& getViewPoint().getViewPointLibrary().getServiceManager() != null
 					&& getViewPoint().getViewPointLibrary().getServiceManager().getService(TechnologyAdapterService.class) != null) {
@@ -432,7 +443,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 			return null;
-		}
+		}*/
 
 		/**
 		 * Return the URI of the {@link VirtualModel}<br>
@@ -498,8 +509,12 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public void setViewPoint(ViewPoint viewPoint) {
-			this.viewPoint = viewPoint;
-			updateBindingModel();
+			if (this.viewPoint != viewPoint) {
+				ViewPoint oldViewPoint = this.viewPoint;
+				this.viewPoint = viewPoint;
+				// updateBindingModel();
+				getPropertyChangeSupport().firePropertyChange(VIEW_POINT_KEY, oldViewPoint, viewPoint);
+			}
 		}
 
 		/*
@@ -605,30 +620,31 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
+		public VirtualModelBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				createBindingModel();
+				bindingModel = new VirtualModelBindingModel(this);
+				// createBindingModel();
 			}
 			return bindingModel;
 		}
 
-		@Override
+		/*@Override
 		public void updateBindingModel() {
 			logger.fine("updateBindingModel()");
 			bindingModel = null;
 			createBindingModel();
 			super.updateBindingModel();
-		}
+		}*/
 
-		private void createBindingModel() {
-			bindingModel = new BindingModel();
+		/*private void createBindingModel() {
+			bindingModel = new VirtualModelBindingModel(this);
 			for (FlexoConcept ep : getFlexoConcepts()) {
 				// bindingModel.addToBindingVariables(new
 				// FlexoConceptPathElement<ViewPoint>(ep, this));
 				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(ep)));
 			}
-		}
+		}*/
 
 		/*
 		 * @Override public String simpleRepresentation() { return

@@ -48,7 +48,6 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -427,8 +426,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
-			}
-			else {
+			} else {
 				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -595,14 +593,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					return (ModelSlotInstance<MS, RD>) msInstance;
 				}
 			}
-			if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
+			/*if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
 				VirtualModelModelSlotInstance reflexiveModelSlotInstance = getResource().getFactory().newInstance(
 						VirtualModelModelSlotInstance.class);
 				reflexiveModelSlotInstance.setModelSlot((VirtualModelModelSlot) modelSlot);
 				reflexiveModelSlotInstance.setAccessedResourceData(this);
 				addToModelSlotInstances(reflexiveModelSlotInstance);
 				return (ModelSlotInstance<MS, RD>) reflexiveModelSlotInstance;
-			}
+			}*/
 			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
 			if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
 				logger.warning("Worse than that, supplied ModelSlot is not part of virtual model " + getVirtualModel());
@@ -737,8 +735,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			}
-			else {
+			} else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
