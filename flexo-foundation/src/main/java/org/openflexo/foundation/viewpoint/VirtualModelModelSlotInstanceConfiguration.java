@@ -97,10 +97,13 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 		/*if (getModelSlot().isReflexiveModelSlot()) {
 			return true;
 		}*/
+		System.out.println("valide ??? " + getOption());
 		if (!super.isValidConfiguration()) {
+			System.out.println("non");
 			return false;
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel) {
+			System.out.println("Ben, " + getAddressedVirtualModelInstanceResource());
 			return getAddressedVirtualModelInstanceResource() != null;
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet

@@ -61,6 +61,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "virtualModelDefinition";
 	public static final String VIEW_PROPERTY = "view";
+	public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a VirtualModel
@@ -118,6 +119,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 				setBaseBindingModel(virtualModel.getViewPoint() != null ? virtualModel.getViewPoint().getBindingModel() : null);
 				viewBindingVariable.setType(virtualModel.getViewPoint() != null ? ViewType.getViewType(virtualModel.getViewPoint())
 						: View.class);
+				virtualModelInstanceBindingVariable.setType(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
 			} else if (evt.getPropertyName().equals(VirtualModel.MODEL_SLOTS_KEY)) {
 				// Model Slot were modified in related flexoConcept
 				updateModelSlotVariables();

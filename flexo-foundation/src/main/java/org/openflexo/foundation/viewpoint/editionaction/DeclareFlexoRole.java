@@ -27,13 +27,10 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -47,7 +44,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeclareFlexoRole.DeclareFlexoRoleImpl.class)
 @XMLElement
-public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, FlexoObject> {
+public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -59,8 +56,7 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, FlexoOb
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<?> object);
 
-	public static abstract class DeclareFlexoRoleImpl extends AssignableActionImpl<ModelSlot<?>, FlexoObject> implements
-			DeclareFlexoRole {
+	public static abstract class DeclareFlexoRoleImpl extends AssignableActionImpl<ModelSlot<?>, Object> implements DeclareFlexoRole {
 
 		private static final Logger logger = Logger.getLogger(DeclareFlexoRole.class.getPackage().getName());
 
@@ -121,8 +117,8 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, FlexoOb
 		}
 
 		@Override
-		public FlexoObject performAction(FlexoBehaviourAction action) {
-			return (FlexoObject) getDeclaredObject(action);
+		public Object performAction(FlexoBehaviourAction action) {
+			return getDeclaredObject(action);
 		}
 
 	}

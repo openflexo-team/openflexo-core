@@ -39,13 +39,15 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
+import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -114,7 +116,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	public <T> T getFlexoActor(FlexoRole<T> patternRole);
-	
+
 	public <T> T getFlexoActor(String flexoRoleName);
 
 	public <T> void setFlexoActor(T object, FlexoRole<T> patternRole);
@@ -126,6 +128,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public <T> void nullifyFlexoActor(FlexoRole<T> patternRole);
 
 	public String getStringRepresentation();
+
+	public boolean hasValidRenderer();
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -170,7 +174,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			return null;
 		}
-		
+
+		@Override
 		public <T> T getFlexoActor(String flexoRoleName) {
 			if (flexoRoleName == null) {
 				logger.warning("Unexpected null flexoRole name");
@@ -269,8 +274,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			sb.append("FlexoConcept: " + (flexoConcept != null ? flexoConcept.getName() : getFlexoConceptURI() + "[NOT_FOUND]") + "\n");
 			sb.append("Instance: " + getFlexoID() + " hash=" + Integer.toHexString(hashCode()) + "\n");
 			for (FlexoRole<?> patternRole : getFlexoConcept().getFlexoRoles()) {
-				FlexoProjectObject object = actors.get(patternRole);
-				sb.append("Role: " + patternRole + " : " + object + "\n");
+				// FlexoProjectObject object = actors.get(patternRole);
+				Object actor = getFlexoActor(patternRole);
+				sb.append("Role: " + patternRole.getName() + " " + patternRole.getType() + " : [" + actor + "]\n");
 			}
 			return sb.toString();
 		}
@@ -403,27 +409,58 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-			if (getFlexoConcept() != null) {
-				FlexoRole pr = getFlexoConcept().getFlexoRole(variable.getVariableName());
-				if (pr != null) {
-					return getFlexoActor(pr);
-				}
-				if (variable.getVariableName().equals("instance")) {
-					return FlexoConceptInstanceImpl.this;
+
+			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
+				return this;
+			}
+			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+				FlexoRole role = getFlexoConcept().getFlexoRole(variable.getVariableName());
+				if (role != null) {
+					return getFlexoActor(role);
 				}
 				logger.warning("Unexpected " + variable);
+				return null;
+			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				return getFlexoConcept();
+			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+				return this;
 			}
+
+			if (getVirtualModelInstance() != null && getVirtualModelInstance() != this) {
+				return getVirtualModelInstance().getValue(variable);
+			}
+
 			return null;
 		}
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
-			FlexoRole pr = getFlexoConcept().getFlexoRole(variable.getVariableName());
-			if (pr != null) {
-				setFlexoActor(value, pr);
-			} else {
-				logger.warning("Unexpected " + variable);
+			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+				FlexoRole role = getFlexoConcept().getFlexoRole(variable.getVariableName());
+				if (role != null) {
+					setFlexoActor(value, role);
+				} else {
+					logger.warning("Unexpected role " + variable);
+				}
+				return;
+			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
+						+ getClass());
+				return;
+			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this
+						+ " of " + getClass());
+				return;
 			}
+
+			if (getVirtualModelInstance() != null) {
+				getVirtualModelInstance().setValue(value, variable);
+				return;
+			}
+
+			logger.warning("Unexpected variable requested in settable context in FlexoConceptInstance: " + variable + " of "
+					+ variable.getClass());
+
 		}
 
 		/**
@@ -545,7 +582,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return getVirtualModelInstance();
 		}
 
-		protected boolean hasValidRenderer() {
+		@Override
+		public boolean hasValidRenderer() {
 			return getFlexoConcept() != null && getFlexoConcept().getInspector() != null
 					&& getFlexoConcept().getInspector().getRenderer() != null && getFlexoConcept().getInspector().getRenderer().isSet()
 					&& getFlexoConcept().getInspector().getRenderer().isValid();
@@ -564,7 +602,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
 					isComputingRenderer = true;
-					// System.out.println("Evaluating " + getFlexoConcept().getInspector().getRenderer());
 					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
 
 					if (rendererChangeListener == null) {

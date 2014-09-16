@@ -62,6 +62,8 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "Inspector")
 public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
+	public static final String FORMATTER_INSTANCE_PROPERTY = "instance";
+
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexo_concept";
 	@PropertyIdentifier(type = String.class)
@@ -442,8 +444,8 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			}
 
 			private void createFormatterBindingModel() {
-				formatterBindingModel = new BindingModel();
-				formatterBindingModel.addToBindingVariables(new BindingVariable("instance", FlexoConceptInstanceType
+				formatterBindingModel = new BindingModel(getFlexoConcept().getBindingModel());
+				formatterBindingModel.addToBindingVariables(new BindingVariable(FORMATTER_INSTANCE_PROPERTY, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept())) {
 					@Override
 					public Type getType() {

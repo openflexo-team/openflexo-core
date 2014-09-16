@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingEvaluationContext;
+import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -37,6 +39,7 @@ import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -61,7 +64,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ImplementationClass(View.ViewImpl.class)
 @XMLElement
 public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
-		TechnologyObject<VirtualModelTechnologyAdapter> {
+		TechnologyObject<VirtualModelTechnologyAdapter>, BindingEvaluationContext {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -527,6 +530,16 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}
+			return null;
+		}
+
+		@Override
+		public Object getValue(BindingVariable variable) {
+			if (variable.getVariableName().equals(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				return getViewPoint();
+			}
+
+			logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
 			return null;
 		}
 

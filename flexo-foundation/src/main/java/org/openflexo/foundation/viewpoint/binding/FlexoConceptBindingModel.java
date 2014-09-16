@@ -62,7 +62,6 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
 
-	public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
 	public static final String FLEXO_CONCEPT_INSTANCE_PROPERTY = "flexoConceptInstance";
 
 	/**

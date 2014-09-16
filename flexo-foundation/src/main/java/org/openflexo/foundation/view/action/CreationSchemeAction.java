@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.InvalidParametersException;
@@ -193,8 +192,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		Object assignedObject = super.performAction(action, performedActions);
 		if (assignedObject != null && action instanceof AssignableAction) {
 			AssignableAction assignableAction = (AssignableAction) action;
-			if (assignableAction.getFlexoRole() != null && assignedObject instanceof FlexoObject) {
-				getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) assignedObject, assignableAction.getFlexoRole());
+			if (assignableAction.getFlexoRole() != null /*&& assignedObject instanceof FlexoObject*/) {
+				getFlexoConceptInstance().setObjectForFlexoRole(/*(FlexoObject)*/assignedObject, assignableAction.getFlexoRole());
 			}
 		}
 

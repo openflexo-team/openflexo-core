@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
@@ -45,7 +44,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
@@ -301,7 +299,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * @return
 	 * @see VirtualModelInstance#getValueForVariable(BindingVariable)
 	 */
-	public boolean handleVariable(BindingVariable variable);
+	// public boolean handleVariable(BindingVariable variable);
 
 	/**
 	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent
@@ -1025,10 +1023,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 * @see VirtualModelInstance#getValueForVariable(BindingVariable)
 		 */
-		@Override
+		/*@Override
 		public boolean handleVariable(BindingVariable variable) {
 			return false;
-		}
+		}*/
 
 	}
 }

@@ -49,6 +49,8 @@ import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.viewpoint.binding.ModelSlotBindingVariable;
+import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -191,7 +193,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param variable
 	 * @return
 	 */
-	public Object getValueForVariable(BindingVariable variable);
+	// public Object getValueForVariable(BindingVariable variable);
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -402,7 +404,6 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				}
 				hash.put(fci.getFlexoID(), fci);
 			}
-			System.out.println("OK, on a essaye de remettre bien les map");
 		}
 
 		/**
@@ -751,11 +752,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 * @param variable
 		 * @return
 		 */
-		@Override
+		/*@Override
 		public Object getValueForVariable(BindingVariable variable) {
 			logger.warning("Not implemented: getValueForVariable() " + variable);
 			return null;
-		}
+		}*/
 
 		@Override
 		public Object getObject(String objectURI) {
@@ -795,6 +796,70 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				}
 			}
 			return null;
+		}
+
+		@Override
+		public Object getValue(BindingVariable variable) {
+
+			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
+				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
+				if (ms != null) {
+					return getModelSlotInstance(ms).getAccessedResourceData();
+				}
+				logger.warning("Unexpected model slot " + variable);
+				return null;
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				return getVirtualModel();
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIEW_PROPERTY)) {
+				return getView();
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+				return this;
+			}
+
+			Object returned = super.getValue(variable);
+
+			if (returned != null) {
+				return returned;
+			}
+
+			// When not found, delegate it to the view
+			if (returned == null && getView() != null) {
+				return getView().getValue(variable);
+			}
+
+			logger.warning("Unexpected variable requested in VirtualModelInstance: " + variable + " of " + variable.getClass());
+			return null;
+		}
+
+		@Override
+		public void setValue(Object value, BindingVariable variable) {
+			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
+				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
+				if (ms != null) {
+					if (value instanceof ResourceData) {
+						((ModelSlotInstance) getModelSlotInstance(ms)).setAccessedResourceData((ResourceData) value);
+					} else {
+						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
+					}
+				} else {
+					logger.warning("Unexpected role " + variable);
+				}
+				return;
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
+						+ getClass());
+				return;
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIEW_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
+				return;
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
+						+ " of " + getClass());
+				return;
+			}
+
+			super.setValue(value, variable);
+
 		}
 
 	}

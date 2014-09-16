@@ -51,9 +51,6 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.ListParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.binding.FlexoBehaviourBindingModel;
-import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingModel;
-import org.openflexo.foundation.viewpoint.binding.FlexoRoleBindingVariable;
-import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.toolbox.StringUtils;
@@ -235,9 +232,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	protected void applyEditionActions() throws FlexoException {
 
-		for (FlexoBehaviourParameter param : parameterValues.keySet()) {
+		// logger.info("******** Executing\n" + getEditionScheme().getFMLRepresentation());
+
+		/*for (FlexoBehaviourParameter param : parameterValues.keySet()) {
 			logger.info("Parameter " + param.getName() + " value=" + parameterValues.get(param));
-		}
+		}*/
 
 		Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
 
@@ -325,6 +324,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @throws FlexoException
 	 */
 	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
+
 		Object assignedObject = action.performAction(this);
 
 		if (assignedObject != null) {
@@ -355,24 +355,32 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	@Override
 	public Object getValue(BindingVariable variable) {
+
+		if (variables.get(variable.getVariableName()) != null) {
+			return variables.get(variable.getVariableName());
+		}
+
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
 		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getEditionScheme().getParameters();
-		} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+		}
+
+		// Not found at this level, delegate it to the FlexoConceptInstance
+		if (getFlexoConceptInstance() != null) {
+			return getFlexoConceptInstance().getValue(variable);
+		}
+
+		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
+		return null;
+
+		/*else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 			return getVirtualModelInstance();
 		} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 			return getFlexoConceptInstance();
 		} else if (variable instanceof FlexoRoleBindingVariable) {
 			return getFlexoConceptInstance().getFlexoActor(((FlexoRoleBindingVariable) variable).getFlexoRole());
 		}
-		/*else if (variable.getVariableName().equals(DiagramEditionScheme.DIAGRAM)) {
-					return getVirtualModelInstance();
-					} else if (variable.getVariableName().equals(DiagramEditionScheme.TOP_LEVEL)) {
-					if (getVirtualModelInstance() instanceof Diagram) {
-						return ((Diagram) getVirtualModelInstance()).getRootPane();
-					}
-					}*/
 
 		if (getEditionScheme().getVirtualModel().handleVariable(variable)) {
 			return getVirtualModelInstance().getValueForVariable(variable);
@@ -383,7 +391,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}
 
 		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
-		return null;
+		return null;*/
 	}
 
 	@Override
@@ -391,7 +399,20 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
+			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
+			return;
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY + " in " + this + " of "
+					+ getClass());
+			return;
 		}
+
+		if (getFlexoConceptInstance() != null) {
+			getFlexoConceptInstance().setValue(value, variable);
+			return;
+		}
+
 		logger.warning("Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of "
 				+ variable.getClass());
 	}
