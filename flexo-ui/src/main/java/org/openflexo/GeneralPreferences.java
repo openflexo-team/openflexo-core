@@ -453,7 +453,7 @@ public interface GeneralPreferences extends PreferencesContainer {
 
 		@Override
 		public boolean isValidationRuleEnabled(ValidationRule<?, ?> rule) {
-			return assertProperty("VR-" + rule.getClass().getName()).booleanValue();
+			return assertProperty("VR-" + rule.getClass().getName()).booleanValue(true);
 		}
 
 		@Override
