@@ -73,6 +73,9 @@ public class FileMenu extends FlexoMenu {
 		super("file", controller);
 		_controller = controller;
 
+		add(new SaveItem());
+		addSeparator();
+
 		add(new NewProjectItem());
 		add(new OpenProjectItem());
 		add(recentProjectMenu = new JMenu());
@@ -84,6 +87,7 @@ public class FileMenu extends FlexoMenu {
 		// TODO: repair reload project. this includes to also support close project.
 		// add(reloadProjectItem = new ReloadProjectItem());
 		addSeparator();
+
 		if (addImportItems()) {
 			add(importMenu);
 		}
@@ -150,6 +154,51 @@ public class FileMenu extends FlexoMenu {
 
 	public void addPrintItems() {
 		// No specific item here, please override this method when required
+	}
+
+	public class SaveItem extends FlexoMenuItem {
+
+		public SaveItem() {
+			super(new SaveAction(), "save", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK), getController(), true);
+			setIcon(IconLibrary.SAVE_ICON);
+		}
+
+	}
+
+	public class SaveAction extends AbstractAction implements PropertyChangeListener {
+		public SaveAction() {
+			super();
+			if (getController() != null) {
+				manager.addListener(ControllerModel.CURRENT_EDITOR, this, getController().getControllerModel());
+			}
+			updateEnability();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			// System.out.println("SaveProjectAction");
+
+			if (getController() == null) {
+				return;
+			}
+			getController().reviewModifiedResources();
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (getController() != null) {
+				if (evt.getSource() == getController().getControllerModel()) {
+					if (ControllerModel.CURRENT_EDITOR.equals(evt.getPropertyName())) {
+						updateEnability();
+					}
+				}
+			}
+		}
+
+		private void updateEnability() {
+			setEnabled(getController() != null);
+		}
 	}
 
 	public void quit() {
@@ -287,8 +336,7 @@ public class FileMenu extends FlexoMenu {
 	public class SaveProjectItem extends FlexoMenuItem {
 
 		public SaveProjectItem() {
-			super(new SaveProjectAction(), "save_current_project", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK),
-					getController(), true);
+			super(new SaveProjectAction(), "save_current_project", null, getController(), true);
 			setIcon(IconLibrary.SAVE_ICON);
 		}
 
