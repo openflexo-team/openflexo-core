@@ -85,47 +85,47 @@
     </Panel>
   </Panel>
   <LocalizedDictionary>
-    <Localized key="done" lang="English">Done</Localized>
-    <Localized key="done" lang="French">Annuler</Localized>
-    <Localized key="done" lang="Dutch">done</Localized>
-    <Localized key="search" lang="English">Search</Localized>
-    <Localized key="search" lang="French">Rechercher</Localized>
-    <Localized key="search" lang="Dutch">search</Localized>
-    <Localized key="ontology" lang="English">Ontology</Localized>
-    <Localized key="ontology" lang="French">Ontologie</Localized>
-    <Localized key="ontology" lang="Dutch">ontology</Localized>
-    <Localized key="root_class" lang="English">Root class</Localized>
-    <Localized key="root_class" lang="French">Classe racine</Localized>
-    <Localized key="root_class" lang="Dutch">root_class</Localized>
-    <Localized key="strict_mode" lang="English">Strict mode</Localized>
-    <Localized key="strict_mode" lang="French">Mode "strict"</Localized>
-    <Localized key="strict_mode" lang="Dutch">strict_mode</Localized>
-    <Localized key="hierarchic_presentation" lang="English">Hierarchic presentation</Localized>
-    <Localized key="hierarchic_presentation" lang="French">Présentation hiérarchique</Localized>
-    <Localized key="hierarchic_presentation" lang="Dutch">hierarchic_presentation</Localized>
-    <Localized key="present_properties_in_classes" lang="English">Present properties in classes</Localized>
-    <Localized key="present_properties_in_classes" lang="French">Présenter les propriétés dans les classes</Localized>
-    <Localized key="present_properties_in_classes" lang="Dutch">present_properties_in_classes</Localized>
-    <Localized key="show_OWL_RDF_concepts" lang="English">Show OWL/RDF concepts</Localized>
-    <Localized key="show_OWL_RDF_concepts" lang="French">Voir les concepts OWL/RDF</Localized>
-    <Localized key="show_OWL_RDF_concepts" lang="Dutch">show_OWL_RDF_concepts</Localized>
-    <Localized key="display_classes" lang="English">Display classes</Localized>
-    <Localized key="display_classes" lang="French">Afficher les classes</Localized>
-    <Localized key="display_classes" lang="Dutch">display_classes</Localized>
-    <Localized key="display_individuals" lang="English">Display individuals</Localized>
-    <Localized key="display_individuals" lang="French">Afficher les instances</Localized>
-    <Localized key="display_individuals" lang="Dutch">display_individuals</Localized>
-    <Localized key="display_object_properties" lang="English">Display objet properties</Localized>
-    <Localized key="display_object_properties" lang="French">Afficher les propriétés "objet"</Localized>
-    <Localized key="display_object_properties" lang="Dutch">display_object_properties</Localized>
-    <Localized key="display_datatype_properties" lang="English">Display datatype properties</Localized>
-    <Localized key="display_datatype_properties" lang="French">Afficher les propriétés "données"</Localized>
-    <Localized key="display_datatype_properties" lang="Dutch">display_datatype_properties</Localized>
-    <Localized key="display_annotation_properties" lang="English">Display annotation properties</Localized>
-    <Localized key="display_annotation_properties" lang="French">Afficher les propriétés d'annotation</Localized>
-    <Localized key="display_annotation_properties" lang="Dutch">display_annotation_properties</Localized>
-    <Localized key="Options" lang="English">Options</Localized>
-    <Localized key="Options" lang="French">Options</Localized>
-    <Localized key="Options" lang="Dutch">Options</Localized>
+    <Localized key="done" lang="English" value="Done" />
+    <Localized key="done" lang="French" value="Annuler" />
+    <Localized key="done" lang="Dutch" value="done" />
+    <Localized key="search" lang="English" value="Search" />
+    <Localized key="search" lang="French" value="Rechercher" />
+    <Localized key="search" lang="Dutch" value="search" />
+    <Localized key="ontology" lang="English" value="Ontology" />
+    <Localized key="ontology" lang="French" value="Ontologie" />
+    <Localized key="ontology" lang="Dutch" value="ontology" />
+    <Localized key="root_class" lang="English" value="Root class" />
+    <Localized key="root_class" lang="French" value="Classe racine" />
+    <Localized key="root_class" lang="Dutch" value="root_class" />
+    <Localized key="strict_mode" lang="English" value="Strict mode" />
+    <Localized key="strict_mode" lang="French" value="Mode &quot;strict&quot;" />
+    <Localized key="strict_mode" lang="Dutch" value="strict_mode" />
+    <Localized key="hierarchic_presentation" lang="English" value="Hierarchic presentation" />
+    <Localized key="hierarchic_presentation" lang="French" value="Présentation hiérarchique" />
+    <Localized key="hierarchic_presentation" lang="Dutch" value="hierarchic_presentation" />
+    <Localized key="present_properties_in_classes" lang="English" value="Present properties in classes" />
+    <Localized key="present_properties_in_classes" lang="French" value="Présenter les propriétés dans les classes" />
+    <Localized key="present_properties_in_classes" lang="Dutch" value="present_properties_in_classes" />
+    <Localized key="show_OWL_RDF_concepts" lang="English" value="Show OWL/RDF concepts" />
+    <Localized key="show_OWL_RDF_concepts" lang="French" value="Voir les concepts OWL/RDF" />
+    <Localized key="show_OWL_RDF_concepts" lang="Dutch" value="show_OWL_RDF_concepts" />
+    <Localized key="display_classes" lang="English" value="Display classes" />
+    <Localized key="display_classes" lang="French" value="Afficher les classes" />
+    <Localized key="display_classes" lang="Dutch" value="display_classes" />
+    <Localized key="display_individuals" lang="English" value="Display individuals" />
+    <Localized key="display_individuals" lang="French" value="Afficher les instances" />
+    <Localized key="display_individuals" lang="Dutch" value="display_individuals" />
+    <Localized key="display_object_properties" lang="English" value="Display objet properties" />
+    <Localized key="display_object_properties" lang="French" value="Afficher les propriétés &quot;objet&quot;" />
+    <Localized key="display_object_properties" lang="Dutch" value="display_object_properties" />
+    <Localized key="display_datatype_properties" lang="English" value="Display datatype properties" />
+    <Localized key="display_datatype_properties" lang="French" value="Afficher les propriétés &quot;données&quot;" />
+    <Localized key="display_datatype_properties" lang="Dutch" value="display_datatype_properties" />
+    <Localized key="display_annotation_properties" lang="English" value="Display annotation properties" />
+    <Localized key="display_annotation_properties" lang="French" value="Afficher les propriétés d'annotation" />
+    <Localized key="display_annotation_properties" lang="Dutch" value="display_annotation_properties" />
+    <Localized key="Options" lang="English" value="Options" />
+    <Localized key="Options" lang="French" value="Options" />
+    <Localized key="Options" lang="Dutch" value="Options" />
   </LocalizedDictionary>
 </Panel>

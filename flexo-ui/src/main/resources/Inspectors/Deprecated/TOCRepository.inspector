@@ -23,34 +23,34 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="title" lang="English">Title</Localized>
-    <Localized key="title" lang="French">Titre</Localized>
-    <Localized key="title" lang="Dutch">Title</Localized>
-    <Localized key="doc_title" lang="English">Document title</Localized>
-    <Localized key="doc_title" lang="French">Titre du document</Localized>
-    <Localized key="doc_title" lang="Dutch">Document title</Localized>
-    <Localized key="customer" lang="English">Customer</Localized>
-    <Localized key="customer" lang="French">Client</Localized>
-    <Localized key="customer" lang="Dutch">Customer</Localized>
-    <Localized key="version" lang="English">Version</Localized>
-    <Localized key="version" lang="French">Version</Localized>
-    <Localized key="version" lang="Dutch">Version</Localized>
-    <Localized key="author" lang="English">Author</Localized>
-    <Localized key="author" lang="French">Auteur</Localized>
-    <Localized key="author" lang="Dutch">Author</Localized>
-    <Localized key="reviewer" lang="English">Reviewer</Localized>
-    <Localized key="reviewer" lang="French">Lecteur</Localized>
-    <Localized key="reviewer" lang="Dutch">Reviewer</Localized>
-    <Localized key="app_name" lang="English">Application name</Localized>
-    <Localized key="app_name" lang="French">Nom de l'application</Localized>
-    <Localized key="app_name" lang="Dutch">Application name</Localized>
-    <Localized key="app_version" lang="English">Application version</Localized>
-    <Localized key="app_version" lang="French">Version de l'application</Localized>
-    <Localized key="app_version" lang="Dutch">Application version</Localized>
-    <Localized key="make_separate_section_for_events" lang="English">Make a separate section for events</Localized>
-    <Localized key="make_separate_section_for_events" lang="French">Crééer une section séparée pour les évenements</Localized>
-    <Localized key="make_separate_section_for_events" lang="Dutch">Make a separate section for events</Localized>
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="title" lang="English" value="Title" />
+    <Localized key="title" lang="French" value="Titre" />
+    <Localized key="title" lang="Dutch" value="Title" />
+    <Localized key="doc_title" lang="English" value="Document title" />
+    <Localized key="doc_title" lang="French" value="Titre du document" />
+    <Localized key="doc_title" lang="Dutch" value="Document title" />
+    <Localized key="customer" lang="English" value="Customer" />
+    <Localized key="customer" lang="French" value="Client" />
+    <Localized key="customer" lang="Dutch" value="Customer" />
+    <Localized key="version" lang="English" value="Version" />
+    <Localized key="version" lang="French" value="Version" />
+    <Localized key="version" lang="Dutch" value="Version" />
+    <Localized key="author" lang="English" value="Author" />
+    <Localized key="author" lang="French" value="Auteur" />
+    <Localized key="author" lang="Dutch" value="Author" />
+    <Localized key="reviewer" lang="English" value="Reviewer" />
+    <Localized key="reviewer" lang="French" value="Lecteur" />
+    <Localized key="reviewer" lang="Dutch" value="Reviewer" />
+    <Localized key="app_name" lang="English" value="Application name" />
+    <Localized key="app_name" lang="French" value="Nom de l'application" />
+    <Localized key="app_name" lang="Dutch" value="Application name" />
+    <Localized key="app_version" lang="English" value="Application version" />
+    <Localized key="app_version" lang="French" value="Version de l'application" />
+    <Localized key="app_version" lang="Dutch" value="Application version" />
+    <Localized key="make_separate_section_for_events" lang="English" value="Make a separate section for events" />
+    <Localized key="make_separate_section_for_events" lang="French" value="Crééer une section séparée pour les évenements" />
+    <Localized key="make_separate_section_for_events" lang="Dutch" value="Make a separate section for events" />
   </LocalizedDictionary>
   <Parameter name="title" value="TOCRepository" />
 </Panel>

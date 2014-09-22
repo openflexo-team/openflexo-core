@@ -8,21 +8,21 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="business_description" lang="English">business description</Localized>
-    <Localized key="business_description" lang="French">description métier</Localized>
-    <Localized key="business_description" lang="Dutch">business description</Localized>
-    <Localized key="dont_generate" lang="English">Don't generate doc</Localized>
-    <Localized key="dont_generate" lang="French">Ne pas générer</Localized>
-    <Localized key="dont_generate" lang="Dutch">Don't generate doc</Localized>
-    <Localized key="technical_description" lang="English">Technical description</Localized>
-    <Localized key="technical_description" lang="French">Description technique</Localized>
-    <Localized key="technical_description" lang="Dutch">Technical description</Localized>
-    <Localized key="user_manual_description" lang="English">User manual description</Localized>
-    <Localized key="user_manual_description" lang="French">Description du manuel d'utilisation</Localized>
-    <Localized key="user_manual_description" lang="Dutch">User manual description</Localized>
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="business_description" lang="English" value="business description" />
+    <Localized key="business_description" lang="French" value="description métier" />
+    <Localized key="business_description" lang="Dutch" value="business description" />
+    <Localized key="dont_generate" lang="English" value="Don't generate doc" />
+    <Localized key="dont_generate" lang="French" value="Ne pas générer" />
+    <Localized key="dont_generate" lang="Dutch" value="Don't generate doc" />
+    <Localized key="technical_description" lang="English" value="Technical description" />
+    <Localized key="technical_description" lang="French" value="Description technique" />
+    <Localized key="technical_description" lang="Dutch" value="Technical description" />
+    <Localized key="user_manual_description" lang="English" value="User manual description" />
+    <Localized key="user_manual_description" lang="French" value="Description du manuel d'utilisation" />
+    <Localized key="user_manual_description" lang="Dutch" value="User manual description" />
   </LocalizedDictionary>
   <Parameter name="title" value="DocForModelObject" />
 </Panel>

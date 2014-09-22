@@ -13,15 +13,15 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="view" lang="English">View</Localized>
-    <Localized key="view" lang="French">Vue</Localized>
-    <Localized key="view" lang="Dutch">View</Localized>
-    <Localized key="value" lang="English">Value</Localized>
-    <Localized key="value" lang="French">Valeur</Localized>
-    <Localized key="value" lang="Dutch">Value</Localized>
-    <Localized key="Basic" lang="English">Basic</Localized>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="Basic" lang="Dutch">Basis</Localized>
+    <Localized key="view" lang="English" value="View" />
+    <Localized key="view" lang="French" value="Vue" />
+    <Localized key="view" lang="Dutch" value="View" />
+    <Localized key="value" lang="English" value="Value" />
+    <Localized key="value" lang="French" value="Valeur" />
+    <Localized key="value" lang="Dutch" value="Value" />
+    <Localized key="Basic" lang="English" value="Basic" />
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="Basic" lang="Dutch" value="Basis" />
   </LocalizedDictionary>
   <Parameter name="title" value="View section" />
 </Panel>

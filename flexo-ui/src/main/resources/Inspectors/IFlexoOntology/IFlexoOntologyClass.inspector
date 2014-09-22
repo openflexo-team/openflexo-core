@@ -12,16 +12,16 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="ontology_super_classes" lang="English">Super classes</Localized>
-    <Localized key="ontology_super_classes" lang="French">Super classes</Localized>
-    <Localized key="ontology_super_classes" lang="Dutch">Super classes</Localized>
-    <Localized key="ontology_sub_classes" lang="English">Sub classes</Localized>
-    <Localized key="ontology_sub_classes" lang="French">Sub classes</Localized>
-    <Localized key="ontology_sub_classes" lang="Dutch">Sub classes</Localized>
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="ontology_super_classes" lang="English" value="Super classes" />
+    <Localized key="ontology_super_classes" lang="French" value="Super classes" />
+    <Localized key="ontology_super_classes" lang="Dutch" value="Super classes" />
+    <Localized key="ontology_sub_classes" lang="English" value="Sub classes" />
+    <Localized key="ontology_sub_classes" lang="French" value="Sub classes" />
+    <Localized key="ontology_sub_classes" lang="Dutch" value="Sub classes" />
   </LocalizedDictionary>
   <Parameter name="title" value="Ontologic class" />
 </Panel>

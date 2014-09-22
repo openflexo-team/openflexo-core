@@ -35,23 +35,23 @@
     </Panel>
   </SplitPanel>
   <LocalizedDictionary>
-    <Localized key="example_diagram" lang="English">Example diagram</Localized>
-    <Localized key="example_diagram" lang="French">Diagramme exemple</Localized>
-    <Localized key="example_diagram" lang="Dutch">example_diagram</Localized>
-    <Localized key="pattern_role" lang="English">Pattern Role</Localized>
-    <Localized key="pattern_role" lang="French">Pattern Role</Localized>
-    <Localized key="pattern_role" lang="Dutch">Pattern Role</Localized>
-    <Localized key="model_slot" lang="English">Model Slot</Localized>
-    <Localized key="model_slot" lang="French">Model Slot</Localized>
-    <Localized key="model_slot" lang="Dutch">model_slot</Localized>
-    <Localized key="type" lang="English">Type</Localized>
-    <Localized key="type" lang="French">Type</Localized>
-    <Localized key="type" lang="Dutch">Type</Localized>
-    <Localized key="delete" lang="English">Delete</Localized>
-    <Localized key="delete" lang="French">Supprimer</Localized>
-    <Localized key="delete" lang="Dutch">Delete</Localized>
-    <Localized key="createFlexoRole" lang="English">createFlexoRole</Localized>
-    <Localized key="createFlexoRole" lang="French">createFlexoRole</Localized>
-    <Localized key="createFlexoRole" lang="Dutch">createFlexoRole</Localized>
+    <Localized key="example_diagram" lang="English" value="Example diagram" />
+    <Localized key="example_diagram" lang="French" value="Diagramme exemple" />
+    <Localized key="example_diagram" lang="Dutch" value="example_diagram" />
+    <Localized key="pattern_role" lang="English" value="Pattern Role" />
+    <Localized key="pattern_role" lang="French" value="Pattern Role" />
+    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
+    <Localized key="model_slot" lang="English" value="Model Slot" />
+    <Localized key="model_slot" lang="French" value="Model Slot" />
+    <Localized key="model_slot" lang="Dutch" value="model_slot" />
+    <Localized key="type" lang="English" value="Type" />
+    <Localized key="type" lang="French" value="Type" />
+    <Localized key="type" lang="Dutch" value="Type" />
+    <Localized key="delete" lang="English" value="Delete" />
+    <Localized key="delete" lang="French" value="Supprimer" />
+    <Localized key="delete" lang="Dutch" value="Delete" />
+    <Localized key="createFlexoRole" lang="English" value="createFlexoRole" />
+    <Localized key="createFlexoRole" lang="French" value="createFlexoRole" />
+    <Localized key="createFlexoRole" lang="Dutch" value="createFlexoRole" />
   </LocalizedDictionary>
 </Panel>

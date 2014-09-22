@@ -30,35 +30,35 @@
     </Panel>-->
   </SplitPanel>
   <LocalizedDictionary>
-    <Localized key="uri" lang="English">URI</Localized>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="kind" lang="English">Generic type</Localized>
-    <Localized key="type" lang="English">Type</Localized>
-    <Localized key="uri" lang="French">URI</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="kind" lang="French">Type générique</Localized>
-    <Localized key="type" lang="French">Type</Localized>
-    <Localized key="uri" lang="Dutch">URI</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="kind" lang="Dutch">Generic Type</Localized>
-    <Localized key="type" lang="Dutch">Type</Localized>
-    <Localized key="flexo_concept" lang="French">Edition pattern</Localized>
-    <Localized key="flexo_concept" lang="English">Edition pattern</Localized>
-    <Localized key="flexo_concepts_declared_in_this_calc" lang="English">Edition patterns declared in this calc</Localized>
-    <Localized key="flexo_concepts_declared_in_this_calc" lang="French">Edition patterns déclarés dans ce calque</Localized>
-    <Localized key="pattern_role" lang="French">Pattern Role</Localized>
-    <Localized key="pattern_role" lang="English">Pattern Role</Localized>
-    <Localized key="palette" lang="English">Palette</Localized>
-    <Localized key="palette" lang="French">Palette</Localized>
-    <Localized key="palette" lang="Dutch">Palette</Localized>
-    <Localized key="view_point" lang="English">View Point</Localized>
-    <Localized key="view_point" lang="French">Point de vue</Localized>
-    <Localized key="view_point" lang="Dutch">View Point</Localized>
-    <Localized key="example_diagram" lang="French">Example diagram</Localized>
-    <Localized key="example_diagram" lang="English">Example diagram</Localized>
-    <Localized key="example_diagram" lang="Dutch">Example diagram</Localized>
-    <Localized key="flexo_concept" lang="Dutch">Editie pattern</Localized>
-    <Localized key="pattern_role" lang="Dutch">Rol van de patroon</Localized>
-    <Localized key="flexo_concepts_declared_in_this_calc" lang="Dutch">Edition patterns declared in this calc</Localized>
+    <Localized key="uri" lang="English" value="URI" />
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="kind" lang="English" value="Generic type" />
+    <Localized key="type" lang="English" value="Type" />
+    <Localized key="uri" lang="French" value="URI" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="kind" lang="French" value="Type générique" />
+    <Localized key="type" lang="French" value="Type" />
+    <Localized key="uri" lang="Dutch" value="URI" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="kind" lang="Dutch" value="Generic Type" />
+    <Localized key="type" lang="Dutch" value="Type" />
+    <Localized key="flexo_concept" lang="French" value="Edition pattern" />
+    <Localized key="flexo_concept" lang="English" value="Edition pattern" />
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="English" value="Edition patterns declared in this calc" />
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="French" value="Edition patterns déclarés dans ce calque" />
+    <Localized key="pattern_role" lang="French" value="Pattern Role" />
+    <Localized key="pattern_role" lang="English" value="Pattern Role" />
+    <Localized key="palette" lang="English" value="Palette" />
+    <Localized key="palette" lang="French" value="Palette" />
+    <Localized key="palette" lang="Dutch" value="Palette" />
+    <Localized key="view_point" lang="English" value="View Point" />
+    <Localized key="view_point" lang="French" value="Point de vue" />
+    <Localized key="view_point" lang="Dutch" value="View Point" />
+    <Localized key="example_diagram" lang="French" value="Example diagram" />
+    <Localized key="example_diagram" lang="English" value="Example diagram" />
+    <Localized key="example_diagram" lang="Dutch" value="Example diagram" />
+    <Localized key="flexo_concept" lang="Dutch" value="Editie pattern" />
+    <Localized key="pattern_role" lang="Dutch" value="Rol van de patroon" />
+    <Localized key="flexo_concepts_declared_in_this_calc" lang="Dutch" value="Edition patterns declared in this calc" />
   </LocalizedDictionary>
 </Panel>

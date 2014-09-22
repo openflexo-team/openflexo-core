@@ -104,128 +104,128 @@
     </Button>
   </Panel>
   <LocalizedDictionary>
-    <Localized key="validate" lang="English">Validate</Localized>
-    <Localized key="validate" lang="French">Valider</Localized>
-    <Localized key="validate" lang="Dutch">Validate</Localized>
-    <Localized key="back" lang="English">&lt;&lt; Back</Localized>
-    <Localized key="back" lang="French">&lt;&lt; Précédent</Localized>
-    <Localized key="back" lang="Dutch">back</Localized>
-    <Localized key="next" lang="English">&gt;&gt; Next</Localized>
-    <Localized key="next" lang="French">&gt;&gt; Suivant</Localized>
-    <Localized key="next" lang="Dutch">next</Localized>
-    <Localized key="configure_model_slot" lang="English">Configure model slot</Localized>
-    <Localized key="configure_model_slot" lang="French">Configuration de la connexion au modèle</Localized>
-    <Localized key="configure_model_slot" lang="Dutch">configure_model_slot</Localized>
-    <Localized key="model_slot_name" lang="English">Model slot name</Localized>
-    <Localized key="model_slot_name" lang="French">Nom du connecteur de modèle</Localized>
-    <Localized key="model_slot_name" lang="Dutch">model_slot_name</Localized>
-    <Localized key="technology" lang="English">Technology</Localized>
-    <Localized key="technology" lang="French">Technologie</Localized>
-    <Localized key="technology" lang="Dutch">technology</Localized>
-    <Localized key="select_an_option" lang="English">Select an option</Localized>
-    <Localized key="select_an_option" lang="French">Sélectionner une option</Localized>
-    <Localized key="select_an_option" lang="Dutch">select_an_option</Localized>
-    <Localized key="SelectExistingResource" lang="English">Select existing resource</Localized>
-    <Localized key="SelectExistingResource" lang="French">Sélectionner une ressource existante</Localized>
-    <Localized key="SelectExistingResource" lang="Dutch">SelectExistingResource</Localized>
-    <Localized key="CreatePrivateNewResouce" lang="English">Create private new resource</Localized>
-    <Localized key="CreatePrivateNewResource" lang="French">Créer une nouvelle resource propre au projet courant</Localized>
-    <Localized key="CreatePrivateNewResource" lang="Dutch">CreatePrivateNewResource</Localized>
-    <Localized key="CreateSharedNewResource" lang="English">Create shared new resource</Localized>
-    <Localized key="CreateSharedNewResource" lang="French">Créer une nouvelle resource partageable</Localized>
-    <Localized key="CreateSharedNewResource" lang="Dutch">CreateSharedNewResource</Localized>
-    <Localized key="LeaveEmpty" lang="English">Leave this resource empty</Localized>
-    <Localized key="LeaveEmpty" lang="French">Ne pas renseigner</Localized>
-    <Localized key="LeaveEmpty" lang="Dutch">LeaveEmpty</Localized>
-    <Localized key="Autoconfigure" lang="English">Automatic configuration</Localized>
-    <Localized key="Autoconfigure" lang="French">Configuration automatique</Localized>
-    <Localized key="Autoconfigure" lang="Dutch">Autoconfigure</Localized>
-    <Localized key="label" lang="English">Label</Localized>
-    <Localized key="label" lang="French">Label</Localized>
-    <Localized key="label" lang="Dutch">Label</Localized>
-    <Localized key="finish" lang="English">Finish</Localized>
-    <Localized key="finish" lang="French">Terminer</Localized>
-    <Localized key="finish" lang="Dutch">Finish</Localized>
-    <Localized key="Cancel" lang="English">Cancel</Localized>
-    <Localized key="Cancel" lang="French">Annuler</Localized>
-    <Localized key="Cancel" lang="Dutch">Cancel</Localized>
-    <Localized key="SelectExistingResource_description" lang="English">&lt;html&gt;Retrieve an existing resource from a given ResourceCenter.&lt;/html&gt;</Localized>
-    <Localized key="SelectExistingResource_description" lang="French">Accèder à une resource existante mise à disposition par un centre de resources Openflexo.</Localized>
-    <Localized key="SelectExistingResource_description" lang="Dutch">SelectExistingResource_description</Localized>
-    <Localized key="CreatePrivateNewResource_description" lang="English">&lt;html&gt;&lt;center&gt;Create a dedicated resource in the scope of current project.&lt;br&gt;The resource will be managed in the project directory and should not be concurrently accessed&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="CreatePrivateNewResource_description" lang="French">&lt;html&gt;&lt;center&gt;Créer une resource dédié eau sein du project courant.&lt;br&gt;La resource sera gérée et stockée dans le répertoire de projet courant et ne devra pas être accédé concurrentiellement.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="CreatePrivateNewResource_description" lang="Dutch">CreatePrivateNewResource_description</Localized>
-    <Localized key="CreateSharedNewResource_description" lang="English">&lt;html&gt;&lt;center&gt;Created a new resource which might be shared with other users and/or applications.&lt;br&gt;A ResourceCenter accessible for push should be selected, and will be the location where the new resource will be stored.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="CreateSharedNewResource_description" lang="French">&lt;html&gt;&lt;center&gt;Créer une resource qui sera partagée avec d'autres utilisateurs et/ou d'autres applications.&lt;br&gt;Un centre de resource accessible en mode "push" doit être sélectionné, et sera le lieu de stockage de la nouvelle resource.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="CreateSharedNewResource_description" lang="Dutch">CreateSharedNewResource_description</Localized>
-    <Localized key="LeaveEmptyDescription" lang="English">&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this resource or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="LeaveEmptyDescription" lang="French">LeaveEmptyDescription</Localized>
-    <Localized key="LeaveEmptyDescription" lang="Dutch">LeaveEmptyDescription</Localized>
-    <Localized key="Autoconfigure_decription" lang="English">Autoconfigure_decription</Localized>
-    <Localized key="Autoconfigure_decription" lang="French">Autoconfigure_decription</Localized>
-    <Localized key="Autoconfigure_decription" lang="Dutch">Autoconfigure_decription</Localized>
-    <Localized key="Autoconfigure_description" lang="English">&lt;html&gt;&lt;center&gt;A default configuration is available.&lt;br&gt;Let Openflexo manage this configuration for you.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="Autoconfigure_description" lang="French">&lt;html&gt;&lt;center&gt;Une configuration par défaut est disponible.&lt;br&gt;Laisser Openflexo gérer cette configuration.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="Autoconfigure_description" lang="Dutch">Autoconfigure_decription</Localized>
-    <Localized key="LeaveEmpty_Description" lang="English">&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="LeaveEmpty_Description" lang="French">LeaveEmptyDescription</Localized>
-    <Localized key="LeaveEmpty_Description" lang="Dutch">LeaveEmptyDescription</Localized>
-    <Localized key="LeaveEmpty_description" lang="English">&lt;html&gt;&lt;center&gt;Leave the model slot empty.&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="LeaveEmpty_description" lang="French">&lt;html&gt;&lt;center&gt;Ne pas renseigner ce connecteur de modèle.&lt;br&gt;Vous pouvez utiliser cette option pour générer le modèle plus tard, ou bien décider plus tard quoi faire.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="LeaveEmpty_description" lang="Dutch">LeaveEmptyDescription</Localized>
+    <Localized key="validate" lang="English" value="Validate" />
+    <Localized key="validate" lang="French" value="Valider" />
+    <Localized key="validate" lang="Dutch" value="Validate" />
+    <Localized key="back" lang="English" value="&lt;&lt; Back" />
+    <Localized key="back" lang="French" value="&lt;&lt; Précédent" />
+    <Localized key="back" lang="Dutch" value="back" />
+    <Localized key="next" lang="English" value="&gt;&gt; Next" />
+    <Localized key="next" lang="French" value="&gt;&gt; Suivant" />
+    <Localized key="next" lang="Dutch" value="next" />
+    <Localized key="configure_model_slot" lang="English" value="Configure model slot" />
+    <Localized key="configure_model_slot" lang="French" value="Configuration de la connexion au modèle" />
+    <Localized key="configure_model_slot" lang="Dutch" value="configure_model_slot" />
+    <Localized key="model_slot_name" lang="English" value="Model slot name" />
+    <Localized key="model_slot_name" lang="French" value="Nom du connecteur de modèle" />
+    <Localized key="model_slot_name" lang="Dutch" value="model_slot_name" />
+    <Localized key="technology" lang="English" value="Technology" />
+    <Localized key="technology" lang="French" value="Technologie" />
+    <Localized key="technology" lang="Dutch" value="technology" />
+    <Localized key="select_an_option" lang="English" value="Select an option" />
+    <Localized key="select_an_option" lang="French" value="Sélectionner une option" />
+    <Localized key="select_an_option" lang="Dutch" value="select_an_option" />
+    <Localized key="SelectExistingResource" lang="English" value="Select existing resource" />
+    <Localized key="SelectExistingResource" lang="French" value="Sélectionner une ressource existante" />
+    <Localized key="SelectExistingResource" lang="Dutch" value="SelectExistingResource" />
+    <Localized key="CreatePrivateNewResouce" lang="English" value="Create private new resource" />
+    <Localized key="CreatePrivateNewResource" lang="French" value="Créer une nouvelle resource propre au projet courant" />
+    <Localized key="CreatePrivateNewResource" lang="Dutch" value="CreatePrivateNewResource" />
+    <Localized key="CreateSharedNewResource" lang="English" value="Create shared new resource" />
+    <Localized key="CreateSharedNewResource" lang="French" value="Créer une nouvelle resource partageable" />
+    <Localized key="CreateSharedNewResource" lang="Dutch" value="CreateSharedNewResource" />
+    <Localized key="LeaveEmpty" lang="English" value="Leave this resource empty" />
+    <Localized key="LeaveEmpty" lang="French" value="Ne pas renseigner" />
+    <Localized key="LeaveEmpty" lang="Dutch" value="LeaveEmpty" />
+    <Localized key="Autoconfigure" lang="English" value="Automatic configuration" />
+    <Localized key="Autoconfigure" lang="French" value="Configuration automatique" />
+    <Localized key="Autoconfigure" lang="Dutch" value="Autoconfigure" />
+    <Localized key="label" lang="English" value="Label" />
+    <Localized key="label" lang="French" value="Label" />
+    <Localized key="label" lang="Dutch" value="Label" />
+    <Localized key="finish" lang="English" value="Finish" />
+    <Localized key="finish" lang="French" value="Terminer" />
+    <Localized key="finish" lang="Dutch" value="Finish" />
+    <Localized key="Cancel" lang="English" value="Cancel" />
+    <Localized key="Cancel" lang="French" value="Annuler" />
+    <Localized key="Cancel" lang="Dutch" value="Cancel" />
+    <Localized key="SelectExistingResource_description" lang="English" value="&lt;html&gt;Retrieve an existing resource from a given ResourceCenter.&lt;/html&gt;" />
+    <Localized key="SelectExistingResource_description" lang="French" value="Accèder à une resource existante mise à disposition par un centre de resources Openflexo." />
+    <Localized key="SelectExistingResource_description" lang="Dutch" value="SelectExistingResource_description" />
+    <Localized key="CreatePrivateNewResource_description" lang="English" value="&lt;html&gt;&lt;center&gt;Create a dedicated resource in the scope of current project.&lt;br&gt;The resource will be managed in the project directory and should not be concurrently accessed&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="CreatePrivateNewResource_description" lang="French" value="&lt;html&gt;&lt;center&gt;Créer une resource dédié eau sein du project courant.&lt;br&gt;La resource sera gérée et stockée dans le répertoire de projet courant et ne devra pas être accédé concurrentiellement.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="CreatePrivateNewResource_description" lang="Dutch" value="CreatePrivateNewResource_description" />
+    <Localized key="CreateSharedNewResource_description" lang="English" value="&lt;html&gt;&lt;center&gt;Created a new resource which might be shared with other users and/or applications.&lt;br&gt;A ResourceCenter accessible for push should be selected, and will be the location where the new resource will be stored.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="CreateSharedNewResource_description" lang="French" value="&lt;html&gt;&lt;center&gt;Créer une resource qui sera partagée avec d'autres utilisateurs et/ou d'autres applications.&lt;br&gt;Un centre de resource accessible en mode &quot;push&quot; doit être sélectionné, et sera le lieu de stockage de la nouvelle resource.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="CreateSharedNewResource_description" lang="Dutch" value="CreateSharedNewResource_description" />
+    <Localized key="LeaveEmptyDescription" lang="English" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this resource or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="LeaveEmptyDescription" lang="French" value="LeaveEmptyDescription" />
+    <Localized key="LeaveEmptyDescription" lang="Dutch" value="LeaveEmptyDescription" />
+    <Localized key="Autoconfigure_decription" lang="English" value="Autoconfigure_decription" />
+    <Localized key="Autoconfigure_decription" lang="French" value="Autoconfigure_decription" />
+    <Localized key="Autoconfigure_decription" lang="Dutch" value="Autoconfigure_decription" />
+    <Localized key="Autoconfigure_description" lang="English" value="&lt;html&gt;&lt;center&gt;A default configuration is available.&lt;br&gt;Let Openflexo manage this configuration for you.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="Autoconfigure_description" lang="French" value="&lt;html&gt;&lt;center&gt;Une configuration par défaut est disponible.&lt;br&gt;Laisser Openflexo gérer cette configuration.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="Autoconfigure_description" lang="Dutch" value="Autoconfigure_decription" />
+    <Localized key="LeaveEmpty_Description" lang="English" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="LeaveEmpty_Description" lang="French" value="LeaveEmptyDescription" />
+    <Localized key="LeaveEmpty_Description" lang="Dutch" value="LeaveEmptyDescription" />
+    <Localized key="LeaveEmpty_description" lang="English" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty.&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="LeaveEmpty_description" lang="French" value="&lt;html&gt;&lt;center&gt;Ne pas renseigner ce connecteur de modèle.&lt;br&gt;Vous pouvez utiliser cette option pour générer le modèle plus tard, ou bien décider plus tard quoi faire.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="LeaveEmpty_description" lang="Dutch" value="LeaveEmptyDescription" />
     <Localized key="" lang="English" />
     <Localized key="" lang="French" />
     <Localized key="" lang="Dutch" />
-    <Localized key="SelectExistingVirtualModel" lang="English">Select existing virtual model</Localized>
-    <Localized key="SelectExistingVirtualModel" lang="French">Sélectionner un modèle virtuel</Localized>
-    <Localized key="SelectExistingVirtualModel" lang="Dutch">SelectExistingVirtualModel</Localized>
-    <Localized key="Select existing resource" lang="English">Select existing resource</Localized>
-    <Localized key="Select existing resource" lang="French">Select existing resource</Localized>
-    <Localized key="Select existing resource" lang="Dutch">Select existing resource</Localized>
-    <Localized key="Create private new resource" lang="English">Create private new resource</Localized>
-    <Localized key="Create private new resource" lang="French">Create private new resource</Localized>
-    <Localized key="Create private new resource" lang="Dutch">Create private new resource</Localized>
-    <Localized key="Create shared new resource" lang="English">Create shared new resource</Localized>
-    <Localized key="Create shared new resource" lang="French">Create shared new resource</Localized>
-    <Localized key="Create shared new resource" lang="Dutch">Create shared new resource</Localized>
-    <Localized key="resource_uri" lang="English">resource_uri</Localized>
-    <Localized key="resource_uri" lang="French">resource_uri</Localized>
-    <Localized key="resource_uri" lang="Dutch">resource_uri</Localized>
-    <Localized key="relative_path" lang="English">relative_path</Localized>
-    <Localized key="relative_path" lang="French">relative_path</Localized>
-    <Localized key="relative_path" lang="Dutch">relative_path</Localized>
-    <Localized key="file_name" lang="English">File name</Localized>
-    <Localized key="file_name" lang="French">Nom de fichier</Localized>
-    <Localized key="file_name" lang="Dutch">File name</Localized>
-    <Localized key="resource" lang="English">Resource</Localized>
-    <Localized key="resource" lang="French">Ressource</Localized>
-    <Localized key="resource" lang="Dutch">Resource</Localized>
-    <Localized key="resource_center" lang="English">Resource center</Localized>
-    <Localized key="resource_center" lang="French">Centre des ressources</Localized>
-    <Localized key="resource_center" lang="Dutch">Resource center</Localized>
-    <Localized key="meta_model" lang="English">Meta model</Localized>
-    <Localized key="meta_model" lang="French">Métamodèle</Localized>
-    <Localized key="meta_model" lang="Dutch">meta_model</Localized>
-    <Localized key="Sélectionner un modèle existant" lang="English">Sélectionner un modèle existant</Localized>
-    <Localized key="Sélectionner un modèle existant" lang="French">Sélectionner un modèle existant</Localized>
-    <Localized key="Sélectionner un modèle existant" lang="Dutch">Sélectionner un modèle existant</Localized>
-    <Localized key="Créer un nouveau modèle propre au projet courant" lang="English">Créer un nouveau modèle propre au projet courant</Localized>
-    <Localized key="Créer un nouveau modèle propre au projet courant" lang="French">Créer un nouveau modèle propre au projet courant</Localized>
-    <Localized key="Créer un nouveau modèle propre au projet courant" lang="Dutch">Créer un nouveau modèle propre au projet courant</Localized>
-    <Localized key="Créer un nouveau modèle partageable" lang="English">Créer un nouveau modèle partageable</Localized>
-    <Localized key="Créer un nouveau modèle partageable" lang="French">Créer un nouveau modèle partageable</Localized>
-    <Localized key="Créer un nouveau modèle partageable" lang="Dutch">Créer un nouveau modèle partageable</Localized>
-    <Localized key="SelectExistingVirtualModel_description" lang="English">&lt;html&gt;Retrieve an existing virtual model already defined.&lt;/html&gt;</Localized>
-    <Localized key="SelectExistingVirtualModel_description" lang="French">&lt;html&gt;Accèder à un modèle virtuel existant.&lt;/html&gt;</Localized>
-    <Localized key="SelectExistingVirtualModel_description" lang="Dutch">SelectExistingVirtualModel_description</Localized>
-    <Localized key="CreateNewVirtualModel" lang="English">Creates new virtual model</Localized>
-    <Localized key="CreateNewVirtualModel" lang="French">Créer un nouveau modèle virtuel</Localized>
-    <Localized key="CreateNewVirtualModel" lang="Dutch">CreateNewVirtualModel</Localized>
-    <Localized key="virtual_model_instance" lang="English">Virtual model instance</Localized>
-    <Localized key="virtual_model_instance" lang="French">Instance de modèle virtuel</Localized>
-    <Localized key="virtual_model_instance" lang="Dutch">virtual_model_instance</Localized>
-    <Localized key="CreateNewVirtualModel_description" lang="English">Creates a new virtual model instance conform to required virtual model</Localized>
-    <Localized key="CreateNewVirtualModel_description" lang="French">&lt;html&gt;&lt;center&gt;Créer une nouvelle instance modèle virtuel conforme au modèle virtuel désiré.&lt;/center&gt;&lt;/html&gt;</Localized>
-    <Localized key="CreateNewVirtualModel_description" lang="Dutch">CreateNewVirtualModel_description</Localized>
+    <Localized key="SelectExistingVirtualModel" lang="English" value="Select existing virtual model" />
+    <Localized key="SelectExistingVirtualModel" lang="French" value="Sélectionner un modèle virtuel" />
+    <Localized key="SelectExistingVirtualModel" lang="Dutch" value="SelectExistingVirtualModel" />
+    <Localized key="Select existing resource" lang="English" value="Select existing resource" />
+    <Localized key="Select existing resource" lang="French" value="Select existing resource" />
+    <Localized key="Select existing resource" lang="Dutch" value="Select existing resource" />
+    <Localized key="Create private new resource" lang="English" value="Create private new resource" />
+    <Localized key="Create private new resource" lang="French" value="Create private new resource" />
+    <Localized key="Create private new resource" lang="Dutch" value="Create private new resource" />
+    <Localized key="Create shared new resource" lang="English" value="Create shared new resource" />
+    <Localized key="Create shared new resource" lang="French" value="Create shared new resource" />
+    <Localized key="Create shared new resource" lang="Dutch" value="Create shared new resource" />
+    <Localized key="resource_uri" lang="English" value="resource_uri" />
+    <Localized key="resource_uri" lang="French" value="resource_uri" />
+    <Localized key="resource_uri" lang="Dutch" value="resource_uri" />
+    <Localized key="relative_path" lang="English" value="relative_path" />
+    <Localized key="relative_path" lang="French" value="relative_path" />
+    <Localized key="relative_path" lang="Dutch" value="relative_path" />
+    <Localized key="file_name" lang="English" value="File name" />
+    <Localized key="file_name" lang="French" value="Nom de fichier" />
+    <Localized key="file_name" lang="Dutch" value="File name" />
+    <Localized key="resource" lang="English" value="Resource" />
+    <Localized key="resource" lang="French" value="Ressource" />
+    <Localized key="resource" lang="Dutch" value="Resource" />
+    <Localized key="resource_center" lang="English" value="Resource center" />
+    <Localized key="resource_center" lang="French" value="Centre des ressources" />
+    <Localized key="resource_center" lang="Dutch" value="Resource center" />
+    <Localized key="meta_model" lang="English" value="Meta model" />
+    <Localized key="meta_model" lang="French" value="Métamodèle" />
+    <Localized key="meta_model" lang="Dutch" value="meta_model" />
+    <Localized key="Sélectionner un modèle existant" lang="English" value="Sélectionner un modèle existant" />
+    <Localized key="Sélectionner un modèle existant" lang="French" value="Sélectionner un modèle existant" />
+    <Localized key="Sélectionner un modèle existant" lang="Dutch" value="Sélectionner un modèle existant" />
+    <Localized key="Créer un nouveau modèle propre au projet courant" lang="English" value="Créer un nouveau modèle propre au projet courant" />
+    <Localized key="Créer un nouveau modèle propre au projet courant" lang="French" value="Créer un nouveau modèle propre au projet courant" />
+    <Localized key="Créer un nouveau modèle propre au projet courant" lang="Dutch" value="Créer un nouveau modèle propre au projet courant" />
+    <Localized key="Créer un nouveau modèle partageable" lang="English" value="Créer un nouveau modèle partageable" />
+    <Localized key="Créer un nouveau modèle partageable" lang="French" value="Créer un nouveau modèle partageable" />
+    <Localized key="Créer un nouveau modèle partageable" lang="Dutch" value="Créer un nouveau modèle partageable" />
+    <Localized key="SelectExistingVirtualModel_description" lang="English" value="&lt;html&gt;Retrieve an existing virtual model already defined.&lt;/html&gt;" />
+    <Localized key="SelectExistingVirtualModel_description" lang="French" value="&lt;html&gt;Accèder à un modèle virtuel existant.&lt;/html&gt;" />
+    <Localized key="SelectExistingVirtualModel_description" lang="Dutch" value="SelectExistingVirtualModel_description" />
+    <Localized key="CreateNewVirtualModel" lang="English" value="Creates new virtual model" />
+    <Localized key="CreateNewVirtualModel" lang="French" value="Créer un nouveau modèle virtuel" />
+    <Localized key="CreateNewVirtualModel" lang="Dutch" value="CreateNewVirtualModel" />
+    <Localized key="virtual_model_instance" lang="English" value="Virtual model instance" />
+    <Localized key="virtual_model_instance" lang="French" value="Instance de modèle virtuel" />
+    <Localized key="virtual_model_instance" lang="Dutch" value="virtual_model_instance" />
+    <Localized key="CreateNewVirtualModel_description" lang="English" value="Creates a new virtual model instance conform to required virtual model" />
+    <Localized key="CreateNewVirtualModel_description" lang="French" value="&lt;html&gt;&lt;center&gt;Créer une nouvelle instance modèle virtuel conforme au modèle virtuel désiré.&lt;/center&gt;&lt;/html&gt;" />
+    <Localized key="CreateNewVirtualModel_description" lang="Dutch" value="CreateNewVirtualModel_description" />
   </LocalizedDictionary>
 </Panel>

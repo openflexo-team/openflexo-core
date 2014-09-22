@@ -284,66 +284,66 @@
     </BrowserElement>
   </Browser>
   <LocalizedDictionary>
-    <Localized key="label" lang="English">Label</Localized>
-    <Localized key="add_property" lang="English">Add property</Localized>
-    <Localized key="label" lang="French">Label</Localized>
-    <Localized key="Class name" lang="French">Nom de classe</Localized>
-    <Localized key="Property" lang="French">Propriété</Localized>
-    <Localized key="Language" lang="French">Langue</Localized>
-    <Localized key="Value" lang="French">Valeur</Localized>
-    <Localized key="add_property" lang="French">Ajouter une property</Localized>
-    <Localized key="label" lang="Dutch">Label</Localized>
-    <Localized key="add_property" lang="Dutch">Add property</Localized>
-    <Localized key="add_see_also" lang="French">Ajouter une annotation "seeAlso"</Localized>
-    <Localized key="add_is_defined_by" lang="French">Ajouter une annotation "IsDefinedBy"</Localized>
-    <Localized key="add_class" lang="French">Ajouter une classe</Localized>
-    <Localized key="add_comment" lang="French">Ajouter une annotation "comment"</Localized>
-    <Localized key="add_label" lang="French">Ajouter une annotation "label"</Localized>
-    <Localized key="add_comment" lang="English">Add "comment" annotation</Localized>
-    <Localized key="add_individual" lang="French">Ajouter un individuel</Localized>
-    <Localized key="add_individual" lang="English">Add individual</Localized>
-    <Localized key="add_class" lang="English">Add class</Localized>
-    <Localized key="add_is_defined_by" lang="English">Add "isDefinedBy" annotation</Localized>
-    <Localized key="add_label" lang="English">Add "label" annotation</Localized>
-    <Localized key="add_see_also" lang="English">Add "seeAlso" annotation</Localized>
-    <Localized key="delete_action" lang="French">Supprimer l'action</Localized>
-    <Localized key="delete_class" lang="French">Supprimer la classe</Localized>
-    <Localized key="delete_individual" lang="French">Supprimer l'individuel</Localized>
-    <Localized key="delete_property" lang="French">Supprimer la propriété</Localized>
-    <Localized key="delete_class" lang="English">Delete class</Localized>
-    <Localized key="delete_action" lang="English">Delete action</Localized>
-    <Localized key="delete_individual" lang="English">Delete individual</Localized>
-    <Localized key="delete_property" lang="English">Delete property</Localized>
-    <Localized key="delete_action" lang="Dutch">Delete action</Localized>
-    <Localized key="individual" lang="French">Individuel</Localized>
-    <Localized key="individual" lang="English">Individual</Localized>
-    <Localized key="ontologic_class" lang="French">Classe ontologique</Localized>
-    <Localized key="ontologic_class" lang="English">Ontologic class</Localized>
-    <Localized key="ontologic_class" lang="Dutch">Ontologic class</Localized>
-    <Localized key="object_property" lang="French">Propriété objet</Localized>
-    <Localized key="object_property" lang="English">Object property</Localized>
-    <Localized key="object_property" lang="Dutch">Object property</Localized>
-    <Localized key="datatype_property" lang="French">Propriété donnée</Localized>
-    <Localized key="datatype_property" lang="English">Datatype property</Localized>
-    <Localized key="datatype_property" lang="Dutch">Datatype property</Localized>
-    <Localized key="properties_whose_domain_is_this" lang="French">Propriétés prenant cette classe comme domaine</Localized>
-    <Localized key="properties_whose_range_is_this" lang="French">Propriétés prenant cette classe comme plage de valeurs</Localized>
-    <Localized key="properties_whose_domain_is_this" lang="English">Properties whose domain is this</Localized>
-    <Localized key="properties_whose_range_is_this" lang="English">Properties whose range is this</Localized>
-    <Localized key="property" lang="English">Property</Localized>
-    <Localized key="domain" lang="English">Domain</Localized>
-    <Localized key="property" lang="French">Propriété</Localized>
-    <Localized key="domain" lang="French">Domaine</Localized>
-    <Localized key="property" lang="Dutch">Property</Localized>
-    <Localized key="domain" lang="Dutch">Domain</Localized>
-    <Localized key="range" lang="French">Plage de valeurs</Localized>
-    <Localized key="range" lang="English">Range</Localized>
-    <Localized key="super_properties" lang="French">Propriétés parentes</Localized>
-    <Localized key="Super classes" lang="French">Classes parentes</Localized>
-    <Localized key="Super classes" lang="English">Super classes</Localized>
-    <Localized key="super_properties" lang="English">Super properties</Localized>
-    <Localized key="sub_properties" lang="French">Propriétés enfants</Localized>
-    <Localized key="sub_properties" lang="English">Sub properties</Localized>
+    <Localized key="label" lang="English" value="Label" />
+    <Localized key="add_property" lang="English" value="Add property" />
+    <Localized key="label" lang="French" value="Label" />
+    <Localized key="Class name" lang="French" value="Nom de classe" />
+    <Localized key="Property" lang="French" value="Propriété" />
+    <Localized key="Language" lang="French" value="Langue" />
+    <Localized key="Value" lang="French" value="Valeur" />
+    <Localized key="add_property" lang="French" value="Ajouter une property" />
+    <Localized key="label" lang="Dutch" value="Label" />
+    <Localized key="add_property" lang="Dutch" value="Add property" />
+    <Localized key="add_see_also" lang="French" value="Ajouter une annotation &quot;seeAlso&quot;" />
+    <Localized key="add_is_defined_by" lang="French" value="Ajouter une annotation &quot;IsDefinedBy&quot;" />
+    <Localized key="add_class" lang="French" value="Ajouter une classe" />
+    <Localized key="add_comment" lang="French" value="Ajouter une annotation &quot;comment&quot;" />
+    <Localized key="add_label" lang="French" value="Ajouter une annotation &quot;label&quot;" />
+    <Localized key="add_comment" lang="English" value="Add &quot;comment&quot; annotation" />
+    <Localized key="add_individual" lang="French" value="Ajouter un individuel" />
+    <Localized key="add_individual" lang="English" value="Add individual" />
+    <Localized key="add_class" lang="English" value="Add class" />
+    <Localized key="add_is_defined_by" lang="English" value="Add &quot;isDefinedBy&quot; annotation" />
+    <Localized key="add_label" lang="English" value="Add &quot;label&quot; annotation" />
+    <Localized key="add_see_also" lang="English" value="Add &quot;seeAlso&quot; annotation" />
+    <Localized key="delete_action" lang="French" value="Supprimer l'action" />
+    <Localized key="delete_class" lang="French" value="Supprimer la classe" />
+    <Localized key="delete_individual" lang="French" value="Supprimer l'individuel" />
+    <Localized key="delete_property" lang="French" value="Supprimer la propriété" />
+    <Localized key="delete_class" lang="English" value="Delete class" />
+    <Localized key="delete_action" lang="English" value="Delete action" />
+    <Localized key="delete_individual" lang="English" value="Delete individual" />
+    <Localized key="delete_property" lang="English" value="Delete property" />
+    <Localized key="delete_action" lang="Dutch" value="Delete action" />
+    <Localized key="individual" lang="French" value="Individuel" />
+    <Localized key="individual" lang="English" value="Individual" />
+    <Localized key="ontologic_class" lang="French" value="Classe ontologique" />
+    <Localized key="ontologic_class" lang="English" value="Ontologic class" />
+    <Localized key="ontologic_class" lang="Dutch" value="Ontologic class" />
+    <Localized key="object_property" lang="French" value="Propriété objet" />
+    <Localized key="object_property" lang="English" value="Object property" />
+    <Localized key="object_property" lang="Dutch" value="Object property" />
+    <Localized key="datatype_property" lang="French" value="Propriété donnée" />
+    <Localized key="datatype_property" lang="English" value="Datatype property" />
+    <Localized key="datatype_property" lang="Dutch" value="Datatype property" />
+    <Localized key="properties_whose_domain_is_this" lang="French" value="Propriétés prenant cette classe comme domaine" />
+    <Localized key="properties_whose_range_is_this" lang="French" value="Propriétés prenant cette classe comme plage de valeurs" />
+    <Localized key="properties_whose_domain_is_this" lang="English" value="Properties whose domain is this" />
+    <Localized key="properties_whose_range_is_this" lang="English" value="Properties whose range is this" />
+    <Localized key="property" lang="English" value="Property" />
+    <Localized key="domain" lang="English" value="Domain" />
+    <Localized key="property" lang="French" value="Propriété" />
+    <Localized key="domain" lang="French" value="Domaine" />
+    <Localized key="property" lang="Dutch" value="Property" />
+    <Localized key="domain" lang="Dutch" value="Domain" />
+    <Localized key="range" lang="French" value="Plage de valeurs" />
+    <Localized key="range" lang="English" value="Range" />
+    <Localized key="super_properties" lang="French" value="Propriétés parentes" />
+    <Localized key="Super classes" lang="French" value="Classes parentes" />
+    <Localized key="Super classes" lang="English" value="Super classes" />
+    <Localized key="super_properties" lang="English" value="Super properties" />
+    <Localized key="sub_properties" lang="French" value="Propriétés enfants" />
+    <Localized key="sub_properties" lang="English" value="Sub properties" />
   </LocalizedDictionary>
 </Panel>
 

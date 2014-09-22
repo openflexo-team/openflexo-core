@@ -22,23 +22,23 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Advanced" lang="French">Avancé</Localized>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="uri" lang="English">URI</Localized>
-    <Localized key="uri" lang="French">URI</Localized>
-    <Localized key="uri" lang="Dutch">URI</Localized>
-    <Localized key="is_loaded" lang="English">Loaded</Localized>
-    <Localized key="is_loaded" lang="French">Chargé</Localized>
-    <Localized key="is_loaded" lang="Dutch">Loaded</Localized>
-    <Localized key="is_read_only" lang="English">Is read only</Localized>
-    <Localized key="is_read_only" lang="French">Lecture seule</Localized>
-    <Localized key="is_read_only" lang="Dutch">Is read only</Localized>
-    <Localized key="imported_ontologies" lang="English">Imported ontologies</Localized>
-    <Localized key="imported_ontologies" lang="French">Ontologies importées</Localized>
-    <Localized key="imported_ontologies" lang="Dutch">Imported ontologies</Localized>
+    <Localized key="Advanced" lang="French" value="Avancé" />
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="uri" lang="English" value="URI" />
+    <Localized key="uri" lang="French" value="URI" />
+    <Localized key="uri" lang="Dutch" value="URI" />
+    <Localized key="is_loaded" lang="English" value="Loaded" />
+    <Localized key="is_loaded" lang="French" value="Chargé" />
+    <Localized key="is_loaded" lang="Dutch" value="Loaded" />
+    <Localized key="is_read_only" lang="English" value="Is read only" />
+    <Localized key="is_read_only" lang="French" value="Lecture seule" />
+    <Localized key="is_read_only" lang="Dutch" value="Is read only" />
+    <Localized key="imported_ontologies" lang="English" value="Imported ontologies" />
+    <Localized key="imported_ontologies" lang="French" value="Ontologies importées" />
+    <Localized key="imported_ontologies" lang="Dutch" value="Imported ontologies" />
   </LocalizedDictionary>
   <Parameter name="title" value="Abstract ontology" />
 </Panel>
