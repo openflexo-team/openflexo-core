@@ -36,23 +36,17 @@ import javax.swing.filechooser.FileFilter;
 import org.openflexo.FlexoCst;
 import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.br.view.JIRAIssueReportDialog;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.components.validation.ConsistencyCheckDialog;
+import org.openflexo.components.validation.ValidationProgressListener;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.fib.utils.FlexoLoggingViewer;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.validation.ValidationFinishedNotification;
-import org.openflexo.foundation.validation.ValidationInitNotification;
 import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationNotification;
-import org.openflexo.foundation.validation.ValidationProgressNotification;
 import org.openflexo.foundation.validation.ValidationReport;
-import org.openflexo.foundation.validation.ValidationSecondaryInitNotification;
-import org.openflexo.foundation.validation.ValidationSecondaryProgressNotification;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
@@ -367,10 +361,12 @@ public class ToolsMenu extends FlexoMenu {
 				return;
 			}
 
+			ValidationProgressListener l = new ValidationProgressListener();
+
 			ValidationModel validationModel = getController().getProject().getProjectValidationModel();
-			validationModel.addObserver(this);
+			validationModel.getPropertyChangeSupport().addPropertyChangeListener(l);
 			ValidationReport report = getController().getProject().validate(validationModel);
-			validationModel.deleteObserver(this);
+			validationModel.getPropertyChangeSupport().removePropertyChangeListener(l);
 
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Validation of project terminated");
@@ -381,26 +377,6 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
-			if (dataModification instanceof ValidationNotification) {
-				if (dataModification instanceof ValidationInitNotification) {
-					ValidationInitNotification initNotification = (ValidationInitNotification) dataModification;
-					ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("validating") + " "
-							+ initNotification.getRootObject().toString(), initNotification.getNbOfObjectToValidate());
-				} else if (dataModification instanceof ValidationProgressNotification) {
-					ValidationProgressNotification progressNotification = (ValidationProgressNotification) dataModification;
-					ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("validating") + " "
-							+ progressNotification.getValidatedObject().toString());
-				} else if (dataModification instanceof ValidationSecondaryInitNotification) {
-					ValidationSecondaryInitNotification initNotification = (ValidationSecondaryInitNotification) dataModification;
-					ProgressWindow.resetSecondaryProgressInstance(initNotification.getNbOfRulesToApply());
-				} else if (dataModification instanceof ValidationSecondaryProgressNotification) {
-					ValidationSecondaryProgressNotification progressNotification = (ValidationSecondaryProgressNotification) dataModification;
-					ProgressWindow.setSecondaryProgressInstance(progressNotification.getValidationRule().getLocalizedName());
-				} else if (dataModification instanceof ValidationFinishedNotification) {
-					ProgressWindow.hideProgressWindow();
-				}
-
-			}
 		}
 
 		@Override

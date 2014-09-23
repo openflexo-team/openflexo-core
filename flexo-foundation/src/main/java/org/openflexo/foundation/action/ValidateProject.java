@@ -22,16 +22,9 @@ package org.openflexo.foundation.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.validation.ValidationFinishedNotification;
-import org.openflexo.foundation.validation.ValidationInitNotification;
-import org.openflexo.foundation.validation.ValidationNotification;
-import org.openflexo.foundation.validation.ValidationProgressNotification;
 import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.localization.FlexoLocalization;
 
@@ -136,7 +129,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 		return errorsNb;
 	}
 
-	private final FlexoObserver ieValidationObserver = new FlexoObserver() {
+	/*private final FlexoObserver ieValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
 			if (dataModification instanceof ValidationNotification) {
@@ -217,7 +210,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 
 			}
 		}
-	};
+	};*/
 
 	public ValidationReport getDmValidationReport() {
 		return dmValidationReport;

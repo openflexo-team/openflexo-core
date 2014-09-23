@@ -69,8 +69,10 @@ import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -716,7 +718,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 	public ValidationModel getProjectValidationModel() {
 		if (projectValidationModel == null) {
-			projectValidationModel = new FlexoProjectValidationModel(this);
+			try {
+				projectValidationModel = new FlexoProjectValidationModel();
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return projectValidationModel;
 	}
@@ -1088,6 +1095,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		validationModel.validate(this, report);
 	}
 
+	@DefineValidationRule
 	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProject> {
 
 		/**

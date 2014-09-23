@@ -40,6 +40,7 @@ import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.localization.FlexoLocalization;
 
 public class DocItemFolder extends DRMObject {
@@ -369,6 +370,7 @@ public class DocItemFolder extends DRMObject {
 	// ============================= Validation =================================
 	// ==========================================================================
 
+	@DefineValidationRule
 	public static class DocItemFolderMustHavePrimaryItem extends ValidationRule {
 		public DocItemFolderMustHavePrimaryItem() {
 			super(DocItemFolder.class, "documentation_folder_must_have_primary_doc_item");

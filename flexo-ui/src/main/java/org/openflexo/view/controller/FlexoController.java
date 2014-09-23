@@ -635,7 +635,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (validationModel != null) {
 			for (int i = 0; i < validationModel.getSize(); i++) {
 				ValidationRuleSet ruleSet = validationModel.getElementAt(i);
-				for (ValidationRule<?, ?> rule : ruleSet.getRules()) {
+				for (int j = 0; j < ruleSet.getSize(); j++) {
+					ValidationRule<?, ?> rule = ruleSet.getElementAt(j);
 					rule.setIsEnabled(getApplicationContext().getGeneralPreferences().isValidationRuleEnabled(rule));
 				}
 			}
@@ -1670,7 +1671,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public final FlexoEditingContext getEditingContext() {
-		if(getApplicationContext()!=null){
+		if (getApplicationContext() != null) {
 			return getApplicationContext().getEditingContext();
 		}
 		return null;

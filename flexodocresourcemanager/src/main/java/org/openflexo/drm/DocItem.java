@@ -38,6 +38,7 @@ import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationWarning;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 
@@ -593,6 +594,7 @@ public class DocItem extends DRMObject {
 	// =================================
 	// ==========================================================================
 
+	@DefineValidationRule
 	public static class DocumentationShouldBeUpToDate extends ValidationRule {
 		private final Language _language;
 

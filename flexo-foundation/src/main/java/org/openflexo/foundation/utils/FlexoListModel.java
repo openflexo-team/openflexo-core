@@ -28,7 +28,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
-import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Redefines SWING AbstractListModel to extend FlexoObservable class
@@ -37,7 +37,7 @@ import org.openflexo.foundation.FlexoObservable;
  * 
  */
 
-public abstract class FlexoListModel extends FlexoObservable implements ListModel, Serializable {
+public abstract class FlexoListModel extends PropertyChangedSupportDefaultImplementation implements ListModel, Serializable {
 	protected EventListenerList listenerList = new EventListenerList();
 
 	/**

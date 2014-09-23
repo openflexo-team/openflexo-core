@@ -21,7 +21,8 @@ package org.openflexo.drm;
 
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.localization.Language;
+import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * Please comment this class
@@ -31,17 +32,17 @@ import org.openflexo.localization.Language;
  */
 public class DRMValidationModel extends ValidationModel {
 
-	public DRMValidationModel(DocResourceCenter drc) {
-		super(null);
+	public DRMValidationModel() throws ModelDefinitionException {
+		super(ModelContextLibrary.getCompoundModelContext(DocResourceCenter.class));
 
-		for (Language language : Language.availableValues()) {
+		/*for (Language language : Language.availableValues()) {
 			registerRule(new DocItem.DocumentationShouldBeUpToDate(language));
 		}
 		registerRule(new DocItemFolder.DocItemFolderMustHavePrimaryItem());
 
 		// Notify that the validation model is complete and that inheritance
 		// computation could be performed
-		update();
+		update();*/
 	}
 
 	/**
