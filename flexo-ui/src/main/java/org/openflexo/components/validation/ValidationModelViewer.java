@@ -25,7 +25,6 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +55,7 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationRuleSet;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
@@ -109,12 +109,15 @@ public class ValidationModelViewer extends JPanel implements GraphicalFlexoObser
 		this.applicationContext = applicationContext;
 		_consistencyCheckDialog = consistencyCheckDialog;
 		_validationModel = validationModel;
-		_currentRuleSet = new ValidationRuleSet(null, new Vector());
+		_currentRuleSet = new ValidationRuleSet(VirtualModel.class);
 
 		_title = new JLabel(FlexoLocalization.localizedForKey("validation_model"), SwingConstants.CENTER);
 		_title.setFont(FlexoCst.BIG_FONT);
 		_title.setForeground(Color.BLACK);
 		_title.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		System.out.println("Tiens, je cree ma liste avec le validationModel=" + _validationModel);
+		System.out.println("taille: " + _validationModel.getSize());
 
 		_validationModelList = new JList(_validationModel);
 		_validationModelList.setCellRenderer(new ValidationModelCellRenderer());
@@ -313,19 +316,21 @@ public class ValidationModelViewer extends JPanel implements GraphicalFlexoObser
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
+
 					if (_validationModel.getSize() > 0) {
 						_validationModelList.setSelectedIndex(0);
 						if (_validationModel.getElementAt(0).getRules().size() > 0) {
-							disableButton
-									.setText(_validationModel.getElementAt(0).getRules().firstElement().getIsEnabled() ? FlexoLocalization
-											.localizedForKey("disableRule", disableButton) : FlexoLocalization.localizedForKey(
-											"enableRule", disableButton));
+							disableButton.setText(_validationModel.getElementAt(0).getElementAt(0).getIsEnabled() ? FlexoLocalization
+									.localizedForKey("disableRule", disableButton) : FlexoLocalization.localizedForKey("enableRule",
+									disableButton));
 						}
 					}
 					_consistencyCheckDialog.toFront();
 				}
 			});
 		}
+
+		revalidate();
 	}
 
 	void setCurrentRuleSet(ValidationRuleSet ruleSet) {
@@ -397,7 +402,9 @@ public class ValidationModelViewer extends JPanel implements GraphicalFlexoObser
 			Component returned = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (returned instanceof JLabel) {
 				JLabel label = (JLabel) returned;
-				label.setText(((ValidationRuleSet) value).getTypeName());
+				if (value != null) {
+					label.setText(((ValidationRuleSet) value).getTypeName());
+				}
 			}
 			return returned;
 		}

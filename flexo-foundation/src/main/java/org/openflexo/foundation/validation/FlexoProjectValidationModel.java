@@ -20,17 +20,19 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * @author gpolet
+ * @author gpolet, sylvain
  * 
  */
 public class FlexoProjectValidationModel extends ValidationModel {
 
-	public FlexoProjectValidationModel(FlexoProject project) {
-		super(project);
+	public FlexoProjectValidationModel() throws ModelDefinitionException {
+		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class));
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
-		registerRule(new FlexoProject.FlexoIDMustBeUnique());
+		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());
 		// registerRule(new FlexoProject.RebuildDependancies());
 		// registerRule(new FlexoProject.ComponentInstancesMustDefineAComponent());
@@ -40,7 +42,7 @@ public class FlexoProjectValidationModel extends ValidationModel {
 
 		// Notify that the validation model is complete and that inheritance
 		// computation could be performed
-		update();
+		// update();
 	}
 
 	/**

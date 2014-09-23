@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.validation;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -41,13 +41,25 @@ public class ValidationWarning<R extends ValidationRule<R, V>, V extends Validab
 		super(rule, anObject, aMessage, proposal);
 	}
 
-	public ValidationWarning(R rule, V anObject, String aMessage, Vector<FixProposal<R, V>> fixProposals) {
+	public ValidationWarning(R rule, V anObject, String aMessage, List<FixProposal<R, V>> fixProposals) {
 		super(rule, anObject, aMessage, fixProposals);
+	}
+
+	public ValidationWarning(R rule, V anObject, String aMessage, String aDetailedMessage) {
+		super(rule, anObject, aMessage, aDetailedMessage);
+	}
+
+	public ValidationWarning(R rule, V anObject, String aMessage, String aDetailedMessage, FixProposal<R, V> proposal) {
+		super(rule, anObject, aMessage, aDetailedMessage, proposal);
+	}
+
+	public ValidationWarning(R rule, V anObject, String aMessage, String aDetailedMessage, List<FixProposal<R, V>> fixProposals) {
+		super(rule, anObject, aMessage, aDetailedMessage, fixProposals);
 	}
 
 	@Override
 	public String toString() {
-		return "VALIDATION / WARNING: " + getMessage();
+		return "VALIDATION / WARNING:   " + getMessage() + (getDetailedMessage() != null ? " details: " + getDetailedMessage() : "");
 	}
 
 }

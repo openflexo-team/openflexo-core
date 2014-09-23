@@ -19,7 +19,7 @@
  */
 package org.openflexo.foundation.validation;
 
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -42,13 +42,26 @@ public class ValidationError<R extends ValidationRule<R, V>, V extends Validable
 		super(rule, anObject, aMessage, proposal);
 	}
 
-	public ValidationError(R rule, V anObject, String aMessage, Vector<FixProposal<R, V>> fixProposals) {
+	public ValidationError(R rule, V anObject, String aMessage, List<FixProposal<R, V>> fixProposals) {
 		super(rule, anObject, aMessage, fixProposals);
+	}
+
+	public ValidationError(R rule, V anObject, String aMessage, String aDetailedMessage) {
+		super(rule, anObject, aMessage, aDetailedMessage);
+	}
+
+	public ValidationError(R rule, V anObject, String aMessage, String aDetailedMessage, FixProposal<R, V> proposal) {
+		super(rule, anObject, aMessage, aDetailedMessage, proposal);
+	}
+
+	public ValidationError(R rule, V anObject, String aMessage, String aDetailedMessage, List<FixProposal<R, V>> fixProposals) {
+		super(rule, anObject, aMessage, aDetailedMessage, fixProposals);
 	}
 
 	@Override
 	public String toString() {
-		return "VALIDATION / ERROR:   " + getMessage();
+		return "VALIDATION / ERROR:   " + getMessage() + (getDetailedMessage() != null ? " details: " + getDetailedMessage() : "")
+				+ " OBJECT=" + getObject();
 	}
 
 }

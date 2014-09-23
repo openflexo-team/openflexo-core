@@ -40,68 +40,79 @@ import org.openflexo.localization.FlexoLocalization;
  */
 public abstract class ValidationIssue<R extends ValidationRule<R, V>, V extends Validable> extends FlexoListModel implements FlexoObserver {
 
+	public static final String DELETED_PROPERTY = "deleted";
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ValidationIssue.class.getPackage().getName());
 
-	private V _object;
-
-	private String _message;
-
-	private String _localizedMessage;
-
-	private ValidationReport _validationReport;
-
-	private R _cause;
-
-	private boolean _isLocalized;
+	private V object;
+	private String message;
+	private String detailedMessage;
+	private String localizedMessage;
+	private ValidationReport validationReport;
+	private R cause;
+	private boolean isLocalized;
 
 	public ValidationIssue(V anObject, String aLocalizedMessage) {
 		this(anObject, aLocalizedMessage, true);
 	}
 
+	public ValidationIssue(V anObject, String aMessage, String aDetailedMessage) {
+		this(anObject, aMessage, aDetailedMessage, true);
+	}
+
 	public ValidationIssue(V anObject, String aMessage, boolean isLocalized) {
+		this(anObject, aMessage, null, isLocalized);
+	}
+
+	public ValidationIssue(V anObject, String aMessage, String aDetailedMessage, boolean isLocalized) {
 		super();
-		_object = anObject;
-		_message = aMessage;
-		_isLocalized = isLocalized;
+		object = anObject;
+		message = aMessage;
+		detailedMessage = aDetailedMessage;
+		this.isLocalized = isLocalized;
 		if (!isLocalized) {
-			_localizedMessage = aMessage;
+			localizedMessage = aMessage;
 		}
-		if (_object instanceof FlexoObservable) {
-			((FlexoObservable) _object).addObserver(this);
+		if (object instanceof FlexoObservable) {
+			((FlexoObservable) object).addObserver(this);
 		}
 	}
 
 	public FlexoProject getProject() {
-		if (_object != null && _object instanceof FlexoProjectObject) {
-			return ((FlexoProjectObject) _object).getProject();
+		if (object != null && object instanceof FlexoProjectObject) {
+			return ((FlexoProjectObject) object).getProject();
 		}
 		return null;
 	}
 
 	public String getMessage() {
-		return _message;
+		return message;
+	}
+
+	public String getDetailedMessage() {
+		return detailedMessage;
 	}
 
 	public String getLocalizedMessage() {
-		if (_localizedMessage == null && _message != null && _isLocalized) {
-			_localizedMessage = FlexoLocalization.localizedForKeyWithParams(_message, this);
+		if (localizedMessage == null && message != null && isLocalized) {
+			localizedMessage = FlexoLocalization.localizedForKeyWithParams(message, this);
 		}
-		return _localizedMessage;
+		return localizedMessage;
 	}
 
 	public void setMessage(String message) {
-		this._message = message;
+		this.message = message;
 	}
 
 	public V getObject() {
-		return _object;
+		return object;
 	}
 
 	// TODO : Check if this is ok => generalized to fix a bug in selection of ViewPointObjects in Viewpoint validation tool
 	public FlexoObject getSelectableObject() {
-		if (_object instanceof FlexoObject || _object instanceof ViewPointObject) {
-			return (FlexoObject) _object;
+		if (object instanceof FlexoObject || object instanceof ViewPointObject) {
+			return (FlexoObject) object;
 		}
 		return null;
 	}
@@ -117,11 +128,11 @@ public abstract class ValidationIssue<R extends ValidationRule<R, V>, V extends 
 	}
 
 	public void setValidationReport(ValidationReport report) {
-		_validationReport = report;
+		validationReport = report;
 	}
 
 	public ValidationReport getValidationReport() {
-		return _validationReport;
+		return validationReport;
 	}
 
 	private String _typeName;
@@ -140,11 +151,11 @@ public abstract class ValidationIssue<R extends ValidationRule<R, V>, V extends 
 	public abstract String toString();
 
 	public void setCause(R rule) {
-		_cause = rule;
+		cause = rule;
 	}
 
 	public R getCause() {
-		return _cause;
+		return cause;
 	}
 
 	@Override
@@ -158,12 +169,13 @@ public abstract class ValidationIssue<R extends ValidationRule<R, V>, V extends 
 	}
 
 	public void delete() {
-		if (_object instanceof FlexoObservable) {
-			((FlexoObservable) _object).deleteObserver(this);
+		if (object instanceof FlexoObservable) {
+			((FlexoObservable) object).deleteObserver(this);
 		}
-		_validationReport.removeFromValidationIssues(this);
-		setChanged();
-		notifyObservers(new DataModification(DELETED_PROPERTY, this, null));
+		validationReport.removeFromValidationIssues(this);
+		if (getPropertyChangeSupport() != null) {
+			getPropertyChangeSupport().firePropertyChange(DELETED_PROPERTY, this, null);
+		}
 	}
 
 	@Override
@@ -172,11 +184,11 @@ public abstract class ValidationIssue<R extends ValidationRule<R, V>, V extends 
 	}
 
 	public void setLocalized(boolean localized) {
-		_isLocalized = localized;
+		isLocalized = localized;
 		if (!localized) {
-			_localizedMessage = null;
+			localizedMessage = null;
 		} else {
-			_localizedMessage = _message;
+			localizedMessage = message;
 		}
 	}
 }

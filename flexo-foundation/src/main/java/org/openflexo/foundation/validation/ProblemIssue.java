@@ -19,8 +19,10 @@
  */
 package org.openflexo.foundation.validation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,28 +39,40 @@ public abstract class ProblemIssue<R extends ValidationRule<R, V>, V extends Val
 
 	private static final Logger logger = Logger.getLogger(ProblemIssue.class.getPackage().getName());
 
-	private Vector<FixProposal<R, V>> _fixProposals;
+	private List<FixProposal<R, V>> fixProposals;
 
-	private R _validationRule;
+	private R validationRule;
 
-	private Vector<Validable> _relatedValidableObjects;
+	private List<Validable> relatedValidableObjects;
 
 	public ProblemIssue(R rule, V anObject, String aMessage) {
-		super(anObject, aMessage);
-		_validationRule = rule;
-		_fixProposals = new Vector<FixProposal<R, V>>();
-		_relatedValidableObjects = new Vector<Validable>();
+		this(rule, anObject, aMessage, (String) null);
+	}
+
+	public ProblemIssue(R rule, V anObject, String aMessage, String aDetailedMessage) {
+		super(anObject, aMessage, aDetailedMessage);
+		validationRule = rule;
+		fixProposals = new ArrayList<FixProposal<R, V>>();
+		relatedValidableObjects = new Vector<Validable>();
 	}
 
 	public ProblemIssue(R rule, V anObject, String aMessage, FixProposal<R, V> proposal) {
-		this(rule, anObject, aMessage);
+		this(rule, anObject, aMessage, null, proposal);
+	}
+
+	public ProblemIssue(R rule, V anObject, String aMessage, List<FixProposal<R, V>> fixProposals) {
+		this(rule, anObject, aMessage, null, fixProposals);
+	}
+
+	public ProblemIssue(R rule, V anObject, String aMessage, String aDetailedMessage, FixProposal<R, V> proposal) {
+		this(rule, anObject, aMessage, aDetailedMessage);
 		if (proposal != null) {
 			addToFixProposals(proposal);
 		}
 	}
 
-	public ProblemIssue(R rule, V anObject, String aMessage, Vector<FixProposal<R, V>> fixProposals) {
-		this(rule, anObject, aMessage);
+	public ProblemIssue(R rule, V anObject, String aMessage, String aDetailedMessage, List<FixProposal<R, V>> fixProposals) {
+		this(rule, anObject, aMessage, aDetailedMessage);
 		if (fixProposals != null) {
 			for (FixProposal<R, V> fp : fixProposals) {
 				addToFixProposals(fp);
@@ -67,31 +81,30 @@ public abstract class ProblemIssue<R extends ValidationRule<R, V>, V extends Val
 	}
 
 	public void addToFixProposals(FixProposal<R, V> proposal) {
-		_fixProposals.add(proposal);
+		fixProposals.add(proposal);
 		proposal.setProblemIssue(this);
 	}
 
 	public boolean isFixable() {
-		return _fixProposals.size() > 0;
+		return fixProposals.size() > 0;
 	}
 
 	@Override
 	public int getSize() {
-		return _fixProposals.size();
+		return fixProposals.size();
 	}
 
 	@Override
 	public FixProposal<R, V> getElementAt(int index) {
-		if (_fixProposals == null) {
+		if (fixProposals == null) {
 			return null;
 		}
-		return _fixProposals.elementAt(index);
+		return fixProposals.get(index);
 	}
 
 	public void revalidateAfterFixing(boolean isDeleteAction) {
 		Vector<ValidationIssue> allIssuesToRemove = getValidationReport().issuesRegarding(getObject());
-		for (Enumeration e = getRelatedValidableObjects().elements(); e.hasMoreElements();) {
-			Validable relatedValidable = (Validable) e.nextElement();
+		for (Validable relatedValidable : getRelatedValidableObjects()) {
 			allIssuesToRemove.addAll(getValidationReport().issuesRegarding(relatedValidable));
 		}
 		Collection<Validable> allEmbeddedValidableObjects = getValidationReport().getValidationModel().retrieveAllEmbeddedValidableObjects(
@@ -118,8 +131,7 @@ public abstract class ProblemIssue<R extends ValidationRule<R, V>, V extends Val
 				getValidationReport().addToValidationIssues(newIssue);
 			}
 		}
-		for (Enumeration e = getRelatedValidableObjects().elements(); e.hasMoreElements();) {
-			Validable relatedValidable = (Validable) e.nextElement();
+		for (Validable relatedValidable : getRelatedValidableObjects()) {
 			if (!(relatedValidable instanceof DeletableObject && ((DeletableObject) relatedValidable).isDeleted())) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Revalidate related");
@@ -138,26 +150,26 @@ public abstract class ProblemIssue<R extends ValidationRule<R, V>, V extends Val
 	}
 
 	public R getValidationRule() {
-		return _validationRule;
+		return validationRule;
 	}
 
-	public Vector<Validable> getRelatedValidableObjects() {
-		return _relatedValidableObjects;
+	public List<Validable> getRelatedValidableObjects() {
+		return relatedValidableObjects;
 	}
 
-	public void setRelatedValidableObjects(Vector<Validable> relatedValidableObjects) {
-		_relatedValidableObjects = relatedValidableObjects;
+	public void setRelatedValidableObjects(List<Validable> relatedValidableObjects) {
+		this.relatedValidableObjects = relatedValidableObjects;
 	}
 
 	public void addToRelatedValidableObjects(Validable object) {
-		_relatedValidableObjects.add(object);
+		relatedValidableObjects.add(object);
 	}
 
 	public void addToRelatedValidableObjects(Vector<? extends Validable> someObjects) {
-		_relatedValidableObjects.addAll(someObjects);
+		relatedValidableObjects.addAll(someObjects);
 	}
 
 	public void removeFromRelatedValidableObjects(Validable object) {
-		_relatedValidableObjects.remove(object);
+		relatedValidableObjects.remove(object);
 	}
 }

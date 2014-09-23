@@ -53,23 +53,15 @@ import javax.swing.table.TableColumn;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.FlexoCst;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.validation.AskParametersComponent.AskParametersComponentImpl;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ParameteredFixProposal;
 import org.openflexo.foundation.validation.ProblemIssue;
 import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationFinishedNotification;
-import org.openflexo.foundation.validation.ValidationInitNotification;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationNotification;
-import org.openflexo.foundation.validation.ValidationProgressNotification;
 import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.foundation.validation.ValidationReport.ReportMode;
 import org.openflexo.foundation.validation.ValidationRule;
@@ -85,7 +77,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author sguerin
  * 
  */
-public class ValidationReportEditor extends JPanel implements GraphicalFlexoObserver {
+public class ValidationReportEditor extends JPanel {
 
 	static final Logger logger = Logger.getLogger(ValidationReportEditor.class.getPackage().getName());
 
@@ -460,45 +452,29 @@ public class ValidationReportEditor extends JPanel implements GraphicalFlexoObse
 	}
 
 	public void consistencyCheckWithValidationModel(Validable objectToValidate, ValidationModel validationModel) {
+
+		System.out.println("ConsistencyCheck for " + objectToValidate + " validationModel=" + validationModel);
+
 		for (int i = 0; i < validationModel.getSize(); i++) {
 			ValidationRuleSet ruleSet = validationModel.getElementAt(i);
-			for (ValidationRule rule : ruleSet.getRules()) {
+			for (int j = 0; j < ruleSet.getSize(); j++) {
+				ValidationRule rule = ruleSet.getElementAt(j);
 				rule.setIsEnabled(applicationContext.getGeneralPreferences().isValidationRuleEnabled(rule));
 			}
 		}
-		validationModel.addObserver(this);
+
+		ValidationProgressListener l = new ValidationProgressListener();
+
+		validationModel.getPropertyChangeSupport().addPropertyChangeListener(l);
+
+		System.out.println("Validate " + objectToValidate);
+
 		ValidationReport report = objectToValidate.validate(validationModel);
 		if (report == null) {
 			report = new ValidationReport(validationModel, objectToValidate);
 		}
 		setValidationReport(report);
-		validationModel.deleteObserver(this);
-	}
-
-	/**
-	 * Implements
-	 * 
-	 * @see org.openflexo.foundation.FlexoObserver#update(org.openflexo.foundation.FlexoObservable,
-	 *      org.openflexo.foundation.DataModification)
-	 * @see org.openflexo.foundation.FlexoObserver#update(org.openflexo.foundation.FlexoObservable,
-	 *      org.openflexo.foundation.DataModification)
-	 */
-	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
-		if (dataModification instanceof ValidationNotification) {
-			if (dataModification instanceof ValidationInitNotification) {
-				ValidationInitNotification initNotification = (ValidationInitNotification) dataModification;
-				ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("validating") + " " + initNotification.getRootObject(),
-						initNotification.getNbOfObjectToValidate());
-			} else if (dataModification instanceof ValidationProgressNotification) {
-				ValidationProgressNotification progressNotification = (ValidationProgressNotification) dataModification;
-				ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("validating") + " "
-						+ progressNotification.getValidatedObject());
-			} else if (dataModification instanceof ValidationFinishedNotification) {
-				ProgressWindow.hideProgressWindow();
-			}
-
-		}
+		validationModel.getPropertyChangeSupport().removePropertyChangeListener(l);
 	}
 
 	protected class ValidationReportCellRenderer extends DefaultTableCellRenderer {

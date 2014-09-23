@@ -25,40 +25,99 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.utils.FlexoListModel;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.ModelContext;
+import org.openflexo.model.ModelEntity;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 
 /**
- * Used to store and manage a set of ValidationRule
+ * Used to store and manage a set of {@link ValidationRule} associated to some types<br>
+ * {@link ValidationRule} discovering is based on PAMELA models annotated with {@link DefineValidationRule} annotations
  * 
  * @author sguerin
  * 
  */
+@SuppressWarnings("serial")
 public abstract class ValidationModel extends FlexoListModel {
 
 	private static final Logger logger = Logger.getLogger(ValidationModel.class.getPackage().getName());
 
-	private final Hashtable<Class, Vector<ValidationRule>> _rules;
+	public static final String VALIDATION_START = "validationStart";
+	public static final String VALIDATION_END = "validationEnd";
+	public static final String VALIDATION_OBJECT = "validateObject";
+	public static final String OBJECT_VALIDATION_START = "objectValidation";
+	public static final String VALIDATE_WITH_RULE = "validateWithRule";
 
-	private final Hashtable<Class, ValidationRuleSet> _inheritedRules;
+	private final Map<Class<?>, ValidationRuleSet<?>> ruleSets;
 
-	private boolean recomputeInheritedRules = true;
+	private ModelFactory validationModelFactory;
 
-	private final FlexoProject _project;
-
-	public ValidationModel(FlexoProject project) {
+	public ValidationModel(ModelContext modelContext) {
 		super();
-		_project = project;
-		_rules = new Hashtable<Class, Vector<ValidationRule>>();
-		_inheritedRules = new Hashtable<Class, ValidationRuleSet>();
+
+		ruleSets = new HashMap<Class<?>, ValidationRuleSet<?>>();
+
+		try {
+			searchAndRegisterValidationRules(modelContext);
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void searchAndRegisterValidationRules(ModelContext modelContext) throws ModelDefinitionException {
+
+		validationModelFactory = new ModelFactory(modelContext);
+
+		Iterator<ModelEntity> it = modelContext.getEntities();
+
+		while (it.hasNext()) {
+			ModelEntity e = it.next();
+			// System.out.println("assertTrue(validationModel.getValidationModelFactory().getModelContext().getModelEntity("
+			// + e.getImplementedInterface().toString().substring(10) + ".class) != null);");
+			Class i = e.getImplementedInterface();
+			ruleSets.put(i, new ValidationRuleSet<Validable>(i));
+		}
+
+		// Now manage inheritance
+		it = modelContext.getEntities();
+		while (it.hasNext()) {
+			ModelEntity e = it.next();
+			// System.out.println("assertTrue(validationModel.getValidationModelFactory().getModelContext().getModelEntity("
+			// + e.getImplementedInterface().toString().substring(10) + ".class) != null);");
+			Class i = e.getImplementedInterface();
+			manageInheritanceFor(i, ruleSets.get(i));
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void manageInheritanceFor(Class<?> cl, ValidationRuleSet<?> originRuleSet) {
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			if (ruleSets.get(superInterface) != null && originRuleSet.getDeclaredType() != superInterface) {
+				// System.out.println("Found " + originRuleSet.getDeclaredType() + " inherits from " + superInterface);
+				originRuleSet.addParentRuleSet((ValidationRuleSet) ruleSets.get(superInterface));
+
+			} else {
+				manageInheritanceFor(superInterface, originRuleSet);
+			}
+		}
+	}
+
+	public ModelFactory getValidationModelFactory() {
+		return validationModelFactory;
 	}
 
 	@Override
@@ -141,77 +200,62 @@ public abstract class ValidationModel extends FlexoListModel {
 				validationStepToNotify++;
 			}
 		}
-		setChanged();
-		notifyObservers(new ValidationInitNotification(object, validationStepToNotify));
+
+		getPropertyChangeSupport().firePropertyChange(VALIDATION_START, object, validationStepToNotify);
 
 		// Perform the validation
 		for (Enumeration<Validable> en = objectsToValidate.elements(); en.hasMoreElements();) {
 			Validable next = en.nextElement();
 			if (shouldNotifyValidation(next)) {
-				setChanged();
-				notifyObservers(new ValidationProgressNotification(object, next));
+				getPropertyChangeSupport().firePropertyChange(VALIDATION_OBJECT, null, next);
 			}
 
 			if (!next.isDeleted()) {
 				addedIssues += performValidation(next, report);
 			}
 
-			/*ValidationRuleSet rules = getValidationRulesForObjectType(next.getClass());
-			if (logger.isLoggable(Level.FINE))
-				logger.fine("Validating " + next.getFullyQualifiedName()+" "+next.toString());
-			
-			if (shouldNotifyValidationRules()) {
-			setChanged();
-			notifyObservers(new ValidationSecondaryInitNotification(next, rules.getSize()));
-			}
-
-			for (Enumeration en2 = rules.elements(); en2.hasMoreElements();) {
-			   ValidationRule rule = (ValidationRule) en2.nextElement();
-			   if (logger.isLoggable(Level.FINE))
-			   	logger.fine("Applying rule " + rule.getLocalizedName());
-
-			   if (shouldNotifyValidationRules()) {
-			   	setChanged();
-			   	notifyObservers(new ValidationSecondaryProgressNotification(next, rule));
-			   }
-
-			   if (performRuleValidation(rule, next, report)) addedIssues++;
-			}*/
-
 		}
 
 		// Notify validation is finished
-		setChanged();
-		notifyObservers(new ValidationFinishedNotification(object));
+		getPropertyChangeSupport().firePropertyChange(VALIDATION_END, null, object);
 
 		return addedIssues == 0;
 	}
 
-	private <V extends Validable> int performValidation(V next, ValidationReport report) {
+	public <V extends Validable> ValidationRuleSet<? super V> getRuleSet(V validable) {
+		return (ValidationRuleSet<? super V>) getRuleSet(validable.getClass());
+	}
+
+	public <V extends Validable> ValidationRuleSet<? super V> getRuleSet(Class<V> validableClass) {
+		return (ValidationRuleSet<? super V>) TypeUtils.objectForClass(validableClass, ruleSets, false);
+	}
+
+	private <V extends Validable> int performValidation(V validable, ValidationReport report) {
 		int addedIssues = 0;
 
-		ValidationRuleSet rules = getValidationRulesForObjectType(next.getClass());
+		ValidationRuleSet<? super V> ruleSet = getRuleSet(validable);
+
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Validating " + next.toString() + " " + next.toString());
+			logger.fine("Validating " + validable.toString() + " " + validable.toString());
 		}
 
 		if (shouldNotifyValidationRules()) {
-			setChanged();
-			notifyObservers(new ValidationSecondaryInitNotification(next, rules.getSize()));
+			getPropertyChangeSupport().firePropertyChange(OBJECT_VALIDATION_START, 0, ruleSet.getSize());
 		}
 
-		for (Enumeration<ValidationRule> en = rules.elements(); en.hasMoreElements();) {
-			ValidationRule rule = en.nextElement();
+		for (int i = 0; i < ruleSet.getSize(); i++) {
+			ValidationRule<?, ? super V> rule = ruleSet.getElementAt(i);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Applying rule " + rule.getLocalizedName());
 			}
 
+			// System.out.println("--> Applying rule " + rule.getLocalizedName() + " for " + validable);
+
 			if (shouldNotifyValidationRules()) {
-				setChanged();
-				notifyObservers(new ValidationSecondaryProgressNotification(next, rule));
+				getPropertyChangeSupport().firePropertyChange(VALIDATE_WITH_RULE, null, rule);
 			}
 
-			if (performRuleValidation(rule, next, report)) {
+			if (performRuleValidation((ValidationRule) rule, validable, report)) {
 				addedIssues++;
 			}
 		}
@@ -286,105 +330,44 @@ public abstract class ValidationModel extends FlexoListModel {
 
 	public abstract boolean fixAutomaticallyIfOneFixProposal();
 
+	private List<Class<?>> sortedClasses;
+
+	public List<Class<?>> getSortedClasses() {
+		if (sortedClasses == null) {
+			sortedClasses = new ArrayList<Class<?>>();
+			sortedClasses.addAll(ruleSets.keySet());
+			Collections.sort(sortedClasses, new ClassComparator());
+		}
+		return sortedClasses;
+	}
+
+	private ValidationRuleFilter _filter = null;
+
+	public void update(ValidationRuleFilter filter) {
+		_filter = filter;
+	}
+
 	/**
-	 * Internally used to build ValidationModel
+	 * Implements
 	 * 
-	 * @param validationRule
-	 * @param objectType
+	 * @see javax.swing.ListModel#getSize()
 	 */
-	protected void registerRule(ValidationRule validationRule) {
-		Class objectType = validationRule.getObjectType();
-		if (_rules.get(objectType) != null) {
-			Vector<ValidationRule> existingRules = _rules.get(objectType);
-			existingRules.add(validationRule);
-		} else {
-			Vector<ValidationRule> newVector = new Vector<ValidationRule>();
-			newVector.add(validationRule);
-			_rules.put(objectType, newVector);
-		}
-		recomputeInheritedRules = true;
-	}
-
-	protected void unregisterRule(ValidationRule validationRule) {
-		Class objectType = validationRule.getObjectType();
-		if (_rules.get(objectType) != null) {
-			Vector<ValidationRule> existingRules = _rules.get(objectType);
-			existingRules.remove(validationRule);
-		}
-		recomputeInheritedRules = true;
+	@Override
+	public int getSize() {
+		return ruleSets.size();
 	}
 
 	/**
-	 * Return all known ValidationRule object known for supplied object type (supports basic class inheritance scheme)
+	 * Implements
 	 * 
-	 * @param objectType
-	 * @return
+	 * @see javax.swing.ListModel#getElementAt(int)
 	 */
-	protected ValidationRuleSet getValidationRulesForObjectType(Class objectType) {
-		if (recomputeInheritedRules) {
-			recomputeInheritedRules(_filter);
+	@Override
+	public ValidationRuleSet<?> getElementAt(int index) {
+		if (index >= 0 && index < getSortedClasses().size()) {
+			return ruleSets.get(getSortedClasses().get(index));
 		}
-		if (_inheritedRules.get(objectType) != null) {
-			return _inheritedRules.get(objectType);
-		} else {
-			Class current = objectType;
-			while (current.getSuperclass() != null) {
-				if (_inheritedRules.get(current.getSuperclass()) != null) {
-					ValidationRuleSet newRuleSet = new ValidationRuleSet(objectType, _inheritedRules.get(current.getSuperclass())
-							.getRules());
-					_inheritedRules.put(objectType, newRuleSet);
-					return newRuleSet;
-				}
-				current = current.getSuperclass();
-			}
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Could not find validation rules for type " + objectType.getName());
-			}
-			return new ValidationRuleSet(objectType);
-		}
-	}
-
-	/**
-	 * Internally used to maintain association between classes and a related set of ValidationRule objects.
-	 */
-	private void recomputeInheritedRules(ValidationRuleFilter filter) {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("BEGIN recomputeInheritedRules()");
-		}
-		for (Enumeration e1 = _rules.keys(); e1.hasMoreElements();) {
-			Class type1 = (Class) e1.nextElement();
-			Vector rulesForType = _rules.get(type1);
-			ValidationRuleSet ruleSet = new ValidationRuleSet(type1, rulesForType);
-			/*if (_project != null) {
-				for (Enumeration e2 = rulesForType.elements(); e2.hasMoreElements();) {
-					ValidationRule rule = (ValidationRule) e2.nextElement();
-					if (!rule.isValidForTarget(getTargetType()) || filter != null && !filter.accept(rule)) {
-						ruleSet.removeRule(rule);
-					}
-				}
-			}*/
-			_inheritedRules.put(type1, ruleSet);
-		}
-		for (Enumeration<Class> e1 = _rules.keys(); e1.hasMoreElements();) {
-			Class type1 = e1.nextElement();
-			for (Enumeration<Class> e2 = _rules.keys(); e2.hasMoreElements();) {
-				Class type2 = e2.nextElement();
-				if (type1.isAssignableFrom(type2) && type1 != type2) {
-					// type1 superclass for type2
-					ValidationRuleSet superRules = _inheritedRules.get(type1);
-					ValidationRuleSet childRules = _inheritedRules.get(type2);
-					for (Enumeration e3 = superRules.elements(); e3.hasMoreElements();) {
-						childRules.addRule((ValidationRule) e3.nextElement());
-					}
-				}
-			}
-		}
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("END recomputeInheritedRules()");
-		}
-		_keys = buildAllKeys();
-		Collections.sort(_keys, new ClassComparator());
-		recomputeInheritedRules = false;
+		return null;
 	}
 
 	private class ClassComparator implements Comparator<Class> {
@@ -413,58 +396,5 @@ public abstract class ValidationModel extends FlexoListModel {
 		}
 
 	}
-
-	private Vector<Class> _keys;
-
-	public Vector<Class> buildAllKeys() {
-		Vector<Class> returned = new Vector<Class>();
-		for (Enumeration e1 = _inheritedRules.elements(); e1.hasMoreElements();) {
-			ValidationRuleSet next = (ValidationRuleSet) e1.nextElement();
-			Class nextKey = next.getType();
-			returned.add(nextKey);
-		}
-		return returned;
-	}
-
-	public void update() {
-		recomputeInheritedRules(null);
-	}
-
-	private ValidationRuleFilter _filter = null;
-
-	public void update(ValidationRuleFilter filter) {
-		_filter = filter;
-		recomputeInheritedRules(filter);
-	}
-
-	/**
-	 * Implements
-	 * 
-	 * @see javax.swing.ListModel#getSize()
-	 * @see javax.swing.ListModel#getSize()
-	 */
-	@Override
-	public int getSize() {
-		return _keys.size();
-	}
-
-	/**
-	 * Implements
-	 * 
-	 * @see javax.swing.ListModel#getElementAt(int)
-	 * @see javax.swing.ListModel#getElementAt(int)
-	 */
-	@Override
-	public ValidationRuleSet getElementAt(int index) {
-		return _inheritedRules.get(_keys.elementAt(index));
-	}
-
-	/*public TargetType getTargetType() {
-		return _targetType;
-	}
-
-	public void setTargetType(CodeType targetType) {
-		_targetType = targetType;
-	}*/
 
 }
