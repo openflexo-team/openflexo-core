@@ -12,13 +12,13 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="ontology_super_properties" lang="English">Super properties</Localized>
-    <Localized key="ontology_super_properties" lang="French">Super properties</Localized>
-    <Localized key="ontology_super_properties" lang="Dutch">Super properties</Localized>
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="ontology_super_properties" lang="English" value="Super properties" />
+    <Localized key="ontology_super_properties" lang="French" value="Super properties" />
+    <Localized key="ontology_super_properties" lang="Dutch" value="Super properties" />
   </LocalizedDictionary>
   <Parameter name="title" value="OWL object property" />
 </Panel>

@@ -12,14 +12,14 @@
     </Button>
   </Panel>
   <LocalizedDictionary>
-    <Localized key="An error occurred while trying to send your issue" lang="English">An error occurred while trying to send your issue</Localized>
-    <Localized key="An error occurred while trying to send your issue" lang="French">An error occurred while trying to send your issue</Localized>
-    <Localized key="An error occurred while trying to send your issue" lang="Dutch">An error occurred while trying to send your issue</Localized>
-    <Localized key="Your issue report has been successfully sent." lang="English">Your issue report has been successfully sent.</Localized>
-    <Localized key="Your issue report has been successfully sent." lang="French">Your issue report has been successfully sent.</Localized>
-    <Localized key="Your issue report has been successfully sent." lang="Dutch">Your issue report has been successfully sent.</Localized>
-    <Localized key="OK" lang="English">OK</Localized>
-    <Localized key="OK" lang="French">OK</Localized>
-    <Localized key="OK" lang="Dutch">OK</Localized>
+    <Localized key="An error occurred while trying to send your issue" lang="English" value="An error occurred while trying to send your issue" />
+    <Localized key="An error occurred while trying to send your issue" lang="French" value="An error occurred while trying to send your issue" />
+    <Localized key="An error occurred while trying to send your issue" lang="Dutch" value="An error occurred while trying to send your issue" />
+    <Localized key="Your issue report has been successfully sent." lang="English" value="Your issue report has been successfully sent." />
+    <Localized key="Your issue report has been successfully sent." lang="French" value="Your issue report has been successfully sent." />
+    <Localized key="Your issue report has been successfully sent." lang="Dutch" value="Your issue report has been successfully sent." />
+    <Localized key="OK" lang="English" value="OK" />
+    <Localized key="OK" lang="French" value="OK" />
+    <Localized key="OK" lang="Dutch" value="OK" />
   </LocalizedDictionary>
 </Panel>

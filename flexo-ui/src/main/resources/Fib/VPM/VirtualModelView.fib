@@ -109,131 +109,131 @@
     </TabPanel>
   </SplitPanel>
   <LocalizedDictionary>
-    <Localized key="edition_scheme" lang="English">Edition Scheme</Localized>
-    <Localized key="edition_scheme" lang="French">Procédé d'édition</Localized>
-    <Localized key="edition_scheme" lang="Dutch">Edition Scheme</Localized>
-    <Localized key="type" lang="English">Type</Localized>
-    <Localized key="type" lang="French">Type</Localized>
-    <Localized key="type" lang="Dutch">Type</Localized>
-    <Localized key="new_drop_scheme" lang="English">New Drop Scheme</Localized>
-    <Localized key="new_drop_scheme" lang="French">Nouveau procédé de glisser/déposer</Localized>
-    <Localized key="new_drop_scheme" lang="Dutch">New Drop Scheme</Localized>
-    <Localized key="delete_scheme" lang="English">Delete scheme</Localized>
-    <Localized key="delete_scheme" lang="French">Supprimer le procédé</Localized>
-    <Localized key="delete_scheme" lang="Dutch">Delete scheme</Localized>
-    <Localized key="new_link_scheme" lang="English">New link scheme</Localized>
-    <Localized key="new_link_scheme" lang="French">Nouveau procédé de liaison</Localized>
-    <Localized key="new_link_scheme" lang="Dutch">new_link_scheme</Localized>
-    <Localized key="new_action_scheme" lang="English">New action scheme</Localized>
-    <Localized key="new_action_scheme" lang="French">Nouveau procédé d'action</Localized>
-    <Localized key="new_action_scheme" lang="Dutch">new_action_scheme</Localized>
-    <Localized key="new_creation_scheme" lang="English">New creation scheme</Localized>
-    <Localized key="new_creation_scheme" lang="French">Nouveau procédé de création</Localized>
-    <Localized key="new_creation_scheme" lang="Dutch">new_creation_scheme</Localized>
-    <Localized key="new_navigation_scheme" lang="English">New navigation scheme</Localized>
-    <Localized key="new_navigation_scheme" lang="French">Nouveau procédé de navigation</Localized>
-    <Localized key="new_navigation_scheme" lang="Dutch">new_navigation_scheme</Localized>
-    <Localized key="new_deletion_scheme" lang="English">New deletion scheme</Localized>
-    <Localized key="new_deletion_scheme" lang="French">Nouveau procédé de suppression</Localized>
-    <Localized key="new_deletion_scheme" lang="Dutch">new_deletion_scheme</Localized>
-    <Localized key="new_synchronization_scheme" lang="English">New synchronization scheme</Localized>
-    <Localized key="new_synchronization_scheme" lang="French">Nouveau procédé de synchronization</Localized>
-    <Localized key="new_synchronization_scheme" lang="Dutch">new_synchronization_scheme</Localized>
-    <Localized key="duplicate" lang="English">duplicate</Localized>
-    <Localized key="duplicate" lang="French">dupliquer</Localized>
-    <Localized key="duplicate" lang="Dutch">duplicate</Localized>
-    <Localized key="new_cloning_scheme" lang="English">New cloning scheme</Localized>
-    <Localized key="new_cloning_scheme" lang="French">Nouveau procédé de clonage</Localized>
-    <Localized key="new_cloning_scheme" lang="Dutch">new_cloning_scheme</Localized>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="label" lang="English">Label</Localized>
-    <Localized key="label" lang="French">Label</Localized>
-    <Localized key="label" lang="Dutch">Label</Localized>
-    <Localized key="widget" lang="English">widget</Localized>
-    <Localized key="widget" lang="French">élément graphique</Localized>
-    <Localized key="widget" lang="Dutch">widget</Localized>
-    <Localized key="add_textfield_parameter" lang="English">Add a Textfield parameter</Localized>
-    <Localized key="add_textfield_parameter" lang="French">Ajouter un paramètre TextField</Localized>
-    <Localized key="add_textfield_parameter" lang="Dutch">Add a Textfield parameter</Localized>
-    <Localized key="add_localized_textfield_parameter" lang="English">Add a localized textfield parameter</Localized>
-    <Localized key="add_localized_textfield_parameter" lang="French">Ajouter un paramètre textfield localisé</Localized>
-    <Localized key="add_localized_textfield_parameter" lang="Dutch">Add a localized textfield parameter</Localized>
-    <Localized key="add_textarea_parameter" lang="English">Add a TextArea parameter</Localized>
-    <Localized key="add_textarea_parameter" lang="French">Ajouter un paramètre TextArea</Localized>
-    <Localized key="add_textarea_parameter" lang="Dutch">Add a TextArea parameter</Localized>
-    <Localized key="add_integer_parameter" lang="English">Add an Integer parameter</Localized>
-    <Localized key="add_integer_parameter" lang="French">Ajouter un paramètre Integer</Localized>
-    <Localized key="add_integer_parameter" lang="Dutch">Add an Integer parameter</Localized>
-    <Localized key="add_checkbox_parameter" lang="English">Add checkbox parameter</Localized>
-    <Localized key="add_checkbox_parameter" lang="French">Ajouter un paramètre checkbox</Localized>
-    <Localized key="add_checkbox_parameter" lang="Dutch">Add checkbox parameter</Localized>
-    <Localized key="add_dropdown_parameter" lang="English">Add dropdown parameter</Localized>
-    <Localized key="add_dropdown_parameter" lang="French">Ajouter une paramètre dropdown</Localized>
-    <Localized key="add_dropdown_parameter" lang="Dutch">Add dropdown parameter</Localized>
-    <Localized key="add_individual_parameter" lang="English">Add individual parameter</Localized>
-    <Localized key="add_individual_parameter" lang="French">Ajouter un paramètre Individu</Localized>
-    <Localized key="add_individual_parameter" lang="Dutch">add_individual_parameter</Localized>
-    <Localized key="add_class_parameter" lang="English">Add class parameter</Localized>
-    <Localized key="add_class_parameter" lang="French">Ajouter un paramètre Classe</Localized>
-    <Localized key="add_class_parameter" lang="Dutch">add_class_parameter</Localized>
-    <Localized key="delete" lang="English">Delete</Localized>
-    <Localized key="delete" lang="French">Supprimer</Localized>
-    <Localized key="delete" lang="Dutch">Delete</Localized>
-    <Localized key="add_flexo_model_parameter" lang="English">Add flexo model parameter</Localized>
-    <Localized key="add_flexo_model_parameter" lang="French">Ajouter un paramètre de type modèle flexo</Localized>
-    <Localized key="add_flexo_model_parameter" lang="Dutch">add_flexo_model_parameter</Localized>
-    <Localized key="add_uri_parameter" lang="English">Add URI parameter</Localized>
-    <Localized key="add_uri_parameter" lang="French">Ajouter un paramètre de type URI</Localized>
-    <Localized key="add_uri_parameter" lang="Dutch">add_uri_parameter</Localized>
-    <Localized key="add_object_property_parameter" lang="English">Add object property parameter</Localized>
-    <Localized key="add_object_property_parameter" lang="French">Ajouter un paramètre de type propriété d'objet</Localized>
-    <Localized key="add_object_property_parameter" lang="Dutch">add_object_property_parameter</Localized>
-    <Localized key="add_data_property_parameter" lang="English">Add data property parameter</Localized>
-    <Localized key="add_data_property_parameter" lang="French">Ajouter un paramètre de type propriété de donnée</Localized>
-    <Localized key="add_data_property_parameter" lang="Dutch">add_data_property_parameter</Localized>
-    <Localized key="add_list_parameter" lang="English">Add list parameter</Localized>
-    <Localized key="add_list_parameter" lang="French">Ajouter un paramètre de type liste</Localized>
-    <Localized key="add_list_parameter" lang="Dutch">add_list_parameter</Localized>
-    <Localized key="add_flexo_concept_parameter" lang="English">Add flexo concept parameter</Localized>
-    <Localized key="add_flexo_concept_parameter" lang="French">Ajouter un paramètre de type concept flexo</Localized>
-    <Localized key="add_flexo_concept_parameter" lang="Dutch">add_flexo_concept_parameter</Localized>
-    <Localized key="add_property_parameter" lang="English">Add property parameter</Localized>
-    <Localized key="add_property_parameter" lang="French">Ajouter un paramètre de type propriété</Localized>
-    <Localized key="add_property_parameter" lang="Dutch">add_property_parameter</Localized>
-    <Localized key="add_technology_object" lang="English">Add technology object</Localized>
-    <Localized key="add_technology_object" lang="French">Ajouter un paramètre de type objet technologique</Localized>
-    <Localized key="add_technology_object" lang="Dutch">add_technology_object</Localized>
-    <Localized key="add_flexo_concept_instance_parameter" lang="English">Add flexo concept instance parameter</Localized>
-    <Localized key="add_flexo_concept_instance_parameter" lang="French">Ajouter un paramètre de type instance de concept flexo</Localized>
-    <Localized key="add_flexo_concept_instance_parameter" lang="Dutch">add_flexo_concept_instance_parameter</Localized>
-    <Localized key="Parameters for FlexoBehaviour" lang="English">Parameters for FlexoBehaviour</Localized>
-    <Localized key="Parameters for FlexoBehaviour" lang="French">Paramètres des comportements</Localized>
-    <Localized key="Parameters for FlexoBehaviour" lang="Dutch">Parameters for FlexoBehaviour</Localized>
-    <Localized key="localization" lang="English">Localization</Localized>
-    <Localized key="localization" lang="French">Locales</Localized>
-    <Localized key="localization" lang="Dutch">localization</Localized>
-    <Localized key="inspector" lang="English">Inspector</Localized>
-    <Localized key="inspector" lang="French">Inspecteur</Localized>
-    <Localized key="inspector" lang="Dutch">Inspector</Localized>
-    <Localized key="structural" lang="English">Structural</Localized>
-    <Localized key="structural" lang="French">Structure</Localized>
-    <Localized key="structural" lang="Dutch">structural</Localized>
-    <Localized key="behavioural" lang="English">Behavioural</Localized>
-    <Localized key="behavioural" lang="French">Comportement</Localized>
-    <Localized key="behavioural" lang="Dutch">behavioural</Localized>
-    <Localized key="model_slot" lang="English">Model Slot</Localized>
-    <Localized key="model_slot" lang="French">Model Slot</Localized>
-    <Localized key="model_slot" lang="Dutch">model_slot</Localized>
-    <Localized key="technology" lang="English">Technology</Localized>
-    <Localized key="technology" lang="French">Technologie</Localized>
-    <Localized key="technology" lang="Dutch">technology</Localized>
-    <Localized key="meta_model" lang="English">Metamodel</Localized>
-    <Localized key="meta_model" lang="French">Metamodèle</Localized>
-    <Localized key="meta_model" lang="Dutch">meta_model</Localized>
-    <Localized key="createModelSlot" lang="English">createModelSlot</Localized>
-    <Localized key="createModelSlot" lang="French">Créer un emplacement pour modèles</Localized>
-    <Localized key="createModelSlot" lang="Dutch">createModelSlot</Localized>
+    <Localized key="edition_scheme" lang="English" value="Edition Scheme" />
+    <Localized key="edition_scheme" lang="French" value="Procédé d'édition" />
+    <Localized key="edition_scheme" lang="Dutch" value="Edition Scheme" />
+    <Localized key="type" lang="English" value="Type" />
+    <Localized key="type" lang="French" value="Type" />
+    <Localized key="type" lang="Dutch" value="Type" />
+    <Localized key="new_drop_scheme" lang="English" value="New Drop Scheme" />
+    <Localized key="new_drop_scheme" lang="French" value="Nouveau procédé de glisser/déposer" />
+    <Localized key="new_drop_scheme" lang="Dutch" value="New Drop Scheme" />
+    <Localized key="delete_scheme" lang="English" value="Delete scheme" />
+    <Localized key="delete_scheme" lang="French" value="Supprimer le procédé" />
+    <Localized key="delete_scheme" lang="Dutch" value="Delete scheme" />
+    <Localized key="new_link_scheme" lang="English" value="New link scheme" />
+    <Localized key="new_link_scheme" lang="French" value="Nouveau procédé de liaison" />
+    <Localized key="new_link_scheme" lang="Dutch" value="new_link_scheme" />
+    <Localized key="new_action_scheme" lang="English" value="New action scheme" />
+    <Localized key="new_action_scheme" lang="French" value="Nouveau procédé d'action" />
+    <Localized key="new_action_scheme" lang="Dutch" value="new_action_scheme" />
+    <Localized key="new_creation_scheme" lang="English" value="New creation scheme" />
+    <Localized key="new_creation_scheme" lang="French" value="Nouveau procédé de création" />
+    <Localized key="new_creation_scheme" lang="Dutch" value="new_creation_scheme" />
+    <Localized key="new_navigation_scheme" lang="English" value="New navigation scheme" />
+    <Localized key="new_navigation_scheme" lang="French" value="Nouveau procédé de navigation" />
+    <Localized key="new_navigation_scheme" lang="Dutch" value="new_navigation_scheme" />
+    <Localized key="new_deletion_scheme" lang="English" value="New deletion scheme" />
+    <Localized key="new_deletion_scheme" lang="French" value="Nouveau procédé de suppression" />
+    <Localized key="new_deletion_scheme" lang="Dutch" value="new_deletion_scheme" />
+    <Localized key="new_synchronization_scheme" lang="English" value="New synchronization scheme" />
+    <Localized key="new_synchronization_scheme" lang="French" value="Nouveau procédé de synchronization" />
+    <Localized key="new_synchronization_scheme" lang="Dutch" value="new_synchronization_scheme" />
+    <Localized key="duplicate" lang="English" value="duplicate" />
+    <Localized key="duplicate" lang="French" value="dupliquer" />
+    <Localized key="duplicate" lang="Dutch" value="duplicate" />
+    <Localized key="new_cloning_scheme" lang="English" value="New cloning scheme" />
+    <Localized key="new_cloning_scheme" lang="French" value="Nouveau procédé de clonage" />
+    <Localized key="new_cloning_scheme" lang="Dutch" value="new_cloning_scheme" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="label" lang="English" value="Label" />
+    <Localized key="label" lang="French" value="Label" />
+    <Localized key="label" lang="Dutch" value="Label" />
+    <Localized key="widget" lang="English" value="widget" />
+    <Localized key="widget" lang="French" value="élément graphique" />
+    <Localized key="widget" lang="Dutch" value="widget" />
+    <Localized key="add_textfield_parameter" lang="English" value="Add a Textfield parameter" />
+    <Localized key="add_textfield_parameter" lang="French" value="Ajouter un paramètre TextField" />
+    <Localized key="add_textfield_parameter" lang="Dutch" value="Add a Textfield parameter" />
+    <Localized key="add_localized_textfield_parameter" lang="English" value="Add a localized textfield parameter" />
+    <Localized key="add_localized_textfield_parameter" lang="French" value="Ajouter un paramètre textfield localisé" />
+    <Localized key="add_localized_textfield_parameter" lang="Dutch" value="Add a localized textfield parameter" />
+    <Localized key="add_textarea_parameter" lang="English" value="Add a TextArea parameter" />
+    <Localized key="add_textarea_parameter" lang="French" value="Ajouter un paramètre TextArea" />
+    <Localized key="add_textarea_parameter" lang="Dutch" value="Add a TextArea parameter" />
+    <Localized key="add_integer_parameter" lang="English" value="Add an Integer parameter" />
+    <Localized key="add_integer_parameter" lang="French" value="Ajouter un paramètre Integer" />
+    <Localized key="add_integer_parameter" lang="Dutch" value="Add an Integer parameter" />
+    <Localized key="add_checkbox_parameter" lang="English" value="Add checkbox parameter" />
+    <Localized key="add_checkbox_parameter" lang="French" value="Ajouter un paramètre checkbox" />
+    <Localized key="add_checkbox_parameter" lang="Dutch" value="Add checkbox parameter" />
+    <Localized key="add_dropdown_parameter" lang="English" value="Add dropdown parameter" />
+    <Localized key="add_dropdown_parameter" lang="French" value="Ajouter une paramètre dropdown" />
+    <Localized key="add_dropdown_parameter" lang="Dutch" value="Add dropdown parameter" />
+    <Localized key="add_individual_parameter" lang="English" value="Add individual parameter" />
+    <Localized key="add_individual_parameter" lang="French" value="Ajouter un paramètre Individu" />
+    <Localized key="add_individual_parameter" lang="Dutch" value="add_individual_parameter" />
+    <Localized key="add_class_parameter" lang="English" value="Add class parameter" />
+    <Localized key="add_class_parameter" lang="French" value="Ajouter un paramètre Classe" />
+    <Localized key="add_class_parameter" lang="Dutch" value="add_class_parameter" />
+    <Localized key="delete" lang="English" value="Delete" />
+    <Localized key="delete" lang="French" value="Supprimer" />
+    <Localized key="delete" lang="Dutch" value="Delete" />
+    <Localized key="add_flexo_model_parameter" lang="English" value="Add flexo model parameter" />
+    <Localized key="add_flexo_model_parameter" lang="French" value="Ajouter un paramètre de type modèle flexo" />
+    <Localized key="add_flexo_model_parameter" lang="Dutch" value="add_flexo_model_parameter" />
+    <Localized key="add_uri_parameter" lang="English" value="Add URI parameter" />
+    <Localized key="add_uri_parameter" lang="French" value="Ajouter un paramètre de type URI" />
+    <Localized key="add_uri_parameter" lang="Dutch" value="add_uri_parameter" />
+    <Localized key="add_object_property_parameter" lang="English" value="Add object property parameter" />
+    <Localized key="add_object_property_parameter" lang="French" value="Ajouter un paramètre de type propriété d'objet" />
+    <Localized key="add_object_property_parameter" lang="Dutch" value="add_object_property_parameter" />
+    <Localized key="add_data_property_parameter" lang="English" value="Add data property parameter" />
+    <Localized key="add_data_property_parameter" lang="French" value="Ajouter un paramètre de type propriété de donnée" />
+    <Localized key="add_data_property_parameter" lang="Dutch" value="add_data_property_parameter" />
+    <Localized key="add_list_parameter" lang="English" value="Add list parameter" />
+    <Localized key="add_list_parameter" lang="French" value="Ajouter un paramètre de type liste" />
+    <Localized key="add_list_parameter" lang="Dutch" value="add_list_parameter" />
+    <Localized key="add_flexo_concept_parameter" lang="English" value="Add flexo concept parameter" />
+    <Localized key="add_flexo_concept_parameter" lang="French" value="Ajouter un paramètre de type concept flexo" />
+    <Localized key="add_flexo_concept_parameter" lang="Dutch" value="add_flexo_concept_parameter" />
+    <Localized key="add_property_parameter" lang="English" value="Add property parameter" />
+    <Localized key="add_property_parameter" lang="French" value="Ajouter un paramètre de type propriété" />
+    <Localized key="add_property_parameter" lang="Dutch" value="add_property_parameter" />
+    <Localized key="add_technology_object" lang="English" value="Add technology object" />
+    <Localized key="add_technology_object" lang="French" value="Ajouter un paramètre de type objet technologique" />
+    <Localized key="add_technology_object" lang="Dutch" value="add_technology_object" />
+    <Localized key="add_flexo_concept_instance_parameter" lang="English" value="Add flexo concept instance parameter" />
+    <Localized key="add_flexo_concept_instance_parameter" lang="French" value="Ajouter un paramètre de type instance de concept flexo" />
+    <Localized key="add_flexo_concept_instance_parameter" lang="Dutch" value="add_flexo_concept_instance_parameter" />
+    <Localized key="Parameters for FlexoBehaviour" lang="English" value="Parameters for FlexoBehaviour" />
+    <Localized key="Parameters for FlexoBehaviour" lang="French" value="Paramètres des comportements" />
+    <Localized key="Parameters for FlexoBehaviour" lang="Dutch" value="Parameters for FlexoBehaviour" />
+    <Localized key="localization" lang="English" value="Localization" />
+    <Localized key="localization" lang="French" value="Locales" />
+    <Localized key="localization" lang="Dutch" value="localization" />
+    <Localized key="inspector" lang="English" value="Inspector" />
+    <Localized key="inspector" lang="French" value="Inspecteur" />
+    <Localized key="inspector" lang="Dutch" value="Inspector" />
+    <Localized key="structural" lang="English" value="Structural" />
+    <Localized key="structural" lang="French" value="Structure" />
+    <Localized key="structural" lang="Dutch" value="structural" />
+    <Localized key="behavioural" lang="English" value="Behavioural" />
+    <Localized key="behavioural" lang="French" value="Comportement" />
+    <Localized key="behavioural" lang="Dutch" value="behavioural" />
+    <Localized key="model_slot" lang="English" value="Model Slot" />
+    <Localized key="model_slot" lang="French" value="Model Slot" />
+    <Localized key="model_slot" lang="Dutch" value="model_slot" />
+    <Localized key="technology" lang="English" value="Technology" />
+    <Localized key="technology" lang="French" value="Technologie" />
+    <Localized key="technology" lang="Dutch" value="technology" />
+    <Localized key="meta_model" lang="English" value="Metamodel" />
+    <Localized key="meta_model" lang="French" value="Metamodèle" />
+    <Localized key="meta_model" lang="Dutch" value="meta_model" />
+    <Localized key="createModelSlot" lang="English" value="createModelSlot" />
+    <Localized key="createModelSlot" lang="French" value="Créer un emplacement pour modèles" />
+    <Localized key="createModelSlot" lang="Dutch" value="createModelSlot" />
   </LocalizedDictionary>
 </Panel>

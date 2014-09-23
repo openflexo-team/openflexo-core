@@ -11,17 +11,17 @@
   <Label label="description" align="right" index="6" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
   <TextArea columns="6" rows="2" text="TextArea" index="7" data="data.description" constraints="twocols(expandHorizontally=true;expandVertically=true;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" localize="true" />
   <LocalizedDictionary>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="action_type" lang="English">Action type</Localized>
-    <Localized key="action_type" lang="French">Type d'Action</Localized>
-    <Localized key="action_type" lang="Dutch">Action type</Localized>
-    <Localized key="iteration" lang="English">iteration</Localized>
-    <Localized key="iteration" lang="French">iteration</Localized>
-    <Localized key="iteration" lang="Dutch">iteration</Localized>
-    <Localized key="iterator_name" lang="English">iterator_name</Localized>
-    <Localized key="iterator_name" lang="French">iterator_name</Localized>
-    <Localized key="iterator_name" lang="Dutch">iterator_name</Localized>
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="action_type" lang="English" value="Action type" />
+    <Localized key="action_type" lang="French" value="Type d'Action" />
+    <Localized key="action_type" lang="Dutch" value="Action type" />
+    <Localized key="iteration" lang="English" value="iteration" />
+    <Localized key="iteration" lang="French" value="iteration" />
+    <Localized key="iteration" lang="Dutch" value="iteration" />
+    <Localized key="iterator_name" lang="English" value="iterator_name" />
+    <Localized key="iterator_name" lang="French" value="iterator_name" />
+    <Localized key="iterator_name" lang="Dutch" value="iterator_name" />
   </LocalizedDictionary>
 </Panel>

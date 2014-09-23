@@ -9,14 +9,14 @@
   <Label label="description" index="6" data="" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" />
   <TextArea columns="6" rows="2" index="7" data="data.description" constraints="twocols(expandHorizontally=true;expandVertically=true;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" editable="" />
   <LocalizedDictionary>
-    <Localized key="cloning_scheme" lang="English">cloning_scheme</Localized>
-    <Localized key="cloning_scheme" lang="French">cloning_scheme</Localized>
-    <Localized key="cloning_scheme" lang="Dutch">cloning_scheme</Localized>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="label" lang="English">Label</Localized>
-    <Localized key="label" lang="French">Label</Localized>
-    <Localized key="label" lang="Dutch">Label</Localized>
+    <Localized key="cloning_scheme" lang="English" value="cloning_scheme" />
+    <Localized key="cloning_scheme" lang="French" value="cloning_scheme" />
+    <Localized key="cloning_scheme" lang="Dutch" value="cloning_scheme" />
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="label" lang="English" value="Label" />
+    <Localized key="label" lang="French" value="Label" />
+    <Localized key="label" lang="Dutch" value="Label" />
   </LocalizedDictionary>
 </Panel>

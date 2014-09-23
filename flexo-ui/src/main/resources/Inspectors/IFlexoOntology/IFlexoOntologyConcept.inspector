@@ -7,11 +7,11 @@
     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Advanced" lang="French">Avancé</Localized>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="uri" lang="English">URI</Localized>
-    <Localized key="uri" lang="French">URI</Localized>
-    <Localized key="uri" lang="Dutch">URI</Localized>
+    <Localized key="Advanced" lang="French" value="Avancé" />
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="uri" lang="English" value="URI" />
+    <Localized key="uri" lang="French" value="URI" />
+    <Localized key="uri" lang="Dutch" value="URI" />
   </LocalizedDictionary>
   <Parameter name="title" value="Ontologic concept" />
 </Panel>

@@ -44,28 +44,28 @@
     </Tab>
    </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Basic" lang="French">Basique</Localized>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="location" lang="English">Location</Localized>
-    <Localized key="location" lang="French">Répertoire de travail</Localized>
-    <Localized key="location" lang="Dutch">Location</Localized>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="target" lang="English">Target</Localized>
-    <Localized key="target" lang="French">Environnement cible</Localized>
-    <Localized key="target" lang="Dutch">Target</Localized>
-   <Localized key="date_format" lang="English">Date format</Localized>
-    <Localized key="date_format" lang="French">Format de date</Localized>
-    <Localized key="date_format" lang="Dutch">Date format</Localized>
-    <Localized key="creation_date" lang="English">Creation date</Localized>
-    <Localized key="creation_date" lang="French">Date de création</Localized>
-    <Localized key="creation_date" lang="Dutch">Creation date</Localized>
-    <Localized key="creation_user_id" lang="English">Creation user</Localized>
-    <Localized key="creation_user_id" lang="French">Créé par</Localized>
-    <Localized key="creation_user_id" lang="Dutch">Creation user</Localized>
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="location" lang="English" value="Location" />
+    <Localized key="location" lang="French" value="Répertoire de travail" />
+    <Localized key="location" lang="Dutch" value="Location" />
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="target" lang="English" value="Target" />
+    <Localized key="target" lang="French" value="Environnement cible" />
+    <Localized key="target" lang="Dutch" value="Target" />
+   <Localized key="date_format" lang="English" value="Date format" />
+    <Localized key="date_format" lang="French" value="Format de date" />
+    <Localized key="date_format" lang="Dutch" value="Date format" />
+    <Localized key="creation_date" lang="English" value="Creation date" />
+    <Localized key="creation_date" lang="French" value="Date de création" />
+    <Localized key="creation_date" lang="Dutch" value="Creation date" />
+    <Localized key="creation_user_id" lang="English" value="Creation user" />
+    <Localized key="creation_user_id" lang="French" value="Créé par" />
+    <Localized key="creation_user_id" lang="Dutch" value="Creation user" />
   </LocalizedDictionary>
   <Parameter name="title" value="Project" />
 </Panel>

@@ -61,59 +61,59 @@
     </Button>
   </Panel>
   <LocalizedDictionary>
-    <Localized key="uri" lang="English">URI</Localized>
-    <Localized key="description" lang="English">Description</Localized>
-    <Localized key="uri" lang="French">URI</Localized>
-    <Localized key="description" lang="French">Description</Localized>
-    <Localized key="uri" lang="Dutch">URI</Localized>
-    <Localized key="description" lang="Dutch">Description</Localized>
-    <Localized key="validate" lang="English">Validate</Localized>
-    <Localized key="label" lang="English">Label</Localized>
-    <Localized key="validate" lang="French">Valider</Localized>
-    <Localized key="label" lang="French">Label</Localized>
-    <Localized key="Cancel" lang="French">Annuler</Localized>
-    <Localized key="validate" lang="Dutch">Validate</Localized>
-    <Localized key="label" lang="Dutch">Label</Localized>
-    <Localized key="no_view_title_defined" lang="English">Please enter title for newly created view</Localized>
-    <Localized key="no_folder_defined" lang="English">No folder defined</Localized>
-    <Localized key="no_view_name_defined" lang="French">Aucun nom défini pour cette nouvelle vue</Localized>
-    <Localized key="no_folder_defined" lang="French">Pas de dossier sélectionné</Localized>
-    <Localized key="example_diagram" lang="English">Example diagram</Localized>
-    <Localized key="example_diagram" lang="French">Diagrame d'exemple</Localized>
-    <Localized key="example_diagram" lang="Dutch">example_diagram</Localized>
-    <Localized key="Cancel" lang="English">Cancel</Localized>
-    <Localized key="Cancel" lang="Dutch">Cancel</Localized>
-    <Localized key="no_view_title_defined" lang="French">Veuillez entrer un titre</Localized>
-    <Localized key="no_view_name_defined" lang="English">No name defined for this view</Localized>
-    <Localized key="virtual_model" lang="English">Virtual model</Localized>
-    <Localized key="virtual_model" lang="French">Modèle virtual</Localized>
-    <Localized key="virtual_model" lang="Dutch">virtual_model</Localized>
-    <Localized key="virtual_model_name" lang="English">Virtual model name</Localized>
-    <Localized key="virtual_model_name" lang="French">Nom du modèle virtuel</Localized>
-    <Localized key="virtual_model_name" lang="Dutch">virtual_model_name</Localized>
-    <Localized key="virtual_model_title" lang="English">Virtual model title</Localized>
-    <Localized key="virtual_model_title" lang="French">Titre du modèle virtuel</Localized>
-    <Localized key="virtual_model_title" lang="Dutch">virtual_model_title</Localized>
-    <Localized key="finish" lang="English">Finish</Localized>
-    <Localized key="finish" lang="French">Terminer</Localized>
-    <Localized key="finish" lang="Dutch">Finish</Localized>
-    <Localized key="back" lang="English">&lt;&lt; Back</Localized>
-    <Localized key="back" lang="French">&lt;&lt; Précédent</Localized>
-    <Localized key="back" lang="Dutch">back</Localized>
-    <Localized key="next" lang="English">&gt;&gt; Next</Localized>
-    <Localized key="next" lang="French">&gt;&gt; Suivant</Localized>
-    <Localized key="next" lang="Dutch">next</Localized>
-    <Localized key="create_diagram" lang="English">Create diagram</Localized>
-    <Localized key="create_diagram" lang="French">Créer un diagramme</Localized>
-    <Localized key="create_diagram" lang="Dutch">create_diagram</Localized>
-    <Localized key="diagram_name" lang="English">Diagram name</Localized>
-    <Localized key="diagram_name" lang="French">Nom du diagramme</Localized>
-    <Localized key="diagram_name" lang="Dutch">Diagram name</Localized>
-    <Localized key="diagram_title" lang="English">Diagram title</Localized>
-    <Localized key="diagram_title" lang="French">Titre du diagramme</Localized>
-    <Localized key="diagram_title" lang="Dutch">diagram_title</Localized>
-    <Localized key="configure_initialization" lang="English">Configure diagram initialization</Localized>
-    <Localized key="configure_initialization" lang="French">Configurer l initialisation du diagramme</Localized>
-    <Localized key="configure_initialization" lang="Dutch">configure_initialization</Localized>
+    <Localized key="uri" lang="English" value="URI" />
+    <Localized key="description" lang="English" value="Description" />
+    <Localized key="uri" lang="French" value="URI" />
+    <Localized key="description" lang="French" value="Description" />
+    <Localized key="uri" lang="Dutch" value="URI" />
+    <Localized key="description" lang="Dutch" value="Description" />
+    <Localized key="validate" lang="English" value="Validate" />
+    <Localized key="label" lang="English" value="Label" />
+    <Localized key="validate" lang="French" value="Valider" />
+    <Localized key="label" lang="French" value="Label" />
+    <Localized key="Cancel" lang="French" value="Annuler" />
+    <Localized key="validate" lang="Dutch" value="Validate" />
+    <Localized key="label" lang="Dutch" value="Label" />
+    <Localized key="no_view_title_defined" lang="English" value="Please enter title for newly created view" />
+    <Localized key="no_folder_defined" lang="English" value="No folder defined" />
+    <Localized key="no_view_name_defined" lang="French" value="Aucun nom défini pour cette nouvelle vue" />
+    <Localized key="no_folder_defined" lang="French" value="Pas de dossier sélectionné" />
+    <Localized key="example_diagram" lang="English" value="Example diagram" />
+    <Localized key="example_diagram" lang="French" value="Diagrame d'exemple" />
+    <Localized key="example_diagram" lang="Dutch" value="example_diagram" />
+    <Localized key="Cancel" lang="English" value="Cancel" />
+    <Localized key="Cancel" lang="Dutch" value="Cancel" />
+    <Localized key="no_view_title_defined" lang="French" value="Veuillez entrer un titre" />
+    <Localized key="no_view_name_defined" lang="English" value="No name defined for this view" />
+    <Localized key="virtual_model" lang="English" value="Virtual model" />
+    <Localized key="virtual_model" lang="French" value="Modèle virtual" />
+    <Localized key="virtual_model" lang="Dutch" value="virtual_model" />
+    <Localized key="virtual_model_name" lang="English" value="Virtual model name" />
+    <Localized key="virtual_model_name" lang="French" value="Nom du modèle virtuel" />
+    <Localized key="virtual_model_name" lang="Dutch" value="virtual_model_name" />
+    <Localized key="virtual_model_title" lang="English" value="Virtual model title" />
+    <Localized key="virtual_model_title" lang="French" value="Titre du modèle virtuel" />
+    <Localized key="virtual_model_title" lang="Dutch" value="virtual_model_title" />
+    <Localized key="finish" lang="English" value="Finish" />
+    <Localized key="finish" lang="French" value="Terminer" />
+    <Localized key="finish" lang="Dutch" value="Finish" />
+    <Localized key="back" lang="English" value="&lt;&lt; Back" />
+    <Localized key="back" lang="French" value="&lt;&lt; Précédent" />
+    <Localized key="back" lang="Dutch" value="back" />
+    <Localized key="next" lang="English" value="&gt;&gt; Next" />
+    <Localized key="next" lang="French" value="&gt;&gt; Suivant" />
+    <Localized key="next" lang="Dutch" value="next" />
+    <Localized key="create_diagram" lang="English" value="Create diagram" />
+    <Localized key="create_diagram" lang="French" value="Créer un diagramme" />
+    <Localized key="create_diagram" lang="Dutch" value="create_diagram" />
+    <Localized key="diagram_name" lang="English" value="Diagram name" />
+    <Localized key="diagram_name" lang="French" value="Nom du diagramme" />
+    <Localized key="diagram_name" lang="Dutch" value="Diagram name" />
+    <Localized key="diagram_title" lang="English" value="Diagram title" />
+    <Localized key="diagram_title" lang="French" value="Titre du diagramme" />
+    <Localized key="diagram_title" lang="Dutch" value="diagram_title" />
+    <Localized key="configure_initialization" lang="English" value="Configure diagram initialization" />
+    <Localized key="configure_initialization" lang="French" value="Configurer l initialisation du diagramme" />
+    <Localized key="configure_initialization" lang="Dutch" value="configure_initialization" />
   </LocalizedDictionary>
 </Panel>

@@ -16,23 +16,23 @@
     <Button action="controller.cancelAndDispose()" buttonIcon="" buttonType="Trigger" label="cancel" index="1" data="" constraints="flow(index=1)" visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" />
   </Panel>
   <LocalizedDictionary>
-    <Localized key="name" lang="English">Name</Localized>
-    <Localized key="type" lang="English">Type</Localized>
-    <Localized key="save" lang="English">Save</Localized>
-    <Localized key="cancel" lang="English">Cancel</Localized>
-    <Localized key="name" lang="French">Nom</Localized>
-    <Localized key="type" lang="French">Type</Localized>
-    <Localized key="save" lang="French">Sauver</Localized>
-    <Localized key="cancel" lang="French">Annuler</Localized>
-    <Localized key="name" lang="Dutch">Name</Localized>
-    <Localized key="type" lang="Dutch">Type</Localized>
-    <Localized key="save" lang="Dutch">Save</Localized>
-    <Localized key="cancel" lang="Dutch">Cancel</Localized>
-    <Localized key="modified" lang="French">Modifié</Localized>
-    <Localized key="modified" lang="English">Modified</Localized>
-    <Localized key="modified_resources_text" lang="French">Les resources suivantes ont été gérées au cours de la session courante. Veuillez sélectionner les resources à sauver.</Localized>
-    <Localized key="modified_resources_text" lang="English">Following resources have been managed by current session. Please select which to save.</Localized>
-    <Localized key="save_modified_resources" lang="French">Sauver les resources modifiées</Localized>
-    <Localized key="save_modified_resources" lang="English">Save modified resources</Localized>
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="type" lang="English" value="Type" />
+    <Localized key="save" lang="English" value="Save" />
+    <Localized key="cancel" lang="English" value="Cancel" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="type" lang="French" value="Type" />
+    <Localized key="save" lang="French" value="Sauver" />
+    <Localized key="cancel" lang="French" value="Annuler" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="type" lang="Dutch" value="Type" />
+    <Localized key="save" lang="Dutch" value="Save" />
+    <Localized key="cancel" lang="Dutch" value="Cancel" />
+    <Localized key="modified" lang="French" value="Modifié" />
+    <Localized key="modified" lang="English" value="Modified" />
+    <Localized key="modified_resources_text" lang="French" value="Les resources suivantes ont été gérées au cours de la session courante. Veuillez sélectionner les resources à sauver." />
+    <Localized key="modified_resources_text" lang="English" value="Following resources have been managed by current session. Please select which to save." />
+    <Localized key="save_modified_resources" lang="French" value="Sauver les resources modifiées" />
+    <Localized key="save_modified_resources" lang="English" value="Save modified resources" />
   </LocalizedDictionary>
 </Panel>

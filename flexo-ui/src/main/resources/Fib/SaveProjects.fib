@@ -19,20 +19,20 @@
     </Panel>
   </Panel>
   <LocalizedDictionary>
-    <Localized key="select_all" lang="English">Select all</Localized>
-    <Localized key="select_all" lang="French">Sélectionner tout</Localized>
-    <Localized key="select_all" lang="Dutch">Select all</Localized>
-    <Localized key="deselect_all" lang="English">Deselect all</Localized>
-    <Localized key="deselect_all" lang="French">Déselectionner tout</Localized>
-    <Localized key="deselect_all" lang="Dutch">Deselect all</Localized>
-    <Localized key="Save" lang="English">Save</Localized>
-    <Localized key="Save" lang="French">Sauver</Localized>
-    <Localized key="Save" lang="Dutch">Save</Localized>
-    <Localized key="Cancel" lang="English">Cancel</Localized>
-    <Localized key="Cancel" lang="French">Annuler</Localized>
-    <Localized key="Cancel" lang="Dutch">Cancel</Localized>
-    <Localized key="exit" lang="English">Exit</Localized>
-    <Localized key="exit" lang="French">Quitter</Localized>
-    <Localized key="exit" lang="Dutch">Exit</Localized>
+    <Localized key="select_all" lang="English" value="Select all" />
+    <Localized key="select_all" lang="French" value="Sélectionner tout" />
+    <Localized key="select_all" lang="Dutch" value="Select all" />
+    <Localized key="deselect_all" lang="English" value="Deselect all" />
+    <Localized key="deselect_all" lang="French" value="Déselectionner tout" />
+    <Localized key="deselect_all" lang="Dutch" value="Deselect all" />
+    <Localized key="Save" lang="English" value="Save" />
+    <Localized key="Save" lang="French" value="Sauver" />
+    <Localized key="Save" lang="Dutch" value="Save" />
+    <Localized key="Cancel" lang="English" value="Cancel" />
+    <Localized key="Cancel" lang="French" value="Annuler" />
+    <Localized key="Cancel" lang="Dutch" value="Cancel" />
+    <Localized key="exit" lang="English" value="Exit" />
+    <Localized key="exit" lang="French" value="Quitter" />
+    <Localized key="exit" lang="Dutch" value="Exit" />
   </LocalizedDictionary>
 </Panel>

@@ -44,23 +44,23 @@
     </Panel>
   </SplitPanel>
   <LocalizedDictionary>
-    <Localized key="flexo_concept_instances" lang="English">FlexoConcept instances</Localized>
-    <Localized key="flexo_concept_instances" lang="French">FlexoConcept instances</Localized>
-    <Localized key="flexo_concept_instances" lang="Dutch">flexo_concept_instances</Localized>
-    <Localized key="virtual_model" lang="English">Virtual Model</Localized>
-    <Localized key="virtual_model" lang="French">Virtual Model</Localized>
-    <Localized key="virtual_model" lang="Dutch">virtual_model</Localized>
-    <Localized key="synchronize" lang="English">Synchronize...</Localized>
-    <Localized key="synchronize" lang="French">Synchroniser...</Localized>
-    <Localized key="synchronize" lang="Dutch">Synchronize...</Localized>
-    <Localized key="id" lang="English">Id</Localized>
-    <Localized key="id" lang="French">Id</Localized>
-    <Localized key="id" lang="Dutch">Id</Localized>
-    <Localized key="pattern_role" lang="English">Pattern Role</Localized>
-    <Localized key="pattern_role" lang="French">Pattern Role</Localized>
-    <Localized key="pattern_role" lang="Dutch">Pattern Role</Localized>
-    <Localized key="actor" lang="English">Actor</Localized>
-    <Localized key="actor" lang="French">Acteur</Localized>
-    <Localized key="actor" lang="Dutch">actor</Localized>
+    <Localized key="flexo_concept_instances" lang="English" value="FlexoConcept instances" />
+    <Localized key="flexo_concept_instances" lang="French" value="FlexoConcept instances" />
+    <Localized key="flexo_concept_instances" lang="Dutch" value="flexo_concept_instances" />
+    <Localized key="virtual_model" lang="English" value="Virtual Model" />
+    <Localized key="virtual_model" lang="French" value="Virtual Model" />
+    <Localized key="virtual_model" lang="Dutch" value="virtual_model" />
+    <Localized key="synchronize" lang="English" value="Synchronize..." />
+    <Localized key="synchronize" lang="French" value="Synchroniser..." />
+    <Localized key="synchronize" lang="Dutch" value="Synchronize..." />
+    <Localized key="id" lang="English" value="Id" />
+    <Localized key="id" lang="French" value="Id" />
+    <Localized key="id" lang="Dutch" value="Id" />
+    <Localized key="pattern_role" lang="English" value="Pattern Role" />
+    <Localized key="pattern_role" lang="French" value="Pattern Role" />
+    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
+    <Localized key="actor" lang="English" value="Actor" />
+    <Localized key="actor" lang="French" value="Acteur" />
+    <Localized key="actor" lang="Dutch" value="actor" />
   </LocalizedDictionary>
 </Panel>

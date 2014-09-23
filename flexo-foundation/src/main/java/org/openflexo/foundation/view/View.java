@@ -38,27 +38,19 @@ import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.*;
 import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
  * A {@link View} is the run-time concept (instance) of a {@link ViewPoint}.<br>
- * 
+ * <p/>
  * A {@link View} is instantiated inside a {@link FlexoProject}.
- * 
+ *
  * @author sylvain
- * 
  */
 @ModelEntity
 @ImplementationClass(View.ViewImpl.class)
@@ -123,11 +115,19 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 	/**
 	 * Return all {@link VirtualModelInstance} defined in this {@link View}
-	 * 
+	 *
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = VirtualModelInstance.VIEW_KEY, ignoreType = true)
 	public List<VirtualModelInstance> getVirtualModelInstances();
+
+	/**
+	 * Allow to retrieve a VMI given a virtual model.
+	 *
+	 * @param virtualModel key to find correct VMI
+	 * @return the first one that match in the list.
+	 */
+	public VirtualModelInstance getVirtualModelInstanceForVirtualModel(VirtualModel virtualModel);
 
 	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
 	public void setVirtualModelInstances(List<VirtualModelInstance> virtualModelInstances);
@@ -188,7 +188,6 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 		/**
 		 * Default Constructor
-		 * 
 		 */
 		public ViewImpl() {
 			super();
@@ -327,9 +326,19 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			return (List<VirtualModelInstance>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
 		}
 
+		@Override
+		public VirtualModelInstance getVirtualModelInstanceForVirtualModel(final VirtualModel virtualModel) {
+			for (VirtualModelInstance vmi : getVirtualModelInstances()) {
+				if (vmi.getVirtualModel() == virtualModel) {
+					return vmi;
+				}
+			}
+			return null;
+		}
+
 		/**
-		 * Load eventually unloaded VirtualModelInstances<br>
-		 * After this call return, we can assert that all {@link VirtualModelInstance} are loaded.
+		 * Load eventually unloaded VirtualModelInstances<br> After this call return, we can assert that all {@link VirtualModelInstance}
+		 * are loaded.
 		 */
 		private void loadVirtualModelInstancesWhenUnloaded() {
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
@@ -347,7 +356,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				} else {
+				}
+				else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -364,9 +374,9 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// ==========================================================================
 
 		/**
-		 * This is the binding point between a {@link ModelSlot} and its concretization in a {@link View} through notion of
-		 * {@link ModelSlotInstance}
-		 * 
+		 * This is the binding point between a {@link ModelSlot} and its concretization in a {@link View} through notion of {@link
+		 * ModelSlotInstance}
+		 *
 		 * @param modelSlot
 		 * @return
 		 */
@@ -464,7 +474,6 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// ==========================================================================
 		// ================================= Delete ===============================
 		// ==========================================================================
-
 		@Override
 		public final boolean delete() {
 
