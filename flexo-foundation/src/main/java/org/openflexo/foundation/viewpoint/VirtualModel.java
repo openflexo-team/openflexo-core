@@ -674,7 +674,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		@Deprecated
 		public void addToModelSlots(ModelSlot<?> aModelSlot) {
-			if (aModelSlot != null && aModelSlot.getName().equals("virtualModelInstance")) {
+			if (aModelSlot != null && aModelSlot.getName() != null && aModelSlot.getName().equals("virtualModelInstance")) {
 				// Temporary hack to ignore reflexive model slot being inherited from 1.7-beta version
 				logger.warning("Reflexive model slot being inherited from 1.7-beta version are ignored now");
 				return;
