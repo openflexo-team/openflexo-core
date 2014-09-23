@@ -22,24 +22,24 @@ package org.openflexo.foundation.viewpoint.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
+import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
- * This {@link BindingModel} is based on ActionContainer's {@link BindingModel}
+ * This is the {@link BindingModel} exposed by a FlexoConceptInspector<br>
  * 
  * @author sylvain
  * 
  */
-public class ControlStructureActionBindingModel extends ActionContainerBindingModel {
+public class InspectorEntryBindingModel extends BindingModel {
 
-	private final ControlStructureAction editionAction;
+	private final InspectorEntry inspectorEntry;
 
-	public ControlStructureActionBindingModel(ControlStructureAction editionAction) {
-		super(editionAction, editionAction.getActionContainer() != null ? editionAction.getActionContainer().getControlGraphBindingModel()
-				: null);
-		this.editionAction = editionAction;
+	public InspectorEntryBindingModel(InspectorEntry inspectorEntry) {
+		super(inspectorEntry.getInspector() != null ? inspectorEntry.getInspector().getBindingModel() : null);
+		this.inspectorEntry = inspectorEntry;
+		if (inspectorEntry != null && inspectorEntry.getPropertyChangeSupport() != null) {
+			inspectorEntry.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	/**
@@ -47,22 +47,23 @@ public class ControlStructureActionBindingModel extends ActionContainerBindingMo
 	 */
 	@Override
 	public void delete() {
+		if (inspectorEntry != null && inspectorEntry.getPropertyChangeSupport() != null) {
+			inspectorEntry.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
 		super.delete();
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == editionAction) {
-			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
-				setBaseBindingModel(editionAction.getActionContainer() != null ? editionAction.getActionContainer()
-						.getControlGraphBindingModel() : null);
+		if (evt.getSource() == inspectorEntry) {
+			if (evt.getPropertyName().equals(InspectorEntry.INSPECTOR_KEY)) {
+				setBaseBindingModel(inspectorEntry.getInspector() != null ? inspectorEntry.getInspector().getBindingModel() : null);
 			}
 		}
 	}
 
-	public ControlStructureAction getEditionAction() {
-		return editionAction;
+	public InspectorEntry getInspectorEntry() {
+		return inspectorEntry;
 	}
-
 }

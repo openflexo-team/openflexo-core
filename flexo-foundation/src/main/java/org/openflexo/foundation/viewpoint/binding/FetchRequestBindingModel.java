@@ -22,47 +22,42 @@ package org.openflexo.foundation.viewpoint.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
+import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
- * This {@link BindingModel} is based on ActionContainer's {@link BindingModel}
+ * This is the {@link BindingModel} exposed by a {@link FetchRequest}<br>
  * 
  * @author sylvain
  * 
  */
-public class ControlStructureActionBindingModel extends ActionContainerBindingModel {
+public class FetchRequestBindingModel extends EditionActionBindingModel {
 
-	private final ControlStructureAction editionAction;
-
-	public ControlStructureActionBindingModel(ControlStructureAction editionAction) {
-		super(editionAction, editionAction.getActionContainer() != null ? editionAction.getActionContainer().getControlGraphBindingModel()
-				: null);
-		this.editionAction = editionAction;
-	}
-
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	@Override
-	public void delete() {
-		super.delete();
+	public FetchRequestBindingModel(FetchRequest<?, ?> fetchRequest) {
+		super(fetchRequest);
+		if (fetchRequest.getEmbeddingIteration() != null) {
+			setBaseBindingModel(fetchRequest.getEmbeddingIteration().getBindingModel());
+		}
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == editionAction) {
-			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
-				setBaseBindingModel(editionAction.getActionContainer() != null ? editionAction.getActionContainer()
-						.getControlGraphBindingModel() : null);
+		if (evt.getSource() == getEditionAction()) {
+			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY) || evt.getPropertyName().equals("embeddingIteration")) {
+				if (getEditionAction().getEmbeddingIteration() != null) {
+					setBaseBindingModel(getEditionAction().getEmbeddingIteration().getBindingModel());
+				} else {
+					setBaseBindingModel(getEditionAction().getActionContainer() != null ? getEditionAction().getActionContainer()
+							.getControlGraphBindingModel() : null);
+				}
 			}
 		}
 	}
 
-	public ControlStructureAction getEditionAction() {
-		return editionAction;
+	@Override
+	public FetchRequest<?, ?> getEditionAction() {
+		return (FetchRequest<?, ?>) super.getEditionAction();
 	}
 
 }

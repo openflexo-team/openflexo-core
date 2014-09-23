@@ -22,24 +22,24 @@ package org.openflexo.foundation.viewpoint.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
+import org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
- * This {@link BindingModel} is based on ActionContainer's {@link BindingModel}
+ * This is the {@link BindingModel} exposed by a MatchingCriteria<br>
  * 
  * @author sylvain
  * 
  */
-public class ControlStructureActionBindingModel extends ActionContainerBindingModel {
+public class MatchingCriteriaBindingModel extends BindingModel {
 
-	private final ControlStructureAction editionAction;
+	private final MatchingCriteria criteria;
 
-	public ControlStructureActionBindingModel(ControlStructureAction editionAction) {
-		super(editionAction, editionAction.getActionContainer() != null ? editionAction.getActionContainer().getControlGraphBindingModel()
-				: null);
-		this.editionAction = editionAction;
+	public MatchingCriteriaBindingModel(MatchingCriteria criteria) {
+		super(criteria.getAction() != null ? criteria.getAction().getBindingModel() : null);
+		this.criteria = criteria;
+		if (criteria != null && criteria.getPropertyChangeSupport() != null) {
+			criteria.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	/**
@@ -47,22 +47,23 @@ public class ControlStructureActionBindingModel extends ActionContainerBindingMo
 	 */
 	@Override
 	public void delete() {
+		if (criteria != null && criteria.getPropertyChangeSupport() != null) {
+			criteria.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
 		super.delete();
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == editionAction) {
-			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
-				setBaseBindingModel(editionAction.getActionContainer() != null ? editionAction.getActionContainer()
-						.getControlGraphBindingModel() : null);
+		if (evt.getSource() == criteria) {
+			if (evt.getPropertyName().equals(MatchingCriteria.ACTION_KEY)) {
+				setBaseBindingModel(criteria.getAction() != null ? criteria.getAction().getBindingModel() : null);
 			}
 		}
 	}
 
-	public ControlStructureAction getEditionAction() {
-		return editionAction;
+	public MatchingCriteria getMatchingCriteria() {
+		return criteria;
 	}
-
 }

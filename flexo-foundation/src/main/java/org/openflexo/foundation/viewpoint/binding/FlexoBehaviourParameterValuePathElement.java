@@ -1,5 +1,7 @@
 package org.openflexo.foundation.viewpoint.binding;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.logging.Logger;
@@ -12,15 +14,47 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction.ParameterValues;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 
-public class FlexoBehaviourParameterValuePathElement extends SimplePathElement {
+public class FlexoBehaviourParameterValuePathElement extends SimplePathElement implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterValuePathElement.class.getPackage().getName());
 
-	private FlexoBehaviourParameter parameter;
+	private final FlexoBehaviourParameter parameter;
+	private Type lastKnownType = null;
 
 	public FlexoBehaviourParameterValuePathElement(BindingPathElement parent, FlexoBehaviourParameter parameter) {
 		super(parent, parameter.getName(), parameter.getType());
 		this.parameter = parameter;
+		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
+			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		if (parameter != null) {
+			lastKnownType = parameter.getType();
+		}
+
+	}
+
+	@Override
+	public void delete() {
+		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
+			parameter.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+		super.delete();
+	}
+
+	@Override
+	public Type getType() {
+		return parameter.getType();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == parameter) {
+			if (lastKnownType != getType()) {
+				lastKnownType = getType();
+				System.out.println("Tiens, si je veux, je notifie que le type change");
+			}
+
+		}
 	}
 
 	@Override
