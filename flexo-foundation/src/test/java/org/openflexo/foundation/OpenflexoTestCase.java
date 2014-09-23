@@ -20,6 +20,7 @@
  */
 package org.openflexo.foundation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -46,6 +47,11 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResour
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.validation.ValidationError;
+import org.openflexo.foundation.validation.ValidationReport;
+import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.ViewPointObject;
+import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
@@ -288,4 +294,23 @@ public abstract class OpenflexoTestCase {
 	public void tearDown() throws Exception {
 		KeyValueLibrary.clearCache();
 	}
+
+	protected void assertViewPointIsValid(ViewPoint vp) {
+
+		log("Testing ViewPoint" + vp.getURI());
+
+		ValidationReport report = vp.validate();
+
+		for (ValidationError error : report.getErrors()) {
+			System.out.println("Found error: " + error);
+			if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
+				BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
+				System.out.println("Details: " + rule.retrieveIssueDetails((ViewPointObject) error.getObject()));
+			}
+		}
+
+		assertEquals(0, report.getErrorNb());
+
+	}
+
 }
