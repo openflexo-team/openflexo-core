@@ -31,7 +31,6 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -82,6 +81,8 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 
 	public void setConcept(IFlexoOntologyClass<?> c);
 
+	public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot();
+
 	public static abstract class IndividualParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
 			IndividualParameter {
 
@@ -119,7 +120,7 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 
 		@Override
 		public IFlexoOntologyClass<?> getConcept() {
-			if(getVirtualModel()!=null){
+			if (getVirtualModel() != null) {
 				return getVirtualModel().getOntologyClass(_getConceptURI());
 			}
 			return null;
@@ -214,10 +215,15 @@ public interface IndividualParameter extends InnerModelSlotParameter<TypeAwareMo
 			return null;
 		}
 
+		@Override
+		public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot() {
+			return getModelSlot();
+		}
+
 		@SuppressWarnings("rawtypes")
 		@Override
-		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
-			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
+			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 	}
 }

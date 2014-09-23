@@ -89,6 +89,8 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 
 	public IFlexoOntologyClass<?> evaluateDomainValue(BindingEvaluationContext parameterRetriever);
 
+	public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot();
+
 	public static abstract class PropertyParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements
 			PropertyParameter {
 
@@ -214,10 +216,15 @@ public interface PropertyParameter extends InnerModelSlotParameter<TypeAwareMode
 			return returned;
 		}
 
+		@Override
+		public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot() {
+			return getModelSlot();
+		}
+
 		@SuppressWarnings("rawtypes")
 		@Override
-		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
-			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
+			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 	}
 }

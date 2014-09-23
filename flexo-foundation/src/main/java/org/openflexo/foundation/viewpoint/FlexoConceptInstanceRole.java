@@ -45,6 +45,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
+	public VirtualModelModelSlot getVirtualModelModelSlot();
+
 	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
 			FlexoConceptInstanceRole {
 
@@ -221,6 +223,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return returned;
 		}
 
+		@Override
 		public VirtualModelModelSlot getVirtualModelModelSlot() {
 			return getModelSlot();
 		}

@@ -72,6 +72,8 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 
 	public IFlexoOntologyClass evaluateConceptValue(BindingEvaluationContext evaluationContext);
 
+	public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot();
+
 	public static abstract class ClassParameterImpl extends InnerModelSlotParameterImpl<TypeAwareModelSlot<?, ?>> implements ClassParameter {
 
 		private String conceptURI;
@@ -174,10 +176,15 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 			return returned;
 		}
 
+		@Override
+		public TypeAwareModelSlot<?, ?> getTypeAwareModelSlot() {
+			return getModelSlot();
+		}
+
 		@SuppressWarnings("rawtypes")
 		@Override
-		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
-			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
+			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 	}
 }
