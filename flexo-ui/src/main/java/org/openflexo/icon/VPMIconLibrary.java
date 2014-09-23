@@ -42,7 +42,7 @@ import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.OntologicObjectRole;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
-import org.openflexo.foundation.viewpoint.TechnologySpecificEditionScheme;
+import org.openflexo.foundation.viewpoint.TechnologySpecificFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -255,8 +255,8 @@ public class VPMIconLibrary extends IconLibrary {
 				return NAVIGATION_SCHEME_ICON;
 			} else if (object instanceof DeletionScheme) {
 				return DELETION_SCHEME_ICON;
-			} else if (object instanceof TechnologySpecificEditionScheme) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificEditionScheme) object)
+			} else if (object instanceof TechnologySpecificFlexoBehaviour) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificFlexoBehaviour) object)
 						.getTechnologyAdapter());
 				if (tac != null) {
 					ImageIcon returned = tac.getIconForFlexoBehaviour((Class<? extends FlexoBehaviour>) object.getClass());

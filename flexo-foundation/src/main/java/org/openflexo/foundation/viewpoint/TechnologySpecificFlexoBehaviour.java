@@ -29,7 +29,7 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface TechnologySpecificEditionScheme extends FlexoBehaviour {
+public interface TechnologySpecificFlexoBehaviour extends FlexoBehaviour {
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where this concept exists
