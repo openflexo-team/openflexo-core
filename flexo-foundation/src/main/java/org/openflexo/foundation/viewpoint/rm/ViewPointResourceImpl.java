@@ -54,6 +54,7 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
+import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -483,6 +484,15 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public ViewPointLibrary getViewPointLibrary() {
+		ViewPointLibrary returned = (ViewPointLibrary)performSuperGetter(VIEW_POINT_LIBRARY);
+		if (returned == null && getServiceManager() != null) {
+			return getServiceManager().getViewPointLibrary();
+		}
+		return returned;
 	}
 
 	public static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
