@@ -133,7 +133,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	 * Test {@link VirtualModel} creation, check {@link BindingModel}
 	 */
 	@Test
-	@TestOrder(2)
+	@TestOrder(3)
 	public void testCreateVirtualModel() throws SaveResourceException {
 
 		virtualModel1 = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
