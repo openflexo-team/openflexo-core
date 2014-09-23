@@ -23,11 +23,12 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -47,9 +48,10 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
-@Imports({ @Import(CheckboxInspectorEntry.class),@Import(ClassInspectorEntry.class), @Import(FloatInspectorEntry.class),
-@Import(IndividualInspectorEntry.class),@Import(IntegerInspectorEntry.class), @Import(PropertyInspectorEntry.class),
-@Import(TextAreaInspectorEntry.class),@Import(TextFieldInspectorEntry.class),@Import(DataPropertyInspectorEntry.class), @Import(ObjectPropertyInspectorEntry.class)})
+@Imports({ @Import(CheckboxInspectorEntry.class), @Import(ClassInspectorEntry.class), @Import(FloatInspectorEntry.class),
+		@Import(IndividualInspectorEntry.class), @Import(IntegerInspectorEntry.class), @Import(PropertyInspectorEntry.class),
+		@Import(TextAreaInspectorEntry.class), @Import(TextFieldInspectorEntry.class), @Import(DataPropertyInspectorEntry.class),
+		@Import(ObjectPropertyInspectorEntry.class) })
 public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
@@ -114,6 +116,9 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 	public int getIndex();
 
+	@Override
+	public InspectorEntryBindingModel getBindingModel();
+
 	public static abstract class InspectorEntryImpl extends FlexoConceptObjectImpl implements InspectorEntry {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
@@ -124,6 +129,8 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 		private DataBinding<?> data;
 		private DataBinding<Boolean> conditional;
+
+		private InspectorEntryBindingModel bindingModel;
 
 		public InspectorEntryImpl() {
 			super();
@@ -245,16 +252,16 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			FlexoConceptInspector inspector = getInspector();
-			if (inspector != null) {
-				return getInspector().getBindingModel();
-			} else
-				return null;
+		public InspectorEntryBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new InspectorEntryBindingModel(this);
+			}
+			return bindingModel;
 		}
 
 	}
 
+	@DefineValidationRule
 	public static class DataBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<InspectorEntry> {
 		public DataBindingIsRequiredAndMustBeValid() {
 			super("'data'_binding_is_not_valid", InspectorEntry.class);

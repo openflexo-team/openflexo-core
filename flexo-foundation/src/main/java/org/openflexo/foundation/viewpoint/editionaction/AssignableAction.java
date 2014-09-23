@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -226,6 +227,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 	}
 
+	@DefineValidationRule
 	public static class AssignationBindingMustBeValid extends BindingMustBeValid<AssignableAction> {
 		public AssignationBindingMustBeValid() {
 			super("'assign'_binding_is_not_valid", AssignableAction.class);

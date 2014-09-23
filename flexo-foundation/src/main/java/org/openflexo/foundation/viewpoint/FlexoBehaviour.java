@@ -724,11 +724,22 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return getBindingModel();
 		}
 
+		/**
+		 * Return the FlexoBehaviour's specific {@link BindingModel}.<br>
+		 * This method might be overriden for specific BindinModel management.
+		 */
+		protected FlexoBehaviourBindingModel makeBindingModel() {
+			return new FlexoBehaviourBindingModel(this);
+		}
+
+		/**
+		 * Return the FlexoBehaviour's specific {@link BindingModel}. Creates it when required.
+		 */
 		@Override
 		public final FlexoBehaviourBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				bindingModel = new FlexoBehaviourBindingModel(this);
-				appendContextualBindingVariables(bindingModel);
+				bindingModel = makeBindingModel();
+				// appendContextualBindingVariables(bindingModel);
 			}
 			return bindingModel;
 			/*if (isRebuildingBindingModel) {
@@ -803,10 +814,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			isRebuildingBindingModel = false;
 		}*/
 
-		protected void appendContextualBindingVariables(BindingModel bindingModel) {
+		/*protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
 			// AprÃ¨s faudra voir au runtime;
-			/*if (getFlexoConcept() != null) {
+			if (getFlexoConcept() != null) {
 				if (getFlexoConcept() instanceof VirtualModel) {
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept())));
@@ -815,9 +826,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 							FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-				}*/
+				}
 
-			/*if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
+			if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 			} 
@@ -829,13 +840,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			else {
 				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-			}*/
+			}
 			// }
 			// if (this instanceof DiagramEditionScheme) {
-			/*if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
+			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
-			}*/
-		}
+			}
+		}*/
 
 		@Override
 		public void variableAdded(AssignableAction action) {

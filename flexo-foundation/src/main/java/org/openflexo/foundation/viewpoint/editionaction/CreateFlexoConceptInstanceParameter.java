@@ -4,17 +4,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.validation.ValidationError;
+import org.openflexo.foundation.validation.ValidationIssue;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.binding.CreateFlexoConceptInstanceParameterBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -36,7 +38,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
-	@Getter(value = ACTION_KEY, inverse = MatchFlexoConceptInstance.PARAMETERS_KEY)
+	@Getter(value = ACTION_KEY/*, inverse = MatchFlexoConceptInstance.PARAMETERS_KEY*/)
 	public MatchFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
@@ -62,11 +64,15 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
+	@Override
+	public CreateFlexoConceptInstanceParameterBindingModel getBindingModel();
+
 	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
 			CreateFlexoConceptInstanceParameter {
 
 		private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceParameter.class.getPackage().getName());
-		MatchFlexoConceptInstance action;
+
+		// MatchFlexoConceptInstance action;
 
 		private FlexoBehaviourParameter param;
 		String paramName;
@@ -105,7 +111,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType():Object.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;
@@ -154,12 +160,14 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			return null;
 		}
 
+		private CreateFlexoConceptInstanceParameterBindingModel bindingModel;
+
 		@Override
-		public BindingModel getBindingModel() {
-			if (getAction() != null) {
-				return getAction().getBindingModel();
+		public CreateFlexoConceptInstanceParameterBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new CreateFlexoConceptInstanceParameterBindingModel(this);
 			}
-			return null;
+			return bindingModel;
 		}
 
 		@Override
@@ -170,7 +178,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public MatchFlexoConceptInstance getAction() {
 			return action;
 		}
@@ -178,7 +186,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public void setAction(MatchFlexoConceptInstance action) {
 			this.action = action;
-		}
+		}*/
 
 		@Override
 		public FlexoBehaviourParameter getParam() {
@@ -212,4 +220,30 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter> {
+		public ValueBindingMustBeValid() {
+			super("'value'_binding_is_required_and_must_be_valid", CreateFlexoConceptInstanceParameter.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(CreateFlexoConceptInstanceParameter object) {
+			return object.getValue();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter> applyValidation(
+				CreateFlexoConceptInstanceParameter object) {
+			DataBinding<?> b = getBinding(object);
+			if (b == null || !b.isSet()) {
+				return new ValidationError<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter>(
+						this, object, "prout de caca, ca chie dans " + object.getAction().getFMLRepresentation() + " pour "
+								+ object.getParam().getName(), "Binding required but not set");
+			}
+			return super.applyValidation(object);
+		}
+
+	}
+
 }

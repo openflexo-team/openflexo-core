@@ -21,7 +21,6 @@ package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -30,6 +29,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.binding.AbstractAssertionBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -41,8 +41,15 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ImplementationClass(AbstractAssertion.AbstractAssertionImpl.class)
 public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 
+	@PropertyIdentifier(type = AddIndividual.class)
+	public static final String ACTION_KEY = "action";
+
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
+
+	public AddIndividual<?, ?> getAction();
+
+	public void setAction(AddIndividual<?, ?> action);
 
 	@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
@@ -53,10 +60,14 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 
 	public boolean evaluateCondition(FlexoBehaviourAction action);
 
+	@Override
+	public AbstractAssertionBindingModel getBindingModel();
+
 	public static abstract class AbstractAssertionImpl extends FlexoBehaviourObjectImpl implements AbstractAssertion {
 
-		private AssignableAction _action;
+		// private AddIndividual<?, ?> _action;
 		private DataBinding<Boolean> conditional;
+		private AbstractAssertionBindingModel bindingModel;
 
 		public AbstractAssertionImpl() {
 			super();
@@ -67,13 +78,15 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 			return null;
 		}
 
-		public void setAction(AssignableAction action) {
+		/*@Override
+		public void setAction(AddIndividual<?, ?> action) {
 			_action = action;
 		}
 
-		public AssignableAction getAction() {
+		@Override
+		public AddIndividual<?, ?> getAction() {
 			return _action;
-		}
+		}*/
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
@@ -113,8 +126,11 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			return getFlexoConcept().getBindingModel();
+		public AbstractAssertionBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new AbstractAssertionBindingModel(this);
+			}
+			return bindingModel;
 		}
 
 		@Override

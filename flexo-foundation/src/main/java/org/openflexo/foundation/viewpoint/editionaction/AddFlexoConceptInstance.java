@@ -34,21 +34,23 @@ import org.openflexo.foundation.validation.CompoundIssue;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreationSchemeAction;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.CreationScheme;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -102,6 +104,8 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = AddFlexoConceptInstanceParameter.ACTION_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<AddFlexoConceptInstanceParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
@@ -226,11 +230,11 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 		@Override
 		public List<AddFlexoConceptInstanceParameter> getParameters() {
-			// Comment this because of an infinite loop with  updateParameters() method
+			// Comment this because of an infinite loop with updateParameters() method
 			updateParameters();
 			return parameters;
 		}
-		
+
 		public void setParameters(Vector<AddFlexoConceptInstanceParameter> parameters) {
 			this.parameters = parameters;
 		}
@@ -264,9 +268,9 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						if(getVirtualModelFactory()!=null){
+						if (getVirtualModelFactory() != null) {
 							addToParameters(getVirtualModelFactory().newAddFlexoConceptInstanceParameter(p));
-						}	
+						}
 					}
 				}
 			}
@@ -318,6 +322,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 	}
 
+	@DefineValidationRule
 	public static class AddFlexoConceptInstanceMustAddressACreationScheme extends
 			ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
 		public AddFlexoConceptInstanceMustAddressACreationScheme() {
@@ -329,17 +334,18 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 				AddFlexoConceptInstance action) {
 			if (action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
-					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this,
-							action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
+					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
+							"add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				} else {
-					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this,
-							action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
+					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
+							"add_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
 			}
 			return null;
 		}
 	}
 
+	@DefineValidationRule
 	public static class AddFlexoConceptInstanceParametersMustBeValid extends
 			ValidationRule<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance> {
 
@@ -383,6 +389,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 		}
 	}
 
+	@DefineValidationRule
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
 			BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {

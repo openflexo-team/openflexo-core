@@ -30,7 +30,11 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.viewpoint.binding.FetchRequestBindingModel;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -55,6 +59,8 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 
 	@Getter(value = CONDITIONS_KEY, cardinality = Cardinality.LIST, inverse = FetchRequestCondition.ACTION_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<FetchRequestCondition> getConditions();
 
 	@Setter(CONDITIONS_KEY)
@@ -97,7 +103,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 			if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = ", context);
 			}
-			out.append(getClass().getSimpleName(), context);
+			out.append(getImplementedInterface().getSimpleName(), context);
 			return out.toString();
 		}
 
@@ -198,7 +204,16 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 
 		@Override
 		public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration) {
-			this.embeddingIteration = embeddingIteration;
+			if (this.embeddingIteration != embeddingIteration) {
+				FetchRequestIterationAction oldValue = this.embeddingIteration;
+				this.embeddingIteration = embeddingIteration;
+				getPropertyChangeSupport().firePropertyChange("embeddingIteration", oldValue, embeddingIteration);
+			}
+		}
+
+		@Override
+		protected FetchRequestBindingModel makeBindingModel() {
+			return new FetchRequestBindingModel(this);
 		}
 
 	}

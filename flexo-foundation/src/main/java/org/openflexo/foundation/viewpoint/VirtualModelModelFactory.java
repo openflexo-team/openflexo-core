@@ -107,7 +107,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	public VirtualModelModelFactory(VirtualModelResource virtualModelResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(allClassesForModelContext(taService));
+		super(retrieveTechnologySpecificClasses(taService));
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
@@ -140,7 +140,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	 * @return
 	 * @throws ModelDefinitionException
 	 */
-	private static List<Class<?>> allClassesForModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(VirtualModel.class);
 		/*classes.add(FlexoConceptStructuralFacet.class);
@@ -188,7 +188,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	 * @throws ModelDefinitionException
 	 */
 	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = allClassesForModelContext(taService);
+		List<Class<?>> classes = retrieveTechnologySpecificClasses(taService);
 		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
 	}
 
@@ -430,6 +430,10 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 
 	public FetchRequestIterationAction newFetchRequestIterationAction() {
 		return newInstance(FetchRequestIterationAction.class);
+	}
+
+	public SelectFlexoConceptInstance newSelectFlexoConceptInstanceAction() {
+		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
 	@Override

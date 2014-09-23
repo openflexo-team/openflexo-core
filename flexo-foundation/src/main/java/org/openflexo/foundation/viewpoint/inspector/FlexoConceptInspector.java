@@ -20,27 +20,27 @@
  */
 package org.openflexo.foundation.viewpoint.inspector;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingFactory;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.binding.DefaultBindable;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptFormatterBindingModel;
+import org.openflexo.foundation.viewpoint.binding.FlexoConceptInspectorBindingModel;
 import org.openflexo.foundation.viewpoint.dm.InspectorEntryInserted;
 import org.openflexo.foundation.viewpoint.dm.InspectorEntryRemoved;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -96,6 +96,8 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	@Getter(value = ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = InspectorEntry.INSPECTOR_KEY)
 	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<InspectorEntry> getEntries();
 
 	@Setter(ENTRIES_KEY)
@@ -137,6 +139,9 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public FlexoConceptFormatter getFormatter();
 
+	@Override
+	public FlexoConceptInspectorBindingModel getBindingModel();
+
 	public static abstract class FlexoConceptInspectorImpl extends FlexoConceptObjectImpl implements FlexoConceptInspector {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInspector.class.getPackage().toString());
@@ -148,14 +153,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		private final FlexoConceptFormatter formatter;
 
-		/*
-		 * public static FlexoConceptInspector
-		 * makeFlexoConceptInspector(FlexoConcept ep) {
-		 * FlexoConceptInspector returned =
-		 * ep.getVirtualModelFactory().newFlexoConceptInspector(ep);
-		 * returned.setInspectorTitle(ep.getName()); ep.setInspector(returned);
-		 * return returned; }
-		 */
+		private FlexoConceptInspectorBindingModel bindingModel;
 
 		public FlexoConceptInspectorImpl() {
 			super();
@@ -180,8 +178,11 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			_flexoConcept = flexoConcept;
-			formatter.notifiedBindingModelRecreated();
+			if (_flexoConcept != flexoConcept) {
+				FlexoConcept old = _flexoConcept;
+				_flexoConcept = flexoConcept;
+				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_KEY, old, flexoConcept);
+			}
 		}
 
 		@Override
@@ -190,10 +191,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
-		}
-
-		public ViewPointLibrary getCalcLibrary() {
-			return getVirtualModel().getViewPointLibrary();
 		}
 
 		@Override
@@ -326,38 +323,13 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return entry;
 		}
 
-		/*@Override
-		public void notifyBindingModelChanged() {
-			super.notifyBindingModelChanged();
-			// SGU: as all entries share the flexo concept binding model, they
-			// should
-			// all notify change of their binding models
-			for (InspectorEntry entry : getEntries()) {
-				entry.notifyBindingModelChanged();
-			}
-		}*/
-
 		@Override
-		public final BindingModel getBindingModel() {
-			return getFlexoConcept().getBindingModel();
-			/*
-			 * if (_bindingModel == null) { createBindingModel(); } return
-			 * _bindingModel;
-			 */
+		public final FlexoConceptInspectorBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new FlexoConceptInspectorBindingModel(this);
+			}
+			return bindingModel;
 		}
-
-		/*
-		 * public void updateBindingModel() {
-		 * logger.fine("updateBindingModel()"); _bindingModel = null;
-		 * createBindingModel(); }
-		 * 
-		 * private void createBindingModel() { _bindingModel = new
-		 * BindingModel(); for (FlexoRole role :
-		 * getFlexoConcept().getPatternRoles()) {
-		 * _bindingModel.addToBindingVariables
-		 * (PatternRolePathElement.makePatternRolePathElement(role,
-		 * (FlexoConceptInstance) null)); } }
-		 */
 
 		@Override
 		public void entryFirst(InspectorEntry p) {
@@ -423,12 +395,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		}
 
 		public class FlexoConceptFormatterImpl extends DefaultBindable implements FlexoConceptFormatter {
-			private BindingModel formatterBindingModel = null;
-
-			@Override
-			public void notifiedBindingModelRecreated() {
-				createFormatterBindingModel();
-			}
+			private FlexoConceptFormatterBindingModel formatterBindingModel = null;
 
 			@Override
 			public BindingFactory getBindingFactory() {
@@ -436,22 +403,11 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			}
 
 			@Override
-			public BindingModel getBindingModel() {
+			public FlexoConceptFormatterBindingModel getBindingModel() {
 				if (formatterBindingModel == null) {
-					createFormatterBindingModel();
+					formatterBindingModel = new FlexoConceptFormatterBindingModel(FlexoConceptInspectorImpl.this);
 				}
 				return formatterBindingModel;
-			}
-
-			private void createFormatterBindingModel() {
-				formatterBindingModel = new BindingModel(getFlexoConcept().getBindingModel());
-				formatterBindingModel.addToBindingVariables(new BindingVariable(FORMATTER_INSTANCE_PROPERTY, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept())) {
-					@Override
-					public Type getType() {
-						return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept());
-					}
-				});
 			}
 
 			@Override
@@ -474,7 +430,9 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public interface FlexoConceptFormatter extends Bindable {
 
-		public void notifiedBindingModelRecreated();
+		@Override
+		public FlexoConceptFormatterBindingModel getBindingModel();
+
 	}
 
 }

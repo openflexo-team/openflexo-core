@@ -21,7 +21,6 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -94,12 +93,12 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			return true;
 		}
 
-		@Override
+		/*@Override
 		protected void appendContextualBindingVariables(BindingModel bindingModel) {
 			super.appendContextualBindingVariables(bindingModel);
-			/*bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
-					this));*/
-		}
+			bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
+					this));
+		}*/
 
 		/*@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {

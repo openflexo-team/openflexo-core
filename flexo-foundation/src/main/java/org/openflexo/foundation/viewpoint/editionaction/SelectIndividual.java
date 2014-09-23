@@ -68,7 +68,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 	public IFlexoOntologyClass getType();
 
 	public void setType(IFlexoOntologyClass ontologyClass);
-	
+
 	public FlexoMetaModel getMetaModelData();
 
 	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
@@ -88,7 +88,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
 			}
-			out.append(getClass().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
+			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
 					+ (getType() != null ? " as " + getType().getName() : "")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			if (getAssignation().isSet()) {
@@ -119,14 +119,14 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 				typeURI = null;
 			}
 		}
-		
+
 		@Override
 		public FlexoMetaModel getMetaModelData() {
 			/*if (StringUtils.isNotEmpty(typeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return getModelSlot().getMetaModelResource().getMetaModelData();
 			}*/
-			if (getModelSlot()!=null&&getModelSlot().getMetaModelResource() != null
+			if (getModelSlot() != null && getModelSlot().getMetaModelResource() != null
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return getModelSlot().getMetaModelResource().getMetaModelData();
 			}
@@ -151,7 +151,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			return getClass().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}*/
-		
+
 		@Override
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")

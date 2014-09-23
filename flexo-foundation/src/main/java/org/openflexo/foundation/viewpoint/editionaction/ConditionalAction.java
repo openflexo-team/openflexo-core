@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -145,6 +146,7 @@ public interface ConditionalAction extends ControlStructureAction {
 
 	}
 
+	@DefineValidationRule
 	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ConditionalAction> {
 		public ConditionBindingIsRequiredAndMustBeValid() {
 			super("'condition'_binding_is_not_valid", ConditionalAction.class);

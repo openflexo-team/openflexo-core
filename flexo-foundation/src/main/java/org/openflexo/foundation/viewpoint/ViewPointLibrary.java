@@ -38,6 +38,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
  * The {@link ViewPointLibrary} manages all references to all {@link ViewPoint} known in a JVM instance.<br>
@@ -51,7 +52,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 	private static final Logger logger = Logger.getLogger(ViewPointLibrary.class.getPackage().getName());
 
-	public static final ViewPointValidationModel VALIDATION_MODEL = new ViewPointValidationModel();
+	public ViewPointValidationModel viewPointValidationModel;
 
 	private final Map<String, ViewPointResource> map;
 
@@ -224,14 +225,15 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter newRC = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
-				//newRC.initialize(this);
-				
+				// newRC.initialize(this);
+
 				getPropertyChangeSupport().firePropertyChange("getResourceCenters()", null, newRC);
-			}if (notification instanceof ResourceCenterRemoved) {
+			}
+			if (notification instanceof ResourceCenterRemoved) {
 				FlexoResourceCenter newRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 				// A new resource center has just been referenced, initialize it related to viewpoint exploring
-				//newRC.initialize(this);
-				
+				// newRC.initialize(this);
+
 				getPropertyChangeSupport().firePropertyChange("getResourceCenters()", null, newRC);
 			}
 			/*if (notification instanceof ResourceCenterRemoved) {
@@ -271,10 +273,10 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return getServiceManager().getService(TechnologyAdapterService.class);
 	}
 
-	public List<FlexoResourceCenter> getResourceCenters(){
+	public List<FlexoResourceCenter> getResourceCenters() {
 		return getResourceCenterService().getResourceCenters();
 	}
-	
+
 	@Override
 	public void initialize() {
 		if (getResourceCenterService() != null) {
@@ -294,7 +296,14 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 
 	@Override
 	public ValidationModel getDefaultValidationModel() {
-		return VALIDATION_MODEL;
+		if (viewPointValidationModel == null && serviceManager != null) {
+			try {
+				viewPointValidationModel = new ViewPointValidationModel(serviceManager.getTechnologyAdapterService());
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		return viewPointValidationModel;
 	}
 
 	/*public void delete(ViewPoint viewPoint) {

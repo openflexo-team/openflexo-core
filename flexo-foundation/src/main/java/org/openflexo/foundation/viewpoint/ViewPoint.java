@@ -22,7 +22,10 @@ package org.openflexo.foundation.viewpoint;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +41,12 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.XMLUtils;
+import org.openflexo.foundation.validation.Validable;
+import org.openflexo.foundation.validation.ValidationError;
+import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationModel;
+import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
@@ -187,7 +195,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
 		private LocalizedDictionary localizedDictionary;
-		private ViewPointLibrary _library;
+		// private ViewPointLibrary _library;
 		// private List<ModelSlot> modelSlots;
 		private List<VirtualModel> virtualModels;
 		private ViewPointResource resource;
@@ -263,7 +271,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			logger.info("Registering viewpoint " + baseName + " URI=" + getViewPointURI());
 
 			setName(baseName);
-			_library = library;
+			// _library = library;
 
 			/*for (VirtualModel vm : getVirtualModels()) {
 				for (FlexoConcept ep : vm.getFlexoConcepts()) {
@@ -361,7 +369,11 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public ViewPointLibrary getViewPointLibrary() {
-			return _library;
+			if (getResource() != null) {
+				return getResource().getViewPointLibrary();
+			}
+			return null;
+			// return _library;
 		}
 
 		@Override
@@ -616,7 +628,10 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		@Override
 		public ValidationModel getDefaultValidationModel() {
-			return ViewPointLibrary.VALIDATION_MODEL;
+			if (getViewPointLibrary() != null) {
+				return getViewPointLibrary().getDefaultValidationModel();
+			}
+			return null;
 		}
 
 		// ==========================================================================
@@ -813,5 +828,46 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			return null;
 		}
 
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			return getVirtualModels();
+		}
 	}
+
+	@DefineValidationRule
+	public static class ViewPointMustHaveAName extends ValidationRule<ViewPointMustHaveAName, ViewPoint> {
+		public ViewPointMustHaveAName() {
+			super(ViewPoint.class, "viewpoint_must_have_a_name");
+		}
+
+		@Override
+		public ValidationIssue<ViewPointMustHaveAName, ViewPoint> applyValidation(ViewPoint vp) {
+			if (StringUtils.isEmpty(vp.getName())) {
+				return new ValidationError<ViewPointMustHaveAName, ViewPoint>(this, vp, "viewpoint_has_no_name");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class ViewPointURIMustBeValid extends ValidationRule<ViewPointURIMustBeValid, ViewPoint> {
+		public ViewPointURIMustBeValid() {
+			super(ViewPoint.class, "viewpoint_uri_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
+			if (StringUtils.isEmpty(vp.getURI())) {
+				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
+			} else {
+				try {
+					new URL(vp.getURI());
+				} catch (MalformedURLException e) {
+					return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_uri_is_not_valid");
+				}
+			}
+			return null;
+		}
+	}
+
 }

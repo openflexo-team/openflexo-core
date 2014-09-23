@@ -27,6 +27,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -54,7 +55,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
-@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(OntologicObjectRole.class), @Import(PrimitiveRole.class) })
+@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(OntologicObjectRole.class), @Import(PrimitiveRole.class),
+		@Import(OntologicObjectRole.class) })
 public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
@@ -269,15 +271,16 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	}
 
-	public static class PatternRoleMustHaveAName extends ValidationRule<PatternRoleMustHaveAName, FlexoRole> {
-		public PatternRoleMustHaveAName() {
-			super(FlexoRole.class, "pattern_role_must_have_a_name");
+	@DefineValidationRule
+	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole> {
+		public FlexoRoleMustHaveAName() {
+			super(FlexoRole.class, "flexo_role_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<PatternRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
+		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getRoleName())) {
-				return new ValidationError<PatternRoleMustHaveAName, FlexoRole>(this, flexoRole, "pattern_role_has_no_name");
+				return new ValidationError<FlexoRoleMustHaveAName, FlexoRole>(this, flexoRole, "flexo_role_has_no_name");
 			}
 			return null;
 		}

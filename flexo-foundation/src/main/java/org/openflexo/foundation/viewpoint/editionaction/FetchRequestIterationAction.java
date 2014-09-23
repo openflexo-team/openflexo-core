@@ -29,6 +29,9 @@ import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.foundation.viewpoint.binding.FetchRequestIterationActionBindingModel;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -58,6 +61,8 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 
 	@Getter(value = FETCH_REQUEST_KEY)
 	@XMLElement(context = "FetchRequest_")
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public FetchRequest<?, ?> getFetchRequest();
 
 	@Setter(FETCH_REQUEST_KEY)

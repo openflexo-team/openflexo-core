@@ -32,6 +32,7 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.URIUtilities;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
@@ -107,11 +108,11 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		public Type getType() {
 			return String.class;
 		}
-		
+
 		@SuppressWarnings("rawtypes")
 		@Override
-		public List<TypeAwareModelSlot> getAccessibleModelSlots(){
-			return  getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
+			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 
 		@Override
@@ -222,6 +223,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 
 	}
 
+	@DefineValidationRule
 	public static class BaseURIBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<URIParameter> {
 		public BaseURIBindingIsRequiredAndMustBeValid() {
 			super("'base_uri'_binding_is_required", URIParameter.class);

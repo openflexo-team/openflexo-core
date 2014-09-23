@@ -32,6 +32,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
@@ -352,14 +353,14 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		@Override
 		public final EditionActionBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				bindingModel = new EditionActionBindingModel(this);
+				bindingModel = makeBindingModel();
 			}
 			return bindingModel;
 		}
 
-		/*protected EditionActionBindingModel makeBindingModel() {
+		protected EditionActionBindingModel makeBindingModel() {
 			return new EditionActionBindingModel(this);
-		}*/
+		}
 
 		/*@Override
 		public final BindingModel getInferedBindingModel() {
@@ -562,6 +563,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	}
 
+	@DefineValidationRule
 	public static class ConditionalBindingMustBeValid extends BindingMustBeValid<EditionAction> {
 		public ConditionalBindingMustBeValid() {
 			super("'conditional'_binding_is_not_valid", EditionAction.class);

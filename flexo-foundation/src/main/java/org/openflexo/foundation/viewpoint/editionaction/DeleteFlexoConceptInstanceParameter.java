@@ -4,17 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.binding.DeleteFlexoConceptInstanceParameterBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -50,7 +50,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	@Setter(VALUE_KEY)
 	public void setValue(DataBinding<Object> value);
 
-	@Getter(value = ACTION_KEY, inverse = DeleteFlexoConceptInstance.PARAMETERS_KEY)
+	@Getter(value = ACTION_KEY /*, inverse = DeleteFlexoConceptInstance.PARAMETERS_KEY*/)
 	public DeleteFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
@@ -64,6 +64,9 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public Object evaluateParameterValue(FlexoBehaviourAction action);
 
+	@Override
+	public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel();
+
 	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
 			DeleteFlexoConceptInstanceParameter {
 
@@ -74,6 +77,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		private FlexoBehaviourParameter param;
 		String paramName;
 		private DataBinding<Object> value;
+
+		private DeleteFlexoConceptInstanceParameterBindingModel bindingModel;
 
 		// Use it only for deserialization
 		public DeleteFlexoConceptInstanceParameterImpl() {
@@ -158,11 +163,11 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			if (getAction() != null) {
-				return getAction().getBindingModel();
+		public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new DeleteFlexoConceptInstanceParameterBindingModel(this);
 			}
-			return null;
+			return bindingModel;
 		}
 
 		@Override
@@ -215,4 +220,18 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<DeleteFlexoConceptInstanceParameter> {
+		public ValueBindingMustBeValid() {
+			super("'value'_binding_is_required_and_must_be_valid", DeleteFlexoConceptInstanceParameter.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(DeleteFlexoConceptInstanceParameter object) {
+			return object.getValue();
+		}
+
+	}
+
 }

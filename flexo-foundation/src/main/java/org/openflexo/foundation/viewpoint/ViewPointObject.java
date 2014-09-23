@@ -192,7 +192,8 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 					ViewPointObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
-					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getNameKey(), deleteBinding);
+					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getNameKey(), "Binding: "
+							+ getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
 				}
 			}
 			return null;
@@ -228,12 +229,13 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
 				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getNameKey());
+						BindingIsRequiredAndMustBeValid.this.getNameKey(), "Binding required but not set");
 			} else if (!b.isValid()) {
 				ViewPointObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for "
 						+ object.getStringRepresentation() + ". Reason: " + b.invalidBindingReason());
 				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getNameKey());
+						BindingIsRequiredAndMustBeValid.this.getNameKey(), "Binding: " + getBinding(object) + " reason: "
+								+ getBinding(object).invalidBindingReason());
 			}
 			return null;
 		}

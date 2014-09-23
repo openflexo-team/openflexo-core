@@ -4,17 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject.FlexoBehaviourObjectImpl;
+import org.openflexo.foundation.viewpoint.binding.MatchingCriteriaBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -36,7 +36,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
-	@Getter(value = ACTION_KEY, inverse = MatchFlexoConceptInstance.MATCHING_CRITERIAS_KEY)
+	@Getter(value = ACTION_KEY /*, inverse = MatchFlexoConceptInstance.MATCHING_CRITERIAS_KEY*/)
 	public MatchFlexoConceptInstance getAction();
 
 	@Setter(ACTION_KEY)
@@ -62,15 +62,20 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 
 	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
 
+	@Override
+	public MatchingCriteriaBindingModel getBindingModel();
+
 	public static abstract class MatchingCriteriaImpl extends FlexoBehaviourObjectImpl implements MatchingCriteria {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 
-		private MatchFlexoConceptInstance action;
+		// private MatchFlexoConceptInstance action;
 
 		private FlexoRole flexoRole;
 		private String patternRoleName;
 		private DataBinding<?> value;
+
+		private MatchingCriteriaBindingModel bindingModel;
 
 		// Use it only for deserialization
 		public MatchingCriteriaImpl() {
@@ -152,11 +157,11 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			if (getAction() != null) {
-				return getAction().getBindingModel();
+		public MatchingCriteriaBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				return bindingModel = new MatchingCriteriaBindingModel(this);
 			}
-			return null;
+			return bindingModel;
 		}
 
 		@Override
@@ -167,7 +172,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public MatchFlexoConceptInstance getAction() {
 			return action;
 		}
@@ -175,7 +180,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		@Override
 		public void setAction(MatchFlexoConceptInstance action) {
 			this.action = action;
-		}
+		}*/
 
 		@Override
 		public FlexoRole getFlexoRole() {
@@ -209,4 +214,18 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ValueBindingMustBeValid extends BindingMustBeValid<MatchingCriteria> {
+		public ValueBindingMustBeValid() {
+			super("'value'_binding_must_be_valid", MatchingCriteria.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(MatchingCriteria object) {
+			return object.getValue();
+		}
+
+	}
+
 }

@@ -34,13 +34,17 @@ import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.IndividualRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.foundation.viewpoint.IndividualRole;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -77,6 +81,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	@Getter(value = DATA_ASSERTIONS_KEY, cardinality = Cardinality.LIST, inverse = DataPropertyAssertion.ACTION_KEY)
 	@XMLElement(xmlTag = "DataPropertyAssertion")
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<DataPropertyAssertion> getDataAssertions();
 
 	@Setter(DATA_ASSERTIONS_KEY)
@@ -90,6 +96,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	@Getter(value = OBJECT_ASSERTIONS_KEY, cardinality = Cardinality.LIST, inverse = ObjectPropertyAssertion.ACTION_KEY)
 	@XMLElement(xmlTag = "ObjectPropertyAssertion")
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<ObjectPropertyAssertion> getObjectAssertions();
 
 	@Setter(OBJECT_ASSERTIONS_KEY)
@@ -130,7 +138,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
 	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
-	AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
+			AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
@@ -153,7 +161,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 				out.append(getAssignation().toString() + " = (", context);
 			}
 			out.append(getClass().getSimpleName() + (getOntologyClass() != null ? " conformTo " + getOntologyClass().getName() : "")
-					+ " from " + (getModelSlot()!=null ? getModelSlot().getName():"") + " {" + StringUtils.LINE_SEPARATOR, context);
+					+ " from " + (getModelSlot() != null ? getModelSlot().getName() : "") + " {" + StringUtils.LINE_SEPARATOR, context);
 			out.append(getAssertionsFMLRepresentation(context), context);
 			out.append("}", context);
 			if (getAssignation().isSet()) {
@@ -227,13 +235,12 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
 				if (getFlexoRole() instanceof IndividualRole) {
-					if (getFlexoRole().getOntologicType() != null){
+					if (getFlexoRole().getOntologicType() != null) {
 						if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						} else {
 							getFlexoRole().setOntologicType(ontologyClass);
 						}
-					}
-					else {
+					} else {
 						getFlexoRole().setOntologicType(ontologyClass);
 					}
 				}
@@ -361,8 +368,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	}
 
+	@DefineValidationRule
 	public static class AddIndividualActionMustDefineAnOntologyClass extends
-	ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
+			ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
 		public AddIndividualActionMustDefineAnOntologyClass() {
 			super(AddIndividual.class, "add_individual_action_must_define_an_ontology_class");
 		}
@@ -400,18 +408,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			}
 
 		}
-	}
-
-	public static class URIBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddIndividual> {
-		public URIBindingIsRequiredAndMustBeValid() {
-			super("'uri'_binding_is_required_and_must_be_valid", AddIndividual.class);
-		}
-
-		@Override
-		public DataBinding<String> getBinding(AddIndividual object) {
-			return object.getIndividualName();
-		}
-
 	}
 
 }

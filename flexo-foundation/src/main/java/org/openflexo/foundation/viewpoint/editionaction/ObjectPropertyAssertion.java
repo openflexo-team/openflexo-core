@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
@@ -36,6 +35,7 @@ import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -58,11 +58,13 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
 
+	@Override
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.OBJECT_ASSERTIONS_KEY)
-	public AssignableAction<?, ?> getAction();
+	public AddIndividual<?, ?> getAction();
 
+	@Override
 	@Setter(ACTION_KEY)
-	public void setAction(AssignableAction<?, ?> action);
+	public void setAction(AddIndividual<?, ?> action);
 
 	@Getter(value = OBJECT_PROPERTY_URI_KEY)
 	@XMLAttribute
@@ -117,11 +119,6 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		@Override
 		public void setOntologyProperty(IFlexoOntologyStructuralProperty p) {
 			_setObjectPropertyURI(p != null ? p.getURI() : null);
-		}
-
-		@Override
-		public BindingModel getBindingModel() {
-			return getFlexoBehaviour().getBindingModel();
 		}
 
 		private DataBinding<?> object;
@@ -189,6 +186,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	}
 
+	@DefineValidationRule
 	public static class ObjectPropertyAssertionMustDefineAnOntologyProperty extends
 			ValidationRule<ObjectPropertyAssertionMustDefineAnOntologyProperty, ObjectPropertyAssertion> {
 		public ObjectPropertyAssertionMustDefineAnOntologyProperty() {
@@ -207,6 +205,7 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	}
 
+	@DefineValidationRule
 	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ObjectPropertyAssertion> {
 		public ObjectBindingIsRequiredAndMustBeValid() {
 			super("'object'_binding_is_required_and_must_be_valid", ObjectPropertyAssertion.class);

@@ -21,7 +21,6 @@ package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
@@ -31,6 +30,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,19 +45,17 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface DataPropertyAssertion extends AbstractAssertion {
 
-	@PropertyIdentifier(type = AddIndividual.class)
-	public static final String ACTION_KEY = "action";
-
 	@PropertyIdentifier(type = String.class)
 	public static final String DATA_PROPERTY_URI_KEY = "dataPropertyURI";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
+	@Override
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.DATA_ASSERTIONS_KEY)
-	public AssignableAction<?, ?> getAction();
+	public AddIndividual<?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(AssignableAction<?, ?> action);
+	public void setAction(AddIndividual<?, ?> action);
 
 	@Getter(value = DATA_PROPERTY_URI_KEY)
 	@XMLAttribute
@@ -128,14 +126,6 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			if (getFlexoBehaviour() != null) {
-				return getFlexoBehaviour().getBindingModel();
-			}
-			return null;
-		}
-
-		@Override
 		public java.lang.reflect.Type getType() {
 			if (getOntologyProperty() instanceof IFlexoOntologyDataProperty) {
 				if (((IFlexoOntologyDataProperty) getOntologyProperty()).getRange() != null) {
@@ -167,6 +157,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 	}
 
+	@DefineValidationRule
 	public static class DataPropertyAssertionMustDefineAnOntologyProperty extends
 			ValidationRule<DataPropertyAssertionMustDefineAnOntologyProperty, DataPropertyAssertion> {
 		public DataPropertyAssertionMustDefineAnOntologyProperty() {
@@ -185,6 +176,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 	}
 
+	@DefineValidationRule
 	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DataPropertyAssertion> {
 		public ValueBindingIsRequiredAndMustBeValid() {
 			super("'value'_binding_is_required_and_must_be_valid", DataPropertyAssertion.class);

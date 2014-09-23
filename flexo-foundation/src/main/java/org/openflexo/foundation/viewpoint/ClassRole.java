@@ -7,6 +7,7 @@ import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ConceptActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
@@ -115,16 +116,17 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 	}
 
+	@DefineValidationRule
 	public static class ClassRoleMustDefineAValidConceptClass extends ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole> {
 		public ClassRoleMustDefineAValidConceptClass() {
-			super(ClassRole.class, "pattern_role_must_define_a_valid_concept_class");
+			super(ClassRole.class, "flexo_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
 		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole> applyValidation(ClassRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
 				return new ValidationError<ClassRoleMustDefineAValidConceptClass, ClassRole>(this, patternRole,
-						"pattern_role_does_not_define_any_concept_class");
+						"flexo_role_does_not_define_any_concept_class");
 			}
 			return null;
 		}

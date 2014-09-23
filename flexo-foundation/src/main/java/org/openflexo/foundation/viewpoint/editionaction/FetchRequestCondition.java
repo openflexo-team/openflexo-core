@@ -20,19 +20,19 @@
 package org.openflexo.foundation.viewpoint.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
+import org.openflexo.foundation.viewpoint.binding.FetchRequestConditionBindingModel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -53,13 +53,15 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "Condition")
 public interface FetchRequestCondition extends FlexoConceptObject {
 
+	public static final String SELECTED = "selected";
+
 	@PropertyIdentifier(type = FetchRequest.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITION_KEY = "condition";
 
-	@Getter(value = ACTION_KEY, inverse = FetchRequest.CONDITIONS_KEY)
+	@Getter(value = ACTION_KEY /*, inverse = FetchRequest.CONDITIONS_KEY*/)
 	public FetchRequest<?, ?> getAction();
 
 	@Setter(ACTION_KEY)
@@ -78,8 +80,6 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FetchRequestCondition.class.getPackage().getName());
 
-		public static final String SELECTED = "selected";
-
 		// private FetchRequest fetchRequest;
 		private DataBinding<Boolean> condition;
 
@@ -95,56 +95,15 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 			return null;
 		}
 
-		private BindingModel bindingModel;
+		private FetchRequestConditionBindingModel bindingModel;
 
 		@Override
-		public BindingModel getBindingModel() {
+		public FetchRequestConditionBindingModel getBindingModel() {
 			if (bindingModel == null) {
-				bindingModel = buildBindingModel();
+				bindingModel = new FetchRequestConditionBindingModel(this);
 			}
 			return bindingModel;
 		}
-
-		protected BindingModel buildBindingModel() {
-			BindingModel returned = null;
-			if (getAction() != null) {
-				/*returned = new BindingModel(getFetchRequest().getActionContainer() != null ? getFetchRequest().getActionContainer()
-						.getBindingModel() : getFetchRequest().getBindingModel());*/
-				if (getAction().getEmbeddingIteration() != null) {
-					returned = new BindingModel(getAction().getEmbeddingIteration().getBindingModel());
-				} else {
-					returned = new BindingModel(getAction().getBindingModel());
-				}
-				returned.addToBindingVariables(new BindingVariable(SELECTED, getAction().getFetchedType()) {
-					@Override
-					public Object getBindingValue(Object target, BindingEvaluationContext context) {
-						logger.info("What should i return for " + SELECTED + " ? target " + target + " context=" + context);
-						return super.getBindingValue(target, context);
-					}
-
-					@Override
-					public Type getType() {
-						if (getAction() != null) {
-							return getAction().getFetchedType();
-						} else {
-							return null;
-						}
-					}
-				});
-			} /* else {
-				returned = new BindingModel();
-				}*/
-			return returned;
-		}
-
-		/*public FetchRequest getFetchRequest() {
-			return fetchRequest;
-		}
-
-		public void setFetchRequest(FetchRequest fetchRequest) {
-			this.fetchRequest = fetchRequest;
-			bindingModel = null;
-		}*/
 
 		@Override
 		public String getURI() {
@@ -197,4 +156,17 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 			return returned;
 		}
 	}
+
+	@DefineValidationRule
+	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<FetchRequestCondition> {
+		public ConditionBindingIsRequiredAndMustBeValid() {
+			super("'condition'_binding_is_not_valid", FetchRequestCondition.class);
+		}
+
+		@Override
+		public DataBinding<Boolean> getBinding(FetchRequestCondition object) {
+			return object.getCondition();
+		}
+	}
+
 }

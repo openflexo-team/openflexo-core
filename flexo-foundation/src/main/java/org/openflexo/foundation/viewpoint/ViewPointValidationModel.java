@@ -19,39 +19,52 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.viewpoint.editionaction.AddClass;
-import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.editionaction.AddIndividual;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
-import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
-import org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
-import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion;
-import org.openflexo.foundation.viewpoint.inspector.InspectorEntry;
+import org.openflexo.model.ModelContext;
+import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * Please comment this class
+ * This is the ValidationModel for FML model (ViewPoint, VirtualModel, FlexoConcept, etc...)
  * 
- * @author sguerin
+ * @author sylvain
  * 
  */
+@SuppressWarnings("serial")
 public class ViewPointValidationModel extends ValidationModel {
 
-	public ViewPointValidationModel() {
-		super(null);
+	/**
+	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
+	 * parts, and return a newly created ModelContext dedicated to FML model validation
+	 * 
+	 * @param taService
+	 * @return
+	 * @throws ModelDefinitionException
+	 */
+	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
+		List<Class<?>> classes = (taService != null ? VirtualModelModelFactory.retrieveTechnologySpecificClasses(taService)
+				: new ArrayList<Class<?>>());
+		classes.add(ViewPoint.class);
+		classes.add(VirtualModel.class);
+		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
+	}
 
-		registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());
+	public ViewPointValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
+		super(computeModelContext(taService));
+
+		/*registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveEditionSchemes());
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveDeletionScheme());
 
-		registerRule(new FlexoRole.PatternRoleMustHaveAName());
+		registerRule(new FlexoRole.FlexoRoleMustHaveAName());
 		registerRule(new ClassRole.ClassRoleMustDefineAValidConceptClass());
-		registerRule(new IndividualRole.IndividualPatternRoleMustDefineAValidConceptClass());
+		registerRule(new IndividualRole.IndividualFlexoRoleMustDefineAValidConceptClass());
 		// registerRule(new DataPropertyStatementPatternRole.DataPropertyStatementPatternRoleMustDefineAValidProperty());
 		// registerRule(new ObjectPropertyStatementPatternRole.ObjectPropertyStatementPatternRoleMustDefineAValidProperty());
 
@@ -79,14 +92,8 @@ public class ViewPointValidationModel extends ValidationModel {
 		// registerRule(new AddDataPropertyStatement.AddDataPropertyStatementActionMustDefineADataProperty());
 		// registerRule(new AddDataPropertyStatement.ValueIsRequiredAndMustBeValid());
 
-		/*registerRule(new AddShape.AddShapeActionMustAdressAValidShapePatternRole());
-		registerRule(new AddShape.AddShapeActionMustHaveAValidContainer());
 
-		registerRule(new AddConnector.AddConnectorActionMustAdressAValidConnectorPatternRole());
-		registerRule(new AddConnector.AddConnectorActionMustHaveAValidStartingShape());
-		registerRule(new AddConnector.AddConnectorActionMustHaveAValidEndingShape());*/
-
-		registerRule(new DeclareFlexoRole.AssignationBindingIsRequiredAndMustBeValid());
+		// registerRule(new DeclareFlexoRole.AssignationBindingIsRequiredAndMustBeValid());
 		registerRule(new DeclareFlexoRole.ObjectBindingIsRequiredAndMustBeValid());
 
 		registerRule(new DeleteAction.ObjectToDeleteBindingIsRequiredAndMustBeValid());
@@ -103,7 +110,7 @@ public class ViewPointValidationModel extends ValidationModel {
 
 		// Notify that the validation model is complete and that inheritance
 		// computation could be performed
-		update();
+		update();*/
 	}
 
 	/**

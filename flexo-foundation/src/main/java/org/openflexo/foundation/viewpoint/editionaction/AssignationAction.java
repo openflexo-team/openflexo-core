@@ -28,11 +28,10 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -147,4 +146,18 @@ public interface AssignationAction<T> extends AssignableAction<ModelSlot<?>, T> 
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
+		public ValueBindingMustBeValid() {
+			super("'value'_binding_is_required_and_must_be_valid", AssignationAction.class);
+		}
+
+		@Override
+		public DataBinding<Object> getBinding(AssignationAction object) {
+			return object.getValue();
+		}
+
+	}
+
 }

@@ -22,12 +22,14 @@ package org.openflexo.foundation.viewpoint;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
@@ -42,8 +44,10 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.foundation.validation.Validable;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
+import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
@@ -1027,6 +1031,12 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public boolean handleVariable(BindingVariable variable) {
 			return false;
 		}*/
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			// TODO Auto-generated method stub
+			return super.getEmbeddedValidableObjects();
+		}
 
 	}
 }

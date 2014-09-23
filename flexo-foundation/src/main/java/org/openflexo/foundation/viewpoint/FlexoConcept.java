@@ -33,6 +33,7 @@ import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.ValidationWarning;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
@@ -883,6 +884,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	}
 
+	@DefineValidationRule
 	public static class FlexoConceptShouldHaveRoles extends ValidationRule<FlexoConceptShouldHaveRoles, FlexoConcept> {
 		public FlexoConceptShouldHaveRoles() {
 			super(FlexoConcept.class, "flexo_concept_should_have_roles");
@@ -898,21 +900,23 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 	}
 
-	public static class FlexoConceptShouldHaveEditionSchemes extends ValidationRule<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> {
-		public FlexoConceptShouldHaveEditionSchemes() {
+	@DefineValidationRule
+	public static class FlexoConceptShouldHaveFlexoBehaviours extends ValidationRule<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> {
+		public FlexoConceptShouldHaveFlexoBehaviours() {
 			super(FlexoConcept.class, "flexo_concept_should_have_edition_scheme");
 		}
 
 		@Override
-		public ValidationIssue<FlexoConceptShouldHaveEditionSchemes, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+		public ValidationIssue<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (flexoConcept.getFlexoBehaviours().size() == 0) {
-				return new ValidationWarning<FlexoConceptShouldHaveEditionSchemes, FlexoConcept>(this, flexoConcept,
+				return new ValidationWarning<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept>(this, flexoConcept,
 						"flexo_concept_has_no_edition_scheme");
 			}
 			return null;
 		}
 	}
 
+	@DefineValidationRule
 	public static class FlexoConceptShouldHaveDeletionScheme extends ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 		public FlexoConceptShouldHaveDeletionScheme() {
 			super(FlexoConcept.class, "flexo_concept_should_have_deletion_scheme");

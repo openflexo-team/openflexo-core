@@ -8,6 +8,7 @@ import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ConceptActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
@@ -120,16 +121,17 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 
 	}
 
-	public static class IndividualPatternRoleMustDefineAValidConceptClass extends
-			ValidationRule<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole> {
-		public IndividualPatternRoleMustDefineAValidConceptClass() {
+	@DefineValidationRule
+	public static class IndividualFlexoRoleMustDefineAValidConceptClass extends
+			ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
+		public IndividualFlexoRoleMustDefineAValidConceptClass() {
 			super(IndividualRole.class, "pattern_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole patternRole) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole patternRole) {
 			if (patternRole.getOntologicType() == null) {
-				return new ValidationError<IndividualPatternRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
+				return new ValidationError<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole>(this, patternRole,
 						"pattern_role_does_not_define_any_concept_class");
 			}
 			return null;

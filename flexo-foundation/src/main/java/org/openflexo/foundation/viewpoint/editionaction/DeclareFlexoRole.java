@@ -28,6 +28,7 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
@@ -123,18 +124,7 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object>
 
 	}
 
-	public static class AssignationBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclareFlexoRole> {
-		public AssignationBindingIsRequiredAndMustBeValid() {
-			super("'assign'_binding_is_not_valid", DeclareFlexoRole.class);
-		}
-
-		@Override
-		public DataBinding<?> getBinding(DeclareFlexoRole object) {
-			return object.getAssignation();
-		}
-
-	}
-
+	@DefineValidationRule
 	public static class ObjectBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<DeclareFlexoRole> {
 		public ObjectBindingIsRequiredAndMustBeValid() {
 			super("'object'_binding_is_not_valid", DeclareFlexoRole.class);

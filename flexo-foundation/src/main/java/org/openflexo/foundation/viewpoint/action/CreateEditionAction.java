@@ -273,12 +273,19 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 			} else if (IterationAction.class.isAssignableFrom(controlActionClass)) {
 				return factory.newIterationAction();
 			} else if (FetchRequestIterationAction.class.isAssignableFrom(controlActionClass) && requestActionClass != null
-					&& modelSlot != null) {
+			/*&& modelSlot != null*/) {
 				returned = factory.newFetchRequestIterationAction();
-				FetchRequest request = modelSlot.makeFetchRequest(requestActionClass);
-				request.setModelSlot(modelSlot);
-				((FetchRequestIterationAction) returned).setFetchRequest(request);
-				returned.setModelSlot(modelSlot);
+				FetchRequest request = null;
+				if (modelSlot != null) {
+					request = modelSlot.makeFetchRequest(requestActionClass);
+					request.setModelSlot(modelSlot);
+					returned.setModelSlot(modelSlot);
+				} else if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
+					request = factory.newSelectFlexoConceptInstanceAction();
+				}
+				if (request != null) {
+					((FetchRequestIterationAction) returned).setFetchRequest(request);
+				}
 				return returned;
 			} else {
 				logger.warning("Unexpected " + controlActionClass);
@@ -292,7 +299,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 			}
 			break;
 		case RequestAction:
-			if (requestActionClass != null && modelSlot != null) {
+			if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
+				return factory.newSelectFlexoConceptInstanceAction();
+			} else if (requestActionClass != null && modelSlot != null) {
 				returned = modelSlot.makeFetchRequest(requestActionClass);
 				returned.setModelSlot(modelSlot);
 				return returned;
