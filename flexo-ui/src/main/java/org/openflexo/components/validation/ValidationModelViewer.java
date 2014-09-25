@@ -52,11 +52,11 @@ import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.ValidationRuleSet;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationRuleSet;
 
 /**
  * Defines the panel allowing to show and edit a ValidationModel

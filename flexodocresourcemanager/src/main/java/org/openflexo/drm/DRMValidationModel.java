@@ -19,10 +19,10 @@
  */
 package org.openflexo.drm;
 
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationModel;
 
 /**
  * Please comment this class
@@ -59,7 +59,7 @@ public class DRMValidationModel extends ValidationModel {
 	/**
 	 * Overrides fixAutomaticallyIfOneFixProposal
 	 * 
-	 * @see org.openflexo.foundation.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
+	 * @see org.openflexo.model.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
 	 */
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {

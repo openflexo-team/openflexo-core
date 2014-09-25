@@ -31,16 +31,16 @@ import java.util.logging.Logger;
 import org.openflexo.drm.action.ApproveVersion;
 import org.openflexo.drm.dm.StructureModified;
 import org.openflexo.drm.helpset.HelpSetConfiguration;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ProblemIssue;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.ValidationWarning;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
+import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ProblemIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 public class DocItem extends DRMObject {
 

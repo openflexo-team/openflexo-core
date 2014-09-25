@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.validation.ValidationModel;
 
 /**
  * This is the default non-abstract implementation of {@link FlexoObject}.<br>
@@ -178,12 +177,6 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	public boolean isBeingCloned() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public ValidationModel getDefaultValidationModel() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

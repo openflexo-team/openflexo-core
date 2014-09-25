@@ -35,10 +35,9 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.Validable;
 
 /**
  * The {@link ViewPointLibrary} manages all references to all {@link ViewPoint} known in a JVM instance.<br>
@@ -294,8 +293,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		}
 	}
 
-	@Override
-	public ValidationModel getDefaultValidationModel() {
+	public ViewPointValidationModel getViewPointValidationModel() {
 		if (viewPointValidationModel == null && serviceManager != null) {
 			try {
 				viewPointValidationModel = new ViewPointValidationModel(serviceManager.getTechnologyAdapterService());

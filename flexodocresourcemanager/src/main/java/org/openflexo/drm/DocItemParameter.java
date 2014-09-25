@@ -19,7 +19,7 @@
  */
 package org.openflexo.drm;
 
-import org.openflexo.foundation.validation.ParameteredFixProposal.ParameterDefinition;
+import org.openflexo.model.validation.ParameteredFixProposal.ParameterDefinition;
 
 public class DocItemParameter extends ParameterDefinition<DocItem> {
 

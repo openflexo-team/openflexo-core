@@ -23,9 +23,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.openflexo.components.ProgressWindow;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * Listen to validation process and control ProgressWindow

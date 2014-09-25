@@ -41,12 +41,6 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.XMLUtils;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
@@ -54,6 +48,7 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -63,6 +58,10 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -624,14 +623,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		@Override
 		public FlexoConceptBindingFactory getBindingFactory() {
 			return bindingFactory;
-		}
-
-		@Override
-		public ValidationModel getDefaultValidationModel() {
-			if (getViewPointLibrary() != null) {
-				return getViewPointLibrary().getDefaultValidationModel();
-			}
-			return null;
 		}
 
 		// ==========================================================================

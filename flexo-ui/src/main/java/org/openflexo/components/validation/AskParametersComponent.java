@@ -10,12 +10,12 @@ import org.openflexo.fib.model.FIBPanel;
 import org.openflexo.fib.model.FIBTextField;
 import org.openflexo.fib.model.TwoColsLayoutConstraints;
 import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
-import org.openflexo.foundation.validation.ParameteredFixProposal;
-import org.openflexo.foundation.validation.ParameteredFixProposal.ParameterDefinition;
-import org.openflexo.foundation.validation.ParameteredFixProposal.StringParameter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ParameteredFixProposal;
+import org.openflexo.model.validation.ParameteredFixProposal.ParameterDefinition;
+import org.openflexo.model.validation.ParameteredFixProposal.StringParameter;
 
 /**
  * Represents a FIBComponent built at run-time with a {@link ParameteredFixProposal}, and allowing to edit the parameters of the proposal

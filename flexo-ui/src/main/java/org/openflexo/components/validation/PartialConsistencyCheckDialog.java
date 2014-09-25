@@ -25,9 +25,9 @@ import java.awt.Toolkit;
 
 import javax.swing.JTabbedPane;
 
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.view.FlexoDialog;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;

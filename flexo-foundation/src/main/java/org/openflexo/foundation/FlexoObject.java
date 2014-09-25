@@ -40,9 +40,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationReport;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -63,6 +60,7 @@ import org.openflexo.model.factory.DeletableProxyObject;
 import org.openflexo.model.factory.EmbeddingType;
 import org.openflexo.model.factory.KeyValueCoding;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.model.validation.Validable;
 import org.openflexo.toolbox.HTMLUtils;
 
 /**
@@ -995,97 +993,6 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public void removeSpecificDescriptionsWithKey(String key) {
 			specificDescriptions.remove(key);
-		}
-
-		// ***************************************************
-		// Validable support
-		// ***************************************************
-
-		/**
-		 * Returns a flag indicating if this object is valid according to default validation model<br>
-		 * This method only works if this is an instance of {@link Validable} interface, otherwise return true
-		 * 
-		 * @return boolean
-		 */
-		@Override
-		public boolean isValid() {
-			return isValid(getDefaultValidationModel());
-		}
-
-		/**
-		 * Returns a flag indicating if this object is valid according to specified validation model<br>
-		 * This method only works if this is an instance of {@link Validable} interface, otherwise return true
-		 * 
-		 * @return boolean
-		 */
-		@Override
-		public boolean isValid(ValidationModel validationModel) {
-			if (validationModel == null) {
-				logger.warning("isValid() called with null validation model");
-				return true;
-			}
-			return validationModel.isValid(this);
-		}
-
-		/**
-		 * Validates this object by building new ValidationReport object Default validation model is used to perform this validation.<br>
-		 * This method only works if this is an instance of {@link Validable} interface, otherwise return null
-		 */
-		@Override
-		public ValidationReport validate() {
-			return validate(getDefaultValidationModel());
-		}
-
-		/**
-		 * Validates this object by building new ValidationReport object Supplied validation model is used to perform this validation.<br>
-		 * This method only works if this is an instance of {@link Validable} interface, otherwise return null
-		 */
-		@Override
-		public ValidationReport validate(ValidationModel validationModel) {
-			return validationModel.validate(this);
-		}
-
-		/**
-		 * Validates this object by appending eventual issues to supplied ValidationReport. Default validation model is used to perform this
-		 * validation.
-		 * 
-		 * @param report
-		 *            , a ValidationReport object on which found issues are appened
-		 */
-		@Override
-		public void validate(ValidationReport report) {
-			validate(report, getDefaultValidationModel());
-		}
-
-		/**
-		 * Validates this object by appending eventual issues to supplied ValidationReport. Supplied validation model is used to perform
-		 * this validation.
-		 * 
-		 * @param report
-		 *            , a ValidationReport object on which found issues are appened
-		 */
-		@Override
-		public void validate(ValidationReport report, ValidationModel validationModel) {
-			validationModel.validate(this, report);
-		}
-
-		@Override
-		public Collection<? extends Validable> getAllEmbeddedValidableObjects() {
-			List<Validable> returned = new ArrayList<Validable>();
-			if (this instanceof Validable) {
-				appendAllEmbeddedValidableObjects(this, returned);
-			}
-			return returned;
-		}
-
-		private void appendAllEmbeddedValidableObjects(Validable o, Collection<Validable> c) {
-			c.add(o);
-			Collection<? extends Validable> embeddedObjects = o.getEmbeddedValidableObjects();
-			if (embeddedObjects != null) {
-				for (Validable o2 : embeddedObjects) {
-					appendAllEmbeddedValidableObjects(o2, c);
-				}
-			}
 		}
 
 		/**

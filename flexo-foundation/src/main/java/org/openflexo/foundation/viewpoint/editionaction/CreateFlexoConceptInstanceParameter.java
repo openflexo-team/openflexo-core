@@ -7,9 +7,6 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
@@ -17,6 +14,7 @@ import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.binding.CreateFlexoConceptInstanceParameterBindingModel;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -230,18 +228,6 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<?> getBinding(CreateFlexoConceptInstanceParameter object) {
 			return object.getValue();
-		}
-
-		@Override
-		public ValidationIssue<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter> applyValidation(
-				CreateFlexoConceptInstanceParameter object) {
-			DataBinding<?> b = getBinding(object);
-			if (b == null || !b.isSet()) {
-				return new ValidationError<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter>(
-						this, object, "prout de caca, ca chie dans " + object.getAction().getFMLRepresentation() + " pour "
-								+ object.getParam().getName(), "Binding required but not set");
-			}
-			return super.applyValidation(object);
 		}
 
 	}

@@ -24,11 +24,12 @@ import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationModel;
 
 /**
  * This is the ValidationModel for FML model (ViewPoint, VirtualModel, FlexoConcept, etc...)
@@ -127,10 +128,15 @@ public class ViewPointValidationModel extends ValidationModel {
 	/**
 	 * Overrides fixAutomaticallyIfOneFixProposal
 	 * 
-	 * @see org.openflexo.foundation.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
+	 * @see org.openflexo.model.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
 	 */
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {
 		return false;
+	}
+
+	@Override
+	public String localizedForKey(String key) {
+		return FlexoLocalization.localizedForKey(key);
 	}
 }

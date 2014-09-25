@@ -29,14 +29,13 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * Represents an object which is part of the model of a ViewPoint
@@ -97,14 +96,6 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		@Override
 		public ResourceData getResourceData() {
 			return getViewPoint();
-		}
-
-		@Override
-		public ValidationModel getDefaultValidationModel() {
-			if (getViewPoint() != null) {
-				return getViewPoint().getDefaultValidationModel();
-			}
-			return null;
 		}
 
 		@Override

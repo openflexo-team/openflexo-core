@@ -24,14 +24,11 @@ import java.lang.reflect.Type;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -42,6 +39,9 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**

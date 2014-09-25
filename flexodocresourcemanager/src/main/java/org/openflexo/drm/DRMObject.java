@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationReport;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
 
 // TODO: convert this model with PAMELA
 public abstract class DRMObject extends DefaultFlexoObject implements Validable {
