@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -24,9 +25,11 @@ import java.lang.reflect.Type;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.FixProposal;
 import org.openflexo.foundation.validation.ValidationError;
 import org.openflexo.foundation.validation.ValidationIssue;
 import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
@@ -155,7 +158,8 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getRoleName();
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -190,7 +194,8 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 				if (concept instanceof VirtualModel) {
 					// the role belongs to a FlexoConcept that is a VirtualModel
 					return (VirtualModel) concept;
-				} else {
+				}
+				else {
 					// the role belongs to a FlexoConcept that belongs to a VirtualModel
 					return getFlexoConcept().getVirtualModel();
 				}
@@ -255,7 +260,8 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			RoleCloningStrategy returned = (RoleCloningStrategy) performSuperGetter(CLONING_STRATEGY_KEY);
 			if (returned == null) {
 				return defaultCloningStrategy();
-			} else {
+			}
+			else {
 				return returned;
 			}
 		}
@@ -289,4 +295,43 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public static enum RoleCloningStrategy {
 		Clone, Reference, Ignore, Factory
 	}
+
+	@DefineValidationRule
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+
+		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
+			super(FlexoRole.class, "FlexoRole_should_not_have_reflexive_model_slot_no_more");
+		}
+
+		@Override
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
+			ModelSlot ms = aRole.getModelSlot();
+			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
+				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
+						"FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);
+
+			}
+			return null;
+		}
+
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+
+			private final FlexoRole role;
+
+			public RemoveReflexiveVirtualModelModelSlot(FlexoRole aRole) {
+				super("remove_reflexive_modelslot");
+				this.role = aRole;
+			}
+
+			@Override
+			protected void fixAction() {
+				role.setModelSlot(null);
+			}
+		}
+
+	}
+
 }

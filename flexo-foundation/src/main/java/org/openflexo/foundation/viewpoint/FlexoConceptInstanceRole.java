@@ -215,11 +215,13 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public VirtualModelModelSlot getModelSlot() {
 			VirtualModelModelSlot returned = (VirtualModelModelSlot) super.getModelSlot();
+			/* This is not true any-more => when no ModelSlot is set, Role is from current VirtualModel
 			if (returned == null) {
 				if (getVirtualModel() != null && getVirtualModel().getModelSlots(VirtualModelModelSlot.class).size() > 0) {
 					return getVirtualModel().getModelSlots(VirtualModelModelSlot.class).get(0);
 				}
 			}
+			*/
 			return returned;
 		}
 

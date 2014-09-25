@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
- * (c) Copyright 2012-2013 Openflexo
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -32,6 +32,10 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.FixProposal;
+import org.openflexo.foundation.validation.ValidationIssue;
+import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.ValidationWarning;
 import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -169,7 +173,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		public FlexoBehaviour getFlexoBehaviour() {
 			if (getActionContainer() instanceof FlexoBehaviour) {
 				return (FlexoBehaviour) getActionContainer();
-			} else if (getActionContainer() != null) {
+			}
+			else if (getActionContainer() != null) {
 				return getActionContainer().getFlexoBehaviour();
 			}
 			return null;
@@ -197,7 +202,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
 			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
 				return getFlexoConcept().getVirtualModel().getModelSlots(msType);
-			} else if (getFlexoConcept() instanceof VirtualModel) {
+			}
+			else if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
 			}
 			return null;
@@ -216,7 +222,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
 				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
-			} else {
+			}
+			else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}
@@ -572,6 +579,44 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		@Override
 		public DataBinding<Boolean> getBinding(EditionAction object) {
 			return object.getConditional();
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction> {
+
+		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
+			super(EditionAction.class, "EditionAction_should_not_have_reflexive_model_slot_no_more");
+		}
+
+		@Override
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction> applyValidation(EditionAction anAction) {
+			ModelSlot ms = anAction.getModelSlot();
+			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(anAction);
+				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction>(this, anAction,
+						"EditionAction_should_not_have_reflexive_model_slot_no_more", fixProposal);
+
+			}
+			return null;
+		}
+
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction> {
+
+			private final EditionAction action;
+
+			public RemoveReflexiveVirtualModelModelSlot(EditionAction anAction) {
+				super("remove_reflexive_modelslot");
+				this.action = anAction;
+			}
+
+			@Override
+			protected void fixAction() {
+				action.setModelSlot(null);
+			}
 		}
 
 	}

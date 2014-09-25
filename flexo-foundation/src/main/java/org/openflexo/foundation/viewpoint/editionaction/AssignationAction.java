@@ -133,23 +133,11 @@ public interface AssignationAction<T> extends AssignableAction<ModelSlot<?>, T> 
 			super.notifiedBindingChanged(dataBinding);
 		}
 
-		public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
-			public ValueBindingIsRequiredAndMustBeValid() {
-				super("'value'_binding_is_not_valid", AssignationAction.class);
-			}
-
-			@Override
-			public DataBinding<Object> getBinding(AssignationAction object) {
-				return object.getValue();
-			}
-
-		}
-
 	}
 
 	@DefineValidationRule
-	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
-		public ValueBindingMustBeValid() {
+	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
+		public ValueBindingIsRequiredAndMustBeValid() {
 			super("'value'_binding_is_required_and_must_be_valid", AssignationAction.class);
 		}
 

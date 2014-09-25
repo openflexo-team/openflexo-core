@@ -143,7 +143,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -154,7 +155,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;
@@ -236,9 +238,9 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter> applyValidation(
 				CreateFlexoConceptInstanceParameter object) {
 			DataBinding<?> b = getBinding(object);
-			if (b == null || !b.isSet()) {
+			if (b == null || (!b.isSet() && object.getParam().getIsRequired())) {
 				return new ValidationError<BindingIsRequiredAndMustBeValid<CreateFlexoConceptInstanceParameter>, CreateFlexoConceptInstanceParameter>(
-						this, object, "prout de caca, ca chie dans " + object.getAction().getFMLRepresentation() + " pour "
+						this, object, "'value'_binding_is_required_and_must_be_valid " + object.getAction().getFMLRepresentation() + " in "
 								+ object.getParam().getName(), "Binding required but not set");
 			}
 			return super.applyValidation(object);
