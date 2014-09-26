@@ -151,31 +151,26 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 			if (modelSlot != null) {
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
-				if (isIndividual()) {
-					((IndividualRole<?>) newFlexoRole).setOntologicType(individualType);
-				}
-				if (isFlexoConceptInstance()) {
-					((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(flexoConceptInstanceType);
-				}
 			}
 			else {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
+			}
 
-				if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
-					((PrimitiveRole) newFlexoRole).setPrimitiveType(primitiveType);
-					logger.info("Created " + newFlexoRole + " with " + primitiveType);
-				}
+			if (newFlexoRole != null) {
+
 				if (isIndividual()) {
 					((IndividualRole<?>) newFlexoRole).setOntologicType(individualType);
 				}
 				if (isFlexoConceptInstance()) {
 					((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
+				if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
+					((PrimitiveRole) newFlexoRole).setPrimitiveType(primitiveType);
+					logger.info("Created " + newFlexoRole + " with " + primitiveType);
+				}
 
-			}
 
-			if (newFlexoRole != null) {
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setDescription(description);
 				getFlexoConcept().addToFlexoRoles(newFlexoRole);
