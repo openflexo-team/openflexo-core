@@ -54,7 +54,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoRole.class.getPackage().getName());
 
-	private static List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
+	private List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
 	public static FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject>(
 			"create_flexo_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
@@ -82,8 +82,6 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	static {
 		FlexoObjectImpl.addActionForClass(CreateFlexoRole.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoRole.actionType, FlexoConceptStructuralFacet.class);
-		vmAvailableFlexoRoleTypes.add(FlexoConceptInstanceRole.class);
-		vmAvailableFlexoRoleTypes.add((Class<? extends FlexoRole<?>>) PrimitiveRole.class);
 	}
 
 	private String roleName;
@@ -123,6 +121,12 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+		if (vmAvailableFlexoRoleTypes == null) {
+			vmAvailableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
+			vmAvailableFlexoRoleTypes.add(FlexoConceptInstanceRole.class);
+			vmAvailableFlexoRoleTypes.add((Class<? extends FlexoRole<?>>) PrimitiveRole.class);
+
+		}
 		if (getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
 		}
