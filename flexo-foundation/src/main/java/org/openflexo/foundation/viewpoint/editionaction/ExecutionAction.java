@@ -29,11 +29,10 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -126,6 +125,7 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 			super.notifiedBindingChanged(dataBinding);
 		}
 
+		@DefineValidationRule
 		public static class ExecutionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ExecutionAction> {
 			public ExecutionBindingIsRequiredAndMustBeValid() {
 				super("'execution'_binding_is_not_valid", ExecutionAction.class);
