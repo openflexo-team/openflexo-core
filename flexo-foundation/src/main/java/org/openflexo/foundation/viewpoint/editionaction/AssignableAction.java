@@ -25,6 +25,10 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.FixProposal;
+import org.openflexo.foundation.validation.ValidationError;
+import org.openflexo.foundation.validation.ValidationIssue;
+import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.Getter;
@@ -100,7 +104,8 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 			if (assignation == null) {
 				if (StringUtils.isNotEmpty(variableName)) {
 					updateVariableAssignation();
-				} else {
+				}
+				else {
 					assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
 						@Override
 						public Type getDeclaredType() {
@@ -183,7 +188,8 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 					if (StringUtils.isEmpty(getVariableName())) {
 						setVariableName("newVariable");
 					}
-				} else {
+				}
+				else {
 					if (StringUtils.isNotEmpty(getVariableName())) {
 						setVariableName(null);
 						getAssignation().reset();
@@ -228,16 +234,50 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	}
 
 	@DefineValidationRule
-	public static class AssignationBindingMustBeValid extends BindingMustBeValid<AssignableAction> {
-		public AssignationBindingMustBeValid() {
-			super("'assign'_binding_is_not_valid", AssignableAction.class);
+	public static class AssignationBindingMustBeValidOrVariable extends
+			ValidationRule<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+
+		public AssignationBindingMustBeValidOrVariable() {
+			super(AssignableAction.class, "'assign'_binding_is_not_valid");
 		}
 
 		@Override
-		public DataBinding<Object> getBinding(AssignableAction object) {
-			return object.getAssignation();
+		public ValidationIssue<AssignationBindingMustBeValidOrVariable, AssignableAction> applyValidation(AssignableAction object) {
+
+			DataBinding<?> assignation = object.getAssignation();
+
+			if (object.getIsVariableDeclaration()) {
+				return null;
+			}
+
+			if (assignation != null && assignation.isSet()) {
+				if (!assignation.isValid()) {
+					DeleteBinding<AssignableAction> deleteBinding = new DeleteBinding<AssignableAction>(this);
+
+					return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
+							AssignationBindingMustBeValidOrVariable.this.getNameKey(), "Binding: " + assignation + " reason: "
+									+ assignation.invalidBindingReason(), deleteBinding);
+				}
+			}
+			return null;
 		}
 
+		protected static class DeleteBinding<C extends AssignableAction> extends
+				FixProposal<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+
+			private final AssignationBindingMustBeValidOrVariable rule;
+
+			public DeleteBinding(AssignationBindingMustBeValidOrVariable rule) {
+				super("delete_this_binding");
+				this.rule = rule;
+			}
+
+			@Override
+			protected void fixAction() {
+				getObject().getAssignation().reset();
+			}
+
+		}
 	}
 
 }
