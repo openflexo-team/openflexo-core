@@ -384,7 +384,6 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			return getFIBPanelForObject(action);
 		}
 		else {
-			System.out.println("toto");
 			TechnologyAdapter technologyAdapter = action.getModelSlot().getTechnologyAdapter();
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
