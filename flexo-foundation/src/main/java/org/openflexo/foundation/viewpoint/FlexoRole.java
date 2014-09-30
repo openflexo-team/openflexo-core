@@ -277,6 +277,10 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	}
 
+	public static enum RoleCloningStrategy {
+		Clone, Reference, Ignore, Factory
+	}
+
 	@DefineValidationRule
 	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole> {
 		public FlexoRoleMustHaveAName() {
@@ -290,10 +294,6 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			}
 			return null;
 		}
-	}
-
-	public static enum RoleCloningStrategy {
-		Clone, Reference, Ignore, Factory
 	}
 
 	@DefineValidationRule
