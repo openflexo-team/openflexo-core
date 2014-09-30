@@ -122,12 +122,12 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	public List<VirtualModelInstance> getVirtualModelInstances();
 
 	/**
-	 * Allow to retrieve a VMI given a virtual model.
+	 * Allow to retrieve VMIs given a virtual model.
 	 *
 	 * @param virtualModel key to find correct VMI
-	 * @return the first one that match in the list.
+	 * @return the list
 	 */
-	public VirtualModelInstance getVirtualModelInstanceForVirtualModel(VirtualModel virtualModel);
+	public List<VirtualModelInstance> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
 
 	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
 	public void setVirtualModelInstances(List<VirtualModelInstance> virtualModelInstances);
@@ -327,13 +327,14 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		}
 
 		@Override
-		public VirtualModelInstance getVirtualModelInstanceForVirtualModel(final VirtualModel virtualModel) {
+		public List<VirtualModelInstance> getVirtualModelInstancesForVirtualModel(final VirtualModel virtualModel) {
+			List<VirtualModelInstance> returned = new ArrayList<VirtualModelInstance>();
 			for (VirtualModelInstance vmi : getVirtualModelInstances()) {
 				if (vmi.getVirtualModel() == virtualModel) {
-					return vmi;
+					returned.add(vmi);
 				}
 			}
-			return null;
+			return returned;
 		}
 
 		/**
