@@ -250,7 +250,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public ValidationIssue<MustHaveAConceptType, FlexoConceptInstanceRole> applyValidation(FlexoConceptInstanceRole aRole) {
 			FlexoConcept fc = aRole.getFlexoConceptType();
-			if (fc != null) {
+			if (fc == null) {
 				return new ValidationWarning<MustHaveAConceptType, FlexoConceptInstanceRole>(this, aRole,
 						"FlexoConceptInstanceRole_should_have_a_type");
 
