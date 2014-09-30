@@ -296,29 +296,32 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			for (File f : viewpointResource.getDirectory().listFiles()) {
 				if (f.isDirectory()) {
 					for (File file : f.listFiles()) {
-						if (file.getName().endsWith(".palette")) {
-							if (contains16Elements(XMLUtils.readXMLFile(file))) {
-								return true;
+						try {
+							if (file.getName().endsWith(".palette")) {
+								if (contains16Elements(XMLUtils.readXMLFile(file))) {
+									return true;
+								}
+							}
+							if (file.getName().endsWith(".diagram")) {
+								if (contains16Elements(XMLUtils.readXMLFile(file))) {
+									return true;
+								}
+							}
+							if (file.getName().endsWith(".xml")) {
+								if (contains16Elements(XMLUtils.readXMLFile(file))) {
+									return true;
+								}
 							}
 						}
-						if (file.getName().endsWith(".diagram")) {
-							if (contains16Elements(XMLUtils.readXMLFile(file))) {
-								return true;
-							}
-						}
-						if (file.getName().endsWith(".xml")) {
-							if (contains16Elements(XMLUtils.readXMLFile(file))) {
-								return true;
-							}
+						catch  (JDOMException e) {
+							logger.warning("Error when parsing file : " + file.getName());
+							e.printStackTrace();
 						}
 					}
 				}
 			}
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.warning("Error when checking Viewpoin version for  : " + viewpointResource.getURI());
 			e.printStackTrace();
 		}
 		return false;
@@ -485,7 +488,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		return false;
 	}
-	
+
 	@Override
 	public ViewPointLibrary getViewPointLibrary() {
 		ViewPointLibrary returned = (ViewPointLibrary)performSuperGetter(VIEW_POINT_LIBRARY);
