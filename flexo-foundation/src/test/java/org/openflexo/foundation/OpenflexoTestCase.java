@@ -309,7 +309,7 @@ public abstract class OpenflexoTestCase {
 			}
 		}
 
-		assertEquals(0, report.getErrorNb());
+		assertEquals(0, report.getErrorsCount());
 
 	}
 

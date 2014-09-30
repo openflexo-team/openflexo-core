@@ -1,6 +1,6 @@
 /*
+ * (c) Copyright 2012-2014 Openflexo
  * (c) Copyright 2010-2011 AgileBirds
- * (c) Copyright 2013-2014 Openflexo
  *
  * This file is part of OpenFlexo Software Infrastructure.
  *
@@ -67,10 +67,6 @@ import org.openflexo.toolbox.HTMLUtils;
  * Super class for any object involved in Openflexo-Core (model layer)<br>
  * 
  * This abstract class represents an object. (a "model" in the model-view paradigm)<br>
- * 
- * This class provides default implementation for validation (see {@link Validable} interface). When relevant, just extends interface
- * {@link Validable} and implements both methods {@link Validable#getDefaultValidationModel()} and
- * {@link Validable#getAllEmbeddedValidableObjects()}
  * 
  * @author sguerin
  * 

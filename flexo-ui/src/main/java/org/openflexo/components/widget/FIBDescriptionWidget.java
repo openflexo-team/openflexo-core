@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
@@ -38,7 +38,7 @@ import org.openflexo.rm.Resource;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBDescriptionWidget extends DefaultFIBCustomComponent<FlexoObject> {
+public class FIBDescriptionWidget extends FIBJPanel<FlexoObject> {
 
 	static final Logger logger = Logger.getLogger(FIBDescriptionWidget.class.getPackage().getName());
 	

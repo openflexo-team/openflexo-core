@@ -19,17 +19,12 @@
  */
 package org.openflexo.drm;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
 
 // TODO: convert this model with PAMELA
 public abstract class DRMObject extends DefaultFlexoObject implements Validable {
@@ -62,49 +57,49 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	 * 
 	 * @return
 	 */
-	@Override
+	/*@Override
 	public ValidationModel getDefaultValidationModel() {
 		if (getDocResourceCenter() != null) {
 			return getDocResourceCenter().getDefaultValidationModel();
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Returns a flag indicating if this object is valid according to default validation model
 	 * 
 	 * @return boolean
 	 */
-	@Override
+	/*@Override
 	public boolean isValid() {
 		return isValid(getDefaultValidationModel());
-	}
+	}*/
 
 	/**
 	 * Returns a flag indicating if this object is valid according to specified validation model
 	 * 
 	 * @return boolean
 	 */
-	@Override
+	/*@Override
 	public boolean isValid(ValidationModel validationModel) {
 		return validationModel.isValid(this);
-	}
+	}*/
 
 	/**
 	 * Validates this object by building new ValidationReport object Default validation model is used to perform this validation.
 	 */
-	@Override
+	/*@Override
 	public ValidationReport validate() {
 		return validate(getDefaultValidationModel());
-	}
+	}*/
 
 	/**
 	 * Validates this object by building new ValidationReport object Supplied validation model is used to perform this validation.
 	 */
-	@Override
+	/*@Override
 	public ValidationReport validate(ValidationModel validationModel) {
 		return validationModel.validate(this);
-	}
+	}*/
 
 	/**
 	 * Validates this object by appending eventual issues to supplied ValidationReport. Default validation model is used to perform this
@@ -113,10 +108,10 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	 * @param report
 	 *            , a ValidationReport object on which found issues are appened
 	 */
-	@Override
+	/*@Override
 	public void validate(ValidationReport report) {
 		validate(report, getDefaultValidationModel());
-	}
+	}*/
 
 	/**
 	 * Validates this object by appending eventual issues to supplied ValidationReport. Supplied validation model is used to perform this
@@ -125,17 +120,17 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	 * @param report
 	 *            , a ValidationReport object on which found issues are appened
 	 */
-	@Override
+	/*@Override
 	public void validate(ValidationReport report, ValidationModel validationModel) {
 		validationModel.validate(this, report);
-	}
+	}*/
 
 	/**
 	 * Return a vector of all embedded objects on which the validation will be performed
 	 * 
 	 * @return a Vector of Validable objects
 	 */
-	@Override
+	/*@Override
 	public List<? extends DRMObject> getAllEmbeddedValidableObjects() {
 		List<DRMObject> returned = new ArrayList<DRMObject>();
 		returned.add(this);
@@ -146,7 +141,7 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 			}
 		}
 		return returned;
-	}
+	}*/
 
 	/**
 	 * Return a vector of all embedded objects at this level does NOT include itself

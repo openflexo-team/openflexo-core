@@ -265,7 +265,9 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 	}
 
 	public List<? extends DRMObject> getAllFoldersAndItems() {
-		return getAllEmbeddedValidableObjects();
+		// return getAllEmbeddedValidableObjects();
+		// TODO
+		return null;
 	}
 
 	public List<DocItem> getAllItems() {

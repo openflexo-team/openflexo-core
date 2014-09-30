@@ -89,7 +89,7 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, WizardDialog.FIB_FILE/*.getLocator().retrieveResourceAsFile(
 																						WizardDialog.FIB_FILE)*/);
 
-		/*DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
+		/*FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());*/
 	}
@@ -232,7 +232,7 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForCreationScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());
 	}
@@ -241,7 +241,7 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForActionScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
@@ -250,7 +250,7 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclareFlexoRole> widget = instanciateFIB(
+		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(
 				ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"), (DeclareFlexoRole) creationScheme.getActions()
 						.get(0), DeclareFlexoRole.class);
 

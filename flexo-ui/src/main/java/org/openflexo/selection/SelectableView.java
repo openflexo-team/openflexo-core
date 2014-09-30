@@ -26,6 +26,7 @@ import org.openflexo.foundation.FlexoObject;
  * 
  * @author bmangez, sguerin
  */
+@Deprecated
 public interface SelectableView {
 
 	/**

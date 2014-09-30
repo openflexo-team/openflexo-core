@@ -124,8 +124,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			getFlexoFrame().setRelativeVisible(false);
 		}
 		if (getFlexoController() != null) {
-			if (getFlexoController().getConsistencyCheckWindow(false) != null) {
-				getFlexoController().getConsistencyCheckWindow(false).setVisible(false);
+			if (getFlexoController().getValidationWindow(false) != null) {
+				getFlexoController().getValidationWindow(false).setVisible(false);
 			}
 		}
 		if (getFlexoController().getCurrentModuleView() != null) {

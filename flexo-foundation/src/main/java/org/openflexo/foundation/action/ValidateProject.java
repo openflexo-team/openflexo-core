@@ -115,16 +115,16 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 	public int getErrorsNb() {
 		int errorsNb = 0;
 		if (ieValidationReport != null) {
-			errorsNb += ieValidationReport.getErrorNb();
+			errorsNb += ieValidationReport.getErrorsCount();
 		}
 		if (wkfValidationReport != null) {
-			errorsNb += wkfValidationReport.getErrorNb();
+			errorsNb += wkfValidationReport.getErrorsCount();
 		}
 		if (dkvValidationReport != null) {
-			errorsNb += dkvValidationReport.getErrorNb();
+			errorsNb += dkvValidationReport.getErrorsCount();
 		}
 		if (dmValidationReport != null) {
-			errorsNb += dmValidationReport.getErrorNb();
+			errorsNb += dmValidationReport.getErrorsCount();
 		}
 		return errorsNb;
 	}
@@ -247,16 +247,16 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 	public String readableValidationErrors() {
 		StringBuffer bf = new StringBuffer();
 		if (getWkfValidationReport() != null) {
-			bf.append(getWkfValidationReport().errorAsString());
+			bf.append(getWkfValidationReport().toString());
 		}
 		if (getIeValidationReport() != null) {
-			bf.append(getIeValidationReport().errorAsString());
+			bf.append(getIeValidationReport().toString());
 		}
 		if (getDkvValidationReport() != null) {
-			bf.append(getDkvValidationReport().errorAsString());
+			bf.append(getDkvValidationReport().toString());
 		}
 		if (getDmValidationReport() != null) {
-			bf.append(getDmValidationReport().errorAsString());
+			bf.append(getDmValidationReport().toString());
 		}
 		return bf.toString();
 	}

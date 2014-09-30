@@ -22,7 +22,7 @@ package org.openflexo.drm.ui;
 import java.util.logging.Logger;
 
 import org.openflexo.drm.DocResourceCenter;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
@@ -35,7 +35,7 @@ import org.openflexo.rm.ResourceLocatorDelegate;
  * 
  */
 // TODO
-public class DREBrowser extends DefaultFIBCustomComponent<DocResourceCenter> {
+public class DREBrowser extends FIBJPanel<DocResourceCenter> {
 
 	protected static final Logger logger = Logger.getLogger(DREBrowser.class.getPackage().getName());
 	

@@ -11,9 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.fib.testutils.GraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.viewpoint.ActionScheme;
@@ -208,7 +208,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidgetForCreationScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("CreationScheme", widget.getController());
 	}
@@ -217,7 +217,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(5)
 	public void testInstanciateWidgetForActionScheme() {
 
-		DefaultFIBCustomComponent<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
 
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
@@ -226,7 +226,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		DefaultFIBCustomComponent<DeclareFlexoRole> widget = instanciateFIB(
+		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(
 				ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"), (DeclareFlexoRole) creationScheme.getActions()
 						.get(0), DeclareFlexoRole.class);
 

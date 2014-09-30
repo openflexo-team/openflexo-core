@@ -25,13 +25,12 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationModel;
 
 /**
  * @author gpolet, sylvain
  * 
  */
-public class FlexoProjectValidationModel extends ValidationModel {
+public class FlexoProjectValidationModel extends FlexoValidationModel {
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class));

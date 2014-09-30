@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationModel;
 
 /**
  * This is the ValidationModel for FML model (ViewPoint, VirtualModel, FlexoConcept, etc...)
@@ -38,7 +38,7 @@ import org.openflexo.model.validation.ValidationModel;
  * 
  */
 @SuppressWarnings("serial")
-public class ViewPointValidationModel extends ValidationModel {
+public class ViewPointValidationModel extends FlexoValidationModel {
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel

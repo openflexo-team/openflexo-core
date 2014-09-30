@@ -38,8 +38,6 @@ import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
-import org.openflexo.components.validation.ConsistencyCheckDialog;
-import org.openflexo.components.validation.ValidationProgressListener;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.fib.utils.FlexoLoggingViewer;
 import org.openflexo.foundation.DataModification;
@@ -48,8 +46,6 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.module.AutoSaveService;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -101,7 +97,7 @@ public class ToolsMenu extends FlexoMenu {
 			add(saveDocSubmissions = new SaveDocSubmissionItem());
 		}
 		addSeparator();
-		add(repairProject = new RepairProjectItem());
+		add(repairProject = new ValidateProjectItem());
 		add(timeTraveler = new TimeTraveler());
 	}
 
@@ -334,16 +330,16 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class RepairProjectItem extends FlexoMenuItem {
+	public class ValidateProjectItem extends FlexoMenuItem {
 
-		public RepairProjectItem() {
-			super(new RepairProjectAction(), "repair_project", null, getController(), true);
+		public ValidateProjectItem() {
+			super(new ValidateProjectAction(), "validate_project", null, getController(), true);
 		}
 
 	}
 
-	public class RepairProjectAction extends AbstractAction implements GraphicalFlexoObserver, PropertyChangeListener {
-		public RepairProjectAction() {
+	public class ValidateProjectAction extends AbstractAction implements GraphicalFlexoObserver, PropertyChangeListener {
+		public ValidateProjectAction() {
 			super();
 			if (getController() != null) {
 				manager.addListener(ControllerModel.CURRENT_EDITOR, this, getController().getControllerModel());
@@ -361,18 +357,8 @@ public class ToolsMenu extends FlexoMenu {
 				return;
 			}
 
-			ValidationProgressListener l = new ValidationProgressListener();
-
-			ValidationModel validationModel = getController().getProject().getProjectValidationModel();
-			validationModel.getPropertyChangeSupport().addPropertyChangeListener(l);
-			ValidationReport report = getController().getProject().validate(validationModel);
-			validationModel.getPropertyChangeSupport().removePropertyChangeListener(l);
-
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Validation of project terminated");
-			}
-
-			getRepairProjectWindow(report).setVisible(true);
+			getController().getValidationWindow(true).validateAndDisplayReportForObject(getController().getProject(),
+					getController().getProject().getProjectValidationModel());
 		}
 
 		@Override
@@ -393,17 +379,6 @@ public class ToolsMenu extends FlexoMenu {
 		private void updateEnability() {
 			setEnabled(getController() != null && getController().getProject() != null);
 		}
-	}
-
-	private ConsistencyCheckDialog repairProjectWindow = null;
-
-	protected ConsistencyCheckDialog getRepairProjectWindow(ValidationReport report) {
-		if (repairProjectWindow == null || repairProjectWindow.isDisposed()) {
-			repairProjectWindow = new ConsistencyCheckDialog(null, report, FlexoLocalization.localizedForKey("project_repairing"));
-		} else {
-			repairProjectWindow.setValidationReport(report);
-		}
-		return repairProjectWindow;
 	}
 
 	protected AutoSaveService getAutoSaveService() {

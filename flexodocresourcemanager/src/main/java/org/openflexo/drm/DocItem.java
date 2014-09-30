@@ -610,11 +610,11 @@ public class DocItem extends DRMObject {
 			return "";
 		}
 
-		@Override
+		/*@Override
 		public String getLocalizedName() {
 			return FlexoLocalization.localizedForKeyWithParams("documentation_should_be_up_to_date_for_language_($languageIdentifier)",
 					this);
-		}
+		}*/
 
 		@Override
 		public ValidationIssue applyValidation(final Validable object) {

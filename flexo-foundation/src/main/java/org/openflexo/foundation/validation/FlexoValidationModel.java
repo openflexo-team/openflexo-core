@@ -17,32 +17,24 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.drm;
+package org.openflexo.foundation.validation;
 
-import org.openflexo.foundation.validation.FlexoValidationModel;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.ModelContext;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationModel;
 
 /**
- * Please comment this class
+ * This is the ValidationModel managed in Openflexo context
  * 
- * @author sguerin
+ * @author sylvain
  * 
  */
-public class DRMValidationModel extends FlexoValidationModel {
+@SuppressWarnings("serial")
+public class FlexoValidationModel extends ValidationModel {
 
-	public DRMValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(DocResourceCenter.class));
-
-		/*for (Language language : Language.availableValues()) {
-			registerRule(new DocItem.DocumentationShouldBeUpToDate(language));
-		}
-		registerRule(new DocItemFolder.DocItemFolderMustHavePrimaryItem());
-
-		// Notify that the validation model is complete and that inheritance
-		// computation could be performed
-		update();*/
+	public FlexoValidationModel(ModelContext modelContext) {
+		super(modelContext);
 	}
 
 	/**
@@ -53,7 +45,7 @@ public class DRMValidationModel extends FlexoValidationModel {
 	 */
 	@Override
 	protected boolean shouldNotifyValidation(Validable next) {
-		return next instanceof DocResourceCenter;
+		return true;
 	}
 
 	/**
@@ -64,5 +56,10 @@ public class DRMValidationModel extends FlexoValidationModel {
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {
 		return false;
+	}
+
+	@Override
+	public String localizedForKey(String key) {
+		return FlexoLocalization.localizedForKey(key);
 	}
 }

@@ -24,7 +24,7 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
@@ -37,17 +37,17 @@ public class ValidationProgressListener implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(ValidationModel.VALIDATION_START)) {
+		if (evt.getPropertyName().equals(ValidationReport.VALIDATION_START)) {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("validating") + " " + evt.getOldValue().toString(),
 					(Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(ValidationModel.VALIDATION_OBJECT)) {
+		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_OBJECT)) {
 			ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("validating") + " " + evt.getNewValue().toString());
-		} else if (evt.getPropertyName().equals(ValidationModel.VALIDATION_END)) {
+		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATION_END)) {
 			ProgressWindow.hideProgressWindow();
-		} else if (evt.getPropertyName().equals(ValidationModel.OBJECT_VALIDATION_START)) {
+		} else if (evt.getPropertyName().equals(ValidationReport.OBJECT_VALIDATION_START)) {
 			ProgressWindow.resetSecondaryProgressInstance((Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals(ValidationModel.VALIDATE_WITH_RULE)) {
-			ProgressWindow.setSecondaryProgressInstance(((ValidationRule) evt.getNewValue()).getLocalizedName());
+		} else if (evt.getPropertyName().equals(ValidationReport.VALIDATE_WITH_RULE)) {
+			ProgressWindow.setSecondaryProgressInstance(((ValidationRule) evt.getNewValue()).getRuleName());
 		}
 	}
 
