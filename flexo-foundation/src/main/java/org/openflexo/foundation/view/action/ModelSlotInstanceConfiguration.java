@@ -136,6 +136,10 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 
 	public abstract List<ModelSlotInstanceConfigurationOption> getAvailableOptions();
 
+	public boolean isValid() {
+		return isValidConfiguration();
+	}
+
 	public boolean isValidConfiguration() {
 		return option != null;
 	}
