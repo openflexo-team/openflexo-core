@@ -124,6 +124,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		private FlexoConcept flexoConceptType;
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
+		private boolean isUpdating = false;
 
 		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
@@ -230,20 +231,24 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 
 		private void updateParameters() {
-			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
-			if (getDeletionScheme() != null) {
-				for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
-					DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
-					if (existingParam != null) {
-						parametersToRemove.remove(existingParam);
-					}
-					else {
-						addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
+			if (!isUpdating) {
+				List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
+				if (getDeletionScheme() != null) {
+					for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
+						DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
+						if (existingParam != null) {
+							parametersToRemove.remove(existingParam);
+						}
+						else {
+							isUpdating = true;
+							addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
+						}
 					}
 				}
-			}
-			for (DeleteFlexoConceptInstanceParameter removeThis : parametersToRemove) {
-				removeFromParameters(removeThis);
+				for (DeleteFlexoConceptInstanceParameter removeThis : parametersToRemove) {
+					removeFromParameters(removeThis);
+				}
+				isUpdating = false;
 			}
 		}
 
