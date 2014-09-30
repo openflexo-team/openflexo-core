@@ -33,6 +33,10 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -228,16 +232,50 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	}
 
 	@DefineValidationRule
-	public static class AssignationBindingMustBeValid extends BindingMustBeValid<AssignableAction> {
-		public AssignationBindingMustBeValid() {
-			super("'assign'_binding_is_not_valid", AssignableAction.class);
+	public static class AssignationBindingMustBeValidOrVariable extends
+			ValidationRule<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+
+		public AssignationBindingMustBeValidOrVariable() {
+			super(AssignableAction.class, "'assign'_binding_is_not_valid");
 		}
 
 		@Override
-		public DataBinding<Object> getBinding(AssignableAction object) {
-			return object.getAssignation();
+		public ValidationIssue<AssignationBindingMustBeValidOrVariable, AssignableAction> applyValidation(AssignableAction object) {
+
+			DataBinding<?> assignation = object.getAssignation();
+
+			if (object.getIsVariableDeclaration()) {
+				return null;
+			}
+
+			if (assignation != null && assignation.isSet()) {
+				if (!assignation.isValid()) {
+					DeleteBinding<AssignableAction> deleteBinding = new DeleteBinding<AssignableAction>(this);
+
+					return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
+							AssignationBindingMustBeValidOrVariable.this.getNameKey(), "Binding: " + assignation + " reason: "
+									+ assignation.invalidBindingReason(), deleteBinding);
+				}
+			}
+			return null;
 		}
 
+		protected static class DeleteBinding<C extends AssignableAction> extends
+				FixProposal<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+
+			private final AssignationBindingMustBeValidOrVariable rule;
+
+			public DeleteBinding(AssignationBindingMustBeValidOrVariable rule) {
+				super("delete_this_binding");
+				this.rule = rule;
+			}
+
+			@Override
+			protected void fixAction() {
+				getObject().getAssignation().reset();
+			}
+
+		}
 	}
 
 }

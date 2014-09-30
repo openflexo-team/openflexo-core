@@ -3,6 +3,10 @@ package org.openflexo.foundation.viewpoint;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.validation.ValidationIssue;
+import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.ValidationWarning;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelObjectActorReference;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
@@ -215,11 +219,13 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public VirtualModelModelSlot getModelSlot() {
 			VirtualModelModelSlot returned = (VirtualModelModelSlot) super.getModelSlot();
+			/* This is not true any-more => when no ModelSlot is set, Role is from current VirtualModel
 			if (returned == null) {
 				if (getVirtualModel() != null && getVirtualModel().getModelSlots(VirtualModelModelSlot.class).size() > 0) {
 					return getVirtualModel().getModelSlots(VirtualModelModelSlot.class).get(0);
 				}
 			}
+			 */
 			return returned;
 		}
 
@@ -233,4 +239,25 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class MustHaveAConceptType extends ValidationRule<MustHaveAConceptType, FlexoConceptInstanceRole> {
+
+		public MustHaveAConceptType() {
+			super(FlexoConceptInstanceRole.class, "FlexoConceptInstanceRole_should_have_a_type");
+		}
+
+		@Override
+		public ValidationIssue<MustHaveAConceptType, FlexoConceptInstanceRole> applyValidation(FlexoConceptInstanceRole aRole) {
+			FlexoConcept fc = aRole.getFlexoConceptType();
+			if (fc == null) {
+				return new ValidationWarning<MustHaveAConceptType, FlexoConceptInstanceRole>(this, aRole,
+						"FlexoConceptInstanceRole_should_have_a_type");
+
+			}
+			return null;
+		}
+
+	}
+
 }

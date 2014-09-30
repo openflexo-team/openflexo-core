@@ -21,7 +21,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -80,12 +79,14 @@ public class TestApplicationContext extends ApplicationContext {
 			if (generateCompoundTestResourceCenter) {
 				System.out.println("Generating CompoundTestResourceCenter");
 				// TODO : FIX this, it does not work & , this is crappy!
-				List<File> testRCList = ((FileSystemResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).locateAllFiles("TestResourceCenter");
+				List<File> testRCList = ((FileSystemResourceLocatorImpl) ResourceLocator
+						.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class)).locateAllFiles("TestResourceCenter");
 				for (File f : testRCList) {
 					System.out.println("Found TestResourceCenter " + f);
 					FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
 				}
-			} else {
+			}
+			else {
 				Resource sourceTestResourceCenter = ResourceLocator.locateResource("TestResourceCenter");
 				System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
 				FileUtils.copyResourceToDir(sourceTestResourceCenter, testResourceCenterDirectory);
@@ -138,8 +139,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 	@Override
 	protected PreferencesService createPreferencesService() {
-		// not necessary
-		return null;
+		// needed for testing the VEModule
+		return new PreferencesService();
 	}
 
 	@Override

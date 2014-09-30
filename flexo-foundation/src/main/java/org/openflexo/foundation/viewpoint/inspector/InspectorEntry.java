@@ -145,7 +145,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 			return getDefaultDataClass();
 		}
 
-		public abstract Class getDefaultDataClass();
+		public abstract Class<?> getDefaultDataClass();
 
 		@Override
 		public VirtualModel getVirtualModel() {
@@ -171,6 +171,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		@Override
 		public void setInspector(FlexoConceptInspector inspector) {
 			this.inspector = inspector;
+			this.getBindingModel().setBaseBindingModel(inspector.getBindingModel());
 		}
 
 		@Override
@@ -206,6 +207,10 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		@Override
 		public void setIsReadOnly(boolean readOnly) {
 			this.readOnly = readOnly;
+			if (data != null) {
+				data.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				notifiedBindingChanged(this.data);
+			}
 		}
 
 		@Override

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2013 Openflexo
+ * (c) Copyright 2013 -  Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -34,13 +34,13 @@ import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.URIParameter;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -124,6 +124,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		private FlexoConcept flexoConceptType;
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
+		private boolean isUpdating = false;
 
 		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
@@ -157,20 +158,28 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
-			this.virtualModelInstance = aVirtualModelInstance;
+			if (this.virtualModelInstance != aVirtualModelInstance) {
+				this.getPropertyChangeSupport()
+						.firePropertyChange("virtualModelInstance", this.virtualModelInstance, aVirtualModelInstance);
+				this.virtualModelInstance = aVirtualModelInstance;
+			}
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (getDeletionScheme() != null) {
-				return getDeletionScheme().getFlexoConcept();
+			if (flexoConceptType == null && deletionScheme != null) {
+				flexoConceptType = deletionScheme.getFlexoConcept();
 			}
 			return flexoConceptType;
 		}
 
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
-			this.flexoConceptType = flexoConceptType;
+			if (this.flexoConceptType != flexoConceptType) {
+				this.getPropertyChangeSupport().firePropertyChange("flexoConceptType", this.flexoConceptType, flexoConceptType);
+				this.flexoConceptType = flexoConceptType;
+			}
+
 			if (getDeletionScheme() != null && getDeletionScheme().getFlexoConcept() != flexoConceptType) {
 				setDeletionScheme(null);
 			}
@@ -186,20 +195,32 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 		@Override
 		public void _setDeletionSchemeURI(String uri) {
-			if (getViewPointLibrary() != null) {
-				deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(uri);
+			if (getFlexoConceptType() != null) {
+				deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(uri);
+				if (deletionScheme == null) {
+					logger.warning("Not able to find deletion Scheme : " + uri);
+					_deletionSchemeURI = null;
+				}
+			} else {
+				_deletionSchemeURI = uri;
 			}
-			_deletionSchemeURI = uri;
 		}
 
 		@Override
 		public DeletionScheme getDeletionScheme() {
-			if (deletionScheme == null && _deletionSchemeURI != null && getViewPointLibrary() != null) {
-				deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI);
+			if (deletionScheme == null && _deletionSchemeURI != null) {
+				if (getFlexoConceptType() != null) {
+					deletionScheme = (DeletionScheme) getFlexoConceptType().getFlexoBehaviourForURI(_deletionSchemeURI);
+				} else if (getViewPointLibrary() != null) {
+					deletionScheme = (DeletionScheme) getViewPointLibrary().getFlexoBehaviour(_deletionSchemeURI);
+					if (deletionScheme != null)
+						setFlexoConceptType(deletionScheme.getFlexoConcept());
+				}
+			} else if (deletionScheme == null && getFlexoConceptType() != null) {
+				deletionScheme = getFlexoConceptType().getDefaultDeletionScheme();
+				_deletionSchemeURI = deletionScheme.getURI();
 			}
-			if (deletionScheme == null && getFlexoRole() instanceof FlexoConceptInstanceRole) {
-				deletionScheme = ((FlexoConceptInstanceRole) getFlexoRole()).getFlexoConcept().getDefaultDeletionScheme();
-			}
+
 			return deletionScheme;
 		}
 
@@ -220,7 +241,8 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 
 		public DeleteFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
-			for (DeleteFlexoConceptInstanceParameter deleteEPParam : getParameters()) {
+			List<DeleteFlexoConceptInstanceParameter> pList = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
+			for (DeleteFlexoConceptInstanceParameter deleteEPParam : pList) {
 				if (deleteEPParam.getParam() == p) {
 					return deleteEPParam;
 				}
@@ -229,19 +251,23 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 
 		private void updateParameters() {
-			List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
-			if (getDeletionScheme() != null) {
-				for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
-					DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
-					if (existingParam != null) {
-						parametersToRemove.remove(existingParam);
-					} else {
-						addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
+			if (!isUpdating) {
+				List<DeleteFlexoConceptInstanceParameter> parametersToRemove = (List<DeleteFlexoConceptInstanceParameter>) performSuperGetter(PARAMETERS_KEY);
+				if (getDeletionScheme() != null) {
+					for (FlexoBehaviourParameter p : getDeletionScheme().getParameters()) {
+						DeleteFlexoConceptInstanceParameter existingParam = getParameter(p);
+						if (existingParam != null) {
+							parametersToRemove.remove(existingParam);
+						} else {
+							isUpdating = true;
+							addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
+						}
 					}
 				}
-			}
-			for (DeleteFlexoConceptInstanceParameter removeThis : parametersToRemove) {
-				removeFromParameters(removeThis);
+				for (DeleteFlexoConceptInstanceParameter removeThis : parametersToRemove) {
+					removeFromParameters(removeThis);
+				}
+				isUpdating = false;
 			}
 		}
 
@@ -294,6 +320,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 	}
 
+	@DefineValidationRule
 	public static class DeleteFlexoConceptInstanceMustAddressADeletionScheme extends
 			ValidationRule<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance> {
 		public DeleteFlexoConceptInstanceMustAddressADeletionScheme() {
@@ -309,13 +336,14 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 							action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");
 				} else {
 					return new ValidationError<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance>(this,
-							action, "delete_flexo_concept_action_doesn't_define_any_creation_scheme");
+							action, "delete_flexo_concept_action_doesn't_define_any_deletion_scheme");
 				}
 			}
 			return null;
 		}
 	}
 
+	@DefineValidationRule
 	public static class DeleteFlexoConceptInstanceParametersMustBeValid extends
 			ValidationRule<DeleteFlexoConceptInstanceParametersMustBeValid, DeleteFlexoConceptInstance> {
 
@@ -362,6 +390,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 		}
 	}
 
+	@DefineValidationRule
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
 			BindingIsRequiredAndMustBeValid<DeleteFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {

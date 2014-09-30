@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -23,6 +24,11 @@ import java.util.List;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.validation.FixProposal;
+import org.openflexo.foundation.validation.ValidationIssue;
+import org.openflexo.foundation.validation.ValidationRule;
+import org.openflexo.foundation.validation.ValidationWarning;
+import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -43,7 +49,7 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(MS modelSlot);
-	
+
 	public List<? extends ModelSlot> getAccessibleModelSlots();
 
 	public static abstract class InnerModelSlotParameterImpl<MS extends ModelSlot<?>> extends FlexoBehaviourParameterImpl implements
@@ -68,4 +74,44 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
+
+		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
+			super(InnerModelSlotParameter.class, "Parameter_should_not_have_reflexive_model_slot_no_more");
+		}
+
+		@Override
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> applyValidation(
+				InnerModelSlotParameter aParameter) {
+			ModelSlot ms = aParameter.getModelSlot();
+			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aParameter);
+				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter>(this, aParameter,
+						"Parameter_should_not_have_reflexive_model_slot_no_more", fixProposal);
+
+			}
+			return null;
+		}
+
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> {
+
+			private final InnerModelSlotParameter parameter;
+
+			public RemoveReflexiveVirtualModelModelSlot(InnerModelSlotParameter aParameter) {
+				super("remove_reflexive_modelslot");
+				this.parameter = aParameter;
+			}
+
+			@Override
+			protected void fixAction() {
+				parameter.setModelSlot(null);
+			}
+		}
+
+	}
+
 }

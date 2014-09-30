@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
- * (c) Copyright 2012-2013 Openflexo
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -208,11 +208,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		private ViewType viewType = null;
 
-		/**
-		 * Stores a chained collections of objects which are involved in validation
-		 */
-		// private final ChainedCollection<ViewPointObject> validableObjects = null;
-
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
@@ -343,7 +338,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			if (requireChange(getName(), name)) {
 				if (getResource() != null) {
 					getResource().setName(name);
-				} else {
+				}
+				else {
 					super.setName(name);
 				}
 			}
@@ -414,7 +410,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				} else {
+				}
+				else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -708,23 +705,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			return out.toString();
 		}
 
-		/*@Override
-		public Collection<VirtualModel> getEmbeddedValidableObjects() {
-			return getVirtualModels();
-		}*/
-
-		// Implementation of XMLStorageResourceData
-
-		/*@Override
-		public FlexoStorageResource<ViewPoint> getFlexoResource() {
-			return (FlexoStorageResource<ViewPoint>) getResource();
-		}
-
-		@Override
-		public void setFlexoResource(FlexoResource resource) throws DuplicateResourceException {
-			setResource(resource);
-		}*/
-
 		@Override
 		public ViewPointResource getResource() {
 			return resource;
@@ -734,22 +714,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		public void setResource(org.openflexo.foundation.resource.FlexoResource<ViewPoint> resource) {
 			this.resource = (ViewPointResource) resource;
 		}
-
-		/*@Override
-		public ViewPointImplResource getFlexoXMLFileResource() {
-			return getResource();
-		}*/
-
-		/*@Override
-		public void save() {
-			logger.info("Saving ViewPoint to " + getResource().getFile().getAbsolutePath() + "...");
-
-			try {
-				getResource().save(null);
-			} catch (SaveResourceException e) {
-				e.printStackTrace();
-			}
-		}*/
 
 		@Override
 		public boolean delete() {
@@ -788,7 +752,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 						instanceType = new VirtualModelInstanceType((VirtualModel) anFlexoConcept);
 						virtualModelTypesMap.put(anFlexoConcept, (VirtualModelInstanceType) instanceType);
 					}
-				} else {
+				}
+				else {
 					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
 						instanceType = new FlexoConceptInstanceType(anFlexoConcept);
@@ -850,7 +815,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			} else {
+			}
+			else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

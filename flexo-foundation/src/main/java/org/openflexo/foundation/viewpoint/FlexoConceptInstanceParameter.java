@@ -91,11 +91,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<V
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlotVirtualModel() != null) {
-				flexoConceptType = getModelSlotVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-				/*for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
-					s.updateBindingModels();
-				}*/
+			if (flexoConceptType == null && flexoConceptTypeURI != null) {
+				flexoConceptType = getViewPoint().getFlexoConcept(flexoConceptTypeURI);
 			}
 			return flexoConceptType;
 		}

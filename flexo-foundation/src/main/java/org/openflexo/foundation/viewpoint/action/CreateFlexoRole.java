@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
@@ -51,6 +53,8 @@ import org.openflexo.toolbox.StringUtils;
 public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptObject, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoRole.class.getPackage().getName());
+
+	private List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
 	public static FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject>(
 			"create_flexo_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
@@ -117,8 +121,23 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+		if (vmAvailableFlexoRoleTypes == null) {
+			vmAvailableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
+			vmAvailableFlexoRoleTypes.add(FlexoConceptInstanceRole.class);
+			vmAvailableFlexoRoleTypes.add((Class<? extends FlexoRole<?>>) PrimitiveRole.class);
+
+		}
 		if (getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
+		}
+		else {
+			FlexoConcept fc = (FlexoConcept) this.getFocusedObject();
+			if (fc != null) {
+				VirtualModel vm = fc.getVirtualModel();
+				if (vm != null) {
+					return vmAvailableFlexoRoleTypes;
+				}
+			}
 		}
 		return null;
 	}
@@ -132,24 +151,26 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 			if (modelSlot != null) {
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
+			}
+			else {
+				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+				newFlexoRole = factory.newInstance(flexoRoleClass);
+			}
+
+			if (newFlexoRole != null) {
+
 				if (isIndividual()) {
 					((IndividualRole<?>) newFlexoRole).setOntologicType(individualType);
 				}
 				if (isFlexoConceptInstance()) {
 					((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(flexoConceptInstanceType);
 				}
-			}
-			if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
-				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
-				newFlexoRole = factory.newInstance(flexoRoleClass);
-				/*if (getFocusedObject().getVirtualModel() != null) {
-					newFlexoRole.setModelSlot(getFocusedObject().getVirtualModel().getReflexiveModelSlot());
-				}*/
-				((PrimitiveRole) newFlexoRole).setPrimitiveType(primitiveType);
-				logger.info("Created " + newFlexoRole + " with " + primitiveType);
-			}
+				if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
+					((PrimitiveRole) newFlexoRole).setPrimitiveType(primitiveType);
+					logger.info("Created " + newFlexoRole + " with " + primitiveType);
+				}
 
-			if (newFlexoRole != null) {
+
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setDescription(description);
 				getFlexoConcept().addToFlexoRoles(newFlexoRole);
@@ -177,13 +198,18 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		if (StringUtils.isEmpty(getRoleName())) {
 			validityMessage = EMPTY_NAME;
 			return false;
-		} else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
+		}
+		else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
 			validityMessage = DUPLICATED_NAME;
 			return false;
-		} else if (modelSlot == null) {
+		}
+		/* Valid  => when modelSlot is null, then it is VirtualModel
+		else if (modelSlot == null) {
 			validityMessage = NO_MODEL_SLOT;
 			return false;
-		} else {
+		}
+		 */
+		else {
 			validityMessage = "";
 			return true;
 		}
@@ -209,13 +235,17 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				return ((VirtualModelModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
 		}
+		else if (modelSlot == null) {
+			return getFlexoConcept().getVirtualModel();
+		}
 		return null;
 	}
 
 	public List<ModelSlot<?>> getAvailableModelSlots() {
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
 			return getFocusedObject().getVirtualModel().getModelSlots();
 		}
 		return null;
@@ -224,7 +254,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private ModelSlot<?> retrieveDefaultModelSlot() {
 		if (getFocusedObject() instanceof VirtualModel && ((VirtualModel) getFocusedObject()).getModelSlots().size() > 0) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots().get(0);
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
 				&& getFocusedObject().getVirtualModel().getModelSlots().size() > 0) {
 			return getFocusedObject().getVirtualModel().getModelSlots().get(0);
 		}
@@ -259,6 +290,15 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		return modelSlot;
 	}
 
+	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
+		if (modelSlot != null) {
+			return modelSlot.getTechnologyAdapter();
+		}
+		else {
+			return getFlexoConcept().getVirtualModel().getTechnologyAdapter();
+		}
+	}
+
 	public void setModelSlot(ModelSlot<?> modelSlot) {
 		boolean wasValid = isValid();
 		this.modelSlot = modelSlot;
@@ -267,7 +307,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			} else {
+			}
+			else {
 				setFlexoRoleClass(null);
 			}
 		}

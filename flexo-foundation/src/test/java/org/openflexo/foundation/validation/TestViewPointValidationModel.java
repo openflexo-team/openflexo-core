@@ -294,7 +294,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(DeclareFlexoRole.ObjectBindingIsRequiredAndMustBeValid.class));
-		assertTrue(ruleSet.containsRuleClass(AssignableAction.AssignationBindingMustBeValid.class));
+		assertTrue(ruleSet.containsRuleClass(AssignableAction.AssignationBindingMustBeValidOrVariable.class));
 		assertTrue(ruleSet.containsRuleClass(EditionAction.ConditionalBindingMustBeValid.class));
 	}
 }

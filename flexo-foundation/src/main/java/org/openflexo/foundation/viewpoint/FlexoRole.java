@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -39,9 +40,11 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -271,6 +274,10 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	}
 
+	public static enum RoleCloningStrategy {
+		Clone, Reference, Ignore, Factory
+	}
+
 	@DefineValidationRule
 	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole> {
 		public FlexoRoleMustHaveAName() {
@@ -286,7 +293,42 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		}
 	}
 
-	public static enum RoleCloningStrategy {
-		Clone, Reference, Ignore, Factory
+	@DefineValidationRule
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+
+		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
+			super(FlexoRole.class, "FlexoRole_should_not_have_reflexive_model_slot_no_more");
+		}
+
+		@Override
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
+			ModelSlot ms = aRole.getModelSlot();
+			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
+				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
+						"FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);
+
+			}
+			return null;
+		}
+
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+
+			private final FlexoRole role;
+
+			public RemoveReflexiveVirtualModelModelSlot(FlexoRole aRole) {
+				super("remove_reflexive_modelslot");
+				this.role = aRole;
+			}
+
+			@Override
+			protected void fixAction() {
+				role.setModelSlot(null);
+			}
+		}
+
 	}
+
 }

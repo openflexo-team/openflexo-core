@@ -132,6 +132,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@Finder(collection = FLEXO_BEHAVIOURS_KEY, attribute = FlexoBehaviour.NAME_KEY)
 	public FlexoBehaviour getFlexoBehaviour(String editionSchemeName);
 
+	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
+
 	@Getter(value = FLEXO_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
@@ -405,7 +407,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "#" + getName();
-			} else {
+			}
+			else {
 				return "null#" + getName();
 			}
 		}
@@ -553,6 +556,25 @@ public interface FlexoConcept extends FlexoConceptObject {
 				index++;
 			}
 			return testName;
+		}
+
+		@Override
+		public FlexoBehaviour getFlexoBehaviourForURI(String uri) {
+
+			if (uri != null && !uri.isEmpty() && getVirtualModel() != null) {
+				if (uri.contains(getVirtualModel().getURI())) {
+					String behaviourname = uri.replace(getVirtualModel().getURI(), "").substring(1);
+					System.out.println("XTOF :: je récupère " + behaviourname);
+					return getFlexoBehaviour(behaviourname);
+				}
+				else {
+					logger.warning("Trying to retrieve a FlexoBehaviour (" + uri + ") that does not belong to current Concept " + getURI());
+					return null;
+				}
+			}
+
+			return null;
+
 		}
 
 		@Override

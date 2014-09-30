@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2010-2011 AgileBirds
- * (c) Copyright 2012-2013 Openflexo
+ * (c) Copyright 2012-2014 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -22,14 +22,12 @@ package org.openflexo.foundation.viewpoint;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
@@ -46,7 +44,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.viewpoint.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter;
@@ -57,6 +54,7 @@ import org.openflexo.foundation.viewpoint.rm.VirtualModelResourceImpl;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
@@ -72,7 +70,10 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
@@ -408,45 +409,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return nature.hasNature(this);
 		}
 
-		// private VirtualModelModelSlot reflexiveModelSlot;
-
-		/**
-		 * Return reflexive model slot<br>
-		 * The reflexive model slot is an abstraction which allow to consider the virtual model as a model which can be accessed from itself
-		 * 
-		 * @return
-		 */
-		/*@Override
-		public VirtualModelModelSlot getReflexiveModelSlot() {
-			if (reflexiveModelSlot == null) {
-				reflexiveModelSlot = (VirtualModelModelSlot) getModelSlot(REFLEXIVE_MODEL_SLOT_NAME);
-				if (reflexiveModelSlot == null) {
-					reflexiveModelSlot = makeReflexiveModelSlot();
-				}
-			}
-			return reflexiveModelSlot;
-		}*/
-
-		/*protected VirtualModelModelSlot makeReflexiveModelSlot() {
-			if (getViewPoint() != null && getViewPoint().getViewPointLibrary() != null
-					&& getViewPoint().getViewPointLibrary().getServiceManager() != null
-					&& getViewPoint().getViewPointLibrary().getServiceManager().getService(TechnologyAdapterService.class) != null) {
-				VirtualModelTechnologyAdapter builtInTA = getViewPoint().getViewPointLibrary().getServiceManager()
-						.getService(TechnologyAdapterService.class).getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
-				if (builtInTA == null) {
-					logger.severe("VirtualModelTechnologyAdapter not found: this should not happen");
-					return null;
-				} else {
-					VirtualModelModelSlot returned = builtInTA.makeVirtualModelModelSlot(this, this);
-					returned.setVirtualModelResource(getResource());
-					returned.setName(REFLEXIVE_MODEL_SLOT_NAME);
-					addToModelSlots(returned);
-					return returned;
-				}
-			}
-			return null;
-		}*/
-
 		/**
 		 * Return the URI of the {@link VirtualModel}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
@@ -671,6 +633,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return returned;
 		}
 
+		/*
 		@Override
 		@Deprecated
 		public void addToModelSlots(ModelSlot<?> aModelSlot) {
@@ -681,6 +644,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			}
 			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
 		}
+		*/
 
 		/*
 		 * public ModelSlot<?> getModelSlot(String modelSlotName) { for
@@ -1020,23 +984,51 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return out.toString();
 		}
 
-		/**
-		 * Return flag indicating if supplied BindingVariable is set at runtime
-		 * 
-		 * @param variable
-		 * @return
-		 * @see VirtualModelInstance#getValueForVariable(BindingVariable)
-		 */
-		/*@Override
-		public boolean handleVariable(BindingVariable variable) {
-			return false;
-		}*/
+	}
+
+	@DefineValidationRule
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel> {
+
+		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
+			super(VirtualModel.class, "virtual_model_should_not_have_reflexive_model_slot_no_more");
+		}
 
 		@Override
-		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-			// TODO Auto-generated method stub
-			return super.getEmbeddedValidableObjects();
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel> applyValidation(VirtualModel vm) {
+			for (ModelSlot ms : vm.getModelSlots()) {
+				if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+					RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(vm);
+					return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel>(this, vm,
+							"virtual_model_should_not_have_reflexive_model_slot_no_more", fixProposal);
+
+				}
+			}
+			return null;
+		}
+
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel> {
+
+			private final VirtualModel vm;
+
+			public RemoveReflexiveVirtualModelModelSlot(VirtualModel vm) {
+				super("remove_reflexive_modelslot");
+				this.vm = vm;
+			}
+
+			@Override
+			protected void fixAction() {
+				// TODO: Fix this
+				for (ModelSlot ms : vm.getModelSlots()) {
+					if ("virtualModelInstance".equals(ms.getName())) {
+						vm.removeFromModelSlots(ms);
+					}
+				}
+			}
+
 		}
 
 	}
+
 }
