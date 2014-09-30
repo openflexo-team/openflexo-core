@@ -1021,8 +1021,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 			@Override
 			protected void fixAction() {
-				// TODO: Fix this
-				for (ModelSlot ms : vm.getModelSlots()) {
+				for (ModelSlot ms : new ArrayList<ModelSlot>(vm.getModelSlots())) {
 					if ("virtualModelInstance".equals(ms.getName())) {
 						vm.removeFromModelSlots(ms);
 					}
