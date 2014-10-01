@@ -219,7 +219,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 
 			@Override
 			protected void fixAction() {
-				AddClass<?, ?> action = getObject();
+				AddClass<?, ?> action = getValidable();
 				action.setAssignation(new DataBinding<Object>(patternRole.getRoleName()));
 			}
 

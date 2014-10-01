@@ -35,7 +35,7 @@ import org.openflexo.rm.ResourceLocator;
  */
 public class FlexoProjectValidationModel extends FlexoValidationModel {
 
-	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("ProjectValidationLocalized");
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
 	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
 			fibValidationLocalizedDelegate, null, true);
 

@@ -403,7 +403,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 			@Override
 			protected void fixAction() {
-				AddIndividual<?, ?> action = getObject();
+				AddIndividual<?, ?> action = getValidable();
 				action.setAssignation(new DataBinding<Object>(patternRole.getRoleName()));
 			}
 

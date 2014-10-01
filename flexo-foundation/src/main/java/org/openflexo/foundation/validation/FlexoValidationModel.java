@@ -19,14 +19,12 @@
  */
 package org.openflexo.foundation.validation;
 
+import org.openflexo.antar.binding.BindingEvaluator;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;
-import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationRule;
 
 /**
  * This is the ValidationModel managed in Openflexo context
@@ -66,36 +64,18 @@ public class FlexoValidationModel extends ValidationModel {
 	}
 
 	@Override
-	public String localizedRuleName(ValidationRule<?, ?> validationRule) {
-		if (validationRule == null) {
-			return null;
+	public String localizedInContext(String key, Object context) {
+		String localized = validationLocalization.getLocalizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
+		if (localized.contains("($")) {
+			String asBindingExpression = asBindingExpression(localized);
+			try {
+				return (String) BindingEvaluator.evaluateBinding(asBindingExpression, context);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return localized;
+			}
 		}
-		return validationLocalization.getLocalizedForKeyAndLanguage(validationRule.getRuleName(), FlexoLocalization.getCurrentLanguage(),
-				true);
+		return localized;
 	}
 
-	@Override
-	public String localizedRuleDescription(ValidationRule<?, ?> validationRule) {
-		if (validationRule == null) {
-			return null;
-		}
-		return validationLocalization.getLocalizedForKeyAndLanguage(validationRule.getRuleDescription(),
-				FlexoLocalization.getCurrentLanguage(), true);
-	}
-
-	@Override
-	public String localizedIssueMessage(ValidationIssue<?, ?> issue) {
-		if (issue == null) {
-			return null;
-		}
-		return validationLocalization.getLocalizedForKeyAndLanguage(issue.getMessage(), FlexoLocalization.getCurrentLanguage(), true);
-	}
-
-	@Override
-	public String localizedFixProposal(FixProposal<?, ?> proposal) {
-		if (proposal == null) {
-			return null;
-		}
-		return validationLocalization.getLocalizedForKeyAndLanguage(proposal.getMessage(), FlexoLocalization.getCurrentLanguage(), true);
-	}
 }

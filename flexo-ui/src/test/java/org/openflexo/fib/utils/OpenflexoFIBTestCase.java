@@ -36,7 +36,7 @@ public abstract class OpenflexoFIBTestCase extends OpenflexoTestCaseWithGUI {
 			}
 			ValidationReport validationReport = component.validate();
 			for (ValidationError error : validationReport.getErrors()) {
-				logger.severe("FIBComponent validation error: Object: " + error.getObject() + " message: " + error.getMessage());
+				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
 			}
 			assertEquals(0, validationReport.getErrorsCount());
 		} finally {

@@ -201,7 +201,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 			@Override
 			protected void fixAction() {
-				rule.getBinding(getObject()).reset();
+				rule.getBinding(getValidable()).reset();
 			}
 
 		}

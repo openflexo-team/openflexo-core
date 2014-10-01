@@ -43,7 +43,7 @@ import org.openflexo.rm.ResourceLocator;
 @SuppressWarnings("serial")
 public class ViewPointValidationModel extends FlexoValidationModel {
 
-	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("ViewPointValidationLocalized");
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ViewPointValidation");
 	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
 			fibValidationLocalizedDelegate, null, true);
 

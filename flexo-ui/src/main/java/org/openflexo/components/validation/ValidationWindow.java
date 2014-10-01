@@ -58,8 +58,8 @@ public class ValidationWindow extends JDialog {
 
 	protected void performSelect(ValidationIssue<?, ?> validationIssue) {
 
-		if (validationIssue != null && validationIssue.getObject() instanceof FlexoObject) {
-			getController().selectAndFocusObject((FlexoObject) validationIssue.getObject());
+		if (validationIssue != null && validationIssue.getValidable() instanceof FlexoObject) {
+			getController().selectAndFocusObject((FlexoObject) validationIssue.getValidable());
 		}
 	}
 

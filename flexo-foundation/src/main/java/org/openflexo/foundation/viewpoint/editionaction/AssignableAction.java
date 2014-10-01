@@ -272,7 +272,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 			@Override
 			protected void fixAction() {
-				getObject().getAssignation().reset();
+				getValidable().getAssignation().reset();
 			}
 
 		}
