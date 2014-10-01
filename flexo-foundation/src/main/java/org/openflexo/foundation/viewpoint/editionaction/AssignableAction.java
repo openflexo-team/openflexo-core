@@ -253,7 +253,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 					DeleteBinding<AssignableAction> deleteBinding = new DeleteBinding<AssignableAction>(this);
 
 					return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
-							AssignationBindingMustBeValidOrVariable.this.getNameKey(), "Binding: " + assignation + " reason: "
+							AssignationBindingMustBeValidOrVariable.this.getRuleName(), "Binding: " + assignation + " reason: "
 									+ assignation.invalidBindingReason(), deleteBinding);
 				}
 			}

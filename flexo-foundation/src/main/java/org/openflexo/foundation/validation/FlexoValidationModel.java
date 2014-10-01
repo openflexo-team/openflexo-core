@@ -20,9 +20,13 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;
+import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * This is the ValidationModel managed in Openflexo context
@@ -33,8 +37,11 @@ import org.openflexo.model.validation.ValidationModel;
 @SuppressWarnings("serial")
 public class FlexoValidationModel extends ValidationModel {
 
-	public FlexoValidationModel(ModelContext modelContext) {
+	private final LocalizedDelegate validationLocalization;
+
+	public FlexoValidationModel(ModelContext modelContext, LocalizedDelegate validationLocalization) {
 		super(modelContext);
+		this.validationLocalization = validationLocalization;
 	}
 
 	/**
@@ -59,7 +66,36 @@ public class FlexoValidationModel extends ValidationModel {
 	}
 
 	@Override
-	public String localizedForKey(String key) {
-		return FlexoLocalization.localizedForKey(key);
+	public String localizedRuleName(ValidationRule<?, ?> validationRule) {
+		if (validationRule == null) {
+			return null;
+		}
+		return validationLocalization.getLocalizedForKeyAndLanguage(validationRule.getRuleName(), FlexoLocalization.getCurrentLanguage(),
+				true);
+	}
+
+	@Override
+	public String localizedRuleDescription(ValidationRule<?, ?> validationRule) {
+		if (validationRule == null) {
+			return null;
+		}
+		return validationLocalization.getLocalizedForKeyAndLanguage(validationRule.getRuleDescription(),
+				FlexoLocalization.getCurrentLanguage(), true);
+	}
+
+	@Override
+	public String localizedIssueMessage(ValidationIssue<?, ?> issue) {
+		if (issue == null) {
+			return null;
+		}
+		return validationLocalization.getLocalizedForKeyAndLanguage(issue.getMessage(), FlexoLocalization.getCurrentLanguage(), true);
+	}
+
+	@Override
+	public String localizedFixProposal(FixProposal<?, ?> proposal) {
+		if (proposal == null) {
+			return null;
+		}
+		return validationLocalization.getLocalizedForKeyAndLanguage(proposal.getMessage(), FlexoLocalization.getCurrentLanguage(), true);
 	}
 }

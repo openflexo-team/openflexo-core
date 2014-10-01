@@ -22,14 +22,17 @@ package org.openflexo.foundation.viewpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * This is the ValidationModel for FML model (ViewPoint, VirtualModel, FlexoConcept, etc...)
@@ -39,6 +42,10 @@ import org.openflexo.model.validation.Validable;
  */
 @SuppressWarnings("serial")
 public class ViewPointValidationModel extends FlexoValidationModel {
+
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("ViewPointValidationLocalized");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
+			fibValidationLocalizedDelegate, null, true);
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
@@ -57,7 +64,7 @@ public class ViewPointValidationModel extends FlexoValidationModel {
 	}
 
 	public ViewPointValidationModel(TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(computeModelContext(taService));
+		super(computeModelContext(taService), VALIDATION_LOCALIZATION);
 
 		/*registerRule(new FlexoConcept.FlexoConceptShouldHaveRoles());
 		registerRule(new FlexoConcept.FlexoConceptShouldHaveEditionSchemes());
@@ -135,8 +142,4 @@ public class ViewPointValidationModel extends FlexoValidationModel {
 		return false;
 	}
 
-	@Override
-	public String localizedForKey(String key) {
-		return FlexoLocalization.localizedForKey(key);
-	}
 }

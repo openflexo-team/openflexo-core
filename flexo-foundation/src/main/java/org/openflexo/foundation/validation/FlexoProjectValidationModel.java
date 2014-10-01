@@ -20,11 +20,14 @@
  */
 package org.openflexo.foundation.validation;
 
+import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * @author gpolet, sylvain
@@ -32,8 +35,12 @@ import org.openflexo.model.validation.Validable;
  */
 public class FlexoProjectValidationModel extends FlexoValidationModel {
 
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("ProjectValidationLocalized");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
+			fibValidationLocalizedDelegate, null, true);
+
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class));
+		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), VALIDATION_LOCALIZATION);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());
@@ -77,11 +84,6 @@ public class FlexoProjectValidationModel extends FlexoValidationModel {
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {
 		return true;
-	}
-
-	@Override
-	public String localizedForKey(String key) {
-		return FlexoLocalization.localizedForKey(key);
 	}
 
 }

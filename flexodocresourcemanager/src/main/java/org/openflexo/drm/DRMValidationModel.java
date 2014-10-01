@@ -19,10 +19,14 @@
  */
 package org.openflexo.drm;
 
+import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.validation.FlexoValidationModel;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Please comment this class
@@ -32,8 +36,12 @@ import org.openflexo.model.validation.Validable;
  */
 public class DRMValidationModel extends FlexoValidationModel {
 
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("DRMValidationLocalized");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
+			fibValidationLocalizedDelegate, null, true);
+
 	public DRMValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(DocResourceCenter.class));
+		super(ModelContextLibrary.getCompoundModelContext(DocResourceCenter.class), VALIDATION_LOCALIZATION);
 
 		/*for (Language language : Language.availableValues()) {
 			registerRule(new DocItem.DocumentationShouldBeUpToDate(language));
