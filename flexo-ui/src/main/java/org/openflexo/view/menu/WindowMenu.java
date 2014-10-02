@@ -119,10 +119,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 		add(inspectorWindowItem = new InspectorWindowItem());
 		add(preferencesWindowItem = new PreferencesWindowItem());
 		windowFirstIndex = getItemCount();
-		if (controller.getDefaultValidationModel() != null) {
-			add(checkConsistencyWindowItem = new CheckConsistencyWindowItem());
-			windowFirstIndex = getItemCount();
-		}
+		add(checkConsistencyWindowItem = new CheckConsistencyWindowItem());
+		windowFirstIndex = getItemCount();
 		relativeWindowItems = new Hashtable<FlexoRelativeWindow, RelativeWindowItem>();
 
 		addSeparator();
@@ -164,8 +162,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 					.isVisible());
 		}
 		if (checkConsistencyWindowItem != null) {
-			if (getController().getConsistencyCheckWindow(false) != null) {
-				checkConsistencyWindowItem.setState(getController().getConsistencyCheckWindow().isVisible());
+			if (getController().getValidationWindow(false) != null) {
+				checkConsistencyWindowItem.setState(getController().getValidationWindow().isVisible());
 			} else {
 				checkConsistencyWindowItem.setEnabled(false);
 			}
@@ -233,8 +231,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 			/*if (getController().getModuleInspectorController().getInspectorDialog().isVisible()) {
 				getController().hideInspector();
 			} else {*/
-				getController().showInspector();
-			//}
+			getController().showInspector();
+			// }
 		}
 
 	}
@@ -279,8 +277,8 @@ public class WindowMenu extends FlexoMenu implements PropertyChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (getController().getConsistencyCheckWindow() != null) {
-				getController().getConsistencyCheckWindow().setVisible(true);
+			if (getController().getValidationWindow() != null) {
+				getController().getValidationWindow().setVisible(true);
 			}
 		}
 

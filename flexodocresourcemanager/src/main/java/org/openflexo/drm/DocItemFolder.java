@@ -33,15 +33,15 @@ import org.openflexo.drm.dm.DocItemAdded;
 import org.openflexo.drm.dm.DocItemFolderAdded;
 import org.openflexo.drm.dm.StructureModified;
 import org.openflexo.drm.helpset.HelpSetConfiguration;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ParameteredFixProposal;
-import org.openflexo.foundation.validation.ProblemIssue;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ParameteredFixProposal;
+import org.openflexo.model.validation.ProblemIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 public class DocItemFolder extends DRMObject {
 

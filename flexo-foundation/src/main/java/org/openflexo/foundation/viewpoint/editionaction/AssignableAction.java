@@ -25,18 +25,18 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -104,8 +104,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 			if (assignation == null) {
 				if (StringUtils.isNotEmpty(variableName)) {
 					updateVariableAssignation();
-				}
-				else {
+				} else {
 					assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
 						@Override
 						public Type getDeclaredType() {
@@ -188,8 +187,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 					if (StringUtils.isEmpty(getVariableName())) {
 						setVariableName("newVariable");
 					}
-				}
-				else {
+				} else {
 					if (StringUtils.isNotEmpty(getVariableName())) {
 						setVariableName(null);
 						getAssignation().reset();
@@ -255,7 +253,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 					DeleteBinding<AssignableAction> deleteBinding = new DeleteBinding<AssignableAction>(this);
 
 					return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
-							AssignationBindingMustBeValidOrVariable.this.getNameKey(), "Binding: " + assignation + " reason: "
+							AssignationBindingMustBeValidOrVariable.this.getRuleName(), "Binding: " + assignation + " reason: "
 									+ assignation.invalidBindingReason(), deleteBinding);
 				}
 			}
@@ -274,7 +272,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 			@Override
 			protected void fixAction() {
-				getObject().getAssignation().reset();
+				getValidable().getAssignation().reset();
 			}
 
 		}

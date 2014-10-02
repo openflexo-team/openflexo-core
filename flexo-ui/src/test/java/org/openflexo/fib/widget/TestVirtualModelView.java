@@ -11,9 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.fib.testutils.GraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.viewpoint.ActionScheme;
@@ -211,7 +211,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidget() {
 
-		DefaultFIBCustomComponent<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
+		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
 
 		gcDelegate.addTab("TestVirtualModel", widget.getController());
 	}

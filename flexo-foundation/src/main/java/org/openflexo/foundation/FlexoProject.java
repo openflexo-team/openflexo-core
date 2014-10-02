@@ -61,18 +61,18 @@ import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
-import org.openflexo.foundation.validation.CompoundIssue;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
-import org.openflexo.foundation.validation.InformationIssue;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationReport;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.CompoundIssue;
+import org.openflexo.model.validation.InformationIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -485,9 +485,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 	}
 
-	private void repairProject() {
-		ValidationModel validationModel = getProjectValidationModel();
-		validate(validationModel);
+	private ValidationReport repairProject() {
+		return getProjectValidationModel().validate(this);
 	}
 
 	/**
@@ -1024,77 +1023,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		this.filesToDelete = filesToDel;
 	}
 
-	/**
-	 * Overrides getDefaultValidationModel
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#getDefaultValidationModel()
-	 */
-	@Override
-	public ValidationModel getDefaultValidationModel() {
-		return getProjectValidationModel();
-	}
-
-	/**
-	 * Overrides isValid
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#isValid()
-	 */
-	@Override
-	public boolean isValid() {
-		return isValid(getDefaultValidationModel());
-	}
-
-	/**
-	 * Overrides isValid
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#isValid(org.openflexo.foundation.validation.ValidationModel)
-	 */
-	@Override
-	public boolean isValid(ValidationModel validationModel) {
-		return validationModel.isValid(this);
-	}
-
-	/**
-	 * Overrides validate
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#validate()
-	 */
-	@Override
-	public ValidationReport validate() {
-		return validate(getDefaultValidationModel());
-	}
-
-	/**
-	 * Overrides validate
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#validate(org.openflexo.foundation.validation.ValidationModel)
-	 */
-	@Override
-	public synchronized ValidationReport validate(ValidationModel validationModel) {
-		return validationModel.validate(this);
-	}
-
-	/**
-	 * Overrides validate
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#validate(org.openflexo.foundation.validation.ValidationReport)
-	 */
-	@Override
-	public void validate(ValidationReport report) {
-		validate(report, getDefaultValidationModel());
-	}
-
-	/**
-	 * Overrides validate
-	 * 
-	 * @see org.openflexo.foundation.validation.Validable#validate(org.openflexo.foundation.validation.ValidationReport,
-	 *      org.openflexo.foundation.validation.ValidationModel)
-	 */
-	@Override
-	public synchronized void validate(ValidationReport report, ValidationModel validationModel) {
-		validationModel.validate(this, report);
-	}
-
 	@DefineValidationRule
 	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProject> {
 
@@ -1109,7 +1037,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		/**
 		 * Overrides applyValidation
 		 * 
-		 * @see org.openflexo.foundation.validation.ValidationRule#applyValidation(org.openflexo.foundation.validation.Validable)
+		 * @see org.openflexo.model.validation.ValidationRule#applyValidation(org.openflexo.model.validation.Validable)
 		 */
 		@Override
 		public ValidationIssue<FlexoIDMustBeUnique, FlexoProject> applyValidation(FlexoProject object) {

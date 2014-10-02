@@ -1,4 +1,5 @@
 /*
+ * (c) Copyright 2012-2014 Openflexo
  * (c) Copyright 2010-2011 AgileBirds
  *
  * This file is part of OpenFlexo.
@@ -21,7 +22,9 @@ package org.openflexo.foundation.validation;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.DeletableObject;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * Automatic deletion fix proposal
@@ -41,14 +44,14 @@ public class DeletionFixProposal<R extends ValidationRule<R, V>, V extends Valid
 	@Override
 	public void apply() {
 		fixAction();
-		getProblemIssue().revalidateAfterFixing(true);
+		getProblemIssue().revalidateAfterFixing();
 	}
 
 	@Override
 	protected void fixAction() {
-		if (getObject() instanceof DeletableObject) {
+		/*if (getObject() instanceof DeletableObject) {
 			((DeletableObject) getObject()).delete();
-		}
+		}*/
 	}
 
 	@Override

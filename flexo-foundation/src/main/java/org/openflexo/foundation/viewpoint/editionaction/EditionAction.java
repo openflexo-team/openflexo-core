@@ -32,11 +32,6 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.ValidationWarning;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.ActionSchemeAction;
@@ -54,6 +49,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.binding.EditionActionBindingModel;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -63,6 +59,10 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 /**
  * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
@@ -173,8 +173,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		public FlexoBehaviour getFlexoBehaviour() {
 			if (getActionContainer() instanceof FlexoBehaviour) {
 				return (FlexoBehaviour) getActionContainer();
-			}
-			else if (getActionContainer() != null) {
+			} else if (getActionContainer() != null) {
 				return getActionContainer().getFlexoBehaviour();
 			}
 			return null;
@@ -202,8 +201,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
 			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
 				return getFlexoConcept().getVirtualModel().getModelSlots(msType);
-			}
-			else if (getFlexoConcept() instanceof VirtualModel) {
+			} else if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
 			}
 			return null;
@@ -222,8 +220,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
 				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
-			}
-			else {
+			} else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}

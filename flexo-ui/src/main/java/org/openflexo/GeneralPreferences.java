@@ -29,7 +29,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.localization.FlexoLocalization;
@@ -41,6 +40,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.converter.AWTRectangleConverter;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.toolbox.StringUtils;
 

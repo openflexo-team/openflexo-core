@@ -27,10 +27,10 @@ import java.util.Vector;
 import org.openflexo.drm.dm.DocResourceCenterIsModified;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.validation.ValidationModel;
 import org.openflexo.localization.Language;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ValidationModel;
 
 // TODO: this model should be migrated to PAMELA
 @ModelEntity
@@ -265,7 +265,9 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 	}
 
 	public List<? extends DRMObject> getAllFoldersAndItems() {
-		return getAllEmbeddedValidableObjects();
+		// return getAllEmbeddedValidableObjects();
+		// TODO
+		return null;
 	}
 
 	public List<DocItem> getAllItems() {

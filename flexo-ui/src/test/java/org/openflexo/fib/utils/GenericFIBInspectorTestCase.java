@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBModelFactory;
-import org.openflexo.fib.model.validation.ValidationError;
-import org.openflexo.fib.model.validation.ValidationReport;
 import org.openflexo.inspector.FIBInspector;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 
 /**
@@ -44,9 +44,9 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 			}
 			ValidationReport validationReport = component.validate();
 			for (ValidationError error : validationReport.getErrors()) {
-				logger.severe("FIBComponent validation error: Object: " + error.getObject() + " message: " + error.getMessage());
+				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
 			}
-			assertEquals(0, validationReport.getErrorNb());
+			assertEquals(0, validationReport.getErrorsCount());
 		} finally {
 			FIBLibrary.instance().removeFIBComponentFromCache(fibResource);
 		}

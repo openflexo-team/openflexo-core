@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
@@ -121,12 +121,12 @@ public abstract class WizardStep {
 
 	}
 
-	private DefaultFIBCustomComponent<?> jComponent;
+	private FIBJPanel<?> jComponent;
 
-	public DefaultFIBCustomComponent<?> getJComponent() {
+	public FIBJPanel<?> getJComponent() {
 		if (jComponent == null) {
 			if (getFIBComponent() != null) {
-				jComponent = new DefaultFIBCustomComponent(fibComponent, this, FlexoLocalization.getMainLocalizer()) {
+				jComponent = new FIBJPanel(fibComponent, this, FlexoLocalization.getMainLocalizer()) {
 
 					@Override
 					public Class<?> getRepresentedType() {

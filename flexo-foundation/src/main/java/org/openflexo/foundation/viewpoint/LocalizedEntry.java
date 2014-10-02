@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -27,6 +28,10 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity
 @ImplementationClass(LocalizedEntry.LocalizedEntryImpl.class)
@@ -62,7 +67,8 @@ public interface LocalizedEntry extends ViewPointObject {
 	@Setter(VALUE_KEY)
 	public void setValue(String value);
 
-	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = LocalizedDictionary.ENTRIES_KEY)
+	@Override
+	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = LocalizedDictionary.ENTRIES_KEY*/)
 	public LocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
@@ -144,4 +150,48 @@ public interface LocalizedEntry extends ViewPointObject {
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class LocalizedEntryShouldNotBeRegisteredTwice extends
+			ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> {
+		public LocalizedEntryShouldNotBeRegisteredTwice() {
+			super(LocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
+		}
+
+		@Override
+		public ValidationIssue<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> applyValidation(LocalizedEntry entry) {
+
+			if (entry.getLocalizedDictionary() != null) {
+				if (entry.getLocalizedDictionary().getEntries().indexOf(entry) != entry.getLocalizedDictionary().getEntries()
+						.lastIndexOf(entry)) {
+					RemoveExtraReferences fixProposal = new RemoveExtraReferences(entry);
+					return new ValidationWarning<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry>(this, entry,
+							"localized_entry_is_registered_twice", fixProposal);
+				}
+			}
+			return null;
+		}
+
+		protected static class RemoveExtraReferences extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> {
+
+			private final LocalizedEntry entry;
+
+			public RemoveExtraReferences(LocalizedEntry entry) {
+				super("remove_duplicated_references");
+				this.entry = entry;
+			}
+
+			@Override
+			protected void fixAction() {
+				while (entry.getLocalizedDictionary().getEntries().indexOf(entry) != entry.getLocalizedDictionary().getEntries()
+						.lastIndexOf(entry)) {
+					System.out.println("remove " + entry);
+					entry.getLocalizedDictionary().removeFromEntries(entry);
+				}
+			}
+
+		}
+
+	}
+
 }

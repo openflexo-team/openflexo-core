@@ -79,7 +79,7 @@ import org.openflexo.GeneralPreferences;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
-import org.openflexo.components.validation.ConsistencyCheckDialog;
+import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.FlexoEditingContext;
@@ -112,10 +112,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.validation.Validable;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.ValidationRuleSet;
+import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.foundation.view.ViewObject;
 import org.openflexo.foundation.view.rm.ViewResource;
@@ -138,6 +135,9 @@ import org.openflexo.model.undo.CreateCommand;
 import org.openflexo.model.undo.DeleteCommand;
 import org.openflexo.model.undo.RemoveCommand;
 import org.openflexo.model.undo.SetCommand;
+import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationRuleFilter;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
@@ -186,7 +186,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	private final Multimap<ModuleView<?>, Location> locationsForView;
 
-	private ConsistencyCheckDialog consistencyCheckWindow;
+	private ValidationWindow validationWindow;
 
 	protected FlexoModule module;
 
@@ -609,38 +609,58 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	public ConsistencyCheckDialog getConsistencyCheckWindow() {
-		return getConsistencyCheckWindow(true);
+	/**
+	 * Return non-modal {@link ValidationWindow} declared for this module<br>
+	 * Note that one {@link ValidationWindow} is declared for each {@link FlexoModule}<br>
+	 * Force the creation of {@link ValidationWindow} if non existant.
+	 * 
+	 * @return
+	 */
+	public ValidationWindow getValidationWindow() {
+		return getValidationWindow(true);
 	}
 
-	public ConsistencyCheckDialog getConsistencyCheckWindow(boolean create) {
-		if (create && getDefaultValidationModel() != null) {
-			if (consistencyCheckWindow == null || consistencyCheckWindow.isDisposed()) {
-				consistencyCheckWindow = new ConsistencyCheckDialog(this);
+	/**
+	 * Return non-modal {@link ValidationWindow} declared for this module<br>
+	 * Note that one {@link ValidationWindow} is declared for each {@link FlexoModule}<br>
+	 * 
+	 * @param create
+	 *            flag indicating if ValidationWindow must be created when unexistant
+	 * @return
+	 */
+	public ValidationWindow getValidationWindow(boolean create) {
+		if (create) {
+			if (validationWindow == null || validationWindow.isDisposed()) {
+				validationWindow = new ValidationWindow(getFlexoFrame(), this);
 			}
 		}
-		return consistencyCheckWindow;
+		return validationWindow;
 	}
 
-	public void consistencyCheck(Validable objectToValidate) {
-		if (getDefaultValidationModel() != null) {
-			initializeValidationModel();
-			getConsistencyCheckWindow(true).setVisible(true);
-			getConsistencyCheckWindow(true).consistencyCheck(objectToValidate);
+	/**
+	 * Perform consistency check for supplied object<br>
+	 * The right {@link ValidationModel} is first retrieved and set with the rule enability as defined in preferences.<br>
+	 * Then, the validation is run and results are displayed in the module's {@link ValidationWindow}
+	 * 
+	 * @param objectToValidate
+	 */
+	public void consistencyCheck(FlexoObject objectToValidate) {
+		FlexoValidationModel validationModel = getValidationModelForObject(objectToValidate);
+		if (validationModel == null) {
+			logger.warning("No ValidationModel found for " + objectToValidate);
+			return;
 		}
-	}
-
-	public void initializeValidationModel() {
-		ValidationModel validationModel = getDefaultValidationModel();
-		if (validationModel != null) {
-			for (int i = 0; i < validationModel.getSize(); i++) {
-				ValidationRuleSet ruleSet = validationModel.getElementAt(i);
-				for (int j = 0; j < ruleSet.getSize(); j++) {
-					ValidationRule<?, ?> rule = ruleSet.getElementAt(j);
-					rule.setIsEnabled(getApplicationContext().getGeneralPreferences().isValidationRuleEnabled(rule));
+		if (validationModel.getRuleFilter() == null) {
+			validationModel.setRuleFilter(new ValidationRuleFilter() {
+				@Override
+				public boolean accept(ValidationRule rule) {
+					return getApplicationContext().getGeneralPreferences().isValidationRuleEnabled(rule);
 				}
-			}
+			});
 		}
+		getValidationWindow(true).setVisible(true);
+		getValidationWindow(true).validateAndDisplayReportForObject(objectToValidate, validationModel);
+
 	}
 
 	/**
@@ -1301,8 +1321,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		manager.delete();
 		getApplicationContext().getGeneralPreferences().getPropertyChangeSupport().removePropertyChangeListener(this);
 		mainPane.dispose();
-		if (consistencyCheckWindow != null && !consistencyCheckWindow.isDisposed()) {
-			consistencyCheckWindow.dispose();
+		if (validationWindow != null && !validationWindow.isDisposed()) {
+			validationWindow.dispose();
 		}
 		if (mainInspectorController != null) {
 			mainInspectorController.delete();
@@ -1338,7 +1358,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		setEditor(null);
 		propertyChangeSupport = null;
 		inspectorMenuBar = null;
-		consistencyCheckWindow = null;
+		validationWindow = null;
 		flexoFrame = null;
 		mainPane = null;
 		menuBar = null;
@@ -1658,7 +1678,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		getSelectionManager().setSelectedObject(object);
 	}
 
-	public ValidationModel getDefaultValidationModel() {
+	public FlexoValidationModel getValidationModelForObject(FlexoObject object) {
 		return null;
 	}
 

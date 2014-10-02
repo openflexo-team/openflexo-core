@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.fib.testutils.GraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
@@ -77,7 +77,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	@TestOrder(4)
 	public void testInstanciateWidget() {
 
-		DefaultFIBCustomComponent<ViewPoint> widget = instanciateFIB(ResourceLocator.locateResource(fibFileName), viewPoint, ViewPoint.class);
+		FIBJPanel<ViewPoint> widget = instanciateFIB(ResourceLocator.locateResource(fibFileName), viewPoint, ViewPoint.class);
 
 		gcDelegate.addTab("TestViewPoint1", widget.getController());
 	}

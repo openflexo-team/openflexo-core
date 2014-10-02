@@ -25,16 +25,11 @@ import java.lang.reflect.Type;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationRule;
-import org.openflexo.foundation.validation.ValidationWarning;
-import org.openflexo.foundation.validation.annotations.DefineValidationRule;
 import org.openflexo.foundation.view.ActorReference;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,6 +40,11 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -158,8 +158,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getRoleName();
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -194,8 +193,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 				if (concept instanceof VirtualModel) {
 					// the role belongs to a FlexoConcept that is a VirtualModel
 					return (VirtualModel) concept;
-				}
-				else {
+				} else {
 					// the role belongs to a FlexoConcept that belongs to a VirtualModel
 					return getFlexoConcept().getVirtualModel();
 				}
@@ -260,8 +258,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			RoleCloningStrategy returned = (RoleCloningStrategy) performSuperGetter(CLONING_STRATEGY_KEY);
 			if (returned == null) {
 				return defaultCloningStrategy();
-			}
-			else {
+			} else {
 				return returned;
 			}
 		}

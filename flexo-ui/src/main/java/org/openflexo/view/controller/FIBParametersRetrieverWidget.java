@@ -22,7 +22,7 @@ package org.openflexo.view.controller;
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.localization.FlexoLocalization;
 
@@ -32,7 +32,7 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sguerin
  * 
  */
-public class FIBParametersRetrieverWidget extends DefaultFIBCustomComponent<FlexoBehaviourAction> {
+public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 

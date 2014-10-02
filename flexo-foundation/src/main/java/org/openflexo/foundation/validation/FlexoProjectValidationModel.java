@@ -1,4 +1,5 @@
 /*
+ * (c) Copyright 2012-2014 Openflexo
  * (c) Copyright 2010-2011 AgileBirds
  *
  * This file is part of OpenFlexo.
@@ -19,18 +20,27 @@
  */
 package org.openflexo.foundation.validation;
 
+import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * @author gpolet, sylvain
  * 
  */
-public class FlexoProjectValidationModel extends ValidationModel {
+public class FlexoProjectValidationModel extends FlexoValidationModel {
+
+	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
+			fibValidationLocalizedDelegate, null, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class));
+		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), VALIDATION_LOCALIZATION);
 		// registerRule(new FlexoProject.AllResourcesMustBeDefinedInProject());
 		// registerRule(new FlexoProject.FlexoIDMustBeUnique());
 		// registerRule(new FlexoProject.NameOfResourceMustBeKeyOfHashtableEntry());
@@ -48,7 +58,7 @@ public class FlexoProjectValidationModel extends ValidationModel {
 	/**
 	 * Overrides shouldNotifyValidation
 	 * 
-	 * @see org.openflexo.foundation.validation.ValidationModel#shouldNotifyValidation(org.openflexo.foundation.validation.Validable)
+	 * @see org.openflexo.model.validation.ValidationModel#shouldNotifyValidation(org.openflexo.model.validation.Validable)
 	 */
 	@Override
 	protected boolean shouldNotifyValidation(Validable next) {
@@ -69,7 +79,7 @@ public class FlexoProjectValidationModel extends ValidationModel {
 	/**
 	 * Overrides fixAutomaticallyIfOneFixProposal
 	 * 
-	 * @see org.openflexo.foundation.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
+	 * @see org.openflexo.model.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
 	 */
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {

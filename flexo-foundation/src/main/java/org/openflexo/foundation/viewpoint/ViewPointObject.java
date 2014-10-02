@@ -29,14 +29,13 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
-import org.openflexo.foundation.validation.FixProposal;
-import org.openflexo.foundation.validation.ValidationError;
-import org.openflexo.foundation.validation.ValidationIssue;
-import org.openflexo.foundation.validation.ValidationModel;
-import org.openflexo.foundation.validation.ValidationRule;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * Represents an object which is part of the model of a ViewPoint
@@ -97,14 +96,6 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		@Override
 		public ResourceData getResourceData() {
 			return getViewPoint();
-		}
-
-		@Override
-		public ValidationModel getDefaultValidationModel() {
-			if (getViewPoint() != null) {
-				return getViewPoint().getDefaultValidationModel();
-			}
-			return null;
 		}
 
 		@Override
@@ -192,7 +183,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 					ViewPointObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
-					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getNameKey(), "Binding: "
+					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
 							+ getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
 				}
 			}
@@ -210,7 +201,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 			@Override
 			protected void fixAction() {
-				rule.getBinding(getObject()).reset();
+				rule.getBinding(getValidable()).reset();
 			}
 
 		}
@@ -229,12 +220,12 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
 				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getNameKey(), "Binding required but not set");
+						BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding required but not set");
 			} else if (!b.isValid()) {
 				ViewPointObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for "
 						+ object.getStringRepresentation() + ". Reason: " + b.invalidBindingReason());
 				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getNameKey(), "Binding: " + getBinding(object) + " reason: "
+						BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding: " + getBinding(object) + " reason: "
 								+ getBinding(object).invalidBindingReason());
 			}
 			return null;

@@ -1,6 +1,5 @@
 package org.openflexo.foundation.validation;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -16,6 +15,8 @@ import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.model.validation.ValidationRuleSet;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -230,8 +231,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.viewpoint.PropertyRole.class) != null);
 
-		assertEquals(validationModel.getSize(), validationModel.getSortedClasses().size());
-
 	}
 
 	@Test
@@ -239,7 +238,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 	public void testViewPointValidationRules() throws ModelDefinitionException {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(ViewPoint.class);
 		assertNotNull(ruleSet);
-		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getSize());
+		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
@@ -252,7 +251,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 	public void testFlexoConceptValidationRules() throws ModelDefinitionException {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoConcept.class);
 		assertNotNull(ruleSet);
-		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getSize());
+		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
@@ -266,7 +265,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 	public void testFlexoRoleValidationRules() throws ModelDefinitionException {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(FlexoRole.class);
 		assertNotNull(ruleSet);
-		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getSize());
+		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
@@ -278,7 +277,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 	public void testModelSlotValidationRules() throws ModelDefinitionException {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(ModelSlot.class);
 		assertNotNull(ruleSet);
-		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getSize());
+		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}
@@ -290,7 +289,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 	public void testDeclareFlexoRoleValidationRules() throws ModelDefinitionException {
 		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(DeclareFlexoRole.class);
 		assertNotNull(ruleSet);
-		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getSize());
+		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {
 			System.out.println("> " + r);
 		}

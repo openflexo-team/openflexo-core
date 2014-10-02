@@ -34,7 +34,7 @@ import org.openflexo.components.widget.OntologyBrowserModel.OntologyBrowserModel
 import org.openflexo.fib.model.FIBBrowser;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
-import org.openflexo.fib.view.widget.DefaultFIBCustomComponent;
+import org.openflexo.fib.swing.FIBJPanel;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntology;
@@ -66,7 +66,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBOntologyBrowser extends DefaultFIBCustomComponent<FIBOntologyBrowser> {
+public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
 

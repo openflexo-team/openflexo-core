@@ -33,6 +33,9 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -53,6 +56,8 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 	public static final String ENTRIES_KEY = "entries";
 
 	@Getter(value = ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = LocalizedEntry.LOCALIZED_DICTIONARY_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
 	public List<LocalizedEntry> getEntries();
 
 	@Setter(ENTRIES_KEY)
@@ -120,8 +125,9 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 
 		@Override
 		public void addToEntries(LocalizedEntry entry) {
-			entry.setLocalizedDictionary(this);
-			_entries.add(entry);
+			performSuperAdder(ENTRIES_KEY, entry);
+			// entry.setLocalizedDictionary(this);
+			// _entries.add(entry);
 			logger.fine("Add entry key:" + entry.getKey() + " lang=" + entry.getLanguage() + " value:" + entry.getValue());
 			Language lang = Language.retrieveLanguage(entry.getLanguage());
 			if (lang == null) {
@@ -131,11 +137,11 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			getDictForLang(lang).put(entry.getKey(), entry.getValue());
 		}
 
-		@Override
+		/*@Override
 		public void removeFromEntries(LocalizedEntry entry) {
 			entry.setLocalizedDictionary(null);
 			_entries.remove(entry);
-		}
+		}*/
 
 		private LocalizedEntry getEntry(Language language, String key) {
 			for (LocalizedEntry entry : getEntries()) {
