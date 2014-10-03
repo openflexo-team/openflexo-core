@@ -22,10 +22,12 @@
 package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.CustomType;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.logging.FlexoLogger;
 
 /**
  * Represent the type of a FlexoConceptInstance of a given FlexoConcept
@@ -36,6 +38,8 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 public class FlexoConceptInstanceType implements CustomType {
 
 	protected FlexoConcept flexoConcept;
+
+	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
 	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		this.flexoConcept = anFlexoConcept;
@@ -49,7 +53,8 @@ public class FlexoConceptInstanceType implements CustomType {
 	public Class getBaseClass() {
 		if (getFlexoConcept() instanceof VirtualModel) {
 			return VirtualModelInstance.class;
-		} else {
+		}
+		else {
 			return FlexoConceptInstance.class;
 		}
 	}
@@ -79,9 +84,11 @@ public class FlexoConceptInstanceType implements CustomType {
 	}
 
 	public static Type getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
-		if (anFlexoConcept != null && anFlexoConcept.getViewPoint() != null) {
-			return anFlexoConcept.getViewPoint().getInstanceType(anFlexoConcept);
-		} else {
+		if (anFlexoConcept != null) {
+			return anFlexoConcept.getInstanceType();
+		}
+		else {
+			logger.warning("Trying to get a InstanceType for a null FlexoConcept");
 			return null;
 		}
 	}
