@@ -17,7 +17,7 @@ import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
@@ -171,13 +171,13 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
-			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
+			CreateFlexoConcept addFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			return addFlexoConcept.getNewFlexoConcept();
 		}
 		else if (flexoConcept != null) {
-			AddFlexoConcept addFlexoConcept = AddFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null, getEditor());
+			CreateFlexoConcept addFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null, getEditor());
 			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			addFlexoConcept.doAction();
 			addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
