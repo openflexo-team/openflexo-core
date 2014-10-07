@@ -49,7 +49,7 @@ import org.openflexo.toolbox.HTMLUtils;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
-@ImplementationClass(ViewPointLocalizedDictionary.LocalizedDictionaryImpl.class)
+@ImplementationClass(ViewPointLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
 @XMLElement(xmlTag = "ViewPointLocalizedDictionary")
 public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openflexo.localization.LocalizedDelegate {
 
@@ -87,7 +87,7 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 
 	public void deleteEntry(DynamicEntry entry);
 
-	public static abstract class LocalizedDictionaryImpl extends ViewPointObjectImpl implements ViewPointLocalizedDictionary {
+	public static abstract class ViewPointLocalizedDictionaryImpl extends ViewPointObjectImpl implements ViewPointLocalizedDictionary {
 
 		private static final Logger logger = Logger.getLogger(ViewPointLocalizedDictionary.class.getPackage().getName());
 
@@ -95,7 +95,7 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 		private final Hashtable<Language, Hashtable<String, String>> _values;
 		private List<DynamicEntry> entries = null;
 
-		public LocalizedDictionaryImpl() {
+		public ViewPointLocalizedDictionaryImpl() {
 			super();
 			// _entries = new Vector<LocalizedEntry>();
 			_values = new Hashtable<Language, Hashtable<String, String>>();
@@ -104,7 +104,7 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 			}*/
 		}
 
-		/*public LocalizedDictionaryImpl() {
+		/*public ViewPointLocalizedDictionaryImpl() {
 			super();
 			_entries = new Vector<ViewPointLocalizedEntry>();
 			_values = new Hashtable<Language, Hashtable<String, String>>();
@@ -356,68 +356,6 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 		}
 
 		public class DynamicEntryImpl implements DynamicEntry {
-			/*private String key;
-
-			public DynamicEntryImpl(String aKey) {
-				key = aKey;
-			}
-
-			@Override
-			public String getKey() {
-				return key;
-			}
-
-			@Override
-			public void setKey(String aNewKey) {
-				String oldKey = key;
-				for (Language l : Language.availableValues()) {
-					String oldValue = _values.get(l).get(oldKey);
-					_values.get(l).remove(oldKey);
-					if (oldValue != null) {
-						_values.get(l).put(aNewKey, oldValue);
-					}
-					LocalizedEntry e = getEntry(l, oldKey);
-					if (e != null) {
-						e.setKey(aNewKey);
-					}
-				}
-				key = aNewKey;
-			}
-
-			@Override
-			public String getEnglish() {
-				return getLocalizedForKeyAndLanguage(key, Language.ENGLISH);
-			}
-
-			@Override
-			public void setEnglish(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
-			}
-
-			@Override
-			public String getFrench() {
-				return getLocalizedForKeyAndLanguage(key, Language.FRENCH);
-			}
-
-			@Override
-			public void setFrench(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
-			}
-
-			@Override
-			public String getDutch() {
-				return getLocalizedForKeyAndLanguage(key, Language.DUTCH);
-			}
-
-			@Override
-			public void setDutch(String value) {
-				setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
-			}
-
-			@Override
-			public String toString() {
-				return "(key=" + key + "{en=" + getEnglish() + ";fr=" + getFrench() + ";du=" + getDutch() + "})";
-			}*/
 
 			private String key;
 			private final PropertyChangeSupport pcSupport;
@@ -487,7 +425,13 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 
 			@Override
 			public String getEnglish() {
-				return getLocalizedForKeyAndLanguage(key, Language.ENGLISH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization
+						.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.ENGLISH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
@@ -499,7 +443,12 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 
 			@Override
 			public String getFrench() {
-				return getLocalizedForKeyAndLanguage(key, Language.FRENCH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.FRENCH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
@@ -511,7 +460,12 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 
 			@Override
 			public String getDutch() {
-				return getLocalizedForKeyAndLanguage(key, Language.DUTCH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.DUTCH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
