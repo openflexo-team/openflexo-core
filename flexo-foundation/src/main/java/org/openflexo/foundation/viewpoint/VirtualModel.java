@@ -331,6 +331,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		private boolean readOnly = false;
 
+		private final VirtualModelInstanceType vmInstanceType = new VirtualModelInstanceType(this);
+
 		/**
 		 * Stores a chained collections of objects which are involved in validation
 		 */
@@ -378,6 +380,11 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
+		public FlexoConceptInstanceType getInstanceType() {
+			return vmInstanceType;
+		}
+
+		@Override
 		public boolean delete() {
 			if (bindingModel != null) {
 				bindingModel.delete();
@@ -389,7 +396,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public VirtualModelModelFactory getVirtualModelFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
-			} else {
+			}
+			else {
 				return super.getVirtualModelFactory();
 			}
 		}
@@ -438,7 +446,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			if (requireChange(getName(), name)) {
 				if (getResource() != null) {
 					getResource().setName(name);
-				} else {
+				}
+				else {
 					super.setName(name);
 				}
 			}
@@ -1019,8 +1028,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 			@Override
 			protected void fixAction() {
-				// TODO: Fix this
-				for (ModelSlot ms : vm.getModelSlots()) {
+				for (ModelSlot ms : new ArrayList<ModelSlot>(vm.getModelSlots())) {
 					if ("virtualModelInstance".equals(ms.getName())) {
 						vm.removeFromModelSlots(ms);
 					}

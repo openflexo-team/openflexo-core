@@ -60,11 +60,12 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	}
 
 	public static Type getVirtualModelInstanceType(VirtualModel aVirtualModel) {
-		if (aVirtualModel != null && aVirtualModel.getViewPoint() != null) {
-			return aVirtualModel.getViewPoint().getInstanceType(aVirtualModel);
-		} else {
+		if (aVirtualModel != null) {
+			return aVirtualModel.getInstanceType();
+		}
+		else {
+			logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
 			return null;
 		}
 	}
-
 }

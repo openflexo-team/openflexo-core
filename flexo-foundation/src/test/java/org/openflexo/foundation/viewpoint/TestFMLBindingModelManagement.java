@@ -42,7 +42,7 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
-import org.openflexo.foundation.viewpoint.action.AddFlexoConcept;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
@@ -185,7 +185,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(4)
 	public void testCreateFlexoConceptA() throws SaveResourceException {
 
-		AddFlexoConcept addEP = AddFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
+		CreateFlexoConcept addEP = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConceptA");
 		addEP.doAction();
 
@@ -348,13 +348,13 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(6)
 	public void testFlexoConceptBindingModelManagement() throws SaveResourceException {
 
-		AddFlexoConcept addFlexoConceptB = AddFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
+		CreateFlexoConcept addFlexoConceptB = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptB.setNewFlexoConceptName("FlexoConceptB");
 		addFlexoConceptB.doAction();
 		flexoConceptB = addFlexoConceptB.getNewFlexoConcept();
 		assertNotNull(flexoConceptB);
 
-		AddFlexoConcept addFlexoConceptC = AddFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
+		CreateFlexoConcept addFlexoConceptC = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptC.setNewFlexoConceptName("FlexoConceptC");
 		addFlexoConceptC.addToParentConcepts(flexoConceptB);
 		addFlexoConceptC.doAction();
@@ -484,7 +484,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(7)
 	public void testFlexoConceptBindingModelManagement2() throws SaveResourceException {
 
-		AddFlexoConcept addFlexoConceptD = AddFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
+		CreateFlexoConcept addFlexoConceptD = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptD.setNewFlexoConceptName("FlexoConceptD");
 		addFlexoConceptD.doAction();
 		flexoConceptD = addFlexoConceptD.getNewFlexoConcept();

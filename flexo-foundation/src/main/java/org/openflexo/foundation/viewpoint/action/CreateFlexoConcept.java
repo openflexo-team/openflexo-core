@@ -34,21 +34,22 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
+import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.toolbox.StringUtils;
 
-// TODO: rename to CreateFlexoConcept !!!
-public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, ViewPointObject> {
+public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualModel, ViewPointObject> {
 
-	private static final Logger logger = Logger.getLogger(AddFlexoConcept.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<AddFlexoConcept, VirtualModel, ViewPointObject> actionType = new FlexoActionType<AddFlexoConcept, VirtualModel, ViewPointObject>(
+	public static FlexoActionType<CreateFlexoConcept, VirtualModel, ViewPointObject> actionType = new FlexoActionType<CreateFlexoConcept, VirtualModel, ViewPointObject>(
 			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public AddFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
-			return new AddFlexoConcept(focusedObject, globalSelection, editor);
+		public CreateFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -64,16 +65,19 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(AddFlexoConcept.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, VirtualModel.class);
 	}
 
+	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
+	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_concept_must_have_an_non_empty_and_unique_name");
+	
 	private String newFlexoConceptName;
 	private FlexoConcept newFlexoConcept;
 	private final List<FlexoConcept> parentConcepts = new ArrayList<FlexoConcept>();
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	AddFlexoConcept(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoConcept(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -90,7 +94,7 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 		}
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 	}
-
+	
 	public FlexoConcept getNewFlexoConcept() {
 		return newFlexoConcept;
 	}
@@ -101,6 +105,8 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 
 	public void setNewFlexoConceptName(String newFlexoConceptName) {
 		this.newFlexoConceptName = newFlexoConceptName;
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		getPropertyChangeSupport().firePropertyChange("isValid", null, isValid());
 	}
 
 	public List<FlexoConcept> getParentConcepts() {
@@ -114,5 +120,27 @@ public class AddFlexoConcept extends FlexoAction<AddFlexoConcept, VirtualModel, 
 	public void removeFromParentConcepts(FlexoConcept parentConcept) {
 		parentConcepts.remove(parentConcept);
 	}
+	
+	private String errorMessage;
 
+	public String getErrorMessage() {
+		if (isValid()) {
+			return null;
+		}
+		return errorMessage;
+	}
+
+
+	@Override
+	public boolean isValid() {
+		if (StringUtils.isEmpty(newFlexoConceptName)) {
+			errorMessage = EMPTY_NAME;
+			return false;
+		}else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+			errorMessage = DUPLICATED_NAME;
+			return false;
+		}
+		return true;
+	}
+	
 }

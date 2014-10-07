@@ -125,18 +125,17 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 			super.notifiedBindingChanged(dataBinding);
 		}
 
-		@DefineValidationRule
-		public static class ExecutionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ExecutionAction> {
-			public ExecutionBindingIsRequiredAndMustBeValid() {
-				super("'execution'_binding_is_not_valid", ExecutionAction.class);
-			}
+	}
 
-			@Override
-			public DataBinding<Object> getBinding(ExecutionAction object) {
-				return object.getExecution();
-			}
-
+	@DefineValidationRule
+	public static class ExecutionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<ExecutionAction> {
+		public ExecutionBindingIsRequiredAndMustBeValid() {
+			super("'execution'_binding_is_not_valid", ExecutionAction.class);
 		}
 
+		@Override
+		public DataBinding<Object> getBinding(ExecutionAction object) {
+			return object.getExecution();
+		}
 	}
 }
