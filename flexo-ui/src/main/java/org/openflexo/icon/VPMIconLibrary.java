@@ -37,7 +37,7 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.LocalizedDictionary;
+import org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.OntologicObjectRole;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
@@ -279,7 +279,7 @@ public class VPMIconLibrary extends IconLibrary {
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
 				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
 			}
-		} else if (object instanceof LocalizedDictionary) {
+		} else if (object instanceof ViewPointLocalizedDictionary) {
 			return LOCALIZATION_ICON;
 		} else if (object instanceof InspectorEntry) {
 			if (object instanceof CheckboxInspectorEntry) {

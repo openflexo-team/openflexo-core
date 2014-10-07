@@ -327,7 +327,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		// private List<ModelSlot<?>> modelSlots;
 		private VirtualModelBindingModel bindingModel;
 		private VirtualModelResource resource;
-		private LocalizedDictionary localizedDictionary;
+		private ViewPointLocalizedDictionary localizedDictionary;
 
 		private boolean readOnly = false;
 

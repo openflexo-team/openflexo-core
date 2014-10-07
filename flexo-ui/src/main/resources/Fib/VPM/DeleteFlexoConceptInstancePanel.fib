@@ -24,7 +24,7 @@
 		clickAction="" doubleClickAction="" rightClickAction=""
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" />
-	<Custom componentClassName="org.openflexo.fib.utils.BindingSelector"
+	<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
 		format="" icon="" tooltip="" localize="true" enable=""
 		manageDynamicModel="true" clickAction="" doubleClickAction=""
 		rightClickAction="" enterPressedAction="" valueChangedAction=""
@@ -41,7 +41,7 @@
 		clickAction="" doubleClickAction="" rightClickAction=""
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" />
-	<Custom componentClassName="org.openflexo.fib.utils.BindingSelector"
+	<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
 		format="" icon="" tooltip="" localize="true" enable=""
 		manageDynamicModel="true" opaque="false" clickAction=""
 		doubleClickAction="" rightClickAction="" enterPressedAction=""
@@ -58,7 +58,7 @@
 		clickAction="" doubleClickAction="" rightClickAction=""
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" />
-	<Custom componentClassName="org.openflexo.fib.utils.BindingSelector"
+	<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
 		format="" icon="" tooltip="" localize="true" enable=""
 		manageDynamicModel="true" opaque="false" clickAction=""
 		doubleClickAction="" rightClickAction="" enterPressedAction=""
@@ -132,7 +132,7 @@
 		<LabelColumn data="iterator.param.name" format="" title="parameter"
 			columnWidth="80" resizable="true" displayTitle="true" color=""
 			bgColor="" tooltip="" valueChangedAction="" name="label" />
-		<CustomColumn componentClassName="org.openflexo.fib.utils.BindingSelector"
+		<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
 			customRendering="false" disableTerminateEditOnFocusLost="false"
 			data="iterator.value" format="" title="value" columnWidth="200"
 			resizable="true" displayTitle="true" color="" bgColor="" tooltip=""

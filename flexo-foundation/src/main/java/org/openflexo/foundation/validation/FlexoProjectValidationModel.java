@@ -20,8 +20,8 @@
  */
 package org.openflexo.foundation.validation;
 
-import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -36,8 +36,8 @@ import org.openflexo.rm.ResourceLocator;
 public class FlexoProjectValidationModel extends FlexoValidationModel {
 
 	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ProjectValidation");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
-			fibValidationLocalizedDelegate, null, true);
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate, null,
+			true, true);
 
 	public FlexoProjectValidationModel() throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(FlexoProject.class), VALIDATION_LOCALIZATION);

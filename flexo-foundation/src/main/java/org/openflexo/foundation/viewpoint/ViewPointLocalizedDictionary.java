@@ -19,6 +19,7 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import java.beans.PropertyChangeSupport;
 import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,30 +45,32 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.HTMLUtils;
+import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
-@ImplementationClass(LocalizedDictionary.LocalizedDictionaryImpl.class)
-@XMLElement(xmlTag = "LocalizedDictionary")
-public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate {
+@ImplementationClass(ViewPointLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
+@XMLElement(xmlTag = "ViewPointLocalizedDictionary")
+public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openflexo.localization.LocalizedDelegate {
 
 	@PropertyIdentifier(type = ViewPoint.class)
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = List.class)
-	public static final String ENTRIES_KEY = "entries";
+	public static final String LOCALIZED_ENTRIES_KEY = "localizedEntries";
 
-	@Getter(value = ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = LocalizedEntry.LOCALIZED_DICTIONARY_KEY)
+	@Getter(value = LOCALIZED_ENTRIES_KEY, cardinality = Cardinality.LIST, inverse = ViewPointLocalizedEntry.LOCALIZED_DICTIONARY_KEY)
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	public List<LocalizedEntry> getEntries();
+	public List<ViewPointLocalizedEntry> getLocalizedEntries();
 
-	@Setter(ENTRIES_KEY)
-	public void setEntries(List<LocalizedEntry> entries);
+	@Setter(LOCALIZED_ENTRIES_KEY)
+	public void setLocalizedEntries(List<ViewPointLocalizedEntry> entries);
 
-	@Adder(ENTRIES_KEY)
-	public void addToEntries(LocalizedEntry aEntrie);
+	@Adder(LOCALIZED_ENTRIES_KEY)
+	public void addToLocalizedEntries(ViewPointLocalizedEntry aEntrie);
 
-	@Remover(ENTRIES_KEY)
-	public void removeFromEntries(LocalizedEntry aEntrie);
+	@Remover(LOCALIZED_ENTRIES_KEY)
+	public void removeFromLocalizedEntries(ViewPointLocalizedEntry aEntrie);
 
 	@Getter(value = OWNER_KEY, inverse = ViewPoint.LOCALIZED_DICTIONARY_KEY)
 	public ViewPoint getOwner();
@@ -75,7 +78,8 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 	@Setter(OWNER_KEY)
 	public void setOwner(ViewPoint owner);
 
-	public List<DynamicEntry> getDynamicEntries();
+	@Override
+	public List<DynamicEntry> getEntries();
 
 	public void searchNewEntries();
 
@@ -83,26 +87,26 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 
 	public void deleteEntry(DynamicEntry entry);
 
-	public static abstract class LocalizedDictionaryImpl extends ViewPointObjectImpl implements LocalizedDictionary {
+	public static abstract class ViewPointLocalizedDictionaryImpl extends ViewPointObjectImpl implements ViewPointLocalizedDictionary {
 
-		private static final Logger logger = Logger.getLogger(LocalizedDictionary.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(ViewPointLocalizedDictionary.class.getPackage().getName());
 
-		private Vector<LocalizedEntry> _entries;
+		// private Vector<LocalizedEntry> _entries;
 		private final Hashtable<Language, Hashtable<String, String>> _values;
-		private List<DynamicEntry> dynamicEntries = null;
+		private List<DynamicEntry> entries = null;
 
-		public LocalizedDictionaryImpl() {
+		public ViewPointLocalizedDictionaryImpl() {
 			super();
-			_entries = new Vector<LocalizedEntry>();
+			// _entries = new Vector<LocalizedEntry>();
 			_values = new Hashtable<Language, Hashtable<String, String>>();
 			/*if (builder != null) {
 				owner = builder.getVirtualModel();
 			}*/
 		}
 
-		/*public LocalizedDictionaryImpl() {
+		/*public ViewPointLocalizedDictionaryImpl() {
 			super();
-			_entries = new Vector<LocalizedEntry>();
+			_entries = new Vector<ViewPointLocalizedEntry>();
 			_values = new Hashtable<Language, Hashtable<String, String>>();
 			if (builder != null) {
 				owner = builder.getViewPoint();
@@ -114,18 +118,18 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 			return getOwner();
 		}
 
-		@Override
-		public Vector<LocalizedEntry> getEntries() {
+		/*@Override
+		public Vector<ViewPointLocalizedEntry> getEntries() {
 			return _entries;
 		}
 
 		public void setEntries(Vector<LocalizedEntry> someEntries) {
 			_entries = someEntries;
-		}
+		}*/
 
 		@Override
-		public void addToEntries(LocalizedEntry entry) {
-			performSuperAdder(ENTRIES_KEY, entry);
+		public void addToLocalizedEntries(ViewPointLocalizedEntry entry) {
+			performSuperAdder(LOCALIZED_ENTRIES_KEY, entry);
 			// entry.setLocalizedDictionary(this);
 			// _entries.add(entry);
 			logger.fine("Add entry key:" + entry.getKey() + " lang=" + entry.getLanguage() + " value:" + entry.getValue());
@@ -138,13 +142,13 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 		}
 
 		/*@Override
-		public void removeFromEntries(LocalizedEntry entry) {
+		public void removeFromEntries(ViewPointLocalizedEntry entry) {
 			entry.setLocalizedDictionary(null);
 			_entries.remove(entry);
 		}*/
 
-		private LocalizedEntry getEntry(Language language, String key) {
-			for (LocalizedEntry entry : getEntries()) {
+		private ViewPointLocalizedEntry getLocalizedEntry(Language language, String key) {
+			for (ViewPointLocalizedEntry entry : getLocalizedEntries()) {
 				if (Language.retrieveLanguage(entry.getLanguage()) == language && key.equals(entry.getKey())) {
 					return entry;
 				}
@@ -179,11 +183,11 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 				String defaultValue = getDefaultValue(key, language);
 				if (handleNewEntry(key, language)) {
 					if (!key.equals(defaultValue)) {
-						addToEntries(new LocalizedEntry(this, key, language.getName(), defaultValue));
-						logger.fine("Calc LocalizedDictionary: store value " + defaultValue + " for key " + key + " for language " + language);
+						addToEntries(new ViewPointLocalizedEntry(this, key, language.getName(), defaultValue));
+						logger.fine("Calc ViewPointLocalizedDictionary: store value " + defaultValue + " for key " + key + " for language " + language);
 					} else {
 						getDictForLang(language).put(key, defaultValue);
-						logger.fine("Calc LocalizedDictionary: undefined value for key " + key + " for language " + language);
+						logger.fine("Calc ViewPointLocalizedDictionary: undefined value for key " + key + " for language " + language);
 					}
 					// dynamicEntries = null;
 				}
@@ -194,13 +198,13 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 
 		public void setLocalizedForKeyAndLanguage(String key, String value, Language language) {
 			getDictForLang(language).put(key, value);
-			LocalizedEntry entry = getEntry(language, key);
+			ViewPointLocalizedEntry entry = getLocalizedEntry(language, key);
 			if (entry == null) {
-				LocalizedEntry newEntry = getViewPoint().getFactory().newInstance(LocalizedEntry.class);
+				ViewPointLocalizedEntry newEntry = getViewPoint().getFactory().newInstance(ViewPointLocalizedEntry.class);
 				newEntry.setLanguage(language.getName());
 				newEntry.setKey(key);
 				newEntry.setValue(value);
-				addToEntries(newEntry);
+				addToLocalizedEntries(newEntry);
 			} else {
 				entry.setValue(value);
 			}
@@ -230,27 +234,27 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 		// This method is really not efficient, but only called in the context of locales editor
 		// Impact of this issue is not really severe.
 		@Override
-		public List<DynamicEntry> getDynamicEntries() {
-			if (dynamicEntries == null) {
-				dynamicEntries = new Vector<DynamicEntry>();
+		public List<DynamicEntry> getEntries() {
+			if (entries == null) {
+				entries = new Vector<DynamicEntry>();
 				for (String key : buildAllKeys()) {
-					dynamicEntries.add(new DynamicEntryImpl(key));
+					entries.add(new DynamicEntryImpl(key));
 				}
-				Collections.sort(dynamicEntries, new Comparator<DynamicEntry>() {
+				Collections.sort(entries, new Comparator<DynamicEntry>() {
 					@Override
 					public int compare(DynamicEntry o1, DynamicEntry o2) {
 						return Collator.getInstance().compare(o1.getKey(), o2.getKey());
 					}
 				});
 			}
-			return dynamicEntries;
+			return entries;
 		}
 
-		private DynamicEntry getDynamicEntry(String key) {
+		private DynamicEntry getEntry(String key) {
 			if (key == null) {
 				return null;
 			}
-			for (DynamicEntry entry : getDynamicEntries()) {
+			for (DynamicEntry entry : getEntries()) {
 				if (key.equals(entry.getKey())) {
 					return entry;
 				}
@@ -259,8 +263,8 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 		}
 
 		public void refresh() {
-			logger.fine("Refresh called on FIBLocalizedDictionary " + Integer.toHexString(hashCode()));
-			dynamicEntries = null;
+			logger.fine("Refresh called on ViewPointLocalizedDictionary " + Integer.toHexString(hashCode()));
+			entries = null;
 			setChanged();
 			notifyObservers();
 		}
@@ -277,22 +281,23 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 				index++;
 			}
 
-			LocalizedEntry newEntry = getViewPoint().getFactory().newInstance(LocalizedEntry.class);
+			ViewPointLocalizedEntry newEntry = getViewPoint().getFactory().newInstance(ViewPointLocalizedEntry.class);
 			newEntry.setLanguage(FlexoLocalization.getCurrentLanguage().getName());
 			newEntry.setKey(newKey);
 			newEntry.setValue(newKey);
-			addToEntries(newEntry);
+			addToLocalizedEntries(newEntry);
 			refresh();
-			return getDynamicEntry(newKey);
+			return getEntry(newKey);
 		}
 
 		@Override
 		public void deleteEntry(DynamicEntry entry) {
 			for (Language l : Language.availableValues()) {
 				_values.get(l).remove(entry.getKey());
-				LocalizedEntry e = getEntry(l, entry.getKey());
+				ViewPointLocalizedEntry e = getLocalizedEntry(l, entry.getKey());
 				if (e != null) {
-					_entries.remove(e);
+					removeFromLocalizedEntries(e);
+					// _entries.remove(e);
 				}
 			}
 			refresh();
@@ -316,7 +321,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 					}
 				}
 			}
-			dynamicEntries = null;
+			entries = null;
 			getViewPoint().setChanged();
 			getViewPoint().notifyObservers();
 		}
@@ -351,10 +356,38 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 		}
 
 		public class DynamicEntryImpl implements DynamicEntry {
-			private String key;
 
-			public DynamicEntryImpl(String aKey) {
+			private String key;
+			private final PropertyChangeSupport pcSupport;
+
+			protected DynamicEntryImpl(String aKey) {
+				pcSupport = new PropertyChangeSupport(this);
 				key = aKey;
+			}
+
+			@Override
+			public PropertyChangeSupport getPropertyChangeSupport() {
+				return pcSupport;
+			}
+
+			@Override
+			public String getDeletedProperty() {
+				// TODO
+				return null;
+			}
+
+			@Override
+			public void delete() {
+				if (entries != null) {
+					entries.remove(this);
+					for (Language l : Language.getAvailableLanguages()) {
+						ViewPointLocalizedEntry e = getLocalizedEntry(l, key);
+						if (e != null) {
+							System.out.println("Removing " + e.getValue() + " for key " + key + " language=" + l);
+							removeFromLocalizedEntries(e);
+						}
+					}
+				}
 			}
 
 			@Override
@@ -371,7 +404,7 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 					if (oldValue != null) {
 						_values.get(l).put(aNewKey, oldValue);
 					}
-					LocalizedEntry e = getEntry(l, oldKey);
+					ViewPointLocalizedEntry e = getLocalizedEntry(l, oldKey);
 					if (e != null) {
 						e.setKey(aNewKey);
 					}
@@ -379,34 +412,132 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 				key = aNewKey;
 			}
 
+			/*@Override
+			public void setKey(String aKey) {
+				String englishValue = getEnglish();
+				String frenchValue = getFrench();
+				String dutchValue = getDutch();
+				key = aKey;
+				setEnglish(englishValue);
+				setFrench(frenchValue);
+				setDutch(dutchValue);
+			}*/
+
 			@Override
 			public String getEnglish() {
-				return getLocalizedForKeyAndLanguage(key, Language.ENGLISH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization
+						.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.ENGLISH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
 			public void setEnglish(String value) {
+				String oldValue = getEnglish();
 				setLocalizedForKeyAndLanguage(key, value, Language.ENGLISH);
+				getPropertyChangeSupport().firePropertyChange("english", oldValue, getEnglish());
 			}
 
 			@Override
 			public String getFrench() {
-				return getLocalizedForKeyAndLanguage(key, Language.FRENCH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.FRENCH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
 			public void setFrench(String value) {
+				String oldValue = getFrench();
 				setLocalizedForKeyAndLanguage(key, value, Language.FRENCH);
+				getPropertyChangeSupport().firePropertyChange("french", oldValue, getFrench());
 			}
 
 			@Override
 			public String getDutch() {
-				return getLocalizedForKeyAndLanguage(key, Language.DUTCH);
+				// The locale might be found in parent localizer
+				String returned = FlexoLocalization.localizedForKeyAndLanguage(ViewPointLocalizedDictionaryImpl.this, key, Language.DUTCH);
+				if (returned == null) {
+					returned = key;
+				}
+				return returned;
 			}
 
 			@Override
 			public void setDutch(String value) {
+				String oldValue = getDutch();
 				setLocalizedForKeyAndLanguage(key, value, Language.DUTCH);
+				getPropertyChangeSupport().firePropertyChange("dutch", oldValue, getDutch());
+			}
+
+			@Override
+			public boolean getIsHTML() {
+				return getFrench().startsWith("<html>") || getEnglish().startsWith("<html>") || getDutch().startsWith("<html>");
+			}
+
+			@Override
+			public void setIsHTML(boolean flag) {
+				if (flag) {
+					setEnglish(addHTMLSupport(getEnglish()));
+					setFrench(addHTMLSupport(getFrench()));
+					setDutch(addHTMLSupport(getDutch()));
+				} else {
+					setEnglish(removeHTMLSupport(getEnglish()));
+					setFrench(removeHTMLSupport(getFrench()));
+					setDutch(removeHTMLSupport(getDutch()));
+				}
+				getPropertyChangeSupport().firePropertyChange("isHTML", !flag, flag);
+			}
+
+			private String addHTMLSupport(String value) {
+				return "<html>" + StringUtils.LINE_SEPARATOR + "<head>" + StringUtils.LINE_SEPARATOR + "</head>"
+						+ StringUtils.LINE_SEPARATOR + "<body>" + StringUtils.LINE_SEPARATOR + value + StringUtils.LINE_SEPARATOR
+						+ "</body>" + StringUtils.LINE_SEPARATOR + "</html>";
+			}
+
+			private String removeHTMLSupport(String value) {
+				return HTMLUtils.convertHTMLToPlainText(HTMLUtils.extractBodyContent(value, true).trim(), true);
+				/*System.out.println("From " + value);
+				System.out.println("To" + HTMLUtils.extractSourceFromEmbeddedTag(value));
+				return HTMLUtils.extractSourceFromEmbeddedTag(value);*/
+			}
+
+			@Override
+			public boolean hasInvalidValue() {
+				return !isFrenchValueValid() || !isEnglishValueValid() || !isDutchValueValid();
+			}
+
+			@Override
+			public boolean isFrenchValueValid() {
+				return isValueValid(getKey(), getFrench());
+			}
+
+			@Override
+			public boolean isEnglishValueValid() {
+				return isValueValid(getKey(), getEnglish());
+			}
+
+			@Override
+			public boolean isDutchValueValid() {
+				return isValueValid(getKey(), getDutch());
+			}
+
+			public boolean isValueValid(String aKey, String aValue) {
+				if (aValue == null || aValue.length() == 0) {
+					return false;
+				} // null or empty value is not valid
+				if (aValue.equals(aKey)) {
+					return false;
+				} // not the same value > means not translated
+				if (aValue.lastIndexOf("_") > -1) {
+					return false;
+				} // should not contains UNDERSCORE char
+				return true;
 			}
 
 			@Override
@@ -418,22 +549,29 @@ public interface LocalizedDictionary extends ViewPointObject, LocalizedDelegate 
 
 	}
 
-	public interface DynamicEntry {
+	public interface DynamicEntry extends LocalizedEntry {
 
+		@Override
 		public String getKey();
 
 		public void setKey(String aNewKey);
 
+		@Override
 		public String getEnglish();
 
+		@Override
 		public void setEnglish(String value);
 
+		@Override
 		public String getFrench();
 
+		@Override
 		public void setFrench(String value);
 
+		@Override
 		public String getDutch();
 
+		@Override
 		public void setDutch(String value);
 
 	}

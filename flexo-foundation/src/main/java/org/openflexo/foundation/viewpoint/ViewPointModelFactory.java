@@ -55,8 +55,8 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 	public <I> void objectHasBeenDeserialized(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenDeserialized(newlyCreatedObject, implementedInterface);
 		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a LocalizedDictionary for a ViewPoint
-			LocalizedDictionary localizedDictionary = newInstance(LocalizedDictionary.class);
+			// Always set a ViewPointLocalizedDictionary for a ViewPoint
+			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
 			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}
@@ -65,8 +65,8 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
 		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a LocalizedDictionary for a ViewPoint
-			LocalizedDictionary localizedDictionary = newInstance(LocalizedDictionary.class);
+			// Always set a ViewPointLocalizedDictionary for a ViewPoint
+			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
 			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}

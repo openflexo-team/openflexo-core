@@ -66,7 +66,7 @@ public class ValidationWindow extends JDialog {
 	private ValidationProgressListener validationProgressListener;
 
 	/**
-	 * Once the {@link ValidationWindow} is instantiated, this is the way to launch validation for a given {@link FlexoObject} and a
+	 * Once the {@link ComponentValidationWindow} is instantiated, this is the way to launch validation for a given {@link FlexoObject} and a
 	 * supplied {@link ValidationModel}
 	 * 
 	 * @param object

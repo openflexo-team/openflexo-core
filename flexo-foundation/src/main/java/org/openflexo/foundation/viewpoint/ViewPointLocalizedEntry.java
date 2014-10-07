@@ -34,11 +34,11 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
 
 @ModelEntity
-@ImplementationClass(LocalizedEntry.LocalizedEntryImpl.class)
+@ImplementationClass(ViewPointLocalizedEntry.LocalizedEntryImpl.class)
 @XMLElement(xmlTag = "Localized")
-public interface LocalizedEntry extends ViewPointObject {
+public interface ViewPointLocalizedEntry extends ViewPointObject {
 
-	@PropertyIdentifier(type = LocalizedDictionary.class)
+	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = String.class)
 	public static final String KEY_KEY = "key";
@@ -68,15 +68,15 @@ public interface LocalizedEntry extends ViewPointObject {
 	public void setValue(String value);
 
 	@Override
-	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = LocalizedDictionary.ENTRIES_KEY*/)
-	public LocalizedDictionary getLocalizedDictionary();
+	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = ViewPointLocalizedDictionary.ENTRIES_KEY*/)
+	public ViewPointLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	public void setLocalizedDictionary(LocalizedDictionary owner);
+	public void setLocalizedDictionary(ViewPointLocalizedDictionary owner);
 
-	public static abstract class LocalizedEntryImpl extends ViewPointObjectImpl implements LocalizedEntry {
+	public static abstract class LocalizedEntryImpl extends ViewPointObjectImpl implements ViewPointLocalizedEntry {
 
-		private LocalizedDictionary _dictionary;
+		private ViewPointLocalizedDictionary _dictionary;
 
 		private String key;
 		private String language;
@@ -86,7 +86,7 @@ public interface LocalizedEntry extends ViewPointObject {
 			super();
 		}
 
-		public LocalizedEntryImpl(LocalizedDictionary localizedDictionary, String key, String language, String value) {
+		public LocalizedEntryImpl(ViewPointLocalizedDictionary localizedDictionary, String key, String language, String value) {
 			super();
 			setLocalizedDictionary(localizedDictionary);
 			this.key = key;
@@ -95,12 +95,12 @@ public interface LocalizedEntry extends ViewPointObject {
 		}
 
 		@Override
-		public void setLocalizedDictionary(LocalizedDictionary dict) {
+		public void setLocalizedDictionary(ViewPointLocalizedDictionary dict) {
 			_dictionary = dict;
 		}
 
 		@Override
-		public LocalizedDictionary getLocalizedDictionary() {
+		public ViewPointLocalizedDictionary getLocalizedDictionary() {
 			return _dictionary;
 		}
 
@@ -153,40 +153,43 @@ public interface LocalizedEntry extends ViewPointObject {
 
 	@DefineValidationRule
 	public static class LocalizedEntryShouldNotBeRegisteredTwice extends
-			ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> {
+			ValidationRule<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
 		public LocalizedEntryShouldNotBeRegisteredTwice() {
-			super(LocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
+			super(ViewPointLocalizedEntry.class, "localized_entry_should_not_be_registered_twice");
 		}
 
 		@Override
-		public ValidationIssue<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> applyValidation(LocalizedEntry entry) {
+		public ValidationIssue<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> applyValidation(
+				ViewPointLocalizedEntry entry) {
 
 			if (entry.getLocalizedDictionary() != null) {
-				if (entry.getLocalizedDictionary().getEntries().indexOf(entry) != entry.getLocalizedDictionary().getEntries()
-						.lastIndexOf(entry)) {
+				if (entry.getLocalizedDictionary().getLocalizedEntries().indexOf(entry) != entry.getLocalizedDictionary()
+						.getLocalizedEntries().lastIndexOf(entry)) {
 					RemoveExtraReferences fixProposal = new RemoveExtraReferences(entry);
-					return new ValidationWarning<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry>(this, entry,
+					return new ValidationWarning<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry>(this, entry,
 							"localized_entry_is_registered_twice", fixProposal);
 				}
 			}
 			return null;
 		}
 
-		protected static class RemoveExtraReferences extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, LocalizedEntry> {
+		protected static class RemoveExtraReferences extends FixProposal<LocalizedEntryShouldNotBeRegisteredTwice, ViewPointLocalizedEntry> {
 
-			private final LocalizedEntry entry;
+			private final ViewPointLocalizedEntry entry;
 
-			public RemoveExtraReferences(LocalizedEntry entry) {
+			public RemoveExtraReferences(ViewPointLocalizedEntry entry) {
 				super("remove_duplicated_references");
 				this.entry = entry;
 			}
 
 			@Override
 			protected void fixAction() {
-				while (entry.getLocalizedDictionary().getEntries().indexOf(entry) != entry.getLocalizedDictionary().getEntries()
-						.lastIndexOf(entry)) {
-					System.out.println("remove " + entry);
-					entry.getLocalizedDictionary().removeFromEntries(entry);
+				ViewPointLocalizedDictionary dict = entry.getLocalizedDictionary();
+				if (dict != null) {
+					while (dict.getLocalizedEntries().indexOf(entry) != dict.getLocalizedEntries().lastIndexOf(entry)) {
+						System.out.println("remove " + entry);
+						entry.getLocalizedDictionary().removeFromLocalizedEntries(entry);
+					}
 				}
 			}
 

@@ -82,6 +82,8 @@ import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
+import org.openflexo.fib.editor.ComponentValidationWindow;
+import org.openflexo.fib.swing.localization.LocalizedEditor;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -183,29 +185,21 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private boolean disposed = false;
 
 	private final Map<Location, ModuleView<?>> viewsForLocation;
-
 	private final Multimap<ModuleView<?>, Location> locationsForView;
 
+	private LocalizedEditor mainLocalizedEditor;
 	private ValidationWindow validationWindow;
 
 	protected FlexoModule module;
-
 	protected FlexoMenuBar menuBar;
-
 	protected MouseSelectionManager selectionManager;
-
 	private final ControllerActionInitializer controllerActionInitializer;
 
 	protected FlexoFrame flexoFrame;
-
 	private FlexoMainPane mainPane;
-
 	private final ControllerModel controllerModel;
-
 	private final List<FlexoMenuBar> registeredMenuBar = new ArrayList<FlexoMenuBar>();
-
 	private ModuleInspectorController mainInspectorController;
-
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
 	/**
@@ -610,9 +604,24 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * Return non-modal {@link ValidationWindow} declared for this module<br>
-	 * Note that one {@link ValidationWindow} is declared for each {@link FlexoModule}<br>
-	 * Force the creation of {@link ValidationWindow} if non existant.
+	 * Return LocalizedEditor for main localization<br>
+	 * Each module defines its own LocalizedEditor for main localization (this is not very optimal) TODO: refactor this when localization
+	 * will be a service
+	 * 
+	 * @return
+	 */
+	public LocalizedEditor getMainLocalizedEditor() {
+		if (mainLocalizedEditor == null) {
+			mainLocalizedEditor = new LocalizedEditor(getFlexoFrame(), "localized_editor", FlexoLocalization.getMainLocalizer(),
+					FlexoLocalization.getMainLocalizer());
+		}
+		return mainLocalizedEditor;
+	}
+
+	/**
+	 * Return non-modal {@link ComponentValidationWindow} declared for this module<br>
+	 * Note that one {@link ComponentValidationWindow} is declared for each {@link FlexoModule}<br>
+	 * Force the creation of {@link ComponentValidationWindow} if non existant.
 	 * 
 	 * @return
 	 */
@@ -621,11 +630,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * Return non-modal {@link ValidationWindow} declared for this module<br>
-	 * Note that one {@link ValidationWindow} is declared for each {@link FlexoModule}<br>
+	 * Return non-modal {@link ComponentValidationWindow} declared for this module<br>
+	 * Note that one {@link ComponentValidationWindow} is declared for each {@link FlexoModule}<br>
 	 * 
 	 * @param create
-	 *            flag indicating if ValidationWindow must be created when unexistant
+	 *            flag indicating if ComponentValidationWindow must be created when unexistant
 	 * @return
 	 */
 	public ValidationWindow getValidationWindow(boolean create) {
@@ -640,7 +649,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/**
 	 * Perform consistency check for supplied object<br>
 	 * The right {@link ValidationModel} is first retrieved and set with the rule enability as defined in preferences.<br>
-	 * Then, the validation is run and results are displayed in the module's {@link ValidationWindow}
+	 * Then, the validation is run and results are displayed in the module's {@link ComponentValidationWindow}
 	 * 
 	 * @param objectToValidate
 	 */

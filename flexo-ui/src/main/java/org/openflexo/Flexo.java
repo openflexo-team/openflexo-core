@@ -205,7 +205,7 @@ public class Flexo {
 		}
 		final SplashWindow splashWindow2 = splashWindow;
 		// First init localization with default location
-		FlexoLocalization.initWith(new FlexoMainLocalizer());
+		FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 		final ApplicationContext applicationContext = new InteractiveApplicationContext();
 
 		remapStandardOuputs(isDev, applicationContext);

@@ -45,7 +45,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	private final FlexoEditor applicationEditor;
 
-//	private ServerRestService serverRestService;
+	// private ServerRestService serverRestService;
 
 	public ApplicationContext() {
 		super();
@@ -64,8 +64,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
-		//BugReportService bugReportService = createBugReportService();
-		//registerService(bugReportService);
+		// BugReportService bugReportService = createBugReportService();
+		// registerService(bugReportService);
 		DocResourceManager docResourceManager = createDocResourceManager();
 		registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
@@ -96,7 +96,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	public BugReportService getBugReportService() {
-		if(getService(BugReportService.class)==null){
+		if (getService(BugReportService.class) == null) {
 			BugReportService bugReportService = createBugReportService();
 			registerService(bugReportService);
 		}
@@ -195,4 +195,5 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		}
 		return null;
 	}
+
 }

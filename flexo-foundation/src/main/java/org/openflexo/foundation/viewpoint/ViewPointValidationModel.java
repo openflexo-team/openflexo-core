@@ -22,10 +22,10 @@ package org.openflexo.foundation.viewpoint;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
@@ -44,8 +44,8 @@ import org.openflexo.rm.ResourceLocator;
 public class ViewPointValidationModel extends FlexoValidationModel {
 
 	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("Localized/ViewPointValidation");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = LocalizedDelegateGUIImpl.getLocalizedDelegate(
-			fibValidationLocalizedDelegate, null, true);
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate, null,
+			true, true);
 
 	/**
 	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
