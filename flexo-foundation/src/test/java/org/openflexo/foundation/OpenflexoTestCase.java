@@ -27,10 +27,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +55,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
@@ -113,7 +112,8 @@ public abstract class OpenflexoTestCase {
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -138,37 +138,25 @@ public abstract class OpenflexoTestCase {
 					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
 					testResourceCenterDirectory.mkdirs();
 
-					System.out.println("Creating TestResourceCenter " + testResourceCenterDirectory);
+					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
+							+ testResourceCenterDirectory);
 					System.out.println("***************** WARNING WARNING WARNING ************************");
 
 					if (generateCompoundTestResourceCenter) {
 
-						Enumeration<URL> toto = ClassLoader.getSystemClassLoader().getResources("TestResourceCenter");
+						ClasspathResourceLocatorImpl locator = new ClasspathResourceLocatorImpl();
 
-						while (toto.hasMoreElements()) {
-							System.out.println(toto.nextElement().toString());
+						List<Resource> toto = locator.locateAllResources("TestResourceCenter");
+						for (Resource tstRC : toto) {
+							System.out.println(tstRC.toString());
+							FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 						}
-					} else {
+					}
+					else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
 						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 					}
-
-					// TODO : Code to be refactored!
-					/*
-					if (generateCompoundTestResourceCenter) {
-						System.out.println("Generating CompoundTestResourceCenter");
-						List<File> testRCList = ResourceLocator.locateAllFiles("TestResourceCenter");
-						for (File f : testRCList) {
-							System.out.println("Found TestResourceCenter " + f);
-							FileUtils.copyContentDirToDir(f, testResourceCenterDirectory);
-						}
-					} else {
-						File sourceTestResourceCenter = ((FileResourceImpl ) ResourceLocator.locateResource("TestResourceCenter");
-						System.out.println("Found TestResourceCenter " + sourceTestResourceCenter);
-						FileUtils.copyContentDirToDir(sourceTestResourceCenter, testResourceCenterDirectory);
-					}
-					 */
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
 					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
@@ -215,7 +203,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should not be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -228,7 +217,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -300,6 +290,7 @@ public abstract class OpenflexoTestCase {
 		log("Testing ViewPoint" + vp.getURI());
 
 		ValidationReport report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
+		report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
 
 		for (ValidationError error : report.getErrors()) {
 			System.out.println("Found error: " + error);
