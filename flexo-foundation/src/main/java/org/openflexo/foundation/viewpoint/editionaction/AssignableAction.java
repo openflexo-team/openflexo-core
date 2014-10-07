@@ -232,15 +232,15 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	}
 
 	@DefineValidationRule
-	public static class AssignationBindingMustBeValidOrVariable extends
-			ValidationRule<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+	public static class AssignationBindingMustBeValidOrVariable<A extends AssignableAction<?, ?>> extends
+			ValidationRule<AssignationBindingMustBeValidOrVariable<A>, A> {
 
 		public AssignationBindingMustBeValidOrVariable() {
 			super(AssignableAction.class, "'assign'_binding_is_not_valid");
 		}
 
 		@Override
-		public ValidationIssue<AssignationBindingMustBeValidOrVariable, AssignableAction> applyValidation(AssignableAction object) {
+		public ValidationIssue<AssignationBindingMustBeValidOrVariable<A>, A> applyValidation(A object) {
 
 			DataBinding<?> assignation = object.getAssignation();
 
@@ -250,22 +250,48 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 			if (assignation != null && assignation.isSet()) {
 				if (!assignation.isValid()) {
-					DeleteBinding<AssignableAction> deleteBinding = new DeleteBinding<AssignableAction>(this);
+					DeleteBinding<A> deleteBinding = new DeleteBinding<A>(this);
 
-					return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
+					return new InvalidBindingIssue<A>(this, object, deleteBinding);
+					/*return new ValidationError<AssignationBindingMustBeValidOrVariable, AssignableAction>(this, object,
 							AssignationBindingMustBeValidOrVariable.this.getRuleName(), "Binding: " + assignation + " reason: "
-									+ assignation.invalidBindingReason(), deleteBinding);
+									+ assignation.invalidBindingReason(), deleteBinding);*/
 				}
 			}
 			return null;
 		}
 
-		protected static class DeleteBinding<C extends AssignableAction> extends
-				FixProposal<AssignationBindingMustBeValidOrVariable, AssignableAction> {
+		public static class InvalidBindingIssue<A extends AssignableAction<?, ?>> extends
+				ValidationError<AssignationBindingMustBeValidOrVariable<A>, A> {
 
-			private final AssignationBindingMustBeValidOrVariable rule;
+			private final A assignableAction;
 
-			public DeleteBinding(AssignationBindingMustBeValidOrVariable rule) {
+			public InvalidBindingIssue(AssignationBindingMustBeValidOrVariable<A> rule, A anObject,
+					FixProposal<AssignationBindingMustBeValidOrVariable<A>, A>... fixProposals) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+				assignableAction = anObject;
+			}
+
+			public DataBinding<?> getBinding() {
+				return assignableAction.getAssignation();
+			}
+
+			public String getReason() {
+				return getBinding().invalidBindingReason();
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "($reason)";
+			}
+		}
+
+		protected static class DeleteBinding<A extends AssignableAction<?, ?>> extends
+				FixProposal<AssignationBindingMustBeValidOrVariable<A>, A> {
+
+			private final AssignationBindingMustBeValidOrVariable<A> rule;
+
+			public DeleteBinding(AssignationBindingMustBeValidOrVariable<A> rule) {
 				super("delete_this_binding");
 				this.rule = rule;
 			}

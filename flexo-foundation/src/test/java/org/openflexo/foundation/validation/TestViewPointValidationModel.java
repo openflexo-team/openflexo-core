@@ -88,7 +88,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPoint.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.LocalizedEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPointLocalizedEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.viewpoint.TechnologyObjectParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
@@ -209,7 +209,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.LocalizedDictionary.class) != null);
+				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()

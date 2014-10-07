@@ -33,13 +33,13 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
+import org.openflexo.Flexo;
 import org.openflexo.FlexoCst;
-import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.drm.DocResourceManager;
-import org.openflexo.fib.utils.FlexoLoggingViewer;
+import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -87,7 +87,9 @@ public class ToolsMenu extends FlexoMenu {
 		addSpecificItems();
 		add(manageResourceCenterItem = new ManageResourceCenterItem());
 		add(loggingItem = new LoggingItem());
-		add(localizedEditorItem = new LocalizedEditorItem());
+		if (Flexo.isDev) {
+			add(localizedEditorItem = new LocalizedEditorItem());
+		}
 		add(rmItem = new ResourceManagerItem());
 		add(undoManagerItem = new UndoManagerItem());
 		addSeparator();
@@ -196,14 +198,9 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			((FlexoMainLocalizer) FlexoLocalization.getMainLocalizer()).showLocalizedEditor(getController().getFlexoFrame());
+			getController().getMainLocalizedEditor().setVisible(true);
 		}
-
 	}
-
-	// ===================================================
-	// ================== Licence Manager ===============
-	// ===================================================
 
 	// ===================================================
 	// ================== Resource Manager ===============

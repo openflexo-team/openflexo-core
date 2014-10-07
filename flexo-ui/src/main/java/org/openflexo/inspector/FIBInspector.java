@@ -46,7 +46,7 @@ import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
-import org.openflexo.foundation.viewpoint.LocalizedDictionary;
+import org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry;
 import org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry;
@@ -606,7 +606,7 @@ public interface FIBInspector extends FIBPanel {
 			for (FlexoConcept parentEP : ep.getParentFlexoConcepts()) {
 				appendInspectorEntries(parentEP, newTab);
 			}
-			LocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
+			ViewPointLocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
 			for (final InspectorEntry entry : ep.getInspector().getEntries()) {
 				FIBLabel label = getFactory().newFIBLabel();
 				String entryLabel = localizedDictionary.getLocalizedForKeyAndLanguage(entry.getLabel(),

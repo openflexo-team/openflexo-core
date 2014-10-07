@@ -1,12 +1,11 @@
 package org.openflexo;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.utils.LocalizedDelegateGUIImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -17,13 +16,14 @@ import org.openflexo.rm.ResourceLocator;
  * @author sylvain
  * 
  */
-public class FlexoMainLocalizer extends LocalizedDelegateGUIImpl {
+public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
 	private static final Logger logger = Logger.getLogger(FlexoLocalization.class.getPackage().getName());
 
 	public static final String LOCALIZATION_DIRNAME = "Localized";
 
 	private static Resource _localizedDirectory = null;
+	private static FlexoMainLocalizer instance = null;
 
 	/**
 	 * Return directory where localized dictionnaries for main localizer are stored
@@ -41,8 +41,15 @@ public class FlexoMainLocalizer extends LocalizedDelegateGUIImpl {
 		return _localizedDirectory;
 	}
 
-	public FlexoMainLocalizer() {
-		super(getMainLocalizerLocalizedDirectory(), null, false);
+	private FlexoMainLocalizer() {
+		super(getMainLocalizerLocalizedDirectory(), null, Flexo.isDev, Flexo.isDev);
+	}
+
+	public static FlexoMainLocalizer getInstance() {
+		if (instance == null) {
+			instance = new FlexoMainLocalizer();
+		}
+		return instance;
 	}
 
 	public static void main(String[] args) {

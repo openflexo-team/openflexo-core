@@ -63,7 +63,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 	// public void notifyBindingModelChanged();
 
-	public LocalizedDictionary getLocalizedDictionary();
+	public ViewPointLocalizedDictionary getLocalizedDictionary();
 
 	public static abstract class ViewPointObjectImpl extends FlexoObjectImpl implements ViewPointObject {
 
@@ -143,7 +143,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		}*/
 
 		@Override
-		public LocalizedDictionary getLocalizedDictionary() {
+		public ViewPointLocalizedDictionary getLocalizedDictionary() {
 			return getViewPoint().getLocalizedDictionary();
 		}
 
@@ -183,11 +183,32 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 					ViewPointObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
-					return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
-							+ getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
+					// return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
+					// + getBinding(object) + " reason: " + getBinding(object).invalidBindingReason(), deleteBinding);
+					return new InvalidBindingIssue<C>(this, object, deleteBinding);
 				}
 			}
 			return null;
+		}
+
+		public static class InvalidBindingIssue<C extends ViewPointObject> extends ValidationError<BindingMustBeValid<C>, C> {
+
+			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
+			}
+
+			public DataBinding<?> getBinding() {
+				return getCause().getBinding(getValidable());
+			}
+
+			public String getReason() {
+				return getBinding().invalidBindingReason();
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "($reason)";
+			}
 		}
 
 		protected static class DeleteBinding<C extends ViewPointObject> extends FixProposal<BindingMustBeValid<C>, C> {
@@ -219,26 +240,62 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<C>, C> applyValidation(C object) {
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
-				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding required but not set");
+				return new UndefinedRequiredBindingIssue<C>(this, object);
 			} else if (!b.isValid()) {
 				ViewPointObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for "
 						+ object.getStringRepresentation() + ". Reason: " + b.invalidBindingReason());
-				return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
-						BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding: " + getBinding(object) + " reason: "
-								+ getBinding(object).invalidBindingReason());
+				return new InvalidRequiredBindingIssue<C>(this, object);
+				// return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
+				// BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding: " + getBinding(object) + " reason: "
+				// + getBinding(object).invalidBindingReason());
 			}
 			return null;
 		}
 
-		public String retrieveIssueDetails(C object) {
-			if (getBinding(object) == null || !getBinding(object).isSet()) {
-				return "Binding not set";
-			} else if (!getBinding(object).isValid()) {
-				return "Binding not valid [" + getBinding(object) + "], reason: " + getBinding(object).invalidBindingReason();
+		public static class UndefinedRequiredBindingIssue<C extends ViewPointObject> extends
+				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+
+			public UndefinedRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
+					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_was_not_set", fixProposals);
 			}
-			return null;
+
+			public DataBinding<?> getBinding() {
+				return getCause().getBinding(getValidable());
+			}
+
+			public String getReason() {
+				return getBinding().invalidBindingReason();
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "($reason)";
+			}
 		}
+
+		public static class InvalidRequiredBindingIssue<C extends ViewPointObject> extends
+				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+
+			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
+					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid: ($binding)", fixProposals);
+			}
+
+			public DataBinding<?> getBinding() {
+				return getCause().getBinding(getValidable());
+			}
+
+			public String getReason() {
+				return getBinding().invalidBindingReason();
+			}
+
+			@Override
+			public String getDetailedInformations() {
+				return "($reason)";
+			}
+		}
+
 	}
 
 }

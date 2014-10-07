@@ -106,7 +106,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String MODEL_VERSION_KEY = "modelVersion";
-	@PropertyIdentifier(type = LocalizedDictionary.class)
+	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
 	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	public static final String VIRTUAL_MODELS_KEY = "virtualModels";
@@ -133,11 +133,11 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	public void setModelVersion(FlexoVersion modelVersion);
 
 	@Override
-	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = LocalizedDictionary.OWNER_KEY)
-	public LocalizedDictionary getLocalizedDictionary();
+	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = ViewPointLocalizedDictionary.OWNER_KEY)
+	public ViewPointLocalizedDictionary getLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	public void setLocalizedDictionary(LocalizedDictionary localizedDictionary);
+	public void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
 
 	/**
 	 * Retrieves the right type given the {@link FlexoConcept}<br>
@@ -193,7 +193,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
-		private LocalizedDictionary localizedDictionary;
+		private ViewPointLocalizedDictionary localizedDictionary;
 		// private ViewPointLibrary _library;
 		// private List<ModelSlot> modelSlots;
 		private List<VirtualModel> virtualModels;
@@ -546,18 +546,18 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}*/
 
 		@Override
-		public LocalizedDictionary getLocalizedDictionary() {
+		public ViewPointLocalizedDictionary getLocalizedDictionary() {
 			// localized dictionnary is no longer created at this point
 			// this is now managed in the ViewPointModelFactory
 			/*if (localizedDictionary == null && getResource() != null && getResource().getFactory() != null) {
-				localizedDictionary = getResource().getFactory().newInstance(LocalizedDictionary.class);
+				localizedDictionary = getResource().getFactory().newInstance(ViewPointLocalizedDictionary.class);
 				localizedDictionary.setOwner(this);
 			}*/
 			return localizedDictionary;
 		}
 
 		@Override
-		public void setLocalizedDictionary(LocalizedDictionary localizedDictionary) {
+		public void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary) {
 			if (localizedDictionary != null) {
 				localizedDictionary.setOwner(this);
 			}
