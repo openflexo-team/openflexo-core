@@ -70,6 +70,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
+		Flexo.isDev = true;
 		return instanciateTestServiceManager(false);
 	}
 
