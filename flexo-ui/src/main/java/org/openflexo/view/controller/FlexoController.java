@@ -613,7 +613,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public LocalizedEditor getMainLocalizedEditor() {
 		if (mainLocalizedEditor == null) {
 			mainLocalizedEditor = new LocalizedEditor(getFlexoFrame(), "localized_editor", FlexoLocalization.getMainLocalizer(),
-					FlexoLocalization.getMainLocalizer());
+					FlexoLocalization.getMainLocalizer(), true, false);
 		}
 		return mainLocalizedEditor;
 	}
