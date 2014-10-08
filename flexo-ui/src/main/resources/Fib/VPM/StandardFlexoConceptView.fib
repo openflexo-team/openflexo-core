@@ -95,7 +95,7 @@
         <FIBReferencedComponent componentFile="Fib/VPM/FlexoConceptInspectorPanel.fib" localize="true" manageDynamicModel="true" name="FlexoConceptInspectorWidget" data="data.inspector" constraints="border(location=center)" opaque="false" />
       </Tab>
       <Tab title="localization" layout="border" borderTitle="FlexoBehaviour" titleFont="SansSerif,0,11" darkLevel="0" index="2" constraints="border(index=1;location=center)" name="LocalizationTab">
-        <FIBReferencedComponent componentFile="Fib/VPM/LocalizedDictionaryPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />
+        <FIBReferencedComponent componentFile="Fib/LocalizedPanel.fib" localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget" data="data.viewPoint.localizedDictionary" constraints="border(location=center)" opaque="false" />
       </Tab>
     </TabPanel>
   </SplitPanel>
