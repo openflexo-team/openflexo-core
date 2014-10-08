@@ -106,7 +106,11 @@ public interface ViewPointLocalizedEntry extends ViewPointObject {
 
 		@Override
 		public ViewPoint getViewPoint() {
-			return getLocalizedDictionary().getViewPoint();
+			if (getLocalizedDictionary() != null) {
+				return getLocalizedDictionary().getViewPoint();
+			} else {
+				return null;
+			}
 		}
 
 		@Override

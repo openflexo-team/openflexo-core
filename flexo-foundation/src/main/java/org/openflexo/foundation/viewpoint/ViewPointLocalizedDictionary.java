@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint;
 
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.text.Collator;
 import java.util.Collections;
 import java.util.Comparator;
@@ -353,6 +354,63 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return "<not_implemented:" + getStringRepresentation() + ">";
+		}
+
+		@Override
+		public File getLocalizedDirectory() {
+			return null;
+		}
+
+		@Override
+		public void searchLocalized() {
+			searchNewEntries();
+			getPropertyChangeSupport().firePropertyChange("entries", null, getEntries());
+		}
+
+		@Override
+		public void searchTranslation(LocalizedEntry entry) {
+			if (getParent() != null) {
+				String englishTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.ENGLISH,
+						false);
+				if (entry.getKey().equals(englishTranslation)) {
+					englishTranslation = automaticEnglishTranslation(entry.getKey());
+				}
+				entry.setEnglish(englishTranslation);
+				String dutchTranslation = FlexoLocalization.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.DUTCH, false);
+				if (entry.getKey().equals(dutchTranslation)) {
+					dutchTranslation = automaticDutchTranslation(entry.getKey());
+				}
+				entry.setDutch(dutchTranslation);
+				String frenchTranslation = FlexoLocalization
+						.localizedForKeyAndLanguage(getParent(), entry.getKey(), Language.FRENCH, false);
+				if (entry.getKey().equals(frenchTranslation)) {
+					frenchTranslation = automaticFrenchTranslation(entry.getKey());
+				}
+				entry.setFrench(frenchTranslation);
+			} else {
+				String englishTranslation = entry.getKey().toString();
+				englishTranslation = englishTranslation.replace("_", " ");
+				englishTranslation = englishTranslation.substring(0, 1).toUpperCase() + englishTranslation.substring(1);
+				entry.setEnglish(englishTranslation);
+				entry.setDutch(englishTranslation);
+			}
+		}
+
+		private String automaticEnglishTranslation(String key) {
+			String englishTranslation = key.toString();
+			englishTranslation = englishTranslation.replace("_", " ");
+			englishTranslation = englishTranslation.substring(0, 1).toUpperCase() + englishTranslation.substring(1);
+			return englishTranslation;
+		}
+
+		private String automaticDutchTranslation(String key) {
+			return key;
+			// return automaticEnglishTranslation(key);
+		}
+
+		private String automaticFrenchTranslation(String key) {
+			return key;
+			// return automaticEnglishTranslation(key);
 		}
 
 		public class DynamicEntryImpl implements DynamicEntry {
