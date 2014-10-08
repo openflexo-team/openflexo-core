@@ -97,7 +97,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	public FlexoFrame getFlexoFrame() {
 		if (controller != null) {
 			return controller.getFlexoFrame();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -127,9 +128,10 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			if (getFlexoController().getValidationWindow(false) != null) {
 				getFlexoController().getValidationWindow(false).setVisible(false);
 			}
-		}
-		if (getFlexoController().getCurrentModuleView() != null) {
-			getFlexoController().getCurrentModuleView().willHide();
+
+			if (getFlexoController().getCurrentModuleView() != null) {
+				getFlexoController().getCurrentModuleView().willHide();
+			}
 		}
 	}
 
@@ -155,7 +157,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				}
 			}
 		});
-		*/
+		 */
 		if (getEditor() != null && getController().getCurrentDisplayedObjectAsModuleView() == null) {
 			boolean selectDefaultObject = false;
 			FlexoObject defaultObjectToSelect = getController().getDefaultObjectToSelect(getEditor().getProject());
@@ -165,12 +167,14 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
 					selectDefaultObject = true;
 				}
-			} else {
+			}
+			else {
 				selectDefaultObject = true;
 			}
 			if (selectDefaultObject) {
 				getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
-			} else {
+			}
+			else {
 				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
 					getFlexoController().setCurrentEditedObjectAsModuleView(null);
 				}
@@ -206,7 +210,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			} catch (OperationCancelledException e) {
 				return false;
 			}
-		} else { // There are still other modules left
+		}
+		else { // There are still other modules left
 			closeWithoutConfirmation();// Unloads the module
 			return true; // Since there is nothing to save and that Flexo
 			// has other windows opened to access it, we
@@ -227,7 +232,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		setAsInactive();
 		if (controller != null) {
 			controller.dispose();
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Called twice closeWithoutConfirmation on " + this);
 		}
 		controller = null;
@@ -246,7 +252,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				logger.severe("Module is loaded and so this exception CANNOT occur. Please investigate and FIX.");
 				e.printStackTrace();
 			}
-		} else {
+		}
+		else {
 			if (quitIfNoModuleLeft) {
 				try {
 					getModuleLoader().quit(false);

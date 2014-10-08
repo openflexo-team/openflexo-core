@@ -39,10 +39,10 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -142,17 +142,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
-		private Vector<DataPropertyAssertion> dataAssertions;
-		private Vector<ObjectPropertyAssertion> objectAssertions;
 		protected String ontologyClassURI = null;
 
 		private DataBinding<String> individualName;
-
-		public AddIndividualImpl() {
-			super();
-			dataAssertions = new Vector<DataPropertyAssertion>();
-			objectAssertions = new Vector<ObjectPropertyAssertion>();
-		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -199,7 +191,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			FlexoRole superFlexoRole = super.getFlexoRole();
 			if (superFlexoRole instanceof IndividualRole) {
 				return (IndividualRole) superFlexoRole;
-			} else if (superFlexoRole != null) {
+			}
+			else if (superFlexoRole != null) {
 				// logger.warning("Unexpected pattern role of type " + superPatternRole.getClass().getSimpleName());
 				return null;
 			}
@@ -219,7 +212,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			// System.out.println("AddIndividual: ontologyClassURI=" + ontologyClassURI);
 			if (StringUtils.isNotEmpty(ontologyClassURI) && getVirtualModel() != null) {
 				return getVirtualModel().getOntologyClass(ontologyClassURI);
-			} else {
+			}
+			else {
 				if (getFlexoRole() != null) {
 					// System.out.println("Je reponds avec le pattern role " + getPatternRole());
 					IFlexoOntologyClass t = getFlexoRole().getOntologicType();
@@ -237,15 +231,18 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 				if (getFlexoRole() instanceof IndividualRole) {
 					if (getFlexoRole().getOntologicType() != null) {
 						if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
-						} else {
+						}
+						else {
 							getFlexoRole().setOntologicType(ontologyClass);
 						}
-					} else {
+					}
+					else {
 						getFlexoRole().setOntologicType(ontologyClass);
 					}
 				}
 				ontologyClassURI = ontologyClass.getURI();
-			} else {
+			}
+			else {
 				ontologyClassURI = null;
 			}
 			// System.out.println("ontologyClassURI=" + ontologyClassURI);
@@ -269,27 +266,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		}
 
 		@Override
-		public Vector<DataPropertyAssertion> getDataAssertions() {
-			return dataAssertions;
-		}
-
-		public void setDataAssertions(Vector<DataPropertyAssertion> assertions) {
-			this.dataAssertions = assertions;
-		}
-
-		@Override
-		public void addToDataAssertions(DataPropertyAssertion assertion) {
-			assertion.setAction(this);
-			dataAssertions.add(assertion);
-		}
-
-		@Override
-		public void removeFromDataAssertions(DataPropertyAssertion assertion) {
-			assertion.setAction(null);
-			dataAssertions.remove(assertion);
-		}
-
-		@Override
 		public DataPropertyAssertion createDataPropertyAssertion() {
 			DataPropertyAssertion newDataPropertyAssertion = getVirtualModelFactory().newDataPropertyAssertion();
 			addToDataAssertions(newDataPropertyAssertion);
@@ -301,27 +277,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			removeFromDataAssertions(assertion);
 			assertion.delete();
 			return assertion;
-		}
-
-		@Override
-		public Vector<ObjectPropertyAssertion> getObjectAssertions() {
-			return objectAssertions;
-		}
-
-		public void setObjectAssertions(Vector<ObjectPropertyAssertion> assertions) {
-			this.objectAssertions = assertions;
-		}
-
-		@Override
-		public void addToObjectAssertions(ObjectPropertyAssertion assertion) {
-			assertion.setAction(this);
-			objectAssertions.add(assertion);
-		}
-
-		@Override
-		public void removeFromObjectAssertions(ObjectPropertyAssertion assertion) {
-			assertion.setAction(null);
-			objectAssertions.remove(assertion);
 		}
 
 		@Override
