@@ -22,6 +22,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationIssue;
 
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
@@ -145,7 +146,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -156,7 +158,8 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;
@@ -230,6 +233,17 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 		@Override
 		public DataBinding<?> getBinding(AddFlexoConceptInstanceParameter object) {
 			return object.getValue();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<AddFlexoConceptInstanceParameter>, AddFlexoConceptInstanceParameter> applyValidation(
+				AddFlexoConceptInstanceParameter object) {
+			// Should return an issue only if parameter is required
+			if (object.getParam().getIsRequired()) {
+				return super.applyValidation(object);
+			}
+			else
+				return null;
 		}
 
 	}
