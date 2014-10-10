@@ -219,6 +219,8 @@ public class IconLibrary {
 	public static final IconMarker SYNC = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
+	public static final IconMarker NEW_32_32 = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(

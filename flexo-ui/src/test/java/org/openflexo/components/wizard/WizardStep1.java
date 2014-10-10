@@ -14,7 +14,7 @@ public class WizardStep1 extends WizardStep {
 
 	@Override
 	public String getTitle() {
-		return "FlexoWizard test, Step1";
+		return "Wizard test, Step1";
 	}
 
 	@Override
@@ -24,7 +24,15 @@ public class WizardStep1 extends WizardStep {
 
 	@Override
 	public boolean isValid() {
-		return StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName);
+		if (StringUtils.isEmpty(firstName)) {
+			setIssueMessage("firstName is not set", IssueMessageType.ERROR);
+			return false;
+		}
+		if (StringUtils.isEmpty(lastName)) {
+			setIssueMessage("lastName is not set", IssueMessageType.ERROR);
+			return false;
+		}
+		return true;
 	}
 
 	public String getFirstName() {
@@ -32,7 +40,12 @@ public class WizardStep1 extends WizardStep {
 	}
 
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		if (!firstName.equals(this.firstName)) {
+			String oldValue = this.firstName;
+			this.firstName = firstName;
+			getPropertyChangeSupport().firePropertyChange("firstName", oldValue, firstName);
+			checkValidity();
+		}
 	}
 
 	public String getLastName() {
@@ -40,7 +53,12 @@ public class WizardStep1 extends WizardStep {
 	}
 
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		if (!lastName.equals(this.lastName)) {
+			String oldValue = this.lastName;
+			this.lastName = lastName;
+			getPropertyChangeSupport().firePropertyChange("lastName", oldValue, lastName);
+			checkValidity();
+		}
 	}
 
 }

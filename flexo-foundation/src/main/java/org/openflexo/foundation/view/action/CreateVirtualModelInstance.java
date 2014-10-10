@@ -45,7 +45,6 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -144,14 +143,14 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		newVirtualModelInstanceResource.save(null);
 	}
 
-	private String errorMessage;
+	/*private String errorMessage;
 
 	public String getErrorMessage() {
 		isValid();
 		// System.out.println("valid=" + isValid());
 		// System.out.println("errorMessage=" + errorMessage);
 		return errorMessage;
-	}
+	}*/
 
 	public int getStepsNumber() {
 		if (virtualModel == null) {
@@ -166,49 +165,29 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	@Override
 	public boolean isValid() {
 		if (virtualModel == null) {
-			errorMessage = noVirtualModelSelectedMessage();
+			// errorMessage = noVirtualModelSelectedMessage();
 			return false;
 		}
-		if (StringUtils.isEmpty(newVirtualModelInstanceName)) {
-			errorMessage = noNameMessage();
-			return false;
-		}
-
-		if (!newVirtualModelInstanceName.equals(JavaUtils.getClassName(newVirtualModelInstanceName))
-				&& !newVirtualModelInstanceName.equals(JavaUtils.getVariableName(newVirtualModelInstanceName))) {
-			errorMessage = invalidNameMessage();
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
+			// errorMessage = noNameMessage();
 			return false;
 		}
 
-		if (StringUtils.isEmpty(newVirtualModelInstanceTitle)) {
-			errorMessage = noTitleMessage();
+		if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
+				&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
+			// errorMessage = invalidNameMessage();
+			return false;
+		}
+
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
+			// errorMessage = noTitleMessage();
 			return false;
 		}
 		if (getFocusedObject().getVirtualModelInstance(newVirtualModelInstanceName) != null) {
-			errorMessage = duplicatedNameMessage();
+			// errorMessage = duplicatedNameMessage();
 			return false;
 		}
 		return true;
-	}
-
-	public String noVirtualModelSelectedMessage() {
-		return FlexoLocalization.localizedForKey("no_virtual_model_type_selected");
-	}
-
-	public String noTitleMessage() {
-		return FlexoLocalization.localizedForKey("no_virtual_model_title_defined");
-	}
-
-	public String noNameMessage() {
-		return FlexoLocalization.localizedForKey("no_virtual_model_name_defined");
-	}
-
-	public String invalidNameMessage() {
-		return FlexoLocalization.localizedForKey("invalid_name_for_new_virtual_model");
-	}
-
-	public String duplicatedNameMessage() {
-		return FlexoLocalization.localizedForKey("a_virtual_model_with_that_name_already_exists");
 	}
 
 	public VirtualModelInstance getNewVirtualModelInstance() {
@@ -255,7 +234,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		}
 	}*/
 
-	public ModelSlotInstanceConfiguration<?, ?> getModelSlotInstanceConfiguration(ModelSlot ms) {
+	public ModelSlotInstanceConfiguration<?, ?> getModelSlotInstanceConfiguration(ModelSlot<?> ms) {
 		return modelSlotConfigurations.get(ms);
 	}
 
@@ -301,6 +280,9 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	public String getNewVirtualModelInstanceTitle() {
+		if (newVirtualModelInstanceTitle == null) {
+			return getNewVirtualModelInstanceName();
+		}
 		return newVirtualModelInstanceTitle;
 	}
 
@@ -324,6 +306,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			creationSchemeAction = null;
 		}
 		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);
+		getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationScheme);
 		getPropertyChangeSupport().firePropertyChange("isActionValidable", wasValidable, isActionValidable());
 
 	}

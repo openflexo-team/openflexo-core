@@ -21,19 +21,21 @@
 package org.openflexo.components.wizard;
 
 import java.awt.Image;
+import java.beans.PropertyChangeSupport;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.FIBJPanel;
+import javax.swing.ImageIcon;
+
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
+import org.openflexo.toolbox.StringUtils;
 
 /**
- * Encodes a step of a {@link FlexoWizard}.<br>
+ * Encodes a step of a {@link Wizard}.<br>
  * This class is generally enriched with configuration data<br>
  * isValid() method should return true if and only if the configuration data is valid regarding the purpose of the wizard.<br>
  * Assuming validity of this step causes the "next" and/or "finish" button of the wizard to be enabled.
@@ -41,11 +43,35 @@ import org.openflexo.rm.ResourceLocator;
  * @author guillaume, sylvain
  * 
  */
-public abstract class WizardStep {
+public abstract class WizardStep implements HasPropertyChangeSupport {
 
 	private static final Logger logger = FlexoLogger.getLogger(WizardStep.class.getPackage().getName());
 
-	private FlexoWizard wizard;
+	private Wizard wizard;
+
+	private Boolean lastNotifiedValidity = null;
+	private String issueMessage;
+	private IssueMessageType issueMessageType = null;
+
+	private final PropertyChangeSupport pcSupport;
+
+	protected WizardStep() {
+		pcSupport = new PropertyChangeSupport(this);
+	}
+
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	public int getIndex() {
+		return getWizard().getSteps().indexOf(this) + 1;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		return null;
+	}
 
 	/**
 	 * The title of this page.
@@ -59,7 +85,7 @@ public abstract class WizardStep {
 	 * 
 	 * @param wizard
 	 */
-	protected FlexoWizard getWizard() {
+	protected Wizard getWizard() {
 		return wizard;
 	}
 
@@ -68,7 +94,7 @@ public abstract class WizardStep {
 	 * 
 	 * @param wizard
 	 */
-	protected void setWizard(FlexoWizard wizard) {
+	protected void setWizard(Wizard wizard) {
 		this.wizard = wizard;
 	}
 
@@ -77,20 +103,62 @@ public abstract class WizardStep {
 	 * 
 	 * @return
 	 */
-	// public WizardStep getNextPage();
+	public WizardStep getNextStep() {
+		return wizard.getNextStep(this);
+	}
 
 	/**
 	 * The previous page of this wizard page. Can be null.
 	 * 
 	 * @return
 	 */
-	// public WizardStep getPreviousPage();
+	public WizardStep getPreviousStep() {
+		return wizard.getPreviousStep(this);
+	}
+
+	/**
+	 * Called just before to be displayed.<br>
+	 * This is a hook that might be overriden
+	 * 
+	 * @param previous
+	 */
+	protected void prepare(WizardStep previous) {
+	}
 
 	public Image getPageImage() {
 		return null;
 	}
 
 	public abstract boolean isValid();
+
+	/**
+	 * Return true if this step is a transitional step<br>
+	 * This means that some other steps might be added/removed just AFTER this step is validated<br>
+	 * Please override this method when required. Note that default value return false.
+	 * 
+	 * @return
+	 */
+	public boolean isTransitionalStep() {
+		return false;
+	}
+
+	/**
+	 * Hook used when this step is a transitional step<br>
+	 * This means that some other steps might be added/removed just AFTER this step is validated<br>
+	 * Please override this method when required (when declared as transitional step). Note that default value does nothing.
+	 * 
+	 */
+	public void performTransition() {
+	}
+
+	/**
+	 * Hook used when this step is a transitional step<br>
+	 * This means that some other steps might be added/removed just AFTER this step is validated<br>
+	 * Please override this method when required (when declared as transitional step). Note that default value does nothing.
+	 * 
+	 */
+	public void discardTransition() {
+	}
 
 	public boolean isNextEnabled() {
 		return true;
@@ -102,49 +170,90 @@ public abstract class WizardStep {
 		return true;
 	}
 
-	private FIBComponent fibComponent = null;
+	private Resource fibComponentResource = null;
 
-	public FIBComponent getFIBComponent() {
-		if (fibComponent == null) {
-			if (getClass().getAnnotation(FIBPanel.class) != null) {
-				System.out.println("Found annotation " + getClass().getAnnotation(FIBPanel.class));
-				String fibPanelName = getClass().getAnnotation(FIBPanel.class).value();
-				Resource fibPanelResource = ResourceLocator.locateResource(fibPanelName);
-				System.out.println("fibPanelResource=" + fibPanelResource);
-				if (fibPanelResource != null) {
-					fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibPanelResource);
-					logger.info("Found " + fibComponent);
+	public Resource getFibComponentResource() {
+		if (fibComponentResource == null) {
+			Class<?> current = getClass();
+			while (fibComponentResource == null && current != null) {
+				if (current.getAnnotation(FIBPanel.class) != null) {
+					// System.out.println("Found annotation " + getClass().getAnnotation(FIBPanel.class));
+					String fibPanelName = current.getAnnotation(FIBPanel.class).value();
+					fibComponentResource = ResourceLocator.locateResource(fibPanelName);
 				}
+				current = current.getSuperclass();
 			}
 		}
-		return fibComponent;
-
+		return fibComponentResource;
 	}
 
-	private FIBJPanel<?> jComponent;
-
-	public FIBJPanel<?> getJComponent() {
-		if (jComponent == null) {
-			if (getFIBComponent() != null) {
-				jComponent = new FIBJPanel(fibComponent, this, FlexoLocalization.getMainLocalizer()) {
-
-					@Override
-					public Class<?> getRepresentedType() {
-						return getClass();
-					}
-
-					@Override
-					public void delete() {
-					}
-
-				};
-			}
+	protected void checkValidity() {
+		boolean valid = isValid();
+		if (lastNotifiedValidity == null || (!lastNotifiedValidity.equals(valid))) {
+			getPropertyChangeSupport().firePropertyChange("isValid", !valid, valid);
+			getPropertyChangeSupport().firePropertyChange("messageTypeIsToBeDisplayed", !messageTypeIsToBeDisplayed(),
+					messageTypeIsToBeDisplayed());
+			wizard.updateStatus();
 		}
-		return jComponent;
+		lastNotifiedValidity = valid;
 	}
 
-	/*public JComponent initUserInterface(JComponent parent);
+	public String getIssueMessage() {
+		return issueMessage;
+	}
 
-	public JComponent getUserInterface();*/
+	public void setIssueMessage(String issueMessage) {
+		if ((issueMessage == null && this.issueMessage != null) || (issueMessage != null && !issueMessage.equals(this.issueMessage))) {
+			String oldValue = this.issueMessage;
+			this.issueMessage = issueMessage;
+			getPropertyChangeSupport().firePropertyChange("issueMessage", oldValue, issueMessage);
+		}
+		if (getIssueMessageType() == null) {
+			setIssueMessageType(IssueMessageType.ERROR);
+		}
+	}
+
+	public void setIssueMessage(String issueMessage, IssueMessageType messageType) {
+		setIssueMessageType(messageType);
+		setIssueMessage(issueMessage);
+	}
+
+	public enum IssueMessageType {
+		ERROR, WARNING, INFO
+	}
+
+	public IssueMessageType getIssueMessageType() {
+		return issueMessageType;
+	}
+
+	public void setIssueMessageType(IssueMessageType issueMessageType) {
+		if (issueMessageType != this.issueMessageType) {
+			IssueMessageType oldValue = this.issueMessageType;
+			this.issueMessageType = issueMessageType;
+			getPropertyChangeSupport().firePropertyChange("issueMessageType", oldValue, issueMessageType);
+			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
+		}
+	}
+
+	public boolean messageTypeIsToBeDisplayed() {
+		return (!isValid() && StringUtils.isNotEmpty(getIssueMessage()))
+				|| (isValid() && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.INFO);
+	}
+
+	public ImageIcon getIssueMessageIcon() {
+		if (StringUtils.isEmpty(getIssueMessage())) {
+			return null;
+		}
+		switch (getIssueMessageType()) {
+		case ERROR:
+			return UtilsIconLibrary.ERROR_ICON;
+		case WARNING:
+			return UtilsIconLibrary.WARNING_ICON;
+		case INFO:
+			return UtilsIconLibrary.OK_ICON;
+		default:
+			return null;
+		}
+	}
 
 }

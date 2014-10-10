@@ -20,6 +20,8 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,6 +37,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -51,11 +54,11 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	protected List<ModelSlotInstanceConfigurationOption> options;
 
-	protected FlexoResourceCenter<?> resourceCenter;
+	private FlexoResourceCenter<?> resourceCenter;
 	private TechnologyAdapterResource<RD, ?> resource;
-	protected String resourceUri;
-	protected String relativePath;
-	protected String filename;
+	private String resourceUri;
+	private String relativePath;
+	private String filename;
 
 	protected FreeModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
 		super(ms, action);
@@ -67,13 +70,14 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource);
-		// options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource);
+		options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource);
 		if (!ms.getIsRequired()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
 		}
+		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 	}
 
-	@Override
+	/*@Override
 	public void setOption(org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
 		super.setOption(option);
 		if (option == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
@@ -81,7 +85,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			relativePath = null;
 			filename = null;
 		}
-	}
+	}*/
 
 	@Override
 	public List<ModelSlotInstanceConfigurationOption> getAvailableOptions() {
@@ -154,12 +158,16 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		return view;
 	}
 
-	public FlexoResourceCenter getResourceCenter() {
+	public FlexoResourceCenter<?> getResourceCenter() {
 		return resourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if (resourceCenter == null || !resourceCenter.equals(this.resourceCenter)) {
+			FlexoResourceCenter<?> oldValue = this.resourceCenter;
+			this.resourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+		}
 	}
 
 	public String getResourceUri() {
@@ -167,7 +175,11 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setResourceUri(String resourceUri) {
-		this.resourceUri = resourceUri;
+		if (!resourceUri.equals(this.resourceUri)) {
+			String oldValue = this.resourceUri;
+			this.resourceUri = resourceUri;
+			getPropertyChangeSupport().firePropertyChange("resourceUri", oldValue, resourceUri);
+		}
 	}
 
 	public String getRelativePath() {
@@ -175,7 +187,11 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setRelativePath(String relativePath) {
-		this.relativePath = relativePath;
+		if (!relativePath.equals(this.relativePath)) {
+			String oldValue = this.relativePath;
+			this.relativePath = relativePath;
+			getPropertyChangeSupport().firePropertyChange("relativePath", oldValue, relativePath);
+		}
 	}
 
 	public String getFilename() {
@@ -183,15 +199,28 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setFilename(String filename) {
-		this.filename = filename;
+		System.out.println("******** setFileName with " + filename);
+		if (!filename.equals(this.filename)) {
+			String oldValue = this.filename;
+			this.filename = filename;
+			getPropertyChangeSupport().firePropertyChange("filename", oldValue, filename);
+		}
 	}
 
+	@Override
 	public TechnologyAdapterResource<RD, ?> getResource() {
 		return resource;
 	}
 
 	public void setResource(TechnologyAdapterResource<RD, ?> resource) {
-		this.resource = resource;
+		System.out.println("Hop, on set la resource a " + resource);
+		System.out.println("filename=" + getFilename());
+		if (resource != this.resource) {
+			TechnologyAdapterResource<RD, ?> oldValue = this.resource;
+			this.resource = resource;
+			getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
+		}
+		System.out.println("filename=" + getFilename());
 	}
 
 	@Override
@@ -200,22 +229,62 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			return false;
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
-			if (getResourceCenter() == null) {
-				logger.warning("Null resource center");
-			}
 			if (getResource() == null) {
-				logger.warning("Null resource");
+				setErrorMessage(FlexoLocalization.localizedForKey("no_resource_selected"));
+				return false;
 			}
-			return getResourceCenter() != null && getResource() != null;
+			return true;
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
-			return StringUtils.isNotEmpty(getResourceUri()) && StringUtils.isNotEmpty(getRelativePath())
-					&& StringUtils.isNotEmpty(getFilename());
-
-		} /*else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
-			return getResourceCenter() != null && StringUtils.isNotEmpty(getResourceUri()) && StringUtils.isNotEmpty(getRelativePath())
-					&& StringUtils.isNotEmpty(getFilename());
-
-			}*/
+			if (StringUtils.isEmpty(getResourceUri())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				return false;
+			}
+			try {
+				new URL(getResourceUri());
+			} catch (MalformedURLException e) {
+				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getRelativePath())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				return false;
+			}
+			return checkValidFileName();
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
+			if (getResourceCenter() == null) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_select_a_resource_center"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getResourceUri())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				return false;
+			}
+			try {
+				new URL(getResourceUri());
+			} catch (MalformedURLException e) {
+				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getRelativePath())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				return false;
+			}
+			return checkValidFileName();
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+			if (getModelSlot().getIsRequired()) {
+				setErrorMessage(FlexoLocalization.localizedForKey("resource_is_required"));
+				return false;
+			}
+			return true;
+		}
 		return false;
+	}
+
+	protected boolean checkValidFileName() {
+		if (StringUtils.isEmpty(getFilename())) {
+			setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_file_name"));
+			return false;
+		}
+		return true;
 	}
 }
