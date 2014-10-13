@@ -31,6 +31,7 @@ import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
+import org.openflexo.localization.FlexoLocalization;
 
 /**
  * This class is used to stored the configuration of a {@link VirtualModelModelSlot} which has to be instantiated
@@ -57,6 +58,7 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 		if (!ms.getIsRequired()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
 		}
+		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		// }
 	}
 
@@ -72,15 +74,11 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
-		/*if (getModelSlot().isReflexiveModelSlot()) {
-			returned.setAccessedResourceData(vmInstance);
-		} else {*/
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
 		} else {
 			logger.warning("Addressed virtual model instance is null");
 		}
-		// }
 		return returned;
 	}
 
@@ -89,25 +87,36 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 	}
 
 	public void setAddressedVirtualModelInstanceResource(VirtualModelInstanceResource addressedVirtualModelInstanceResource) {
-		this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
+		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
+			VirtualModelInstanceResource oldValue = this.addressedVirtualModelInstanceResource;
+			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
+			getPropertyChangeSupport().firePropertyChange("addressedVirtualModelInstanceResource", oldValue,
+					addressedVirtualModelInstanceResource);
+		}
 	}
 
 	@Override
 	public boolean isValidConfiguration() {
-		/*if (getModelSlot().isReflexiveModelSlot()) {
-			return true;
-		}*/
-		System.out.println("valide ??? " + getOption());
 		if (!super.isValidConfiguration()) {
-			System.out.println("non");
 			return false;
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel) {
-			System.out.println("Ben, " + getAddressedVirtualModelInstanceResource());
-			return getAddressedVirtualModelInstanceResource() != null;
+			if (getAddressedVirtualModelInstanceResource() == null) {
+				setErrorMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_selected"));
+				return false;
+			}
+			return true;
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet
+			setErrorMessage(FlexoLocalization.localizedForKey("not_implemented_yet"));
 			return false;
+
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+			if (getModelSlot().getIsRequired()) {
+				setErrorMessage(FlexoLocalization.localizedForKey("virtual_model_instance_is_required"));
+				return false;
+			}
+			return true;
 
 		}
 		return false;

@@ -20,6 +20,8 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -35,6 +37,7 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -67,13 +70,14 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		options.add(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
 		options.add(DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel);
-		// options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewModel);
+		options.add(DefaultModelSlotInstanceConfigurationOption.CreateSharedNewModel);
 		if (!ms.getIsRequired()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.LeaveEmpty);
 		}
+		setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingModel);
 	}
 
-	@Override
+	/*@Override
 	public void setOption(org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
 		super.setOption(option);
 		if (option == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
@@ -81,7 +85,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			relativePath = null;
 			filename = null;
 		}
-	}
+	}*/
 
 	@Override
 	public List<ModelSlotInstanceConfigurationOption> getAvailableOptions() {
@@ -164,36 +168,23 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 				modelSlot.getMetaModelResource());
 	}*/
 
-	public FlexoResourceCenter getResourceCenter() {
+	public abstract boolean isURIEditable();
+
+	@Override
+	public FlexoModelResource<M, MM, ?> getResource() {
+		return getModelResource();
+	}
+
+	public FlexoResourceCenter<?> getResourceCenter() {
 		return resourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
-	}
-
-	public String getModelUri() {
-		return modelUri;
-	}
-
-	public void setModelUri(String modelUri) {
-		this.modelUri = modelUri;
-	}
-
-	public String getRelativePath() {
-		return relativePath;
-	}
-
-	public void setRelativePath(String relativePath) {
-		this.relativePath = relativePath;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if (this.resourceCenter != resourceCenter) {
+			FlexoResourceCenter<?> oldValue = this.resourceCenter;
+			this.resourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+		}
 	}
 
 	public FlexoModelResource<M, MM, ?> getModelResource() {
@@ -201,7 +192,47 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	public void setModelResource(FlexoModelResource<M, MM, ?> modelResource) {
-		this.modelResource = modelResource;
+		if (this.modelResource != modelResource) {
+			FlexoModelResource<M, MM, ?> oldValue = this.modelResource;
+			this.modelResource = modelResource;
+			getPropertyChangeSupport().firePropertyChange("modelResource", oldValue, modelResource);
+		}
+	}
+
+	public String getModelUri() {
+		return modelUri;
+	}
+
+	public void setModelUri(String modelUri) {
+		if ((modelUri == null && this.modelUri != null) || (modelUri != null && !modelUri.equals(this.modelUri))) {
+			String oldValue = this.modelUri;
+			this.modelUri = modelUri;
+			getPropertyChangeSupport().firePropertyChange("modelUri", oldValue, modelUri);
+		}
+	}
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	public void setRelativePath(String relativePath) {
+		if ((relativePath == null && this.relativePath != null) || (relativePath != null && !relativePath.equals(this.relativePath))) {
+			String oldValue = this.relativePath;
+			this.relativePath = relativePath;
+			getPropertyChangeSupport().firePropertyChange("relativePath", oldValue, relativePath);
+		}
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		if ((filename == null && this.filename != null) || (filename != null && !filename.equals(this.filename))) {
+			String oldValue = this.filename;
+			this.filename = filename;
+			getPropertyChangeSupport().firePropertyChange("filename", oldValue, filename);
+		}
 	}
 
 	@Override
@@ -210,29 +241,63 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 			return false;
 		}
 		if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
-			if (getResourceCenter() == null) {
-				logger.warning("Null resource center");
+			if (getResource() == null) {
+				setErrorMessage(FlexoLocalization.localizedForKey("no_model_selected"));
+				return false;
 			}
-			if (getModelResource() == null) {
-				logger.warning("Null model resource");
-			}
-			return getResourceCenter() != null && getModelResource() != null;
+			return true;
 		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewModel) {
-			return StringUtils.isNotEmpty(getModelUri()) && StringUtils.isNotEmpty(getRelativePath())
-					&& StringUtils.isNotEmpty(getFilename());
-
-		}/* else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewModel) {
-			return getResourceCenter() != null && StringUtils.isNotEmpty(getModelUri()) && StringUtils.isNotEmpty(getRelativePath())
-					&& StringUtils.isNotEmpty(getFilename());
-
-			}*/
+			if (StringUtils.isEmpty(getModelUri())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				return false;
+			}
+			try {
+				new URL(getModelUri());
+			} catch (MalformedURLException e) {
+				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getRelativePath())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				return false;
+			}
+			return checkValidFileName();
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewModel) {
+			if (getResourceCenter() == null) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_select_a_resource_center"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getModelUri())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
+				return false;
+			}
+			try {
+				new URL(getModelUri());
+			} catch (MalformedURLException e) {
+				setErrorMessage(FlexoLocalization.localizedForKey("malformed_uri"));
+				return false;
+			}
+			if (StringUtils.isEmpty(getRelativePath())) {
+				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_relative_path"));
+				return false;
+			}
+			return checkValidFileName();
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+			if (getModelSlot().getIsRequired()) {
+				setErrorMessage(FlexoLocalization.localizedForKey("model_is_required"));
+				return false;
+			}
+			return true;
+		}
 		return false;
 	}
 
-	public abstract boolean isURIEditable();
-
-	@Override
-	public FlexoModelResource<M, MM, ?> getResource() {
-		return getModelResource();
+	protected boolean checkValidFileName() {
+		if (StringUtils.isEmpty(getFilename())) {
+			setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_file_name"));
+			return false;
+		}
+		return true;
 	}
+
 }

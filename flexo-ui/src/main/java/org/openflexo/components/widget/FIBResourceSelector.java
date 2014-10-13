@@ -19,7 +19,6 @@
  */
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -27,8 +26,8 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a Resource while browsing in Information Space<br>
@@ -46,11 +45,12 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	private InformationSpace informationSpace;
 	private TechnologyAdapter technologyAdapter;
-	private FlexoResourceCenter resourceCenter;
+	private FlexoResourceCenter<?> resourceCenter;
 	private Class<? extends ResourceData<?>> resourceDataClass;
 
 	public FIBResourceSelector(TechnologyAdapterResource editedObject) {
 		super(editedObject);
+		logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
 	}
 
 	@Override
@@ -78,9 +78,15 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.MANDATORY)
 	public void setInformationSpace(InformationSpace informationSpace) {
 
-		this.informationSpace = informationSpace;
-		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
-		updateCustomPanel(getEditedObject());
+		if (this.informationSpace != informationSpace) {
+			logger.info(">>>>>>>>>> setInformationSpace in FIBResourceSelector" + Integer.toHexString(hashCode()) + " with "
+					+ informationSpace);
+			InformationSpace oldValue = this.informationSpace;
+			this.informationSpace = informationSpace;
+			getPropertyChangeSupport().firePropertyChange("informationSpace", oldValue, informationSpace);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+			updateCustomPanel(getEditedObject());
+		}
 
 	}
 
@@ -90,10 +96,13 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-		// System.out.println(">>>>>>>>> SETS TechnologyAdapter with " + technologyAdapter);
-		this.technologyAdapter = technologyAdapter;
-		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
-		updateCustomPanel(getEditedObject());
+		if (this.technologyAdapter != technologyAdapter) {
+			TechnologyAdapter oldValue = this.technologyAdapter;
+			this.technologyAdapter = technologyAdapter;
+			getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+			updateCustomPanel(getEditedObject());
+		}
 	}
 
 	public Object getRootObject() {
@@ -104,12 +113,16 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		}
 	}
 
-	public FlexoResourceCenter getResourceCenter() {
+	public FlexoResourceCenter<?> getResourceCenter() {
 		return resourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if (resourceCenter == null || !resourceCenter.equals(this.resourceCenter)) {
+			FlexoResourceCenter<?> oldValue = this.resourceCenter;
+			this.resourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+		}
 	}
 
 	// IMPORTANT: used in ResourceSelector.fib
@@ -211,4 +224,12 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	};
 	editor.launch();
 	}*/
+
+	@Override
+	public void openPopup() {
+		System.out.println("InformationSpace=" + getInformationSpace());
+		System.out.println("TA=" + getTechnologyAdapter());
+		System.out.println("RC=" + getResourceCenter());
+		super.openPopup();
+	}
 }

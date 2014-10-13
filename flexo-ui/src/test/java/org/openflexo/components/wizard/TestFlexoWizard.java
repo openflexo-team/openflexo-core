@@ -1,6 +1,7 @@
 package org.openflexo.components.wizard;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,7 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * Test FlexoWizard
+ * Test Wizard
  * 
  * @author sylvain
  * 
@@ -27,7 +28,7 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 
 	static FlexoEditor editor;
 
-	private static FlexoWizard wizard;
+	private static Wizard wizard;
 	private static WizardStep step1;
 	private static WizardStep step2;
 	private static WizardStep step3;
@@ -42,21 +43,11 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void buildWizard() {
 
-		wizard = new FlexoWizard() {
-
-			@Override
-			public void performFinish() {
-				System.out.println("Finish");
-			}
-
-			@Override
-			public void performCancel() {
-				System.out.println("Cancel");
-			}
+		wizard = new FlexoWizard(null) {
 
 			@Override
 			public String getWizardTitle() {
-				return "FlexoWizard test";
+				return "Wizard test";
 			}
 
 		};
@@ -64,7 +55,16 @@ public class TestFlexoWizard extends OpenflexoFIBTestCase {
 		step1 = new WizardStep1();
 		wizard.addStep(step1);
 
+		step2 = new WizardStep2();
+		wizard.addStep(step2);
+
+		step3 = new WizardStep3();
+		wizard.addStep(step3);
+
 		assertFalse(step1.isValid());
+		assertFalse(step2.isValid());
+		assertTrue(step3.isValid());
+
 		assertFalse(wizard.canFinish());
 
 	}

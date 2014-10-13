@@ -19,104 +19,31 @@
  */
 package org.openflexo.components.wizard;
 
-import java.awt.Image;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.view.controller.FlexoController;
 
 /**
- * Abstract generic class used to encodes a wizard in Openflexo GUI environment.<br>
+ * Abstract generic class used to encodes a wizard in Openflexo GUI environment in the context of a {@link FlexoController}
  * 
- * A {@link FlexoWizard} is composed of some {@link WizardStep} which are sequentially executed.
  * 
  * @author guillaume, sylvain
  * 
  */
-public abstract class FlexoWizard {
+public abstract class FlexoWizard extends Wizard {
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoWizard.class.getPackage().getName());
 
-	private final List<WizardStep> steps;
+	private final FlexoController controller;
 
-	private WizardStep currentStep;
-
-	public FlexoWizard() {
-		steps = new ArrayList<WizardStep>();
+	public FlexoWizard(FlexoController controller) {
+		super();
+		this.controller = controller;
 	}
 
-	public void addStep(WizardStep step) {
-		if (step == null) {
-			return;
-		}
-		steps.add(step);
-		if (steps.size() == 1) {
-			currentStep = step;
-		}
+	public FlexoController getController() {
+		return controller;
 	}
-
-	public boolean canFinish() {
-		for (WizardStep page : steps) {
-			if (!page.isValid()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean needsPreviousAndNext() {
-		return steps.size() > 1;
-	}
-
-	public boolean isPreviousEnabled() {
-		return getPreviousStep(currentStep) != null;
-	}
-
-	public WizardStep getCurrentStep() {
-		return currentStep;
-	}
-
-	public void setCurrentStep(WizardStep currentPage) {
-		this.currentStep = currentPage;
-	}
-
-	public WizardStep getPreviousStep(WizardStep page) {
-		if (page.isPreviousEnabled() && steps.indexOf(page) > 0) {
-			return steps.get(steps.indexOf(page) - 1);
-		} else {
-			return null;
-		}
-	}
-
-	public boolean isNextEnabled() {
-		return getNextPage(currentStep) != null && currentStep.isValid();
-	}
-
-	public WizardStep getNextPage(WizardStep page) {
-		if (page.isNextEnabled() && steps.indexOf(page) > -1 && steps.indexOf(page) < steps.size() - 1) {
-			return steps.get(steps.indexOf(page) + 1);
-		} else {
-			return null;
-		}
-	}
-
-	public Image getPageImage() {
-		if (currentStep.getPageImage() != null) {
-			return currentStep.getPageImage();
-		} else {
-			return getDefaultPageImage();
-		}
-	}
-
-	public abstract String getWizardTitle();
-
-	public Image getDefaultPageImage() {
-		return null;
-	}
-
-	public abstract void performFinish();
-
-	public abstract void performCancel();
 
 }

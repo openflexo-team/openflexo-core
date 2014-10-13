@@ -23,26 +23,41 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 
 /**
- * Component displaying a FlexoWizard<br>
+ * Component displaying a Wizard<br>
  * Use GINA technology (component is declared in a FIB)
  * 
  * @author sylvain
  */
-public class WizardDialog extends FIBDialog<FlexoWizard> {
+public class WizardDialog extends FIBDialog<Wizard> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WizardDialog.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WizardPanel.fib");
 
-	public WizardDialog(FlexoWizard wizard) {
+	public WizardDialog(Wizard wizard) {
 		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), wizard, FlexoFrame.getActiveFrame(), true, FlexoLocalization
 				.getMainLocalizer());
+		if (wizard instanceof FlexoWizard) {
+			getController().setFlexoController(((FlexoWizard) wizard).getController());
+		}
+	}
+
+	@Override
+	public WizardPanelController getController() {
+		return (WizardPanelController) super.getController();
+	}
+
+	@Override
+	protected WizardPanelController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer) {
+		return new WizardPanelController(fibComponent);
 	}
 }

@@ -10,8 +10,8 @@ public class WizardPanelController extends FlexoFIBController {
 	}
 
 	@Override
-	public FlexoWizard getDataObject() {
-		return (FlexoWizard) super.getDataObject();
+	public Wizard getDataObject() {
+		return (Wizard) super.getDataObject();
 	}
 
 }

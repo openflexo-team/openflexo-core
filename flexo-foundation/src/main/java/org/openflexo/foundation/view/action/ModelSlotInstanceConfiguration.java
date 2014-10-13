@@ -32,6 +32,7 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.localization.FlexoLocalization;
 
 /**
  * This class is used to stored the configuration of a {@link ModelSlot} which has to be instantiated
@@ -131,8 +132,16 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	}
 
 	public void setOption(ModelSlotInstanceConfigurationOption option) {
-		this.option = option;
+		if (option != this.option) {
+			ModelSlotInstanceConfigurationOption oldValue = this.option;
+			this.option = option;
+			getPropertyChangeSupport().firePropertyChange("option", oldValue, option);
+		}
 	}
+
+	/*public void setOption(ModelSlotInstanceConfigurationOption option) {
+		this.option = option;
+	}*/
 
 	public abstract List<ModelSlotInstanceConfigurationOption> getAvailableOptions();
 
@@ -141,7 +150,11 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	}
 
 	public boolean isValidConfiguration() {
-		return option != null;
+		if (option == null) {
+			setErrorMessage(FlexoLocalization.localizedForKey("please_select_an_option"));
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -160,6 +173,14 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	public String getErrorMessage() {
 		isValidConfiguration();
 		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		if (!errorMessage.equals(this.errorMessage)) {
+			String oldValue = this.errorMessage;
+			this.errorMessage = errorMessage;
+			getPropertyChangeSupport().firePropertyChange("errorMessage", oldValue, errorMessage);
+		}
 	}
 
 	public abstract TechnologyAdapterResource<RD, ?> getResource();
