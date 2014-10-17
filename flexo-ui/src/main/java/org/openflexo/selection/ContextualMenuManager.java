@@ -48,8 +48,13 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
+import org.openflexo.foundation.view.action.DeletionSchemeActionType;
+import org.openflexo.foundation.view.action.NavigationSchemeActionType;
 import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.viewpoint.ActionScheme;
+import org.openflexo.foundation.viewpoint.DeletionScheme;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.action.EditionAction;
 
@@ -226,50 +231,29 @@ public class ContextualMenuManager {
 				}
 			}
 			if (focusedObject instanceof FlexoConceptInstance) {
-				FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
-				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
-					contextualMenu
-							.putAction(new SynchronizationSchemeActionType(epi.getFlexoConcept().getSynchronizationScheme(), epi));
-				}
-				if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
-					for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
-						contextualMenu.putAction(new ActionSchemeActionType(as, epi));
+				FlexoConceptInstance fci = (FlexoConceptInstance) focusedObject;
+				FlexoConcept commonConcept = fci.getFlexoConcept();
+				if (FlexoAction.isHomogeneousFlexoConceptInstanceSelection(focusedObject, _selectionManager.getSelection())) {
+					if (commonConcept.hasSynchronizationScheme()) {
+						contextualMenu.putAction(new SynchronizationSchemeActionType(commonConcept.getSynchronizationScheme(), fci));
+					}
+					if (commonConcept.hasActionScheme()) {
+						for (ActionScheme as : commonConcept.getActionSchemes()) {
+							contextualMenu.putAction(new ActionSchemeActionType(as, fci));
+						}
+					}
+					if (commonConcept.hasNavigationScheme()) {
+						for (NavigationScheme as : commonConcept.getNavigationSchemes()) {
+							contextualMenu.putAction(new NavigationSchemeActionType(as, fci));
+						}
+					}
+					if (commonConcept.hasDeletionScheme()) {
+						for (DeletionScheme ds : commonConcept.getDeletionSchemes()) {
+							contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
+						}
 					}
 				}
 			}
-				/*if (focusedObject instanceof FlexoObject) {
-					if (focusedObject.getFlexoConceptReferences() != null) {
-						for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
-							FlexoConceptInstance epi = ref.getObject();
-							if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
-								for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
-									contextualMenu.putAction(new ActionSchemeActionType(as, epi));
-								}
-							}
-						}
-						for (FlexoObjectReference<FlexoConceptInstance> ref : focusedObject.getFlexoConceptReferences()) {
-							FlexoConceptInstance epi = ref.getObject();
-							if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasNavigationScheme()) {
-								for (NavigationScheme ns : epi.getFlexoConcept().getNavigationSchemes()) {
-									contextualMenu.putAction(new NavigationSchemeActionType(ns, epi));
-								}
-							}
-						}
-					}
-				}*/
-				/*if (focusedObject instanceof FlexoConceptInstance) {
-					FlexoConceptInstance epi = (FlexoConceptInstance) focusedObject;
-					if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasSynchronizationScheme()) {
-						contextualMenu
-								.putAction(new SynchronizationSchemeActionType(epi.getFlexoConcept().getSynchronizationScheme(), epi));
-					}
-					if (epi != null && epi.getFlexoConcept() != null && epi.getFlexoConcept().hasActionScheme()) {
-						for (ActionScheme as : epi.getFlexoConcept().getActionSchemes()) {
-							contextualMenu.putAction(new ActionSchemeActionType(as, epi));
-						}
-					}
-				}*/
-			//}
 			_popupMenu = contextualMenu.makePopupMenu(focusedObject);
 		} else {
 			_popupMenu = new JPopupMenu();

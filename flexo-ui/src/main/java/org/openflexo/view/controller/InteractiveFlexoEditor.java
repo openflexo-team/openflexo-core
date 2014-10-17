@@ -54,6 +54,7 @@ import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
+import org.openflexo.foundation.view.action.DeletionSchemeActionType;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
@@ -111,9 +112,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	public <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(
 			final A action, final EventObject e) {
 		// NPE Protection
-		if (action != null ){
+		if (action != null) {
 			FlexoActionType<A, T1, T2> at = action.getActionType();
-			if (at != null){
+			if (at != null) {
 				if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 					return null;
 				}
@@ -127,13 +128,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 				executeAction(action, e);
 				return action;
-			}
-			else {
+			} else {
 				logger.warning("Action Type was NULL!");
 				return null;
 			}
-		}
-		else{
+		} else {
 			logger.warning("Action was NULL!");
 			return null;
 		}
@@ -143,7 +142,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			final A action, final EventObject event) {
 		final boolean progressIsShowing = ProgressWindow.hasInstance();
 		// If action is embedded and valid, we skip initializer
-		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true: runInitializer(action, event);
+		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
 			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
@@ -337,6 +336,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (actionType instanceof ActionSchemeActionType) {
 			return true;
 		}
+		if (actionType instanceof DeletionSchemeActionType) {
+			return true;
+		}
 		if (actionType.isEnabled(focusedObject, globalSelection)) {
 			ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
 			if (actionInitializer != null) {
@@ -379,6 +381,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (actionInitializer != null) {
 			return actionInitializer.getEnabledIcon();
 		}
+		if (actionType instanceof DeletionSchemeActionType) {
+			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
+		} else if (actionType instanceof ActionSchemeActionType) {
+			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
+		}
+
 		return null;
 	}
 

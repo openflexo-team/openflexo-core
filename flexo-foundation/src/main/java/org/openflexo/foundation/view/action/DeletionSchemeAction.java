@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
@@ -42,12 +40,9 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 
 	private static final Logger logger = Logger.getLogger(DeletionSchemeAction.class.getPackage().getName());
 
-	public static FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType = new FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>(
+	/*public static FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType = new FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>(
 			"delete_flexo_concept_instance", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
-		/**
-		 * Factory method
-		 */
 		@Override
 		public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
 				FlexoEditor editor) {
@@ -68,15 +63,30 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 
 	static {
 		FlexoObjectImpl.addActionForClass(actionType, FlexoConceptInstance.class);
+	}*/
+
+	private final DeletionSchemeActionType actionType;
+
+	public DeletionSchemeAction(DeletionSchemeActionType actionType, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionType, focusedObject, globalSelection, editor);
+		this.actionType = actionType;
+	}
+
+	public DeletionScheme getDeletionScheme() {
+		if (actionType != null) {
+			return actionType.getDeletionScheme();
+		}
+		return null;
 	}
 
 	private VirtualModelInstance vmInstance;
-	private DeletionScheme deletionScheme;
+	// private DeletionScheme deletionScheme;
 	private FlexoConceptInstance flexoConceptInstanceToDelete;
 
-	DeletionSchemeAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+	/*DeletionSchemeAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-	}
+	}*/
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
@@ -120,13 +130,13 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 		this.vmInstance = vmInstance;
 	}
 
-	public DeletionScheme getDeletionScheme() {
+	/*public DeletionScheme getDeletionScheme() {
 		return deletionScheme;
 	}
 
 	public void setDeletionScheme(DeletionScheme deletionScheme) {
 		this.deletionScheme = deletionScheme;
-	}
+	}*/
 
 	@Override
 	public DeletionScheme getEditionScheme() {

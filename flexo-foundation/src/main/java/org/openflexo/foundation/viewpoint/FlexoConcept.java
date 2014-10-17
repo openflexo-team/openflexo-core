@@ -39,12 +39,12 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
@@ -268,6 +268,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public boolean hasCreationScheme();
 
+	public boolean hasDeletionScheme();
+
 	public boolean hasSynchronizationScheme();
 
 	public boolean hasNavigationScheme();
@@ -407,8 +409,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "#" + getName();
-			}
-			else {
+			} else {
 				return "null#" + getName();
 			}
 		}
@@ -566,8 +567,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 					String behaviourname = uri.replace(getVirtualModel().getURI(), "").substring(1);
 					System.out.println("XTOF :: je récupère " + behaviourname);
 					return getFlexoBehaviour(behaviourname);
-				}
-				else {
+				} else {
 					logger.warning("Trying to retrieve a FlexoBehaviour (" + uri + ") that does not belong to current Concept " + getURI());
 					return null;
 				}
@@ -648,6 +648,16 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public boolean hasCreationScheme() {
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				if (es instanceof CreationScheme) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean hasDeletionScheme() {
+			for (FlexoBehaviour es : getFlexoBehaviours()) {
+				if (es instanceof DeletionScheme) {
 					return true;
 				}
 			}

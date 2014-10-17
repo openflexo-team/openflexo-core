@@ -30,6 +30,7 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.DeletionSchemeAction;
+import org.openflexo.foundation.view.action.DeletionSchemeActionType;
 import org.openflexo.foundation.view.action.FlexoBehaviourAction;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
@@ -276,7 +277,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 			logger.info("Perform performDeleteFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 
-			DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
+			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
 
 			try {
 				FlexoConceptInstance objectToDelete = (FlexoConceptInstance) getObject().getBindingValue(action);
@@ -286,9 +287,19 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 					logger.info("FlexoConceptInstance To Delete: " + objectToDelete);
 					logger.info("VirtualModelInstance: " + vmInstance);
+					logger.info("deletionScheme: " + deletionScheme);
+
+					if (deletionScheme == null) {
+						logger.warning("No deletion scheme !");
+						return objectToDelete;
+					}
+
+					DeletionSchemeActionType actionType = new DeletionSchemeActionType(deletionScheme, objectToDelete);
+					DeletionSchemeAction deletionSchemeAction = actionType.makeNewEmbeddedAction(objectToDelete, null, action);
+
 					deletionSchemeAction.setFlexoConceptInstanceToDelete(objectToDelete);
 					deletionSchemeAction.setVirtualModelInstance(vmInstance);
-					deletionSchemeAction.setDeletionScheme(getDeletionScheme());
+					// deletionSchemeAction.setDeletionScheme(getDeletionScheme());
 
 					for (DeleteFlexoConceptInstanceParameter p : getParameters()) {
 						FlexoBehaviourParameter param = p.getParam();
@@ -302,6 +313,12 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 					deletionSchemeAction.doAction();
 					// Finally delete the FlexoConcept
 					objectToDelete.delete();
+
+					if (deletionSchemeAction.hasActionExecutionSucceeded()) {
+						logger.info("Successfully performed performDeleteFlexoConcept " + action);
+						return deletionSchemeAction.getFlexoConceptInstance();
+					}
+
 				}
 
 			} catch (TypeMismatchException e1) {
@@ -310,10 +327,6 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
-			}
-			if (deletionSchemeAction.hasActionExecutionSucceeded()) {
-				logger.info("Successfully performed performDeleteFlexoConcept " + action);
-				return deletionSchemeAction.getFlexoConceptInstance();
 			}
 			return null;
 		}

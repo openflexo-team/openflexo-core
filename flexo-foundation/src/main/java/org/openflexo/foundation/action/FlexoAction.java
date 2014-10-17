@@ -33,6 +33,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -298,6 +300,28 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			v.add(focusedObject);
 		}
 		return v;
+	}
+
+	public static boolean isHomogeneousFlexoConceptInstanceSelection(FlexoObject focusedObject, Vector<FlexoObject> selection) {
+		if (focusedObject instanceof FlexoConceptInstance) {
+			// Flag indicating if the whole selection is composed of FlexoConceptInstance OF SAME TYPE (ie same FlexoConcept)
+			boolean isHomogeneousFlexoConceptInstanceSelection = true;
+			FlexoConceptInstance fci = (FlexoConceptInstance) focusedObject;
+			FlexoConcept commonConcept = fci.getFlexoConcept();
+			Vector<FlexoObject> globalSelection = getGlobalSelectionAndFocusedObject(focusedObject, selection);
+			for (FlexoObject o : globalSelection) {
+				if (!(o instanceof FlexoConceptInstance)) {
+					isHomogeneousFlexoConceptInstanceSelection = false;
+					break;
+				}
+				if (((FlexoConceptInstance) o).getFlexoConcept() != commonConcept) {
+					isHomogeneousFlexoConceptInstanceSelection = false;
+					break;
+				}
+			}
+			return isHomogeneousFlexoConceptInstanceSelection;
+		}
+		return false;
 	}
 
 	public FlexoEditor getEditor() {
