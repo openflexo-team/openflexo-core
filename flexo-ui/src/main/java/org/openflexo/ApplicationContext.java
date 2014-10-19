@@ -18,11 +18,13 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ProjectLoader;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.task.TaskManagerPanel;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -196,4 +198,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return null;
 	}
 
+	@Override
+	protected FlexoTaskManager createTaskManager() {
+		FlexoTaskManager returned = super.createTaskManager();
+		TaskManagerPanel taskManagerPanel = new TaskManagerPanel(returned);
+		return returned;
+	}
 }

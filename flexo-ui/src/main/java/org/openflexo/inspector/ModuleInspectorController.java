@@ -38,8 +38,10 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.fib.model.FIBWidget;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -127,6 +129,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 						if (logger.isLoggable(Level.FINE)) {
 							logger.fine("Loaded inspector: " + f.getRelativePath() + " for " + inspector.getDataClass());
 						}
+						Progress.progress(FlexoLocalization.localizedForKey("loaded_inspector") + " "
+								+ inspector.getDataClass().getSimpleName());
 					}
 				} else {
 					logger.warning("Not found: " + f.getURI());

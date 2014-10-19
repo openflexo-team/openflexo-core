@@ -34,10 +34,12 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
+import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.LoadProjectTask;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -94,19 +96,25 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 				while (true) {
 					if (chooser.showOpenDialog() == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 						FlexoEditor editor = null;
-						try {
-							editor = getController().getApplicationContext().getProjectLoader()
-									.loadProject(chooser.getSelectedFile(), true);
-						} catch (ProjectLoadingCancelledException e1) {
-							e1.printStackTrace();
-							// User chose not to load this project
-							return false;
-						} catch (ProjectInitializerException e1) {
-							e1.printStackTrace();
-							// Failed to load the project
-							FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-									+ e1.getProjectDirectory().getAbsolutePath());
+
+						LoadProjectTask loadProject = getController().getApplicationContext().getProjectLoader()
+								.loadProject(chooser.getSelectedFile(), true);
+						getController().getApplicationContext().getTaskManager().waitTask(loadProject);
+						if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
+							if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
+								loadProject.getThrownException().printStackTrace();
+								// User chose not to load this project
+								return false;
+							} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+								loadProject.getThrownException().printStackTrace();
+								// Failed to load the project
+								FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
+										+ chooser.getSelectedFile().getAbsolutePath());
+							}
 						}
+
+						editor = loadProject.getFlexoEditor();
+
 						if (editor == null) {
 							return false;
 						}

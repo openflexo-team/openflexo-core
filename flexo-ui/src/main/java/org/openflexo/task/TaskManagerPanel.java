@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.VerticalLayout;
 import org.openflexo.foundation.task.FlexoTask;
@@ -28,11 +29,12 @@ import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.toolbox.StringUtils;
 
 public class TaskManagerPanel extends JDialog implements PropertyChangeListener {
 
 	private static final int PREFERRED_HEIGHT = 50;
-	private static final int PREFERRED_WIDTH = 400;
+	private static final int PREFERRED_WIDTH = 800;
 
 	private final FlexoTaskManager taskManager;
 	private final JPanel contentPane;
@@ -101,6 +103,14 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 		if (!isVisible() && taskManager.getScheduledTasks().size() > 0) {
 			setVisible(true);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					requestFocusInWindow();
+					requestFocus();
+				}
+			});
+
 		}
 
 		updateSizeAndCenter();
@@ -189,12 +199,20 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 			setPreferredSize(new Dimension(200, 50));
 		}
 
+		private void updateStatusLabel() {
+			if (StringUtils.isEmpty(task.getCurrentStepName())) {
+				statusLabel.setText(task.getTaskStatus().getLocalizedName());
+			} else {
+				statusLabel.setText(task.getCurrentStepName());
+			}
+		}
+
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			if (evt.getSource() == task) {
 				if (evt.getPropertyName().equals(FlexoTask.TASK_STATUS_PROPERTY)) {
-					cancelButton.setEnabled(task.getTaskStatus() == TaskStatus.RUNNING);
-					statusLabel.setText(task.getTaskStatus().getLocalizedName());
+					cancelButton.setEnabled(task.getTaskStatus() == TaskStatus.RUNNING && task.isCancellable());
+					updateStatusLabel();
 					if (task.getTaskStatus() == TaskStatus.RUNNING) {
 						progressBar.setStringPainted(false);
 						progressBar.setIndeterminate(true);
@@ -214,6 +232,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 					progressBar.setValue(task.getCurrentProgress());
 				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_PROGRESS_PROPERTY)) {
 					progressBar.setValue(task.getCurrentProgress());
+				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
+					updateStatusLabel();
 				}
 			}
 		}

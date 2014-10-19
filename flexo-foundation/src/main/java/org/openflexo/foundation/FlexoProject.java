@@ -54,6 +54,7 @@ import org.openflexo.foundation.resource.ImportedProjectLoaded;
 import org.openflexo.foundation.resource.ProjectExternalRepository;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
@@ -177,6 +178,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	// TODO: add ProjectLoadingHandler to the parameters
 	public static FlexoEditor openProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException, ProjectLoadingCancelledException {
+
+		Progress.progress(FlexoLocalization.localizedForKey("opening_project") + aProjectDirectory.getAbsolutePath());
+
 		if (!aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory does not exists: " + aProjectDirectory, aProjectDirectory);
 		}
@@ -215,6 +219,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 
 		// We add the newly created project as a ResourceCenter
+		Progress.progress(FlexoLocalization.localizedForKey("scan_project_for_technology_adapters"));
 		serviceManager.getResourceCenterService().addToResourceCenters(project);
 
 		return editor;

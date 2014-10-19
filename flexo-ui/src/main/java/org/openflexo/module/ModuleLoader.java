@@ -42,6 +42,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.localization.FlexoLocalization;
@@ -379,7 +380,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 	private boolean ignoreSwitch = false;
 
-	public FlexoModule switchToModule(final Module module) throws ModuleLoadingException {
+	public LoadModuleTask switchToModule(final Module module) throws ModuleLoadingException {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -394,8 +395,21 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			return null;
 		}
 		if (ignoreSwitch || activeModule != null && activeModule.getModule() == module) {
-			return activeModule;
+			return null;
 		}
+
+		if (module.isLoaded()) {
+			performSwitchToModule(module);
+			return null;
+		} else {
+			LoadModuleTask task = new LoadModuleTask(this, module);
+			getServiceManager().getTaskManager().scheduleExecution(task);
+			return task;
+		}
+	}
+
+	protected FlexoModule performSwitchToModule(final Module module) throws ModuleLoadingException {
+
 		ignoreSwitch = true;
 		activatingModule = module;
 		try {
@@ -404,6 +418,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			}
 			FlexoModule moduleInstance = getModuleInstance(module);
 			if (moduleInstance != null) {
+				Progress.progress("activate_module");
 				FlexoModule old = activeModule;
 				if (activeModule != null) {
 					if (activeModule.getController() != null && activeModule.getController().getControllerModel() != null) {

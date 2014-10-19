@@ -14,7 +14,7 @@ public class InfiniteTask extends FlexoTask {
 	}
 
 	@Override
-	public void run() {
+	public void performTask() {
 
 		Progress.setExpectedProgressSteps(1000);
 
@@ -85,5 +85,10 @@ public class InfiniteTask extends FlexoTask {
 		//	interrupt();
 		//}
 	}*/
+
+	@Override
+	public boolean isCancellable() {
+		return true;
+	}
 
 }

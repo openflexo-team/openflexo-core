@@ -29,4 +29,11 @@ public class Progress {
 			((FlexoTaskThread) currentThread).getTask().progress();
 		}
 	}
+
+	public static void progress(String stepName) {
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof FlexoTaskThread) {
+			((FlexoTaskThread) currentThread).getTask().progress(stepName);
+		}
+	}
 }

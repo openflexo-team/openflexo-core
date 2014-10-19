@@ -40,8 +40,6 @@ import javax.swing.SwingConstants;
 import org.openflexo.GeneralPreferences;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.utils.ProjectInitializerException;
-import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoAutoSaveThread.FlexoAutoSaveFile;
@@ -246,15 +244,15 @@ public class AutoSaveService implements PropertyChangeListener {
 		if (progress != null) {
 			progress.hideWindow();
 		}
-		try {
-			projectLoader.loadProject(projectDirectory);
-		} catch (ProjectLoadingCancelledException e) {
+		// try {
+		projectLoader.loadProject(projectDirectory);
+		/*} catch (ProjectLoadingCancelledException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ProjectInitializerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override

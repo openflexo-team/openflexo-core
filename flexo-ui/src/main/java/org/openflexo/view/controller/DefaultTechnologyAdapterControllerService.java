@@ -9,9 +9,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;
@@ -124,6 +126,8 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer
 			// The newly loaded module will be able to provide all tooling provided by the technology adapter
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
+				Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+						+ adapterController.getTechnologyAdapter().getName());
 				adapterController.initializeActions(((ModuleLoaded) notification).getLoadedModule().getController()
 						.getControllerActionInitializer());
 			}

@@ -28,6 +28,8 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.task.FlexoTaskManager;
+import org.openflexo.foundation.task.ThreadPoolFlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -47,6 +49,9 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 		FlexoEditingContext editingContext = createEditingContext();
 		registerService(editingContext);
+
+		FlexoTaskManager taskManager = createTaskManager();
+		registerService(taskManager);
 
 		ResourceManager resourceManager = createResourceManager();
 		registerService(resourceManager);
@@ -104,6 +109,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	@Override
 	protected InformationSpace createInformationSpace() {
 		return new InformationSpace();
+	}
+
+	@Override
+	protected FlexoTaskManager createTaskManager() {
+		return ThreadPoolFlexoTaskManager.createInstance();
 	}
 
 	@Override

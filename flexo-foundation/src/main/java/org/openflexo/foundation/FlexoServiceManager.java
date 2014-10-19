@@ -29,6 +29,7 @@ import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceManager;
+import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
@@ -141,6 +142,10 @@ public abstract class FlexoServiceManager {
 		return getService(ResourceManager.class);
 	}
 
+	public FlexoTaskManager getTaskManager() {
+		return getService(FlexoTaskManager.class);
+	}
+
 	public class ServiceRegistered implements ServiceNotification {
 	}
 
@@ -161,5 +166,7 @@ public abstract class FlexoServiceManager {
 	protected abstract InformationSpace createInformationSpace();
 
 	protected abstract ResourceManager createResourceManager();
+
+	protected abstract FlexoTaskManager createTaskManager();
 
 }

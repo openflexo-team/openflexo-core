@@ -8,11 +8,11 @@ public class FlexoTaskThread extends Thread {
 		super(group, r, name, stackSize);
 	}
 
-	public FlexoTask getTask() {
+	public synchronized FlexoTask getTask() {
 		return task;
 	}
 
-	public void setTask(FlexoTask task) {
+	public synchronized void setTask(FlexoTask task) {
 		this.task = task;
 	}
 

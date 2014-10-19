@@ -54,6 +54,7 @@ import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
 import org.openflexo.components.WelcomeDialog;
 import org.openflexo.fib.controller.FIBController.Status;
+import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -61,6 +62,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLoggingFormatter;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
+import org.openflexo.module.LoadProjectTask;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
@@ -327,15 +329,21 @@ public class Flexo {
 					}
 				}
 				applicationContext.getModuleLoader().switchToModule(module);
-				applicationContext.getProjectLoader().loadProject(projectDirectory);
-			} catch (ProjectLoadingCancelledException e) {
-				// project need a conversion, but user cancelled the conversion.
-				showWelcomDialog(applicationContext, null);
-			} catch (ProjectInitializerException e) {
-				e.printStackTrace();
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-						+ e.getProjectDirectory().getAbsolutePath());
-				showWelcomDialog(applicationContext, null);
+
+				LoadProjectTask loadProject = applicationContext.getProjectLoader().loadProject(projectDirectory);
+				applicationContext.getTaskManager().waitTask(loadProject);
+				if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
+					if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
+						// project need a conversion, but user cancelled the conversion.
+						showWelcomDialog(applicationContext, null);
+					} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+						loadProject.getThrownException().printStackTrace();
+						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
+								+ projectDirectory.getAbsolutePath());
+						showWelcomDialog(applicationContext, null);
+					}
+				}
+
 			} catch (ModuleLoadingException e) {
 				e.printStackTrace();
 				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());

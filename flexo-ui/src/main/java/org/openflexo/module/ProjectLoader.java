@@ -1,5 +1,6 @@
 /*
- * (c) Copyright 2010-2011 AgileBirds
+ * (c) Copyright 2014-2015 Openflexo
+ * (c) Copyright 2010-2013 AgileBirds
  *
  * This file is part of OpenFlexo.
  *
@@ -29,7 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -40,14 +40,11 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
-import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.foundation.utils.FlexoProjectUtil;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.utils.ProjectInitializerException;
-import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.foundation.utils.UnreadableProjectException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -57,17 +54,17 @@ import org.openflexo.view.controller.InteractiveFlexoEditor;
 
 public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChangeSupport, FlexoService {
 
+	private static final Logger logger = Logger.getLogger(ProjectLoader.class.getPackage().getName());
+
 	public static final String PROJECT_OPENED = "projectOpened";
 	public static final String PROJECT_CLOSED = "projectClosed";
-
-	private static final Logger logger = Logger.getLogger(ModuleLoader.class.getPackage().getName());
 
 	private static final String FOR_FLEXO_SERVER = "_forFlexoServer_";
 	public static final String EDITOR_ADDED = "editorAdded";
 	public static final String EDITOR_REMOVED = "editorRemoved";
 	public static final String ROOT_PROJECTS = "rootProjects";
 
-	private final Map<FlexoProject, FlexoEditor> editors;
+	protected final Map<FlexoProject, FlexoEditor> editors;
 
 	private final Map<FlexoProject, AutoSaveService> autoSaveServices;
 
@@ -113,8 +110,8 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		return false;
 	}
 
-	public FlexoEditor loadProject(File projectDirectory) throws ProjectLoadingCancelledException, ProjectInitializerException {
-		return loadProject(projectDirectory, false);
+	public LoadProjectTask loadProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
+		return loadProject(projectDirectory, false, tasksToBeExecutedBefore);
 	}
 
 	/**
@@ -129,8 +126,16 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 *             whenever the load procedure is interrupted by the user or by Flexo.
 	 * @throws ProjectInitializerException
 	 */
-	public FlexoEditor loadProject(File projectDirectory, boolean asImportedProject) throws ProjectLoadingCancelledException,
-			ProjectInitializerException {
+	public LoadProjectTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore) {
+
+		LoadProjectTask returned = new LoadProjectTask(this, projectDirectory, asImportedProject);
+		for (FlexoTask task : tasksToBeExecutedBefore) {
+			returned.addToDependantTasks(task);
+		}
+		getServiceManager().getTaskManager().scheduleExecution(returned);
+		return returned;
+
+		/*
 		if (projectDirectory == null) {
 			throw new IllegalArgumentException("Project directory cannot be null");
 		}
@@ -178,20 +183,29 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
 
 		return editor;
+		 */
 	}
 
-	public void reloadProject(FlexoProject project) throws ProjectLoadingCancelledException, ProjectInitializerException {
+	public LoadProjectTask reloadProject(FlexoProject project) {
 		File projectDirectory = project.getProjectDirectory();
 		closeProject(project);
-		loadProject(projectDirectory);
+		return loadProject(projectDirectory);
 	}
 
-	public FlexoEditor newProject(File projectDirectory) throws ProjectInitializerException {
-		return newProject(projectDirectory, null);
+	public NewProjectTask newProject(File projectDirectory, FlexoTask... tasksToBeExecutedBefore) {
+		return newProject(projectDirectory, null, tasksToBeExecutedBefore);
 	}
 
-	public FlexoEditor newProject(File projectDirectory, ProjectNature<?, ?> projectNature) throws ProjectInitializerException {
-		if (!ProgressWindow.hasInstance()) {
+	public NewProjectTask newProject(File projectDirectory, ProjectNature<?, ?> projectNature, FlexoTask... tasksToBeExecutedBefore) {
+
+		NewProjectTask returned = new NewProjectTask(this, projectDirectory, projectNature);
+		for (FlexoTask task : tasksToBeExecutedBefore) {
+			returned.addToDependantTasks(task);
+		}
+		getServiceManager().getTaskManager().scheduleExecution(returned);
+		return returned;
+
+		/*if (!ProgressWindow.hasInstance()) {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("building_new_project"), 10);
 		} else {
 			ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("building_new_project"));
@@ -212,11 +226,11 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			return editor;
 		} finally {
 			ProgressWindow.hideProgressWindow();
-		}
+		}*/
 
 	}
 
-	private void newEditor(FlexoEditor editor) {
+	protected void newEditor(FlexoEditor editor) {
 		editors.put(editor.getProject(), editor);
 		if (getServiceManager().isAutoSaveServiceEnabled()) {
 			autoSaveServices.put(editor.getProject(), new AutoSaveService(this, editor.getProject()));
@@ -460,7 +474,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		return rootProjects;
 	}
 
-	private void addToRootProjects(FlexoProject project) {
+	protected void addToRootProjects(FlexoProject project) {
 		if (!rootProjects.contains(project)) {
 			rootProjects.add(project);
 			getPropertyChangeSupport().firePropertyChange(PROJECT_OPENED, null, project);
@@ -537,7 +551,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 	}
 
-	private void preInitialization(File projectDirectory) {
+	protected void preInitialization(File projectDirectory) {
 		getServiceManager().getGeneralPreferences().addToLastOpenedProjects(projectDirectory);
 		getServiceManager().getPreferencesService().savePreferences();
 	}

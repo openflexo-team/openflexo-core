@@ -15,6 +15,7 @@ import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
@@ -72,16 +73,20 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 				return null;
 			}
 			FlexoEditor editor = null;
-			try {
-				editor = getServiceManager().getProjectLoader().loadProject(selectedFile, true);
-			} catch (ProjectLoadingCancelledException e) {
-				return null;
-			} catch (ProjectInitializerException e) {
-				e.printStackTrace();
-				if (!retrievedFromResourceCenter) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_project_at") + " "
-							+ selectedFile.getAbsolutePath());
-					selectedFile = null;
+			LoadProjectTask loadProject = getServiceManager().getProjectLoader().loadProject(selectedFile, true);
+			getServiceManager().getTaskManager().waitTask(loadProject);
+			if (loadProject.getTaskStatus() == TaskStatus.FINISHED) {
+				editor = loadProject.getFlexoEditor();
+			} else if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
+				if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
+					return null;
+				} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+					loadProject.getThrownException().printStackTrace();
+					if (!retrievedFromResourceCenter) {
+						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_project_at") + " "
+								+ selectedFile.getAbsolutePath());
+						selectedFile = null;
+					}
 				}
 			}
 			FlexoProject project = editor.getProject();

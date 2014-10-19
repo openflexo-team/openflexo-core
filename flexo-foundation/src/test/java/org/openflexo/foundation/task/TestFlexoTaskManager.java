@@ -10,7 +10,7 @@ public class TestFlexoTaskManager {
 
 	public static void main(String[] args) {
 
-		final FlexoTaskManager taskManager = new FlexoTaskManager();
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance();
 
 		for (int i = 0; i < 10; i++) {
 			ExampleTask task = new ExampleTask("ExampleTask" + i);
@@ -31,7 +31,7 @@ public class TestFlexoTaskManager {
 		ExampleTask[] tasks = new ExampleTask[5];
 
 		// Instanciate a TaskManager with a thread pool of 3 threads
-		final FlexoTaskManager taskManager = new FlexoTaskManager(3);
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance(3);
 
 		// Launch the threads
 		for (int i = 0; i < 5; i++) {
@@ -108,7 +108,7 @@ public class TestFlexoTaskManager {
 		ExampleTask[] tasks = new ExampleTask[8];
 
 		// Instanciate a TaskManager with a thread pool of 3 threads
-		final FlexoTaskManager taskManager = new FlexoTaskManager(3);
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance(3);
 
 		// Launch the threads
 		for (int i = 0; i < 5; i++) {
@@ -216,7 +216,7 @@ public class TestFlexoTaskManager {
 		ExampleTask[] tasks = new ExampleTask[5];
 
 		// Instanciate a TaskManager with a thread pool of 3 threads
-		final FlexoTaskManager taskManager = new FlexoTaskManager(3);
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance(3);
 
 		// Launch the threads
 		for (int i = 0; i < 5; i++) {
@@ -270,4 +270,74 @@ public class TestFlexoTaskManager {
 
 	}
 
+	/**
+	 * First basic test<br>
+	 * We schedule some sequential tasks
+	 */
+	@Test
+	public void test4() {
+
+		// Instanciate a TaskManager with a thread pool of 3 threads
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance(3);
+
+		ExampleTask sequentialTask1 = new ExampleTask("SequentialTask1");
+		ExampleTask sequentialTask2 = new ExampleTask("SequentialTask2");
+		ExampleTask sequentialTask3 = new ExampleTask("SequentialTask3");
+		taskManager.scheduleExecution(sequentialTask1, sequentialTask2, sequentialTask3);
+
+		// Let the threads be started
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(TaskStatus.RUNNING, sequentialTask1.getTaskStatus());
+		assertEquals(TaskStatus.WAITING, sequentialTask2.getTaskStatus());
+		assertEquals(TaskStatus.WAITING, sequentialTask3.getTaskStatus());
+
+		taskManager.waitTask(sequentialTask1);
+
+		assertEquals(TaskStatus.FINISHED, sequentialTask1.getTaskStatus());
+		assertEquals(TaskStatus.RUNNING, sequentialTask2.getTaskStatus());
+		assertEquals(TaskStatus.WAITING, sequentialTask3.getTaskStatus());
+
+		taskManager.waitTask(sequentialTask2);
+
+		assertEquals(TaskStatus.FINISHED, sequentialTask1.getTaskStatus());
+		assertEquals(TaskStatus.FINISHED, sequentialTask2.getTaskStatus());
+		assertEquals(TaskStatus.RUNNING, sequentialTask3.getTaskStatus());
+
+		taskManager.waitTask(sequentialTask3);
+
+		assertEquals(TaskStatus.FINISHED, sequentialTask1.getTaskStatus());
+		assertEquals(TaskStatus.FINISHED, sequentialTask2.getTaskStatus());
+		assertEquals(TaskStatus.FINISHED, sequentialTask3.getTaskStatus());
+
+		taskManager.shutdownAndWait();
+
+		assertTrue(taskManager.isTerminated());
+
+	}
+
+	/**
+	 * First basic test<br>
+	 * We schedule a task which execution throws an exception
+	 */
+	@Test
+	public void test5() {
+
+		// Instanciate a TaskManager with a thread pool of 3 threads
+		final FlexoTaskManager taskManager = ThreadPoolFlexoTaskManager.createInstance(3);
+
+		ErrorTask task = new ErrorTask("ErrorTask");
+		taskManager.scheduleExecution(task);
+
+		taskManager.waitTask(task);
+
+		assertEquals(TaskStatus.EXCEPTION_THROWN, task.getTaskStatus());
+
+		assertTrue(task.getThrownException() instanceof ArrayIndexOutOfBoundsException);
+
+	}
 }
