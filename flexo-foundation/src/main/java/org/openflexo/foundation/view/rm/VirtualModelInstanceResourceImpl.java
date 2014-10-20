@@ -15,6 +15,8 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -25,6 +27,7 @@ import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
@@ -55,17 +58,21 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	public static VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel, View view) {
 		try {
-			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = name;
-			File xmlFile = new File(((ViewResource) view.getResource()).getFile().getParentFile(), baseName
+			
+			FileFlexoIODelegate delegate = (FileFlexoIODelegate)((ViewResource) view.getResource()).getFlexoIODelegate();
+			
+			File xmlFile = new File(delegate.getFile().getParentFile(), baseName
 					+ VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setProject(view.getProject());
 			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getProject().getServiceManager().getEditingContext(),
 					view.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.setName(name);
-			returned.setFile(xmlFile);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
 
@@ -83,18 +90,26 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile, ViewResource viewResource) {
 		try {
-			ModelFactory factory = new ModelFactory(VirtualModelInstanceResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = virtualModelInstanceFile.getName().substring(0,
 					virtualModelInstanceFile.getName().length() - VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX.length());
-			File xmlFile = new File(viewResource.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
+			
+
+			FileFlexoIODelegate delegate = (FileFlexoIODelegate)(viewResource.getFlexoIODelegate());
+			
+			
+			File xmlFile = new File(delegate.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			returned.setFlexoIODelegate(fileIODelegate);
+			fileIODelegate.setFile(xmlFile);
 			returned.setProject(viewResource.getProject());
 			returned.setFactory(new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager()
 					.getEditingContext(), viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.setName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
-			returned.setFile(xmlFile);
 			VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(xmlFile, "VirtualModelInstance");
 			if (vmiInfo == null) {
 				// Unable to retrieve infos, just abort

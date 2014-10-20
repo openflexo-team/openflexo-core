@@ -16,6 +16,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceDefinition;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
@@ -23,6 +24,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.RequiredResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SomeResources;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.ViewLibrary;
@@ -30,8 +32,11 @@ import org.openflexo.foundation.view.ViewModelFactory;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
@@ -58,7 +63,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			ViewLibrary viewLibrary) {
 		try {
 			File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
-			ModelFactory factory = new ModelFactory(ViewResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = name;
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -66,8 +71,15 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setProject(viewLibrary.getProject());
 			returned.setVersion(new FlexoVersion("1.0"));
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + name);
-			returned.setFile(xmlFile);
-			returned.setDirectory(viewDirectory);
+			//returned.setFile(xmlFile);
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
+			
+			//returned.setFile(viewDirectory);
+
+			//returned.setDirectory(viewDirectory);
+			returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
+			
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
@@ -84,7 +96,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 
 	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource> folder, ViewLibrary viewLibrary) {
 		try {
-			ModelFactory factory = new ModelFactory(ViewResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -93,8 +105,12 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			returned.setFile(xmlFile);
-			returned.setDirectory(viewDirectory);
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
+			//returned.setFile(xmlFile);
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
+			
+			//returned.setDirectory(viewDirectory);
+			returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
 			returned.setName(vpi.name);
 
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + vpi.name);
@@ -130,7 +146,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		}
 		return null;
 	}
-
+	
 	@Override
 	public View getView() {
 		try {
@@ -245,15 +261,16 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return null;
 	}
 
-	@Override
+	// Covered by IODelegate
+	/*@Override
 	public synchronized boolean hasWritePermission() {
 		return true;
-	}
+	}*/
 
 	@Override
 	public boolean delete() {
 		if (super.delete()) {
-			getServiceManager().getResourceManager().addToFilesToDelete(getDirectory());
+			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
 		return false;
