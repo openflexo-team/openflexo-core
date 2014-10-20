@@ -18,7 +18,7 @@ import org.openflexo.model.factory.DeletableProxyObject;
 @XMLElement
 @ImplementationClass(FlexoProjectReferenceImpl.class)
 @Modify(forward = FlexoProjectReference.PROJECT_DATA)
-public interface FlexoProjectReference extends AccessibleProxyObject, DeletableProxyObject, FlexoFileResource<FlexoProject> {
+public interface FlexoProjectReference extends AccessibleProxyObject, DeletableProxyObject, FlexoResource<FlexoProject> {
 
 	public static final String PROJECT_DATA = "projectData";
 	public static final String REFERRING_PROJECT = "referringProject";

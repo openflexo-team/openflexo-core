@@ -137,12 +137,14 @@ public abstract class FlexoProjectReferenceImpl implements FlexoProjectReference
 		return (Long) performSuperGetter(REVISION);
 	}
 
-	@Override
 	public File getFile() {
 		if (getReferredProject() != null) {
 			return getReferredProject().getProjectDirectory();
+		}else {
+			return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile();
 		}
-		return (File) performSuperGetter(FILE);
+		
+		//return (File) performSuperGetter(FILE);
 	}
 
 	@Override

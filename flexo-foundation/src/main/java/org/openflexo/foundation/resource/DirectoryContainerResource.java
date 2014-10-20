@@ -9,6 +9,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.converter.RelativePathFileConverter;
+import org.openflexo.rm.Resource;
 
 /**
  * A {@link DirectoryContainerResource} is a resource bound to a directory on file system<br>
@@ -24,7 +25,7 @@ import org.openflexo.model.converter.RelativePathFileConverter;
  */
 @ModelEntity
 @XMLElement
-public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends FlexoFileResource<RD> {
+public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends FlexoResource<RD> {
 
 	public static final String DIRECTORY = "directory";
 	public static final String RELATIVE_FILE_PATH_CONVERTER = "relativePathFileConverter";
@@ -36,13 +37,13 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 */
 	@Getter(DIRECTORY)
 	@XmlAttribute
-	public File getDirectory();
+	public Resource getDirectory();
 
 	/**
 	 * Sets the directory (parent file)
 	 */
 	@Setter(DIRECTORY)
-	public void setDirectory(File file);
+	public void setDirectory(Resource resource);
 
 	/**
 	 * Return the relative file path converter associated with the directory location

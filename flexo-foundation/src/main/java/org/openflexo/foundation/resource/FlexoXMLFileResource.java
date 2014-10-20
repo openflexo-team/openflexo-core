@@ -21,7 +21,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @XMLElement
 @Deprecated
 /* use PamelaResource instead */
-public interface FlexoXMLFileResource<RD extends ResourceData<RD>> extends FlexoFileResource<RD> {
+public interface FlexoXMLFileResource<RD extends ResourceData<RD>> extends FlexoResource<RD> {
 
 	public static final String MODEL_VERSION = "modelVersion";
 

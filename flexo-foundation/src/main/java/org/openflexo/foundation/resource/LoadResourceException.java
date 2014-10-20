@@ -30,20 +30,20 @@ import org.openflexo.foundation.FlexoException;
 @SuppressWarnings("serial")
 public abstract class LoadResourceException extends FlexoException {
 
-	protected FlexoFileResource<?> fileResource;
+	protected FlexoResource<?> resource;
 
-	public LoadResourceException(FlexoFileResource<?> fileResource, String message) {
+	public LoadResourceException(FlexoResource<?> resource, String message) {
 		super(message);
-		this.fileResource = fileResource;
+		this.resource = resource;
 	}
 
 	@Override
 	public String getMessage() {
 		String msg = super.getMessage();
-		return "LoadResourceException: resource " + fileResource.getURI() + (msg != null ? "\n" + msg : "");
+		return "LoadResourceException: resource " + resource.getURI() + (msg != null ? "\n" + msg : "");
 	}
 
-	public FlexoFileResource<?> getFileResource() {
-		return fileResource;
+	public FlexoResource<?> getResource() {
+		return resource;
 	}
 }

@@ -39,6 +39,7 @@ import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.viewpoint.ViewPointFileBasedRepository;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -54,7 +55,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoFileResource<?>> implements
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements
 		FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
@@ -83,10 +84,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public ViewPointRepository getViewPointRepository() {
+	public ViewPointFileBasedRepository getViewPointRepository() {
 		if (technologyAdapterService != null) {
 			VirtualModelTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
-			return getRepository(ViewPointRepository.class, vmTA);
+			return getRepository(ViewPointFileBasedRepository.class, vmTA);
 		}
 		return null;
 	}

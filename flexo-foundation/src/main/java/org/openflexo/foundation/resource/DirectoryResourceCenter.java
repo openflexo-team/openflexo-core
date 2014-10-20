@@ -93,7 +93,7 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	@Override
-	public Collection<FlexoFileResource<?>> getAllResources(IProgress progress) {
+	public Collection<FlexoResource<?>> getAllResources(IProgress progress) {
 		return getAllResources();
 	}
 

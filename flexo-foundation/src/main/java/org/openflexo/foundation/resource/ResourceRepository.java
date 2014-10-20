@@ -212,12 +212,12 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 		if (getParentFolder(resource) == fromFolder) {
 			fromFolder.removeFromResources(resource);
 			toFolder.addToResources(resource);
-			if (resource instanceof FlexoFileResource) {
-				File fromFile = ((FlexoFileResource) resource).getFile();
+			if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+				File fromFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				File toFile = new File(toFolder.getFile(), fromFile.getName());
 				try {
 					FileUtils.rename(fromFile, toFile);
-					((FlexoFileResource) resource).setFile(toFile);
+					((FileFlexoIODelegate) resource.getFlexoIODelegate()).setFile(toFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -10,7 +10,7 @@ import java.io.File;
  * @author Sylvain
  * 
  */
-public abstract class FlexoXMLFileResourceImpl<RD extends ResourceData<RD>> extends FlexoFileResourceImpl<RD> implements
+public abstract class FlexoXMLFileResourceImpl<RD extends ResourceData<RD>> extends FlexoResourceImpl<RD> implements
 		FlexoXMLFileResource<RD> {
 
 	/*private boolean isLoading = false;

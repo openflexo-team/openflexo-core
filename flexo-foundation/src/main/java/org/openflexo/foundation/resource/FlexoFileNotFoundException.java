@@ -28,14 +28,15 @@ package org.openflexo.foundation.resource;
 @SuppressWarnings("serial")
 public class FlexoFileNotFoundException extends LoadResourceException {
 
-	public FlexoFileNotFoundException(FlexoFileResource<?> fileResource) {
+	public FlexoFileNotFoundException(FlexoResource<?> fileResource) {
 		super(fileResource, null);
 	}
 
 	@Override
 	public String getMessage() {
 		String msg = super.getMessage();
-		return "LoadResourceException: resource " + fileResource.getURI() + " file=" + fileResource.getFile() + " "
+		FileFlexoIODelegate delegate = (FileFlexoIODelegate)(getResource().getFlexoIODelegate());
+		return "LoadResourceException: resource " + getResource().getURI() + " file=" + delegate.getFile() + " "
 				+ (msg != null ? "\n" + msg : "");
 	}
 

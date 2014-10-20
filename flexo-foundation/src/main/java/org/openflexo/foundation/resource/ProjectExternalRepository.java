@@ -129,7 +129,7 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 	}
 
 	// TODO: reimplement this
-	public List<FlexoFileResource<?>> getRelatedResources() {
+	public List<FlexoResource<?>> getRelatedResources() {
 		/*List<FlexoFileResource<?>> returned = new Vector<FlexoFileResource<?>>();
 		for (FlexoResource<?> resource : getProject().getServiceManager().getResourceManager().getRegisteredResources()) {
 			if (resource instanceof FlexoFileResource) {
@@ -149,7 +149,7 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 	}
 
 	// TODO: reimplement this
-	public List<FlexoFileResource<?>> getRelatedActiveResources() {
+	public List<FlexoResource<?>> getRelatedActiveResources() {
 		/*List<FlexoFileResource<? extends FlexoResourceData>> returned = new Vector<FlexoFileResource<? extends FlexoResourceData>>();
 		for (FlexoFileResource<? extends FlexoResourceData> resource : getRelatedResources()) {
 			if (resource.isActive()) {

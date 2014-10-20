@@ -78,8 +78,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		return resources;
 	}
 
-	public List<FlexoFileResource<?>> getRegisteredFileResources() {
-		return (List<FlexoFileResource<?>>) getRegisteredResources(FlexoFileResource.class);
+	public List<FlexoResource<?>> getRegisteredFileResources() {
+		return (List<FlexoResource<?>>) getRegisteredResources(FlexoResource.class);
 	}
 
 	public <R extends FlexoResource<?>> List<? extends R> getRegisteredResources(Class<R> resourceClass) {
