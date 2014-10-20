@@ -108,7 +108,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in view " + getFocusedObject());
 
-		System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
+		//System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
+		System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getURI());
 
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
 			System.out.println("*** ModelSlot: " + ms);
