@@ -1,13 +1,16 @@
 package org.openflexo.foundation;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
-import org.openflexo.foundation.resource.FlexoFileResource;
-import org.openflexo.foundation.resource.FlexoFileResourceImpl;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoProjectResource;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -24,7 +27,7 @@ import org.openflexo.toolbox.IProgress;
  */
 @ModelEntity
 @ImplementationClass(ProjectDirectoryResourceImpl.class)
-public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProject>, FlexoFileResource<FlexoProject> {
+public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProject>, FlexoResource<FlexoProject> {
 
 	/**
 	 * Default implementation for {@link ProjectDataResource}
@@ -33,20 +36,23 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class ProjectDirectoryResourceImpl extends FlexoFileResourceImpl<FlexoProject> implements
+	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject> implements
 			ProjectDirectoryResource {
 
 		public static ProjectDirectoryResource makeProjectDirectoryResource(FlexoProject project) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ProjectDirectoryResource.class);
+				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+						FileFlexoIODelegate.class,ProjectDirectoryResource.class));
 				ProjectDirectoryResource returned = resourceFactory.newInstance(ProjectDirectoryResource.class);
 				returned.setProject(project);
 				returned.setName(project.getProjectName());
-				returned.setFile(project.getProjectDirectory());
+				FileFlexoIODelegate fileIODelegate = resourceFactory.newInstance(FileFlexoIODelegate.class) ;
+				returned.setFlexoIODelegate(fileIODelegate);
+				fileIODelegate.setFile(project.getProjectDirectory());
 				returned.setURI(project.getURI());
 				returned.setServiceManager(project.getServiceManager());
-				if (!returned.getFile().exists()) {
-					returned.getFile().mkdirs();
+				if (!(fileIODelegate.getFile()).exists()) {
+					fileIODelegate.getFile().mkdirs();
 				}
 				returned.setResourceData(project);
 				project.getViewLibrary();
@@ -89,6 +95,13 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 				FileNotFoundException, FlexoException {
 			// TODO Auto-generated method stub
 			return null;
+		}
+		
+		private File getFile(){
+			return getFileFlexoIODelegate().getFile();
+		}
+		private FileFlexoIODelegate getFileFlexoIODelegate(){
+			return (FileFlexoIODelegate) getFlexoIODelegate();
 		}
 	}
 
