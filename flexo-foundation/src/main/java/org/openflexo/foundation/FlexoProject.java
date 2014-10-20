@@ -46,7 +46,6 @@ import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;
 import org.openflexo.foundation.resource.ExternalRepositorySet;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
-import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -494,7 +493,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 * Return a collection of all resources that are part of this project
 	 */
 	@Override
-	public Collection<FlexoFileResource<?>> getAllResources() {
+	public Collection<FlexoResource<?>> getAllResources() {
 		return super.getAllResources();
 	}
 
