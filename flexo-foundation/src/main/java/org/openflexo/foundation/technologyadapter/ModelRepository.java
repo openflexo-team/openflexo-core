@@ -21,7 +21,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.io.File;
 
-import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceRepository;
 
@@ -34,7 +34,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA> & FlexoFileResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
 		extends TechnologyAdapterFileResourceRepository<R, TA, M> {
 
 	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {

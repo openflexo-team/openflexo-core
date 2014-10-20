@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FileResourceRepository;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
-import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
@@ -38,7 +38,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoFileResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
+public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
 		extends FileResourceRepository<R> {
 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterFileResourceRepository.class.getPackage().getName());
