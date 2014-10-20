@@ -7,8 +7,11 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.ProjectDataResource;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.IProgress;
@@ -27,11 +30,12 @@ public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<D
 
 	public static DocResourceCenterResource retrieveDocResourceCenterResource(DocResourceManager docResourceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(DocResourceCenterResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,DocResourceCenterResource.class));
 			DocResourceCenterResourceImpl returned = (DocResourceCenterResourceImpl) factory.newInstance(DocResourceCenterResource.class);
 			returned.setFactory(docResourceManager.getDRMModelFactory());
 			returned.setName("DocResourceCenter");
-			returned.setFile(docResourceManager.getDRMFile());
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(docResourceManager.getDRMFile(), factory));
 			returned.setURI("http://www.openflexo.org/DocResourceCenter");
 			returned.setServiceManager(docResourceManager.getServiceManager());
 			return returned;
