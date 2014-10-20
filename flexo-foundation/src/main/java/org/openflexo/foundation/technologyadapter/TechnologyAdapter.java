@@ -391,7 +391,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resourceCenter
 	 */
 	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		if (resourceCenter instanceof ResourceRepository && resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+		if (resourceCenter instanceof ResourceRepository && resource!=null && resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			// Also register the resource in the ResourceCenter seen as a ResourceRepository
 			try {
 				File candidateFile = null;
