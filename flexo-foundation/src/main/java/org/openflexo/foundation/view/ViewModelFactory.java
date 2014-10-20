@@ -28,6 +28,7 @@ import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * {@link ModelFactory} used to handle View models<br>
@@ -41,7 +42,10 @@ public class ViewModelFactory extends DefaultPamelaResourceModelFactory<ViewReso
 	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext) throws ModelDefinitionException {
 		super(viewResource, ModelContextLibrary.getModelContext(View.class));
 		setEditingContext(editingContext);
-		addConverter(new RelativePathFileConverter(viewResource.getDirectory()));
+		if(ResourceLocator.retrieveResourceAsFile(viewResource.getDirectory())!=null){
+			addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(viewResource.getDirectory())));
+		}
+		//addConverter(new RelativePathFileConverter(viewResource.getDirectory()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 	}

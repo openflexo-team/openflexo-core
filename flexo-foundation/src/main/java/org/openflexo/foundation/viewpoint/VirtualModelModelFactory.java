@@ -77,6 +77,7 @@ import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * {@link ModelFactory} used to handle VirtualModel models<br>
@@ -115,7 +116,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		if (virtualModelResource != null) {
 			this.virtualModelResource = virtualModelResource;
-			addConverter(new RelativePathFileConverter(virtualModelResource.getDirectory()));
+			addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(virtualModelResource.getDirectory())));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initVirtualModelFactory(this);

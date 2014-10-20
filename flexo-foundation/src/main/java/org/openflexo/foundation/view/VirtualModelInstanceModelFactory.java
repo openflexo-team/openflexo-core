@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.technologyadapter.DeclareActorReference;
 import org.openflexo.foundation.technologyadapter.DeclareActorReferences;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -58,7 +59,7 @@ public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModel
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
-			addConverter(new RelativePathFileConverter(virtualModelInstanceResource.getFile()));
+			addConverter(new RelativePathFileConverter(((FileFlexoIODelegate)virtualModelInstanceResource.getFlexoIODelegate()).getFile()));
 			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
 		}
 	}

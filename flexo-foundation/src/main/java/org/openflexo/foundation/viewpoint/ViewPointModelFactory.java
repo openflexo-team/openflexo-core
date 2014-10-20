@@ -28,6 +28,7 @@ import org.openflexo.model.converter.RelativePathFileConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * {@link ModelFactory} used to handle ViewPoint models<br>
@@ -44,7 +45,10 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		if (viewPointResource != null) {
-			addConverter(new RelativePathFileConverter(viewPointResource.getDirectory()));
+			if(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())!=null){
+				addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())));
+			}
+			
 		}
 	}
 
