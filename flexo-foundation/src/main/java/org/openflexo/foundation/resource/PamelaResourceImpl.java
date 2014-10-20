@@ -33,6 +33,8 @@ import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
+import com.google.common.base.Throwables;
+
 /**
  * Default implementation for {@link PamelaResource} (a resource where underlying model is managed by PAMELA framework)
  * 
@@ -85,7 +87,14 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			return;
 		}
 		isDeserializing = true;
-		getFactory().startDeserializing();
+		F factory = getFactory();
+		if (factory != null) {
+			factory.startDeserializing();
+		}
+		else {
+			logger.warning("Trying to deserialize with a NULL factory!!!");
+			System.err.println(Throwables.getStackTraceAsString(new Throwable()));
+		}
 	}
 
 	/**
@@ -100,7 +109,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		getFactory().stopDeserializing();
 		if (getLoadedResourceData() != null) {
 			getLoadedResourceData().clearIsModified();
-		} else {
+		}
+		else {
 			logger.warning("Could not access loaded resource data");
 		}
 	}
@@ -472,7 +482,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = document.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -481,7 +492,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = from.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
