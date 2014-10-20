@@ -18,7 +18,7 @@ public class TestCreateProject extends OpenflexoProjectAtRunTimeTestCase {
 		FlexoProject project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 	}
 
 }

@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.view.action.CreateView;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -42,8 +43,11 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		ViewPointResource resource = ((ViewPointResource) newViewPoint.getResource());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory()!=null);
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 	}
 
 	@Test
@@ -53,7 +57,7 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -71,7 +75,9 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 		newView = action.getNewView();
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 	}
 }

@@ -69,7 +69,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -96,8 +96,10 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
 		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
@@ -123,8 +125,10 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		newVirtualModelInstance = action.getNewVirtualModelInstance();
 		assertNotNull(newVirtualModelInstance);
 		assertNotNull(newVirtualModelInstance.getResource());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 
 		// Not relevant anymore since reflexive model slot has disappeared from 1.7.0-beta to 1.7.0 version
 		// assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());
@@ -175,7 +179,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		virtualModel = viewPoint.getVirtualModels().get(0);
 
 		assertEquals(1, newViewResource.getVirtualModelInstanceResources().size());
-		VirtualModelInstanceResource vmiRes = newViewResource.getVirtualModelInstanceResources().get(0);
+		VirtualModelInstanceResource vmiRes = (VirtualModelInstanceResource) newViewResource.getVirtualModelInstanceResources().get(0);
 		newVirtualModelInstance = vmiRes.getVirtualModelInstance();
 
 		assertEquals(virtualModel, newVirtualModelInstance.getFlexoConcept());

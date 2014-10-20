@@ -25,6 +25,7 @@ import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.CreateVirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -61,8 +62,10 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory()!=null);
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 
 		CreateVirtualModel action = CreateVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
 		action.setNewVirtualModelName("TestVirtualModel");
@@ -70,8 +73,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertTrue(action.hasActionExecutionSucceeded());
 		newVirtualModel = action.getNewVirtualModel();
 		// newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getDirectory().exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFile().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 	}
 
 	@Test
@@ -84,7 +87,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -111,9 +114,11 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-
+		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
+		
 		assertNotNull(project.getResource(newView.getURI()));
 		assertNotNull(project.getViewLibrary().getResource(newView.getURI()));
 
@@ -137,8 +142,10 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		newVirtualModelInstance = action.getNewVirtualModelInstance();
 		assertNotNull(newVirtualModelInstance);
 		assertNotNull(newVirtualModelInstance.getResource());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 
 		// Not relevant anymore since reflexive model slot has disappeared from 1.7.0-beta to 1.7.0 version
 		// assertEquals(1, newVirtualModelInstance.getModelSlotInstances().size());

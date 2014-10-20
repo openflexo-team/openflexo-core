@@ -25,6 +25,7 @@ import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
 import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -57,8 +58,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		System.out.println("ResourceCenter= " + resourceCenter);
 		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
 				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory()!=null);
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -68,8 +71,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void testCreateVirtualModel() throws SaveResourceException {
 		newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getDirectory().exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFile().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -100,8 +103,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
-
+		//System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 	}
 
 	/**
@@ -122,7 +125,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -150,7 +153,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -179,7 +182,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 
@@ -217,7 +220,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
+		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
 
 	}
 

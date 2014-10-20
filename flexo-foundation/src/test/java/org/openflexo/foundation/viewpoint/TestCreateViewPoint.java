@@ -32,8 +32,10 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
-		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory()!=null);
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(newViewPoint.getLocalizedDictionary());
 	}

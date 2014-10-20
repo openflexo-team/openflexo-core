@@ -15,6 +15,7 @@ import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
@@ -47,8 +48,10 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
 				serviceManager.getViewPointLibrary());
 		newViewPointResource = (ViewPointResource) newViewPoint.getResource();
-		assertTrue(newViewPointResource.getDirectory().exists());
-		assertTrue(newViewPointResource.getFile().exists());
+		//assertTrue(newViewPointResource.getDirectory().exists());
+		//assertTrue(newViewPointResource.getFile().exists());
+		assertTrue(newViewPointResource.getDirectory()!=null);
+		assertTrue(newViewPointResource.getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -58,8 +61,8 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 	@TestOrder(2)
 	public void testCreateVirtualModel() throws SaveResourceException {
 		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getDirectory().exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFile().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
+		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 	}
 
 	/**
@@ -74,13 +77,12 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		log("testReloadViewPoint()");
 
 		instanciateTestServiceManager();
-
-		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), newViewPointResource.getDirectory()
-				.getName());
+		File directory = ResourceLocator.retrieveResourceAsFile(newViewPointResource.getDirectory());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
 		newDirectory.mkdirs();
 
 		try {
-			FileUtils.copyContentDirToDir(newViewPointResource.getDirectory(), newDirectory);
+			FileUtils.copyContentDirToDir(directory, newDirectory);
 			// We wait here for the thread monitoring ResourceCenters to detect new files
 			Thread.sleep(3000);
 		} catch (IOException e) {

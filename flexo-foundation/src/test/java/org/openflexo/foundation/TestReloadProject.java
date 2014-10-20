@@ -35,7 +35,7 @@ public class TestReloadProject extends OpenflexoProjectAtRunTimeTestCase {
 		project = editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
 		assertTrue(project.getProjectDirectory().exists());
-		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 		project.setDescription("This is a test project");
 		project.save();
 	}
