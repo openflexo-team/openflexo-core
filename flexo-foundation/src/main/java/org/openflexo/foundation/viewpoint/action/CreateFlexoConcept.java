@@ -70,7 +70,7 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 
 	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
 	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_concept_must_have_an_non_empty_and_unique_name");
-	
+
 	private String newFlexoConceptName;
 	private FlexoConcept newFlexoConcept;
 	private final List<FlexoConcept> parentConcepts = new ArrayList<FlexoConcept>();
@@ -83,7 +83,6 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add new flexo concept");
 
 		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 
@@ -94,7 +93,7 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 		}
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 	}
-	
+
 	public FlexoConcept getNewFlexoConcept() {
 		return newFlexoConcept;
 	}
@@ -120,7 +119,7 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 	public void removeFromParentConcepts(FlexoConcept parentConcept) {
 		parentConcepts.remove(parentConcept);
 	}
-	
+
 	private String errorMessage;
 
 	public String getErrorMessage() {
@@ -130,17 +129,17 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 		return errorMessage;
 	}
 
-
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
 			errorMessage = EMPTY_NAME;
 			return false;
-		}else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+		}
+		else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
 			errorMessage = DUPLICATED_NAME;
 			return false;
 		}
 		return true;
 	}
-	
+
 }

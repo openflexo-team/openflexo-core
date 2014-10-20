@@ -20,20 +20,18 @@
 package org.openflexo.module;
 
 import java.lang.reflect.Constructor;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.drm.DocItem;
 import org.openflexo.drm.DocResourceManager;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.prefs.ModulePreferences;
-import org.openflexo.swing.FlexoSwingUtils;
 
 /**
  * Represents a Module in Openflexo intrastructure. A module is a software component.
@@ -230,16 +228,25 @@ public abstract class Module<M extends FlexoModule<M>> {
 	 */
 	public M load() throws Exception {
 
-		boolean createProgress = !ProgressWindow.hasInstance();
+		/*boolean createProgress = !ProgressWindow.hasInstance();
 		if (createProgress) {
 			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName(), 8);
 		}
-		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName());
+		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("loading_module") + " " + getLocalizedName());*/
+		Progress.progress("load_module");
 		loadedModuleInstance = getConstructor().newInstance(new Object[] { getModuleLoader().getServiceManager() });
-		doInternalLoadModule();
-		if (createProgress) {
+		// doInternalLoadModule();
+		/*if (createProgress) {
 			ProgressWindow.hideProgressWindow();
+		}*/
+
+		Progress.progress("init_module");
+		loadedModuleInstance.initModule();
+		if (getApplicationContext().getDocResourceManager() != null) {
+			Progress.progress("init_help_entry");
+			getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(loadedModuleInstance);
 		}
+
 		return loadedModuleInstance;
 	}
 
@@ -259,12 +266,13 @@ public abstract class Module<M extends FlexoModule<M>> {
 		return loadedModuleInstance;
 	}
 
-	private FlexoModule doInternalLoadModule() throws Exception {
+	/*private FlexoModule doInternalLoadModule() throws Exception {
 		ModuleLoaderCallable loader = new ModuleLoaderCallable(loadedModuleInstance);
-		return FlexoSwingUtils.syncRunInEDT(loader);
-	}
+		// return FlexoSwingUtils.syncRunInEDT(loader);
+		return loader.call();
+	}*/
 
-	private class ModuleLoaderCallable implements Callable<FlexoModule> {
+	/*private class ModuleLoaderCallable implements Callable<FlexoModule> {
 
 		private final FlexoModule module;
 
@@ -275,14 +283,15 @@ public abstract class Module<M extends FlexoModule<M>> {
 		@Override
 		public FlexoModule call() throws Exception {
 			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Loading module " + module.getName());
+				logger.info("Initialize module " + module.getName());
 			}
+			Progress.progress("init_module");
 			module.initModule();
 			if (getApplicationContext().getDocResourceManager() != null) {
 				getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(module);
 			}
 			return module;
 		}
-	}
+	}*/
 
 }

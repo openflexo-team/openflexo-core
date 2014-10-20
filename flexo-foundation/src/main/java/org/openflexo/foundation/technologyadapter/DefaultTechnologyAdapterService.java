@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -19,6 +20,8 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.task.Progress;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -140,6 +143,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				rc.initialize(this);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
+					Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
 					ta.resourceCenterAdded(rc);
 				}
 			}

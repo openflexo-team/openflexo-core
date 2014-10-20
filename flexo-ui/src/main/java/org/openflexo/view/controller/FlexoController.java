@@ -105,6 +105,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -207,7 +208,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 */
 	protected FlexoController(FlexoModule module) {
 		super();
-		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("init_module_controller"));
+		// ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("init_module_controller"));
+
+		Progress.progress(FlexoLocalization.localizedForKey("init_module_controller"));
+
 		this.module = module;
 		locationsForView = ArrayListMultimap.create();
 		viewsForLocation = new HashMap<Location, ModuleView<?>>();
@@ -234,7 +238,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		mainPane = createMainPane();
 		getFlexoFrame().getContentPane().add(mainPane, BorderLayout.CENTER);
 		((JComponent) getFlexoFrame().getContentPane()).revalidate();
+
+		Progress.progress(FlexoLocalization.localizedForKey("init_inspectors"));
 		initInspectors();
+
+		Progress.progress(FlexoLocalization.localizedForKey("init_perspectives"));
 		initializePerspectives();
 
 		if (getApplicationContext().getGeneralPreferences() != null) {
@@ -1602,11 +1610,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public FlexoProgress willLoad(Resource fibResource) {
 
 		if (!FIBLibrary.instance().componentIsLoaded(fibResource)) {
-			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
-			progress.setProgress("loading_component");
+			Progress.progress(FlexoLocalization.localizedForKey("loading_component") + " " + fibResource);
+
+			// FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
+			// progress.setProgress("loading_component");
 			FIBLibrary.instance().retrieveFIBComponent(fibResource);
-			progress.setProgress("build_interface");
-			return progress;
+			// progress.setProgress("build_interface");
+			// return progress;
+			return null;
 		}
 		return null;
 	}

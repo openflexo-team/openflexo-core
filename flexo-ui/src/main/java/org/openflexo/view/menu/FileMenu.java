@@ -41,8 +41,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.utils.OperationCancelledException;
-import org.openflexo.foundation.utils.ProjectInitializerException;
-import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.NatureSpecificModule;
@@ -230,17 +228,12 @@ public class FileMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			File projectDirectory = NewProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
-				try {
-					if (getController().getModule().getModule() instanceof NatureSpecificModule) {
-						ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
-								.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
-						getProjectLoader().newProject(projectDirectory, nature);
-					} else {
-						getProjectLoader().newProject(projectDirectory);
-					}
-				} catch (ProjectInitializerException e) {
-					e.printStackTrace();
-					FlexoController.notify(e.getMessage());
+				if (getController().getModule().getModule() instanceof NatureSpecificModule) {
+					ProjectNature<?, ?> nature = getController().getApplicationContext().getProjectNatureService()
+							.getProjectNature(((NatureSpecificModule) getController().getModule().getModule()).getNatureClass());
+					getProjectLoader().newProject(projectDirectory, nature);
+				} else {
+					getProjectLoader().newProject(projectDirectory);
 				}
 			}
 		}
@@ -263,14 +256,14 @@ public class FileMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			File projectDirectory = OpenProjectComponent.getProjectDirectory(getController().getApplicationContext());
 			if (projectDirectory != null) {
-				try {
-					getProjectLoader().loadProject(projectDirectory);
-				} catch (ProjectLoadingCancelledException e) {
+				// try {
+				getProjectLoader().loadProject(projectDirectory);
+				/*} catch (ProjectLoadingCancelledException e) {
 				} catch (ProjectInitializerException e) {
 					e.printStackTrace();
 					FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
 							+ projectDirectory.getAbsolutePath());
-				}
+				}*/
 			}
 		}
 	}
@@ -296,14 +289,14 @@ public class FileMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			try {
-				getProjectLoader().loadProject(projectDirectory);
-			} catch (ProjectLoadingCancelledException e) {
+			// try {
+			getProjectLoader().loadProject(projectDirectory);
+			/*} catch (ProjectLoadingCancelledException e) {
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
 				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
 						+ projectDirectory.getAbsolutePath());
-			}
+			}*/
 		}
 	}
 
@@ -487,15 +480,15 @@ public class FileMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			try {
-				getProjectLoader().reloadProject(getController().getProject());
-			} catch (ProjectLoadingCancelledException e) {
+			// try {
+			getProjectLoader().reloadProject(getController().getProject());
+			/*} catch (ProjectLoadingCancelledException e) {
 
 			} catch (ProjectInitializerException e) {
 				e.printStackTrace();
 				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
 						+ e.getProjectDirectory().getAbsolutePath());
-			}
+			}*/
 		}
 
 	}
