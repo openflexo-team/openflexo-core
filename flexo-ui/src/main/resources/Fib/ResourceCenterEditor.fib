@@ -19,6 +19,10 @@
               <Children data="fsResourceCenter.rootFolder.children" name="subFolders" />
               <Children data="fsResourceCenter.rootFolder.resources" name="resources" />
             </BrowserElement>
+            <BrowserElement dataClassName="org.openflexo.foundation.resource.JarResourceCenter" label="jarResourceCenter.name" icon="controller.iconForObject(jarResourceCenter)" isEditable="false" filtered="false" defaultVisible="true" name="jarResourceCenter">
+              <Children data="jarResourceCenter.rootFolder.children" name="subFolders" />
+              <Children data="jarResourceCenter.rootFolder.resources" name="resources" />
+            </BrowserElement>
             <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="folder.name" icon="controller.iconForObject(folder)" isEditable="false" filtered="false" defaultVisible="true" name="folder">
               <Children data="folder.children" name="subFolders" />
               <Children data="folder.resources" name="resources" />

@@ -55,6 +55,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			logger.info("Loading available technology adapter controllers...");
 			ServiceLoader<TechnologyAdapterController> loader = ServiceLoader.load(TechnologyAdapterController.class);
 			Iterator<TechnologyAdapterController> iterator = loader.iterator();
+			System.getProperty("java.class.path");
 			while (iterator.hasNext()) {
 				TechnologyAdapterController technologyAdapterController = iterator.next();
 				registerTechnologyAdapterController(technologyAdapterController);

@@ -32,7 +32,7 @@ import javax.swing.JOptionPane;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -110,8 +110,8 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 
 	@Override
 	public void notifySevereLoadingFailure(FlexoResource<?> resource, Exception e) {
-		if (resource instanceof FlexoFileResource) {
-			FlexoFileResource<?> r = (FlexoFileResource<?>) resource;
+		if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			FileFlexoIODelegate r = (FileFlexoIODelegate) (resource.getFlexoIODelegate());
 			if (e.getMessage().indexOf("JDOMParseException") > -1 && !GraphicsEnvironment.isHeadless()) {
 				JOptionPane.showMessageDialog(
 						null,

@@ -12,7 +12,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.utils.ProjectInitializerException;
@@ -42,8 +42,8 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 
 		File selectedFile = null;
 
-		if (retrievedResource instanceof FlexoFileResource) {
-			selectedFile = ((FlexoFileResource<?>) retrievedResource).getFile();
+		if (retrievedResource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			selectedFile = ((FileFlexoIODelegate) (retrievedResource.getFlexoIODelegate())).getFile();
 			retrievedFromResourceCenter = true;
 		}
 		ProjectChooserComponent projectChooser = null;
