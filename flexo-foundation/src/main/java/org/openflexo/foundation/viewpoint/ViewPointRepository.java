@@ -19,13 +19,10 @@
  */
 package org.openflexo.foundation.viewpoint;
 
-import java.util.logging.Logger;
+import java.util.Collection;
 
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.resource.FileResourceRepository;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.view.ViewRepository;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 
@@ -35,37 +32,22 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
  * @author sylvain
  * 
  */
-public class ViewPointRepository extends FileResourceRepository<ViewPointResource> {
+public interface ViewPointRepository<VP extends ViewPointResource> {
 
-	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
+	public FlexoResourceCenter getResourceCenter(); 
 
-	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
+	public void setResourceCenter(FlexoResourceCenter resourceCenter);
+	
+	public Collection<ViewPointResource> getAllResources();
+	
+	public void registerResource(ViewPointResource flexoResource);
+	
+	public void registerResource(ViewPointResource resource, RepositoryFolder<ViewPointResource> parentFolder);
 
-	private FlexoResourceCenter resourceCenter;
-	private final FlexoServiceManager serviceManager;
+	public void unregisterResource(ViewPointResource flexoResource);
+	
+	public ViewPointLibrary getViewPointLibrary();
+	
+	public RepositoryFolder<VP> getRootFolder();
 
-	public ViewPointRepository(FlexoResourceCenter resourceCenter, FlexoServiceManager serviceManager) {
-		super(resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
-				.getRootDirectory() : null);
-		this.resourceCenter = resourceCenter;
-		this.serviceManager = serviceManager;
-		getRootFolder().setName(resourceCenter.getName());
-	}
-
-	public FlexoResourceCenter getResourceCenter() {
-		return resourceCenter;
-	}
-
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
-	}
-
-	public ViewPointLibrary getViewPointLibrary() {
-		return serviceManager.getViewPointLibrary();
-	}
-
-	@Override
-	public String getDefaultBaseURI() {
-		return DEFAULT_BASE_URI;
-	}
 }
