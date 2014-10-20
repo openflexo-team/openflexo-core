@@ -29,21 +29,21 @@ import org.openflexo.foundation.FlexoException;
  */
 public class SaveResourceException extends FlexoException {
 
-	protected FlexoFileResource<?> fileResource;
+	protected FlexoIODelegate<?> delegate;
 	protected Exception cause;
 
-	public SaveResourceException(FlexoFileResource<?> fileResource) {
+	public SaveResourceException(FlexoIODelegate<?> delegate) {
 		super();
-		this.fileResource = fileResource;
+		this.delegate = delegate;
 	}
 
-	public SaveResourceException(FlexoFileResource<?> fileResource, Exception cause) {
+	public SaveResourceException(FlexoIODelegate<?> delegate, Exception cause) {
 		super(cause);
-		this.fileResource = fileResource;
+		this.delegate = delegate;
 	}
 
-	public FlexoFileResource<?> getFileResource() {
-		return fileResource;
+	public FlexoIODelegate<?> getDelegate() {
+		return delegate;
 	}
 
 }

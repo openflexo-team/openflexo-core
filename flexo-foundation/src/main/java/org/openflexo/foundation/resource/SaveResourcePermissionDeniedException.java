@@ -28,8 +28,8 @@ package org.openflexo.foundation.resource;
 @SuppressWarnings("serial")
 public class SaveResourcePermissionDeniedException extends SaveResourceException {
 
-	public SaveResourcePermissionDeniedException(FlexoFileResource<?> fileResource) {
-		super(fileResource);
+	public SaveResourcePermissionDeniedException(FlexoIODelegate<?> delegate) {
+		super(delegate);
 	}
 
 }
