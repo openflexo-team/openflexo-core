@@ -12,6 +12,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.IProgress;
 
 /**
@@ -204,6 +205,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
 	}
 
+	@Override
 	public void notifyResourceStatusChanged() {
 	}
 
@@ -319,5 +321,5 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void objectDeleted(FlexoObjectReference<?> reference) {
 		logger.warning("TODO: implement this");
 	}
-
+	
 }

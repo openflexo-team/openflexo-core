@@ -43,6 +43,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String DEPENDENCIES = "dependencies";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
+	public static final String FLEXO_IO_DELEGATE ="flexoIODelegate";
 
 	/**
 	 * Returns the name of this resource. The name of the resource is a displayable name that the end-user will understand. There are no
@@ -237,6 +238,13 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	@Remover(DEPENDENCIES)
 	public void removeFromDependencies(FlexoResource<?> resource);
+	
+	@Getter(value = FLEXO_IO_DELEGATE, inverse = FlexoIODelegate.FLEXO_RESOURCE)
+	public FlexoIODelegate<?> getFlexoIODelegate();
+
+	@Setter(FLEXO_IO_DELEGATE)
+	public void setFlexoIODelegate(FlexoIODelegate<?> delegate);
+
 
 	/**
 	 * Return flag indicating if this resource is loaded
@@ -308,7 +316,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	/*public FlexoResourceTree update() throws ResourceDependencyLoopException, LoadResourceException, FileNotFoundException,
 			ProjectLoadingCancelledException, FlexoException;*/
-
+	
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
@@ -323,6 +331,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * Called to notify that a resource has been modified
 	 */
 	public void notifyResourceModified();
+	
+	public void notifyResourceStatusChanged();
 
 	/**
 	 * Called to notify that a resource has been added to contents
