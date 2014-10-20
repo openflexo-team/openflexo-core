@@ -62,6 +62,8 @@ import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -213,19 +215,19 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
 					library.getServiceManager());
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
 			viewpoint.setResource(vpRes);
 			// And register it to the library
 			library.registerViewPoint(vpRes);
-
 			viewpoint.init(baseName, library);
 			try {
 				vpRes.save(null);
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-
+			vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
 			return viewpoint;
 		}
 

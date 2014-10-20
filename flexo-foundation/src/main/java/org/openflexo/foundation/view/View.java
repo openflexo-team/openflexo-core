@@ -20,6 +20,7 @@
  */
 package org.openflexo.foundation.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,6 +44,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
 import org.openflexo.model.annotations.*;
 import org.openflexo.model.annotations.Getter.Cardinality;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -164,7 +166,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
 			VirtualModelTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
-			vmTA.referenceResource(newViewResource, project);
+			
 
 			View newView = newViewResource.getFactory().newInstance(View.class);
 
@@ -175,14 +177,15 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 			newView.setTitle(viewTitle);
 
-			System.out.println("Et hop on sauve " + newViewResource.getFile());
+			System.out.println("Et hop on sauve " + newViewResource.getFlexoIODelegate().toString());
 			System.out.println("uri=" + newViewResource.getURI());
 
 			// Save it
 			newViewResource.save(null);
-
+			File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
+			newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
-
+			vmTA.referenceResource(newViewResource, project);
 			return newView;
 		}
 
