@@ -177,9 +177,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter rc : resourceCenters) {
-			ViewPointRepository vpr = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
-			if ((vpr != null) && (vpr.getAllResources().contains(vpRes))) {
-				vpr.unregisterResource(vpRes);
+			ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);
+			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
+				vprfb.unregisterResource(vpRes);
+			}
+			ViewPointRepository vprjb = (ViewPointRepository) rc.getRepository(ViewPointJarBasedRepository.class, vmTA);
+			if ((vprjb != null) && (vprjb.getAllResources().contains(vpRes))) {
+				vprjb.unregisterResource(vpRes);
 			}
 		}
 		setChanged();
@@ -284,8 +288,15 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			// found
 			VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
 			for (FlexoResourceCenter rc : getResourceCenters()) {
-				ViewPointRepository vpr = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
-				for (ViewPointResource vpRes : vpr.getAllResources()) {
+				// Register Viewpoint file based viewpoint resources
+				ViewPointFileBasedRepository vprfb = (ViewPointFileBasedRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);
+				for (ViewPointResource vpRes : vprfb.getAllResources()) {
+					vpRes.setViewPointLibrary(this);
+					registerViewPoint(vpRes);
+				}
+				// Register Viewpoint jar based viewpoint resources
+				ViewPointJarBasedRepository vprjb = (ViewPointJarBasedRepository) rc.getRepository(ViewPointJarBasedRepository.class, vmTA);
+				for (ViewPointResource vpRes : vprjb.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
 					registerViewPoint(vpRes);
 				}
