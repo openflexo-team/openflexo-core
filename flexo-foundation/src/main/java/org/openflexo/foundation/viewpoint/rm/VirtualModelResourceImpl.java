@@ -1,11 +1,14 @@
 package org.openflexo.foundation.viewpoint.rm;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -16,16 +19,25 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.InJarFlexoIODelegate;
+import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
@@ -38,11 +50,15 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public static VirtualModelResource makeVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(VirtualModelResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			returned.setName(virtualModelDirectory.getName());
-			returned.setDirectory(virtualModelDirectory);
-			returned.setFile(virtualModelXMLFile);
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
+			returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
+			
+			//returned.setFile(virtualModelXMLFile);
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			/*if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
@@ -67,17 +83,29 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(VirtualModelResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			String baseName = virtualModelDirectory.getName();
 			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-			VirtualModelInfo vpi = findVirtualModelInfo(virtualModelDirectory);
+			VirtualModelInfo vpi = null;
+			try {
+				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (vpi == null) {
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			returned.setFile(xmlFile);
-			returned.setDirectory(virtualModelDirectory);
+			
+			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
+			
+			
+			//returned.setFile(xmlFile);
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
+			returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
 			returned.setName(vpi.name);
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -93,6 +121,51 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			returned.setServiceManager(serviceManager);
 
 			logger.fine("VirtualModelResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
+
+			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
+			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
+					.getTechnologyAdapterService()));
+
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
+			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
+		try {
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					InJarFlexoIODelegate.class,VirtualModelResource.class));
+			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
+			
+			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
+			VirtualModelInfo vpi = findVirtualModelInfo(returned.getFlexoIOStreamDelegate().getInputStream());
+			if (vpi == null) {
+				// Unable to retrieve infos, just abort
+				return null;
+			}
+			
+			
+			//returned.setFile(xmlFile);
+			returned.setDirectory(parent);
+			returned.setName(vpi.name);
+			returned.setURI(viewPointResource.getURI() + "/" + FilenameUtils.getBaseName(inJarResource.getRelativePath()));
+			if (StringUtils.isNotEmpty(vpi.version)) {
+				returned.setVersion(new FlexoVersion(vpi.version));
+			}
+			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
+
+			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
+			/*if (serviceManager.getViewPointLibrary() != null) {
+				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
+			}*/
+
+			returned.setServiceManager(serviceManager);
+
+			logger.fine("VirtualModelResource " + returned.getFlexoIODelegate().toString() + " version " + returned.getModelVersion());
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
@@ -194,7 +267,54 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		public String modelVersion;
 	}
 
-	private static VirtualModelInfo findVirtualModelInfo(File virtualModelDirectory) {
+	private static VirtualModelInfo findVirtualModelInfo(InputStream inputStream) {
+		Document document;
+		try {
+			//logger.fine("Try to find infos for " + virtualModelDirectory);
+
+			//String baseName = virtualModelDirectory.getName();
+			//File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
+
+			//if (xmlFile.exists()) {
+
+				document = readXMLInputStream(inputStream);//(xmlFile);
+				Element root = getElement(document, "VirtualModel");
+				if (root != null) {
+					VirtualModelInfo returned = new VirtualModelInfo();
+					Iterator<Attribute> it = root.getAttributes().iterator();
+					while (it.hasNext()) {
+						Attribute at = it.next();
+						if (at.getName().equals("name")) {
+							logger.fine("Returned " + at.getValue());
+							returned.name = at.getValue();
+						} else if (at.getName().equals("version")) {
+							logger.fine("Returned " + at.getValue());
+							returned.version = at.getValue();
+						} else if (at.getName().equals("modelVersion")) {
+							logger.fine("Returned " + at.getValue());
+							returned.modelVersion = at.getValue();
+						}
+					}
+					if (StringUtils.isEmpty(returned.name)) {
+						//returned.name = virtualModelDirectory.getName();
+						returned.name = "NoName";
+					}
+					return returned;
+				}
+			/*} else {
+				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
+						+ xmlFile.getAbsolutePath());
+			}*/
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.fine("Returned null");
+		return null;
+	}
+	
+	/*private static VirtualModelInfo findVirtualModelInfo(File virtualModelDirectory) {
 		Document document;
 		try {
 			logger.fine("Try to find infos for " + virtualModelDirectory);
@@ -238,12 +358,12 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 		logger.fine("Returned null");
 		return null;
-	}
+	}*/
 
 	@Override
 	public boolean delete() {
 		if (super.delete()) {
-			getServiceManager().getResourceManager().addToFilesToDelete(getDirectory());
+			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
 		return false;
