@@ -19,7 +19,7 @@ import org.openflexo.toolbox.FlexoVersion;
  */
 @ModelEntity
 @XMLElement
-public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoFileResource<RD> {
+public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResource<RD>{
 
 	public static final String MODEL_VERSION = "modelVersion";
 	public static final String FACTORY = "factory";

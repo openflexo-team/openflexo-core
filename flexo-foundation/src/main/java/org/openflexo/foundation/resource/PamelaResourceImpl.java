@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,8 +42,7 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends
-		FlexoFileResourceImpl<RD> implements PamelaResource<RD, F> {
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResourceImpl<RD> implements PamelaResource<RD, F>{
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -64,7 +64,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (!isLoaded()) {
 			return;
 		}
-		if (!isDeleted) {
+		if (!isDeleted()) {
 			saveResourceData(true);
 			resourceData.clearIsModified(false);
 		}
@@ -141,7 +141,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
 		}
-		if (!getFile().exists()) {
+		/*TODO
+		 * if (!getFile().exists()) {
 			recoverFile();
 			if (!getFile().exists()) {
 				if (logger.isLoggable(Level.SEVERE)) {
@@ -149,7 +150,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 				}
 				throw new FlexoFileNotFoundException(this);
 			}
-		}
+		}*/
 
 		/*EditingContext editingContext = getServiceManager().getEditingContext();
 		IgnoreLoadingEdits ignoreHandler = null;
@@ -163,8 +164,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		try {
 
-			FileInputStream fis = new FileInputStream(getFile());
-			resourceData = (RD) getFactory().deserialize(fis);
+			//FileInputStream fis = new FileInputStream(getFile());
+			
+			// Retrieve the data from an input stream given by the FlexoIOStream delegate of the resource
+			resourceData = (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
 
 			isLoading = false;
 			resourceData.setResource(this);
@@ -199,6 +202,19 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 	}
 
+	//This should be removed from Pamela Resource class
+	private File getFile(){
+		return (File) getFlexoIODelegate().getSerializationArtefact();
+	}
+	
+	/**
+	 * Return a FlexoIOStreamDelegate associated to this flexo resource
+	 * @return
+	 */
+	public FlexoIOStreamDelegate<?> getFlexoIOStreamDelegate(){
+		return (FlexoIOStreamDelegate<?>) getFlexoIODelegate();
+	}
+	
 	/**
 	 * Save current resource data to current XML resource file.<br>
 	 * Forces XML version to be the latest one.
@@ -207,11 +223,11 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	protected void saveResourceData(boolean clearIsModified) throws SaveResourceException, SaveResourcePermissionDeniedException {
 		// System.out.println("PamelaResourceImpl Saving " + getFile());
-		if (!hasWritePermission()) {
+		if (!getFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Permission denied : " + getFile().getAbsolutePath());
 			}
-			throw new SaveResourcePermissionDeniedException(this);
+			throw new SaveResourcePermissionDeniedException((FileFlexoIODelegate) getFlexoIODelegate());
 		}
 		if (resourceData != null) {
 			// Sylvain: I think the SerializationHandler is no more necessary
@@ -264,7 +280,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 	private void _saveResourceData(/*SerializationHandler handler,*/boolean clearIsModified) throws SaveResourceException {
 		File temporaryFile = null;
-		FileWritingLock lock = willWriteOnDisk();
+		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
 
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
@@ -308,10 +324,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Failed to save resource " + this + " with model version " + getModelVersion());
 			}
-			hasWrittenOnDisk(lock);
+			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			// ((FlexoXMLSerializable) resourceData).finalizeSerialization();
 			// throw new SaveXMLResourceException(this, e, version);
-			throw new SaveResourceException(this, e);
+			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate(), e);
 		}
 	}
 
@@ -324,7 +340,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	private void postXMLSerialization(File temporaryFile, FileWritingLock lock, boolean clearIsModified) throws IOException {
 		FileUtils.rename(temporaryFile, getFile());
-		hasWrittenOnDisk(lock);
+		getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 		// ((FlexoXMLSerializable) resourceData).finalizeSerialization();
 		// setModelVersion(version);
 		if (clearIsModified) {
@@ -391,7 +407,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 					if (logger.isLoggable(Level.WARNING)) {
 						logger.warning("Found file " + file.getAbsolutePath() + ". Using it and repairing project as well!");
 					}
-					setFile(file);
+					((FileFlexoIODelegate)getFlexoIODelegate()).setSerializationArtefact(file);
 					break;
 				}
 			}
@@ -461,10 +477,20 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
+	/**
+	 * Read an XML input stream from File and return the parsed Document 
+	 */
 	public static Document readXMLFile(File f) throws JDOMException, IOException {
 		FileInputStream fio = new FileInputStream(f);
+		return readXMLInputStream(fio);
+	}
+	
+	/**
+	 * Read an XML input stream and return the parsed Document 
+	 */
+	public static Document readXMLInputStream(InputStream inputStream) throws JDOMException, IOException {
 		SAXBuilder parser = new SAXBuilder();
-		Document reply = parser.build(fio);
+		Document reply = parser.build(inputStream);
 		return reply;
 	}
 
