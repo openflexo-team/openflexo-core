@@ -74,6 +74,7 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
@@ -349,7 +350,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @throws SaveResourceException
 		 */
 		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
-			File diagramSpecificationDirectory = new File(((ViewPointResource) viewPoint.getResource()).getDirectory(), baseName);
+			
+			File diagramSpecificationDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory()), baseName);
 			File diagramSpecificationXMLFile = new File(diagramSpecificationDirectory, baseName + ".xml");
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
 			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(diagramSpecificationDirectory,
@@ -361,6 +363,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			virtualModel.setResource(vmRes);
 			// ((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
 			virtualModel.getResource().save(null);
+			vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
+			
 			return virtualModel;
 		}
 
@@ -894,7 +898,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public void save() {
-			logger.info("Saving ViewPoint to " + getResource().getFile().getAbsolutePath() + "...");
+			logger.info("Saving ViewPoint to " + getResource().getFlexoIODelegate().toString() + "...");
 
 			try {
 				getResource().save(null);
