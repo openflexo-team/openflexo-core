@@ -215,7 +215,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
 					library.getServiceManager());
-			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
+			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
 			viewpoint.setResource(vpRes);
@@ -227,7 +227,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-			vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
+			//vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
 			return viewpoint;
 		}
 

@@ -363,7 +363,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			virtualModel.setResource(vmRes);
 			// ((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
 			virtualModel.getResource().save(null);
-			vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
+			//vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
 			
 			return virtualModel;
 		}

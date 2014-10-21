@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -44,7 +45,7 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-		if (viewPointResource != null) {
+		if (viewPointResource != null && viewPointResource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			if(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())!=null){
 				addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())));
 			}

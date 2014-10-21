@@ -36,6 +36,7 @@ import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -72,13 +73,13 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setVersion(new FlexoVersion("1.0"));
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + name);
 			//returned.setFile(xmlFile);
-			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
+			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			
 			//returned.setFile(viewDirectory);
 
 			//returned.setDirectory(viewDirectory);
-			returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
+			//returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
 			
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
@@ -105,12 +106,12 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
+			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
 			//returned.setFile(xmlFile);
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			
 			//returned.setDirectory(viewDirectory);
-			returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
+			//returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
 			returned.setName(vpi.name);
 
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + vpi.name);
@@ -276,4 +277,12 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return false;
 	}
 
+	@Override
+	public Resource getDirectory() {
+		String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+		if(ResourceLocator.locateResource(parentPath)==null){
+			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
+		}
+		return ResourceLocator.locateResource(parentPath);
+	}
 }

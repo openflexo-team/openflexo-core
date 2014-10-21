@@ -106,7 +106,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			
 			//returned.setFile(xmlFile);
-			returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
+			//returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
@@ -144,9 +144,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			
-			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewPointDirectory.getPath());
+			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewPointDirectory.getPath());
 			
-			returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
+			//returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
 			returned.setURI(vpi.uri);
 			returned.setName(vpi.name);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -211,7 +211,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				return null;
 			}
 
-			returned.setDirectory(parent);
+			//returned.setDirectory(parent);
 			returned.setURI(vpi.uri);
 			returned.setName(vpi.name);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -1327,6 +1327,22 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					}
 				}
 			}
+		}
+		return null;
+	}
+	
+	@Override
+	public Resource getDirectory() {
+		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
+			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+			if(ResourceLocator.locateResource(parentPath)==null){
+				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
+			}
+			return ResourceLocator.locateResource(parentPath);
+		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
+			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
+			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(resource.getContainer().getRelativePath());
+			return parent;
 		}
 		return null;
 	}

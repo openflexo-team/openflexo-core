@@ -182,8 +182,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 			// Save it
 			newViewResource.save(null);
-			File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
-			newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
+			//File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
+			//newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
 			vmTA.referenceResource(newViewResource, project);
 			return newView;
