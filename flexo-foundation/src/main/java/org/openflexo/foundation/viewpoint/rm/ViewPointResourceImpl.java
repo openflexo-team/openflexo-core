@@ -1341,10 +1341,10 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			return ResourceLocator.locateResource(parentPath);
 		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
 			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
-			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(resource.getContainer().getRelativePath());
+			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
+			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(parentPath);
 			return parent;
 		}
 		return null;
 	}
-
 }
