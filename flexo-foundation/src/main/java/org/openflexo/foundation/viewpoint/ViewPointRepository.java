@@ -19,6 +19,7 @@
  */
 package org.openflexo.foundation.viewpoint;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -49,5 +50,7 @@ public interface ViewPointRepository<VP extends ViewPointResource> {
 	public ViewPointLibrary getViewPointLibrary();
 	
 	public RepositoryFolder<VP> getRootFolder();
+	
+	public RepositoryFolder<VP> getRepositoryFolder(Object element, boolean createWhenNonExistent) throws IOException;
 
 }
