@@ -376,7 +376,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return (ViewPointResource) performSuperGetter(CONTAINER);
 	}
 	
-	@Override
+	/*@Override
 	public Resource getDirectory() {
 		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
 			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
@@ -387,6 +387,22 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
 			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
 			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(resource.getContainer().getRelativePath());
+			return parent;
+		}
+		return null;
+	}*/
+	@Override
+	public Resource getDirectory() {
+		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
+			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+			if(ResourceLocator.locateResource(parentPath)==null){
+				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
+			}
+			return ResourceLocator.locateResource(parentPath);
+		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
+			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
+			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
+			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(parentPath);
 			return parent;
 		}
 		return null;
