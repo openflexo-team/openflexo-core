@@ -45,11 +45,8 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-		if (viewPointResource != null && viewPointResource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			if(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())!=null){
-				addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory())));
-			}
-			
+		if(viewPointResource!=null && viewPointResource.getFlexoIODelegate() instanceof FileFlexoIODelegate){
+			addConverter(new RelativePathFileConverter(((FileFlexoIODelegate)viewPointResource.getFlexoIODelegate()).getFile()));
 		}
 	}
 
