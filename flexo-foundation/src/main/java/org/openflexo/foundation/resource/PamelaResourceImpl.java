@@ -235,9 +235,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		// System.out.println("PamelaResourceImpl Saving " + getFile());
 		if (!getFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Permission denied : " + getFile().getAbsolutePath());
+				logger.warning("Permission denied : " + getFlexoIODelegate().toString());
 			}
-			throw new SaveResourcePermissionDeniedException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourcePermissionDeniedException(getFlexoIODelegate());
 		}
 		if (resourceData != null) {
 			// Sylvain: I think the SerializationHandler is no more necessary
