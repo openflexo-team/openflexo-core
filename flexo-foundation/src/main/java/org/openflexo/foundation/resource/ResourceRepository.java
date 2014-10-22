@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,8 @@ import org.openflexo.foundation.DataFlexoObserver;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObservable;
+import org.openflexo.rm.ClasspathResourceLocatorImpl;
+import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -311,35 +314,85 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 		return null;
 	}
 
-	// TODO : a Repository might not contain only files but also Resources that are note files!!
-	public RepositoryFolder<R> getRepositoryFolder(File aFile, boolean createWhenNonExistent) throws IOException {
+	/**
+	 * Get the respository folder. The object can be accessed from different ways, for instance it can be a file
+	 * or an InJarResource, so the path must be computed for each kind of access.
+	 * @param element
+	 * @param createWhenNonExistent
+	 * @return
+	 * @throws IOException
+	 */
+	public RepositoryFolder<R> getRepositoryFolder(Object element, boolean createWhenNonExistent) throws IOException {
+		List<String> pathTo = null;
+		if(element instanceof File){
+			pathTo = getPathTo((File)element);
+		}else if(element instanceof InJarResourceImpl){
+			pathTo = getPathTo((InJarResourceImpl) element);
+		}
+		return getRepositoryFolder(pathTo, createWhenNonExistent);
+	}
+	
+	/**
+	 * Get the set of path in the case of File
+	 * @param aFile
+	 * @return
+	 * @throws IOException
+	 */
+	private List<String> getPathTo(File aFile) throws IOException{
 		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile,true)) {
-			// System.out.println("Searching folder for file " + aFile + "root folder = " + getRootFolder().getFile());
 			List<String> pathTo = new ArrayList<String>();
 			File f = aFile.getParentFile().getCanonicalFile();
 			while (f != null && !f.equals(getRootFolder().getFile().getCanonicalFile())) {
 				pathTo.add(0, f.getName());
 				f = f.getParentFile();
 			}
-			// System.out.println("Paths = " + pathTo);
-			RepositoryFolder<R> returned = getRootFolder();
-			for (String pathElement : pathTo) {
-				RepositoryFolder<R> currentFolder = returned.getFolderNamed(pathElement);
-				if (currentFolder == null) {
-					if (createWhenNonExistent) {
-						RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
-						currentFolder = newFolder;
-					} else {
-						// System.out.println("Folder for " + aFile + " is not existant");
-						return null;
-					}
-				}
-				returned = currentFolder;
-			}
-			// System.out.println("Folder for " + aFile + " is " + returned.getFile());
-			return returned;
+			return pathTo;
+		}else{
+			return null;
 		}
-		return null;
+	}
+	
+	/**
+	 * Get the set of path in the case of InJarResource
+	 * @param resource
+	 * @return
+	 */
+	private List<String> getPathTo(InJarResourceImpl resource){
+		if(!getRootFolder().getChildren().contains(resource)){
+			List<String> pathTo = new ArrayList<String>();
+			StringTokenizer string = new StringTokenizer(resource.getURI().toString(), 
+					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
+			while(string.hasMoreTokens()){
+				pathTo.add(string.nextToken());
+			}
+			return pathTo;
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * Get the repository folder from a set of path
+	 * @param pathTo
+	 * @param createWhenNonExistent
+	 * @return
+	 * @throws IOException
+	 */
+	public RepositoryFolder<R> getRepositoryFolder(List<String> pathTo, boolean createWhenNonExistent) throws IOException {
+		RepositoryFolder<R> returned = getRootFolder();
+		for (String pathElement : pathTo) {
+			RepositoryFolder<R> currentFolder = returned.getFolderNamed(pathElement);
+			if (currentFolder == null) {
+				if (createWhenNonExistent) {
+					RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
+					currentFolder = newFolder;
+				} else {
+					return null;
+				}
+			}
+		returned = currentFolder;
+		}
+		return returned;
 	}
 
 	/**
