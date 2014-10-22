@@ -192,6 +192,14 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		return status;
 	}
 
+	public synchronized void setTaskStatus(TaskStatus status) {
+		if ((status == null && this.status != null) || (status != null && !status.equals(this.status))) {
+			TaskStatus oldValue = this.status;
+			this.status = status;
+			getPropertyChangeSupport().firePropertyChange("status", oldValue, status);
+		}
+	}
+
 	public int getExpectedProgressSteps() {
 		return expectedProgressSteps;
 	}
@@ -270,7 +278,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public void throwException(Exception e) {
 		thrownException = e;
 		e.printStackTrace();
-		status = TaskStatus.EXCEPTION_THROWN;
+		// status = TaskStatus.EXCEPTION_THROWN;
+		setTaskStatus(TaskStatus.EXCEPTION_THROWN);
 		thread.interrupt();
 	}
 
