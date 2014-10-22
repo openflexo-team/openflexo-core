@@ -16,7 +16,7 @@ import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.module.NatureSpecificModule;
-import org.openflexo.module.ProjectLoader;
+import org.openflexo.project.ProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
 

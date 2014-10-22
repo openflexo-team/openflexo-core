@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.module;
+package org.openflexo.project;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,7 +42,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.module.FlexoAutoSaveThread.FlexoAutoSaveFile;
+import org.openflexo.project.FlexoAutoSaveThread.FlexoAutoSaveFile;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoDialog;
 import org.openflexo.view.FlexoFrame;

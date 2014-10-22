@@ -18,7 +18,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.module;
+package org.openflexo.project;
 
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -541,18 +541,15 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	}
 
 	private static void informUserAboutPermissionDeniedException(SaveResourcePermissionDeniedException e) {
-		if (e instanceof FileFlexoIODelegate && ((FileFlexoIODelegate)e).getFile().isDirectory()) {
+		if (e instanceof FileFlexoIODelegate && ((FileFlexoIODelegate) e).getFile().isDirectory()) {
 			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_directory") + "\n"
-							+ e.toString());
-		} else if (e instanceof FileFlexoIODelegate){
+					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_directory") + "\n" + e.toString());
+		} else if (e instanceof FileFlexoIODelegate) {
 			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_file") + "\n"
-							+ e.toString());
-		} else{
+					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied_file") + "\n" + e.toString());
+		} else {
 			FlexoController.showError(FlexoLocalization.localizedForKey("permission_denied"),
-					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied") + "\n"
-							+ e.toString());
+					FlexoLocalization.localizedForKey("project_was_not_properly_saved_permission_denied") + "\n" + e.toString());
 		}
 	}
 

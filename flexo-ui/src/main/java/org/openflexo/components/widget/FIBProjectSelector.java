@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.module.ProjectLoader;
+import org.openflexo.project.ProjectLoader;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 

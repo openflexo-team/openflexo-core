@@ -217,7 +217,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 						progressBar.setStringPainted(false);
 						progressBar.setIndeterminate(true);
 						progressBar.setEnabled(true);
-					} else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)) {
+					} else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)
+							|| (task.getTaskStatus() == TaskStatus.EXCEPTION_THROWN)) {
 						taskPanels.remove(task);
 						contentPane.remove(this);
 						((JComponent) getContentPane()).revalidate();

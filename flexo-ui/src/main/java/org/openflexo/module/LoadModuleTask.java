@@ -19,9 +19,9 @@
  */
 package org.openflexo.module;
 
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.task.FlexoApplicationTask;
 
 /**
  * A task used to load a Flexo module
@@ -29,15 +29,15 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sylvain
  *
  */
-public class LoadModuleTask extends FlexoTask {
+public class LoadModuleTask extends FlexoApplicationTask {
 	/**
 	 * 
 	 */
 	private final ModuleLoader moduleLoader;
 	private final Module module;
 
-	LoadModuleTask(ModuleLoader moduleLoader, Module module) {
-		super(FlexoLocalization.localizedForKey("loading_module") + " " + module.getLocalizedName());
+	public LoadModuleTask(ModuleLoader moduleLoader, Module module) {
+		super(FlexoLocalization.localizedForKey("loading_module") + " " + module.getLocalizedName(), moduleLoader);
 		this.moduleLoader = moduleLoader;
 		this.module = module;
 	}
