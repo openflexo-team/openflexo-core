@@ -20,8 +20,8 @@
 package org.openflexo.foundation.viewpoint;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.jar.JarEntry;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,7 +42,6 @@ import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * This class defines and implements the Openflexo built-in virtual model technology adapter
@@ -140,32 +139,27 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 		final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
 		final ViewPointJarBasedRepository viewPointJarBasedRepository = this.getViewPointJarBasedRepository(resourceCenter);
 		final ViewPointFileBasedRepository viewPointFileBasedRepository = this.getViewPointFileBasedRepository(resourceCenter);
-		// ViewLibrary viewLibrary = null;
-
-		/*if (resourceCenter instanceof FlexoProject) {
-			viewLibrary = ((FlexoProject) resourceCenter).getViewLibrary();
-		}*/
-
+		
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
 
 		while (it.hasNext()) {
 			final I item = it.next();
 			if (!this.isIgnorable(resourceCenter, item)) {
-				if (item instanceof File) {
-					final File candidateFile = (File) item;
-					if (this.isValidViewPointDirectory(candidateFile)) {
-						final ViewPointResource vpRes = this.analyseAsViewPoint(candidateFile, viewPointFileBasedRepository);
-						this.referenceResource(vpRes, resourceCenter);
-					}
-				}
-				if (item instanceof InJarResourceImpl) {
-					final InJarResourceImpl candidateJar = (InJarResourceImpl) item;
-					if (this.isValidViewPointDirectory(candidateJar)) {
-						final ViewPointResource vpRes = this.analyseAsViewPoint(candidateJar, viewPointJarBasedRepository);
-						this.referenceResource(vpRes, resourceCenter);
-					}
-				}
+				//if (item instanceof File) {
+				//	final File candidateFile = (File) item;
+					//if (this.isValidViewPointDirectory(item)) {
+						final ViewPointResource vpRes = analyseAsViewPoint(item, resourceCenter);
+					//	this.referenceResource(vpRes, resourceCenter);
+				//	}
+				//}
+				//if (item instanceof InJarResourceImpl) {
+				//	final InJarResourceImpl candidateJar = (InJarResourceImpl) item;
+				//	if (this.isValidViewPointDirectory(candidateJar)) {
+				//		final ViewPointResource vpRes = analyseAsViewPoint(candidateJar, resourceCenter);
+				//		this.referenceResource(vpRes, resourceCenter);
+				///	}
+				//}
 			}
 		}
 		// Iterate
@@ -227,20 +221,56 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	 * @param viewPointRepository
 	 * @return the newly created {@link ViewPointResource}
 	 */
-	private ViewPointResource analyseAsViewPoint(final File candidateFile, final ViewPointFileBasedRepository viewPointRepository) {
-		if (this.isValidViewPointDirectory(candidateFile)) {
-			final ViewPointResource vpRes = ViewPointResourceImpl.retrieveViewPointResource(candidateFile, this.getServiceManager());
-			if (vpRes != null) {
-				logger.info("Found and register viewpoint " + vpRes.getURI() + vpRes.getFlexoIODelegate().toString());
-				final RepositoryFolder<ViewPointResource> folder = this.retrieveRepositoryFolder(viewPointRepository, candidateFile);
-				viewPointRepository.registerResource(vpRes, folder);
+	private ViewPointResource analyseAsViewPoint(final Object candidateElement, FlexoResourceCenter resourceCenter) {
+		if (this.isValidViewPoint(candidateElement)) {
+			ViewPointResource vpRes = null;
+			if(candidateElement instanceof File){
+				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File)candidateElement, getServiceManager());
+				ViewPointFileBasedRepository viewPointFileBasedRepository = getViewPointFileBasedRepository(resourceCenter);
+				registerResource(vpRes, viewPointFileBasedRepository,candidateElement);
+				referenceResource(vpRes, resourceCenter);
 				return vpRes;
-			} else {
-				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for file " + candidateFile.getAbsolutePath());
+			}else if (candidateElement instanceof InJarResourceImpl){
+				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl)candidateElement, this.getServiceManager());
+				ViewPointJarBasedRepository viewPointJarBasedRepository = getViewPointJarBasedRepository(resourceCenter);
+				registerResource(vpRes, viewPointJarBasedRepository,candidateElement);
+				referenceResource(vpRes, resourceCenter);
+				return vpRes;
 			}
 		}
-
 		return null;
+	}
+
+	private void registerResource(ViewPointResource vpRes, ViewPointRepository repository, Object candidateElement){
+		try {
+			if (vpRes != null) {
+				logger.info("Found and register viewpoint " + vpRes.getURI() + vpRes.getFlexoIODelegate().toString());
+				RepositoryFolder<ViewPointResource> folder;
+				folder = repository.getRepositoryFolder(candidateElement, true);
+				repository.registerResource(vpRes, folder);
+			}  else {
+			logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element " + candidateElement);
+			}
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Check it might correspond to a viewpoint
+	 * @param candidateElement
+	 * @return
+	 */
+	private boolean isValidViewPoint(Object candidateElement) {
+		if (candidateElement instanceof File && isValidViewPointDirectory(((File)candidateElement))){
+			return true;
+		}
+		if (candidateElement instanceof InJarResourceImpl && isValidViewPointDirectory((InJarResourceImpl)candidateElement)){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -251,12 +281,18 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	 * @param viewPointRepository
 	 * @return the newly created {@link ViewPointResource}
 	 */
-	private ViewPointResource analyseAsViewPoint(final InJarResourceImpl candidateJar, final ViewPointJarBasedRepository viewPointRepository) {
+	/*private ViewPointResource analyseAsViewPoint(final InJarResourceImpl candidateJar, final ViewPointJarBasedRepository viewPointRepository) {
 		if (this.isValidViewPointDirectory(candidateJar)) {
 			final ViewPointResource vpRes = ViewPointResourceImpl.retrieveViewPointResource(candidateJar, this.getServiceManager());
 			if (vpRes != null) {
-				final RepositoryFolder<ViewPointResource> folder = this.retrieveRepositoryFolder(viewPointRepository, new File(candidateJar.getContainer().getRelativePath()));
-				viewPointRepository.registerResource(vpRes, viewPointRepository.getRootFolder());
+				RepositoryFolder<ViewPointResource> folder = null;
+				try {
+					folder = viewPointRepository.getRepositoryFolder(candidateJar, true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				viewPointRepository.registerResource(vpRes, folder);
 				return vpRes;
 			} else {
 				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for file " + candidateJar.getRelativePath());
@@ -264,7 +300,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 		}
 
 		return null;
-	}
+	}*/
 
 	/**
 	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
@@ -347,27 +383,27 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	public <I> void contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
-			final ViewPointJarBasedRepository viewPointJarBasedRepository = this.getViewPointJarBasedRepository(resourceCenter);
-			final ViewPointFileBasedRepository viewPointFileBasedRepository = this.getViewPointFileBasedRepository(resourceCenter);
-			if (contents instanceof File) {
-				System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
-				final File candidateFile = (File) contents;
-				if (this.isValidViewPointDirectory(candidateFile)) {
-					final ViewPointResource vpRes = this.analyseAsViewPoint(candidateFile, viewPointFileBasedRepository);
-					this.referenceResource(vpRes, resourceCenter);
-				}
-				if (this.isValidViewDirectory(candidateFile)) {
-					final ViewResource vRes = this.analyseAsView(candidateFile, viewRepository);
-					this.referenceResource(vRes, resourceCenter);
-				}
-			}else if(contents instanceof InJarResourceImpl){
-				System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
-				final InJarResourceImpl candidateElement = (InJarResourceImpl) contents;
-				if (this.isValidViewPointDirectory(candidateElement)) {
-					final ViewPointResource vpRes = this.analyseAsViewPoint(candidateElement, viewPointJarBasedRepository);
-					this.referenceResource(vpRes, resourceCenter);
-				}
-			}
+			//final ViewPointJarBasedRepository viewPointJarBasedRepository = this.getViewPointJarBasedRepository(resourceCenter);
+			//final ViewPointFileBasedRepository viewPointFileBasedRepository = this.getViewPointFileBasedRepository(resourceCenter);
+			//if (contents instanceof File) {
+			System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
+				//final File candidateFile = (File) contents;
+				//if (this.isValidViewPointDirectory(candidateFile)) {
+			final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
+				//	this.referenceResource(vpRes, resourceCenter);
+				//}
+				//if (this.isValidViewDirectory(candidateFile)) {
+				//	final ViewResource vRes = this.analyseAsView(candidateFile, viewRepository);
+				//	this.referenceResource(vRes, resourceCenter);
+				//}
+			//}else if(contents instanceof InJarResourceImpl){
+			//	System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
+			//	final InJarResourceImpl candidateElement = (InJarResourceImpl) contents;
+			//	if (this.isValidViewPointDirectory(candidateElement)) {
+			//		final ViewPointResource vpRes = this.analyseAsViewPoint(candidateElement, viewPointJarBasedRepository);
+			//		this.referenceResource(vpRes, resourceCenter);
+			//	}
+			//}
 		}
 	}
 
