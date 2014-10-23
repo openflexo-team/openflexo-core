@@ -12,7 +12,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.module.ProjectLoader;
+import org.openflexo.project.ProjectLoader;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;

@@ -38,6 +38,7 @@ import org.openflexo.foundation.resource.ResourceSaved;
 import org.openflexo.foundation.resource.ResourceUnregistered;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.project.ProjectLoader;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 

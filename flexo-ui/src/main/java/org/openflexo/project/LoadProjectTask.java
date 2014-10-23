@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.module;
+package org.openflexo.project;
 
 import java.io.File;
 import java.util.Map.Entry;
@@ -28,13 +28,13 @@ import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.ProjectLoaded;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.foundation.utils.UnreadableProjectException;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.task.FlexoApplicationTask;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -43,7 +43,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author sylvain
  *
  */
-public class LoadProjectTask extends FlexoTask {
+public class LoadProjectTask extends FlexoApplicationTask {
 
 	private static final Logger logger = Logger.getLogger(ProjectLoader.class.getPackage().getName());
 
@@ -53,7 +53,7 @@ public class LoadProjectTask extends FlexoTask {
 	private final boolean asImportedProject;
 
 	public LoadProjectTask(ProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
-		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName());
+		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName(), projectLoader);
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.asImportedProject = asImportedProject;

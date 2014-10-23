@@ -26,7 +26,8 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	@TestOrder(1)
 	public void testinstanciateTestServiceManager() {
 		instanciateTestServiceManager();
-
+		JarResourceCenter.addNamedJarFromClassPathResourceCenters(getFlexoServiceManager().getResourceCenterService(), "testViewpoint2-1.0");
+		
 		System.out.println("ServiceManager= " + serviceManager);
 		assertNotNull(serviceManager);
 
@@ -107,7 +108,8 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 	public void testLoadViewPointFromAClassPathJar() {
 
 		
-		JarResourceCenter.addNamedJarFromClassPathResourceCenters(getFlexoServiceManager().getResourceCenterService(), "org\\openflexo\\testViewpoint2\\1.0\\testViewpoint2-1.0");
+		//JarResourceCenter.addNamedJarFromClassPathResourceCenters(getFlexoServiceManager().getResourceCenterService(), "org\\openflexo\\testViewpoint2\\1.0\\testViewpoint2-1.0");
+				
 		
 		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
 

@@ -1,4 +1,4 @@
-package org.openflexo.module;
+package org.openflexo.project;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -19,6 +19,7 @@ import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
