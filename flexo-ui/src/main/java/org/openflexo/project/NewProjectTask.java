@@ -1,4 +1,4 @@
-package org.openflexo.module;
+package org.openflexo.project;
 
 import java.io.File;
 
@@ -6,12 +6,11 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.ProjectLoaded;
-import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.view.controller.FlexoController;
+import org.openflexo.task.FlexoApplicationTask;
 
 /**
  * A task used to create a new Flexo project
@@ -19,7 +18,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author sylvain
  *
  */
-public class NewProjectTask extends FlexoTask {
+public class NewProjectTask extends FlexoApplicationTask {
 	/**
 	 * 
 	 */
@@ -33,7 +32,7 @@ public class NewProjectTask extends FlexoTask {
 	}
 
 	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
-		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName());
+		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader);
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.projectNature = projectNature;
@@ -70,10 +69,10 @@ public class NewProjectTask extends FlexoTask {
 	}
 
 	@Override
-	public void throwException(Exception e) {
-		super.throwException(e);
-		FlexoController.notify(FlexoLocalization.localizedForKey("could_not_create_project_located_at")
-				+ projectDirectory.getAbsolutePath());
+	protected void notifyThrownException(Exception e) {
 
+		showException(FlexoLocalization.localizedForKey("could_not_create_project"),
+				FlexoLocalization.localizedForKey("could_not_create_project_located_at") + projectDirectory.getAbsolutePath(), e);
+		e.printStackTrace();
 	}
 }

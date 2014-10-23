@@ -408,7 +408,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		}
 	}
 
-	protected FlexoModule performSwitchToModule(final Module module) throws ModuleLoadingException {
+	FlexoModule performSwitchToModule(final Module module) throws ModuleLoadingException {
 
 		ignoreSwitch = true;
 		activatingModule = module;

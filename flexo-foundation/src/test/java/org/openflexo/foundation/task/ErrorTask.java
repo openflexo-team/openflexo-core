@@ -25,4 +25,10 @@ public class ErrorTask extends FlexoTask {
 		int v = someInts[2];
 	}
 
+	@Override
+	protected synchronized void finishedExecution() {
+		super.finishedExecution();
+		System.out.println("A yes j'ai fini avec le status " + getTaskStatus());
+	}
+
 }

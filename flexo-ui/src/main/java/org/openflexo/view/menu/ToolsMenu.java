@@ -46,7 +46,7 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.module.AutoSaveService;
+import org.openflexo.project.AutoSaveService;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
 

@@ -7,7 +7,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.FlexoProject" label="project.displayName" icon="controller.iconForObject(project)" tooltip="project.projectDirectory.absolutePath" isEditable="false" filtered="false" defaultVisible="true" name="project">
       <Children data="project.projectData.importedProjects" name="children" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.module.ProjectLoader" isEditable="false" filtered="false" defaultVisible="true" name="projectLoader">
+    <BrowserElement dataClassName="org.openflexo.project.ProjectLoader" isEditable="false" filtered="false" defaultVisible="true" name="projectLoader">
       <Children data="projectLoader.rootProjects" name="children" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoProjectReference" label="projectReference.name" icon="controller.flexoController.iconForObject(projectReference)" tooltip="projectReference.uRI" isEditable="false" filtered="false" defaultVisible="true" name="projectReference">

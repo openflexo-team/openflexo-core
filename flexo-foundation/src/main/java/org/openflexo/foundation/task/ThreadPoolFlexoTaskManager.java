@@ -48,11 +48,12 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 			}
 
 			@Override
-			protected synchronized void afterExecute(Runnable r, Throwable t) {
-				if (r instanceof FlexoTask) {
-					scheduledTasks.remove(r);
-					((FlexoTask) r).finishedExecution();
-					System.out.println("Finished executing " + r);
+			protected synchronized void afterExecute(Runnable task, Throwable t) {
+				if (task instanceof FlexoTask) {
+					scheduledTasks.remove(task);
+					getPropertyChangeSupport().firePropertyChange(SCHEDULED_TASK_PROPERTY, task, null);
+					((FlexoTask) task).finishedExecution();
+					System.out.println("Finished executing " + task);
 					launchReadyToExecuteTasks();
 				}
 			}
@@ -191,7 +192,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	@Override
-	public List<FlexoTask> getScheduledTasks() {
+	public synchronized List<FlexoTask> getScheduledTasks() {
 		return scheduledTasks;
 	}
 
