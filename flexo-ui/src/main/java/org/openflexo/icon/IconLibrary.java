@@ -103,6 +103,11 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Common/Validation/FixableWarning.gif"));
 	public static final ImageIconResource UNFIXABLE_WARNING_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/Validation/UnfixableWarning.gif"));
+	
+	public static final ImageIcon MARKET16x16_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Market/market_16x16.png"));
+	public static final ImageIcon MARKET32x32_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Market/market_32x32.png"));
 
 	// Actions icons
 	public static final ImageIcon UNDO_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Undo.png"));

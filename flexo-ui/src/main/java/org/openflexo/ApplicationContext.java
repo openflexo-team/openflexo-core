@@ -12,12 +12,14 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -51,10 +53,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public ApplicationContext() {
 		super();
-
+		
 		registerModuleLoaderService();
 		registerPreferencesService();
-
+		
 		applicationEditor = createApplicationEditor();
 		try {
 			ProjectLoader projectLoader = new ProjectLoader();
@@ -117,6 +119,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return getService(FlexoServerInstanceManager.class);
 	}
 
+	public FlexoUpdateService getFlexoUpdateService() {
+		return getService(FlexoUpdateService.class);
+	}
+	
 	public final TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
 		return getService(TechnologyAdapterControllerService.class);
 	}
@@ -170,6 +176,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
+				}else if(rc instanceof JarResourceCenter){
+					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);

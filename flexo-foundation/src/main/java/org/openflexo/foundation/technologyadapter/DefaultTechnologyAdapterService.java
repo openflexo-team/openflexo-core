@@ -62,11 +62,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
 	public void loadAvailableTechnologyAdapters() {
+		ServiceLoader<TechnologyAdapter> loader = ServiceLoader.load(TechnologyAdapter.class);
 		if (loadedAdapters == null) {
 			loadedAdapters = new Hashtable<Class, TechnologyAdapter>();
 			technologyContextManagers = new Hashtable<TechnologyAdapter, TechnologyContextManager>();
 			logger.info("Loading available technology adapters...");
-			ServiceLoader<TechnologyAdapter> loader = ServiceLoader.load(TechnologyAdapter.class);
 			Iterator<TechnologyAdapter> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapter technologyAdapter = iterator.next();
@@ -81,10 +81,33 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			 * registerTechnologyAdapter(diagramTechnologyAdapter); }
 			 */
 			logger.info("Loading available technology adapters. Done.");
+		}else{
+			Iterator<TechnologyAdapter> iterator = loader.iterator();
+			while (iterator.hasNext()) {
+				TechnologyAdapter technologyAdapter = iterator.next();
+				if(!loadedAdapters.containsKey(technologyAdapter.getClass())){
+					registerTechnologyAdapter(technologyAdapter);
+				}
+				logger.info("Loading available technology adapters. Done.");
+			}
 		}
 
 	}
 
+	/*public void loadAvailableTechnologyAdapters(ServiceLoader<TechnologyAdapter> loader) {
+		if (loadedAdapters != null) {
+			Iterator<TechnologyAdapter> iterator = loader.iterator();
+			while (iterator.hasNext()) {
+				TechnologyAdapter technologyAdapter = iterator.next();
+				if(!loadedAdapters.containsKey(technologyAdapter.getClass())){
+					registerTechnologyAdapter(technologyAdapter);
+				}
+			}
+			logger.info("Loading available technology adapters. Done.");
+		}
+	}*/
+
+	
 	private void registerTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		logger.info("Found " + technologyAdapter);
 		technologyAdapter.setTechnologyAdapterService(this);
@@ -167,6 +190,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			rc.initialize(this);
 		}
 	}
+	
+	/*@Override
+	public void initialize(ServiceLoader<TechnologyAdapter> loader) {
+		loadAvailableTechnologyAdapters(loader);
+	}*/
 
 	/**
 	 * Return the list of all non-empty {@link ModelRepository} discoverable in the scope of {@link FlexoServiceManager}, related to
