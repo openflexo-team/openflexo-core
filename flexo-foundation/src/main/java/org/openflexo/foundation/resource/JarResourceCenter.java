@@ -287,10 +287,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 					jarFile = new JarFile(getFile());
 					return new JarResourceCenter(jarFile);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					return null;
 				}
-				return null;
 			}
 		}
 
