@@ -108,6 +108,19 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				return (TAC) tac;
 			}
 		}
+		/*ApplicationContext app = (ApplicationContext)getServiceManager();
+		ServiceLoader<TechnologyAdapterController> loader = (ServiceLoader<TechnologyAdapterController>) app.getFlexoUpdateService().load(TechnologyAdapterController.class);
+		Iterator<TechnologyAdapterController> iterator = loader.iterator();
+		while (iterator.hasNext()) {
+			TechnologyAdapterController technologyAdapterController = iterator.next();
+			if(!loadedAdapters.containsKey(technologyAdapterController.getClass())){
+				registerTechnologyAdapterController(technologyAdapterController);
+				return (TAC) technologyAdapterController;
+			}
+			
+		}*/
+		
+		
 		return null;
 	}
 
