@@ -19,6 +19,7 @@
  */
 package org.openflexo.foundation.resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
@@ -34,6 +35,15 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.viewpoint.ViewPointJarBasedRepository;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
+import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
@@ -214,6 +224,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	public static void addNamedJarFromClassPathResourceCenters(FlexoResourceCenterService rcService, String name){	
 		for(JarFile file : ClassPathUtils.getClassPathJarFiles()){	
+			System.out.println(file.getName());
 			if((file.getName().endsWith(name+".jar")) ||
 					(name.endsWith(".jar") && file.getName().endsWith(name))){
 				addJarFileInResourceCenter(file,rcService);
@@ -228,10 +239,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	public static void addJarFileInResourceCenter(JarFile jarFile,FlexoResourceCenterService rcService){
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
-		// Get the jar resource from the file
-		//JarResourceImpl jri = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),jarFile);
-		//((ClasspathResourceLocatorImpl)jri.getLocator()).getJarResourcesList().put(jri.getRelativePath(), jri);
 		rcService.addToResourceCenters(new JarResourceCenter(jarFile));
+		rcService.storeDirectoryResourceCenterLocations();
 	}
 	
 	
@@ -256,12 +265,37 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		
 	}
 
-	@Override
-	public org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry<?> getResourceCenterEntry() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	@ModelEntity
+	@XMLElement
+	public static interface JarResourceCenterEntry extends ResourceCenterEntry<JarResourceCenter> {
+		@PropertyIdentifier(type = File.class)
+		public static final String JAR_KEY = "jar";
 
+		@Getter(JAR_KEY)
+		@XMLAttribute
+		public File getFile();
+
+		@Setter(JAR_KEY)
+		public void setFile(File jar);
+
+		@Implementation
+		public static abstract class JarResourceCenterEntryImpl implements JarResourceCenterEntry {
+			@Override
+			public JarResourceCenter makeResourceCenter() {
+				JarFile jarFile;
+				try {
+					jarFile = new JarFile(getFile());
+					return new JarResourceCenter(jarFile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+		}
+
+	}
+		
 	@Override
 	public String getDefaultBaseURI() {
 		// TODO Auto-generated method stub
@@ -284,4 +318,19 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return null;
 	}
 	
+	private JarResourceCenterEntry entry;
+
+	@Override
+	public ResourceCenterEntry<?> getResourceCenterEntry() {
+		if (entry == null) {
+			try {
+				ModelFactory factory = new ModelFactory(JarResourceCenterEntry.class);
+				entry = factory.newInstance(JarResourceCenterEntry.class);
+				entry.setFile(new File(getJarResourceImpl().getRelativePath()));
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		return entry;
+	}
 }
