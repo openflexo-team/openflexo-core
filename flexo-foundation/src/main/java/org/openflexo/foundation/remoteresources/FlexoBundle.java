@@ -11,6 +11,8 @@ public interface FlexoBundle {
 	
 	public FlexoBundleType getBundleType();
 	
+	public void setBundleType(FlexoBundleType type);
+	
 	public FlexoVersion getVersion();
 	
 	public List<URL> getURLs();
@@ -21,6 +23,7 @@ public interface FlexoBundle {
 	
 	public String getSimpleName();
 	
+	public void setSimpleName(String name);
+	
 	public List<FlexoBundle> getBundleDependencies();
-
 }

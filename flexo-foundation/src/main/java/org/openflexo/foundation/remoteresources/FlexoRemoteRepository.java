@@ -10,8 +10,12 @@ public interface FlexoRemoteRepository {
 	public boolean isPrivate();
 	
 	public String getName();
+	
+	public void setName(String name);
 
-	public String getURI();
+	public String getUri();
+	
+	public void setUri(String uri);
 	
 	public String getProvider();
 	

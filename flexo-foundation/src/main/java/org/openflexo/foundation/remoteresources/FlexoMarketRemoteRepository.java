@@ -1,21 +1,13 @@
 package org.openflexo.foundation.remoteresources;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.HTTPFileUtils;
 import org.openflexo.toolbox.ImageIconResource;
 
 
-public class FlexoMarketRemoteRepository implements FlexoRemoteRepository{
+public class FlexoMarketRemoteRepository extends FlexoRemoteRepositoryImpl{
 
 	private final String name;
 	
@@ -29,6 +21,7 @@ public class FlexoMarketRemoteRepository implements FlexoRemoteRepository{
 			ResourceLocator.locateResource("Icons/Market/flexo_market_16x16.png"));
 	
 	public FlexoMarketRemoteRepository(String name, String uri){
+		super(name,uri);
 		this.name = name;
 		this.uri = "https://maven.openflexo.org/artifactory/";
 		initialize();
@@ -56,7 +49,7 @@ public class FlexoMarketRemoteRepository implements FlexoRemoteRepository{
 	}
 
 	@Override
-	public String getURI() {
+	public String getUri() {
 		return uri;
 	}
 
