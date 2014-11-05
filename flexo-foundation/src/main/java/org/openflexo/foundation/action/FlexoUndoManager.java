@@ -354,7 +354,7 @@ public class FlexoUndoManager extends UndoManager {
 		 */
 		private void willDoEmbeddedAction(FlexoAction<?, ?, ?> action) {
 			if (action.getOwnerAction() == getAction()) {
-				System.out.println("OK, j'execute bien " + action + " au sein de " + getAction());
+				// System.out.println("Executing " + action + " inside " + getAction());
 				currentEmbeddedFlexoActionCompoundEdit = new FlexoActionCompoundEdit(this, action);
 			}
 		}
@@ -367,7 +367,7 @@ public class FlexoUndoManager extends UndoManager {
 		 */
 		private void hasDoneEmbeddedAction(FlexoAction<?, ?, ?> action) {
 			if (action.getOwnerAction() == getAction()) {
-				System.out.println("OK, j'ai fini d'executer " + action + " au sein de " + getAction());
+				// System.out.println("Finished executing " + action + " inside " + getAction());
 				embeddedFlexoActionCompoundEdits.add(currentEmbeddedFlexoActionCompoundEdit);
 				currentEmbeddedFlexoActionCompoundEdit = null;
 			}
