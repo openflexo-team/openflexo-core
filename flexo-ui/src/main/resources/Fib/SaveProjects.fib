@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="border" borderTop="5" borderBottom="5" borderLeft="5" borderRight="5" darkLevel="0" data="data" dataClassName="org.openflexo.components.SaveProjectsDialog$ProjectList" controllerClassName="org.openflexo.view.controller.FlexoFIBController" opaque="false">
-  <Panel layout="border" borderTitle="" darkLevel="0" index="0" constraints="border(index=0;location=center)" opaque="false">
-    <Panel layout="border" border="line" borderColor="204,204,204" darkLevel="0" index="0" constraints="border(index=0;location=center)" opaque="true" backgroundColor="255,255,255" width="320" height="320" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED">
-      <Panel layout="flow" hGap="5" vGap="5" flowAlignment="LEADING" borderTitle="Panel" borderBottom="0" borderRight="80" darkLevel="0" index="0" constraints="border(index=0;location=center)" opaque="false">
-        <CheckboxList columns="1" hGap="0" vGap="2" index="0" data="data.selected" constraints="flow(index=0;location=center)" name="CheckboxList" format="(((object.displayName + &quot; (&quot;) + object.projectDirectory.absolutePath) + &quot;)&quot;)" icon="controller.iconForObject(object)" localize="false" manageDynamicModel="true" staticList="" list="data.projects" showIcon="true" iteratorClassName="org.openflexo.foundation.FlexoProject" autoSelectFirstRow="true">
-          <Dependancy componentName="SelectAll" />
-          <Dependancy componentName="DeselectAll" />
+<Panel id="0" darkLevel="0" useScrollBar="false" data="data" borderLeft="5" protectContent="false" opaque="false" layout="border" controllerClassName="org.openflexo.view.controller.FlexoFIBController" border="empty" borderRight="5" trackViewPortWidth="true" borderBottom="5" dataClassName="org.openflexo.components.SaveProjectsDialog$ProjectList" borderTop="5" trackViewPortHeight="true">
+  <LocalizedDictionary id="1">
+    <Localized id="2" value="Select all" lang="English" key="select_all" />
+    <Localized id="3" value="Sélectionner tout" lang="French" key="select_all" />
+    <Localized id="4" value="Select all" lang="Dutch" key="select_all" />
+    <Localized id="5" value="Deselect all" lang="English" key="deselect_all" />
+    <Localized id="6" value="Déselectionner tout" lang="French" key="deselect_all" />
+    <Localized id="7" value="Deselect all" lang="Dutch" key="deselect_all" />
+    <Localized id="8" value="Save" lang="English" key="Save" />
+    <Localized id="9" value="Sauver" lang="French" key="Save" />
+    <Localized id="10" value="Save" lang="Dutch" key="Save" />
+    <Localized id="11" value="Cancel" lang="English" key="Cancel" />
+    <Localized id="12" value="Annuler" lang="French" key="Cancel" />
+    <Localized id="13" value="Cancel" lang="Dutch" key="Cancel" />
+    <Localized id="14" value="Exit" lang="English" key="exit" />
+    <Localized id="15" value="Quitter" lang="French" key="exit" />
+    <Localized id="16" value="Exit" lang="Dutch" key="exit" />
+  </LocalizedDictionary>
+  <Panel id="17" darkLevel="0" useScrollBar="false" protectContent="false" opaque="false" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" trackViewPortWidth="true" index="0" constraints="border(index=0;location=center)" borderTitle="" trackViewPortHeight="true">
+    <Panel id="18" darkLevel="0" borderColor="204,204,204" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" backgroundColor="255,255,255" useScrollBar="true" protectContent="false" height="320" opaque="true" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" border="line" trackViewPortWidth="true" index="0" width="320" constraints="border(index=0;location=center)" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
+      <Panel id="19" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" opaque="false" layout="flow" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" borderRight="80" flowAlignment="LEADING" trackViewPortWidth="true" index="0" constraints="border(index=0;location=center)" borderBottom="0" borderTitle="Panel" trackViewPortHeight="true">
+        <CheckboxList id="20" manageDynamicModel="true" columns="1" controllerClassName="org.openflexo.fib.controller.FIBController" index="0" localize="false" constraints="flow(index=0;location=center)" format="(((object.displayName + &quot; (&quot;) + object.projectDirectory.absolutePath) + &quot;)&quot;)" showText="true" iteratorClassName="org.openflexo.foundation.FlexoProject" vGap="2" showIcon="true" useScrollBar="false" data="data.selected" staticList="" autoSelectFirstRow="true" name="CheckboxList" hGap="0" icon="controller.iconForObject(object)" list="data.projects" readOnly="false">
+          <Dependancy id="21" componentName="SelectAll" />
+          <Dependancy idref="21" />
+          <Dependancy idref="21" />
+          <Dependancy id="22" componentName="DeselectAll" />
+          <Dependancy idref="22" />
+          <Dependancy idref="22" />
         </CheckboxList>
       </Panel>
     </Panel>
-    <Panel layout="flow" hGap="5" vGap="5" flowAlignment="RIGHT" borderTitle="Panel" darkLevel="0" index="0" constraints="border(index=0;location=south)" opaque="false">
-      <Panel layout="grid" hGap="5" vGap="5" cols="2" rows="2" darkLevel="0" index="0" constraints="flow(index=0;location=center)" opaque="false">
-        <Button action="data.selectAll()" buttonType="Trigger" label="select_all" localize="true" manageDynamicModel="true" name="SelectAll" constraints="grid(x=0;y=0)" />
-        <Button action="data.deselectAll()" buttonType="Trigger" label="deselect_all" localize="true" manageDynamicModel="true" name="DeselectAll" constraints="grid(x=1;y=0)" />
-        <Button action="controller.chooseYesAndDispose()" buttonType="Trigger" label="Save" default="true" localize="true" data="((data.selected.size &gt; 0) ? &quot;save&quot; : &quot;exit&quot;)" constraints="grid(x=0;y=1)" />
-        <Button action="controller.chooseNoAndDispose()" buttonType="Trigger" label="Cancel" localize="true" constraints="grid(x=1;y=1)" />
+    <Panel id="23" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" opaque="false" layout="flow" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" flowAlignment="RIGHT" trackViewPortWidth="true" index="0" constraints="border(index=0;location=south)" borderTitle="Panel" trackViewPortHeight="true">
+      <Panel id="24" cols="2" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" opaque="false" layout="grid" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" trackViewPortWidth="true" index="0" constraints="flow(index=0;location=center)" rows="2" trackViewPortHeight="true">
+        <Button id="25" manageDynamicModel="true" useScrollBar="false" buttonType="Trigger" name="SelectAll" action="data.selectAll()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="grid(x=0;y=0)" label="select_all" readOnly="false" />
+        <Button id="26" manageDynamicModel="true" useScrollBar="false" buttonType="Trigger" name="DeselectAll" action="data.deselectAll()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="grid(x=1;y=0)" label="deselect_all" readOnly="false" />
+        <Button id="27" manageDynamicModel="false" useScrollBar="false" data="((data.selected.size &gt; 0) ? &quot;save&quot; : &quot;exit_without_saving&quot;)" default="true" buttonType="Trigger" action="controller.chooseYesAndDispose()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="grid(x=0;y=1)" label="Save" readOnly="false">
+          <Dependancy id="28" componentName="CheckboxList" />
+          <Dependancy idref="28" />
+        </Button>
+        <Button id="29" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" action="controller.chooseNoAndDispose()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="grid(x=1;y=1)" label="Cancel" readOnly="false" />
       </Panel>
     </Panel>
   </Panel>
-  <LocalizedDictionary>
-    <Localized key="select_all" lang="English" value="Select all" />
-    <Localized key="select_all" lang="French" value="Sélectionner tout" />
-    <Localized key="select_all" lang="Dutch" value="Select all" />
-    <Localized key="deselect_all" lang="English" value="Deselect all" />
-    <Localized key="deselect_all" lang="French" value="Déselectionner tout" />
-    <Localized key="deselect_all" lang="Dutch" value="Deselect all" />
-    <Localized key="Save" lang="English" value="Save" />
-    <Localized key="Save" lang="French" value="Sauver" />
-    <Localized key="Save" lang="Dutch" value="Save" />
-    <Localized key="Cancel" lang="English" value="Cancel" />
-    <Localized key="Cancel" lang="French" value="Annuler" />
-    <Localized key="Cancel" lang="Dutch" value="Cancel" />
-    <Localized key="exit" lang="English" value="Exit" />
-    <Localized key="exit" lang="French" value="Quitter" />
-    <Localized key="exit" lang="Dutch" value="Exit" />
-  </LocalizedDictionary>
 </Panel>
