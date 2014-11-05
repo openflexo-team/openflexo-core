@@ -71,9 +71,6 @@ public class FileMenu extends FlexoMenu {
 		super("file", controller);
 		_controller = controller;
 
-		add(new SaveItem());
-		addSeparator();
-
 		add(new NewProjectItem());
 		add(new OpenProjectItem());
 		add(recentProjectMenu = new JMenu());
@@ -82,6 +79,7 @@ public class FileMenu extends FlexoMenu {
 		add(new SaveProjectItem());
 		add(new SaveAllProjectItem());
 		add(new SaveAsProjectItem());
+		add(new SaveItem());
 		// TODO: repair reload project. this includes to also support close project.
 		// add(reloadProjectItem = new ReloadProjectItem());
 		addSeparator();
@@ -157,7 +155,7 @@ public class FileMenu extends FlexoMenu {
 	public class SaveItem extends FlexoMenuItem {
 
 		public SaveItem() {
-			super(new SaveAction(), "save", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK), getController(), true);
+			super(new SaveAction(), "save_all", KeyStroke.getKeyStroke(KeyEvent.VK_S, FlexoCst.META_MASK), getController(), true);
 			setIcon(IconLibrary.SAVE_ICON);
 		}
 
