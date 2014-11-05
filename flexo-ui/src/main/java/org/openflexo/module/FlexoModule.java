@@ -32,6 +32,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
+import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ResourceModified;
 import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceSaved;
@@ -98,8 +99,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	public FlexoFrame getFlexoFrame() {
 		if (controller != null) {
 			return controller.getFlexoFrame();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -168,14 +168,12 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
 					selectDefaultObject = true;
 				}
-			}
-			else {
+			} else {
 				selectDefaultObject = true;
 			}
 			if (selectDefaultObject) {
 				getFlexoController().setCurrentEditedObjectAsModuleView(defaultObjectToSelect);
-			}
-			else {
+			} else {
 				if (getFlexoController().getSelectionManager().getFocusedObject() == null) {
 					getFlexoController().setCurrentEditedObjectAsModuleView(null);
 				}
@@ -211,8 +209,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			} catch (OperationCancelledException e) {
 				return false;
 			}
-		}
-		else { // There are still other modules left
+		} else { // There are still other modules left
 			closeWithoutConfirmation();// Unloads the module
 			return true; // Since there is nothing to save and that Flexo
 			// has other windows opened to access it, we
@@ -233,8 +230,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 		setAsInactive();
 		if (controller != null) {
 			controller.dispose();
-		}
-		else if (logger.isLoggable(Level.WARNING)) {
+		} else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Called twice closeWithoutConfirmation on " + this);
 		}
 		controller = null;
@@ -253,8 +249,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 				logger.severe("Module is loaded and so this exception CANNOT occur. Please investigate and FIX.");
 				e.printStackTrace();
 			}
-		}
-		else {
+		} else {
 			if (quitIfNoModuleLeft) {
 				try {
 					getModuleLoader().quit(false);
@@ -275,11 +270,19 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("ModuleLoader service received notification " + notification + " from " + caller);
-		if (notification instanceof ResourceModified || notification instanceof ResourceSaved || notification instanceof ResourceRegistered
-				|| notification instanceof ResourceUnregistered) {
+		if (notification instanceof ProjectClosed) {
+			if (getEditor() != null && getEditor().getProject() == ((ProjectClosed) notification).getProject()) {
+				logger.info("Closing projet " + getEditor().getProject() + " in module " + this);
+				getController().getControllerModel().setCurrentEditor(null);
+				// getController().getControllerModel().setCurrentLocation(new Location(null, null,
+				// getController().getCurrentPerspective()));
+			}
+		} else if (notification instanceof ResourceModified || notification instanceof ResourceSaved
+				|| notification instanceof ResourceRegistered || notification instanceof ResourceUnregistered) {
 			if (getFlexoFrame() != null) {
 				getFlexoFrame().updateWindowModified();
 			}
 		}
+
 	}
 }

@@ -75,6 +75,7 @@ public class FileMenu extends FlexoMenu {
 		add(new OpenProjectItem());
 		add(recentProjectMenu = new JMenu());
 		recentProjectMenu.setText(FlexoLocalization.localizedForKey("recent_projects", recentProjectMenu));
+		add(new CloseProjectItem());
 		add(new ImportProjectMenuItem());
 		add(new SaveProjectItem());
 		add(new SaveAllProjectItem());
@@ -263,6 +264,50 @@ public class FileMenu extends FlexoMenu {
 							+ projectDirectory.getAbsolutePath());
 				}*/
 			}
+		}
+	}
+
+	public class CloseProjectItem extends FlexoMenuItem {
+
+		public CloseProjectItem() {
+			super(new CloseProjectAction(), "close_project", null, getController(), true);
+		}
+	}
+
+	public class CloseProjectAction extends AbstractAction implements PropertyChangeListener {
+		public CloseProjectAction() {
+			super();
+			if (getController() != null) {
+				manager.addListener(ControllerModel.CURRENT_EDITOR, this, getController().getControllerModel());
+			}
+			updateEnability();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			// System.out.println("SaveProjectAction");
+
+			if (getController() == null || getController().getProject() == null) {
+				return;
+			}
+
+			getProjectLoader().closeProject(getController().getProject());
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (getController() != null) {
+				if (evt.getSource() == getController().getControllerModel()) {
+					if (ControllerModel.CURRENT_EDITOR.equals(evt.getPropertyName())) {
+						updateEnability();
+					}
+				}
+			}
+		}
+
+		private void updateEnability() {
+			setEnabled(getController() != null && getController().getProject() != null);
 		}
 	}
 

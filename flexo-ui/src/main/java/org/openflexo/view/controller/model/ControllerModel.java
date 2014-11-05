@@ -309,9 +309,9 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		if (isDeleted()) {
 			return;
 		}
-		if (editor == null) {
+		/*if (editor == null) {
 			editor = getCurrentEditor();
-		}
+		}*/
 		if (perspective == null) {
 			perspective = getCurrentPerspective();
 		}
@@ -337,6 +337,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	private void notifyLocationChange(Location old, Location newLocation) {
+
 		if (old == null || old.getEditor() != currentLocation.getEditor()) {
 			getPropertyChangeSupport()
 					.firePropertyChange(CURRENT_EDITOR, old != null ? old.getEditor() : null, currentLocation.getEditor());
@@ -480,7 +481,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();
-			if (hl.getEditor().getProject() == removedProject) {
+			if (hl.getEditor() != null && hl.getEditor().getProject() == removedProject) {
 				i.remove();
 			}
 		}

@@ -41,6 +41,7 @@ import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
@@ -136,55 +137,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		getServiceManager().getTaskManager().scheduleExecution(returned);
 		return returned;
 
-		/*
-		if (projectDirectory == null) {
-			throw new IllegalArgumentException("Project directory cannot be null");
-		}
-		if (!projectDirectory.exists()) {
-			throw new ProjectInitializerException("project directory does not exist", projectDirectory);
-		}
-		try {
-			FlexoProjectUtil.isProjectOpenable(projectDirectory);
-		} catch (UnreadableProjectException e) {
-			FlexoController.notify(e.getMessage());
-			ProgressWindow.hideProgressWindow();
-			throw new ProjectLoadingCancelledException(e.getMessage());
-		}
-
-		if (ProgressWindow.hasInstance()) {
-			ProgressWindow.hideProgressWindow();
-		}
-		ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("loading_project"), 14);
-		FlexoEditor editor = null;
-		try {
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine("Opening " + projectDirectory.getAbsolutePath());
-			}
-			if (!asImportedProject) {
-				// Adds to recent project
-				preInitialization(projectDirectory);
-			}
-			for (Entry<FlexoProject, FlexoEditor> e : editors.entrySet()) {
-				if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
-					editor = e.getValue();
-				}
-			}
-			if (editor == null) {
-				editor = FlexoProject.openProject(projectDirectory, getServiceManager(), getServiceManager(), ProgressWindow.instance());
-				newEditor(editor);
-			}
-			if (!asImportedProject) {
-				addToRootProjects(editor.getProject());
-			}
-		} finally {
-			ProgressWindow.hideProgressWindow();
-		}
-
-		// Notify project just loaded
-		getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
-
-		return editor;
-		 */
 	}
 
 	public LoadProjectTask reloadProject(FlexoProject project) {
@@ -205,29 +157,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 		}
 		getServiceManager().getTaskManager().scheduleExecution(returned);
 		return returned;
-
-		/*if (!ProgressWindow.hasInstance()) {
-			ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("building_new_project"), 10);
-		} else {
-			ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("building_new_project"));
-		}
-		try {
-			// This will just create the .version in the project
-			FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
-
-			preInitialization(projectDirectory);
-			FlexoEditor editor = FlexoProject.newProject(projectDirectory, projectNature, getServiceManager(), getServiceManager(),
-					ProgressWindow.instance());
-			newEditor(editor);
-			addToRootProjects(editor.getProject());
-
-			// Notify project just loaded
-			getServiceManager().notify(this, new ProjectLoaded(editor.getProject()));
-
-			return editor;
-		} finally {
-			ProgressWindow.hideProgressWindow();
-		}*/
 
 	}
 
@@ -252,7 +181,6 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 				}
 			}
 		}
-		// editor.getProject().setModuleLoader(applicationContext.getModuleLoader());
 	}
 
 	public void closeProject(FlexoProject project) {
@@ -267,6 +195,7 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 			removeFromRootProjects(project);
 			getPropertyChangeSupport().firePropertyChange(EDITOR_REMOVED, editor, null);
 		}
+		getServiceManager().notify(this, new ProjectClosed(project));
 	}
 
 	public AutoSaveService getAutoSaveService(FlexoProject project) {
