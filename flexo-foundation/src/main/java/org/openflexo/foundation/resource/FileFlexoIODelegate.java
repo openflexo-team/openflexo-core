@@ -113,7 +113,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public boolean delete(boolean deleteFile) {
 			if (hasWritePermission()) {
-				if (getFlexoResource().delete()) {
+				//if (getFlexoResource().delete()) {
 					if (getFile() != null && getFile().exists() && deleteFile) {
 						getFlexoResource().getServiceManager().getResourceManager().addToFilesToDelete(getFile());
 						if (logger.isLoggable(Level.INFO)) {
@@ -121,8 +121,8 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 						}
 					}
 					return true;
-				}
-				return false;
+				//}
+				//return false;
 			} else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;

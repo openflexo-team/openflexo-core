@@ -281,6 +281,10 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (isLoaded()) {
 				unloadResourceData();
 			}
+			
+			// Handle Flexo IO delegate deletion
+			getFlexoIODelegate().delete();
+			
 			return true;
 		}
 	}
