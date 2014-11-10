@@ -22,6 +22,7 @@ package org.openflexo.foundation.view.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -47,7 +48,7 @@ public class DeleteVirtualModelInstance extends FlexoAction<DeleteVirtualModelIn
 
 		@Override
 		public boolean isVisibleForSelection(VirtualModelInstance vmi, Vector<FlexoObject> globalSelection) {
-			return vmi != null && vmi.getClass().equals(VirtualModelInstance.class); // Only if class is not specialized
+			return vmi != null && TypeUtils.isAssignableTo(vmi, VirtualModelInstance.class);
 		}
 
 		@Override
