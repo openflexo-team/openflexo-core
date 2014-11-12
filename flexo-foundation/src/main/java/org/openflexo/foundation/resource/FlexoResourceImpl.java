@@ -11,6 +11,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.IProgress;
@@ -124,6 +125,22 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyResourceLoaded();
 	}
 
+	@Override
+	public void setURI(String anURI) {
+		String oldUri = getURI();
+		// Handle dependencies and contents, replace the reference toward old uri
+		for(FlexoResource<?> resource : getDependencies()){
+			resource.getURI().replace(oldUri, anURI);
+		}
+		for(FlexoResource<?> resource : getContents()){
+			resource.setURI(resource.getURI().replace(oldUri, anURI));
+		}
+		// Set the new URI
+		performSuperSetter(URI, anURI);
+		
+	}
+
+	
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
@@ -326,4 +343,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		logger.warning("TODO: implement this");
 	}
 	
+	public List<MissingFlexoResource> getMissingInformations() {
+		return null;
+	}
 }
