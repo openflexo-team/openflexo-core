@@ -26,6 +26,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.project.ProjectLoader;
+import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.task.TaskManagerPanel;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
@@ -74,6 +75,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
 		registerService(flexoServerInstanceManager);
+		ResourceConsistencyService resourceConsistencyService = new ResourceConsistencyService();
+		registerService(resourceConsistencyService);
 	}
 
 	private void registerPreferencesService() {
@@ -122,6 +125,11 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	public FlexoUpdateService getFlexoUpdateService() {
 		return getService(FlexoUpdateService.class);
 	}
+	
+	public ResourceConsistencyService getResourceConsistencyService() {
+		return getService(ResourceConsistencyService.class);
+	}
+	
 	
 	public final TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
 		return getService(TechnologyAdapterControllerService.class);

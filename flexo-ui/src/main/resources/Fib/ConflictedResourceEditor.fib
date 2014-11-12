@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="border" borderTitle="Resource conflict management" borderLeft="5" titleFont="Lucida Grande,0,11" darkLevel="0" dataClassName="org.openflexo.rm.ConflictedResourceEditor" controllerClassName="org.openflexo.view.controller.FlexoFIBController" font="Lucida Grande,0,11" width="600" height="250" name="main">
+   <Panel layout="flow" hGap="5" vGap="5" flowAlignment="CENTER" borderTitle="Panel" darkLevel="0" index="0" constraints="border(index=0;location=north)" name="title">
+    <Image imageFile="" data="data.image" sizeAdjustment="OriginalSize" align="left" imageWidth="32" imageHeight="32" index="0" constraints="flow(index=0;location=west)" localize="true"/>
+    <Label label="Resource conflict management" align="center" index="1" constraints="flow(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" font="Lucida Grande,1,15" localize="true" />
+    <Label label="" data="data.getIndexOfConflicts() + ' / ' + data.getNumberOfConflicts()" align="center" index="2" constraints="flow(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" font="Lucida Grande,1,15" localize="true" />
+  </Panel>
+  
+  <SplitPanel index="2" constraints="border(index=1;location=center)">
+      <RowSplit name="RowSplit" weight="0.0">
+        <Leaf name="left" weight="0.2" />
+        <Divider />
+        <Leaf name="right" weight="0.8" />
+      </RowSplit>
+      <Panel constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=left;weightX=1.0;weightY=1.0;x=0;y=0)" font="Lucida Grande,0,11">
+  		  <Table iteratorClassName="org.openflexo.foundation.resource.FlexoResource" visibleRowCount="5" rowHeight="18" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="41,90,209" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" name="ResourcesTable" index="1" data="data.resources.conflictedResources" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" font="Lucida Grande,0,11">
+          	 <LabelColumn data="iterator.name" title="name" columnWidth="150" resizable="true" displayTitle="true" name="label" />
+          	 <!--<RemoveAction method="data.deleteResource(selected)" name="deleteResource" />-->
+          </Table>
+          <Label label="label" align="center" index="5" data="data.errorMessage" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" visible="(!(data.isValid()))" localize="true"/>   
+      </Panel>
+      <Panel manageDynamicModel="true" constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=right;weightX=1.0;weightY=1.0;x=0;y=0)" font="Lucida Grande,0,11">
+		  <Panel id="7" manageDynamicModel="true"  darkLevel="0" data="ResourcesTable.selected" useScrollBar="false" protectContent="false" description="" layout="twocols" borderRight="2" border="empty" trackViewPortWidth="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" borderBottom="2" borderTop="2" trackViewPortHeight="true">
+		    <Label id="8" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="name" readOnly="false" />
+		    <TextField id="9" passwd="false" manageDynamicModel="true" useScrollBar="false" data="ResourcesTable.selected.name" columns="25" name="newName" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" validateOnReturn="false" />
+			<Label id="10" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="uri" readOnly="false" />
+		    <TextField id="11" passwd="false" manageDynamicModel="true" useScrollBar="false" data="ResourcesTable.selected.uRI" columns="60" name="newURI" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="false" validateOnReturn="false" />
+		    <Label id="12" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="location" readOnly="false" />
+		    <TextField id="13" passwd="false" manageDynamicModel="true" useScrollBar="false" data="data.getLocation(ResourcesTable.selected)" columns="60" name="location" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" validateOnReturn="false" />
+		    <Label id="14" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="version" readOnly="false" />
+		    <TextField id="15" passwd="false" manageDynamicModel="true" useScrollBar="false" data="ResourcesTable.selected.version.toString()" columns="25" name="version" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" validateOnReturn="false" />
+  		  	<Button action="data.update()" buttonType="Trigger" label="Apply changes" enable="true" localize="true" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" font="Lucida Grande,0,13"/>
+  		  	<Dependancy componentName="ResourcesTable" />
+  		  </Panel>   
+      </Panel>
+  </SplitPanel>
+  <Panel layout="flow" hGap="5" vGap="5" flowAlignment="CENTER" borderTitle="Panel" titleFont="Lucida Grande,0,11" darkLevel="0" index="6" constraints="border(index=2;location=south)">
+    <Button action="controller.validateAndDispose()" buttonType="Trigger" label="Next" enable="(data.isValid())" localize="true" index="1" constraints="flow(index=1)" font="Lucida Grande,0,13">
+      <LocalizedDictionary />
+    </Button>
+    <Button action="controller.validateAndDispose()" buttonType="Trigger" label="Skip" enable="true" localize="true" index="2" constraints="flow(index=2)" font="Lucida Grande,0,13">
+      <LocalizedDictionary />
+    </Button>
+    <Button action="controller.validateAndDispose()" buttonType="Trigger" label="Auto" enable="true" localize="true" index="3" constraints="flow(index=3)" font="Lucida Grande,0,13">
+      <LocalizedDictionary />
+    </Button>
+  </Panel>
+</Panel>
