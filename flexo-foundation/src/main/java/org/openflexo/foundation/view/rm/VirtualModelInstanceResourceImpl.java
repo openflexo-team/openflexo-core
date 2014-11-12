@@ -3,7 +3,9 @@ package org.openflexo.foundation.view.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.jdom2.Attribute;
@@ -18,12 +20,17 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
+import org.openflexo.foundation.view.FreeModelSlotInstance;
+import org.openflexo.foundation.view.ModelSlotInstance;
+import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
@@ -76,11 +83,11 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
 
-			returned.setServiceManager(view.getProject().getServiceManager());
+			
 
 			view.getResource().addToContents(returned);
 			view.getResource().notifyContentsAdded(returned);
-
+			returned.setServiceManager(view.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -115,7 +122,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			returned.setServiceManager(viewResource.getProject().getServiceManager());
+			
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 				if (viewResource != null && viewResource.getViewPoint() != null
 						&& viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI) != null) {
@@ -125,6 +132,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			}
 			viewResource.addToContents(returned);
 			viewResource.notifyContentsAdded(returned);
+			returned.setServiceManager(viewResource.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -257,4 +265,25 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		return (ViewResource) performSuperGetter(CONTAINER);
 	}
 
+	@Override
+	public List<MissingFlexoResource> getMissingInformations() {
+		List<MissingFlexoResource> missingResources = new ArrayList<MissingFlexoResource>();
+		if(isLoaded() && getVirtualModelInstance()!=null){
+				
+			for(ModelSlotInstance msi : getVirtualModelInstance().getModelSlotInstances()){
+				if(msi.getResource()==null && msi instanceof TypeAwareModelSlotInstance){
+					TypeAwareModelSlotInstance taMsi = (TypeAwareModelSlotInstance)msi;
+					missingResources.add(new MissingFlexoResource(taMsi.getModelURI(),this)) ;
+				} else if(msi.getResource()==null && msi instanceof FreeModelSlotInstance){
+					FreeModelSlotInstance fMsi = (FreeModelSlotInstance)msi;
+						missingResources.add(new MissingFlexoResource(fMsi.getResourceURI(),this)) ;
+				} else if(msi.getResource()==null && msi instanceof VirtualModelModelSlotInstance){
+					VirtualModelModelSlotInstance vmMsi = (VirtualModelModelSlotInstance)msi;
+					missingResources.add(new MissingFlexoResource(vmMsi.getVirtualModelInstanceURI(),this)) ;
+				}
+			}	
+		}
+		
+		return missingResources;
+	}
 }

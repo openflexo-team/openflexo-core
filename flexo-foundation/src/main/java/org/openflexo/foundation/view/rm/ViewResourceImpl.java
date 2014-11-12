@@ -3,6 +3,7 @@ package org.openflexo.foundation.view.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,14 +18,15 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceDefinition;
+import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.RequiredResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SomeResources;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.ViewLibrary;
@@ -118,6 +120,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setProject(viewLibrary.getProject());
 
 			if (StringUtils.isNotEmpty(vpi.viewPointURI)) {
+				returned.viewpointURI = vpi.viewPointURI;
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
@@ -147,6 +150,8 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		}
 		return null;
 	}
+	
+	public String viewpointURI;
 	
 	@Override
 	public View getView() {
@@ -285,4 +290,14 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		}
 		return ResourceLocator.locateResource(parentPath);
 	}
+	
+	@Override
+	public List<MissingFlexoResource> getMissingInformations() {
+		List<MissingFlexoResource> missingResources = new ArrayList<MissingFlexoResource>();
+		if(getViewPointResource()==null){
+			missingResources.add(new MissingFlexoResource(viewpointURI,this)) ;
+		} 
+		return missingResources;
+	}
+	
 }
