@@ -380,17 +380,19 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	public RepositoryFolder<R> getRepositoryFolder(List<String> pathTo, boolean createWhenNonExistent) throws IOException {
 		RepositoryFolder<R> returned = getRootFolder();
-		for (String pathElement : pathTo) {
-			RepositoryFolder<R> currentFolder = returned.getFolderNamed(pathElement);
-			if (currentFolder == null) {
-				if (createWhenNonExistent) {
-					RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
-					currentFolder = newFolder;
-				} else {
-					return null;
+		if(pathTo!=null){
+			for (String pathElement : pathTo) {
+				RepositoryFolder<R> currentFolder = returned.getFolderNamed(pathElement);
+				if (currentFolder == null) {
+					if (createWhenNonExistent) {
+						RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
+						currentFolder = newFolder;
+					} else {
+						return null;
+					}
 				}
+			returned = currentFolder;
 			}
-		returned = currentFolder;
 		}
 		return returned;
 	}
