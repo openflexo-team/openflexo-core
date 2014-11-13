@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
+import org.openflexo.antar.expr.BindingValue;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -145,8 +146,11 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			if (assignation != null) {
-				return getFlexoConcept().getFlexoRole(assignation.toString());
+			if (assignation != null && assignation.isBindingValue()) {
+				BindingValue bindingValue = (BindingValue) assignation.getExpression();
+				if (bindingValue.getBindingPath().size() == 0) {
+					return getFlexoConcept().getFlexoRole(bindingValue.getVariableName());
+				}
 			}
 			return null;
 		}
