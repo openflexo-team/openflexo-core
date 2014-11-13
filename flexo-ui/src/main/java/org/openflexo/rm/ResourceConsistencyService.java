@@ -29,6 +29,9 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	
 	private List<ConflictedResourceSet> conflictedResourceSets;
 	
+	public ResourceConsistencyService() {
+	}
+	
 	@Override
 	public void initialize() {
 		// Initialize current conflicted resource set

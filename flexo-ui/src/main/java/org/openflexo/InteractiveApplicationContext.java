@@ -14,6 +14,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.FullInteractiveProjectLoadingHandler;
@@ -78,5 +79,10 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	@Override
 	protected FlexoServerInstanceManager createFlexoServerInstanceManager() {
 		return new FlexoServerInstanceManager();
+	}
+
+	@Override
+	protected ResourceConsistencyService createResourceConsistencyService() {
+		return new ResourceConsistencyService();
 	}
 }

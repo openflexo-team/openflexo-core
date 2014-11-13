@@ -75,7 +75,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
 		registerService(flexoServerInstanceManager);
-		ResourceConsistencyService resourceConsistencyService = new ResourceConsistencyService();
+		ResourceConsistencyService resourceConsistencyService = createResourceConsistencyService();
 		registerService(resourceConsistencyService);
 	}
 
@@ -166,6 +166,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	protected abstract DocResourceManager createDocResourceManager();
 
 	protected abstract FlexoServerInstanceManager createFlexoServerInstanceManager();
+	
+	protected abstract ResourceConsistencyService createResourceConsistencyService();
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {

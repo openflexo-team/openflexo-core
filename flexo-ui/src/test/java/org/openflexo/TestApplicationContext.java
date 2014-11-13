@@ -23,6 +23,7 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
@@ -161,4 +162,8 @@ public class TestApplicationContext extends ApplicationContext {
 		return null;
 	}
 
+	@Override
+	protected ResourceConsistencyService createResourceConsistencyService() {
+		return null;
+	}
 }
