@@ -264,26 +264,4 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 	public ViewResource getContainer() {
 		return (ViewResource) performSuperGetter(CONTAINER);
 	}
-
-	@Override
-	public List<MissingFlexoResource> getMissingInformations() {
-		List<MissingFlexoResource> missingResources = new ArrayList<MissingFlexoResource>();
-		if(isLoaded() && getVirtualModelInstance()!=null){
-				
-			for(ModelSlotInstance msi : getVirtualModelInstance().getModelSlotInstances()){
-				if(msi.getResource()==null && msi instanceof TypeAwareModelSlotInstance){
-					TypeAwareModelSlotInstance taMsi = (TypeAwareModelSlotInstance)msi;
-					missingResources.add(new MissingFlexoResource(taMsi.getModelURI(),this)) ;
-				} else if(msi.getResource()==null && msi instanceof FreeModelSlotInstance){
-					FreeModelSlotInstance fMsi = (FreeModelSlotInstance)msi;
-						missingResources.add(new MissingFlexoResource(fMsi.getResourceURI(),this)) ;
-				} else if(msi.getResource()==null && msi instanceof VirtualModelModelSlotInstance){
-					VirtualModelModelSlotInstance vmMsi = (VirtualModelModelSlotInstance)msi;
-					missingResources.add(new MissingFlexoResource(vmMsi.getVirtualModelInstanceURI(),this)) ;
-				}
-			}	
-		}
-		
-		return missingResources;
-	}
 }

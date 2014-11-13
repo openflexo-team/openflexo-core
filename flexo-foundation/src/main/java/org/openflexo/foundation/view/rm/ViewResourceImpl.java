@@ -291,13 +291,4 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return ResourceLocator.locateResource(parentPath);
 	}
 	
-	@Override
-	public List<MissingFlexoResource> getMissingInformations() {
-		List<MissingFlexoResource> missingResources = new ArrayList<MissingFlexoResource>();
-		if(getViewPointResource()==null){
-			missingResources.add(new MissingFlexoResource(viewpointURI,this)) ;
-		} 
-		return missingResources;
-	}
-	
 }

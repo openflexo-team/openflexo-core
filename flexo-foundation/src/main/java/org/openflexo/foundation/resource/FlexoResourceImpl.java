@@ -342,8 +342,5 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void objectDeleted(FlexoObjectReference<?> reference) {
 		logger.warning("TODO: implement this");
 	}
-	
-	public List<MissingFlexoResource> getMissingInformations() {
-		return null;
-	}
+
 }

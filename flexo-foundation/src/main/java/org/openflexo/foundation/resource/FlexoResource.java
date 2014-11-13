@@ -367,6 +367,4 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean isDeleted();
 
 	// public Date getLastUpdate();
-	
-	public List<MissingFlexoResource> getMissingInformations();
 }

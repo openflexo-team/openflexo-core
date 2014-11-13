@@ -14,6 +14,8 @@ import org.openflexo.foundation.resource.ResourceLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceUnregistered;
+import org.openflexo.foundation.view.rm.ViewResource;
+import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
@@ -27,28 +29,12 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	
 	private List<ConflictedResourceSet> conflictedResourceSets;
 	
-	// List<FlexoResource<?>> resourcesNotComplete;
-	
 	@Override
 	public void initialize() {
 		// Initialize current conflicted resource set
 		conflictedResourceSets = getConflictedResourceSets();
 		informOfConflictedResourceSets();
-		//resourcesNotComplete = getResourceNotComplete();
-		//updateResourcesNotComplete();
 	}
-	
-	/*public List<FlexoResource<?>> getResourceNotComplete(){
-		resourcesNotComplete = new ArrayList<FlexoResource<?>>();
-		// Browse all resources
-		for(FlexoResource<?> resource : getResourceManager().getRegisteredResources()){
-			if(resource.getMissingInformations()!=null && resource.getMissingInformations().size()>0 && !resourcesNotComplete.contains(resource)){
-				resourcesNotComplete.add(resource);
-			}
-		}
-		return resourcesNotComplete;
-	}*/
-	
 
 	/**
 	 * Receive a ntification that a new resource has changed.
@@ -56,16 +42,24 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	 */
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		if (notification instanceof DataModification 
-				&&  ((DataModification)notification).newValue() instanceof FlexoResource<?>){
+		if (notification instanceof ResourceUnregistered){
+			ResourceUnregistered unRegistered = (ResourceUnregistered)notification;
 			informOfConflictedResourceSets();
-			informOfResourcesIncomplete((FlexoResource<?>) ((DataModification)notification).newValue());
-		}else if (notification instanceof DataModification 
-					&&  ((DataModification)notification).newValue() instanceof ResourceData){
-			ResourceData data = (ResourceData) ((DataModification)notification).newValue();
-				informOfConflictedResourceSets();
-				informOfResourcesIncomplete(data.getResource());
-				
+			if(unRegistered.newValue() instanceof ViewResourceImpl){
+				ViewResourceImpl viewResource = (ViewResourceImpl)unRegistered.newValue();
+				if(viewResource.getViewPointResource()==null){
+					informOfViewPointMissing(viewResource);
+				}
+			}
+		}else if(notification instanceof ResourceRegistered){
+			ResourceRegistered registered = (ResourceRegistered)notification;
+			informOfConflictedResourceSets();
+			if(registered.newValue() instanceof ViewResourceImpl){
+				ViewResourceImpl viewResource = (ViewResourceImpl)registered.newValue();
+				if(viewResource.getViewPointResource()==null){
+					informOfViewPointMissing(viewResource);
+				}
+			}
 		}
 	}
 	
@@ -110,30 +104,17 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	}
 	
 	/**
-	 * Inform that some resources are incomplete
+	 * Inform that a viewpoint is missing
 	 * @param resource
 	 */
-	private void informOfResourcesIncomplete(FlexoResource<?> resource){
-		if(resource!=null && resource.getMissingInformations()!=null 
-				&& resource.getMissingInformations().size()>0){
+	private void informOfViewPointMissing(ViewResourceImpl resource){
+		if(resource!=null){
 			FlexoController.notify(
 					 "<html> "
-					+ "<h3>Resources missings!</h3>"
-						+ prepareMissingResourcesMessage(resource)
-					+ "<h4> Please add resources in resource centers and restart Openflexo</h4> "
-					+ "</html>");
+					+ "<h4>Viewpoint resources is missing!</h4>"
+						+ "View " + resource.getURI() +" requires \nViewpoint: " + resource.viewpointURI
+					+ "\nPlease add resources in resource centers and restart Openflexo");
 		}
-	}
-	
-	private String prepareMissingResourcesMessage(FlexoResource<?> resource){
-		StringBuilder sb = new StringBuilder();
-		sb.append("<ul>" + resource.getURI() +" requires " );
-		for(MissingFlexoResource missingResource : resource.getMissingInformations()){
-			//manageMissingResources(missingResource);
-			sb.append("<li>"+ missingResource.getInfos() +"</li>");
-		}
-		sb.append("</ul>");
-		return sb.toString();
 	}
 	
 	public void removeConflictedResourceSet(ConflictedResourceSet conflictedResourceSet){
