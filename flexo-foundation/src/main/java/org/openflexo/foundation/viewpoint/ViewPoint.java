@@ -62,8 +62,6 @@ import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -215,7 +213,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
 					library.getServiceManager());
-			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
+			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
 			viewpoint.setResource(vpRes);
@@ -227,7 +225,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-			//vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
+			// vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
 			return viewpoint;
 		}
 
@@ -340,8 +338,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			if (requireChange(getName(), name)) {
 				if (getResource() != null) {
 					getResource().setName(name);
-				}
-				else {
+				} else {
 					super.setName(name);
 				}
 			}
@@ -384,7 +381,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * Load eventually unloaded VirtualModels<br>
 		 * After this call return, we can assert that all {@link VirtualModel} are loaded.
 		 */
-		private synchronized void loadVirtualModelsWhenUnloaded() {
+		private void loadVirtualModelsWhenUnloaded() {
 			if (isLoading) {
 				return;
 			}
@@ -412,8 +409,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				}
-				else {
+				} else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -754,8 +750,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 						instanceType = new VirtualModelInstanceType((VirtualModel) anFlexoConcept);
 						virtualModelTypesMap.put(anFlexoConcept, (VirtualModelInstanceType) instanceType);
 					}
-				}
-				else {
+				} else {
 					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
 					if (instanceType == null) {
 						instanceType = new FlexoConceptInstanceType(anFlexoConcept);
@@ -817,8 +812,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			}
-			else {
+			} else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {
