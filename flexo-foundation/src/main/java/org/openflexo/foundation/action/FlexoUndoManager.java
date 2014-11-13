@@ -113,7 +113,7 @@ public class FlexoUndoManager extends UndoManager {
 	}
 
 	@Override
-	public synchronized FlexoActionCompoundEdit startRecording(String presentationName) {
+	public FlexoActionCompoundEdit startRecording(String presentationName) {
 		return (FlexoActionCompoundEdit) super.startRecording(presentationName);
 	}
 
