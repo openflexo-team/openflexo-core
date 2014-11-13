@@ -23,14 +23,12 @@ import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.ProgressWindow;
@@ -51,11 +49,11 @@ import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
 import org.openflexo.foundation.view.action.DeletionSchemeActionType;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
@@ -147,65 +145,34 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			actionWillBePerformed(action);
 			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
 
-				System.out.println(">>>>>>>>>>>>>>>>> LONG RUNNING ACTION");
-
-				ProgressWindow.showProgressWindow(action.getLocalizedName(), 100);
-				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+				FlexoTask task = new FlexoTask(action.getLocalizedName()) {
 					@Override
-					protected Void doInBackground() throws Exception {
-						runAction(action);
-						return null;
-					}
-
-					@Override
-					protected void done() {
-						super.done();
-						try {
-							get();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						} catch (ExecutionException e) {
-							e.printStackTrace();
-							if (e.getCause() instanceof FlexoException) {
-								if (!runExceptionHandler((FlexoException) e.getCause(), action)) {
-									if (!progressIsShowing) {
-										ProgressWindow.hideProgressWindow();
-									}
-									return;
-								}
-							} else {
-								throw new RuntimeException(FlexoLocalization.localizedForKey("action_failed") + " "
-										+ action.getLocalizedName(), e.getCause());
-							}
-						}
-						if (!action.isEmbedded()) {
-							runFinalizer(action, event);
-						}
-						if (!progressIsShowing) {
-							ProgressWindow.hideProgressWindow();
-						}
+					public void performTask() {
+						doExecuteAction(action, event);
 					}
 				};
-				worker.execute();
-				return action;
+				applicationContext.getTaskManager().scheduleExecution(task);
 			} else {
-				try {
-					runAction(action);
-				} catch (FlexoException exception) {
-					if (!runExceptionHandler(exception, action)) {
-						return null;
-					}
-				}
-				if (!action.isEmbedded()) {
-					runFinalizer(action, event);
-				}
-				if (!progressIsShowing) {
-					ProgressWindow.hideProgressWindow();
-				}
+				// Do it now, in this thread
+				doExecuteAction(action, event);
 			}
 		}
 
 		return action;
+	}
+
+	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void doExecuteAction(
+			final A action, final EventObject event) {
+		try {
+			runAction(action);
+		} catch (FlexoException exception) {
+			if (!runExceptionHandler(exception, action)) {
+				return;
+			}
+		}
+		if (!action.isEmbedded()) {
+			runFinalizer(action, event);
+		}
 	}
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runInitializer(A action,

@@ -27,6 +27,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -72,10 +73,10 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		Thread.dumpStack();
 		if (getFocusedObject() instanceof FlexoResource) {
 			if (!((FlexoResource<?>) getFocusedObject()).isLoaded()) {
 				// FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
+				Progress.progress("loading_resource");
 				try {
 					((FlexoResource<?>) getFocusedObject()).getResourceData(null);
 				} catch (Exception e) {

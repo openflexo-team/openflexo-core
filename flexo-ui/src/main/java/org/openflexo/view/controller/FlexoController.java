@@ -37,7 +37,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ConnectException;
@@ -88,7 +87,6 @@ import org.openflexo.fib.editor.ComponentValidationWindow;
 import org.openflexo.fib.swing.localization.LocalizedEditor;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
@@ -98,15 +96,16 @@ import org.openflexo.foundation.ProjectData;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
+import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
@@ -1542,38 +1541,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public void objectWasDoubleClicked(Object object) {
 		// logger.info("Object was double-clicked: " + object);
 		if (object instanceof FlexoResource<?>) {
-			FlexoObject resourceData = null;
+			// FlexoObject resourceData = null;
 			if (((FlexoResource<?>) object).isLoadable() && !((FlexoResource<?>) object).isLoaded()) {
-				FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
-				try {
-					resourceData = (FlexoObject) ((FlexoResource<?>) object).getResourceData(progress);
-				} catch (FileNotFoundException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				}
-				progress.hideWindow();
+
+				LoadResourceAction action = LoadResourceAction.actionType.makeNewAction((FlexoResource<?>) object, null, getEditor());
+				action.doAction();
 			} else {
-				try {
-					resourceData = (FlexoObject) ((FlexoResource<?>) object).getResourceData(null);
-				} catch (FileNotFoundException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					notify("Cannot load resource: " + e.getMessage());
-					e.printStackTrace();
-				}
-			}
-			if (resourceData != null) {
-				selectAndFocusObjectAsTask(resourceData);
+				selectAndFocusObjectAsTask((FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData());
 			}
 		}
 		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
@@ -1712,7 +1686,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param object
 	 *            the object to focus on
 	 */
-	public void selectAndFocusObjectAsTask(FlexoObject object) {
+	public void selectAndFocusObjectAsTask(FlexoObject object, FlexoTask... tasksToBeExecutedBefore) {
 		if (selectAndFocusObjectTasks.get(object) == null) {
 			SelectAndFocusObjectTask task = new SelectAndFocusObjectTask(this, object) {
 				@Override
@@ -1721,6 +1695,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					selectAndFocusObjectTasks.remove(this);
 				}
 			};
+			for (FlexoTask before : tasksToBeExecutedBefore) {
+				task.addToDependantTasks(before);
+			}
 			selectAndFocusObjectTasks.put(object, task);
 			getApplicationContext().getTaskManager().scheduleExecution(task);
 		}
