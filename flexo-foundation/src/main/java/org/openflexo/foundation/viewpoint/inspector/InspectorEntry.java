@@ -68,7 +68,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.ENTRIES_KEY)
+	@Getter(value = INSPECTOR_KEY/*, inverse = FlexoConceptInspector.ENTRIES_KEY*/)
 	@XMLElement(xmlTag = "Inspector")
 	public FlexoConceptInspector getInspector();
 
@@ -123,9 +123,9 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 		static final Logger logger = Logger.getLogger(InspectorEntry.class.getPackage().getName());
 
-		private FlexoConceptInspector inspector;
-		private String label;
-		private boolean readOnly;
+		// private FlexoConceptInspector inspector;
+		// private String label;
+		// private boolean readOnly;
 
 		private DataBinding<?> data;
 		private DataBinding<Boolean> conditional;
@@ -164,18 +164,8 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public FlexoConceptInspector getInspector() {
-			return inspector;
-		}
-
-		@Override
-		public void setInspector(FlexoConceptInspector inspector) {
-			this.inspector = inspector;
-			this.getBindingModel().setBaseBindingModel(inspector.getBindingModel());
-		}
-
-		@Override
 		public String getLabel() {
+			String label = (String) performSuperGetter(LABEL_KEY);
 			if (label == null || StringUtils.isEmpty(label)) {
 				return getName();
 			}
@@ -187,7 +177,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 			if (label != null && label.equals(getName())) {
 				return;
 			}
-			this.label = label;
+			performSuperSetter(LABEL_KEY, label);
 		}
 
 		public boolean isSingleEntry() {
@@ -196,19 +186,22 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 
 		@Override
 		public int getIndex() {
+			if (getInspector() == null) {
+				return -1;
+			}
 			return getInspector().getEntries().indexOf(this);
 		}
 
-		@Override
+		/*@Override
 		public boolean getIsReadOnly() {
 			return readOnly;
-		}
+		}*/
 
 		@Override
 		public void setIsReadOnly(boolean readOnly) {
-			this.readOnly = readOnly;
+			performSuperSetter(IS_READ_ONLY_KEY, readOnly);
 			if (data != null) {
-				data.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				data.setBindingDefinitionType(readOnly ? DataBinding.BindingDefinitionType.GET : DataBinding.BindingDefinitionType.GET_SET);
 				notifiedBindingChanged(this.data);
 			}
 		}

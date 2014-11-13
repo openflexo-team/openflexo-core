@@ -34,8 +34,6 @@ import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptInspectorBindingModel;
-import org.openflexo.foundation.viewpoint.dm.InspectorEntryInserted;
-import org.openflexo.foundation.viewpoint.dm.InspectorEntryRemoved;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -148,7 +146,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		private String inspectorTitle;
 		private FlexoConcept _flexoConcept;
-		private Vector<InspectorEntry> entries;
+		// private Vector<InspectorEntry> entries;
 		private DataBinding<String> renderer;
 
 		private final FlexoConceptFormatter formatter;
@@ -157,7 +155,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		public FlexoConceptInspectorImpl() {
 			super();
-			entries = new Vector<InspectorEntry>();
+			// entries = new Vector<InspectorEntry>();
 			formatter = new FlexoConceptFormatterImpl();
 		}
 
@@ -203,7 +201,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			this.inspectorTitle = inspectorTitle;
 		}
 
-		@Override
+		/*@Override
 		public Vector<InspectorEntry> getEntries() {
 			return entries;
 		}
@@ -226,7 +224,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			entries.remove(anEntry);
 			setChanged();
 			notifyObservers(new InspectorEntryRemoved(anEntry, this));
-		}
+		}*/
 
 		@Override
 		public TextFieldInspectorEntry createNewTextField() {
@@ -333,44 +331,48 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public void entryFirst(InspectorEntry p) {
+			List<InspectorEntry> entries = getEntries();
 			entries.remove(p);
-			entries.insertElementAt(p, 0);
+			entries.add(0, p);
 			setChanged();
 			notifyObservers();
-			notifyChange("entries", null, entries);
+			notifyChange(ENTRIES_KEY, null, entries);
 		}
 
 		@Override
 		public void entryUp(InspectorEntry p) {
+			List<InspectorEntry> entries = getEntries();
 			int index = entries.indexOf(p);
 			if (index > 0) {
 				entries.remove(p);
-				entries.insertElementAt(p, index - 1);
+				entries.add(index - 1, p);
 				setChanged();
 				notifyObservers();
-				notifyChange("entries", null, entries);
+				notifyChange(ENTRIES_KEY, null, entries);
 			}
 		}
 
 		@Override
 		public void entryDown(InspectorEntry p) {
+			List<InspectorEntry> entries = getEntries();
 			int index = entries.indexOf(p);
 			if (index > -1) {
 				entries.remove(p);
-				entries.insertElementAt(p, index + 1);
+				entries.add(index + 1, p);
 				setChanged();
 				notifyObservers();
-				notifyChange("entries", null, entries);
+				notifyChange(ENTRIES_KEY, null, entries);
 			}
 		}
 
 		@Override
 		public void entryLast(InspectorEntry p) {
+			List<InspectorEntry> entries = getEntries();
 			entries.remove(p);
 			entries.add(p);
 			setChanged();
 			notifyObservers();
-			notifyChange("entries", null, entries);
+			notifyChange(ENTRIES_KEY, null, entries);
 		}
 
 		@Override

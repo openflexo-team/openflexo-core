@@ -3,6 +3,7 @@ package org.openflexo.components.validation;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.openflexo.fib.editor.ComponentValidationWindow;
 import org.openflexo.fib.swing.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
@@ -28,7 +29,7 @@ public class ValidationWindow extends JDialog {
 	private boolean isDisposed = false;
 
 	public ValidationWindow(JFrame frame, FlexoController controller) {
-		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), false);
+		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), ModalityType.MODELESS);
 		this.controller = controller;
 		validationPanel = new ValidationPanel(null, FlexoLocalization.getMainLocalizer()) {
 			@Override
@@ -66,8 +67,8 @@ public class ValidationWindow extends JDialog {
 	private ValidationProgressListener validationProgressListener;
 
 	/**
-	 * Once the {@link ComponentValidationWindow} is instantiated, this is the way to launch validation for a given {@link FlexoObject} and a
-	 * supplied {@link ValidationModel}
+	 * Once the {@link ComponentValidationWindow} is instantiated, this is the way to launch validation for a given {@link FlexoObject} and
+	 * a supplied {@link ValidationModel}
 	 * 
 	 * @param object
 	 * @param validationModel
