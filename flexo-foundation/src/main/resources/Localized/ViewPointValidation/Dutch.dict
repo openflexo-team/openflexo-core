@@ -4,6 +4,7 @@
 'value'_binding_is_required_and_must_be_valid_description='value' binding is required and must be valid description
 'virtual_model_instance'_binding_is_not_valid='virtual model instance' binding is not valid
 'virtual_model_instance'_binding_is_not_valid_description='virtual model instance' binding is not valid description
+($reason)=($reason)
 EditionAction_should_not_have_reflexive_model_slot_no_more=EditionAction should not have reflexive model slot no more
 EditionAction_should_not_have_reflexive_model_slot_no_more_description=EditionAction should not have reflexive model slot no more description
 FlexoRole_should_not_have_reflexive_model_slot_no_more=FlexoRole should not have reflexive model slot no more
