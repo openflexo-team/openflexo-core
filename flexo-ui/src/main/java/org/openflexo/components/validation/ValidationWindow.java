@@ -3,6 +3,7 @@ package org.openflexo.components.validation;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.editor.ComponentValidationWindow;
 import org.openflexo.fib.swing.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
@@ -60,7 +61,8 @@ public class ValidationWindow extends JDialog {
 	protected void performSelect(ValidationIssue<?, ?> validationIssue) {
 
 		if (validationIssue != null && validationIssue.getValidable() instanceof FlexoObject) {
-			getController().selectAndFocusObject((FlexoObject) validationIssue.getValidable());
+			SelectAndFocusObjectTask task = new SelectAndFocusObjectTask(getController(), (FlexoObject) validationIssue.getValidable());
+			getController().getApplicationContext().getTaskManager().scheduleExecution(task);
 		}
 	}
 

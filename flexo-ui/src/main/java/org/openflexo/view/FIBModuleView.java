@@ -34,10 +34,11 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.listener.FIBSelectionListener;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.utils.FlexoProgress;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -55,20 +56,12 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	// private FIBView fibView;
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false, controller.willLoad(fibResource));
-	}
-
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
-		this(representedObject, controller, fibResource, false, progress);
+		this(representedObject, controller, fibResource, false);
 	}
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller
-				.willLoad(fibResource));
-	}
-
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar, FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+		controller.willLoad(fibResource);
 	}
 
 	// TODO : delete after debug
@@ -87,9 +80,27 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 		
 	*/
 
-	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
-			FlexoProgress progress) {
-		super(representedObject, controller, fibComponent, addScrollBar, progress);
+	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, addScrollBar);
+		Progress.progress("instantiating_fib_component");
+	}
+
+	@Override
+	protected void initializeFIBComponent() {
+		Progress.progress("initializing_fib_component");
+		super.initializeFIBComponent();
+	}
+
+	@Override
+	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
+		Progress.progress("initializing_fib_controller");
+		return super.createFibController(fibComponent, controller);
+	}
+
+	@Override
+	public void setDataObject(Object object) {
+		Progress.progress("set_data_object");
+		super.setDataObject(object);
 	}
 
 	@Override

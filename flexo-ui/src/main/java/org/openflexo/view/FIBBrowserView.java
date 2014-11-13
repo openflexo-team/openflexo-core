@@ -33,7 +33,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl;
 import org.openflexo.view.controller.FlexoController;
@@ -52,21 +51,12 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	// private FIBView fibView;
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false, controller.willLoad(fibResource));
-	}
-
-	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
-		this(representedObject, controller, fibResource, false, progress);
+		this(representedObject, controller, fibResource, false);
 	}
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, controller
-				.willLoad(fibResource));
-	}
-
-	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+		controller.willLoad(fibResource);
 	}
 
 	// Removed as we should only used Resource everywhere
@@ -85,9 +75,8 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	}
 	*/
 
-	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
-			FlexoProgress progress) {
-		super(representedObject, controller, fibComponent, addScrollBar, progress);
+	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, addScrollBar);
 	}
 
 	@Override

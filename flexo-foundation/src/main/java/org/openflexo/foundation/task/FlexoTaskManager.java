@@ -39,5 +39,11 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 
 	public List<FlexoTask> getScheduledTasks();
 
+	/**
+	 * Interrupts current thread until the task has finished<br>
+	 * (more exactely, when the status of task is either of TaskStatus.WAITING, TaskStatus.RUNNING, TaskStatus.READY_TO_EXECUTE)
+	 * 
+	 * @param task
+	 */
 	public void waitTask(FlexoTask task);
 }

@@ -45,6 +45,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,6 +81,7 @@ import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
+import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.editor.ComponentValidationWindow;
@@ -992,6 +994,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (moduleView == null) {
 			moduleView = lookupViewForLocation(location);
 			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
+				Progress.progress("load_module_view");
 				moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(), location.isEditable());
 				if (moduleView != null) {
 					FlexoObject representedObject = moduleView.getRepresentedObject();
@@ -1570,12 +1573,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 			if (resourceData != null) {
-				selectAndFocusObject(resourceData);
+				selectAndFocusObjectAsTask(resourceData);
 			}
 		}
 		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
 			// Try to display object in view
-			selectAndFocusObject((FlexoObject) object);
+			selectAndFocusObjectAsTask((FlexoObject) object);
 		}
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
@@ -1612,7 +1615,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (!FIBLibrary.instance().componentIsLoaded(fibResource)) {
 			Progress.progress(FlexoLocalization.localizedForKey("loading_component") + " " + fibResource);
 
-			// FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
+			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			// progress.setProgress("loading_component");
 			FIBLibrary.instance().retrieveFIBComponent(fibResource);
 			// progress.setProgress("build_interface");
@@ -1690,12 +1693,37 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 *            the object to focus on
 	 */
 	public void selectAndFocusObject(FlexoObject object) {
+		Progress.progress(FlexoLocalization.localizedForKey("select_and_focus") + " " + object);
 		if (object instanceof FlexoProject) {
 			getControllerModel().setCurrentProject((FlexoProject) object);
 		} else {
 			setCurrentEditedObjectAsModuleView(object);
 		}
+		Progress.progress(FlexoLocalization.localizedForKey("selecting") + " " + object);
 		getSelectionManager().setSelectedObject(object);
+	}
+
+	// Stores currently loading/selecting tasks
+	private final Map<FlexoObject, SelectAndFocusObjectTask> selectAndFocusObjectTasks = new Hashtable<FlexoObject, SelectAndFocusObjectTask>();
+
+	/**
+	 * Select the supplied object in a dedicated task
+	 * 
+	 * @param object
+	 *            the object to focus on
+	 */
+	public void selectAndFocusObjectAsTask(FlexoObject object) {
+		if (selectAndFocusObjectTasks.get(object) == null) {
+			SelectAndFocusObjectTask task = new SelectAndFocusObjectTask(this, object) {
+				@Override
+				protected synchronized void finishedExecution() {
+					super.finishedExecution();
+					selectAndFocusObjectTasks.remove(this);
+				}
+			};
+			selectAndFocusObjectTasks.put(object, task);
+			getApplicationContext().getTaskManager().scheduleExecution(task);
+		}
 	}
 
 	public FlexoValidationModel getValidationModelForObject(FlexoObject object) {

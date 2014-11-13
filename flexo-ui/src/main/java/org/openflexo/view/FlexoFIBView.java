@@ -36,7 +36,7 @@ import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
-import org.openflexo.foundation.utils.FlexoProgress;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -66,13 +66,12 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, FlexoProgress progress) {
-		this(representedObject, controller, fibResource, false, progress);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
+		this(representedObject, controller, fibResource, false);
 	}
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar, progress);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
+		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
 	}
 
 	// Removed as we should only use Resource everywhere
@@ -87,8 +86,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	}
 	*/
 
-	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar,
-			FlexoProgress progress) {
+	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
 		super(new BorderLayout());
 		this.dataObject = dataObject;
 		this.controller = controller;
@@ -106,15 +104,11 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		fibController = createFibController(fibComponent, controller);
 
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("build_view"));
-		}
+		Progress.progress("builing_view");
 
 		fibView = fibController.buildView(fibComponent);
 
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("init_view"));
-		}
+		Progress.progress("init_view");
 
 		fibController.setDataObject(dataObject);
 
@@ -131,9 +125,6 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		validate();
 		revalidate();
 
-		if (progress != null) {
-			progress.hideWindow();
-		}
 	}
 
 	/**
