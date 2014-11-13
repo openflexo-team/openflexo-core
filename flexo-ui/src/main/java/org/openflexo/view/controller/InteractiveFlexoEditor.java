@@ -146,6 +146,9 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
 			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
+
+				System.out.println(">>>>>>>>>>>>>>>>> LONG RUNNING ACTION");
+
 				ProgressWindow.showProgressWindow(action.getLocalizedName(), 100);
 				SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 					@Override
