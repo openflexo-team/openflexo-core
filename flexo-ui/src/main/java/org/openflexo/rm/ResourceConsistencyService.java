@@ -198,7 +198,7 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	}
 	
 	public boolean multipleResourcesWithSameURI(FlexoResource<?> resource){
-		if(getResources(resource.getURI()).size()>1){
+		if(resource.getURI()!=null && getResources(resource.getURI()).size()>1){
 			return true;
 		}
 		return false;
