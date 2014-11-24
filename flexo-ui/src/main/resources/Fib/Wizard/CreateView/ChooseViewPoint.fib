@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="gridbag" titleFont="Lucida Grande,0,11" darkLevel="0"
+	dataClassName="org.openflexo.ve.controller.action.CreateViewWizard$ChooseViewPoint"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	font="Lucida Grande,0,11" width="800" height="500" name="main">
+	<Label label="new_view_title" index="1"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextField index="2" data="data.newViewTitle"
+		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=10;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		name="ViewNameTextField" localize="true" columns="6" text="TextField" />
+	<SplitPanel index="3"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)">
+		<RowSplit name="RowSplit" weight="0.0">
+			<Leaf name="browser" weight="0.2948435412166979" />
+			<Divider />
+			<ColSplit name="ColSplit" weight="0.7051564485109709">
+				<Leaf name="description" weight="0.20000000298023224" />
+				<Divider />
+				<Leaf name="contents" weight="0.800000011920929" />
+				<!-- <RowSplit name="RowSplit" weight="0.800000011920929"> <Leaf name="screenshot" 
+					weight="0.800000011920929" /> <Divider /> <Leaf name="exampleList" weight="0.20000000298023224" 
+					/> </RowSplit> -->
+			</ColSplit>
+		</RowSplit>
+		<Browser root="data.serviceManager.viewPointLibrary"
+			iteratorClassName="org.openflexo.foundation.viewpoint.rm.ViewPointResource"
+			visibleRowCount="3" rowHeight="18" boundToSelectionManager="false"
+			selectionMode="DiscontiguousTreeSelection" selected="data.viewpointResource"
+			showFooter="false" rootVisible="true" showRootsHandle="true"
+			localize="true" manageDynamicModel="true" name="ViewPointBrowser"
+			index="3"
+			constraints="split(anchor=center;fill=both;gridHeight=2;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;splitIdentifier=browser;weightX=1.0;weightY=1.0)"
+			opaque="false" width="300" height="400">
+			<BrowserElement dataClassName="org.openflexo.foundation.viewpoint.ViewPointLibrary"
+				label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
+				isEditable="false" filtered="false" defaultVisible="true"
+				name="viewPointLibrary">
+				<Children data="viewPointLibrary.resourceCenterService.resourceCenters"
+					cast="child.viewPointRepository.rootFolder" name="resourceCenters" />
+			</BrowserElement>
+			<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+				label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)"
+				isEditable="false" filtered="false" defaultVisible="true" name="viewPointFolder">
+				<Children data="viewPointFolder.children" name="subFolders" />
+				<Children data="viewPointFolder.resources" name="viewPoints" />
+			</BrowserElement>
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.viewpoint.rm.ViewPointResource"
+				label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
+				isEditable="false" filtered="false" defaultVisible="true" name="viewPoint">
+				<Children data="viewPoint.contents" visible="viewPoint.isLoaded"
+					name="subResources" />
+			</BrowserElement>
+		</Browser>
+		<TextArea columns="6" rows="2" text="TextArea" index="3"
+			data="ViewPointBrowser.selected.viewPoint.description"
+			constraints="split(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=1;gridY=2;index=3;insetsBottom=10;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;splitIdentifier=description;weightX=1.0;weightY=0.2)"
+			useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+		<Table iteratorClassName="org.openflexo.foundation.viewpoint.rm.VirtualModelResource"
+			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="true"
+			createNewRowOnClick="false" boundToSelectionManager="false"
+			showFooter="true" selectionMode="SingleSelection" textSelectionColor="255,255,255"
+			textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
+			backgroundSecondarySelectionColor="173,215,255"
+			backgroundNonSelectionColor="255,255,255" localize="true"
+			manageDynamicModel="true" name="VirtualModelTable" index="0"
+			data="ViewPointBrowser.selected.virtualModelResources" constraints="split(index=0;location=east;splitIdentifier=contents)"
+			opaque="false">
+			<IconColumn data="controller.iconForObject(iterator)"
+				title="icon" columnWidth="30" resizable="false" displayTitle="false"
+				name="icon" />
+			<LabelColumn data="iterator.name" title="virtual_model"
+				columnWidth="120" resizable="true" displayTitle="true" name="label" />
+			<LocalizedDictionary />
+		</Table>
+	</SplitPanel>
+	<LocalizedDictionary>
+		<Localized id="2" value="Create view" lang="English" key="create_view" />
+		<Localized id="3" value="Création d'une nouvelle vue" lang="French" key="create_view" />
+		<Localized id="4" value="create_view" lang="Dutch" key="create_view" />
+		<Localized id="5" value="Please choose a view point" lang="English" key="choose_view_point" />
+		<Localized id="6" value="Veuillez choisir un point de vue" lang="French" key="choose_view_point" />
+		<Localized id="7" value="choose_view_point" lang="Dutch" key="choose_view_point" />
+		<Localized id="8" value="Please choose a view title" lang="English" key="no_view_title_defined" />
+		<Localized id="9" value="Veuillez choisir un titre pour la vue" lang="French" key="no_view_title_defined" />
+		<Localized id="10" value="no_view_title_defined" lang="Dutch" key="no_view_title_defined" />
+		<Localized id="11" value="New view title" lang="English" key="new_view_title" />
+		<Localized id="12" value="Titre de la nouvelle vue" lang="French" key="new_view_title" />
+		<Localized id="13" value="new_view_title" lang="Dutch" key="new_view_title" />
+	</LocalizedDictionary>
+</Panel>

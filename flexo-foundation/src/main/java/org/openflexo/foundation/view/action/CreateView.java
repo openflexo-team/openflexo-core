@@ -36,7 +36,6 @@ import org.openflexo.foundation.view.View.ViewImpl;
 import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -73,7 +72,7 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 	private View newView;
 
-	private boolean useViewPoint = true;
+	// private boolean useViewPoint = true;
 	private String newViewName;
 	private String newViewTitle;
 	private ViewPointResource viewpointResource;
@@ -134,17 +133,8 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		return null;
 	}
 
-	public RepositoryFolder getFolder() {
+	public RepositoryFolder<ViewResource> getFolder() {
 		return getFocusedObject();
-	}
-
-	private String errorMessage;
-
-	public String getErrorMessage() {
-		isValid();
-		// System.out.println("valid=" + isValid());
-		// System.out.println("errorMessage=" + errorMessage);
-		return errorMessage;
 	}
 
 	@Override
@@ -153,14 +143,11 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		// System.out.println("viewpointResource=" + viewpointResource);
 
 		if (getFolder() == null) {
-			errorMessage = FlexoLocalization.localizedForKey("no_folder_defined");
 			return false;
-		} else if (viewpointResource == null && useViewPoint) {
-			errorMessage = FlexoLocalization.localizedForKey("no_view_point_selected");
+		} else if (viewpointResource == null) {
 			return false;
 		}
 		if (StringUtils.isEmpty(newViewTitle)) {
-			errorMessage = FlexoLocalization.localizedForKey("no_view_title_defined");
 			return false;
 		}
 
@@ -170,7 +157,6 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 		}
 
 		if (getFocusedObject().getResourceWithName(viewName) != null) {
-			errorMessage = FlexoLocalization.localizedForKey("a_view_with_that_name_already_exists");
 			return false;
 		}
 		return true;
@@ -178,17 +164,6 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 
 	public View getNewView() {
 		return newView;
-	}
-
-	public boolean isUseViewPoint() {
-		return useViewPoint;
-	}
-
-	public void setUseViewPoint(boolean useViewPoint) {
-		boolean wasValid = isValid();
-		this.useViewPoint = useViewPoint;
-		getPropertyChangeSupport().firePropertyChange("useViewPoint", !useViewPoint, useViewPoint);
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public String getNewViewName() {
@@ -203,6 +178,9 @@ public class CreateView extends FlexoAction<CreateView, RepositoryFolder, FlexoO
 	}
 
 	public String getNewViewTitle() {
+		if (newViewTitle == null) {
+			return getNewViewName();
+		}
 		return newViewTitle;
 	}
 
