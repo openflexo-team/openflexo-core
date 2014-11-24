@@ -42,16 +42,4 @@ public class TestCommonFlexoDialogFibs extends GenericFIBTestCase {
 		validateFIB("Fib/Dialog/ConfigureTypeAwareModelSlotInstanceDialog.fib");
 	}
 
-	@Test
-	public void testCreateViewDialog() {
-		validateFIB("Fib/Dialog/CreateViewDialog.fib");
-	}
-
-	/* TODO cannot be tested due to dependency to diagramconnector! */
-	/*
-	@Test
-	public void testCreateVirtualModelInstanceDialog() {
-		validateFIB("Fib/Dialog/CreateVirtualModelInstanceDialog.fib");
-	}
-	*/
 }
