@@ -31,6 +31,12 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * Dialog showing all waiting and running tasks
+ * 
+ * @author sylvain
+ *
+ */
 public class TaskManagerPanel extends JDialog implements PropertyChangeListener {
 
 	private static final int PREFERRED_HEIGHT = 50;
@@ -41,7 +47,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 	private final Map<FlexoTask, TaskPanel> taskPanels;
 
-	private final boolean automaticallyBecomesVisible = true;
+	// private final boolean automaticallyBecomesVisible = true;
 
 	public TaskManagerPanel(FlexoTaskManager taskManager) {
 		super((Frame) null, "TaskManager", false);

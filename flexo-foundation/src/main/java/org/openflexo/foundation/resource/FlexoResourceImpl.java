@@ -125,22 +125,6 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyResourceLoaded();
 	}
 
-	@Override
-	public void setURI(String anURI) {
-		String oldUri = getURI();
-		// Handle dependencies and contents, replace the reference toward old uri
-		for(FlexoResource<?> resource : getDependencies()){
-			resource.getURI().replace(oldUri, anURI);
-		}
-		for(FlexoResource<?> resource : getContents()){
-			resource.setURI(resource.getURI().replace(oldUri, anURI));
-		}
-		// Set the new URI
-		performSuperSetter(URI, anURI);
-		
-	}
-
-	
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
