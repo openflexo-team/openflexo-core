@@ -28,6 +28,8 @@ public class CommonFIB {
 	public static Resource VIRTUAL_MODEL_INSTANCE_VIEW_FIB = ResourceLocator.locateResource("Fib/VirtualModelInstanceView.fib");
 
 	// View/VirtualModelInstance edition
+	// Should be removed
+	@Deprecated
 	public static Resource CREATE_VIEW_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateViewDialog.fib");
 	@Deprecated
 	public static Resource CREATE_VIRTUAL_MODEL_INSTANCE_DIALOG_FIB = ResourceLocator

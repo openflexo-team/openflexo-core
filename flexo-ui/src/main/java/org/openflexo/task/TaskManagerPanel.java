@@ -55,7 +55,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		this.taskManager = taskManager;
 		taskManager.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		// setAlwaysOnTop(true);
+		setAlwaysOnTop(false);
 		setUndecorated(true);
 
 		contentPane = new JPanel();
