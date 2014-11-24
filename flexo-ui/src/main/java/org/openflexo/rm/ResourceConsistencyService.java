@@ -30,6 +30,11 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	
 	private List<ViewResource> viewsWithoutViewpoint;
 	
+	private int skip =1;
+	
+	private String[] options1={"Don't show this message again", "Show conflicted resources"}; 
+	private String[] options2={"Don't show this message again", "Close message"};
+	
 	public ResourceConsistencyService() {
 	}
 	
@@ -140,43 +145,49 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		if(resource!=null){
 			FlexoController.notify(
 					 "<html> "
-					+ "<h4>Viewpoint resources is missing!</h4>"
-						+ "View " + resource.getURI() +" requires \nViewpoint: " + resource.viewpointURI
-					+ "\nPlease add resources in resource centers and restart Openflexo");
+					+ "<h3>Viewpoint resources is missing!</h3>"
+						+ "<p>View <font color=\"red\">" + resource.getURI() +" requires Viewpoint: " + resource.viewpointURI
+					+ "</br>Please add resources in resource centers and restart Openflexo</html>");
 		}
 	}
-	
-	//TODO
-	/*public void removeConflictedResourceSet(ConflictedResourceSet conflictedResourceSet){
-		conflictedResourceSets.remove(conflictedResourceSet);
-	}*/
-	
+
 	private void informOfConflictedResourceSets(List<ConflictedResourceSet> conflicts){
 		if(conflicts.size()>0){
 			StringBuilder conflictsInformation = new StringBuilder();
 			for(ConflictedResourceSet conflict : conflicts){
-				conflictsInformation.append("URI : " + conflict.getCommonUri() +" is owned by \n");
-				for(FlexoResource<?> fr : conflict.getConflictedResources()){
-					conflictsInformation.append(fr.getRelativePath());
+				conflictsInformation.append(informationMessageForConflictSet(conflict));
+			}
+			if(skip!=0){
+				skip = FlexoController.selectOption("<html> <h3>" +Integer.toString(conflicts.size()) + " URI conflicts have been found:</h3></br></html>", options1,"OK");
+				if(skip!=0){
+					skip = FlexoController.selectOption("<html> <h3>" +Integer.toString(conflicts.size()) + " URI conflicts have been found:</h3></br>" +
+							conflictsInformation.toString()+ "</html>", options2,"OK");
 				}
 			}
-			FlexoController.notify(Integer.toString(conflicts.size()) + " URI conflicts have been found:\n" +
-					conflictsInformation.toString());
 		}
 	}
 	
 	private void informOfConflictedResourceSet(ConflictedResourceSet conflict){
-		StringBuilder sb = new StringBuilder();
-		sb.append("URI : " + conflict.getCommonUri() +" is owned by \n");
-		for(FlexoResource<?> fr : conflict.getConflictedResources()){
-			if(fr.getFlexoIODelegate() instanceof FileFlexoIODelegate){
-				sb.append(((FileFlexoIODelegate)fr.getFlexoIODelegate()).getFile().getAbsolutePath());
-			}else{
-				sb.append(fr.getFlexoIODelegate().toString());
-			}
-			sb.append("\n");
+		if(skip!=0){
+			skip=FlexoController.selectOption("<html> <h3> URI conflicts have been found:</h3></br>" +
+					informationMessageForConflictSet(conflict)+ "</html>", options2,"OK");
 		}
-		FlexoController.notify(" URI conflicts have been found:\n" + sb.toString());
+	}
+	
+	private String informationMessageForConflictSet(ConflictedResourceSet conflict){
+		StringBuilder conflictsInformation = new StringBuilder();
+		conflictsInformation.append("<p> <font color=\"red\"> URI : " + conflict.getCommonUri() +" is owned by </font><br/>");
+		for(FlexoResource<?> fr : conflict.getConflictedResources()){
+			
+			if(fr.getFlexoIODelegate() instanceof FileFlexoIODelegate){
+				conflictsInformation.append(((FileFlexoIODelegate)fr.getFlexoIODelegate()).getFile());
+			}else{
+				conflictsInformation.append(fr.getFlexoIODelegate().getSerializationArtefact().toString());
+			}
+			conflictsInformation.append("<br/>");
+		}
+		conflictsInformation.append("</p>");
+		return conflictsInformation.toString();
 	}
 	
 	/**
@@ -219,5 +230,6 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	public int getNumberOfConflicts(){
 		return conflictedResourceSets.size();
 	}
+	
 	
 }
