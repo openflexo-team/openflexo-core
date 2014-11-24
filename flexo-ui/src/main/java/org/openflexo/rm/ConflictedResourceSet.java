@@ -39,7 +39,7 @@ public class ConflictedResourceSet {
 		this.conflictedResources = conflictedResources;
 	}
 
-	public ConflictedResourceSet(ArrayList<FlexoResource<?>> conflictedResources) {
+	public ConflictedResourceSet(List<FlexoResource<?>> conflictedResources) {
 		this.conflictedResources = conflictedResources;
 		commonUri = conflictedResources.get(0).getURI();
 	}

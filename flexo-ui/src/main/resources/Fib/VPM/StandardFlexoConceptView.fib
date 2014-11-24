@@ -8,7 +8,7 @@
     </ColSplit>
     <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoRole" visibleRowCount="5" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="FlexoRoleTable" index="0" data="data.flexoRoles" constraints="split(index=0;location=north;splitIdentifier=flexoRoles)" opaque="false" rightClickAction="controller.rightClick(FlexoRoleTable.selected,event)">
       <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="25" resizable="false" displayTitle="false" name="icon" />
-      <TextFieldColumn data="iterator.roleName" title="pattern_role" columnWidth="70" resizable="true" displayTitle="true" />
+      <TextFieldColumn data="iterator.roleName" title="flexo_role" columnWidth="70" resizable="true" displayTitle="true" />
       <LabelColumn data="iterator.modelSlot.name" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" name="label" />
       <LabelColumn data="iterator.preciseType" title="type" columnWidth="70" resizable="true" displayTitle="true" name="label" />
       <RemoveAction method="controller.deleteFlexoRole(data,selected)" name="delete" />
@@ -31,7 +31,7 @@
               </RowSplit>
               <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="FlexoBehaviourTable" index="0" data="data.flexoBehaviours" constraints="split(index=0;location=west;splitIdentifier=left)" opaque="false" rightClickAction="controller.rightClick(FlexoBehaviourTable.selected,event)">
                 <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
-                <TextFieldColumn data="iterator.name" title="edition_scheme" columnWidth="200" resizable="true" displayTitle="true" />
+                <TextFieldColumn data="iterator.name" title="flexo_behaviour" columnWidth="200" resizable="true" displayTitle="true" />
                 <LabelColumn data="iterator.flexoBehaviourType.name" title="type" columnWidth="100" resizable="true" displayTitle="true" name="label" />
                 <RemoveAction method="controller.deleteFlexoBehaviour(data,selected)" name="delete_scheme" />
                 <!--<AddAction method="controller.createActionScheme(data)" name="new_action_scheme" />
