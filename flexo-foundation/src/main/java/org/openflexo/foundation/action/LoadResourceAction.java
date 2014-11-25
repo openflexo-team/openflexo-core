@@ -36,7 +36,7 @@ import org.openflexo.logging.FlexoLogger;
  * @author sylvain
  * 
  */
-public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObject, FlexoObject> {
+public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObject, FlexoObject> implements LongRunningAction {
 
 	private static final Logger logger = FlexoLogger.getLogger(LoadResourceAction.class.getPackage().getName());
 
@@ -89,7 +89,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 	}
 
 	@Override
-	public boolean isLongRunningAction() {
-		return true;
+	public int getExpectedProgressSteps() {
+		return 10;
 	}
 }
