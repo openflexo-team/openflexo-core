@@ -38,17 +38,17 @@ import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceType;
 import org.openflexo.foundation.viewpoint.URIParameter;
-import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -310,14 +310,19 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 		@Override
 		public Type getAssignableType() {
+			if (getViewPoint() != null) {
+				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			} else {
+				return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+			}
 			// NPE Protection
-			ViewPoint vp = this.getViewPoint();
+			/*ViewPoint vp = this.getViewPoint();
 			if (vp != null) {
 				return vp.getInstanceType(getFlexoConceptType());
 			} else {
 				logger.warning("Adding FlexoConcept Instance in a null ViewPoint !");
 				return null;
-			}
+			}*/
 		}
 
 	}
