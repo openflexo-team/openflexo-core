@@ -607,6 +607,9 @@ public class Flexo {
 			}
 			if (loggingFile != null) {
 				logger.info("Default logging config file " + loggingFileName);
+				if (applicationContext.getAdvancedPrefs().getDefaultLoggingLevel() == null) {
+					applicationContext.getAdvancedPrefs().setDefaultLoggingLevel(Level.INFO);
+				}
 				return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(), applicationContext
 						.getAdvancedPrefs().getIsLoggingTrace(),
 						applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null ? applicationContext.getAdvancedPrefs()
