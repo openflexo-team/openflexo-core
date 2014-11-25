@@ -27,6 +27,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sguerin
  * 
  */
+@Deprecated
 public interface FlexoProgress extends IProgress {
 
 }

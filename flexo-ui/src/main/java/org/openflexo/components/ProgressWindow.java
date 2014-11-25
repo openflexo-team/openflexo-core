@@ -54,6 +54,7 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
+@Deprecated
 public class ProgressWindow extends JDialog implements FlexoProgress {
 
 	private static class ProgressBarLabel extends JLabel {

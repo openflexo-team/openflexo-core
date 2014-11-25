@@ -25,6 +25,7 @@ package org.openflexo.foundation.utils;
  * @author sguerin
  * 
  */
+@Deprecated
 public interface FlexoProgressFactory {
 
 	public FlexoProgress makeFlexoProgress(String title, int steps);
