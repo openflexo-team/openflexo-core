@@ -110,8 +110,7 @@ public abstract class OpenflexoTestCase {
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		}
-		else if (logger.isLoggable(Level.WARNING)) {
+		} else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -149,8 +148,7 @@ public abstract class OpenflexoTestCase {
 							System.out.println(tstRC.toString());
 							FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 						}
-					}
-					else {
+					} else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
 						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
@@ -201,8 +199,7 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
-			}
-			else {
+			} else {
 				fail("Resource " + resource.getURI() + " should not be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -215,8 +212,7 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
-			}
-			else {
+			} else {
 				fail("Resource " + resource.getURI() + " should be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -287,19 +283,24 @@ public abstract class OpenflexoTestCase {
 
 		log("Testing ViewPoint" + vp.getURI());
 
-		ValidationReport report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
-		report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
+		ValidationReport report;
+		try {
+			report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
 
-		for (ValidationError error : report.getErrors()) {
-			System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
-			/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
-				BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
-				System.out.println("Details: " + rule.retrieveIssueDetails((ViewPointObject) error.getValidable()));
-			}*/
+			for (ValidationError error : report.getErrors()) {
+				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
+				/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
+					BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
+					System.out.println("Details: " + rule.retrieveIssueDetails((ViewPointObject) error.getValidable()));
+				}*/
+			}
+
+			assertEquals(0, report.getErrorsCount());
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail("Interrupted");
 		}
-
-		assertEquals(0, report.getErrorsCount());
-
 	}
 
 }

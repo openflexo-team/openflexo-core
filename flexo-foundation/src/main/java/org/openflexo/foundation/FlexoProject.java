@@ -490,7 +490,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	}
 
 	private ValidationReport repairProject() {
-		return getProjectValidationModel().validate(this);
+		try {
+			return getProjectValidationModel().validate(this);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

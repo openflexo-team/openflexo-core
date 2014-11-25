@@ -27,7 +27,7 @@ public abstract class OpenflexoFIBTestCaseWithProjectAtRunTime extends Openflexo
 
 	static final Logger logger = Logger.getLogger(OpenflexoFIBTestCaseWithProjectAtRunTime.class.getPackage().getName());
 
-	public void validateFIB(Resource fibResource) {
+	public void validateFIB(Resource fibResource) throws InterruptedException {
 		try {
 			System.out.println("Validating fib file " + fibResource);
 			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResource);

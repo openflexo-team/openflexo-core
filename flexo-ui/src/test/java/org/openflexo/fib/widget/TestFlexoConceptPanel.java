@@ -3,8 +3,6 @@ package org.openflexo.fib.widget;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,7 +63,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testValidateWidget() {
+	public void testValidateWidget() throws InterruptedException {
 
 		validateFIB(fibResource);
 	}

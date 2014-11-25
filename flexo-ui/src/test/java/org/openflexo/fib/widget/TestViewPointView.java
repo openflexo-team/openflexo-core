@@ -53,7 +53,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testValidateWidget() {
+	public void testValidateWidget() throws InterruptedException {
 
 		validateFIB(ResourceLocator.locateResource(fibFileName));
 	}

@@ -47,6 +47,9 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
 			}
 			assertEquals(0, validationReport.getErrorsCount());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail("Interrupted FIB validation");
 		} finally {
 			FIBLibrary.instance().removeFIBComponentFromCache(fibResource);
 		}

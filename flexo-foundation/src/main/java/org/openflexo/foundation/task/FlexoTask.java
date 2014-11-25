@@ -230,6 +230,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public void progress() {
 		currentProgress++;
 		getPropertyChangeSupport().firePropertyChange(CURRENT_PROGRESS_PROPERTY, currentProgress - 1, currentProgress);
+		// System.out.println(Integer.toHexString(hashCode()) + " " + getTaskTitle() + " progress " + currentProgress + "/"
+		// + getExpectedProgressSteps());
 	}
 
 	public void progress(String stepName) {
@@ -295,7 +297,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	/**
 	 * Here comes the code that should be executed in task
 	 */
-	public abstract void performTask();
+	public abstract void performTask() throws InterruptedException;
 
 	/**
 	 * Final run method<br>
@@ -306,6 +308,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public final void run() {
 		try {
 			performTask();
+		} catch (InterruptedException e) {
+			System.out.println("Tiens, je choppe bien l'interruption");
 		} catch (Exception e) {
 			throwException(e);
 		}

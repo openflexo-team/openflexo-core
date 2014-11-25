@@ -8,6 +8,8 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -185,8 +187,19 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 			progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
 			progressBar.setStringPainted(false);
 			progressBar.setEnabled(false);
-			cancelButton = new JButton(/*"stop"*/IconLibrary.SMALL_DELETE_ICON);
+			cancelButton = new JButton(IconFactory.getDisabledIcon(IconLibrary.SMALL_DELETE_ICON));
 			cancelButton.setDisabledIcon(IconFactory.getDisabledIcon(IconLibrary.SMALL_DELETE_ICON));
+			cancelButton.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					cancelButton.setIcon(IconLibrary.SMALL_DELETE_ICON);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					cancelButton.setIcon(IconFactory.getDisabledIcon(IconLibrary.SMALL_DELETE_ICON));
+				}
+			});
 			cancelButton.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 			cancelButton.addActionListener(new ActionListener() {
 				@Override

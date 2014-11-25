@@ -80,7 +80,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
-	public void testValidateWidget() {
+	public void testValidateWidget() throws InterruptedException {
 
 		validateFIB(fibResource);
 	}
@@ -226,9 +226,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(6)
 	public void testInstanciateWidgetForDeclarePatternRole() {
 
-		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(
-				ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"), (DeclareFlexoRole) creationScheme.getActions()
-						.get(0), DeclareFlexoRole.class);
+		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"),
+				(DeclareFlexoRole) creationScheme.getActions().get(0), DeclareFlexoRole.class);
 
 		gcDelegate.addTab("DeclareFlexoRole", widget.getController());
 	}

@@ -5,11 +5,15 @@ import javax.swing.JFrame;
 
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.editor.ComponentValidationWindow;
+import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.swing.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 
@@ -25,31 +29,14 @@ import org.openflexo.view.controller.FlexoController;
 @SuppressWarnings("serial")
 public class ValidationWindow extends JDialog {
 
-	private final ValidationPanel validationPanel;
+	private final FlexoValidationPanel validationPanel;
 	private final FlexoController controller;
 	private boolean isDisposed = false;
 
 	public ValidationWindow(JFrame frame, FlexoController controller) {
 		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), ModalityType.MODELESS);
 		this.controller = controller;
-		validationPanel = new ValidationPanel(null, FlexoLocalization.getMainLocalizer()) {
-			@Override
-			protected void performSelect(ValidationIssue<?, ?> validationIssue) {
-				ValidationWindow.this.performSelect(validationIssue);
-			}
-
-			@Override
-			public void startValidation(ValidationModel validationModel) {
-				super.startValidation(validationModel);
-				ValidationWindow.this.startValidation(validationModel);
-			}
-
-			@Override
-			public void stopValidation(ValidationModel validationModel) {
-				ValidationWindow.this.stopValidation(validationModel);
-				super.stopValidation(validationModel);
-			}
-		};
+		validationPanel = new FlexoValidationPanel(null, FlexoLocalization.getMainLocalizer());
 		getContentPane().add(validationPanel);
 		pack();
 	}
@@ -66,7 +53,7 @@ public class ValidationWindow extends JDialog {
 		}
 	}
 
-	private ValidationProgressListener validationProgressListener;
+	// private ValidationProgressListener validationProgressListener;
 
 	/**
 	 * Once the {@link ComponentValidationWindow} is instantiated, this is the way to launch validation for a given {@link FlexoObject} and
@@ -76,19 +63,8 @@ public class ValidationWindow extends JDialog {
 	 * @param validationModel
 	 */
 	public void validateAndDisplayReportForObject(FlexoObject object, ValidationModel validationModel) {
-		startValidation(validationModel);
-		validationPanel.validate(validationModel, object);
-		stopValidation(validationModel);
 		setVisible(true);
-	}
-
-	public void startValidation(ValidationModel validationModel) {
-		validationProgressListener = new ValidationProgressListener();
-		validationModel.getPropertyChangeSupport().addPropertyChangeListener(validationProgressListener);
-	}
-
-	public void stopValidation(ValidationModel validationModel) {
-		validationModel.getPropertyChangeSupport().removePropertyChangeListener(validationProgressListener);
+		validationPanel.validate(validationModel, object);
 	}
 
 	@Override
@@ -99,5 +75,44 @@ public class ValidationWindow extends JDialog {
 
 	public boolean isDisposed() {
 		return isDisposed;
+	}
+
+	protected class FlexoValidationPanel extends ValidationPanel {
+
+		public FlexoValidationPanel(ValidationReport validationReport, LocalizedDelegate parentLocalizer) {
+			super(validationReport, parentLocalizer);
+		}
+
+		@Override
+		protected void performSelect(ValidationIssue<?, ?> validationIssue) {
+			ValidationWindow.this.performSelect(validationIssue);
+		}
+
+		@Override
+		protected FlexoFIBValidationController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer) {
+			FlexoFIBValidationController returned = new FlexoFIBValidationController(fibComponent) {
+				@Override
+				protected void performSelect(ValidationIssue<?, ?> validationIssue) {
+					FlexoValidationPanel.this.performSelect(validationIssue);
+				}
+			};
+			returned.setController(ValidationWindow.this.controller);
+			return returned;
+		}
+
+		@Override
+		public FlexoFIBValidationController getController() {
+			return (FlexoFIBValidationController) super.getController();
+		}
+
+		/**
+		 * Override parent implementation by launching validation in a dedicated task
+		 */
+		@Override
+		public void validate(ValidationModel validationModel, Validable objectToValidate) {
+			ValidationTask validationTask = new ValidationTask(validationModel, objectToValidate, getController());
+			ValidationWindow.this.controller.getApplicationContext().getTaskManager().scheduleExecution(validationTask);
+		}
+
 	}
 }
