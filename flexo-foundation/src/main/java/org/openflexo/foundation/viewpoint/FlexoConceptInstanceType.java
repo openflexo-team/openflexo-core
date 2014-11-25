@@ -41,6 +41,8 @@ public class FlexoConceptInstanceType implements CustomType {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
+	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType(null);
+
 	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		this.flexoConcept = anFlexoConcept;
 	}
@@ -53,8 +55,7 @@ public class FlexoConceptInstanceType implements CustomType {
 	public Class getBaseClass() {
 		if (getFlexoConcept() instanceof VirtualModel) {
 			return VirtualModelInstance.class;
-		}
-		else {
+		} else {
 			return FlexoConceptInstance.class;
 		}
 	}
@@ -86,10 +87,9 @@ public class FlexoConceptInstanceType implements CustomType {
 	public static Type getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		if (anFlexoConcept != null) {
 			return anFlexoConcept.getInstanceType();
-		}
-		else {
-			logger.warning("Trying to get a InstanceType for a null FlexoConcept");
-			return null;
+		} else {
+			// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
+			return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
 	}
 }
