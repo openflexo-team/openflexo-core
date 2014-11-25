@@ -47,9 +47,11 @@ import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.foundation.view.action.ActionSchemeActionType;
@@ -143,11 +145,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
-			if (action.isLongRunningAction() && SwingUtilities.isEventDispatchThread()) {
+			if (action instanceof LongRunningAction && SwingUtilities.isEventDispatchThread()) {
 
 				FlexoTask task = new FlexoTask(action.getLocalizedName()) {
 					@Override
 					public void performTask() {
+						Progress.setExpectedProgressSteps(((LongRunningAction) action).getExpectedProgressSteps());
 						doExecuteAction(action, event);
 					}
 				};
@@ -161,8 +164,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		return action;
 	}
 
-	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void doExecuteAction(
-			final A action, final EventObject event) {
+	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void doExecuteAction(final A action,
+			final EventObject event) {
 		try {
 			runAction(action);
 		} catch (FlexoException exception) {

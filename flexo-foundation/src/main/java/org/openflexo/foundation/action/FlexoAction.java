@@ -200,10 +200,6 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return thrownException;
 	}
 
-	public boolean isLongRunningAction() {
-		return false;
-	}
-
 	public A doActionInContext() throws FlexoException {
 		if (!getActionType().isEnabled(getFocusedObject(), getGlobalSelection())) {
 			throw new InactiveFlexoActionException(getActionType(), getFocusedObject(), getGlobalSelection());
