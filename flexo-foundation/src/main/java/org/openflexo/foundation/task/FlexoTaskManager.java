@@ -24,19 +24,19 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	 */
 	public abstract void scheduleExecution(FlexoTask... tasks);
 
+	/**
+	 * Request stop execution of a task<br>
+	 * This is a 'cancel' request
+	 * 
+	 */
 	public void stopExecution(FlexoTask task);
 
-	@Deprecated
-	public void forceStopExecution(FlexoTask task);
-
-	public boolean isTerminated();
-
-	public void shutdownAndWait();
-
-	public void shutdown();
-
-	public void shutdownAndExecute(final Runnable r);
-
+	/**
+	 * Return a list of all tasks beeing scheduled for execution (more exactely, when the status of tasks is either of TaskStatus.WAITING,
+	 * TaskStatus.RUNNING, TaskStatus.READY_TO_EXECUTE) *
+	 * 
+	 * @return
+	 */
 	public List<FlexoTask> getScheduledTasks();
 
 	/**
@@ -46,4 +46,37 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	 * @param task
 	 */
 	public void waitTask(FlexoTask task);
+
+	/**
+	 * Shutdown the task manager, let all running and scheduled tasks been executed
+	 */
+	public void shutdown();
+
+	/**
+	 * Shutdown the task manager, and blocks current thread until all tasks have been executed
+	 */
+	public void shutdownAndWait();
+
+	/**
+	 * Shutdown the task manager, and blocks a new thread until all tasks have been executed, then execute runnable in this thread
+	 */
+	public void shutdownAndExecute(final Runnable r);
+
+	/**
+	 * Return boolean indicating if all tasks (scheduled and/or running) have finished and if task manager is ready for shutdown
+	 * 
+	 * @return
+	 */
+	public boolean isTerminated();
+
+	/**
+	 * Should not be used as it uses {@link #Thread.stop()} to force interruption of task<br>
+	 * Consistency is no more guaranteed<br>
+	 * Use this only as rescue service
+	 * 
+	 * @param task
+	 */
+	@Deprecated
+	public void forceStopExecution(FlexoTask task);
+
 }
