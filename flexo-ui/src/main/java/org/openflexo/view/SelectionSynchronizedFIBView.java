@@ -51,7 +51,9 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
 		this(representedObject, controller, fibResource, false);
-		controller.willLoad(fibResource);
+		if (controller != null) {
+			controller.willLoad(fibResource);
+		}
 	}
 
 	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
@@ -71,7 +73,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 				FlexoProgress progress) {
 			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(ResourceLocator.locateResource(fibResourcePath)), addScrollBar, progress);
 		}
-		*/
+	 */
 
 	protected SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, FIBComponent fibComponent,
 			boolean addScrollBar) {
@@ -157,7 +159,10 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 	}
 
 	public SelectionManager getSelectionManager() {
-		return getFlexoController().getSelectionManager();
+		if (getFlexoController() != null) {
+			return getFlexoController().getSelectionManager();
+		}
+		return null;
 	}
 
 	@Override
@@ -174,9 +179,11 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("FlexoFIBView now impose new selection : " + newSelection);
 		}
-		ignoreFiredSelectionEvents = true;
-		getSelectionManager().setSelectedObjects(newSelection);
-		ignoreFiredSelectionEvents = false;
+		if (getSelectionManager() != null) {
+			ignoreFiredSelectionEvents = true;
+			getSelectionManager().setSelectedObjects(newSelection);
+			ignoreFiredSelectionEvents = false;
+		}
 	}
 
 	private boolean ignoreFiredSelectionEvents = false;
