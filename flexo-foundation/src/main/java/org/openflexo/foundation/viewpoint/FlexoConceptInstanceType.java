@@ -71,12 +71,12 @@ public class FlexoConceptInstanceType implements CustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "FlexoConceptInstanceType" + ":" + flexoConcept.toString();
+		return "FlexoConceptInstanceType" + (flexoConcept != null ? ":" + flexoConcept.toString() : "");
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoConceptInstanceType" + ":" + flexoConcept.toString();
+		return "FlexoConceptInstanceType" + (flexoConcept != null ? ":" + flexoConcept.toString() : "");
 	}
 
 	@Override
