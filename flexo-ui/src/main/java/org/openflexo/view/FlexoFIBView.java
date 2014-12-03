@@ -243,43 +243,6 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		return DELETED;
 	}
 
-	// test purposes
-	/*public static FlexoEditor loadProject(File prjDir) {
-		FlexoResourceCenterService resourceCenter = DefaultResourceCenterService.getNewInstance();
-		FlexoServiceManager sm = new DefaultFlexoServiceManager();
-		sm.registerService(resourceCenter);
-		FlexoEditor editor = null;
-		try {
-			editor = FlexoResourceManager.initializeExistingProject(prjDir, EDITOR_FACTORY, sm);
-		} catch (ProjectLoadingCancelledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProjectInitializerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (editor == null) {
-			System.exit(-1);
-		}
-		return editor;
-	}*/
-
-	// test purposes
-	/*protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {
-		@Override
-		public DefaultFlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
-			return new FlexoTestEditor(project, serviceManager);
-		}
-	};*/
-
-	// test purposes
-	/*public static class FlexoTestEditor extends DefaultFlexoEditor {
-		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
-			super(project, sm);
-		}
-
-	}*/
-
 	/**
 	 * Semantics of this method is not trivial: the goal is to aggregate some notifications within a given time (supplied as a
 	 * aggregationTimeOut), to do it only once.<br>
