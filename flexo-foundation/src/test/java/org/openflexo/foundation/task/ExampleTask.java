@@ -15,7 +15,7 @@ public class ExampleTask extends FlexoTask {
 
 		System.out.println(Thread.currentThread().getName() + " Start. Thread: " + Thread.currentThread());
 		try {
-			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000));
+			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000) + 500);
 			for (int i = 0; i < 100; i++) {
 				Progress.progress();
 				Thread.sleep(30);
