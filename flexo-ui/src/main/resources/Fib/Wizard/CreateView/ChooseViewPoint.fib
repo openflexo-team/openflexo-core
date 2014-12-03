@@ -49,8 +49,8 @@
 				dataClassName="org.openflexo.foundation.viewpoint.rm.ViewPointResource"
 				label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
 				isEditable="false" filtered="false" defaultVisible="true" name="viewPoint">
-				<Children data="viewPoint.contents" visible="viewPoint.isLoaded"
-					name="subResources" />
+				<!--  <Children data="viewPoint.contents" visible="viewPoint.isLoaded"
+					name="subResources" />-->
 			</BrowserElement>
 		</Browser>
 		<TextArea columns="6" rows="2" text="TextArea" index="3"
