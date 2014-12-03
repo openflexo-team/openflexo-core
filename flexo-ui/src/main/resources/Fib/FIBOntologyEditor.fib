@@ -244,7 +244,7 @@
 						data="data.displayPropertiesInClasses"
 						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=2;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 						name="PresentPropertiesInClassesCB" localize="true" />
-					<Label label="store_properties" index="5"
+					<Label label="present_properties_in_classes" index="5"
 						constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 						localize="true" />
 					<CheckBox visible="data.supportTechnologySpecificHiddenConcepts"
@@ -399,6 +399,12 @@
 			value="Afficher les propriétés d'annotation" />
 		<Localized key="display_annotation_properties" lang="Dutch"
 			value="display_annotation_properties" />
+		<Localized key="present_properties_in_classes" lang="English"
+			value="Present properties in classes" />
+		<Localized key="present_properties_in_classes" lang="French"
+			value="Présenter les propriétés dans les classes" />
+		<Localized key="present_properties_in_classes" lang="Dutch"
+			value="present_properties_in_classes" />
 		<Localized key="Options" lang="English" value="Options" />
 		<Localized key="Options" lang="French" value="Options" />
 		<Localized key="Options" lang="Dutch" value="Options" />

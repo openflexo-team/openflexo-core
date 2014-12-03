@@ -19,18 +19,16 @@
  */
 package org.openflexo.components.widget;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
 
-import org.openflexo.components.widget.OntologyBrowserModel.OntologyBrowserModelRecomputed;
 import org.openflexo.fib.model.FIBBrowser;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
@@ -45,6 +43,8 @@ import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.HasPropertyChangeSupport;
+import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.IFlexoOntologyTechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterController;
@@ -66,27 +66,13 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
+public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FIBOntologyBrowser.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBOntologyBrowser.fib");
 
-	private IFlexoOntology ontology;
-	private boolean hierarchicalMode = true;
-	private boolean strictMode = false;
-	private IFlexoOntologyClass rootClass;
-	private boolean displayPropertiesInClasses = true;
-
-	private boolean showObjectProperties = true;
-	private boolean showDataProperties = true;
-	private boolean showAnnotationProperties = true;
-	private boolean showClasses = true;
-	private boolean showIndividuals = true;
-
-	private IFlexoOntologyClass domain = null;
-	private IFlexoOntologyClass range = null;
-	private BuiltInDataType dataType = null;
+	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
 	private boolean allowsSearch = true;
 	private boolean displayOptions = true;
@@ -106,7 +92,11 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 	protected FIBOntologyBrowser(Resource fibFile, IFlexoOntology ontology) {
 		super(fibFile, null, FlexoLocalization.getMainLocalizer());
 		matchingValues = new ArrayList<IFlexoOntologyConcept>();
-		setOntology(ontology);
+		model = makeBrowserModel(ontology);
+		// setOntology(ontology);
+		if (ontology != null) {
+			setTechnologyAdapter(ontology.getTechnologyAdapter());
+		}
 		setEditedObject(this);
 	}
 
@@ -116,54 +106,153 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 	}
 
 	public IFlexoOntology getOntology() {
-		return ontology;
+		// return ontology;
+		return getModel().getContext();
 	}
 
 	@CustomComponentParameter(name = "ontology", type = CustomComponentParameter.Type.MANDATORY)
 	public void setOntology(IFlexoOntology context) {
-		this.ontology = context;
-		// ontology.loadWhenUnloaded();
-		update();
+		IFlexoOntology oldValue = getOntology();
+		if (oldValue != context) {
+			if (getOntology() instanceof HasPropertyChangeSupport
+					&& ((HasPropertyChangeSupport) getOntology()).getDeletedProperty() != null) {
+				manager.removeListener(((HasPropertyChangeSupport) getOntology()).getDeletedProperty(), this, getOntology());
+			}
+			getModel().setContext(context);
+			// this.ontology = context;
+			if ((getOntology() instanceof HasPropertyChangeSupport)
+					&& ((HasPropertyChangeSupport) getOntology()).getDeletedProperty() != null) {
+				manager.addListener(((HasPropertyChangeSupport) getOntology()).getDeletedProperty(), this, getOntology());
+			}
+			update();
+			getPropertyChangeSupport().firePropertyChange("ontology", oldValue, context);
+		}
 	}
 
 	public boolean getStrictMode() {
-		return strictMode;
+		return getModel().getStrictMode();
 	}
 
 	@CustomComponentParameter(name = "strictMode", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setStrictMode(boolean strictMode) {
-		this.strictMode = strictMode;
-		update();
+		boolean oldValue = getStrictMode();
+		if (oldValue != strictMode) {
+			model.setStrictMode(strictMode);
+			update();
+			getPropertyChangeSupport().firePropertyChange("strictMode", oldValue, strictMode);
+		}
 	}
 
 	public boolean getHierarchicalMode() {
-		return hierarchicalMode;
+		return getModel().getHierarchicalMode();
 	}
 
 	@CustomComponentParameter(name = "hierarchicalMode", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setHierarchicalMode(boolean hierarchicalMode) {
-		this.hierarchicalMode = hierarchicalMode;
-		update();
+		boolean oldValue = getHierarchicalMode();
+		if (oldValue != hierarchicalMode) {
+			model.setHierarchicalMode(hierarchicalMode);
+			update();
+			getPropertyChangeSupport().firePropertyChange("hierarchicalMode", oldValue, hierarchicalMode);
+		}
 	}
 
 	public boolean getDisplayPropertiesInClasses() {
-		return displayPropertiesInClasses;
+		return getModel().getDisplayPropertiesInClasses();
 	}
 
 	@CustomComponentParameter(name = "displayPropertiesInClasses", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setDisplayPropertiesInClasses(boolean displayPropertiesInClasses) {
-		this.displayPropertiesInClasses = displayPropertiesInClasses;
-		update();
+		boolean oldValue = getDisplayPropertiesInClasses();
+		if (oldValue != displayPropertiesInClasses) {
+			model.setDisplayPropertiesInClasses(displayPropertiesInClasses);
+			update();
+			getPropertyChangeSupport().firePropertyChange("displayPropertiesInClasses", oldValue, displayPropertiesInClasses);
+		}
 	}
 
 	public IFlexoOntologyClass getRootClass() {
-		return rootClass;
+		return getModel().getRootClass();
 	}
 
 	@CustomComponentParameter(name = "rootClass", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setRootClass(IFlexoOntologyClass rootClass) {
-		this.rootClass = rootClass;
-		update();
+		IFlexoOntologyClass oldValue = getRootClass();
+		if (oldValue != rootClass) {
+			model.setRootClass(rootClass);
+			update();
+			getPropertyChangeSupport().firePropertyChange("rootClass", oldValue, rootClass);
+		}
+	}
+
+	public boolean getShowObjectProperties() {
+		return getModel().getShowObjectProperties();
+	}
+
+	@CustomComponentParameter(name = "showObjectProperties", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowObjectProperties(boolean showObjectProperties) {
+		boolean oldValue = getShowObjectProperties();
+		if (oldValue != showObjectProperties) {
+			model.setShowObjectProperties(showObjectProperties);
+			update();
+			getPropertyChangeSupport().firePropertyChange("showObjectProperties", oldValue, showObjectProperties);
+		}
+	}
+
+	public boolean getShowDataProperties() {
+		return getModel().getShowDataProperties();
+	}
+
+	@CustomComponentParameter(name = "showDataProperties", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowDataProperties(boolean showDataProperties) {
+		boolean oldValue = getShowDataProperties();
+		if (oldValue != showDataProperties) {
+			model.setShowDataProperties(showDataProperties);
+			update();
+			getPropertyChangeSupport().firePropertyChange("showDataProperties", oldValue, showDataProperties);
+		}
+	}
+
+	public boolean getShowAnnotationProperties() {
+		return getModel().getShowAnnotationProperties();
+	}
+
+	@CustomComponentParameter(name = "showAnnotationProperties", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowAnnotationProperties(boolean showAnnotationProperties) {
+		boolean oldValue = getShowAnnotationProperties();
+		if (oldValue != showAnnotationProperties) {
+			model.setShowAnnotationProperties(showAnnotationProperties);
+			update();
+			getPropertyChangeSupport().firePropertyChange("showAnnotationProperties", oldValue, showAnnotationProperties);
+		}
+	}
+
+	public boolean getShowClasses() {
+		return getModel().getShowClasses();
+	}
+
+	@CustomComponentParameter(name = "showClasses", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowClasses(boolean showClasses) {
+		boolean oldValue = getShowClasses();
+		if (oldValue != showClasses) {
+			model.setShowClasses(showClasses);
+			update();
+			getPropertyChangeSupport().firePropertyChange("showClasses", oldValue, showClasses);
+		}
+	}
+
+	public boolean getShowIndividuals() {
+		return getModel().getShowIndividuals();
+	}
+
+	@CustomComponentParameter(name = "showIndividuals", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setShowIndividuals(boolean showIndividuals) {
+		boolean oldValue = getShowIndividuals();
+		if (oldValue != showIndividuals) {
+			model.setShowIndividuals(showIndividuals);
+			update();
+			getPropertyChangeSupport().firePropertyChange("showIndividuals", oldValue, showIndividuals);
+		}
 	}
 
 	public boolean getAllowsSearch() {
@@ -184,84 +273,46 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 		this.displayOptions = displayOptions;
 	}
 
-	public boolean getShowObjectProperties() {
-		return showObjectProperties;
-	}
-
-	@CustomComponentParameter(name = "showObjectProperties", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setShowObjectProperties(boolean showObjectProperties) {
-		this.showObjectProperties = showObjectProperties;
-		update();
-	}
-
-	public boolean getShowDataProperties() {
-		return showDataProperties;
-	}
-
-	@CustomComponentParameter(name = "showDataProperties", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setShowDataProperties(boolean showDataProperties) {
-		this.showDataProperties = showDataProperties;
-		update();
-	}
-
-	public boolean getShowAnnotationProperties() {
-		return showAnnotationProperties;
-	}
-
-	@CustomComponentParameter(name = "showAnnotationProperties", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setShowAnnotationProperties(boolean showAnnotationProperties) {
-		this.showAnnotationProperties = showAnnotationProperties;
-		update();
-	}
-
-	public boolean getShowClasses() {
-		return showClasses;
-	}
-
-	@CustomComponentParameter(name = "showClasses", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setShowClasses(boolean showClasses) {
-		this.showClasses = showClasses;
-		update();
-	}
-
-	public boolean getShowIndividuals() {
-		return showIndividuals;
-	}
-
-	@CustomComponentParameter(name = "showIndividuals", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setShowIndividuals(boolean showIndividuals) {
-		this.showIndividuals = showIndividuals;
-		update();
-	}
-
 	public IFlexoOntologyClass getDomain() {
-		return domain;
+		return getModel().getDomain();
 	}
 
 	@CustomComponentParameter(name = "domain", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setDomain(IFlexoOntologyClass domain) {
-		this.domain = domain;
-		update();
+		IFlexoOntologyClass oldValue = getDomain();
+		if (oldValue != domain) {
+			model.setDomain(domain);
+			update();
+			getPropertyChangeSupport().firePropertyChange("domain", oldValue, domain);
+		}
 	}
 
 	public IFlexoOntologyClass getRange() {
-		return range;
+		return getModel().getRange();
 	}
 
 	@CustomComponentParameter(name = "range", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setRange(IFlexoOntologyClass range) {
-		this.range = range;
-		update();
+		IFlexoOntologyClass oldValue = getRange();
+		if (oldValue != range) {
+			model.setRange(range);
+			update();
+			getPropertyChangeSupport().firePropertyChange("range", oldValue, range);
+		}
 	}
 
 	public BuiltInDataType getDataType() {
-		return dataType;
+		return getModel().getDataType();
 	}
 
 	@CustomComponentParameter(name = "dataType", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setDataType(BuiltInDataType dataType) {
-		this.dataType = dataType;
-		update();
+		BuiltInDataType oldValue = getDataType();
+		if (oldValue != dataType) {
+			model.setDataType(dataType);
+			update();
+			getPropertyChangeSupport().firePropertyChange("dataType", oldValue, dataType);
+		}
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
@@ -272,12 +323,17 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 		this.technologyAdapter = technologyAdapter;
 	}
 
+	protected OntologyBrowserModel performBuildOntologyBrowserModel(IFlexoOntology ontology) {
+		return new OntologyBrowserModel(ontology);
+	}
+
 	/**
-	 * Build browser model Override this method when required
+	 * Build browser model<br>
+	 * Override this method when required
 	 * 
 	 * @return
 	 */
-	protected OntologyBrowserModel makeBrowserModel() {
+	protected OntologyBrowserModel makeBrowserModel(IFlexoOntology ontology) {
 		OntologyBrowserModel returned = null;
 		if (getTechnologyAdapter() != null) {
 			// Use technology specific browser model
@@ -285,69 +341,36 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 					.getServiceManager().getService(TechnologyAdapterControllerService.class)
 					.getTechnologyAdapterController(technologyAdapter);
 			if (technologyAdapterController instanceof IFlexoOntologyTechnologyAdapterController) {
-				returned = ((IFlexoOntologyTechnologyAdapterController) technologyAdapterController)
-						.makeOntologyBrowserModel(getOntology());
+				returned = ((IFlexoOntologyTechnologyAdapterController) technologyAdapterController).makeOntologyBrowserModel(ontology);
 			}
 		}
 		if (returned == null) {
 			// Use default
-			returned = new OntologyBrowserModel(getOntology());
+			returned = performBuildOntologyBrowserModel(ontology);
 		}
+
+		returned.disableAutoUpdate();
+		returned.setStrictMode(false);
+		returned.setHierarchicalMode(true);
+		returned.setDisplayPropertiesInClasses(true);
+		returned.setShowClasses(true);
+		returned.setShowIndividuals(true);
+		returned.setShowObjectProperties(true);
+		returned.setShowDataProperties(true);
+		returned.setShowAnnotationProperties(true);
+
+		returned.enableAutoUpdate();
+		returned.recomputeStructure();
+
 		return returned;
 	}
 
-	public OntologyBrowserModel getModel() {
-		if (model == null) {
-			model = makeBrowserModel();
-			model.setStrictMode(getStrictMode());
-			model.setHierarchicalMode(getHierarchicalMode());
-			model.setDisplayPropertiesInClasses(getDisplayPropertiesInClasses());
-			model.setRootClass(getRootClass());
-			model.setShowClasses(getShowClasses());
-			model.setShowIndividuals(getShowIndividuals());
-			model.setShowObjectProperties(getShowObjectProperties());
-			model.setShowDataProperties(getShowDataProperties());
-			model.setShowAnnotationProperties(getShowAnnotationProperties());
-			model.setDomain(getDomain());
-			model.setRange(getRange());
-			model.setDataType(getDataType());
-			model.recomputeStructure();
-			model.addObserver(new Observer() {
-				@Override
-				public void update(Observable o, Object arg) {
-					if (arg instanceof OntologyBrowserModelRecomputed) {
-						performFireModelUpdated();
-					}
-				}
-			});
-		}
+	public OntologyBrowserModel<?> getModel() {
 		return model;
 	}
 
 	public void update() {
-		if (model != null) {
-			model.delete();
-			model = null;
-			setEditedObject(this);
-			performFireModelUpdated();
-		}
-	}
-
-	private boolean modelWillBeUpdated = false;
-
-	private void performFireModelUpdated() {
-		if (modelWillBeUpdated) {
-			return;
-		} else {
-			modelWillBeUpdated = true;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					getPropertyChangeSupport().firePropertyChange("model", null, getModel());
-					modelWillBeUpdated = false;
-				}
-			});
-		}
+		getPropertyChangeSupport().firePropertyChange("model", null, getModel());
 	}
 
 	public String getFilteredName() {
@@ -487,22 +510,34 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> {
 
 	public abstract ImageIcon getOntologyObjectPropertyIcon();
 
-	public abstract ImageIcon getOntologyAnnotationIcon();
+	public abstract ImageIcon getOntologyAnnotationPropertyIcon();
 
 	public abstract boolean supportTechnologySpecificHiddenConcepts();
 
 	public abstract String technologySpecificHiddenConceptsLabel();
 
-	private boolean showTechnologySpecificConcepts;
-
+	/**
+	 * Override when required
+	 * 
+	 * @return
+	 */
 	public boolean showTechnologySpecificConcepts() {
-		return showTechnologySpecificConcepts;
+		return false;
 	}
 
+	/**
+	 * Override when required
+	 * 
+	 * @return
+	 */
 	public void setShowTechnologySpecificConcepts(boolean flag) {
-		if (this.showTechnologySpecificConcepts != flag) {
-			this.showTechnologySpecificConcepts = flag;
-			getPropertyChangeSupport().firePropertyChange("showTechnologySpecificConcepts", !flag, flag);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == getOntology()
+				&& ((HasPropertyChangeSupport) getOntology()).getDeletedProperty().equals(evt.getPropertyName())) {
+			logger.warning("Detecting ontology deleted in FIBOntologyBrowser");
 		}
 	}
 

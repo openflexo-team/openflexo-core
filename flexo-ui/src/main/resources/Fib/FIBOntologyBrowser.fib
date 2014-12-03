@@ -30,7 +30,7 @@
 			<Children data="model.roots" name="children" />
 		</BrowserElement>
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.ontology.IFlexoOntologyConcept"
+			dataClassName="org.openflexo.foundation.ontology.FlexoOntologyObjectImpl"
 			label="element.name" icon="controller.iconForObject(element)"
 			tooltip="element.displayableDescription" isEditable="false" filtered="false"
 			defaultVisible="true"

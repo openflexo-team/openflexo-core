@@ -19,15 +19,10 @@
  */
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
 
 import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingEvaluationContext;
@@ -35,7 +30,6 @@ import org.openflexo.antar.binding.BindingFactory;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.components.widget.OntologyBrowserModel.OntologyBrowserModelRecomputed;
 import org.openflexo.foundation.ontology.FlexoOntologyObjectImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -46,8 +40,8 @@ import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.viewpoint.binding.FlexoConceptBindingFactory;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.IFlexoOntologyTechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterController;
@@ -78,10 +72,6 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBIndividualSelector.fib");
 
 	private InformationSpace informationSpace;
-	private IFlexoOntology context;
-	private IFlexoOntologyClass type;
-	private boolean hierarchicalMode = true;
-	private boolean strictMode = false;
 
 	protected OntologyBrowserModel model = null;
 	private TechnologyAdapter technologyAdapter;
@@ -98,6 +88,7 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 		super(editedObject);
 		bindingModel = new BindingModel();
 		renderers = new HashMap<IFlexoOntologyClass, DataBinding<String>>();
+		model = makeBrowserModel(editedObject != null ? editedObject.getOntology() : null);
 	}
 
 	@Override
@@ -108,12 +99,6 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 	@Override
 	public BindingModel getBindingModel() {
 		return bindingModel;
-	}
-
-	@Override
-	public void delete() {
-		super.delete();
-		context = null;
 	}
 
 	@Override
@@ -279,26 +264,40 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 	}
 
 	public IFlexoOntology getContext() {
-		return context;
+		return getModel().getContext();
 	}
 
 	@CustomComponentParameter(name = "context", type = CustomComponentParameter.Type.MANDATORY)
 	public void setContext(IFlexoOntology context) {
-		System.out.println("Set context with " + context);
-		this.context = context;
-		update();
-		setRepresentationForIndividualOfClass("defaultIndividual", "defaultIndividual.uriName", context.getRootConcept());
+		IFlexoOntology oldValue = getContext();
+		if (oldValue != context) {
+			getModel().setContext(context);
+			update();
+			getPropertyChangeSupport().firePropertyChange("context", oldValue, context);
+			getPropertyChangeSupport().firePropertyChange("ontology", oldValue, context);
+		}
+	}
+
+	public IFlexoOntology getOntology() {
+		return getContext();
+	}
+
+	public void setOntology(IFlexoOntology ontology) {
+		setContext(ontology);
 	}
 
 	public IFlexoOntologyClass getType() {
-		return type;
+		return getModel().getRootClass();
 	}
 
 	@CustomComponentParameter(name = "type", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setType(IFlexoOntologyClass rootClass) {
-		this.type = rootClass;
-		update();
-		// setRepresentationForIndividualOfClass("defaultType", "defaultType.uriName", rootClass);
+	public void setType(IFlexoOntologyClass type) {
+		IFlexoOntologyClass oldValue = getType();
+		if (oldValue != type) {
+			model.setRootClass(type);
+			update();
+			getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
+		}
 	}
 
 	public String getTypeURI() {
@@ -319,24 +318,32 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 		}
 	}
 
-	public boolean getHierarchicalMode() {
-		return hierarchicalMode;
-	}
-
-	@CustomComponentParameter(name = "hierarchicalMode", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setHierarchicalMode(boolean hierarchicalMode) {
-		this.hierarchicalMode = hierarchicalMode;
-		update();
-	}
-
 	public boolean getStrictMode() {
-		return strictMode;
+		return getModel().getStrictMode();
 	}
 
 	@CustomComponentParameter(name = "strictMode", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setStrictMode(boolean strictMode) {
-		this.strictMode = strictMode;
-		update();
+		boolean oldValue = getStrictMode();
+		if (oldValue != strictMode) {
+			model.setStrictMode(strictMode);
+			update();
+			getPropertyChangeSupport().firePropertyChange("strictMode", oldValue, strictMode);
+		}
+	}
+
+	public boolean getHierarchicalMode() {
+		return getModel().getHierarchicalMode();
+	}
+
+	@CustomComponentParameter(name = "hierarchicalMode", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setHierarchicalMode(boolean hierarchicalMode) {
+		boolean oldValue = getHierarchicalMode();
+		if (oldValue != hierarchicalMode) {
+			model.setHierarchicalMode(hierarchicalMode);
+			update();
+			getPropertyChangeSupport().firePropertyChange("hierarchicalMode", oldValue, hierarchicalMode);
+		}
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
@@ -347,12 +354,17 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 		this.technologyAdapter = technologyAdapter;
 	}
 
+	protected OntologyBrowserModel performBuildOntologyBrowserModel(IFlexoOntology ontology) {
+		return new OntologyBrowserModel(ontology);
+	}
+
 	/**
-	 * Build browser model Override this method when required
+	 * Build browser model<br>
+	 * Override this method when required
 	 * 
 	 * @return
 	 */
-	protected OntologyBrowserModel makeBrowserModel() {
+	protected OntologyBrowserModel makeBrowserModel(IFlexoOntology ontology) {
 		OntologyBrowserModel returned = null;
 		if (getTechnologyAdapter() != null) {
 			// Use technology specific browser model
@@ -360,64 +372,35 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 					.getServiceManager().getService(TechnologyAdapterControllerService.class)
 					.getTechnologyAdapterController(technologyAdapter);
 			if (technologyAdapterController instanceof IFlexoOntologyTechnologyAdapterController) {
-				returned = ((IFlexoOntologyTechnologyAdapterController) technologyAdapterController).makeOntologyBrowserModel(getContext());
+				returned = ((IFlexoOntologyTechnologyAdapterController) technologyAdapterController).makeOntologyBrowserModel(ontology);
 			}
 		}
 		if (returned == null) {
 			// Use default
-			returned = new OntologyBrowserModel(getContext());
+			returned = performBuildOntologyBrowserModel(ontology);
 		}
+
+		returned.disableAutoUpdate();
+		returned.setStrictMode(false);
+		returned.setHierarchicalMode(true);
+		returned.setDisplayPropertiesInClasses(false);
+		returned.setShowClasses(false);
+		returned.setShowIndividuals(true);
+		returned.setShowObjectProperties(false);
+		returned.setShowDataProperties(false);
+		returned.setShowAnnotationProperties(false);
+		returned.enableAutoUpdate();
+		returned.recomputeStructure();
+
 		return returned;
 	}
 
-	public OntologyBrowserModel getModel() {
-		if (model == null) {
-			model = makeBrowserModel();
-			model.setStrictMode(getStrictMode());
-			model.setHierarchicalMode(getHierarchicalMode());
-			model.setDisplayPropertiesInClasses(false);
-			model.setRootClass(getType());
-			model.setShowClasses(false);
-			model.setShowIndividuals(true);
-			model.setShowObjectProperties(false);
-			model.setShowDataProperties(false);
-			model.setShowAnnotationProperties(false);
-			model.recomputeStructure();
-			model.addObserver(new Observer() {
-				@Override
-				public void update(Observable o, Object arg) {
-					if (arg instanceof OntologyBrowserModelRecomputed) {
-						performFireModelUpdated();
-					}
-				}
-			});
-		}
+	public OntologyBrowserModel<?> getModel() {
 		return model;
 	}
 
 	public void update() {
-		if (model != null) {
-			model.delete();
-			model = null;
-			performFireModelUpdated();
-		}
-	}
-
-	private boolean modelWillBeUpdated = false;
-
-	private void performFireModelUpdated() {
-		if (modelWillBeUpdated) {
-			return;
-		} else {
-			modelWillBeUpdated = true;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					getPropertyChangeSupport().firePropertyChange("model", null, getModel());
-					modelWillBeUpdated = false;
-				}
-			});
-		}
+		getPropertyChangeSupport().firePropertyChange("model", null, getModel());
 	}
 
 	@Override
@@ -427,59 +410,5 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 	}
-
-	// Please uncomment this for a live test
-	// Never commit this uncommented since it will not compile on continuous build
-	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
-	/*public static void main(String[] args) {
-		FIBAbstractEditor editor = new FIBAbstractEditor() {
-			@Override
-			public Object[] getData() {
-				try {
-					FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				ApplicationContext ac = new TestApplicationContext(new FileResource("TestResourceCenter"));
-
-				IFlexoOntology o = (IFlexoOntology) ac.getInformationSpace()
-						.getMetaModel("http://www.agilebirds.com/openflexo/ontologies/UML/UML2.owl").getMetaModelData();
-				// "http://www.thalesgroup.com/ontologies/sepel-ng/MappingSpecifications.owl");
-				// "http://www.cpmf.org/ontologies/cpmfInstance");
-				// "http://www.agilebirds.com/openflexo/ontologies/FlexoConceptsOntology.owl");
-				// "http://www.w3.org/2002/07/owl");
-				// "http://www.w3.org/2000/01/rdf-schema");
-				// "http://www.openflexo.org/test/TestInstances.owl");
-				// "http://www.openflexo.org/test/Family.owl");
-
-				FIBIndividualSelector selector = new FIBIndividualSelector(null);
-
-				selector.setContext(o);
-				selector.setHierarchicalMode(true); // false
-				selector.setStrictMode(true);
-				selector.setRepresentationForIndividualOfClass("personne", "personne.nom+' '+personne.prenom",
-						o.getClass("http://www.openflexo.org/test/Family.owl#Personne"));
-				selector.setRepresentationForIndividualOfClass("sexe", "'SEXE:'+sexe.uriName",
-						o.getClass("http://www.openflexo.org/test/Family.owl#Sexe"));
-				return makeArray(selector);
-			}
-
-			@Override
-			public File getFIBFile() {
-				return FIB_FILE;
-			}
-
-			@Override
-			public FIBController makeNewController(FIBComponent component) {
-				return new FlexoFIBController(component);
-			}
-		};
-		editor.launch();
-	}*/
 
 }
