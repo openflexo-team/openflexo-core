@@ -30,7 +30,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
-public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> extends DefaultFlexoObject {
+public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> extends DefaultFlexoObject implements IFlexoOntologyObject<TA> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyObjectImpl.class.getPackage().getName());
@@ -48,10 +48,12 @@ public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> exte
 	 * 
 	 * @return
 	 */
+	@Override
 	public abstract String getName();
 
 	public abstract IFlexoOntology<TA> getFlexoOntology();
 
+	@Override
 	public abstract String getDisplayableDescription();
 
 	public final boolean isOntology() {
