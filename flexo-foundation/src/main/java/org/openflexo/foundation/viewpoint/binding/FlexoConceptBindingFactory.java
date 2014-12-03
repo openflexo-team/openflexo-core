@@ -93,8 +93,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
 				return new FlexoBehaviourParameterDefinitionPathElement(parent, (FlexoBehaviourParameter) object);
-			}
-			else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
+			} else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
 				return new FlexoBehaviourParameterValuePathElement(parent, (FlexoBehaviourParameter) object);
 			}
 		}
@@ -127,8 +126,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				}
 				Collections.sort(returned, BindingPathElement.COMPARATOR);
 				return returned;
-			}
-			else if (pType instanceof FlexoBehaviourParametersValuesType) {
+			} else if (pType instanceof FlexoBehaviourParametersValuesType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
@@ -171,24 +169,25 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				} */
 			else if (pType instanceof FlexoConceptInstanceType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
-				FlexoConcept ep = ((FlexoConceptInstanceType) pType).getFlexoConcept();
+				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
-				if (ep instanceof VirtualModel) {
-					VirtualModel vm = (VirtualModel) ep;
-					for (ModelSlot ms : vm.getModelSlots()) {
-						returned.add(getSimplePathElement(ms, parent));
+				if (concept != null) {
+					if (concept instanceof VirtualModel) {
+						VirtualModel vm = (VirtualModel) concept;
+						for (ModelSlot ms : vm.getModelSlots()) {
+							returned.add(getSimplePathElement(ms, parent));
+						}
+					}
+					for (FlexoRole<?> pr : concept.getFlexoRoles()) {
+						returned.add(getSimplePathElement(pr, parent));
+					}
+					// TODO: performance issue
+					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
+						returned.add(new EPIRendererPathElement(parent));
 					}
 				}
-				for (FlexoRole<?> pr : ep.getFlexoRoles()) {
-					returned.add(getSimplePathElement(pr, parent));
-				}
-				// TODO: performance issue
-				if (ep.getInspector().getRenderer().isSet() && ep.getInspector().getRenderer().isValid()) {
-					returned.add(new EPIRendererPathElement(parent));
-				}
 				return returned;
-			}
-			else if (pType instanceof FlexoBehaviourType) {
+			} else if (pType instanceof FlexoBehaviourType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
@@ -197,8 +196,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					returned.add(getSimplePathElement(pr, parent));
 				}
 				return returned;
-			}
-			else if (pType instanceof FlexoBehaviourActionType) {
+			} else if (pType instanceof FlexoBehaviourActionType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
@@ -211,8 +209,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 			// In all other cases, consider it using Java rules
 			return super.getAccessibleSimplePathElements(parent);
-		}
-		else {
+		} else {
 			logger.warning("Trying to find accessible path elements for a NULL parent");
 			return Collections.EMPTY_LIST;
 		}
