@@ -54,6 +54,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.DATA_ASSERTIONS_KEY)
 	public AddIndividual<?, ?> getAction();
 
+	@Override
 	@Setter(ACTION_KEY)
 	public void setAction(AddIndividual<?, ?> action);
 
