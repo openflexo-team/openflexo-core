@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -21,18 +20,15 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateViewPointWizard extends FlexoWizard {
+public class CreateViewPointWizard extends AbstractCreateFlexoConceptWizard<CreateViewPoint> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateViewPointWizard.class.getPackage().getName());
 
-	private final CreateViewPoint action;
-
 	private final DescribeViewPoint describeViewPoint;
 
 	public CreateViewPointWizard(CreateViewPoint action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeViewPoint = new DescribeViewPoint());
 	}
 
@@ -44,6 +40,10 @@ public class CreateViewPointWizard extends FlexoWizard {
 	@Override
 	public Image getDefaultPageImage() {
 		return IconFactory.getImageIcon(VPMIconLibrary.VIEWPOINT_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+	}
+
+	public DescribeViewPoint getDescribeViewPoint() {
+		return describeViewPoint;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class CreateViewPointWizard extends FlexoWizard {
 		}
 
 		public CreateViewPoint getAction() {
-			return action;
+			return CreateViewPointWizard.this.getAction();
 		}
 
 		@Override
@@ -92,36 +92,39 @@ public class CreateViewPointWizard extends FlexoWizard {
 			} else if (getViewPointFolder().getResourceWithName(getNewViewPointName()) != null) {
 				setIssueMessage(FlexoLocalization.localizedForKey("already_existing_viewpoint_name"), IssueMessageType.ERROR);
 				return false;
+			} else if (StringUtils.isEmpty(getNewViewPointDescription())) {
+				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_view_point"), IssueMessageType.WARNING);
 			}
 
 			return true;
 		}
 
+		@SuppressWarnings("unchecked")
 		public RepositoryFolder<ViewPointResource> getViewPointFolder() {
-			return action.getViewPointFolder();
+			return getAction().getViewPointFolder();
 		}
 
 		public String getNewViewPointName() {
-			return action.getNewViewPointName();
+			return getAction().getNewViewPointName();
 		}
 
 		public void setNewViewPointName(String newViewPointName) {
 			if (!newViewPointName.equals(getNewViewPointName())) {
 				String oldValue = getNewViewPointName();
-				action.setNewViewPointName(newViewPointName);
+				getAction().setNewViewPointName(newViewPointName);
 				getPropertyChangeSupport().firePropertyChange("newViewPointName", oldValue, newViewPointName);
 				checkValidity();
 			}
 		}
 
 		public String getNewViewPointURI() {
-			return action.getNewViewPointURI();
+			return getAction().getNewViewPointURI();
 		}
 
 		public void setNewViewPointURI(String newViewPointURI) {
 			if (!newViewPointURI.equals(getNewViewPointURI())) {
 				String oldValue = getNewViewPointURI();
-				action.setNewViewPointURI(newViewPointURI);
+				getAction().setNewViewPointURI(newViewPointURI);
 				getPropertyChangeSupport().firePropertyChange("newViewPointURI", oldValue, newViewPointURI);
 				checkValidity();
 			}
@@ -137,13 +140,13 @@ public class CreateViewPointWizard extends FlexoWizard {
 		}
 
 		public String getNewViewPointDescription() {
-			return action.getNewViewPointDescription();
+			return getAction().getNewViewPointDescription();
 		}
 
 		public void setNewViewPointDescription(String newViewPointDescription) {
 			if (!newViewPointDescription.equals(getNewViewPointDescription())) {
 				String oldValue = getNewViewPointDescription();
-				action.setNewViewPointDescription(newViewPointDescription);
+				getAction().setNewViewPointDescription(newViewPointDescription);
 				getPropertyChangeSupport().firePropertyChange("newViewPointDescription", oldValue, newViewPointDescription);
 				checkValidity();
 			}
