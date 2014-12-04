@@ -32,6 +32,9 @@ public class WizardStep1 extends WizardStep {
 			setIssueMessage("lastName is not set", IssueMessageType.ERROR);
 			return false;
 		}
+		if (firstName.equals(lastName)) {
+			setIssueMessage("lastName equals firstName", IssueMessageType.WARNING);
+		}
 		return true;
 	}
 
