@@ -17,7 +17,7 @@
     <Localized id="15" value="back" lang="Dutch" key="back" />
     <Localized id="16" value="&lt;&lt; Précédent" lang="French" key="back" />
   </LocalizedDictionary>
-  <Panel id="17" opaque="true" backgroundColor="255,255,255" darkLevel="0" useScrollBar="false" borderLeft="10" protectContent="false" name="Header" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=north)" borderBottom="10" borderTop="10" trackViewPortHeight="true">
+  <Panel id="17" darkLevel="0" backgroundColor="255,255,255" useScrollBar="false" borderLeft="10" protectContent="false" opaque="true" name="Header" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=north)" borderBottom="10" borderTop="10" trackViewPortHeight="true">
     <Image id="18" manageDynamicModel="false" useScrollBar="false" data="data.pageImage" sizeAdjustment="OriginalSize" imageFile="../../../../../../../../../Image.gif" controllerClassName="org.openflexo.fib.controller.FIBController" imageHeight="64" localize="true" align="left" constraints="border(location=east)" readOnly="false" imageWidth="64" />
     <Panel id="19" darkLevel="0" useScrollBar="false" protectContent="false" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" trackViewPortWidth="true" constraints="border(location=center)" trackViewPortHeight="true">
       <Label id="20" manageDynamicModel="false" useScrollBar="false" data="data.wizardTitle" controllerClassName="org.openflexo.fib.controller.FIBController" localize="false" font="SansSerif,1,16" align="left" constraints="border(location=north)" label="label" readOnly="false" />
@@ -31,13 +31,13 @@
       </Panel>
     </Panel>
   </Panel>
-  <Panel id="27" vGap="5" useScrollBar="false" borderLeft="10" protectContent="false" hGap="5" name="ControlPanel" layout="buttons" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=south)" borderBottom="10" borderTop="10" trackViewPortHeight="true">
+  <Panel id="27" darkLevel="0" vGap="5" useScrollBar="false" borderLeft="10" protectContent="false" hGap="5" name="ControlPanel" layout="buttons" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=south)" borderBottom="10" borderTop="10" trackViewPortHeight="true">
     <Button id="28" manageDynamicModel="false" useScrollBar="false" enable="data.canFinish" buttonType="Trigger" action="controller.validateAndDispose()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="buttons()" label="finish" readOnly="false" />
     <Button id="29" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" action="controller.cancelAndDispose()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="buttons()" label="cancel" readOnly="false" />
     <Button id="30" manageDynamicModel="false" useScrollBar="false" enable="data.isNextEnabled" buttonType="Trigger" action="data.performNext()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="buttons()" label="next" readOnly="false" />
     <Button id="31" manageDynamicModel="false" useScrollBar="false" enable="data.isPreviousEnabled" buttonType="Trigger" action="data.performPrevious()" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="buttons()" label="back" readOnly="false" />
   </Panel>
-  <Panel id="32" darkLevel="1" useScrollBar="false" borderLeft="10" protectContent="false" name="ContentsPanel" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=center)" borderBottom="2" borderTop="2" trackViewPortHeight="true">
+  <Panel id="32" darkLevel="1" useScrollBar="false" borderLeft="10" protectContent="false" name="ContentsPanel" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" borderRight="10" border="empty" trackViewPortWidth="true" constraints="border(location=center)" borderBottom="2" borderTop="10" trackViewPortHeight="true">
     <FIBReferencedComponent id="33" manageDynamicModel="true" useScrollBar="false" data="data.currentStep" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" dynamicComponentFile="data.currentStep.fibComponentResource" constraints="border(location=center)" readOnly="false">
       <ReferenceAssignment id="34" mandatory="true" value="controller.flexoController" variable="controller.flexoController" />
     </FIBReferencedComponent>
