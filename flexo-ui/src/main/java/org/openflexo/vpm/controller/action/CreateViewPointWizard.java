@@ -9,6 +9,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.CreateViewPoint;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -44,6 +45,11 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 
 	public DescribeViewPoint getDescribeViewPoint() {
 		return describeViewPoint;
+	}
+
+	@Override
+	public ViewPoint getViewPoint() {
+		return null;
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.action.CreateVirtualModel;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
@@ -41,6 +42,11 @@ public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<C
 
 	public DescribeVirtualModel getDescribeVirtualModel() {
 		return describeVirtualModel;
+	}
+
+	@Override
+	public ViewPoint getViewPoint() {
+		return getAction().getFocusedObject();
 	}
 
 	/**

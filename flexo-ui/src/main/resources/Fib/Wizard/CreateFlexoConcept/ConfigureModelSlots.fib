@@ -11,7 +11,7 @@
 		index="0" localize="true"
 		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=0;gridWidth=1;gridX=0;gridY=0;index=0;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;location=north;padX=0;padY=0;splitIdentifier=top;weightX=1.0;weightY=1.0)"
 		visibleRowCount="5" createNewRowOnClick="false"
-		iteratorClassName="org.openflexo.vpm.controller.action.AbstractCreateVirtualModelWizard$ConfigureModelSlots$ModelSlotEntry"
+		iteratorClassName="org.openflexo.vpm.controller.action.AbstractCreateVirtualModelWizard$ModelSlotEntry"
 		useScrollBar="false" data="data.modelSlotEntries" autoSelectFirstRow="true"
 		name="ModelSlotTable" readOnly="false">
 		<IconColumn id="3" data="iterator.icon"
