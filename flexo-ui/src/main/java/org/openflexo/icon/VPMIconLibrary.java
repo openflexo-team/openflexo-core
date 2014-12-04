@@ -123,6 +123,13 @@ public class VPMIconLibrary extends IconLibrary {
 	public static final ImageIconResource VIEWPOINT_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint_64x64.png"));
 
+	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_32x32.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel_64x64.png"));
+
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(
@@ -147,8 +154,7 @@ public class VPMIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/LocalizationIcon.png"));
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
-	public static final ImageIconResource VIRTUAL_MODEL_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/VirtualModel.png"));
+
 	public static final ImageIconResource DECLARE_PATTERN_ROLE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/DeclarePatternRoleIcon.png"));
 	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource(
