@@ -178,8 +178,10 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 
 		WizardStep previousStep = currentStep;
 		WizardStep nextStep = getNextStep(currentStep);
-		nextStep.prepare(previousStep);
-		currentStep = nextStep;
+		if (nextStep != null) {
+			nextStep.prepare(previousStep);
+			currentStep = nextStep;
+		}
 		getPropertyChangeSupport().firePropertyChange("currentStep", previousStep, nextStep);
 		getPropertyChangeSupport().firePropertyChange("pageImage", null, getPageImage());
 		updateStatus();
