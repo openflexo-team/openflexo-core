@@ -13,6 +13,11 @@ public class TestCommonFlexoWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeViewPoint() {
+		validateFIB("Fib/Wizard/CreateFlexoConcept/DescribeViewPoint.fib");
+	}
+
+	@Test
 	public void testChooseViewPoint() {
 		validateFIB("Fib/Wizard/CreateView/ChooseViewPoint.fib");
 	}
@@ -41,5 +46,4 @@ public class TestCommonFlexoWizardFibs extends GenericFIBTestCase {
 	public void testConfigureVirtualModelSlotInstance() {
 		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib");
 	}
-
 }
