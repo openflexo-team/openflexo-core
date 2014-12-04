@@ -110,20 +110,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 
 		logger.info("Creating viewpoint " + newViewPointDir.getAbsolutePath());
 
-		// newViewPointDir.mkdirs();
-
-		/*if (ontologicalScopeChoice == OntologicalScopeChoices.CREATES_NEW_ONTOLOGY) {
-			buildOntology();
-		} else if (ontologicalScopeChoice == OntologicalScopeChoices.IMPORT_EXISTING_ONTOLOGY) {
-			try {
-				FileUtils.copyFileToDir(getOntologyFile(), newViewPointDir);
-			} catch (IOException e) {
-				throw new IOFlexoException(e);
-			}
-
-			_ontologyFile = new File(newViewPointDir, _ontologyFile.getName());
-		}*/
-
 		// Instanciate new ViewPoint
 		newViewPoint = ViewPointImpl.newViewPoint(getBaseName(), getNewViewPointURI(), newViewPointDir, viewPointLibrary);
 		newViewPoint.setDescription(getNewViewPointDescription());
@@ -131,29 +117,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		vpRepository.registerResource((ViewPointResource) newViewPoint.getResource(), getFocusedObject());
 
 	}
-
-	/*private OWLMetaModel buildOntology() {
-		_ontologyFile = new File(getViewPointDir(), getBaseName() + ".owl");
-		OWLMetaModel newOntology = OWLMetaModel.createNewImportedOntology(getNewViewPointURI(), _ontologyFile, getViewPointFolder()
-				.getOntologyLibrary());
-		for (IFlexoOntology importedOntology : importedOntologies) {
-			try {
-				if (importedOntology instanceof OWLOntology) {
-					newOntology.importOntology(importedOntology);
-				} else {
-					logger.warning("Could not import anything else than an OWL ontology");
-				}
-			} catch (OntologyNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			newOntology.save();
-		} catch (SaveResourceException e) {
-			e.printStackTrace();
-		}
-		return newOntology;
-	}*/
 
 	public String getNewViewPointName() {
 		return newViewPointName;
@@ -163,8 +126,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		boolean wasValid = isValid();
 		this.newViewPointName = newViewPointName;
 		getPropertyChangeSupport().firePropertyChange("newViewPointName", null, newViewPointName);
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public String getNewViewPointURI() {
@@ -175,8 +136,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		boolean wasValid = isValid();
 		this.newViewPointURI = newViewPointURI;
 		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, newViewPointURI);
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 
 	}
 
@@ -188,8 +147,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		boolean wasValid = isValid();
 		this.newViewPointDescription = newViewPointDescription;
 		getPropertyChangeSupport().firePropertyChange("newViewPointDescription", null, newViewPointDescription);
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 	public RepositoryFolder getViewPointFolder() {
@@ -198,7 +155,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 
 	public boolean isNewViewPointNameValid() {
 		if (StringUtils.isEmpty(getNewViewPointName())) {
-			errorMessage = "please_supply_valid_view_point_name";
 			return false;
 		}
 		return true;
@@ -206,34 +162,21 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 
 	public boolean isNewViewPointURIValid() {
 		if (StringUtils.isEmpty(getNewViewPointURI())) {
-			errorMessage = "please_supply_valid_uri";
 			return false;
 		}
 		try {
 			new URL(getNewViewPointURI());
 		} catch (MalformedURLException e) {
-			errorMessage = "malformed_uri";
 			return false;
 		}
 		if (getViewPointLibrary() == null) {
-			errorMessage = "could_not_access_viewpoint_library";
 			return false;
 		}
 		if (getViewPointLibrary().getViewPointResource(getNewViewPointURI()) != null) {
-			errorMessage = "already_existing_viewpoint_uri";
 			return false;
 		}
 
 		return true;
-	}
-
-	private String errorMessage;
-
-	public String getErrorMessage() {
-		if (isValid()) {
-			return null;
-		}
-		return errorMessage;
 	}
 
 	@Override
@@ -244,9 +187,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		if (!isNewViewPointURIValid()) {
 			return false;
 		}
-		/*if (ontologicalScopeChoice == OntologicalScopeChoices.IMPORT_EXISTING_ONTOLOGY) {
-			return getOntologyFile() != null;
-		}*/
 		return true;
 	}
 
@@ -259,10 +199,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 	}
 
 	private File getDirectoryWhereToCreateTheViewPoint() {
-		/*String baseName = getBaseName();
-		if (getFocusedObject().getResourceRepository() instanceof ViewPointRepository) {
-			return new File(getFocusedObject().getFile(), baseName + ".viewpoint");
-		}*/
 		if (getFocusedObject() != null) {
 			return getFocusedObject().getFile();
 		}
