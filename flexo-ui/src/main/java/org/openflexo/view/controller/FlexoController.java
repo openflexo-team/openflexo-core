@@ -1686,13 +1686,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param object
 	 *            the object to focus on
 	 */
-	public void selectAndFocusObjectAsTask(FlexoObject object, FlexoTask... tasksToBeExecutedBefore) {
+	public void selectAndFocusObjectAsTask(final FlexoObject object, FlexoTask... tasksToBeExecutedBefore) {
 		if (selectAndFocusObjectTasks.get(object) == null) {
 			SelectAndFocusObjectTask task = new SelectAndFocusObjectTask(this, object) {
 				@Override
 				protected synchronized void finishedExecution() {
 					super.finishedExecution();
-					selectAndFocusObjectTasks.remove(this);
+					selectAndFocusObjectTasks.remove(object);
 				}
 			};
 			for (FlexoTask before : tasksToBeExecutedBefore) {
@@ -1700,6 +1700,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			}
 			selectAndFocusObjectTasks.put(object, task);
 			getApplicationContext().getTaskManager().scheduleExecution(task);
+		} else {
+			logger.info("selectAndFocusObjectAsTask called for " + object
+					+ " : will not proceed as this request has already been registered and beeing processed");
 		}
 	}
 
