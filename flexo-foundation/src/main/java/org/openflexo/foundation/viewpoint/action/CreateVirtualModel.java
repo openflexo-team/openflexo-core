@@ -25,16 +25,17 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModel.VirtualModelImpl;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoint, ViewPointObject> {
+public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, ViewPointObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateVirtualModel.class.getPackage().getName());
@@ -81,10 +82,20 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 	@Override
 	protected void doAction(Object context) throws IOFlexoException, SaveResourceException {
 
+		Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model"));
+
 		newVirtualModel = VirtualModelImpl.newVirtualModel(newVirtualModelName, getFocusedObject());
 		newVirtualModel.setDescription(newVirtualModelDescription);
+
+		Progress.progress(FlexoLocalization.localizedForKey("add_virtual_model"));
+
 		getFocusedObject().addToVirtualModels(newVirtualModel);
 
+		Progress.progress(FlexoLocalization.localizedForKey("create_model_slots"));
+		performCreateModelSlots();
+
+		newVirtualModel.getPropertyChangeSupport().firePropertyChange("name", null, newVirtualModel.getName());
+		newVirtualModel.getResource().getPropertyChangeSupport().firePropertyChange("name", null, newVirtualModel.getName());
 	}
 
 	public boolean isNewVirtualModelNameValid() {
@@ -105,6 +116,7 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 		return true;
 	}
 
+	@Override
 	public VirtualModel getNewVirtualModel() {
 		return newVirtualModel;
 	}
@@ -126,6 +138,11 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 	public void setNewVirtualModelDescription(String newVirtualModelDescription) {
 		this.newVirtualModelDescription = newVirtualModelDescription;
 		getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", null, newVirtualModelDescription);
+	}
+
+	@Override
+	public int getExpectedProgressSteps() {
+		return 20;
 	}
 
 }

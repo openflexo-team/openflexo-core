@@ -38,6 +38,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -51,6 +52,7 @@ import org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstan
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResourceImpl;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -350,21 +352,25 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @throws SaveResourceException
 		 */
 		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
-			
-			File diagramSpecificationDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory()), baseName);
+
+			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource"));
+			File diagramSpecificationDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint
+					.getResource()).getDirectory()), baseName);
 			File diagramSpecificationXMLFile = new File(diagramSpecificationDirectory, baseName + ".xml");
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
 			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(diagramSpecificationDirectory,
 					diagramSpecificationXMLFile, (ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
+			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource_data"));
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);
 			viewPoint.addToVirtualModels(virtualModel);
 			vmRes.setResourceData(virtualModel);
 			virtualModel.setResource(vmRes);
 			// ((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
+			Progress.progress(FlexoLocalization.localizedForKey("save_virtual_model_resource"));
 			virtualModel.getResource().save(null);
-			//vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
-			
+			// vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
+
 			return virtualModel;
 		}
 
@@ -400,8 +406,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public VirtualModelModelFactory getVirtualModelFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
-			}
-			else {
+			} else {
 				return super.getVirtualModelFactory();
 			}
 		}
@@ -448,10 +453,11 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public void setName(String name) {
 			if (requireChange(getName(), name)) {
+				String oldValue = getName();
 				if (getResource() != null) {
 					getResource().setName(name);
-				}
-				else {
+					getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+				} else {
 					super.setName(name);
 				}
 			}

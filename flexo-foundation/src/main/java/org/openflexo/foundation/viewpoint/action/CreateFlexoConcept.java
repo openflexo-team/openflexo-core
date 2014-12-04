@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
@@ -37,7 +36,7 @@ import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualModel, ViewPointObject> {
+public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, VirtualModel, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
@@ -134,12 +133,16 @@ public class CreateFlexoConcept extends FlexoAction<CreateFlexoConcept, VirtualM
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
 			errorMessage = EMPTY_NAME;
 			return false;
-		}
-		else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+		} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
 			errorMessage = DUPLICATED_NAME;
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int getExpectedProgressSteps() {
+		return 10;
 	}
 
 }

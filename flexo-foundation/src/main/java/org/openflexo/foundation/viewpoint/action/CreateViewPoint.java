@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.viewpoint.ViewPoint;
@@ -36,6 +35,7 @@ import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.ViewPointRepository;
+import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -46,7 +46,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> {
+public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateViewPoint.class.getPackage().getName());
 
@@ -187,6 +187,12 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 		return true;
 	}
 
+	@Override
+	public VirtualModel getNewVirtualModel() {
+		// TODO return getNewViewPoint() when ViewPoint will inherits from VirtualModel
+		return null;
+	}
+
 	public ViewPoint getNewViewPoint() {
 		return newViewPoint;
 	}
@@ -200,6 +206,11 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 			return getFocusedObject().getFile();
 		}
 		return null;
+	}
+
+	@Override
+	public int getExpectedProgressSteps() {
+		return 10;
 	}
 
 }

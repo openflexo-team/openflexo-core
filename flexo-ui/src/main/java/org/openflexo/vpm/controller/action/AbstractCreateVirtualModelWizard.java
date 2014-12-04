@@ -6,33 +6,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
+import org.openflexo.foundation.viewpoint.action.AbstractCreateVirtualModel;
+import org.openflexo.foundation.viewpoint.action.AbstractCreateVirtualModel.ModelSlotEntry;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
+import org.openflexo.foundation.viewpoint.action.CreateViewPoint;
+import org.openflexo.foundation.viewpoint.action.CreateVirtualModel;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
-import org.openflexo.icon.VPMIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, ?, ?>> extends AbstractCreateFlexoConceptWizard<A> {
+/**
+ * Common stuff for wizards of {@link AbstractCreateVirtualModel} action
+ * 
+ * @author sylvain
+ *
+ * @param <A>
+ * @see CreateFlexoConcept
+ * @see CreateVirtualModel
+ * @see CreateViewPoint
+ */
+public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateVirtualModel<?, ?, ?>> extends
+		AbstractCreateFlexoConceptWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelWizard.class.getPackage().getName());
@@ -64,10 +75,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureModelSlots.fib")
 	public class ConfigureModelSlots extends WizardStep implements PropertyChangeListener {
 
-		private final List<AbstractCreateVirtualModelWizard.ModelSlotEntry> modelSlotEntries;
-
 		public ConfigureModelSlots() {
-			modelSlotEntries = new ArrayList<AbstractCreateVirtualModelWizard.ModelSlotEntry>();
 		}
 
 		public ApplicationContext getServiceManager() {
@@ -83,9 +91,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 			return FlexoLocalization.localizedForKey("configure_model_slots");
 		}
 
-		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public List<AbstractCreateVirtualModelWizard.ModelSlotEntry> getModelSlotEntries() {
-			return modelSlotEntries;
+		public List<ModelSlotEntry> getModelSlotEntries() {
+			return getAction().getModelSlotEntries();
 		}
 
 		@Override
@@ -95,24 +102,17 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 			}
 		}
 
-		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public AbstractCreateVirtualModelWizard.ModelSlotEntry newModelSlotEntry() {
-			ModelSlotEntry returned = new ModelSlotEntry();
-			modelSlotEntries.add(returned);
-			returned.getPropertyChangeSupport().addPropertyChangeListener(this);
-			getPropertyChangeSupport().firePropertyChange("modelSlotEntries", null, returned);
+		public ModelSlotEntry newModelSlotEntry() {
+			ModelSlotEntry newEntry = getAction().newModelSlotEntry();
+			newEntry.getPropertyChangeSupport().addPropertyChangeListener(this);
 			checkValidity();
-			return returned;
+			return newEntry;
 		}
 
-		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public void deleteModelSlotEntry(AbstractCreateVirtualModelWizard.ModelSlotEntry modelSlotEntryToDelete) {
+		public void deleteModelSlotEntry(ModelSlotEntry modelSlotEntryToDelete) {
 			modelSlotEntryToDelete.getPropertyChangeSupport().removePropertyChangeListener(this);
-			modelSlotEntries.remove(modelSlotEntryToDelete);
-			modelSlotEntryToDelete.delete();
-			getPropertyChangeSupport().firePropertyChange("modelSlotEntries", modelSlotEntryToDelete, null);
+			getAction().deleteModelSlotEntry(modelSlotEntryToDelete);
 			checkValidity();
-			// return modelSlotEntryToDelete;
 		}
 
 		@Override
@@ -207,13 +207,13 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	 */
 	public abstract class ConfigureModelSlot<MS extends ModelSlot<?>> extends WizardStep {
 
-		private final AbstractCreateVirtualModelWizard.ModelSlotEntry modelSlotEntry;
+		private final ModelSlotEntry modelSlotEntry;
 
-		public ConfigureModelSlot(AbstractCreateVirtualModelWizard.ModelSlotEntry modelSlotEntry) {
+		public ConfigureModelSlot(ModelSlotEntry modelSlotEntry) {
 			this.modelSlotEntry = modelSlotEntry;
 		}
 
-		public AbstractCreateVirtualModelWizard.ModelSlotEntry getModelSlotEntry() {
+		public ModelSlotEntry getModelSlotEntry() {
 			return modelSlotEntry;
 		}
 
@@ -254,9 +254,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	public class ConfigureTypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ConfigureModelSlot<TypeAwareModelSlot<M, MM>> {
 
-		private FlexoMetaModelResource<M, MM, ?> metaModelResource;
-
-		public ConfigureTypeAwareModelSlot(AbstractCreateVirtualModelWizard.ModelSlotEntry entry) {
+		public ConfigureTypeAwareModelSlot(ModelSlotEntry entry) {
 			super(entry);
 		}
 
@@ -266,14 +264,13 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 		}
 
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
-			return metaModelResource;
+			return (FlexoMetaModelResource<M, MM, ?>) getModelSlotEntry().getMetaModelResource();
 		}
 
 		public void setMetaModelResource(FlexoMetaModelResource<M, MM, ?> metaModelResource) {
-			if ((metaModelResource == null && this.metaModelResource != null)
-					|| (metaModelResource != null && !metaModelResource.equals(this.metaModelResource))) {
-				FlexoMetaModelResource<M, MM, ?> oldValue = this.metaModelResource;
-				this.metaModelResource = metaModelResource;
+			if (getMetaModelResource() != metaModelResource) {
+				FlexoMetaModelResource<M, MM, ?> oldValue = getMetaModelResource();
+				getModelSlotEntry().setMetaModelResource(metaModelResource);
 				getPropertyChangeSupport().firePropertyChange("metaModelResource", oldValue, metaModelResource);
 				checkValidity();
 			}
@@ -302,7 +299,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureFreeModelSlot.fib")
 	public class ConfigureFreeModelSlot extends ConfigureModelSlot<FreeModelSlot<?>> {
 
-		public ConfigureFreeModelSlot(AbstractCreateVirtualModelWizard.ModelSlotEntry entry) {
+		public ConfigureFreeModelSlot(ModelSlotEntry entry) {
 			super(entry);
 		}
 
@@ -322,9 +319,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureVirtualModelModelSlot.fib")
 	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<VirtualModelModelSlot> {
 
-		private VirtualModelResource virtualModelResource;
-
-		public ConfigureVirtualModelModelSlot(AbstractCreateVirtualModelWizard.ModelSlotEntry entry) {
+		public ConfigureVirtualModelModelSlot(ModelSlotEntry entry) {
 			super(entry);
 		}
 
@@ -334,14 +329,13 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 		}
 
 		public VirtualModelResource getVirtualModelResource() {
-			return virtualModelResource;
+			return getModelSlotEntry().getVirtualModelResource();
 		}
 
 		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
-			if ((virtualModelResource == null && this.virtualModelResource != null)
-					|| (virtualModelResource != null && !virtualModelResource.equals(this.virtualModelResource))) {
-				VirtualModelResource oldValue = this.virtualModelResource;
-				this.virtualModelResource = virtualModelResource;
+			if (getVirtualModelResource() != virtualModelResource) {
+				VirtualModelResource oldValue = getVirtualModelResource();
+				getModelSlotEntry().setVirtualModelResource(virtualModelResource);
 				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
 				checkValidity();
 			}
@@ -358,125 +352,6 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 			}
 			return true;
 		}
-	}
-
-	public class ModelSlotEntry extends PropertyChangedSupportDefaultImplementation {
-
-		private final String defaultModelSlotName;
-		private String modelSlotName;
-		private String description;
-		private TechnologyAdapter technologyAdapter;
-		private boolean required = true;
-		private boolean readOnly = false;
-		private Class<? extends ModelSlot<?>> modelSlotClass;
-
-		public ModelSlotEntry() {
-			super();
-			defaultModelSlotName = "modelSlot" + (configureModelSlots.getModelSlotEntries().size() + 1);
-		}
-
-		public void delete() {
-			modelSlotName = null;
-			description = null;
-			technologyAdapter = null;
-			modelSlotClass = null;
-		}
-
-		public Icon getIcon() {
-			return VPMIconLibrary.iconForModelSlot(getTechnologyAdapter());
-		}
-
-		public Class<? extends ModelSlot<?>> getModelSlotClass() {
-			if (modelSlotClass == null && technologyAdapter != null && technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
-				return technologyAdapter.getAvailableModelSlotTypes().get(0);
-			}
-			return modelSlotClass;
-		}
-
-		public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass) {
-			this.modelSlotClass = modelSlotClass;
-			getPropertyChangeSupport().firePropertyChange("modelSlotClass", modelSlotClass != null ? null : false, modelSlotClass);
-		}
-
-		public String getModelSlotName() {
-			if (modelSlotName == null) {
-				return defaultModelSlotName;
-			}
-			return modelSlotName;
-		}
-
-		public void setModelSlotName(String modelSlotName) {
-			this.modelSlotName = modelSlotName;
-			getPropertyChangeSupport().firePropertyChange("modelSlotName", null, modelSlotName);
-		}
-
-		public String getModelSlotDescription() {
-			return description;
-		}
-
-		public void setModelSlotDescription(String description) {
-			this.description = description;
-			getPropertyChangeSupport().firePropertyChange("modelSlotDescription", null, description);
-		}
-
-		public TechnologyAdapter getTechnologyAdapter() {
-			return technologyAdapter;
-		}
-
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-			this.technologyAdapter = technologyAdapter;
-			getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
-			if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {
-				// The ModelSlot class is not consistent anymore
-				if (technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
-					setModelSlotClass(technologyAdapter.getAvailableModelSlotTypes().get(0));
-				} else {
-					setModelSlotClass(null);
-				}
-			}
-		}
-
-		public boolean isRequired() {
-			return required;
-		}
-
-		public void setRequired(boolean required) {
-			this.required = required;
-			getPropertyChangeSupport().firePropertyChange("required", null, required);
-		}
-
-		public boolean isReadOnly() {
-			return readOnly;
-		}
-
-		public void setReadOnly(boolean readOnly) {
-			this.readOnly = readOnly;
-			getPropertyChangeSupport().firePropertyChange("readOnly", null, readOnly);
-		}
-
-		public String getConfigurationErrorMessage() {
-
-			if (StringUtils.isEmpty(getModelSlotName())) {
-				return FlexoLocalization.localizedForKey("please_supply_valid_model_slot_name");
-			}
-			if (getTechnologyAdapter() == null) {
-				return FlexoLocalization.localizedForKey("no_technology_adapter_defined_for") + " " + getModelSlotName();
-			}
-			if (getModelSlotClass() == null) {
-				return FlexoLocalization.localizedForKey("no_model_slot_type_defined_for") + " " + getModelSlotName();
-			}
-
-			return null;
-		}
-
-		public String getConfigurationWarningMessage() {
-			if (StringUtils.isEmpty(getModelSlotDescription())) {
-				return FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_model_slot") + " " + getModelSlotName();
-			}
-			return null;
-
-		}
-
 	}
 
 }
