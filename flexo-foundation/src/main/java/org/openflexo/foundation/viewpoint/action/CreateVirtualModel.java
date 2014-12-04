@@ -27,7 +27,6 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -37,6 +36,7 @@ import org.openflexo.toolbox.StringUtils;
 
 public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoint, ViewPointObject> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateVirtualModel.class.getPackage().getName());
 
 	public static FlexoActionType<CreateVirtualModel, ViewPoint, ViewPointObject> actionType = new FlexoActionType<CreateVirtualModel, ViewPoint, ViewPointObject>(
@@ -70,7 +70,7 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 	private String newVirtualModelDescription;
 	private VirtualModel newVirtualModel;
 
-	public Vector<IFlexoOntology> importedOntologies = new Vector<IFlexoOntology>();
+	// public Vector<IFlexoOntology> importedOntologies = new Vector<IFlexoOntology>();
 
 	// private boolean createsOntology = false;
 
@@ -89,23 +89,12 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 
 	public boolean isNewVirtualModelNameValid() {
 		if (StringUtils.isEmpty(newVirtualModelName)) {
-			errorMessage = "please_supply_valid_virtual_model_name";
 			return false;
 		}
 		if (getFocusedObject().getVirtualModelNamed(newVirtualModelName) != null) {
-			errorMessage = "duplicated_virtual_model_name";
 			return false;
 		}
 		return true;
-	}
-
-	private String errorMessage;
-
-	public String getErrorMessage() {
-		if (isValid()) {
-			return null;
-		}
-		return errorMessage;
 	}
 
 	@Override
@@ -125,11 +114,8 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 	}
 
 	public void setNewVirtualModelName(String newVirtualModelName) {
-		boolean wasValid = isValid();
 		this.newVirtualModelName = newVirtualModelName;
 		getPropertyChangeSupport().firePropertyChange("newVirtualModelName", null, newVirtualModelName);
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 
 	}
 
@@ -138,11 +124,8 @@ public class CreateVirtualModel extends FlexoAction<CreateVirtualModel, ViewPoin
 	}
 
 	public void setNewVirtualModelDescription(String newVirtualModelDescription) {
-		boolean wasValid = isValid();
 		this.newVirtualModelDescription = newVirtualModelDescription;
 		getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", null, newVirtualModelDescription);
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 
 }
