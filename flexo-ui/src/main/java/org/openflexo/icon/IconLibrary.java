@@ -103,11 +103,9 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Common/Validation/FixableWarning.gif"));
 	public static final ImageIconResource UNFIXABLE_WARNING_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/Validation/UnfixableWarning.gif"));
-	
-	public static final ImageIcon MARKET16x16_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Market/market_16x16.png"));
-	public static final ImageIcon MARKET32x32_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Market/market_32x32.png"));
+
+	public static final ImageIcon MARKET16x16_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Market/market_16x16.png"));
+	public static final ImageIcon MARKET32x32_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Market/market_32x32.png"));
 
 	// Actions icons
 	public static final ImageIcon UNDO_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Undo.png"));
@@ -225,7 +223,7 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
 	public static final IconMarker NEW_32_32 = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
+			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 20, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(

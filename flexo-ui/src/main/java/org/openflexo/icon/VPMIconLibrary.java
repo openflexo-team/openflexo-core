@@ -37,13 +37,13 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole;
 import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.OntologicObjectRole;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.TechnologySpecificFlexoBehaviour;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
@@ -115,8 +115,14 @@ public class VPMIconLibrary extends IconLibrary {
 	// Model icons
 	public static final ImageIconResource VIEWPOINT_LIBRARY_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPointLibrary.png"));
+
 	public static final ImageIconResource VIEWPOINT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint.png"));
+	public static final ImageIconResource VIEWPOINT_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint_32x32.png"));
+	public static final ImageIconResource VIEWPOINT_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ViewPoint_64x64.png"));
+
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(
