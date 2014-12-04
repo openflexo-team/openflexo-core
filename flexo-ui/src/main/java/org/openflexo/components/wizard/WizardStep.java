@@ -49,6 +49,7 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 
 	private Wizard wizard;
 
+	private Boolean lastValidityStatus = null;
 	private IssueMessageType lastNotifiedValidity = null;
 	private String issueMessage;
 	private IssueMessageType issueMessageType = null;
@@ -189,43 +190,54 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 
 	protected void checkValidity() {
 
+		// System.out.println("-------------- checkValidity called");
+		// System.out.println("message=" + getIssueMessage());
+		// System.out.println("messageType=" + getIssueMessageType());
+		// System.out.println("-------------- on s'interroge a nouveau");
+
 		// We we call isValid() by setting issueMessageChange to false
 		// If no call to either setIssueMessage() or setIssueMessageType() is fired, then we consider that no message is to be displayed
-		issueMessageChange = false;
-		boolean valid = isValid();
-		if (!issueMessageChange) {
-			setIssueMessage(null, IssueMessageType.INFO);
+		issueMessageChangeRequested = false;
+		lastValidityStatus = isValid();
+		if (!issueMessageChangeRequested) {
+			setIssueMessage(null, null);
 		}
 		IssueMessageType validity = getIssueMessageType();
 
+		// System.out.println("issueMessageChangeRequested=" + issueMessageChangeRequested);
+		// System.out.println("lastValidityStatus=" + lastValidityStatus);
+		// System.out.println("validity=" + validity);
+
 		if (lastNotifiedValidity == null || (!lastNotifiedValidity.equals(validity))) {
-			getPropertyChangeSupport().firePropertyChange("isValid", !valid, valid);
+			getPropertyChangeSupport().firePropertyChange("isValid", !lastValidityStatus, (boolean) lastValidityStatus);
 			getPropertyChangeSupport().firePropertyChange("messageTypeIsToBeDisplayed", !messageTypeIsToBeDisplayed(),
 					messageTypeIsToBeDisplayed());
+			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
+			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
+			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
 			wizard.updateStatus();
+		} else {
+			// Nothing to do
 		}
 		lastNotifiedValidity = validity;
 	}
 
-	private boolean issueMessageChange = false;
+	private boolean issueMessageChangeRequested = false;
 
 	public String getIssueMessage() {
 		return issueMessage;
 	}
 
-	public void setIssueMessage(String issueMessage) {
+	private void setIssueMessage(String issueMessage) {
 		if ((issueMessage == null && this.issueMessage != null) || (issueMessage != null && !issueMessage.equals(this.issueMessage))) {
 			String oldValue = this.issueMessage;
 			this.issueMessage = issueMessage;
 			getPropertyChangeSupport().firePropertyChange("issueMessage", oldValue, issueMessage);
-			issueMessageChange = true;
-		}
-		if (getIssueMessageType() == null) {
-			setIssueMessageType(IssueMessageType.ERROR);
 		}
 	}
 
 	public void setIssueMessage(String issueMessage, IssueMessageType messageType) {
+		issueMessageChangeRequested = true;
 		setIssueMessageType(messageType);
 		setIssueMessage(issueMessage);
 	}
@@ -238,24 +250,33 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		return issueMessageType;
 	}
 
-	public void setIssueMessageType(IssueMessageType issueMessageType) {
+	private void setIssueMessageType(IssueMessageType issueMessageType) {
 		if (issueMessageType != this.issueMessageType) {
 			IssueMessageType oldValue = this.issueMessageType;
 			this.issueMessageType = issueMessageType;
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", oldValue, issueMessageType);
 			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
-			issueMessageChange = true;
 		}
 	}
 
 	public boolean messageTypeIsToBeDisplayed() {
-		return (!isValid() && StringUtils.isNotEmpty(getIssueMessage()))
+		// return StringUtils.isNotEmpty(getIssueMessage());
+		/*return (!isValid() && StringUtils.isNotEmpty(getIssueMessage()))
 				|| (isValid() && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.INFO)
-				|| (isValid() && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.WARNING);
+				|| (isValid() && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.WARNING);*/
+		if (lastValidityStatus == null) {
+			lastValidityStatus = isValid();
+		}
+		return (!lastValidityStatus && StringUtils.isNotEmpty(getIssueMessage()))
+				|| (lastValidityStatus && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.INFO)
+				|| (lastValidityStatus && StringUtils.isNotEmpty(getIssueMessage()) && getIssueMessageType() == IssueMessageType.WARNING);
 	}
 
 	public ImageIcon getIssueMessageIcon() {
 		if (StringUtils.isEmpty(getIssueMessage())) {
+			return null;
+		}
+		if (getIssueMessageType() == null) {
 			return null;
 		}
 		switch (getIssueMessageType()) {
