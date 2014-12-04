@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.ActionScheme;
 import org.openflexo.foundation.viewpoint.CloningScheme;
@@ -318,6 +319,14 @@ public class VPMIconLibrary extends IconLibrary {
 
 	public static ImageIcon iconForObject(VirtualModelResource object) {
 		return VIRTUAL_MODEL_ICON;
+	}
+
+	public static ImageIcon iconForModelSlot(TechnologyAdapter ta) {
+		TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+		if (tac != null) {
+			return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
+		}
+		return MODEL_SLOT_ICON;
 	}
 
 }
