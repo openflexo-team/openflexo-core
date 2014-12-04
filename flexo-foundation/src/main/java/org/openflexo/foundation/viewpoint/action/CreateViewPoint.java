@@ -123,7 +123,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 	}
 
 	public void setNewViewPointName(String newViewPointName) {
-		boolean wasValid = isValid();
 		this.newViewPointName = newViewPointName;
 		getPropertyChangeSupport().firePropertyChange("newViewPointName", null, newViewPointName);
 	}
@@ -133,7 +132,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 	}
 
 	public void setNewViewPointURI(String newViewPointURI) {
-		boolean wasValid = isValid();
 		this.newViewPointURI = newViewPointURI;
 		getPropertyChangeSupport().firePropertyChange("newViewPointURI", null, newViewPointURI);
 
@@ -144,7 +142,6 @@ public class CreateViewPoint extends FlexoAction<CreateViewPoint, RepositoryFold
 	}
 
 	public void setNewViewPointDescription(String newViewPointDescription) {
-		boolean wasValid = isValid();
 		this.newViewPointDescription = newViewPointDescription;
 		getPropertyChangeSupport().firePropertyChange("newViewPointDescription", null, newViewPointDescription);
 	}
