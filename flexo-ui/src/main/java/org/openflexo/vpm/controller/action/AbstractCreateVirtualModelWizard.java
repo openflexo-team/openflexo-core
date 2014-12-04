@@ -5,14 +5,21 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.icon.VPMIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -26,9 +33,11 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelWizard.class.getPackage().getName());
 
 	private ConfigureModelSlots configureModelSlots;
+	private final List<ConfigureModelSlot<?>> modelSlotConfigurationSteps;
 
 	public AbstractCreateVirtualModelWizard(A action, FlexoController controller) {
 		super(action, controller);
+		modelSlotConfigurationSteps = new ArrayList<AbstractCreateVirtualModelWizard<A>.ConfigureModelSlot<?>>();
 	}
 
 	protected void appendConfigureModelSlots() {
@@ -48,10 +57,10 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureModelSlots.fib")
 	public class ConfigureModelSlots extends WizardStep {
 
-		private final List<AbstractCreateVirtualModelWizard.ConfigureModelSlots.ModelSlotEntry> modelSlotEntries;
+		private final List<AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry> modelSlotEntries;
 
 		public ConfigureModelSlots() {
-			modelSlotEntries = new ArrayList<AbstractCreateVirtualModelWizard.ConfigureModelSlots.ModelSlotEntry>();
+			modelSlotEntries = new ArrayList<AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry>();
 		}
 
 		public ApplicationContext getServiceManager() {
@@ -68,12 +77,12 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 		}
 
 		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public List<AbstractCreateVirtualModelWizard.ConfigureModelSlots.ModelSlotEntry> getModelSlotEntries() {
+		public List<AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry> getModelSlotEntries() {
 			return modelSlotEntries;
 		}
 
 		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public AbstractCreateVirtualModelWizard.ConfigureModelSlots.ModelSlotEntry newModelSlotEntry() {
+		public AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry newModelSlotEntry() {
 			ModelSlotEntry returned = new ModelSlotEntry();
 			modelSlotEntries.add(returned);
 			getPropertyChangeSupport().firePropertyChange("modelSlotEntries", null, returned);
@@ -82,7 +91,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 		}
 
 		// Required full qualified class name, otherwise JVM throw a ParseException while introspecting
-		public void deleteModelSlotEntry(AbstractCreateVirtualModelWizard.ConfigureModelSlots.ModelSlotEntry modelSlotEntryToDelete) {
+		public void deleteModelSlotEntry(AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry modelSlotEntryToDelete) {
 			modelSlotEntries.remove(modelSlotEntryToDelete);
 			modelSlotEntryToDelete.delete();
 			getPropertyChangeSupport().firePropertyChange("modelSlotEntries", modelSlotEntryToDelete, null);
@@ -113,7 +122,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 				// Then, we valid each ModelSLotEntry
 				boolean hasWarnings = false;
 				for (ModelSlotEntry entry : getModelSlotEntries()) {
-					if (!entry.isValid()) {
+					if (!entry.isValidIgnoreConfiguration()) {
 						return false;
 					}
 					if (entry.hasWarnings()) {
@@ -126,6 +135,44 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 				return true;
 			}
 
+		}
+
+		@Override
+		public boolean isTransitionalStep() {
+			return true;
+		}
+
+		private ConfigureModelSlot<?> makeConfigureModelSlotStep(ModelSlotEntry msEntry) {
+			if (TypeAwareModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+				return new ConfigureTypeAwareModelSlot(msEntry);
+			} else if (FreeModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+				return new ConfigureFreeModelSlot(msEntry);
+			} else if (VirtualModelModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+				return new ConfigureVirtualModelModelSlot(msEntry);
+			} else {
+				logger.warning("Could not instantiate ConfigureModelSlot for " + msEntry);
+				return null;
+			}
+		}
+
+		@Override
+		public void performTransition() {
+			// We have now to update all steps according to chosen model slots
+			for (ModelSlotEntry msEntry : getConfigureModelSlots().getModelSlotEntries()) {
+				ConfigureModelSlot<?> step = makeConfigureModelSlotStep(msEntry);
+				if (step != null) {
+					modelSlotConfigurationSteps.add(step);
+					addStep(step);
+				}
+			}
+		}
+
+		@Override
+		public void discardTransition() {
+			for (ConfigureModelSlot<?> step : modelSlotConfigurationSteps) {
+				removeStep(step);
+			}
+			modelSlotConfigurationSteps.clear();
 		}
 
 		public class ModelSlotEntry extends PropertyChangedSupportDefaultImplementation {
@@ -229,7 +276,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 				checkValidity();
 			}
 
-			public boolean isValid() {
+			public boolean isValidIgnoreConfiguration() {
 
 				if (StringUtils.isEmpty(getModelSlotName())) {
 					setIssueMessage(FlexoLocalization.localizedForKey("please_supply_valid_model_slot_name"), IssueMessageType.ERROR);
@@ -261,4 +308,102 @@ public abstract class AbstractCreateVirtualModelWizard<A extends FlexoAction<?, 
 
 		}
 	}
+
+	/**
+	 * This abstract generic step is used to configure a model slot
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	public abstract class ConfigureModelSlot<MS extends ModelSlot<?>> extends WizardStep {
+
+		private final AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry modelSlotEntry;
+
+		public ConfigureModelSlot(AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry modelSlotEntry) {
+			this.modelSlotEntry = modelSlotEntry;
+		}
+
+		public AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry getModelSlotEntry() {
+			return modelSlotEntry;
+		}
+
+		public A getAction() {
+			return AbstractCreateVirtualModelWizard.this.getAction();
+		}
+
+		@Override
+		public boolean isValid() {
+			boolean isValid = modelSlotEntry.isValidIgnoreConfiguration();
+			if (isValid) {
+				setIssueMessage(FlexoLocalization.localizedForKey("valid_model_slot_configuration"), IssueMessageType.INFO);
+			}
+			return isValid;
+		}
+
+		public ImageIcon getTechnologyIcon() {
+			return getController().getTechnologyAdapterController(modelSlotEntry.getTechnologyAdapter()).getTechnologyBigIcon();
+		}
+	}
+
+	/**
+	 * This step is used to configure a type-aware model slot
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureTypeAwareModelSlot.fib")
+	public class ConfigureTypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
+			extends ConfigureModelSlot<TypeAwareModelSlot<M, MM>> {
+
+		public ConfigureTypeAwareModelSlot(AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry entry) {
+			super(entry);
+		}
+
+		@Override
+		public String getTitle() {
+			return FlexoLocalization.localizedForKey("configure_type_aware_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+		}
+
+	}
+
+	/**
+	 * This step is used to configure a type-aware model slot
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureFreeModelSlot.fib")
+	public class ConfigureFreeModelSlot extends ConfigureModelSlot<FreeModelSlot<?>> {
+
+		public ConfigureFreeModelSlot(AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry entry) {
+			super(entry);
+		}
+
+		@Override
+		public String getTitle() {
+			return FlexoLocalization.localizedForKey("configure_free_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+		}
+
+	}
+
+	/**
+	 * This step is used to configure a type-aware model slot
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureVirtualModelModelSlot.fib")
+	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<VirtualModelModelSlot> {
+
+		public ConfigureVirtualModelModelSlot(AbstractCreateVirtualModelWizard<A>.ConfigureModelSlots.ModelSlotEntry entry) {
+			super(entry);
+		}
+
+		@Override
+		public String getTitle() {
+			return FlexoLocalization.localizedForKey("configure_virtual_model_slot") + " : " + getModelSlotEntry().getModelSlotName();
+		}
+
+	}
+
 }
