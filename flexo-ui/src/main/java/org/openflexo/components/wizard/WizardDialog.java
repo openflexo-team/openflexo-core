@@ -19,6 +19,7 @@
  */
 package org.openflexo.components.wizard;
 
+import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
@@ -48,6 +49,10 @@ public class WizardDialog extends FIBDialog<Wizard> {
 				.getMainLocalizer());
 		if (wizard instanceof FlexoWizard) {
 			getController().setFlexoController(((FlexoWizard) wizard).getController());
+		}
+		Dimension preferredSize = wizard.getPreferredSize();
+		if (preferredSize != null) {
+			setPreferredSize(preferredSize);
 		}
 	}
 

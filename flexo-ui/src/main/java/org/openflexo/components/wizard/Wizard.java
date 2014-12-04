@@ -19,6 +19,7 @@
  */
 package org.openflexo.components.wizard;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -209,6 +210,15 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 		getPropertyChangeSupport().firePropertyChange("canFinish", !canFinish(), canFinish());
 		getPropertyChangeSupport().firePropertyChange("isPreviousEnabled", !isPreviousEnabled(), isPreviousEnabled());
 		getPropertyChangeSupport().firePropertyChange("isNextEnabled", !isNextEnabled(), isNextEnabled());
+	}
+
+	/**
+	 * Please override when you want to get a wizard with a given size
+	 * 
+	 * @return
+	 */
+	public Dimension getPreferredSize() {
+		return null;
 	}
 
 }
