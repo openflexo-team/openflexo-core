@@ -20,7 +20,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateViewPointWizard extends AbstractCreateFlexoConceptWizard<CreateViewPoint> {
+public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<CreateViewPoint> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateViewPointWizard.class.getPackage().getName());

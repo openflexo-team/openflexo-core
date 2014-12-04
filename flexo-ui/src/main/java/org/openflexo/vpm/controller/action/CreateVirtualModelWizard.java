@@ -16,7 +16,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateVirtualModelWizard extends AbstractCreateFlexoConceptWizard<CreateVirtualModel> {
+public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<CreateVirtualModel> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateVirtualModelWizard.class.getPackage().getName());
@@ -26,6 +26,7 @@ public class CreateVirtualModelWizard extends AbstractCreateFlexoConceptWizard<C
 	public CreateVirtualModelWizard(CreateVirtualModel action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeVirtualModel = new DescribeVirtualModel());
+		appendConfigureModelSlots();
 	}
 
 	@Override
