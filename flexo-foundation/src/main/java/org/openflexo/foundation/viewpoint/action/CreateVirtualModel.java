@@ -87,10 +87,6 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 		newVirtualModel = VirtualModelImpl.newVirtualModel(newVirtualModelName, getFocusedObject());
 		newVirtualModel.setDescription(newVirtualModelDescription);
 
-		Progress.progress(FlexoLocalization.localizedForKey("add_virtual_model"));
-
-		getFocusedObject().addToVirtualModels(newVirtualModel);
-
 		Progress.progress(FlexoLocalization.localizedForKey("create_model_slots"));
 		performCreateModelSlots();
 
@@ -142,7 +138,7 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 
 	@Override
 	public int getExpectedProgressSteps() {
-		return 20;
+		return 15;
 	}
 
 }

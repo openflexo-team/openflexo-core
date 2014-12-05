@@ -363,13 +363,11 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource_data"));
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);
-			viewPoint.addToVirtualModels(virtualModel);
 			vmRes.setResourceData(virtualModel);
 			virtualModel.setResource(vmRes);
-			// ((VirtualModelImpl) virtualModel).makeReflexiveModelSlot();
+			viewPoint.addToVirtualModels(virtualModel);
 			Progress.progress(FlexoLocalization.localizedForKey("save_virtual_model_resource"));
 			virtualModel.getResource().save(null);
-			// vmRes.setDirectory(ResourceLocator.locateResource(diagramSpecificationDirectory.getPath()));
 
 			return virtualModel;
 		}
