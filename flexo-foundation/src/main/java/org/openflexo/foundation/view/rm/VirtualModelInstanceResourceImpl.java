@@ -1,18 +1,14 @@
 package org.openflexo.foundation.view.rm;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -20,17 +16,11 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.ModelSlotInstance;
-import org.openflexo.foundation.view.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
@@ -65,16 +55,15 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	public static VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel, View view) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = name;
-			
-			FileFlexoIODelegate delegate = (FileFlexoIODelegate)((ViewResource) view.getResource()).getFlexoIODelegate();
-			
-			File xmlFile = new File(delegate.getFile().getParentFile(), baseName
-					+ VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
+
+			FileFlexoIODelegate delegate = (FileFlexoIODelegate) ((ViewResource) view.getResource()).getFlexoIODelegate();
+
+			File xmlFile = new File(delegate.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setProject(view.getProject());
 			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getProject().getServiceManager().getEditingContext(),
@@ -82,12 +71,9 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setName(name);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
-
-			
-
+			returned.setServiceManager(view.getProject().getServiceManager());
 			view.getResource().addToContents(returned);
 			view.getResource().notifyContentsAdded(returned);
-			returned.setServiceManager(view.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
@@ -97,19 +83,17 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile, ViewResource viewResource) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = virtualModelInstanceFile.getName().substring(0,
 					virtualModelInstanceFile.getName().length() - VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX.length());
-			
 
-			FileFlexoIODelegate delegate = (FileFlexoIODelegate)(viewResource.getFlexoIODelegate());
-			
-			
+			FileFlexoIODelegate delegate = (FileFlexoIODelegate) (viewResource.getFlexoIODelegate());
+
 			File xmlFile = new File(delegate.getFile().getParentFile(), baseName + VirtualModelInstanceResource.VIRTUAL_MODEL_SUFFIX);
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(xmlFile);
 			returned.setProject(viewResource.getProject());
@@ -122,7 +106,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			
+
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 				if (viewResource != null && viewResource.getViewPoint() != null
 						&& viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI) != null) {
@@ -142,7 +126,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	@Override
 	public VirtualModelInstance getVirtualModelInstance() {
-		try {
+		return getLoadedResourceData();
+		/*try {
 			return getResourceData(null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -151,7 +136,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		} catch (FlexoException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return null;*/
 	}
 
 	@Override
