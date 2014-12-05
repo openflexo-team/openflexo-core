@@ -118,7 +118,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof VirtualModelModelSlot) {
 				((VirtualModelModelSlot) newModelSlot).setVirtualModelResource(vmRes);
-				
+
 			} else if (newModelSlot instanceof TypeAwareModelSlot) {
 				((TypeAwareModelSlot) newModelSlot).setMetaModelResource(mmRes);
 			}
@@ -152,6 +152,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 
 	@Override
 	public boolean isValid() {
+
 		if (StringUtils.isEmpty(modelSlotName)) {
 			validityMessage = EMPTY_NAME;
 			return false;
