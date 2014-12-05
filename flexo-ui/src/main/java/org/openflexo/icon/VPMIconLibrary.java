@@ -138,6 +138,18 @@ public class VPMIconLibrary extends IconLibrary {
 
 	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept_32x32.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept_64x64.png"));
+
+	public static final ImageIconResource FLEXO_ROLE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole.png"));
+	public static final ImageIconResource FLEXO_ROLE_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole_32x32.png"));
+	public static final ImageIconResource FLEXO_ROLE_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole_64x64.png"));
+
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ActionSchemeIcon.png"));
 	public static final ImageIconResource SYNCHRONIZATION_SCHEME_ICON = new ImageIconResource(
