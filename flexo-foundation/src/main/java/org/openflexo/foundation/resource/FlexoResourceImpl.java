@@ -11,9 +11,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.IProgress;
 
 /**
@@ -47,14 +45,14 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/**
 	 * Return flag indicating if this resource is loadable<br>
-	 * By default, a resource is always loadable, then this method always returns true
+	 * By default, a resource is always loadable, then this method always returns true if IO delegate exists
 	 * 
 	 * @return
 	 */
 	@Override
 	public boolean isLoadable() {
-		// By default, a resource is always loadable, then this method always returns true
-		return true;
+		// By default, a resource is always loadable, then this method always returns true if IO delegate exists
+		return getFlexoIODelegate() != null && getFlexoIODelegate().exists();
 	}
 
 	/**
@@ -282,10 +280,10 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (isLoaded()) {
 				unloadResourceData();
 			}
-			
+
 			// Handle Flexo IO delegate deletion
 			getFlexoIODelegate().delete();
-			
+
 			return true;
 		}
 	}

@@ -1,6 +1,7 @@
 package org.openflexo.foundation.view.rm;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -17,6 +19,7 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
@@ -126,8 +129,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	@Override
 	public VirtualModelInstance getVirtualModelInstance() {
-		return getLoadedResourceData();
-		/*try {
+		try {
 			return getResourceData(null);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -136,7 +138,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		} catch (FlexoException e) {
 			e.printStackTrace();
 		}
-		return null;*/
+		return null;
 	}
 
 	@Override
