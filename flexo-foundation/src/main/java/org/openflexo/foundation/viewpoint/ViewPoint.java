@@ -458,6 +458,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(this);
 			virtualModels.add(virtualModel);
+			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, null, virtualModel);
 			// setChanged();
 			// notifyObservers(new VirtualModelCreated(virtualModel));
 		}
@@ -467,6 +468,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(null);
 			virtualModels.remove(virtualModel);
+			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, virtualModel, null);
 			// setChanged();
 			// notifyObservers(new VirtualModelDeleted(virtualModel));
 		}
