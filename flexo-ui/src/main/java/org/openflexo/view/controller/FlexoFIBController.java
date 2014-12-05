@@ -386,4 +386,9 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " FlexoController=" + getFlexoController();
+	}
+
 }
