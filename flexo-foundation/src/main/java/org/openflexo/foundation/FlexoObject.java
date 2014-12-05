@@ -767,8 +767,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			}
 			if (old == null || !old.equals(description)) {
 				this.description = description;
-				setChanged();
-				notifyObservers(new DataModification("description", old, description));
+				// setChanged();
+				// notifyObservers(new DataModification("description", old, description));
+				getPropertyChangeSupport().firePropertyChange(DESCRIPTION_KEY, old, description);
 			}
 		}
 
