@@ -133,6 +133,9 @@ public class VPMIconLibrary extends IconLibrary {
 
 	public static final ImageIconResource MODEL_SLOT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
+	public static final ImageIconResource MODEL_SLOT_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot32.png"));
+
 	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept.png"));
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource(
