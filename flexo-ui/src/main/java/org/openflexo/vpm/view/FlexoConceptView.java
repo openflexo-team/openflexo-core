@@ -19,16 +19,16 @@
  */
 package org.openflexo.vpm.view;
 
-import java.io.File;
+import java.util.logging.Logger;
 
 import org.openflexo.fib.view.container.FIBPanelView;
 import org.openflexo.fib.view.container.FIBTabPanelView;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBTableWidget;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector;
@@ -48,6 +48,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  */
 public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModuleView<EP> {
 
+	private static final Logger logger = Logger.getLogger(FlexoConceptView.class.getPackage().getName());
+
 	private final FlexoPerspective perspective;
 
 	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
@@ -55,7 +57,7 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		this.perspective = perspective;
 	}
 
-	public FlexoConceptView(EP flexoConcept, String  fibFileName, FlexoController controller, FlexoPerspective perspective) {
+	public FlexoConceptView(EP flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, controller, ResourceLocator.locateResource(fibFileName));
 		this.perspective = perspective;
 	}
@@ -66,32 +68,33 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	}
 
 	public void tryToSelect(FlexoConceptObject object) {
-		FIBTableWidget patternRoleTable = (FIBTableWidget) getFIBView("PatternRoleTable");
+
+		FIBTableWidget flexoRoleTable = (FIBTableWidget) getFIBView("FlexoRoleTable");
 		FIBTabPanelView mainTabPanel = (FIBTabPanelView) getFIBView("MainTabPanel");
-		FIBTableWidget editionSchemeTable = (FIBTableWidget) getFIBView("EditionSchemeTable");
-		FIBPanelView editionSchemePanel = (FIBPanelView) getFIBView("EditionSchemePanel");
+		FIBTableWidget flexoBehaviourTable = (FIBTableWidget) getFIBView("FlexoBehaviourTable");
+		FIBPanelView flexoBehaviourPanel = (FIBPanelView) getFIBView("FlexoBehaviourPanel");
 		FIBTableWidget parametersTable = (FIBTableWidget) getFIBView("ParametersTable");
 		FIBBrowserWidget editionActionBrowser = (FIBBrowserWidget) getFIBView("EditionActionBrowser");
 		FIBTableWidget inspectorPropertyTable = (FIBTableWidget) getFIBView("InspectorPropertyTable");
-		FIBTableWidget localizedTable = (FIBTableWidget) getFIBView("LocalizedTable");
+		FIBTableWidget localizedTable = (FIBTableWidget) getFIBView("EntryTable");
 
 		if (object instanceof FlexoRole) {
-			if (patternRoleTable != null) {
-				patternRoleTable.setSelected(object);
+			if (flexoRoleTable != null) {
+				flexoRoleTable.setSelected(object);
 			}
 		} else if (object instanceof FlexoBehaviour) {
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(0);
 			}
-			if (editionSchemeTable != null) {
-				editionSchemeTable.setSelected(object);
+			if (flexoBehaviourTable != null) {
+				flexoBehaviourTable.setSelected(object);
 			}
 		} else if (object instanceof FlexoBehaviourParameter) {
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(0);
 			}
-			if (editionSchemeTable != null) {
-				editionSchemeTable.setSelected(((FlexoBehaviourParameter) object).getFlexoBehaviour());
+			if (flexoBehaviourTable != null) {
+				flexoBehaviourTable.setSelected(((FlexoBehaviourParameter) object).getFlexoBehaviour());
 			}
 			if (parametersTable != null) {
 				parametersTable.setSelected(object);
@@ -102,8 +105,8 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 			if (mainTabPanel != null) {
 				mainTabPanel.setSelectedIndex(0);
 			}
-			if (editionSchemeTable != null) {
-				editionSchemeTable.setSelected(((EditionAction) object).getFlexoBehaviour());
+			if (flexoBehaviourTable != null) {
+				flexoBehaviourTable.setSelected(((EditionAction) object).getFlexoBehaviour());
 			}
 			// this is not a tab any more
 			// editionSchemePanel.setSelectedIndex(1);
