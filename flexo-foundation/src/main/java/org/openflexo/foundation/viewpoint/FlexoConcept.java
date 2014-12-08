@@ -290,6 +290,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	public boolean isAssignableFrom(FlexoConcept flexoConcept);
 
+	public boolean isSuperConceptOf(FlexoConcept flexoConcept);
+
 	public String getAvailableRoleName(String baseName);
 
 	public String getAvailableEditionSchemeName(String baseName);
@@ -822,12 +824,15 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
-			performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+			if (!isSuperConceptOf(parentFlexoConcept)) {
+				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+			} else {
+				logger.warning("Could not add as parent FlexoConcept: " + parentFlexoConcept);
+			}
 		}
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
-			System.out.println("On enleve " + parentFlexoConcept + " de " + this);
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 		}
 
@@ -864,6 +869,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 			}
 
 			return returned;
+		}
+
+		@Override
+		public boolean isSuperConceptOf(FlexoConcept flexoConcept) {
+			return isAssignableFrom(flexoConcept);
 		}
 
 		@Override

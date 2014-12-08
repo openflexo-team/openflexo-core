@@ -29,7 +29,7 @@
                 <Divider />
                 <Leaf name="right" weight="0.5" />
               </RowSplit>
-              <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="FlexoBehaviourTable" index="0" data="data.flexoBehaviours" constraints="split(index=0;location=west;splitIdentifier=left)" opaque="false" rightClickAction="controller.rightClick(FlexoBehaviourTable.selected,event)">
+              <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoBehaviour" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" name="FlexoBehaviourTable" index="0" data="data.flexoBehaviours" constraints="split(index=0;location=west;splitIdentifier=left)" opaque="false" rightClickAction="controller.rightClick(FlexoBehaviourTable.selected,event)">
                 <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
                 <TextFieldColumn data="iterator.name" title="flexo_behaviour" columnWidth="200" resizable="true" displayTitle="true" />
                 <LabelColumn data="iterator.flexoBehaviourType.name" title="type" columnWidth="100" resizable="true" displayTitle="true" name="label" />

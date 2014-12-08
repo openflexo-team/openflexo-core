@@ -17,9 +17,9 @@ import org.openflexo.foundation.viewpoint.FlexoConceptConstraint;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateEditionAction;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
 import org.openflexo.foundation.viewpoint.action.CreateFlexoRole;
 import org.openflexo.foundation.viewpoint.action.CreateModelSlot;
 import org.openflexo.foundation.viewpoint.action.DeleteFlexoConcept;
@@ -41,10 +41,14 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public ViewPointEditingFIBController(FIBComponent component) {
 		super(component);
+		// System.out.println("cree ici: " + Integer.toHexString(hashCode()));
+		// Thread.dumpStack();
 	}
 
 	public ViewPointEditingFIBController(FIBComponent component, FlexoController controller) {
 		super(component, controller);
+		// System.out.println("cree de la" + Integer.toHexString(hashCode()));
+		// Thread.dumpStack();
 	}
 
 	public ModelSlot createModelSlot(VirtualModel virtualModel) {
@@ -77,7 +81,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoRole createFlexoRole(FlexoConcept flexoConcept) {
-		System.out.println("On tente de creer un FlexoRole");
+		System.out.println("On tente de creer un FlexoRole dans " + Integer.toHexString(hashCode()));
 		System.out.println("getFlexoController()=" + getFlexoController());
 		System.out.println("getEditor()=" + getEditor());
 		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
@@ -171,17 +175,21 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
-			CreateFlexoConcept addFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null, getEditor());
-			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
-			addFlexoConcept.doAction();
-			return addFlexoConcept.getNewFlexoConcept();
-		}
-		else if (flexoConcept != null) {
-			CreateFlexoConcept addFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null, getEditor());
-			addFlexoConcept.switchNewlyCreatedFlexoConcept = false;
-			addFlexoConcept.doAction();
-			addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
-			return addFlexoConcept.getNewFlexoConcept();
+			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+					getEditor());
+			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+			createFlexoConcept.doAction();
+			return createFlexoConcept.getNewFlexoConcept();
+		} else if (flexoConcept != null) {
+			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getVirtualModel(), null,
+					getEditor());
+			createFlexoConcept.addToParentConcepts(flexoConcept);
+			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+			createFlexoConcept.doAction();
+			/*if (addFlexoConcept.getNewFlexoConcept() != null) {
+				addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
+			}*/
+			return createFlexoConcept.getNewFlexoConcept();
 		}
 		logger.warning("Unexpected null flexo concept");
 		return null;
@@ -192,8 +200,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			deleteVirtualModel.doAction();
-		}
-		else if (flexoConcept != null) {
+		} else if (flexoConcept != null) {
 			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 			deleteFlexoConcept.doAction();
 		}
@@ -382,14 +389,12 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		if (action.getModelSlot() == null) {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
-		}
-		else {
+		} else {
 			TechnologyAdapter technologyAdapter = action.getModelSlot().getTechnologyAdapter();
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
-			}
-			else
+			} else
 				// No specific TechnologyAdapter, lookup in generic libraries
 				return getFIBPanelForObject(action);
 		}

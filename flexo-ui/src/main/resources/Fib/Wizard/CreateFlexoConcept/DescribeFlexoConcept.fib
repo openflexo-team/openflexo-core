@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
+	layout="twocols" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" trackViewPortWidth="true"
+	dataClassName="org.openflexo.vpm.controller.action.CreateFlexoConceptWizard$DescribeFlexoConcept"
+	titleFont="Lucida Grande,0,13" trackViewPortHeight="true">
+	<LocalizedDictionary id="1" />
+	<Label id="2" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.fib.controller.FIBController"
+		index="1" localize="true" align="right"
+		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="concept_name" readOnly="false" />
+	<TextField id="3" passwd="false" manageDynamicModel="false"
+		useScrollBar="false" data="data.newFlexoConceptName" columns="40"
+		name="VirtualModelNameTF" controllerClassName="org.openflexo.fib.controller.FIBController"
+		text="TextField" index="2" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		readOnly="false" validateOnReturn="false" />
+	<Label id="4" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.fib.controller.FIBController"
+		index="3" localize="true" align="left"
+		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="parent_concepts" readOnly="false" />
+	<Table id="5" showFooter="true" manageDynamicModel="true"
+		selectionMode="MultipleIntervalSelection" boundToSelectionManager="true"
+		controllerClassName="org.openflexo.fib.controller.FIBController"
+		index="4" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		createNewRowOnClick="false"
+		iteratorClassName="org.openflexo.foundation.viewpoint.action.AbstractCreateFlexoConcept$ParentFlexoConceptEntry"
+		useScrollBar="false" data="data.parentFlexoConceptEntries"
+		autoSelectFirstRow="false" name="ParentFlexoConceptTable" readOnly="false">
+		<IconColumn id="6" data="controller.iconForObject(iterator)"
+			displayTitle="false" title="icon" name="icon" columnWidth="25"
+			resizable="false" showIcon="false" />
+		<CustomColumn id="7" customRendering="false"
+			data="iterator.parentConcept" format="object.name"
+			componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector"
+			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
+			columnWidth="80" resizable="true" showIcon="false">
+			<ColumnAssignment id="12" mandatory="true"
+				value="data.virtualModel" variable="component.virtualModel" />
+		</CustomColumn>
+		<RemoveAction id="13" name="delete"
+			method="data.action.deleteParentFlexoConceptEntry(selected)" />
+		<AddAction id="14" name="addParentFlexoConcept"
+			method="data.action.newParentFlexoConceptEntry()" />
+	</Table>
+	<Label id="15" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.fib.controller.FIBController"
+		index="12" localize="true" align="right"
+		constraints="twocols(anchor=north_east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="description" readOnly="false" />
+	<TextArea id="16" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+		manageDynamicModel="false" useScrollBar="true"
+		data="data.newFlexoConceptDescription" columns="6"
+		controllerClassName="org.openflexo.fib.controller.FIBController" text="TextArea"
+		index="13" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=13;insetsBottom=20;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		rows="5" readOnly="false" validateOnReturn="false"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+</Panel>

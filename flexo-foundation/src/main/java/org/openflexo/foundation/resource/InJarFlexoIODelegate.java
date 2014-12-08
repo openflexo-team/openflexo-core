@@ -19,30 +19,34 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 	@PropertyIdentifier(type = InJarResourceImpl.class)
 	public static final String IN_JAR_RESOURCE = "inJarResource";
 
-	@Getter(value=IN_JAR_RESOURCE, ignoreType =true)
+	@Getter(value = IN_JAR_RESOURCE, ignoreType = true)
 	public InJarResourceImpl getInJarResource();
 
 	@Setter(IN_JAR_RESOURCE)
 	public void setInJarResource(InJarResourceImpl inJarResource);
-	
-	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl> implements InJarFlexoIODelegate{
-		
-		public static InJarFlexoIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory){
-			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class) ;
+
+	public abstract class InJarFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<InJarResourceImpl> implements InJarFlexoIODelegate {
+
+		public static InJarFlexoIODelegate makeInJarFlexoIODelegate(InJarResourceImpl inJarResource, ModelFactory factory) {
+			InJarFlexoIODelegate delegate = factory.newInstance(InJarFlexoIODelegate.class);
 			delegate.setInJarResource(inJarResource);
 			return delegate;
 		}
-		
+
 		@Override
 		public InputStream getInputStream() {
 			return getInJarResource().openInputStream();
 		}
-		
 
 		@Override
 		public synchronized boolean hasWritePermission() {
 			return false;
 		}
+
+		@Override
+		public boolean exists() {
+			return true;
+		}
 	}
-	
+
 }

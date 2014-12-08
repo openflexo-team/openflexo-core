@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.viewpoint.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -29,6 +31,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Abstract action creating a {@link FlexoConcept} or any of its subclass
@@ -41,8 +44,73 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());
 
+	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
+
 	AbstractCreateFlexoConcept(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+		parentFlexoConceptEntries = new ArrayList<AbstractCreateFlexoConcept.ParentFlexoConceptEntry>();
 	}
 
+	public abstract FlexoConcept getNewFlexoConcept();
+
+	public List<ParentFlexoConceptEntry> getParentFlexoConceptEntries() {
+		return parentFlexoConceptEntries;
+	}
+
+	public ParentFlexoConceptEntry newParentFlexoConceptEntry() {
+		ParentFlexoConceptEntry returned = new ParentFlexoConceptEntry();
+		parentFlexoConceptEntries.add(returned);
+		getPropertyChangeSupport().firePropertyChange("parentFlexoConceptEntries", null, returned);
+		return returned;
+	}
+
+	public void deleteParentFlexoConceptEntry(ParentFlexoConceptEntry parentFlexoConceptEntryToDelete) {
+		parentFlexoConceptEntries.remove(parentFlexoConceptEntryToDelete);
+		parentFlexoConceptEntryToDelete.delete();
+		getPropertyChangeSupport().firePropertyChange("parentFlexoConceptEntries", parentFlexoConceptEntryToDelete, null);
+	}
+
+	public ParentFlexoConceptEntry addToParentConcepts(FlexoConcept parentFlexoConcept) {
+		ParentFlexoConceptEntry newParentFlexoConceptEntry = new ParentFlexoConceptEntry(parentFlexoConcept);
+		parentFlexoConceptEntries.add(newParentFlexoConceptEntry);
+		getPropertyChangeSupport().firePropertyChange("parentFlexoConceptEntries", null, newParentFlexoConceptEntry);
+		return newParentFlexoConceptEntry;
+	}
+
+	protected void performSetParentConcepts() {
+		for (ParentFlexoConceptEntry entry : getParentFlexoConceptEntries()) {
+			getNewFlexoConcept().addToParentFlexoConcepts(entry.getParentConcept());
+		}
+	}
+
+	public static class ParentFlexoConceptEntry extends PropertyChangedSupportDefaultImplementation {
+
+		private FlexoConcept parentConcept;
+
+		public ParentFlexoConceptEntry() {
+			super();
+		}
+
+		public ParentFlexoConceptEntry(FlexoConcept parentConcept) {
+			super();
+			this.parentConcept = parentConcept;
+		}
+
+		public void delete() {
+			parentConcept = null;
+		}
+
+		public FlexoConcept getParentConcept() {
+			return parentConcept;
+		}
+
+		public void setParentConcept(FlexoConcept parentConcept) {
+			if ((parentConcept == null && this.parentConcept != null)
+					|| (parentConcept != null && !parentConcept.equals(this.parentConcept))) {
+				FlexoConcept oldValue = this.parentConcept;
+				this.parentConcept = parentConcept;
+				getPropertyChangeSupport().firePropertyChange("parentConcept", oldValue, parentConcept);
+			}
+		}
+	}
 }

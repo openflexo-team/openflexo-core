@@ -79,6 +79,11 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 
 	public abstract VirtualModel getNewVirtualModel();
 
+	@Override
+	public FlexoConcept getNewFlexoConcept() {
+		return getNewVirtualModel();
+	}
+
 	protected void performCreateModelSlots() {
 		for (ModelSlotEntry entry : getModelSlotEntries()) {
 			performCreateModelSlot(entry);
