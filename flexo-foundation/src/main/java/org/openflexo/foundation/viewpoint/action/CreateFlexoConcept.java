@@ -20,8 +20,6 @@
 package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -33,7 +31,6 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, VirtualModel, ViewPointObject> {
@@ -67,12 +64,9 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, VirtualModel.class);
 	}
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_concept_must_have_an_non_empty_and_unique_name");
-
 	private String newFlexoConceptName;
+	private String newFlexoConceptDescription;
 	private FlexoConcept newFlexoConcept;
-	private final List<FlexoConcept> parentConcepts = new ArrayList<FlexoConcept>();
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
@@ -87,12 +81,13 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());
-		for (FlexoConcept parentConcept : getParentConcepts()) {
-			newFlexoConcept.addToParentFlexoConcepts(parentConcept);
-		}
+
+		performSetParentConcepts();
+
 		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 	}
 
+	@Override
 	public FlexoConcept getNewFlexoConcept() {
 		return newFlexoConcept;
 	}
@@ -102,39 +97,32 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	}
 
 	public void setNewFlexoConceptName(String newFlexoConceptName) {
-		this.newFlexoConceptName = newFlexoConceptName;
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
-		getPropertyChangeSupport().firePropertyChange("isValid", null, isValid());
-	}
-
-	public List<FlexoConcept> getParentConcepts() {
-		return parentConcepts;
-	}
-
-	public void addToParentConcepts(FlexoConcept parentConcept) {
-		parentConcepts.add(parentConcept);
-	}
-
-	public void removeFromParentConcepts(FlexoConcept parentConcept) {
-		parentConcepts.remove(parentConcept);
-	}
-
-	private String errorMessage;
-
-	public String getErrorMessage() {
-		if (isValid()) {
-			return null;
+		if ((newFlexoConceptName == null && this.newFlexoConceptName != null)
+				|| (newFlexoConceptName != null && !newFlexoConceptName.equals(this.newFlexoConceptName))) {
+			String oldValue = this.newFlexoConceptName;
+			this.newFlexoConceptName = newFlexoConceptName;
+			getPropertyChangeSupport().firePropertyChange("newFlexoConceptName", oldValue, newFlexoConceptName);
 		}
-		return errorMessage;
+	}
+
+	public String getNewFlexoConceptDescription() {
+		return newFlexoConceptDescription;
+	}
+
+	public void setNewFlexoConceptDescription(String newFlexoConceptDescription) {
+		if ((newFlexoConceptDescription == null && this.newFlexoConceptDescription != null)
+				|| (newFlexoConceptDescription != null && !newFlexoConceptDescription.equals(this.newFlexoConceptDescription))) {
+			String oldValue = this.newFlexoConceptDescription;
+			this.newFlexoConceptDescription = newFlexoConceptDescription;
+			getPropertyChangeSupport().firePropertyChange("newFlexoConceptDescription", oldValue, newFlexoConceptDescription);
+		}
 	}
 
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
-			errorMessage = EMPTY_NAME;
 			return false;
 		} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
-			errorMessage = DUPLICATED_NAME;
 			return false;
 		}
 		return true;
