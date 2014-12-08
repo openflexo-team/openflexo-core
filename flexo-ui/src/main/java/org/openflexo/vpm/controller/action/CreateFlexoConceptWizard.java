@@ -27,10 +27,12 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_concept_must_have_an_non_empty_and_unique_name");
 
 	private final DescribeFlexoConcept describeFlexoConcept;
+	private final ConfigureAdditionalStepsForNewFlexoConcept configureAdditionalStepsForNewFlexoConcept;
 
 	public CreateFlexoConceptWizard(CreateFlexoConcept action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeFlexoConcept = new DescribeFlexoConcept());
+		addStep(configureAdditionalStepsForNewFlexoConcept = new ConfigureAdditionalStepsForNewFlexoConcept());
 	}
 
 	@Override
