@@ -257,7 +257,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
-	protected synchronized void fileModified(File file) {
+	protected  void fileModified(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 		}
@@ -276,7 +276,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
-	protected synchronized void fileDeleted(File file) {
+	protected  void fileDeleted(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 		}
@@ -284,17 +284,13 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	private final List<File> willBeWrittenFiles = new ArrayList<File>();
 
-	public synchronized void willWrite(File file) {
+	public void willWrite(File file) {
 		willBeWrittenFiles.add(file);
 	}
 
 	@Override
-	public synchronized boolean isIgnorable(File file) {
-		if (file.getName().equals("CVS")) {
-			return true;
-		}
+	public boolean isIgnorable(File file) {
 		if (willBeWrittenFiles.contains(file)) {
-			System.out.println("File IGNORED: " + file);
 			willBeWrittenFiles.remove(file);
 			return true;
 		}
