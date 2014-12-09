@@ -145,7 +145,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
 		if (confirmDoAction) {
 			actionWillBePerformed(action);
-			if (action instanceof LongRunningAction && SwingUtilities.isEventDispatchThread()) {
+			if (action instanceof LongRunningAction && (!action.isEmbedded()) && SwingUtilities.isEventDispatchThread()) {
 
 				FlexoTask task = new FlexoTask(action.getLocalizedName()) {
 					@Override

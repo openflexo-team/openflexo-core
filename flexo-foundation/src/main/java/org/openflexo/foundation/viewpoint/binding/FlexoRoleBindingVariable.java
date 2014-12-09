@@ -54,8 +54,19 @@ public class FlexoRoleBindingVariable extends BindingVariable implements Propert
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
+			if (evt.getPropertyName().equals(TYPE_PROPERTY)) {
+				Type newType = (Type) evt.getNewValue();
+				if (lastKnownType == null || !lastKnownType.equals(newType)) {
+					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
+					lastKnownType = newType;
+				}
+			}
 			if (lastKnownType != getType()) {
-				// System.out.println("Notify type changing");
+				// We might arrive here only in the case of a FlexoRole does not correctely notify
+				// its type change. We warn it to 'tell' the developper that such notification should be done
+				// in FlexoRole (see IndividualRole for example)
+				logger.warning("Detecting un-notified type changing for FlexoRole " + flexoRole + " from " + lastKnownType + " to "
+						+ getType() + ". Trying to handle case.");
 				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
 				lastKnownType = getType();
 			}

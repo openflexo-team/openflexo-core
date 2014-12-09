@@ -60,4 +60,30 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 		}
 		return null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ontologyClass == null) ? 0 : ontologyClass.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		IndividualOfClass other = (IndividualOfClass) obj;
+		if (ontologyClass == null) {
+			if (other.ontologyClass != null)
+				return false;
+		} else if (!ontologyClass.equals(other.ontologyClass))
+			return false;
+		return true;
+	}
+
 }

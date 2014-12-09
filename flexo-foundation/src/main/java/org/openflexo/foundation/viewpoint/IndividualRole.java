@@ -2,6 +2,7 @@ package org.openflexo.foundation.viewpoint;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
@@ -68,12 +69,22 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 			return true;
 		}
 
+		private Type lastKnownType = null;
+
 		@Override
 		public Type getType() {
+			Type returned;
 			if (getOntologicType() == null) {
-				return IFlexoOntologyIndividual.class;
+				returned = IFlexoOntologyIndividual.class;
+			} else {
+				returned = IndividualOfClass.getIndividualOfClass(getOntologicType());
 			}
-			return IndividualOfClass.getIndividualOfClass(getOntologicType());
+			if (lastKnownType == null || !lastKnownType.equals(returned)) {
+				Type oldType = lastKnownType;
+				lastKnownType = returned;
+				getPropertyChangeSupport().firePropertyChange(BindingVariable.TYPE_PROPERTY, oldType, returned);
+			}
+			return returned;
 		}
 
 		@Override
