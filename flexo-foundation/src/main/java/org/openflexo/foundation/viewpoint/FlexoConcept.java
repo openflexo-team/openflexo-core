@@ -374,10 +374,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
-			if (behaviouralFacet == null && getVirtualModelFactory() != null) {
-				CompoundEdit ce = this.getFactory().getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
-				behaviouralFacet = getVirtualModelFactory().newFlexoConceptBehaviouralFacet(this);
-				this.getFactory().getEditingContext().getUndoManager().stopRecording(ce);
+			VirtualModelModelFactory factory = getVirtualModelFactory();
+			if (behaviouralFacet == null && factory != null) {
+				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
+				behaviouralFacet = factory.newFlexoConceptBehaviouralFacet(this);
+				factory.getEditingContext().getUndoManager().stopRecording(ce);
 			}
 			return behaviouralFacet;
 		}
