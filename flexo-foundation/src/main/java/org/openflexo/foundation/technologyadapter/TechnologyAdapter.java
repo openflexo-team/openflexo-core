@@ -360,11 +360,18 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return
 	 */
 	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
-		VirtualModelModelFactory factory = containerVirtualModel.getVirtualModelFactory();
-		MS returned = factory.newInstance(modelSlotClass);
-		// containerVirtualModel.addToModelSlots(returned);
-		returned.setTechnologyAdapter(this);
-		return returned;
+		// NPE Protection
+		if (containerVirtualModel != null) {
+			VirtualModelModelFactory factory = containerVirtualModel.getVirtualModelFactory();
+			MS returned = factory.newInstance(modelSlotClass);
+			// containerVirtualModel.addToModelSlots(returned);
+			returned.setTechnologyAdapter(this);
+			return returned;
+		}
+		else {
+			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
+			return null;
+		}
 
 	}
 
@@ -391,13 +398,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resourceCenter
 	 */
 	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
-		if (resourceCenter instanceof ResourceRepository && resource!=null && resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+		if (resourceCenter instanceof ResourceRepository && resource != null
+				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			// Also register the resource in the ResourceCenter seen as a ResourceRepository
 			try {
 				File candidateFile = null;
 				if (resource instanceof DirectoryContainerResource) {
 					candidateFile = ResourceLocator.retrieveResourceAsFile(((DirectoryContainerResource<?>) resource).getDirectory());
-				} else {
+				}
+				else {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
 				((ResourceRepository) resourceCenter).registerResource(resource,
