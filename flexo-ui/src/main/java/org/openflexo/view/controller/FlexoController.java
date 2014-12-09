@@ -1615,6 +1615,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 	 */
 
+	// toto
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getControllerModel()) {
