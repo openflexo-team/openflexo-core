@@ -53,6 +53,7 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -363,7 +364,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public FlexoConceptStructuralFacet getStructuralFacet() {
 			if (structuralFacet == null && getVirtualModelFactory() != null) {
+				CompoundEdit ce = this.getFactory().getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
 				structuralFacet = getVirtualModelFactory().newFlexoConceptStructuralFacet(this);
+				this.getFactory().getEditingContext().getUndoManager().stopRecording(ce);
 			}
 			return structuralFacet;
 		}
@@ -371,7 +374,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
 			if (behaviouralFacet == null && getVirtualModelFactory() != null) {
+				CompoundEdit ce = this.getFactory().getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
 				behaviouralFacet = getVirtualModelFactory().newFlexoConceptBehaviouralFacet(this);
+				this.getFactory().getEditingContext().getUndoManager().stopRecording(ce);
 			}
 			return behaviouralFacet;
 		}
