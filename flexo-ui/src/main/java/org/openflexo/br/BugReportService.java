@@ -51,7 +51,7 @@ public class BugReportService extends FlexoServiceImpl {
 	private FlexoVersion pamelaVersion;
 	private FlexoVersion connieVersion;
 	private FlexoVersion distributionVersion;
-	
+
 	private static final String MODULES_KEY = "MODULES";
 	private static final String TA_KEY = "TA";
 	private static final String DIANA_KEY = "DIANA";
@@ -61,7 +61,7 @@ public class BugReportService extends FlexoServiceImpl {
 	private static final String GINA_KEY = "GINA";
 
 	private HashMap<String, Resource> userProjectFiles;
-	//private File userProjectFile;
+	// private File userProjectFile;
 	private List<JIRAProject> projects;
 
 	@Override
@@ -73,8 +73,8 @@ public class BugReportService extends FlexoServiceImpl {
 	}
 
 	public JIRAProject getOpenFlexoProject(String projectKey) {
-		for(JIRAProject jp : projects){
-			if(jp.getKey().equals(projectKey))
+		for (JIRAProject jp : projects) {
+			if (jp.getKey().equals(projectKey))
 				return jp;
 		}
 		return null;
@@ -82,9 +82,10 @@ public class BugReportService extends FlexoServiceImpl {
 
 	public void loadProjectsFromFile(Resource file) {
 		try {
-			JIRAProjectList projects = JIRAGson.getInstance().fromJson(new InputStreamReader(file.openInputStream()),
-					JIRAProjectList.class);
-			if(this.projects==null){
+			InputStreamReader is = new InputStreamReader(file.openInputStream());
+			JIRAProjectList projects = JIRAGson.getInstance().fromJson(is, JIRAProjectList.class);
+			if (this.projects == null) {
+				logger.warning("INVESTIGATE : projects list is empty!! ");
 				this.projects = new ArrayList<JIRAProject>();
 			}
 
@@ -121,18 +122,18 @@ public class BugReportService extends FlexoServiceImpl {
 	@Override
 	public void initialize() {
 		logger.info("Initialized BugReportService");
-		if(userProjectFiles==null || userProjectFiles.isEmpty()){
-			userProjectFiles = new HashMap<String,Resource>();
+		if (userProjectFiles == null || userProjectFiles.isEmpty()) {
+			userProjectFiles = new HashMap<String, Resource>();
 			userProjectFiles.put(MODULES_KEY, MODULES_FILE);
-			userProjectFiles.put(CONNIE_KEY,CONNIE_FILE);
-			userProjectFiles.put(TA_KEY,TA_FILE);
-			userProjectFiles.put(DIANA_KEY,DIANA_FILE);
-			userProjectFiles.put(CONNIE_KEY,CONNIE_FILE);
-			userProjectFiles.put(PAMELA_KEY,PAMELA_FILE);
-			userProjectFiles.put(CORE_KEY,CORE_FILE);
-			userProjectFiles.put(GINA_KEY,GINA_FILE);
+			userProjectFiles.put(CONNIE_KEY, CONNIE_FILE);
+			userProjectFiles.put(TA_KEY, TA_FILE);
+			userProjectFiles.put(DIANA_KEY, DIANA_FILE);
+			userProjectFiles.put(CONNIE_KEY, CONNIE_FILE);
+			userProjectFiles.put(PAMELA_KEY, PAMELA_FILE);
+			userProjectFiles.put(CORE_KEY, CORE_FILE);
+			userProjectFiles.put(GINA_KEY, GINA_FILE);
 		}
-		
+
 		loadProjectVersions();
 
 		try {
@@ -141,62 +142,60 @@ public class BugReportService extends FlexoServiceImpl {
 					&& getServiceManager().getAdvancedPrefs().getBugReportUser().trim().length() > 0
 					&& getServiceManager().getAdvancedPrefs().getBugReportPassword() != null
 					&& getServiceManager().getAdvancedPrefs().getBugReportPassword().trim().length() > 0) {
-					headers.put(
-							"Authorization",
-							"Basic "
-									+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
-											.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
-				} 	
+				headers.put(
+						"Authorization",
+						"Basic "
+								+ Base64.encodeBase64String((getServiceManager().getAdvancedPrefs().getBugReportUser() + ":" + getServiceManager()
+										.getAdvancedPrefs().getBugReportPassword()).getBytes("ISO-8859-1")));
+			}
 
-				for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
-					String key = entry.getKey();
-					Resource file = entry.getValue();
-					if (file != null && file instanceof FileResourceImpl){
-						FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
-								+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKeys=" + key),((FileResourceImpl) file).getFile(),
-								headers);
-					}
-					else {
-						logger.severe("Unable to create File for Bug");
-					}
+			for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
+				String key = entry.getKey();
+				Resource file = entry.getValue();
+				// Do not execute update if anonymous login, as it will not work!
+				if (file != null && file instanceof FileResourceImpl && headers.size() > 0) {
+					FileUtils.createOrUpdateFileFromURL(new URL(getServiceManager().getAdvancedPrefs().getBugReportUrl()
+							+ "/rest/api/2/issue/createmeta?expand=projects.issuetypes.fields&projectKeys=" + key),
+							((FileResourceImpl) file).getFile(), headers);
 				}
+				else {
+					logger.severe("Unable to create File for Bug");
+				}
+			}
 
-			} 
-		catch (MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
-		} 
-		catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			logger.warning("Encoding error in a bug service request.");
 		}
-		if(!userProjectFiles.isEmpty()){
-			for(Entry<String, Resource> entry : userProjectFiles.entrySet()) {
+		if (!userProjectFiles.isEmpty()) {
+			for (Entry<String, Resource> entry : userProjectFiles.entrySet()) {
 				Resource file = entry.getValue();
 				loadProjectsFromFile(file);
 			}
 		}
-		
-		
+
 	}
-	
+
 	/**
 	 * Load the version of the current project software components
 	 */
-	private void loadProjectVersions(){
+	private void loadProjectVersions() {
 		Properties prop = new Properties();
 		try {
-			if(ResourceLocator.locateResource("gina.properties")!=null){
+			if (ResourceLocator.locateResource("gina.properties") != null) {
 				prop.load(ResourceLocator.locateResource("gina.properties").openInputStream());
 				ginaVersion = new FlexoVersion(prop.getProperty("gina.version"));
 			}
-			if(ResourceLocator.locateResource("diana.properties")!=null){
+			if (ResourceLocator.locateResource("diana.properties") != null) {
 				prop.load(ResourceLocator.locateResource("diana.properties").openInputStream());
 				dianaVersion = new FlexoVersion(prop.getProperty("diana.version"));
 			}
-			if(ResourceLocator.locateResource("connie.properties")!=null){
+			if (ResourceLocator.locateResource("connie.properties") != null) {
 				prop.load(ResourceLocator.locateResource("connie.properties").openInputStream());
 				connieVersion = new FlexoVersion(prop.getProperty("connie.version"));
 			}
-			if(ResourceLocator.locateResource("pamela.properties")!=null){
+			if (ResourceLocator.locateResource("pamela.properties") != null) {
 				prop.load(ResourceLocator.locateResource("pamela.properties").openInputStream());
 				pamelaVersion = new FlexoVersion(prop.getProperty("pamela.version"));
 			}
@@ -210,19 +209,20 @@ public class BugReportService extends FlexoServiceImpl {
 		FlexoVersion returned = null;
 		if (project.getKey().equals(DIANA_KEY)) {
 			returned = dianaVersion;
-		} else if (project.getKey().equals(CONNIE_KEY)) {
+		}
+		else if (project.getKey().equals(CONNIE_KEY)) {
 			returned = connieVersion;
-		}else if (project.getKey().equals(PAMELA_KEY)) {
+		}
+		else if (project.getKey().equals(PAMELA_KEY)) {
 			returned = pamelaVersion;
-		}else if (project.getKey().equals(GINA_KEY)) {
+		}
+		else if (project.getKey().equals(GINA_KEY)) {
 			returned = ginaVersion;
 		}
-		if(returned==null){
+		if (returned == null) {
 			returned = new FlexoVersion(distributionVersion.major, distributionVersion.minor, distributionVersion.patch, -1, false, false);
 		}
 		return returned;
 	}
-
-
 
 }
