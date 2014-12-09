@@ -596,6 +596,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public String getStringRepresentation() {
 
+			/*if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
+					&& getFlexoConcept().getInspector().getRenderer() != null) {
+				System.out.println("renderer=" + getFlexoConcept().getInspector().getRenderer());
+				System.out.println("valid=" + getFlexoConcept().getInspector().getRenderer().isValid());
+				System.out.println("reason=" + getFlexoConcept().getInspector().getRenderer().invalidBindingReason());
+			}*/
+
 			// We avoid here to enter in an infinite loop while protecting the computation of toString()
 			// (Could happen while extensively logging)
 
@@ -637,6 +644,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} finally {
+					isComputingRenderer = false;
 				}
 
 			}
