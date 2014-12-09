@@ -14,7 +14,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.view.rm.VirtualModelInstanceResource" label="virtualModelInstanceResource.name" icon="controller.iconForObject(virtualModelInstanceResource)" tooltip="" enabled="virtualModelInstanceResource.isLoaded" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModelInstanceResource">
   		 <Children data="virtualModelInstanceResource.getVirtualModelInstance().flexoConceptInstances" visible="virtualModelInstanceResource.isLoaded" cast="" name="children" />
   	</BrowserElement>
-  	<BrowserElement dataClassName="org.openflexo.foundation.view.FlexoConceptInstance" label="flexoConceptInstance.name" icon="controller.iconForObject(flexoConceptInstance)" tooltip="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptInstance"/>
+  	<BrowserElement dataClassName="org.openflexo.foundation.view.FlexoConceptInstance" label="flexoConceptInstance.stringRepresentation" icon="controller.iconForObject(flexoConceptInstance)" tooltip="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptInstance"/>
   </Browser>
   <LocalizedDictionary />
 </Panel>
