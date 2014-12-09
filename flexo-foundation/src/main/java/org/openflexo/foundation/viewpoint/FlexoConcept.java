@@ -363,10 +363,11 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public FlexoConceptStructuralFacet getStructuralFacet() {
-			if (structuralFacet == null && getVirtualModelFactory() != null) {
-				CompoundEdit ce = this.getFactory().getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
-				structuralFacet = getVirtualModelFactory().newFlexoConceptStructuralFacet(this);
-				this.getFactory().getEditingContext().getUndoManager().stopRecording(ce);
+			VirtualModelModelFactory factory = getVirtualModelFactory();
+			if (structuralFacet == null && factory != null) {
+				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
+				structuralFacet = factory.newFlexoConceptStructuralFacet(this);
+				factory.getEditingContext().getUndoManager().stopRecording(ce);
 			}
 			return structuralFacet;
 		}
