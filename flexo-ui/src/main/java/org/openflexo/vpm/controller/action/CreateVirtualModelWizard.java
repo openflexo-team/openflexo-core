@@ -37,7 +37,7 @@ public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.VIRTUAL_MODEL_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(VPMIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeVirtualModel getDescribeVirtualModel() {
