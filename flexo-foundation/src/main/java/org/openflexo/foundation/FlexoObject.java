@@ -386,42 +386,6 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		}
 
 		/*@Override
-		public List<FlexoObjectReference<FlexoConceptInstance>> getFlexoConceptReferences() {
-			return flexoConceptReferences;
-		}*/
-
-		/*public void setFlexoConceptReferences(List<FlexoModelObjectReference<FlexoConceptInstance>> flexoConceptReferences) {
-			this.flexoConceptReferences = flexoConceptReferences;
-		}*/
-
-		/*@Override
-		public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref) {
-			// SwingUtilities.invokeLater(new Runnable() {
-			// @Override
-			// public void run() {
-			// try {
-			// ref.getObject();
-			// } catch (ClassCastException e) {
-			// System.out.println("Je tiens le coupable !!!");
-			// }
-			// }
-			// });
-			// logger.info("****************** addToFlexoConceptReferences() with " + ref);
-			// ref.setOwner(this);
-			flexoConceptReferences.add(ref);
-			setChanged();
-			notifyObservers(new DataModification("flexoConceptReferences", null, ref));
-		}*/
-
-		/*@Override
-		public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref) {
-			// ref.setOwner(null);
-			flexoConceptReferences.remove(ref);
-			setChanged();
-			notifyObservers(new DataModification("flexoConceptReferences", ref, null));
-		}*/
-
-		/*@Override
 		public FlexoConceptInstance getFlexoConceptInstance(String flexoConceptId, long instanceId) {
 			if (flexoConceptId == null) {
 				return null;
