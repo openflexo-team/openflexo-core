@@ -992,34 +992,44 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (location.getEditor() == null) {
 			return null;
 		}
-		ModuleView<?> moduleView = viewsForLocation.get(location);
-		if (moduleView == null) {
-			moduleView = lookupViewForLocation(location);
-			if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
-				Progress.progress("load_module_view");
-				moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(), location.isEditable());
-				if (moduleView != null) {
-					FlexoObject representedObject = moduleView.getRepresentedObject();
-					if (representedObject == null) {
-						if (logger.isLoggable(Level.WARNING)) {
-							logger.warning("Module view: " + moduleView.getClass().getName() + " does not return its represented object");
+
+		Object lock = flexoFrame.getTreeLock();
+		// Should only create view if I am the AWT event Thread
+		//
+
+		synchronized (lock) {
+
+			ModuleView<?> moduleView = viewsForLocation.get(location);
+			if (moduleView == null) {
+				moduleView = lookupViewForLocation(location);
+				if (createViewIfRequired && location.getPerspective().hasModuleViewForObject(location.getObject())) {
+					Progress.progress("load_module_view");
+					moduleView = createModuleViewForObjectAndPerspective(location.getObject(), location.getPerspective(),
+							location.isEditable());
+					if (moduleView != null) {
+						FlexoObject representedObject = moduleView.getRepresentedObject();
+						if (representedObject == null) {
+							if (logger.isLoggable(Level.WARNING)) {
+								logger.warning("Module view: " + moduleView.getClass().getName()
+										+ " does not return its represented object");
+							}
+							representedObject = location.getObject();
 						}
-						representedObject = location.getObject();
+						manager.new PropertyChangeListenerRegistration(representedObject.getDeletedProperty(), this, representedObject);
+						if (representedObject instanceof FlexoProjectObject
+								&& ((FlexoProjectObject) representedObject).getProject() != null
+								&& !manager.hasListener(ProjectClosedNotification.CLOSE, this,
+										((FlexoProjectObject) representedObject).getProject())) {
+							manager.new PropertyChangeListenerRegistration(ProjectClosedNotification.CLOSE, this,
+									((FlexoProjectObject) representedObject).getProject());
+						}
+						viewsForLocation.put(location, moduleView);
+						locationsForView.put(moduleView, location);
 					}
-					manager.new PropertyChangeListenerRegistration(representedObject.getDeletedProperty(), this, representedObject);
-					if (representedObject instanceof FlexoProjectObject
-							&& ((FlexoProjectObject) representedObject).getProject() != null
-							&& !manager.hasListener(ProjectClosedNotification.CLOSE, this,
-									((FlexoProjectObject) representedObject).getProject())) {
-						manager.new PropertyChangeListenerRegistration(ProjectClosedNotification.CLOSE, this,
-								((FlexoProjectObject) representedObject).getProject());
-					}
-					viewsForLocation.put(location, moduleView);
-					locationsForView.put(moduleView, location);
 				}
 			}
+			return moduleView;
 		}
-		return moduleView;
 	}
 
 	private ModuleView<?> lookupViewForLocation(Location location) {
