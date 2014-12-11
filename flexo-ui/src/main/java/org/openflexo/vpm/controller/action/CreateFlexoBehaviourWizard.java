@@ -11,7 +11,6 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
@@ -188,7 +187,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 			return FlexoLocalization.localizedForKey("configure_behaviour_parameters");
 		}
 
-		public Class<? extends FlexoBehaviourParameter>[] getAvailableParameterTypes() {
+		public Class[] getAvailableParameterTypes() {
 			return CreateFlexoBehaviourParameter.AVAILABLE_TYPES;
 		}
 
