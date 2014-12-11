@@ -291,4 +291,10 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		}
 	}
 
+	/**
+	 * Hook executed when a step has finished
+	 */
+	public void done() {
+	}
+
 }

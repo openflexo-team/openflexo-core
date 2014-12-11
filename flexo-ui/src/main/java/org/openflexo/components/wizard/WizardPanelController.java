@@ -14,4 +14,8 @@ public class WizardPanelController extends FlexoFIBController {
 		return (Wizard) super.getDataObject();
 	}
 
+	public void finish() {
+		getDataObject().finish();
+		super.validateAndDispose();
+	}
 }
