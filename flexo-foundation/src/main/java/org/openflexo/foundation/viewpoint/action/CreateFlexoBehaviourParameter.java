@@ -20,6 +20,7 @@
 package org.openflexo.foundation.viewpoint.action;
 
 import java.security.InvalidParameterException;
+import java.security.URIParameter;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -28,9 +29,20 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.viewpoint.CheckboxParameter;
+import org.openflexo.foundation.viewpoint.ClassParameter;
+import org.openflexo.foundation.viewpoint.DropDownParameter;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
 import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter;
+import org.openflexo.foundation.viewpoint.FloatParameter;
+import org.openflexo.foundation.viewpoint.IndividualParameter;
+import org.openflexo.foundation.viewpoint.IntegerParameter;
+import org.openflexo.foundation.viewpoint.ListParameter;
+import org.openflexo.foundation.viewpoint.TechnologyObjectParameter;
+import org.openflexo.foundation.viewpoint.TextAreaParameter;
+import org.openflexo.foundation.viewpoint.TextFieldParameter;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
@@ -67,6 +79,10 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 	static {
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviourParameter.actionType, FlexoBehaviour.class);
 	}
+
+	public static final Class[] AVAILABLE_TYPES = new Class[] { TextFieldParameter.class, TextAreaParameter.class, IntegerParameter.class,
+			FloatParameter.class, ListParameter.class, CheckboxParameter.class, DropDownParameter.class, ClassParameter.class,
+			FlexoConceptInstanceParameter.class, IndividualParameter.class, TechnologyObjectParameter.class, URIParameter.class };
 
 	private String parameterName;
 	private String description;

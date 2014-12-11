@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
+	layout="twocols" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" trackViewPortWidth="true"
+	dataClassName="org.openflexo.vpm.controller.action.CreateFlexoBehaviourWizard$ConfigureFlexoBehaviourParameters"
+	titleFont="Lucida Grande,0,13" trackViewPortHeight="true">
+	<LocalizedDictionary id="1" />
+	<Table id="2" showFooter="true" manageDynamicModel="true"
+		selectionMode="MultipleIntervalSelection" opaque="false"
+		boundToSelectionManager="true" controllerClassName="org.openflexo.fib.controller.FIBController"
+		index="0" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=0;gridWidth=1;gridX=0;gridY=0;index=0;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;location=north;padX=0;padY=0;splitIdentifier=top;weightX=1.0;weightY=1.0)"
+		visibleRowCount="5" createNewRowOnClick="false"
+		iteratorClassName="org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour$BehaviourParameterEntry"
+		useScrollBar="false" data="data.parameterEntries" autoSelectFirstRow="true"
+		name="ModelSlotTable" readOnly="false">
+		<IconColumn id="3" data="controller.iconForObject(iterator)"
+			displayTitle="false" title="icon" name="icon" columnWidth="25"
+			resizable="false" />
+		<TextFieldColumn id="4" data="iterator.parameterName"
+			displayTitle="true" title="parameter_name" columnWidth="200" resizable="true" />
+		<DropDownColumn
+			data="iterator.parameterClass" title="type" columnWidth="200"
+			resizable="true" displayTitle="true" name="parameterClassDD" format="object.simpleName"
+			array="data.availableParameterTypes"
+			iteratorClassName="java.lang.Class"
+			autoSelectFirstRow="true" />
+		<TextFieldColumn id="7" data="iterator.parameterDescription"
+			displayTitle="true" title="description" name="descriptionTF" columnWidth="500"
+			resizable="true" />
+		<RemoveAction id="8" name="delete"
+			method="data.deleteParameterEntry(selected)" />
+		<AddAction id="9" name="createParameter" method="data.newParameterEntry" />
+	</Table>
+</Panel>

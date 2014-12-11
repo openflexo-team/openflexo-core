@@ -37,10 +37,12 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 	private static final String NO_PRIMITIVE_TYPE = FlexoLocalization.localizedForKey("please_choose_primitive_type");
 	private static final String NO_INDIVIDUAL_TYPE = FlexoLocalization.localizedForKey("please_choose_individual_type");
 	private static final String RECOMMANDED_DESCRIPTION = FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_flexo_role");
+	private static final String DISCOURAGED_NAME = FlexoLocalization
+			.localizedForKey("name_is_discouraged_by_convention_role_name_usually_start_with_a_lowercase_letter");
 
 	private final DescribeFlexoRole describeFlexoRole;
 
-	private static final Dimension DIMENSIONS = new Dimension(600, 500);
+	private static final Dimension DIMENSIONS = new Dimension(700, 500);
 
 	public CreateFlexoRoleWizard(CreateFlexoRole action, FlexoController controller) {
 		super(action, controller);
@@ -115,6 +117,10 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 				return false;
 			} else if (StringUtils.isEmpty(getDescription())) {
 				setIssueMessage(RECOMMANDED_DESCRIPTION, IssueMessageType.WARNING);
+			}
+
+			if (!getRoleName().substring(0, 1).toLowerCase().equals(getRoleName().substring(0, 1))) {
+				setIssueMessage(DISCOURAGED_NAME, IssueMessageType.WARNING);
 			}
 
 			return true;

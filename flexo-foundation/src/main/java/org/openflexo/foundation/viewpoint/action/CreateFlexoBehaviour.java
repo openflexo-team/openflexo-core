@@ -31,6 +31,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.viewpoint.ActionScheme;
@@ -38,14 +39,17 @@ import org.openflexo.foundation.viewpoint.CloningScheme;
 import org.openflexo.foundation.viewpoint.CreationScheme;
 import org.openflexo.foundation.viewpoint.DeletionScheme;
 import org.openflexo.foundation.viewpoint.FlexoBehaviour;
+import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.viewpoint.FlexoConceptObject;
+import org.openflexo.foundation.viewpoint.NavigationScheme;
 import org.openflexo.foundation.viewpoint.SynchronizationScheme;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
 // TODO: rename as CreateFlexoBehaviour
@@ -93,6 +97,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	private List<Class<? extends FlexoBehaviour>> behaviours;
 
+	private final List<BehaviourParameterEntry> parameterEntries;
+
 	private FlexoBehaviour newFlexoBehaviour;
 
 	CreateFlexoBehaviour(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
@@ -105,6 +111,25 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		} else if (focusedObject instanceof FlexoConcept) {
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
 		}
+
+		parameterEntries = new ArrayList<CreateFlexoBehaviour.BehaviourParameterEntry>();
+	}
+
+	public List<BehaviourParameterEntry> getParameterEntries() {
+		return parameterEntries;
+	}
+
+	public BehaviourParameterEntry newParameterEntry() {
+		BehaviourParameterEntry returned = new BehaviourParameterEntry("param" + (getParameterEntries().size() + 1));
+		parameterEntries.add(returned);
+		getPropertyChangeSupport().firePropertyChange("parameterEntries", null, returned);
+		return returned;
+	}
+
+	public void deleteParameterEntry(BehaviourParameterEntry parameterEntryToDelete) {
+		parameterEntries.remove(parameterEntryToDelete);
+		parameterEntryToDelete.delete();
+		getPropertyChangeSupport().firePropertyChange("parameterEntries", parameterEntryToDelete, null);
 	}
 
 	private void addVirtualModelFlexoBehaviours(VirtualModel virtualModel) {
@@ -166,15 +191,50 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		return null;
 	}
 
+	private String defaultFlexoBehaviourBaseName() {
+		if (flexoBehaviourClass != null) {
+			if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "create";
+			} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "delete";
+			} else if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "action";
+			} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "clone";
+			} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+				return "navigate";
+			}
+			String baseName = flexoBehaviourClass.getSimpleName();
+			return baseName.substring(0, 1).toLowerCase() + baseName.substring(1);
+		}
+		return null;
+	}
+
 	public String getFlexoBehaviourName() {
 		if (StringUtils.isEmpty(flexoBehaviourName) && flexoBehaviourClass != null) {
-			return getFlexoConcept().getAvailableEditionSchemeName(flexoBehaviourClass.getSimpleName());
+			return getFlexoConcept().getAvailableEditionSchemeName(defaultFlexoBehaviourBaseName());
 		}
 		return flexoBehaviourName;
 	}
 
 	public void setFlexoBehaviourName(String flexoBehaviourName) {
 		this.flexoBehaviourName = flexoBehaviourName;
+	}
+
+	private void performCreateParameters() {
+		for (BehaviourParameterEntry entry : getParameterEntries()) {
+			performCreateParameter(entry);
+		}
+	}
+
+	private void performCreateParameter(BehaviourParameterEntry entry) {
+		Progress.progress(FlexoLocalization.localizedForKey("create_parameter") + " " + entry.getParameterName());
+		CreateFlexoBehaviourParameter action = CreateFlexoBehaviourParameter.actionType.makeNewEmbeddedAction(getNewFlexoBehaviour(), null,
+				this);
+		action.setParameterName(entry.getParameterName());
+		action.setFlexoBehaviourParameterClass(entry.getParameterClass());
+		action.setDescription(entry.getParameterDescription());
+		action.doAction();
 	}
 
 	@Override
@@ -187,6 +247,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
+			performCreateParameters();
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		} else {
 			throw new InvalidParameterException("flexoBehaviourClass is null");
@@ -198,29 +259,15 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		return newFlexoBehaviour;
 	}
 
-	private String errorMessage = EMPTY_NAME;
-
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_behaviour_must_have_an_non_empty_and_unique_name");
-	private static final String EMPTY_FLEXO_BEHAVIOUR_TYPE = FlexoLocalization.localizedForKey("a_flexo_behaviour_type_must_be_selected");
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
 	@Override
 	public boolean isValid() {
 		if (getFlexoBehaviourName() == null) {
-			errorMessage = EMPTY_NAME;
 			return false;
 		} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
-			errorMessage = DUPLICATED_NAME;
 			return false;
 		} else if (flexoBehaviourClass == null) {
-			errorMessage = EMPTY_FLEXO_BEHAVIOUR_TYPE;
 			return false;
 		} else {
-			errorMessage = "";
 			return true;
 		}
 	}
@@ -234,7 +281,6 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		this.description = description;
 		getPropertyChangeSupport().firePropertyChange("description", null, description);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
 	public Class<? extends FlexoBehaviour> getFlexoBehaviourClass() {
@@ -246,6 +292,85 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		this.flexoBehaviourClass = flexoBehaviourClass;
 		getPropertyChangeSupport().firePropertyChange("flexoBehaviourClass", null, flexoBehaviourClass);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
+
+	public static class BehaviourParameterEntry extends PropertyChangedSupportDefaultImplementation {
+
+		private String parameterName;
+		private Class<? extends FlexoBehaviourParameter> parameterClass;
+		private boolean required = true;
+		private String description;
+
+		public BehaviourParameterEntry(String paramName) {
+			super();
+			this.parameterName = paramName;
+		}
+
+		public void delete() {
+			parameterName = null;
+			description = null;
+			parameterClass = null;
+		}
+
+		public Class<? extends FlexoBehaviourParameter> getParameterClass() {
+			return parameterClass;
+		}
+
+		public void setParameterClass(Class<? extends FlexoBehaviourParameter> parameterClass) {
+			this.parameterClass = parameterClass;
+			getPropertyChangeSupport().firePropertyChange("parameterClass", parameterClass != null ? null : false, parameterClass);
+		}
+
+		public String getParameterName() {
+			if (parameterName == null) {
+				return "param";
+			}
+			return parameterName;
+		}
+
+		public void setParameterName(String parameterName) {
+			this.parameterName = parameterName;
+			getPropertyChangeSupport().firePropertyChange("parameterName", null, parameterName);
+		}
+
+		public String getParameterDescription() {
+			return description;
+		}
+
+		public void setParameterDescription(String description) {
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("parameterDescription", null, description);
+		}
+
+		public boolean isRequired() {
+			return required;
+		}
+
+		public void setRequired(boolean required) {
+			this.required = required;
+			getPropertyChangeSupport().firePropertyChange("required", null, required);
+		}
+
+		public String getConfigurationErrorMessage() {
+
+			if (StringUtils.isEmpty(getParameterName())) {
+				return FlexoLocalization.localizedForKey("please_supply_valid_parameter_name");
+			}
+			if (getParameterClass() == null) {
+				return FlexoLocalization.localizedForKey("no_parameter_type_defined_for") + " " + getParameterName();
+			}
+
+			return null;
+		}
+
+		public String getConfigurationWarningMessage() {
+			if (StringUtils.isEmpty(getParameterDescription())) {
+				return FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_parameter") + " " + getParameterName();
+			}
+			return null;
+
+		}
+
+	}
+
 }

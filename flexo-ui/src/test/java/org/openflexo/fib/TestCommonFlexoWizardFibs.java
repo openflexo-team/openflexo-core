@@ -18,6 +18,11 @@ public class TestCommonFlexoWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testConfigureFlexoBehaviourParameters() {
+		validateFIB("Fib/Wizard/CreateFlexoConcept/ConfigureFlexoBehaviourParameters.fib");
+	}
+
+	@Test
 	public void testConfigureFreeModelSlot() {
 		validateFIB("Fib/Wizard/CreateFlexoConcept/ConfigureFreeModelSlot.fib");
 	}
@@ -35,6 +40,11 @@ public class TestCommonFlexoWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testConfigureVirtualModelModelSlot() {
 		validateFIB("Fib/Wizard/CreateFlexoConcept/ConfigureVirtualModelModelSlot.fib");
+	}
+
+	@Test
+	public void testDescribeFlexoBehaviour() {
+		validateFIB("Fib/Wizard/CreateFlexoConcept/DescribeFlexoBehaviour.fib");
 	}
 
 	@Test
