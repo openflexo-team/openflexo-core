@@ -42,7 +42,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_CONCEPT_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_CONCEPT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeFlexoConcept getDescribeFlexoConcept() {

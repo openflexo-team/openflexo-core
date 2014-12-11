@@ -47,7 +47,6 @@ import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptObject, ViewPointObject> {
@@ -114,10 +113,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setRoleName(String roleName) {
-		boolean wasValid = isValid();
 		this.roleName = roleName;
 		getPropertyChangeSupport().firePropertyChange("roleName", null, roleName);
-		fireChanges(wasValid);
 	}
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
@@ -129,8 +126,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		}
 		if (getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
-		}
-		else {
+		} else {
 			FlexoConcept fc = (FlexoConcept) this.getFocusedObject();
 			if (fc != null) {
 				VirtualModel vm = fc.getVirtualModel();
@@ -151,8 +147,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 			if (modelSlot != null) {
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
-			}
-			else {
+			} else {
 				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
@@ -170,7 +165,6 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 					logger.info("Created " + newFlexoRole + " with " + primitiveType);
 				}
 
-
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setDescription(description);
 				getFlexoConcept().addToFlexoRoles(newFlexoRole);
@@ -183,36 +177,14 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		return newFlexoRole;
 	}
 
-	private String validityMessage = EMPTY_NAME;
-
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("pattern_role_must_have_an_non_empty_and_unique_name");
-	private static final String NO_MODEL_SLOT = FlexoLocalization.localizedForKey("please_choose_a_model_slot");
-
-	public String getValidityMessage() {
-		return validityMessage;
-	}
-
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getRoleName())) {
-			validityMessage = EMPTY_NAME;
+			return false;
+		} else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
 			return false;
 		}
-		else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
-			validityMessage = DUPLICATED_NAME;
-			return false;
-		}
-		/* Valid  => when modelSlot is null, then it is VirtualModel
-		else if (modelSlot == null) {
-			validityMessage = NO_MODEL_SLOT;
-			return false;
-		}
-		 */
-		else {
-			validityMessage = "";
-			return true;
-		}
+		return true;
 	}
 
 	public boolean isIndividual() {
@@ -229,23 +201,29 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		return FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass);
 	}
 
+	public boolean isPrimitive() {
+		if (flexoRoleClass == null) {
+			return false;
+		}
+		return PrimitiveRole.class.isAssignableFrom(flexoRoleClass);
+	}
+
 	public VirtualModel getModelSlotVirtualModel() {
 		if (modelSlot instanceof VirtualModelModelSlot) {
 			if (((VirtualModelModelSlot) modelSlot).getVirtualModelResource() != null) {
 				return ((VirtualModelModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
-		}
-		else if (modelSlot == null) {
+		} else if (modelSlot == null) {
 			return getFlexoConcept().getVirtualModel();
 		}
 		return null;
 	}
 
 	public List<ModelSlot<?>> getAvailableModelSlots() {
+
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		}
-		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
+		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
 			return getFocusedObject().getVirtualModel().getModelSlots();
 		}
 		return null;
@@ -254,8 +232,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private ModelSlot<?> retrieveDefaultModelSlot() {
 		if (getFocusedObject() instanceof VirtualModel && ((VirtualModel) getFocusedObject()).getModelSlots().size() > 0) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots().get(0);
-		}
-		else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
+		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
 				&& getFocusedObject().getVirtualModel().getModelSlots().size() > 0) {
 			return getFocusedObject().getVirtualModel().getModelSlots().get(0);
 		}
@@ -280,10 +257,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setDescription(String description) {
-		boolean wasValid = isValid();
 		this.description = description;
 		getPropertyChangeSupport().firePropertyChange("description", null, description);
-		fireChanges(wasValid);
 	}
 
 	public ModelSlot<?> getModelSlot() {
@@ -293,29 +268,27 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
 		if (modelSlot != null) {
 			return modelSlot.getTechnologyAdapter();
-		}
-		else {
+		} else {
 			return getFlexoConcept().getVirtualModel().getTechnologyAdapter();
 		}
 	}
 
 	public void setModelSlot(ModelSlot<?> modelSlot) {
-		boolean wasValid = isValid();
 		this.modelSlot = modelSlot;
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
+		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 		getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			}
-			else {
+			} else {
 				setFlexoRoleClass(null);
 			}
 		}
 		if (modelSlot != null && getFlexoRoleClass() == null && getAvailableFlexoRoleTypes().size() > 0) {
 			setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
 		}
-		fireChanges(wasValid);
 	}
 
 	public Class<? extends FlexoRole> getFlexoRoleClass() {
@@ -323,10 +296,11 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setFlexoRoleClass(Class<? extends FlexoRole> flexoRoleClass) {
-		boolean wasValid = isValid();
 		this.flexoRoleClass = flexoRoleClass;
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
-		fireChanges(wasValid);
+		getPropertyChangeSupport().firePropertyChange("isIndividual", !isIndividual(), isIndividual());
+		getPropertyChangeSupport().firePropertyChange("isFlexoConceptInstance", !isFlexoConceptInstance(), isFlexoConceptInstance());
+		getPropertyChangeSupport().firePropertyChange("isPrimitive", !isPrimitive(), isPrimitive());
 	}
 
 	public IFlexoOntologyClass getIndividualType() {
@@ -334,10 +308,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setIndividualType(IFlexoOntologyClass individualType) {
-		boolean wasValid = isValid();
 		this.individualType = individualType;
-		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
-		fireChanges(wasValid);
+		getPropertyChangeSupport().firePropertyChange("individualType", flexoRoleClass != null ? null : false, flexoRoleClass);
 	}
 
 	public FlexoConcept getFlexoConceptInstanceType() {
@@ -345,10 +317,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setFlexoConceptInstanceType(FlexoConcept flexoConceptInstanceType) {
-		boolean wasValid = isValid();
 		this.flexoConceptInstanceType = flexoConceptInstanceType;
 		getPropertyChangeSupport().firePropertyChange("flexoConceptInstanceType", null, flexoConceptInstanceType);
-		fireChanges(wasValid);
 	}
 
 	public PrimitiveType getPrimitiveType() {
@@ -356,19 +326,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public void setPrimitiveType(PrimitiveType primitiveType) {
-		boolean wasValid = isValid();
 		this.primitiveType = primitiveType;
 		getPropertyChangeSupport().firePropertyChange("primitiveType", null, primitiveType);
-		fireChanges(wasValid);
-	}
-
-	private void fireChanges(boolean wasValid) {
-		getPropertyChangeSupport().firePropertyChange("isIndividual", null, getAvailableFlexoRoleTypes());
-		getPropertyChangeSupport().firePropertyChange("isFlexoConceptInstance", null, getAvailableFlexoRoleTypes());
-		getPropertyChangeSupport().firePropertyChange("roleName", null, getAvailableFlexoRoleTypes());
-		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
-		getPropertyChangeSupport().firePropertyChange("validityMessage", null, getValidityMessage());
 	}
 
 }

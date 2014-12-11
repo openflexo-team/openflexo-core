@@ -126,6 +126,7 @@ import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.ViewPointObject;
 import org.openflexo.foundation.viewpoint.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.viewpoint.action.AbstractCreateVirtualModel.ModelSlotEntry;
+import org.openflexo.foundation.viewpoint.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.foundation.viewpoint.rm.VirtualModelResource;
 import org.openflexo.icon.IconFactory;
@@ -1874,10 +1875,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 		if (object instanceof ModelSlotEntry) {
 			return VPMIconLibrary.iconForModelSlot(((ModelSlotEntry) object).getTechnologyAdapter());
-		}
-
-		else if (object instanceof ParentFlexoConceptEntry) {
+		} else if (object instanceof ParentFlexoConceptEntry) {
 			return VPMIconLibrary.FLEXO_CONCEPT_ICON;
+		} else if (object instanceof BehaviourParameterEntry) {
+			return VPMIconLibrary.FLEXO_CONCEPT_PARAMETER_ICON;
 		}
 
 		// If object is a TechnologyObject, we delegate this to the right

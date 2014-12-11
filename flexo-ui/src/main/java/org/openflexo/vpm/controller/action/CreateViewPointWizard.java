@@ -40,7 +40,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.VIEWPOINT_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(VPMIconLibrary.VIEWPOINT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeViewPoint getDescribeViewPoint() {

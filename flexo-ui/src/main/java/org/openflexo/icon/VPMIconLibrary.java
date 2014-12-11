@@ -135,6 +135,8 @@ public class VPMIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png"));
 	public static final ImageIconResource MODEL_SLOT_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot32.png"));
+	public static final ImageIconResource MODEL_SLOT_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot64.png"));
 
 	public static final ImageIconResource FLEXO_CONCEPT_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoConcept.png"));
@@ -149,6 +151,13 @@ public class VPMIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole_32x32.png"));
 	public static final ImageIconResource FLEXO_ROLE_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/FlexoRole_64x64.png"));
+
+	public static final ImageIconResource FLEXO_BEHAVIOUR_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoBehaviour.png"));
+	public static final ImageIconResource FLEXO_BEHAVIOUR_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoBehaviour_32x32.png"));
+	public static final ImageIconResource FLEXO_BEHAVIOUR_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/FlexoBehaviour_64x64.png"));
 
 	public static final ImageIconResource ACTION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ActionSchemeIcon.png"));
