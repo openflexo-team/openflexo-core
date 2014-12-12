@@ -1008,6 +1008,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		//
 
 		synchronized (lock) {
+			
 			ModuleView<?> moduleView = lookupViewForLocation(location);
 
 			if (moduleView == null) {
@@ -1018,6 +1019,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					if (moduleView != null) {
 						viewsForLocation.put(location, moduleView);
 						locationsForView.put(moduleView, location);
+
 
 						FlexoObject representedObject = moduleView.getRepresentedObject();
 						if (representedObject == null) {
@@ -1038,10 +1040,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					}
 				}
 			}
-
 			return moduleView;
 		}
-
 	}
 
 	private ModuleView<?> lookupViewForLocation(Location location) {

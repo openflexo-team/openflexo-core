@@ -27,6 +27,7 @@ flexo_concept_has_no_edition_scheme=Flexo concept has no edition scheme
 flexo_concept_role_has_no_role=Flexo concept role has no role
 flexo_concept_should_have_deletion_scheme_description=Flexo concept should have deletion scheme description
 flexo_concept_should_have_edition_scheme_description=Flexo concept should have edition scheme description
+flexo_concept_should_have_roles_description=Flexo concept should have roles description
 object_property_assertion_must_define_an_ontology_property=Object property assertion must define an ontology property
 remove_reflexive_modelslot=Remove reflexive modelslot
 sets_container_to_'($shapeRole.roleName)'=Sets container to '($shapeRole.roleName)'

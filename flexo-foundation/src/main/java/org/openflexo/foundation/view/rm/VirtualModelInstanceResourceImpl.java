@@ -215,16 +215,6 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			}
 		}*/
 
-		// CAUTION: entering HACKING area
-		/*SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
-					getLoadedResourceData().synchronize(null);
-				}
-			}
-		});*/
-
 		return returned;
 	}
 

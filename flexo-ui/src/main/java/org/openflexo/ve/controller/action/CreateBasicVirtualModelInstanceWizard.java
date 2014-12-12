@@ -102,24 +102,26 @@ public class CreateBasicVirtualModelInstanceWizard extends FlexoWizard {
 				return false;
 			}
 			if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_name_defined"), IssueMessageType.ERROR);
+				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_name_defined"), IssueMessageType.ERROR);
+				return false;
+			}
+
+			if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
+				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_instance_title_defined"), IssueMessageType.ERROR);
+				return false;
+			}
+			if (action.getFocusedObject().getVirtualModelInstance(getNewVirtualModelInstanceName()) != null) {
+				setIssueMessage(FlexoLocalization.localizedForKey("a_virtual_model_instance_with_that_name_already_exists"),
+						IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
 					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
-				setIssueMessage(FlexoLocalization.localizedForKey("invalid_name_for_new_virtual_model"), IssueMessageType.ERROR);
-				return false;
+				setIssueMessage(FlexoLocalization.localizedForKey("discouraged_name_for_new_virtual_model_instance"),
+						IssueMessageType.WARNING);
 			}
 
-			if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_virtual_model_title_defined"), IssueMessageType.ERROR);
-				return false;
-			}
-			if (action.getFocusedObject().getVirtualModelInstance(getNewVirtualModelInstanceName()) != null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("a_virtual_model_with_that_name_already_exists"), IssueMessageType.ERROR);
-				return false;
-			}
 			return true;
 		}
 

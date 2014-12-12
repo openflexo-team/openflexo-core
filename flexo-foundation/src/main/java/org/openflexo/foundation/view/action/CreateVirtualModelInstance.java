@@ -108,7 +108,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in view " + getFocusedObject());
 
-		//System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
+		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
 		System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getURI());
 
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
@@ -166,26 +166,16 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	@Override
 	public boolean isValid() {
 		if (virtualModel == null) {
-			// errorMessage = noVirtualModelSelectedMessage();
 			return false;
 		}
 		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
-			// errorMessage = noNameMessage();
-			return false;
-		}
-
-		if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
-				&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
-			// errorMessage = invalidNameMessage();
 			return false;
 		}
 
 		if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
-			// errorMessage = noTitleMessage();
 			return false;
 		}
 		if (getFocusedObject().getVirtualModelInstance(newVirtualModelInstanceName) != null) {
-			// errorMessage = duplicatedNameMessage();
 			return false;
 		}
 		return true;

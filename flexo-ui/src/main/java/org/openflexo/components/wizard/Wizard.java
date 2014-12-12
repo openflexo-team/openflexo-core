@@ -173,6 +173,8 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 			return;
 		}
 
+		currentStep.done();
+
 		if (currentStep.isTransitionalStep()) {
 			currentStep.performTransition();
 		}
@@ -219,6 +221,12 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 	 */
 	public Dimension getPreferredSize() {
 		return null;
+	}
+
+	public void finish() {
+		if (canFinish()) {
+			getCurrentStep().done();
+		}
 	}
 
 }
