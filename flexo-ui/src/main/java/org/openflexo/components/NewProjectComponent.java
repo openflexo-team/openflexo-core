@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.localization.FlexoLocalization;
@@ -62,11 +63,16 @@ public class NewProjectComponent extends ProjectChooserComponent {
 				if (!newProjectDir.getName().toLowerCase().endsWith(".prj")) {
 					newProjectDir = new File(newProjectDir.getAbsolutePath() + ".prj");
 				}
-				if (!newProjectDir.exists()) {
-					// newProjectDir.mkdir();
-				} else {
-					if (!FlexoController.confirmWithWarning(FlexoLocalization
-							.localizedForKey("project_already_exists_do_you_want_to_replace_it"))) {
+				if (newProjectDir.exists()) {
+					int option = FlexoController.confirmWithWarningYesNoCancel(
+							FlexoLocalization.localizedForKey("project_already_exists_do_you_want_to_replace_it"),
+							FlexoLocalization.localizedForKey("name_conflict"));
+
+					if (option == JOptionPane.YES_OPTION) {
+						// We continue with this folder
+					} else if (option == JOptionPane.NO_OPTION) {
+						return getProjectDirectory(owner, applicationContext);
+					} else { /*Cancel*/
 						newProjectDir = null;
 					}
 				}
