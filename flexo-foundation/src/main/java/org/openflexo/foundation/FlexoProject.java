@@ -126,6 +126,9 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public static FlexoEditor newProject(File aProjectDirectory, ProjectNature nature, FlexoEditorFactory editorFactory,
 			FlexoServiceManager serviceManager, FlexoProgress progress) throws ProjectInitializerException {
 
+		// We should have already asked the user if the new project has to override the old one
+		// When true, old directory was renamed to backup file
+		// So, this is not normal to have here an existing file
 		if (aProjectDirectory.exists()) {
 			throw new ProjectInitializerException("This directory already exists: " + aProjectDirectory, aProjectDirectory);
 		}

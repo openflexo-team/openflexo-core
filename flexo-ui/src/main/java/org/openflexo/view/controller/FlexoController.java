@@ -496,9 +496,14 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return ask(msg) == JOptionPane.YES_OPTION;
 	}
 
-	public static int confirmYesNoCancel(String localizedMessage) {
-		return showOptionDialog(FlexoFrame.getActiveFrame(), localizedMessage, localizedMessage, JOptionPane.YES_NO_CANCEL_OPTION,
+	public static int confirmYesNoCancel(String localizedMessage, String localizedTitle) {
+		return showOptionDialog(FlexoFrame.getActiveFrame(), localizedMessage, localizedTitle, JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
+	}
+
+	public static int confirmWithWarningYesNoCancel(String localizedMessage, String localizedTitle) {
+		return showOptionDialog(FlexoFrame.getActiveFrame(), localizedMessage, localizedTitle, JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.WARNING_MESSAGE, null, null, null);
 	}
 
 	public static String askForString(String msg) throws HeadlessException {

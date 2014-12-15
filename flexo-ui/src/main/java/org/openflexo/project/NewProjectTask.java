@@ -1,6 +1,7 @@
 package org.openflexo.project;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
@@ -11,6 +12,7 @@ import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * A task used to create a new Flexo project
@@ -46,6 +48,23 @@ public class NewProjectTask extends FlexoApplicationTask {
 		FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
 
 		projectLoader.preInitialization(projectDirectory);
+
+		if (projectDirectory.exists()) {
+			// We should have already asked the user if the new project has to override the old one
+			// so we really delete the old project
+
+			File backupProject = new File(projectDirectory.getParentFile(), projectDirectory.getName() + "~");
+			if (backupProject.exists()) {
+				FileUtils.recursiveDeleteFile(backupProject);
+			}
+
+			try {
+				FileUtils.rename(projectDirectory, backupProject);
+			} catch (IOException e) {
+				throwException(e);
+			}
+		}
+
 		try {
 			flexoEditor = FlexoProject.newProject(projectDirectory, projectNature, projectLoader.getServiceManager(),
 					projectLoader.getServiceManager(), null);
