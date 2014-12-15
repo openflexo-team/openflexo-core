@@ -17,11 +17,37 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 @Deprecated
 public class DefaultFlexoObject extends FlexoObjectImpl {
 
+	// Following code relative to modified management is a temporary hack to manage modified status
+	// TODO: DefaultFlexoObject should not be used anymore and PAMELA should be used instead
+	private boolean localModified = false;
+
 	@Override
 	public boolean isModified() {
-		// TODO Auto-generated method stub
-		return false;
+		return localModified;
 	}
+
+	@Override
+	public void performSuperSetModified(boolean modified) {
+		localModified = modified;
+	}
+
+	/*@Override
+	public void setModified(boolean modified) {
+		super.setModified(modified);
+		localModified = modified;
+	}
+
+	@Override
+	public synchronized void setIsModified() {
+		super.setIsModified();
+		localModified = true;
+	}
+
+	@Override
+	public synchronized void clearIsModified() {
+		super.clearIsModified();
+		localModified = false;
+	}*/
 
 	@Override
 	public void setCustomProperties(List<FlexoProperty> customProperties) {
@@ -78,12 +104,6 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
-	public void performSuperSetModified(boolean modified) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public Object performSuperFinder(String finderIdentifier, Object value) {
 		// TODO Auto-generated method stub
 		return null;
@@ -105,12 +125,6 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	public boolean isDeserializing() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public void setModified(boolean modified) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
