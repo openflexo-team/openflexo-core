@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-component</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
 	</parent>
 	<version>1.7.0-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
@@ -11,11 +11,11 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.1-SNAPSHOT</gina.version>
-		<connie.version>1.1-SNAPSHOT</connie.version>
-		<pamela.version>1.1-SNAPSHOT</pamela.version>
-		<diana.version>1.1-SNAPSHOT</diana.version>
-		<flexoutils.version>1.1-SNAPSHOT</flexoutils.version>
+		<gina.version>1.1-RC1</gina.version>
+		<connie.version>1.1-RC1</connie.version>
+		<pamela.version>1.1-RC1</pamela.version>
+		<diana.version>1.1-RC1</diana.version>
+		<flexoutils.version>1.1-RC1</flexoutils.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
@@ -182,105 +182,12 @@
 				<version>${diana.version}</version>
 			</dependency>
 			
-			
-			<!-- Openflexo utils -->
-			
-			<!--  <dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>jiraclient</artifactId>
-				<version>${jiraclient.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.openflexo</groupId>
-				<artifactId>flexohelp</artifactId>
-				<version>${flexohelp.version}</version>
-			</dependency>-->
-			<!-- 3rd party -->
-			<!-- 
-			<dependency>
-				<groupId>org.apache.cayenne</groupId>
-				<artifactId>cayenne-nodeps</artifactId>
-				<version>2.0.3</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>com.thoughtworks.qdox</groupId>
-				<artifactId>qdox</artifactId>
-				<version>1.6.3</version>
-			</dependency>
-			<dependency>
-				<groupId>com.hp.hpl.jena</groupId>
-				<artifactId>jena</artifactId>
-				<version>2.6.4</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.velocity</groupId>
-				<artifactId>velocity</artifactId>
-				<version>1.7</version>
-			</dependency>
-			<dependency>
-				<groupId>velocity-tools</groupId>
-				<artifactId>velocity-tools</artifactId>
-				<version>2.0-beta1</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>3.2</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.findbugs</groupId>
-				<artifactId>jsr305</artifactId>
-				<version>2.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.8</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xsom</groupId>
-				<artifactId>xsom</artifactId>
-				<version>20110809</version>
-			</dependency>
-			-->
 			<dependency>
 				<groupId>org.openflexo.utils</groupId>
 				<artifactId>macos_ui_simulation</artifactId>
 				<version>1.1</version>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>javax.mail</groupId>
-				<artifactId>mail</artifactId>
-				<version>1.4.1</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.17</version>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.3.173</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>1.9.0</version>
-			</dependency>
-			-->
+			
 			<dependency>
 				<groupId>javax.help</groupId>
 				<artifactId>javahelp</artifactId>
@@ -291,23 +198,7 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.8</version>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-client</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey.contribs</groupId>
-				<artifactId>jersey-multipart</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.jersey</groupId>
-				<artifactId>jersey-json</artifactId>
-				<version>${jersey.version}</version>
-			</dependency>
-			-->
+			
 			 <dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>openflexo-utils</artifactId>
