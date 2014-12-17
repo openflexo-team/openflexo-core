@@ -44,7 +44,11 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 
 		@Override
 		public void setModellingElement(T object) {
-			setObjectReference(new FlexoObjectReference<T>(object));
+			if (object != null) {
+				setObjectReference(new FlexoObjectReference<T>(object));
+			} else {
+				setObjectReference(null);
+			}
 		}
 
 		@Override
