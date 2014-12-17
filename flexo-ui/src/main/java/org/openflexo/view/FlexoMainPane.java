@@ -38,6 +38,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeListener;
 
@@ -586,7 +587,16 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			   SwingUtilities.invokeLater(new Runnable() {
+				   @Override
+				   public void run() {
+					   propertyChange(evt);
+				   }
+			});
+			return;
+		}
 		if (evt.getSource() == controller.getControllerModel()) {
 			if (evt.getPropertyName().equals(ControllerModel.CURRENT_LOCATION)) {
 				Location previous = (Location) evt.getOldValue();
