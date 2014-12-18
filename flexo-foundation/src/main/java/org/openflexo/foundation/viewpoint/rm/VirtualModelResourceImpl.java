@@ -394,7 +394,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public Resource getDirectory() {
 		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+			String parentPath = getDirectoryPath();
 			if(ResourceLocator.locateResource(parentPath)==null){
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
@@ -406,5 +406,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			return parent;
 		}
 		return null;
+	}
+	
+	public String getDirectoryPath(){
+		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 }

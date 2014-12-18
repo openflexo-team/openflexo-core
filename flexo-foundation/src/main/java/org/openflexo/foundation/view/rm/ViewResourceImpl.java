@@ -3,7 +3,6 @@ package org.openflexo.foundation.view.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,7 +20,6 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceDefinition;
-import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.RequiredResource;
@@ -66,6 +64,9 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			ViewLibrary viewLibrary) {
 		try {
 			File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
+			if(!viewDirectory.exists()){
+				viewDirectory.mkdirs();
+			}
 			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = name;
@@ -284,11 +285,15 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 
 	@Override
 	public Resource getDirectory() {
-		String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+		String parentPath = getDirectoryPath();
 		if(ResourceLocator.locateResource(parentPath)==null){
 			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 		}
 		return ResourceLocator.locateResource(parentPath);
+	}
+	
+	public String getDirectoryPath(){
+		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 	
 }

@@ -32,7 +32,7 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathFileConverter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -60,7 +60,8 @@ public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModel
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
 			if(virtualModelInstanceResource.getFlexoIODelegate() instanceof FileFlexoIODelegate){
-				addConverter(new RelativePathFileConverter(((FileFlexoIODelegate)virtualModelInstanceResource.getFlexoIODelegate()).getFile()));
+				FileFlexoIODelegate delegate = (FileFlexoIODelegate) virtualModelInstanceResource.getFlexoIODelegate();
+				addConverter(new RelativePathResourceConverter(delegate.getFile().getParent()));
 			}
 			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
 		}

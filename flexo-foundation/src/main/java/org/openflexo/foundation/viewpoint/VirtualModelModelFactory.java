@@ -28,7 +28,6 @@ import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
@@ -74,11 +73,10 @@ import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathFileConverter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * {@link ModelFactory} used to handle VirtualModel models<br>
@@ -117,7 +115,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
 		if (virtualModelResource != null) {
 			this.virtualModelResource = virtualModelResource;
-			addConverter(new RelativePathFileConverter(ResourceLocator.retrieveResourceAsFile(virtualModelResource.getDirectory())));
+			addConverter(new RelativePathResourceConverter(virtualModelResource.getDirectory().getRelativePath()));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initVirtualModelFactory(this);

@@ -211,6 +211,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
+			if(!viewpointDir.exists()){
+				viewpointDir.mkdirs();
+			}
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
 					library.getServiceManager());
 			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
