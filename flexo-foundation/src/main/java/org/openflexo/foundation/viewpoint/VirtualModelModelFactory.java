@@ -113,9 +113,9 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
-		if (virtualModelResource != null) {
+		if(virtualModelResource!=null){
 			this.virtualModelResource = virtualModelResource;
-			addConverter(new RelativePathResourceConverter(virtualModelResource.getDirectory().getRelativePath()));
+			addConverter(new RelativePathResourceConverter(virtualModelResource.getFlexoIODelegate().getParentPath()));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initVirtualModelFactory(this);

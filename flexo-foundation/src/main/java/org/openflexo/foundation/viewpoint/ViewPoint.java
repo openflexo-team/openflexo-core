@@ -211,12 +211,8 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
 			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
-			if(!viewpointDir.exists()){
-				viewpointDir.mkdirs();
-			}
 			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
 					library.getServiceManager());
-			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewpointDir.getAbsolutePath());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
 			viewpoint.setResource(vpRes);
@@ -228,7 +224,6 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-			// vpRes.setDirectory(ResourceLocator.locateResource(viewpointDir.getAbsolutePath()));
 			return viewpoint;
 		}
 
@@ -385,17 +380,27 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * After this call return, we can assert that all {@link VirtualModel} are loaded.
 		 */
 		private void loadVirtualModelsWhenUnloaded() {
-			if (isLoading) {
+			System.out.println("loadVirtualModelsWhenUnloaded "+ isLoading);
+			/*if (isLoading) {
 				return;
-			}
-			isLoading = true;
-			if (getResource() != null) {
-				for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-					if (r instanceof VirtualModelResource) {
-						VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
+			}*/
+			if(!isLoading){
+				System.out.println("test1 loadVirtualModelsWhenUnloaded "+ isLoading);
+				isLoading = true;
+				System.out.println("test2 loadVirtualModelsWhenUnloaded "+ isLoading);
+				if (getResource() != null) {
+					System.out.println("test3 loadVirtualModelsWhenUnloaded ");
+					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
+						System.out.println("test4 loadVirtualModelsWhenUnloaded " + r);
+						if (r instanceof VirtualModelResource) {
+							VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
+							System.out.println("test5 loadVirtualModelsWhenUnloaded " + vm);
+						}
 					}
 				}
+				System.out.println("test3 loadVirtualModelsWhenUnloaded "+ getVirtualModels());
 			}
+			
 			isLoading = false;
 		}
 

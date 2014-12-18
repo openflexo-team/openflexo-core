@@ -59,12 +59,9 @@ public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModel
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		if (virtualModelInstanceResource != null) {
-			if(virtualModelInstanceResource.getFlexoIODelegate() instanceof FileFlexoIODelegate){
-				FileFlexoIODelegate delegate = (FileFlexoIODelegate) virtualModelInstanceResource.getFlexoIODelegate();
-				addConverter(new RelativePathResourceConverter(delegate.getFile().getParent()));
-			}
-			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
+			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
 		}
+		addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
 	}
 
 	/**

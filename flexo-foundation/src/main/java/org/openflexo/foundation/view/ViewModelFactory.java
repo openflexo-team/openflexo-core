@@ -41,9 +41,9 @@ public class ViewModelFactory extends DefaultPamelaResourceModelFactory<ViewReso
 	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext) throws ModelDefinitionException {
 		super(viewResource, ModelContextLibrary.getModelContext(View.class));
 		setEditingContext(editingContext);
-		addConverter(new RelativePathResourceConverter(viewResource.getDirectory().getRelativePath()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
+		addConverter(new RelativePathResourceConverter(viewResource.getFlexoIODelegate().getParentPath()));
 	}
-
+	
 }
