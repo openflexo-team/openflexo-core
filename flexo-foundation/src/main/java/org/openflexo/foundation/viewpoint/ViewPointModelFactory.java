@@ -43,7 +43,9 @@ public class ViewPointModelFactory extends DefaultPamelaResourceModelFactory<Vie
 		setEditingContext(editingContext);
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
-		addConverter(new RelativePathResourceConverter(viewPointResource.getFlexoIODelegate().getParentPath()));
+		if(viewPointResource!=null){
+			addConverter(new RelativePathResourceConverter(viewPointResource.getFlexoIODelegate().getParentPath()));
+		}
 	}
 
 	/**
