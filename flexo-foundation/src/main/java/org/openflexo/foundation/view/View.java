@@ -20,7 +20,6 @@
  */
 package org.openflexo.foundation.view;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,9 +41,16 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.viewpoint.binding.ViewPointBindingModel;
-import org.openflexo.model.annotations.*;
+import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.rm.ResourceLocator;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -126,7 +132,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	/**
 	 * Allow to retrieve VMIs given a virtual model.
 	 *
-	 * @param virtualModel key to find correct VMI
+	 * @param virtualModel
+	 *            key to find correct VMI
 	 * @return the list
 	 */
 	public List<VirtualModelInstance> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
@@ -166,7 +173,6 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
 			VirtualModelTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
-			
 
 			View newView = newViewResource.getFactory().newInstance(View.class);
 
@@ -182,8 +188,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 			// Save it
 			newViewResource.save(null);
-			//File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
-			//newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
+			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
+			// newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
 			vmTA.referenceResource(newViewResource, project);
 			return newView;
@@ -341,8 +347,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		}
 
 		/**
-		 * Load eventually unloaded VirtualModelInstances<br> After this call return, we can assert that all {@link VirtualModelInstance}
-		 * are loaded.
+		 * Load eventually unloaded VirtualModelInstances<br>
+		 * After this call return, we can assert that all {@link VirtualModelInstance} are loaded.
 		 */
 		private void loadVirtualModelInstancesWhenUnloaded() {
 			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
@@ -360,8 +366,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				}
-				else {
+				} else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -378,8 +383,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// ==========================================================================
 
 		/**
-		 * This is the binding point between a {@link ModelSlot} and its concretization in a {@link View} through notion of {@link
-		 * ModelSlotInstance}
+		 * This is the binding point between a {@link ModelSlot} and its concretization in a {@link View} through notion of
+		 * {@link ModelSlotInstance}
 		 *
 		 * @param modelSlot
 		 * @return
@@ -479,7 +484,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		// ================================= Delete ===============================
 		// ==========================================================================
 		@Override
-		public final boolean delete() {
+		public final boolean delete(Object... context) {
 
 			logger.info("Deleting view " + this);
 

@@ -708,7 +708,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		// ==========================================================================
 
 		@Override
-		public final boolean delete() {
+		public final boolean delete(Object... context) {
 
 			logger.info("Deleting virtual model instance " + this);
 

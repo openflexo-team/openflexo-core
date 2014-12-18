@@ -389,14 +389,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean delete() {
+		public boolean delete(Object... context) {
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
 			if (getVirtualModel() != null) {
 				getVirtualModel().removeFromFlexoConcepts(this);
 			}
-			super.delete();
+			performSuperDelete(context);
 			deleteObservers();
 			return true;
 		}
@@ -418,8 +418,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "#" + getName();
-			}
-			else {
+			} else {
 				return "null#" + getName();
 			}
 		}
@@ -577,8 +576,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 					String behaviourname = uri.replace(getVirtualModel().getURI(), "").substring(1);
 					System.out.println("XTOF :: je récupère " + behaviourname);
 					return getFlexoBehaviour(behaviourname);
-				}
-				else {
+				} else {
 					logger.warning("Trying to retrieve a FlexoBehaviour (" + uri + ") that does not belong to current Concept " + getURI());
 					return null;
 				}
@@ -835,8 +833,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
-			}
-			else {
+			} else {
 				logger.warning("Could not add as parent FlexoConcept: " + parentFlexoConcept);
 			}
 		}

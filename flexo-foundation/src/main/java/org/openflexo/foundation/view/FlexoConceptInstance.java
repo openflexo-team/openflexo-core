@@ -467,20 +467,20 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * Delete this FlexoConcept instance using default DeletionScheme
 		 */
 		@Override
-		public boolean delete() {
+		public boolean delete(Object... context) {
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept().getDefaultDeletionScheme() != null) {
-				return delete(getFlexoConcept().getDefaultDeletionScheme());
+				return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
 			} else {
 				// Generate on-the-fly default deletion scheme
-				return delete(getFlexoConcept().generateDefaultDeletionScheme());
+				return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
 			}
 		}
 
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
-		public boolean delete(DeletionScheme deletionScheme) {
+		public boolean deleteWithScheme(DeletionScheme deletionScheme) {
 			if (isDeleted()) {
 				return false;
 			}
@@ -619,7 +619,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 								/*System.out.println(" bindingValueChanged() detected for string representation of "
 										+ FlexoConceptInstanceImpl.this + " " + getFlexoConcept().getInspector().getRenderer()
 										+ " with newValue=" + newValue + " source=" + source);*/
-								if (!isDeleted) {
+								if (!isDeleted()) {
 									// We have here detected that the string representation of this concept instance has changed
 									getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, newValue);
 								}

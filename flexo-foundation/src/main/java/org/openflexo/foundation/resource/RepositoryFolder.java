@@ -110,7 +110,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 
 	// TODO : might be an issue here, while create a File systematically when it is not a FileResourceRepository?
 	public File getFile() {
-		if (isRootFolder()) {			
+		if (isRootFolder()) {
 			if (getResourceRepository() instanceof FileResourceRepository) {
 				return ((FileResourceRepository) getResourceRepository()).getDirectory();
 			}
@@ -145,11 +145,11 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	@Override
-	public boolean delete() {
+	public boolean delete(Object... context) {
 		if (getFile().exists()) {
 			getFile().delete();
 		}
-		super.delete();
+		super.delete(context);
 		return true;
 	}
 

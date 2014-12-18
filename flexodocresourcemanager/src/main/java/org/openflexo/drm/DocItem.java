@@ -146,7 +146,7 @@ public class DocItem extends DRMObject {
 	 * @see org.openflexo.foundation.FlexoModelObject#delete()
 	 */
 	@Override
-	public boolean delete() {
+	public boolean delete(Object... context) {
 		Enumeration en = ((Vector) embeddingChildItems.clone()).elements();
 		while (en.hasMoreElements()) {
 			DocItem it = (DocItem) en.nextElement();
@@ -171,7 +171,7 @@ public class DocItem extends DRMObject {
 		if (getFolder() != null) {
 			getFolder().removeFromItems(this);
 		}
-		return super.delete();
+		return super.delete(context);
 	}
 
 	@Override

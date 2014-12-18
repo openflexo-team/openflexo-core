@@ -393,7 +393,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
-		public boolean delete() {
+		public boolean delete(Object... context) {
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}

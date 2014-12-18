@@ -43,7 +43,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String DEPENDENCIES = "dependencies";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
-	public static final String FLEXO_IO_DELEGATE ="flexoIODelegate";
+	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
 
 	/**
 	 * Returns the name of this resource. The name of the resource is a displayable name that the end-user will understand. There are no
@@ -69,6 +69,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the unique resource identifier of this resource
 	 */
+	@Override
 	@Getter(URI)
 	@XMLAttribute()
 	public String getURI();
@@ -78,6 +79,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @param anURI
 	 */
+	@Override
 	@Setter(URI)
 	public void setURI(String anURI);
 
@@ -106,6 +108,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return date
 	 */
+	@Override
 	@Getter(value = LAST_UPDATE, isStringConvertable = true)
 	@XMLAttribute
 	public Date getLastUpdate();
@@ -161,6 +164,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
 	 */
+	@Override
 	public boolean isReadOnly();
 
 	/**
@@ -168,6 +172,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the container of this resource.
 	 */
+	@Override
 	@Getter(value = CONTAINER, inverse = CONTENTS)
 	public FlexoResource<?> getContainer();
 
@@ -185,6 +190,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the list of contained resources.
 	 */
+	@Override
 	@Getter(value = CONTENTS, cardinality = Cardinality.LIST, inverse = CONTAINER)
 	public List<FlexoResource<?>> getContents();
 
@@ -238,13 +244,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	@Remover(DEPENDENCIES)
 	public void removeFromDependencies(FlexoResource<?> resource);
-	
+
 	@Getter(value = FLEXO_IO_DELEGATE, inverse = FlexoIODelegate.FLEXO_RESOURCE)
 	public FlexoIODelegate<?> getFlexoIODelegate();
 
 	@Setter(FLEXO_IO_DELEGATE)
 	public void setFlexoIODelegate(FlexoIODelegate<?> delegate);
-
 
 	/**
 	 * Return flag indicating if this resource is loaded
@@ -316,7 +321,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	/*public FlexoResourceTree update() throws ResourceDependencyLoopException, LoadResourceException, FileNotFoundException,
 			ProjectLoadingCancelledException, FlexoException;*/
-	
+
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
@@ -331,7 +336,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * Called to notify that a resource has been modified
 	 */
 	public void notifyResourceModified();
-	
+
 	public void notifyResourceStatusChanged();
 
 	/**
@@ -356,7 +361,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return flag indicating if deletion has successfully been performed
 	 */
-	public boolean delete();
+	@Override
+	public boolean delete(Object... context);
 
 	/**
 	 * Return a flag indicating if this resource was deleted

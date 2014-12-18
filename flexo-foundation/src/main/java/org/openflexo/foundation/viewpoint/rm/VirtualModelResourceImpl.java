@@ -52,15 +52,15 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public static VirtualModelResource makeVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			returned.setName(virtualModelDirectory.getName());
-			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
-			//returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
+			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
+			// returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
-			
-			//returned.setFile(virtualModelXMLFile);
+
+			// returned.setFile(virtualModelXMLFile);
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			/*if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
@@ -85,8 +85,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			String baseName = virtualModelDirectory.getName();
 			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
@@ -101,13 +101,12 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			
+
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			
-			
-			//returned.setFile(xmlFile);
-			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
-			//returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
+
+			// returned.setFile(xmlFile);
+			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
+			// returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
 			returned.setName(vpi.name);
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -135,24 +134,23 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 		return null;
 	}
-	
+
 	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					InJarFlexoIODelegate.class,VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			
+
 			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
 			VirtualModelInfo vpi = findVirtualModelInfo(returned.getFlexoIOStreamDelegate().getInputStream());
 			if (vpi == null) {
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			
-			
-			//returned.setFile(xmlFile);
-			//returned.setDirectory(parent);
+
+			// returned.setFile(xmlFile);
+			// returned.setDirectory(parent);
 			returned.setName(vpi.name);
 			returned.setURI(viewPointResource.getURI() + "/" + FilenameUtils.getBaseName(inJarResource.getRelativePath()));
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -272,37 +270,37 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	private static VirtualModelInfo findVirtualModelInfo(InputStream inputStream) {
 		Document document;
 		try {
-			//logger.fine("Try to find infos for " + virtualModelDirectory);
+			// logger.fine("Try to find infos for " + virtualModelDirectory);
 
-			//String baseName = virtualModelDirectory.getName();
-			//File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
+			// String baseName = virtualModelDirectory.getName();
+			// File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
 
-			//if (xmlFile.exists()) {
+			// if (xmlFile.exists()) {
 
-				document = readXMLInputStream(inputStream);//(xmlFile);
-				Element root = getElement(document, "VirtualModel");
-				if (root != null) {
-					VirtualModelInfo returned = new VirtualModelInfo();
-					Iterator<Attribute> it = root.getAttributes().iterator();
-					while (it.hasNext()) {
-						Attribute at = it.next();
-						if (at.getName().equals("name")) {
-							logger.fine("Returned " + at.getValue());
-							returned.name = at.getValue();
-						} else if (at.getName().equals("version")) {
-							logger.fine("Returned " + at.getValue());
-							returned.version = at.getValue();
-						} else if (at.getName().equals("modelVersion")) {
-							logger.fine("Returned " + at.getValue());
-							returned.modelVersion = at.getValue();
-						}
+			document = readXMLInputStream(inputStream);// (xmlFile);
+			Element root = getElement(document, "VirtualModel");
+			if (root != null) {
+				VirtualModelInfo returned = new VirtualModelInfo();
+				Iterator<Attribute> it = root.getAttributes().iterator();
+				while (it.hasNext()) {
+					Attribute at = it.next();
+					if (at.getName().equals("name")) {
+						logger.fine("Returned " + at.getValue());
+						returned.name = at.getValue();
+					} else if (at.getName().equals("version")) {
+						logger.fine("Returned " + at.getValue());
+						returned.version = at.getValue();
+					} else if (at.getName().equals("modelVersion")) {
+						logger.fine("Returned " + at.getValue());
+						returned.modelVersion = at.getValue();
 					}
-					if (StringUtils.isEmpty(returned.name)) {
-						//returned.name = virtualModelDirectory.getName();
-						returned.name = "NoName";
-					}
-					return returned;
 				}
+				if (StringUtils.isEmpty(returned.name)) {
+					// returned.name = virtualModelDirectory.getName();
+					returned.name = "NoName";
+				}
+				return returned;
+			}
 			/*} else {
 				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
 						+ xmlFile.getAbsolutePath());
@@ -315,7 +313,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		logger.fine("Returned null");
 		return null;
 	}
-	
+
 	/*private static VirtualModelInfo findVirtualModelInfo(File virtualModelDirectory) {
 		Document document;
 		try {
@@ -363,8 +361,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}*/
 
 	@Override
-	public boolean delete() {
-		if (super.delete()) {
+	public boolean delete(Object... context) {
+		if (super.delete(context)) {
 			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
@@ -375,7 +373,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public ViewPointResource getContainer() {
 		return (ViewPointResource) performSuperGetter(CONTAINER);
 	}
-	
+
 	/*@Override
 	public Resource getDirectory() {
 		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
@@ -393,16 +391,17 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}*/
 	@Override
 	public Resource getDirectory() {
-		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
-			if(ResourceLocator.locateResource(parentPath)==null){
+		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			String parentPath = ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+			if (ResourceLocator.locateResource(parentPath) == null) {
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
-		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
-			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
+		} else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
 			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
-			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(parentPath);
+			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList()
+					.get(parentPath);
 			return parent;
 		}
 		return null;

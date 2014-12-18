@@ -146,7 +146,7 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
-	public boolean performSuperUndelete() {
+	public boolean performSuperUndelete(boolean restoreProperties) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -157,16 +157,42 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	}
 
+	private boolean isDeleted = false;
+
+	/**
+	 * Abstract implementation of delete<br>
+	 * This method should be overriden.<br>
+	 * At this level, only manage {@link #isDeleted()} feature
+	 * 
+	 * @return flag indicating if deletion has successfully been performed
+	 */
 	@Override
 	public boolean delete(Object... context) {
-		// TODO Auto-generated method stub
-		return false;
+
+		if (isDeleted()) {
+			return false;
+		}
+
+		setChanged();
+		notifyObservers(new ObjectDeleted(this));
+		isDeleted = true;
+		return true;
 	}
 
 	@Override
-	public boolean undelete() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean undelete(boolean restoreProperties) {
+		isDeleted = false;
+		return true;
+	}
+
+	/**
+	 * Return a flag indicating if this object was deleted
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isDeleted() {
+		return isDeleted;
 	}
 
 	@Override

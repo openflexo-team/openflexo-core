@@ -71,11 +71,9 @@ public interface FlexoProjectObject extends FlexoObject {
 		}
 
 		@Override
-		public boolean delete() {
-
+		public boolean delete(Object... context) {
 			project = null;
-			return super.delete();
-
+			return performSuperDelete(context);
 		}
 
 		@Override

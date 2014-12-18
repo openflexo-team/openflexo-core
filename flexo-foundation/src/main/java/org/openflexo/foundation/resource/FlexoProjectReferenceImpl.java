@@ -72,12 +72,12 @@ public abstract class FlexoProjectReferenceImpl implements FlexoProjectReference
 	}
 
 	@Override
-	public boolean delete() {
+	public boolean delete(Object... context) {
 		// FlexoWorkflowResource workflowResource = getReferringProject().getImportedWorkflowResource(this);
 		/*if (workflowResource != null) {
 			workflowResource.delete();
 		}*/
-		return performSuperDelete();
+		return performSuperDelete(context);
 	}
 
 	@Override
@@ -140,11 +140,11 @@ public abstract class FlexoProjectReferenceImpl implements FlexoProjectReference
 	public File getFile() {
 		if (getReferredProject() != null) {
 			return getReferredProject().getProjectDirectory();
-		}else {
-			return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile();
+		} else {
+			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile();
 		}
-		
-		//return (File) performSuperGetter(FILE);
+
+		// return (File) performSuperGetter(FILE);
 	}
 
 	@Override

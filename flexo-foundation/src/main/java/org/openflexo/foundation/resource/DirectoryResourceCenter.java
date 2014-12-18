@@ -111,4 +111,8 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		return getDirectory().toURI().toString();
 	}
 
+	@Override
+	public boolean isDeleted() {
+		return false;
+	}
 }

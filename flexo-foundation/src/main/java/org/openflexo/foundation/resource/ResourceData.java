@@ -49,6 +49,6 @@ CloneableProxyObject*/{
 	/**
 	 * Delete object
 	 */
-	public boolean delete();
+	public boolean delete(Object... context);
 
 }

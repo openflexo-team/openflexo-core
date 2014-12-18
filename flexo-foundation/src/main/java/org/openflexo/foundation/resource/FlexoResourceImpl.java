@@ -261,7 +261,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * Contents of this resource are deleted, and resource data is unloaded
 	 */
 	@Override
-	public boolean delete() {
+	public boolean delete(Object... context) {
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
@@ -276,7 +276,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 					getContents())) {
 				r.delete();
 			}
-			super.delete();
+			performSuperDelete(context);
 			if (isLoaded()) {
 				unloadResourceData();
 			}

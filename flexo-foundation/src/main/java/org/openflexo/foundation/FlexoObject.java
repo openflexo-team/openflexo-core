@@ -241,9 +241,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		private static final Logger logger = Logger.getLogger(FlexoObject.class.getPackage().getName());
 
-		protected boolean isDeleted = false;
 		private boolean ignoreNotifications = false;
-		// private boolean isModified = false;
 		private Date lastMemoryUpdate = null;
 
 		private Object context;
@@ -293,53 +291,6 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public final String getDeletedProperty() {
 			return DELETED_PROPERTY;
-		}
-
-		/**
-		 * Returns fully qualified name for this object NOTE: not used anymore, should disappear
-		 * 
-		 * @return
-		 */
-		// @Deprecated
-		// public abstract String getFullyQualifiedName();
-
-		/**
-		 * Abstract implementation of delete<br>
-		 * This method should be overriden.<br>
-		 * At this level, only manage {@link #isDeleted()} feature
-		 * 
-		 * @return flag indicating if deletion has successfully been performed
-		 */
-		public boolean delete() {
-
-			/*for (FlexoObjectReference<FlexoConceptInstance> ref : new ArrayList<FlexoObjectReference<FlexoConceptInstance>>(
-					flexoConceptReferences)) {
-				FlexoConceptInstance epi = ref.getObject();
-				if (epi != null) {
-					epi.nullifyFlexoActor(epi.getRoleForActor(this));
-				}
-			}
-
-			flexoConceptReferences.clear();
-			flexoConceptReferences = null;*/
-
-			setChanged();
-			notifyObservers(new ObjectDeleted(this));
-			if (isDeleted()) {
-				return false;
-			}
-			isDeleted = true;
-			return true;
-		}
-
-		/**
-		 * Return a flag indicating if this object was deleted
-		 * 
-		 * @return
-		 */
-		@Override
-		public boolean isDeleted() {
-			return isDeleted;
 		}
 
 		/**

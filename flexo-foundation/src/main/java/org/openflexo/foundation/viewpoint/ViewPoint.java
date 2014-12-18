@@ -716,7 +716,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public boolean delete() {
+		public boolean delete(Object... context) {
 
 			logger.info("Deleting ViewPoint " + this);
 
@@ -730,7 +730,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			}
 
 			// Delete viewpoint
-			super.delete();
+			performSuperDelete(context);
 
 			// Delete observers
 			deleteObservers();

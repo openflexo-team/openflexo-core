@@ -577,8 +577,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	@Override
-	public boolean delete() {
-		if (super.delete()) {
+	public boolean delete(Object... context) {
+		if (super.delete(context)) {
 			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
