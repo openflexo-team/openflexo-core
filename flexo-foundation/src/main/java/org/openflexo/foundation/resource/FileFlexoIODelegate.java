@@ -151,6 +151,15 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			}
 
 		}
+		
+		@Override
+		public String getParentPath(){
+			if(getFile().isDirectory()){
+				return getFile().getAbsolutePath();
+			}else{
+				return getFile().getParent();
+			}
+		}
 
 	}
 
