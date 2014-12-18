@@ -26,12 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -54,15 +51,13 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.FlexoIODelegate;
-import org.openflexo.foundation.resource.FlexoIOStreamDelegate;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
@@ -1334,7 +1329,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	@Override
 	public Resource getDirectory() {
 		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+			String parentPath = getDirectoryPath();
 			if(ResourceLocator.locateResource(parentPath)==null){
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
@@ -1346,5 +1341,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			return parent;
 		}
 		return null;
+	}
+	
+	public String getDirectoryPath(){
+		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 }

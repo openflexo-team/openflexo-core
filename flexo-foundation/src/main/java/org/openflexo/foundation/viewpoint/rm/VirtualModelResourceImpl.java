@@ -56,15 +56,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			returned.setName(virtualModelDirectory.getName());
-			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
-			// returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
-
-			// returned.setFile(virtualModelXMLFile);
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
-			/*if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-			}*/
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
 			returned.setServiceManager(serviceManager);
 			viewPointResource.addToContents(returned);
@@ -103,10 +95,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			}
 
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-
-			// returned.setFile(xmlFile);
-			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(virtualModelDirectory.getPath());
-			// returned.setDirectory(ResourceLocator.locateResource(virtualModelDirectory.getPath()));
 			returned.setName(vpi.name);
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -391,9 +379,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}*/
 	@Override
 	public Resource getDirectory() {
-		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			String parentPath = ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
-			if (ResourceLocator.locateResource(parentPath) == null) {
+		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
+			String parentPath = getDirectoryPath();
+			if(ResourceLocator.locateResource(parentPath)==null){
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
@@ -405,5 +393,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			return parent;
 		}
 		return null;
+	}
+	
+	public String getDirectoryPath(){
+		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 }

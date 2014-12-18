@@ -1,14 +1,12 @@
 package org.openflexo.foundation.resource;
 
-import java.io.File;
-
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.converter.RelativePathFileConverter;
+import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.rm.Resource;
 
 /**
@@ -28,7 +26,7 @@ import org.openflexo.rm.Resource;
 public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends FlexoResource<RD> {
 
 	public static final String DIRECTORY = "directory";
-	public static final String RELATIVE_FILE_PATH_CONVERTER = "relativePathFileConverter";
+	public static final String RELATIVE_RESOURCE_PATH_CONVERTER = "relativePathResourceConverter";
 
 	/**
 	 * Return the directory (parent file)
@@ -50,13 +48,13 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 * 
 	 * @return
 	 */
-	@Getter(value = RELATIVE_FILE_PATH_CONVERTER, ignoreType = true)
-	public RelativePathFileConverter getRelativePathFileConverter();
+	@Getter(value = RELATIVE_RESOURCE_PATH_CONVERTER, ignoreType = true)
+	public RelativePathResourceConverter getRelativePathResourceConverter();
 
 	/**
 	 * Sets the relative file path converter
 	 */
-	@Setter(RELATIVE_FILE_PATH_CONVERTER)
-	public void setRelativePathFileConverter(RelativePathFileConverter converter);
+	@Setter(RELATIVE_RESOURCE_PATH_CONVERTER)
+	public void setRelativePathResourceConverter(RelativePathResourceConverter converter);
 
 }

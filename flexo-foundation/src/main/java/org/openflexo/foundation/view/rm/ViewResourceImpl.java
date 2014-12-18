@@ -73,15 +73,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setProject(viewLibrary.getProject());
 			returned.setVersion(new FlexoVersion("1.0"));
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + name);
-			// returned.setFile(xmlFile);
-			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-
-			// returned.setFile(viewDirectory);
-
-			// returned.setDirectory(viewDirectory);
-			// returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
-
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
@@ -108,12 +100,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 				// Unable to retrieve infos, just abort
 				return null;
 			}
-			// FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewDirectory.getPath());
-			// returned.setFile(xmlFile);
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-
-			// returned.setDirectory(viewDirectory);
-			// returned.setDirectory(ResourceLocator.locateResource(viewDirectory.getPath()));
 			returned.setName(vpi.name);
 
 			returned.setURI(viewLibrary.getProject().getURI() + "/" + vpi.name);
@@ -284,11 +271,15 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 
 	@Override
 	public Resource getDirectory() {
-		String parentPath = ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+		String parentPath = getDirectoryPath();
 		if (ResourceLocator.locateResource(parentPath) == null) {
 			FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 		}
 		return ResourceLocator.locateResource(parentPath);
+	}
+
+	public String getDirectoryPath() {
+		return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 
 }

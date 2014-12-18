@@ -69,4 +69,6 @@ public interface FlexoIODelegate<I> {
 	public void hasWrittenOnDisk(FileWritingLock lock);
 	
 	public void notifyHasBeenWrittenOnDisk();
+	
+	public String getParentPath();
 }

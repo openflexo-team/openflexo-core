@@ -356,6 +356,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource"));
 			File diagramSpecificationDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint
 					.getResource()).getDirectory()), baseName);
+			if(!diagramSpecificationDirectory.exists()){
+				diagramSpecificationDirectory.mkdirs();
+			}
 			File diagramSpecificationXMLFile = new File(diagramSpecificationDirectory, baseName + ".xml");
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
 			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(diagramSpecificationDirectory,
