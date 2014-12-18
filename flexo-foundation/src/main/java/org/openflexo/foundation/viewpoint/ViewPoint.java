@@ -385,20 +385,14 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 				return;
 			}*/
 			if(!isLoading){
-				System.out.println("test1 loadVirtualModelsWhenUnloaded "+ isLoading);
 				isLoading = true;
-				System.out.println("test2 loadVirtualModelsWhenUnloaded "+ isLoading);
 				if (getResource() != null) {
-					System.out.println("test3 loadVirtualModelsWhenUnloaded ");
 					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-						System.out.println("test4 loadVirtualModelsWhenUnloaded " + r);
 						if (r instanceof VirtualModelResource) {
 							VirtualModel vm = ((VirtualModelResource) r).getVirtualModel();
-							System.out.println("test5 loadVirtualModelsWhenUnloaded " + vm);
 						}
 					}
 				}
-				System.out.println("test3 loadVirtualModelsWhenUnloaded "+ getVirtualModels());
 			}
 			
 			isLoading = false;
