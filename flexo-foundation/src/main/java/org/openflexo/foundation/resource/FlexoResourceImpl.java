@@ -241,7 +241,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public void setServiceManager(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
-		getServiceManager().getResourceManager().registerResource(this);
+		if (getServiceManager() != null) {
+			getServiceManager().getResourceManager().registerResource(this);
+		}
 	}
 
 	/**
@@ -276,13 +278,14 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 					getContents())) {
 				r.delete();
 			}
+
+			// Handle Flexo IO delegate deletion
+			getFlexoIODelegate().delete();
+
 			performSuperDelete(context);
 			if (isLoaded()) {
 				unloadResourceData();
 			}
-
-			// Handle Flexo IO delegate deletion
-			getFlexoIODelegate().delete();
 
 			return true;
 		}
