@@ -65,6 +65,8 @@ import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.project.LoadProjectTask;
+import org.openflexo.replay.ScenarioPlayer;
+import org.openflexo.replay.ScenarioRecorder;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -96,6 +98,8 @@ public class Flexo {
 	private static String fileNameToOpen;
 
 	private static boolean demoMode = false;
+	private static boolean recordMode = false;
+	private static boolean playMode = false;
 
 	public static boolean isDemoMode() {
 		return demoMode;
@@ -184,11 +188,25 @@ public class Flexo {
 					noSplash = true;
 				} else if (args[i].equalsIgnoreCase("DEV")) {
 					isDev = true;
-				} else if (args[i].toLowerCase().contains("demo")) {
+				} else if (args[i].toLowerCase().contains("-demo")) {
 					demoMode = true;
+				} else if (args[i].toLowerCase().contains("-record")) {
+					recordMode = true;
+				} else if (args[i].toLowerCase().contains("-play")) {
+					playMode = true;
 				}
 			}
 		}
+
+		FlexoApplication.installEventQueue();
+		if (recordMode) {
+			FlexoApplication.eventProcessor.setPreprocessor(new ScenarioRecorder());
+		}
+
+		if (playMode) {
+			new ScenarioPlayer();
+		}
+
 		// 1. Very important to initiate first the ResourceLocator. Nothing else. See also issue 463.
 		String resourcepath = getResourcePath();
 
@@ -254,7 +272,6 @@ public class Flexo {
 				return returned;
 			}
 		};*/
-		FlexoApplication.installEventQueue();
 		// Before starting the UI, we need to initialize localization
 		FlexoApplication.initialize(applicationContext);
 		SwingUtilities.invokeLater(new Runnable() {
