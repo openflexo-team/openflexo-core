@@ -380,10 +380,9 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		 * After this call return, we can assert that all {@link VirtualModel} are loaded.
 		 */
 		private void loadVirtualModelsWhenUnloaded() {
-			System.out.println("loadVirtualModelsWhenUnloaded "+ isLoading);
-			/*if (isLoading) {
+			if (isLoading) {
 				return;
-			}*/
+			}
 			if(!isLoading){
 				isLoading = true;
 				if (getResource() != null) {
