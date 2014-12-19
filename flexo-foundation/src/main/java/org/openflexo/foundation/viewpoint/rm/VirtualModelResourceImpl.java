@@ -242,6 +242,13 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}
 
 	@Override
+	public void notifyResourceLoaded() {
+		super.notifyResourceLoaded();
+		getPropertyChangeSupport().firePropertyChange("virtualModel", null, getLoadedResourceData());
+		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
+	}
+
+	@Override
 	public void stopDeserializing() {
 		for (FlexoConcept fc : getLoadedResourceData().getFlexoConcepts()) {
 			fc.finalizeFlexoConceptDeserialization();
@@ -379,9 +386,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}*/
 	@Override
 	public Resource getDirectory() {
-		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
+		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			String parentPath = getDirectoryPath();
-			if(ResourceLocator.locateResource(parentPath)==null){
+			if (ResourceLocator.locateResource(parentPath) == null) {
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
@@ -394,8 +401,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 		return null;
 	}
-	
-	public String getDirectoryPath(){
-		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
+
+	public String getDirectoryPath() {
+		return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 }
