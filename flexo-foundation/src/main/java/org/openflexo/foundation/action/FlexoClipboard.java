@@ -217,4 +217,13 @@ public class FlexoClipboard {
 		return returned;
 	}
 
+	public String debug() {
+		StringBuffer returned = new StringBuffer();
+		returned.append("*************** FlexoClipboard ****************\n");
+		for (PamelaResource<?, ?> r : clipboards.keySet()) {
+			returned.append(clipboards.get(r).debug(r.toString()));
+		}
+		return returned.toString();
+	}
+
 }
