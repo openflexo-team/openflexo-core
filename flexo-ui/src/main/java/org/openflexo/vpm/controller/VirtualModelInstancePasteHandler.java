@@ -179,7 +179,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 							// modelSlotClipboards.put(msi, modelSlotInstanceClipboard);
 
 							System.out.println("Pour la resource " + msi.getResource());
-							System.out.println("" + modelSlotInstanceClipboard.debug());
+							System.out.println("" + modelSlotInstanceClipboard.debug(modelSlotInstanceResource.toString()));
 
 							Object pastingPointHolder = getModelSlotSpecificPastingPointHolder(msi, this);
 
@@ -194,28 +194,37 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 								Map<Object, Object> copiedObjects = new HashMap<Object, Object>();
 
 								System.out.println("!!!!!!!!! JUSTE AVANT le paste dans " + modelSlotInstanceResource);
-								modelSlotInstanceClipboard.debug();
+								modelSlotInstanceClipboard.debug(modelSlotInstanceResource.toString());
+
+								Object[] lastCopiedContents = modelSlotInstanceClipboard.getLastReferenceContents();
 
 								Object copy = factory.paste(modelSlotInstanceClipboard, pastingPointHolder);
 
 								System.out.println("les nouveaux objets: " + copy);
 
 								if (modelSlotInstanceClipboard.isSingleObject()) {
-									copiedObjects.put(modelSlotInstanceClipboard.getOriginalContents()[0], copy);
-									System.out.println("Pour " + modelSlotInstanceClipboard.getOriginalContents()[0] + " j'ai maintenant "
-											+ copy);
+									copiedObjects.put(lastCopiedContents[0], copy);
+									System.out.println("Pour " + lastCopiedContents[0] + " j'ai maintenant " + copy);
 								} else {
 									List copyList = (List) copy;
-									for (int i = 0; i < modelSlotInstanceClipboard.getOriginalContents().length; i++) {
-										copiedObjects.put(modelSlotInstanceClipboard.getOriginalContents()[i], copyList.get(i));
-										System.out.println("Pour " + modelSlotInstanceClipboard.getOriginalContents()[i]
-												+ " j'ai maintenant " + copyList.get(i));
+									for (int i = 0; i < lastCopiedContents.length; i++) {
+										copiedObjects.put(lastCopiedContents[i], copyList.get(i));
+										System.out.println("Pour " + lastCopiedContents[i] + " j'ai maintenant " + copyList.get(i));
 									}
+								}
+
+								System.out.println("fciList=" + fciList);
+
+								System.out.println("copiedObjects=");
+								for (Object key : copiedObjects.keySet()) {
+									System.out.println("for key=" + key + " copiedObject=" + copiedObjects.get(key));
 								}
 
 								// Now replace all ActorReferences !!!
 								for (FlexoConceptInstance fci : fciList) {
+									System.out.println(">> for " + fci);
 									for (ActorReference actor : fci.getActors()) {
+										System.out.println("    > actor " + actor.getRoleName() + " = " + actor.getModellingElement());
 										if (actor.getFlexoRole().getModelSlot() == msi.getModelSlot()
 												&& actor.getFlexoRole().getCloningStrategy() == RoleCloningStrategy.Clone
 												&& (!(actor.getFlexoRole() instanceof PrimitiveRole))) {
