@@ -113,6 +113,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	@Setter(FLEXO_ID_KEY)
 	public void setFlexoID(long flexoID);
 
+	/**
+	 * Return hashCode() representation, in hexadecimal format
+	 * 
+	 * @return
+	 */
+	public String hash();
+
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLAttribute
 	public String getDescription();
@@ -1075,9 +1082,19 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			return getClass();
 		}
 
+		/**
+		 * Return hashCode() representation, in hexadecimal format
+		 * 
+		 * @return
+		 */
+		@Override
+		public String hash() {
+			return Integer.toHexString(hashCode());
+		}
+
 		@Override
 		public String toString() {
-			return getImplementedInterface().getSimpleName() + "[ID=" + getFlexoID() + "]" + "@" + Integer.toHexString(hashCode());
+			return getImplementedInterface().getSimpleName() + "[ID=" + getFlexoID() + "]" + "@" + hash();
 		}
 
 	}
