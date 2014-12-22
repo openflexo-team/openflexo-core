@@ -304,7 +304,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
 			ModelSlot ms = aRole.getModelSlot();
-			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+			if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
 						"FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);

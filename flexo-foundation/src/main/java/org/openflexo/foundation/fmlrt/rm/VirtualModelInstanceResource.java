@@ -1,6 +1,6 @@
 package org.openflexo.foundation.fmlrt.rm;
 
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fmlrt.VirtualModelInstance;
 import org.openflexo.foundation.fmlrt.VirtualModelInstanceModelFactory;
@@ -24,7 +24,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(VirtualModelInstanceResourceImpl.class)
 @XMLElement
 public interface VirtualModelInstanceResource extends PamelaResource<VirtualModelInstance, VirtualModelInstanceModelFactory>,
-		FlexoProjectResource<VirtualModelInstance>, TechnologyAdapterResource<VirtualModelInstance, VirtualModelTechnologyAdapter> {
+		FlexoProjectResource<VirtualModelInstance>, TechnologyAdapterResource<VirtualModelInstance, FMLTechnologyAdapter> {
 
 	public static final String VIRTUAL_MODEL_SUFFIX = ".vmxml";
 

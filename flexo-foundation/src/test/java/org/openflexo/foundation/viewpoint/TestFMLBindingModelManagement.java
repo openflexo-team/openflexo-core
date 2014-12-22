@@ -60,9 +60,9 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.VirtualModelModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
@@ -606,8 +606,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// Now we create the vm1 model slot
 		CreateModelSlot createMS1 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-				VirtualModelTechnologyAdapter.class));
-		createMS1.setModelSlotClass(VirtualModelModelSlot.class);
+				FMLTechnologyAdapter.class));
+		createMS1.setModelSlotClass(FMLModelSlot.class);
 		createMS1.setModelSlotName("vm1");
 		createMS1.setVmRes((VirtualModelResource) virtualModel1.getResource());
 		createMS1.doAction();
@@ -616,15 +616,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// Now we create the vm2 model slot
 		CreateModelSlot createMS2 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-				VirtualModelTechnologyAdapter.class));
-		createMS2.setModelSlotClass(VirtualModelModelSlot.class);
+				FMLTechnologyAdapter.class));
+		createMS2.setModelSlotClass(FMLModelSlot.class);
 		createMS2.setModelSlotName("vm2");
 		createMS2.setVmRes((VirtualModelResource) virtualModel2.getResource());
 		createMS2.doAction();
 		assertTrue(createMS2.hasActionExecutionSucceeded());
 
-		// VirtualModel should have two VirtualModelModelSlot
-		assertEquals(2, virtualModel3.getModelSlots(VirtualModelModelSlot.class).size());
+		// VirtualModel should have two FMLModelSlot
+		assertEquals(2, virtualModel3.getModelSlots(FMLModelSlot.class).size());
 
 		CreateFlexoRole createRoleInVM3 = CreateFlexoRole.actionType.makeNewAction(virtualModel3, null, editor);
 		createRoleInVM3.setRoleName("aStringInVM3");
@@ -1557,14 +1557,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 3");
 		createVMI3.setVirtualModel(virtualModel3);
 
-		VirtualModelModelSlot ms1 = (VirtualModelModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLModelSlot ms1 = (FMLModelSlot) virtualModel3.getModelSlot("vm1");
 		VirtualModelModelSlotInstanceConfiguration ms1Configuration = (VirtualModelModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms1);
 		ms1Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		ms1Configuration.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) vmi1.getResource());
 		assertTrue(ms1Configuration.isValidConfiguration());
 
-		VirtualModelModelSlot ms2 = (VirtualModelModelSlot) virtualModel3.getModelSlot("vm2");
+		FMLModelSlot ms2 = (FMLModelSlot) virtualModel3.getModelSlot("vm2");
 		VirtualModelModelSlotInstanceConfiguration ms2Configuration = (VirtualModelModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms2);
 		ms2Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);

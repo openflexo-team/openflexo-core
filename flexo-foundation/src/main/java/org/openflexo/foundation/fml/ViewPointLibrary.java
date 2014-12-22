@@ -174,7 +174,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		}
 
 		// Unregister the viewpoint resource from the viewpoint repository
-		VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter rc : resourceCenters) {
 			ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);
@@ -286,7 +286,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			// At initialization, initialize all already existing FlexoResourceCenter with this ViewPointLibrary
 			// Some FlexoResourceCenter may have already initialized, the goal is here to register in ViewPointLibrary any ViewPoint already
 			// found
-			VirtualModelTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				// Register Viewpoint file based viewpoint resources
 				ViewPointFileBasedRepository vprfb = (ViewPointFileBasedRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);

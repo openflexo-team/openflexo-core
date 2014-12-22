@@ -30,7 +30,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fmlrt.rm.ViewResource;
 import org.openflexo.foundation.fmlrt.rm.ViewResourceImpl;
@@ -64,7 +64,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ImplementationClass(View.ViewImpl.class)
 @XMLElement
 public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
-		TechnologyObject<VirtualModelTechnologyAdapter>, BindingEvaluationContext {
+		TechnologyObject<FMLTechnologyAdapter>, BindingEvaluationContext {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -171,8 +171,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 				FlexoProject project) throws SaveResourceException {
 
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
-			VirtualModelTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLTechnologyAdapter.class);
 
 			View newView = newViewResource.getFactory().newInstance(View.class);
 
@@ -544,7 +544,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		}
 
 		@Override
-		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		public FMLTechnologyAdapter getTechnologyAdapter() {
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}

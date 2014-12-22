@@ -17,7 +17,7 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fmlrt.View;
 import org.openflexo.foundation.fmlrt.ViewLibrary;
@@ -187,9 +187,9 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 	}
 
 	@Override
-	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+	public FMLTechnologyAdapter getTechnologyAdapter() {
 		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		}
 		return null;
 	}

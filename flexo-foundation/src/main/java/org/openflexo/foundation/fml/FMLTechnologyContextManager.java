@@ -28,20 +28,20 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 
 // Merge of ViewLibrary and ViewPointLibrary ???
-public class VirtualModelTechnologyContextManager extends TechnologyContextManager<VirtualModelTechnologyAdapter> {
+public class FMLTechnologyContextManager extends TechnologyContextManager<FMLTechnologyAdapter> {
 
 	/** Stores all known DiagramSpecification where key is the URI of DiagramSpecification */
 	protected Map<String, ViewPointResource> viewPoints = new HashMap<String, ViewPointResource>();
 	/** Stores all known Diagrams where key is the URI of Diagram */
 	protected Map<String, ViewResource> views = new HashMap<String, ViewResource>();
 
-	public VirtualModelTechnologyContextManager(VirtualModelTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
+	public FMLTechnologyContextManager(FMLTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
 	}
 
 	@Override
-	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
-		return (VirtualModelTechnologyAdapter) super.getTechnologyAdapter();
+	public FMLTechnologyAdapter getTechnologyAdapter() {
+		return (FMLTechnologyAdapter) super.getTechnologyAdapter();
 	}
 
 	public ViewPointResource getViewPointResource(String uri) {

@@ -40,7 +40,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
@@ -80,7 +80,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface MatchFlexoConceptInstance extends AssignableAction<FMLModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -147,7 +147,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<VirtualModel
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
+	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<FMLModelSlot, FlexoConceptInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
 		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());

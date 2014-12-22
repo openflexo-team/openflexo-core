@@ -13,7 +13,7 @@ import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.VirtualModelModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fmlrt.VirtualModelInstance;
@@ -69,8 +69,8 @@ public class CreateBasicVirtualModelInstanceWizard extends FlexoWizard {
 			return new ConfigureTypeAwareModelSlot((TypeAwareModelSlot) ms);
 		} else if (ms instanceof FreeModelSlot) {
 			return new ConfigureFreeModelSlot((FreeModelSlot) ms);
-		} else if (ms instanceof VirtualModelModelSlot) {
-			return new ConfigureVirtualModelModelSlot((VirtualModelModelSlot) ms);
+		} else if (ms instanceof FMLModelSlot) {
+			return new ConfigureVirtualModelModelSlot((FMLModelSlot) ms);
 		} else {
 			logger.warning("Could not instantiate ConfigureModelSlot for " + ms);
 			return null;
@@ -310,9 +310,9 @@ public class CreateBasicVirtualModelInstanceWizard extends FlexoWizard {
 	 *
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
-	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<VirtualModelModelSlot, VirtualModelInstance> {
+	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLModelSlot, VirtualModelInstance> {
 
-		public ConfigureVirtualModelModelSlot(VirtualModelModelSlot modelSlot) {
+		public ConfigureVirtualModelModelSlot(FMLModelSlot modelSlot) {
 			super(modelSlot);
 		}
 

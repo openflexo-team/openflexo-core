@@ -36,7 +36,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
 import org.openflexo.foundation.fmlrt.VirtualModelInstance;
@@ -75,7 +75,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface AddFlexoConceptInstance extends AssignableAction<FMLModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -121,7 +121,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<VirtualModelMo
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class AddFlexoConceptInstanceImpl extends AssignableActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
+	public static abstract class AddFlexoConceptInstanceImpl extends AssignableActionImpl<FMLModelSlot, FlexoConceptInstance>
 			implements AddFlexoConceptInstance {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());

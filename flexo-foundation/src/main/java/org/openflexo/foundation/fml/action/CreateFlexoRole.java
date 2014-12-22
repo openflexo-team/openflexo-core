@@ -40,7 +40,7 @@ import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -209,9 +209,9 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {
-		if (modelSlot instanceof VirtualModelModelSlot) {
-			if (((VirtualModelModelSlot) modelSlot).getVirtualModelResource() != null) {
-				return ((VirtualModelModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
+		if (modelSlot instanceof FMLModelSlot) {
+			if (((FMLModelSlot) modelSlot).getVirtualModelResource() != null) {
+				return ((FMLModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
 		} else if (modelSlot == null) {
 			return getFlexoConcept().getVirtualModel();

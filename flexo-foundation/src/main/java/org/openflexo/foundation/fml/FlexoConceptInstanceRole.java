@@ -49,7 +49,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public VirtualModelModelSlot getVirtualModelModelSlot();
+	public FMLModelSlot getVirtualModelModelSlot();
 
 	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
 			FlexoConceptInstanceRole {
@@ -217,12 +217,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public VirtualModelModelSlot getModelSlot() {
-			VirtualModelModelSlot returned = (VirtualModelModelSlot) super.getModelSlot();
+		public FMLModelSlot getModelSlot() {
+			FMLModelSlot returned = (FMLModelSlot) super.getModelSlot();
 			/* This is not true any-more => when no ModelSlot is set, Role is from current VirtualModel
 			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(VirtualModelModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(VirtualModelModelSlot.class).get(0);
+				if (getVirtualModel() != null && getVirtualModel().getModelSlots(FMLModelSlot.class).size() > 0) {
+					return getVirtualModel().getModelSlots(FMLModelSlot.class).get(0);
 				}
 			}
 			 */
@@ -230,11 +230,11 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public VirtualModelModelSlot getVirtualModelModelSlot() {
+		public FMLModelSlot getVirtualModelModelSlot() {
 			return getModelSlot();
 		}
 
-		public void setVirtualModelModelSlot(VirtualModelModelSlot modelSlot) {
+		public void setVirtualModelModelSlot(FMLModelSlot modelSlot) {
 			setModelSlot(modelSlot);
 		}
 

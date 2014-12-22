@@ -24,7 +24,7 @@ package org.openflexo.foundation.fmlrt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -37,17 +37,17 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
- * Concretize the binding of a {@link VirtualModelModelSlot} to a concrete {@link VirtualModelInstance} conform to a given
+ * Concretize the binding of a {@link FMLModelSlot} to a concrete {@link VirtualModelInstance} conform to a given
  * {@link VirtualModel}<br>
  * 
  * @author Sylvain Guerin
- * @see VirtualModelModelSlot
+ * @see FMLModelSlot
  * 
  */
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance extends ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> {
+public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLModelSlot, VirtualModelInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
@@ -60,18 +60,18 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<Virtual
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
 	public static abstract class VirtualModelModelSlotInstanceImpl extends
-			ModelSlotInstanceImpl<VirtualModelModelSlot, VirtualModelInstance> implements VirtualModelModelSlotInstance {
+			ModelSlotInstanceImpl<FMLModelSlot, VirtualModelInstance> implements VirtualModelModelSlotInstance {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
 		// Serialization/deserialization only, do not use
 		private String virtualModelInstanceURI;
 
-		/*public VirtualModelModelSlotInstanceImpl(View view, VirtualModelModelSlot modelSlot) {
+		/*public VirtualModelModelSlotInstanceImpl(View view, FMLModelSlot modelSlot) {
 			super(view, modelSlot);
 		}*/
 
-		/*public VirtualModelModelSlotInstanceImpl(VirtualModelInstance vmInstance, VirtualModelModelSlot modelSlot) {
+		/*public VirtualModelModelSlotInstanceImpl(VirtualModelInstance vmInstance, FMLModelSlot modelSlot) {
 			super(vmInstance, modelSlot);
 		}*/
 

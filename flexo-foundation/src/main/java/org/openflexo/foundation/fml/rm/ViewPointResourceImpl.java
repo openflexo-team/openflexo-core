@@ -53,7 +53,7 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.ViewPointModelFactory;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
@@ -303,9 +303,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 	
 	@Override
-	public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+	public FMLTechnologyAdapter getTechnologyAdapter() {
 		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		}
 		return null;
 	}
@@ -717,7 +717,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			// Replace the Diagram Model Slot by a Virtual Model Model slot
 			for (Element thisMs : thisModelSlots) {
 				if (hasSameID(thisMs, thisID) && thisMs.getName().equals("DiagramModelSlot")) {
-					thisMs.setName("VirtualModelModelSlot");
+					thisMs.setName("FMLModelSlot");
 					thisMs.getAttributes().add(new Attribute("virtualModelURI", newThisUri));
 					thisMs.getAttributes().add(new Attribute("name", "virtualModelInstance"));
 					thisMs.getAttributes().add(new Attribute("id", Integer.toString(thisID)));
@@ -1015,7 +1015,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						element.setName("ModelSlot_SemanticsPowerpointModelSlot");
 					} else if (element.getName().equals("OWLModelSlot")) {
 						element.setName("ModelSlot_OWLModelSlot");
-					} else if (element.getName().equals("VirtualModelModelSlot")) {
+					} else if (element.getName().equals("FMLModelSlot")) {
 						element.setName("ModelSlot_VirtualModelModelSlot");
 					}
 				} else {
@@ -1038,7 +1038,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					} else if (element.getName().equals("AddressedDiagramModelSlot")) {
 						element.setName("TypedDiagramModelSlot");
 					} else if (element.getName().equals("AddressedVirtualModelModelSlot")) {
-						element.setName("VirtualModelModelSlot");
+						element.setName("FMLModelSlot");
 					}
 				}
 			}
@@ -1131,7 +1131,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						if (element.getName().equals("ModelSlot_VirtualModelModelSlot")) {
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
 						}
-						if (element.getName().equals("VirtualModelModelSlot")) {
+						if (element.getName().equals("FMLModelSlot")) {
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
 						}
 						if (attribute.getName().equals("virtualModelInstance")) {
@@ -1296,7 +1296,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		for (Content content : document.getDescendants()) {
 			if (content instanceof Element) {
 				Element element = (Element) content;
-				if (element.getName().equals("AddressedVirtualModelModelSlot") || element.getName().equals("VirtualModelModelSlot")) {
+				if (element.getName().equals("AddressedVirtualModelModelSlot") || element.getName().equals("FMLModelSlot")) {
 					if (element.getAttribute("name") != null
 							&& (element.getAttributeValue("name").equals("this") || element.getAttributeValue("name").equals(
 									"virtualModelInstance")) && element.getAttribute("virtualModelURI") != null) {

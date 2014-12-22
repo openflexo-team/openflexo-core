@@ -37,7 +37,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fmlrt.action.SynchronizationSchemeAction;
@@ -84,7 +84,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 @XMLElement
 public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData<VirtualModelInstance>,
-		FlexoModel<VirtualModelInstance, VirtualModel>, TechnologyObject<VirtualModelTechnologyAdapter> {
+		FlexoModel<VirtualModelInstance, VirtualModel>, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -348,7 +348,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		public FMLTechnologyAdapter getTechnologyAdapter() {
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}
@@ -594,10 +594,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					return (ModelSlotInstance<MS, RD>) msInstance;
 				}
 			}
-			/*if (modelSlot instanceof VirtualModelModelSlot && ((VirtualModelModelSlot) modelSlot).isReflexiveModelSlot()) {
+			/*if (modelSlot instanceof FMLModelSlot && ((FMLModelSlot) modelSlot).isReflexiveModelSlot()) {
 				VirtualModelModelSlotInstance reflexiveModelSlotInstance = getResource().getFactory().newInstance(
 						VirtualModelModelSlotInstance.class);
-				reflexiveModelSlotInstance.setModelSlot((VirtualModelModelSlot) modelSlot);
+				reflexiveModelSlotInstance.setModelSlot((FMLModelSlot) modelSlot);
 				reflexiveModelSlotInstance.setAccessedResourceData(this);
 				addToModelSlotInstances(reflexiveModelSlotInstance);
 				return (ModelSlotInstance<MS, RD>) reflexiveModelSlotInstance;

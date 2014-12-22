@@ -22,7 +22,7 @@ package org.openflexo.foundation.fmlrt;
 import java.io.File;
 
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fmlrt.rm.ViewResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
@@ -33,13 +33,13 @@ import org.openflexo.foundation.technologyadapter.ModelRepository;
  * @author sylvain
  * 
  */
-public class ViewRepository extends ModelRepository<ViewResource, View, ViewPoint, VirtualModelTechnologyAdapter> {
+public class ViewRepository extends ModelRepository<ViewResource, View, ViewPoint, FMLTechnologyAdapter> {
 
-	public ViewRepository(VirtualModelTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public ViewRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);
 	}
 
-	public ViewRepository(VirtualModelTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter, File directory) {
+	public ViewRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter, File directory) {
 		super(adapter, resourceCenter, directory);
 	}
 

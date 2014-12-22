@@ -101,7 +101,7 @@ import org.openflexo.toolbox.ToolBox;
 		@Import(FlexoBehaviourParameters.class), @Import(DeleteFlexoConceptInstanceParameter.class),
 		@Import(AddFlexoConceptInstanceParameter.class) })
 public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
-		TechnologyObject<VirtualModelTechnologyAdapter> {
+		TechnologyObject<FMLTechnologyAdapter> {
 
 	// public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
 
@@ -298,7 +298,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * @return
 	 */
 	// Not used anymore, but supported implicitely
-	// public VirtualModelModelSlot getReflexiveModelSlot();
+	// public FMLModelSlot getReflexiveModelSlot();
 
 	/**
 	 * Return flag indicating if supplied BindingVariable is set at runtime
@@ -915,7 +915,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
-		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		public FMLTechnologyAdapter getTechnologyAdapter() {
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}
@@ -1017,7 +1017,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel> applyValidation(VirtualModel vm) {
 			for (ModelSlot ms : vm.getModelSlots()) {
-				if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
 					RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(vm);
 					return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel>(this, vm,
 							"virtual_model_should_not_have_reflexive_model_slot_no_more", fixProposal);

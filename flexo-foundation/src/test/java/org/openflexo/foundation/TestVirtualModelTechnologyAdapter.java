@@ -4,7 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
@@ -26,7 +26,7 @@ public class TestVirtualModelTechnologyAdapter {
 		}
 		assertTrue(taService.getTechnologyAdapters().size() > 0);
 		assertNotNull(taService
-				.getTechnologyAdapter(VirtualModelTechnologyAdapter.class));
+				.getTechnologyAdapter(FMLTechnologyAdapter.class));
 
 	}
 }

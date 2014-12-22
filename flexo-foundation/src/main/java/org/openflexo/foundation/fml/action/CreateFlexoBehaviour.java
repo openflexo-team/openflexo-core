@@ -178,7 +178,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	}
 
 	/*public List<Class<? extends FlexoBehaviour>> getModelSlotSpecificBehaviours() {
-		if (modelSlot != null && !(modelSlot instanceof VirtualModelModelSlot)) {
+		if (modelSlot != null && !(modelSlot instanceof FMLModelSlot)) {
 			return modelSlot.getAvailableFlexoBehaviourTypes();
 		}
 		return null;

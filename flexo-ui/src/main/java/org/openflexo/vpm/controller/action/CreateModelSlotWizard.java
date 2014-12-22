@@ -9,8 +9,8 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLModelSlot;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -107,7 +107,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			} else if (getModelSlotClass() == null) {
 				setIssueMessage(NO_MODEL_SLOT_TYPE, IssueMessageType.ERROR);
 				return false;
-			} else if (getTechnologyAdapter() instanceof VirtualModelTechnologyAdapter) {
+			} else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
 				if (getVmRes() == null) {
 					setIssueMessage(NO_VIRTUAL_MODEL, IssueMessageType.ERROR);
 					return false;
@@ -244,7 +244,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 		}
 
 		public boolean isVirtualModelModelSlot() {
-			return getModelSlotClass() != null && getModelSlotClass().equals(VirtualModelModelSlot.class);
+			return getModelSlotClass() != null && getModelSlotClass().equals(FMLModelSlot.class);
 		}
 
 	}

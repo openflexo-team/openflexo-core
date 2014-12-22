@@ -50,13 +50,13 @@ import org.openflexo.rm.InJarResourceImpl;
  * 
  */
 @DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "VirtualModelModelSlot", modelSlotClass = VirtualModelModelSlot.class), // Classical type-safe interpretation
+@DeclareModelSlot(FML = "FMLModelSlot", modelSlotClass = FMLModelSlot.class), // Classical type-safe interpretation
 })
-public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
+public class FMLTechnologyAdapter extends TechnologyAdapter {
 
-	private static final Logger	logger	= Logger.getLogger(VirtualModelTechnologyAdapter.class.getPackage().getName());
+	private static final Logger	logger	= Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
 
-	public VirtualModelTechnologyAdapter() throws TechnologyAdapterInitializationException {
+	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	/**
-	 * Creates and return a new {@link VirtualModelModelSlot} adressing supplied VirtualModel.<br>
+	 * Creates and return a new {@link FMLModelSlot} adressing supplied VirtualModel.<br>
 	 * 
 	 * @param modelSlotClass
 	 * @param containerVirtualModel
@@ -74,8 +74,8 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	 *            the virtual model referenced by the model slot
 	 * @return
 	 */
-	public VirtualModelModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
-		final VirtualModelModelSlot returned = this.makeModelSlot(VirtualModelModelSlot.class, containerVirtualModel);
+	public FMLModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
+		final FMLModelSlot returned = this.makeModelSlot(FMLModelSlot.class, containerVirtualModel);
 		returned.setAddressedVirtualModel(addressedVirtualModel);
 		return returned;
 	}
@@ -87,13 +87,13 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public VirtualModelTechnologyContextManager createTechnologyContextManager(final FlexoResourceCenterService service) {
-		return new VirtualModelTechnologyContextManager(this, service);
+	public FMLTechnologyContextManager createTechnologyContextManager(final FlexoResourceCenterService service) {
+		return new FMLTechnologyContextManager(this, service);
 	}
 
 	@Override
-	public VirtualModelTechnologyContextManager getTechnologyContextManager() {
-		return (VirtualModelTechnologyContextManager) super.getTechnologyContextManager();
+	public FMLTechnologyContextManager getTechnologyContextManager() {
+		return (FMLTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -386,7 +386,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 			//final ViewPointJarBasedRepository viewPointJarBasedRepository = this.getViewPointJarBasedRepository(resourceCenter);
 			//final ViewPointFileBasedRepository viewPointFileBasedRepository = this.getViewPointFileBasedRepository(resourceCenter);
 			//if (contents instanceof File) {
-			System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
+			System.out.println("FMLTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
 				//final File candidateFile = (File) contents;
 				//if (this.isValidViewPointDirectory(candidateFile)) {
 			final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
@@ -397,7 +397,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 				//	this.referenceResource(vRes, resourceCenter);
 				//}
 			//}else if(contents instanceof InJarResourceImpl){
-			//	System.out.println("VirtualModelTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
+			//	System.out.println("FMLTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
 			//	final InJarResourceImpl candidateElement = (InJarResourceImpl) contents;
 			//	if (this.isValidViewPointDirectory(candidateElement)) {
 			//		final ViewPointResource vpRes = this.analyseAsViewPoint(candidateElement, viewPointJarBasedRepository);
@@ -411,7 +411,7 @@ public class VirtualModelTechnologyAdapter extends TechnologyAdapter {
 	public <I> void contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		if (!this.isIgnorable(resourceCenter, contents)) {
 			if (contents instanceof File) {
-				System.out.println("VirtualModelTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
+				System.out.println("FMLTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in " + ((File) contents).getParentFile().getAbsolutePath());
 			}
 		}
 	}

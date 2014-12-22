@@ -3,7 +3,7 @@ package org.openflexo.foundation.fmlrt.rm;
 import java.util.List;
 
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fmlrt.View;
 import org.openflexo.foundation.fmlrt.ViewLibrary;
@@ -30,7 +30,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(ViewResourceImpl.class)
 @XMLElement
 public interface ViewResource extends PamelaResource<View, ViewModelFactory>, FlexoProjectResource<View>, DirectoryContainerResource<View>,
-		TechnologyAdapterResource<View, VirtualModelTechnologyAdapter>, FlexoModelResource<View, ViewPoint, VirtualModelTechnologyAdapter> {
+		TechnologyAdapterResource<View, FMLTechnologyAdapter>, FlexoModelResource<View, ViewPoint, FMLTechnologyAdapter> {
 
 	public static final String VIEW_SUFFIX = ".view";
 

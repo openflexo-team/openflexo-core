@@ -2,7 +2,7 @@ package org.openflexo.foundation.fml.rm;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -14,7 +14,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(VirtualModelResourceImpl.class)
 @XMLElement
 public interface VirtualModelResource extends PamelaResource<VirtualModel, VirtualModelModelFactory>,
-		TechnologyAdapterResource<VirtualModel, VirtualModelTechnologyAdapter>, DirectoryContainerResource<VirtualModel> {
+		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter>, DirectoryContainerResource<VirtualModel> {
 
 	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
 	//public static final String DIRECTORY = "directory";

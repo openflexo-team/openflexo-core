@@ -31,8 +31,8 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLModelSlot;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
@@ -98,11 +98,11 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			throw new InvalidParameterException("No technology adapter supplied");
 		}
 
-		/*if (technologyAdapter instanceof VirtualModelTechnologyAdapter) {
-			VirtualModelTechnologyAdapter virtualModelTechnologyAdapter = (VirtualModelTechnologyAdapter) technologyAdapter;
-			newModelSlot = virtualModelTechnologyAdapter.makeModelSlot(VirtualModelModelSlot.class, getFocusedObject());
+		/*if (technologyAdapter instanceof FMLTechnologyAdapter) {
+			FMLTechnologyAdapter virtualModelTechnologyAdapter = (FMLTechnologyAdapter) technologyAdapter;
+			newModelSlot = virtualModelTechnologyAdapter.makeModelSlot(FMLModelSlot.class, getFocusedObject());
 			newModelSlot.setName(modelSlotName);
-			((VirtualModelModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+			((FMLModelSlot) newModelSlot).setVirtualModelResource(vmRes);
 			newModelSlot.setIsRequired(required);
 			newModelSlot.setIsReadOnly(readOnly);
 			newModelSlot.setDescription(description);
@@ -116,8 +116,8 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 				newModelSlot = technologyAdapter.createNewModelSlot((ViewPoint) getFocusedObject());
 			}*/
 			newModelSlot.setName(modelSlotName);
-			if (newModelSlot instanceof VirtualModelModelSlot) {
-				((VirtualModelModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+			if (newModelSlot instanceof FMLModelSlot) {
+				((FMLModelSlot) newModelSlot).setVirtualModelResource(vmRes);
 
 			} else if (newModelSlot instanceof TypeAwareModelSlot) {
 				((TypeAwareModelSlot) newModelSlot).setMetaModelResource(mmRes);
@@ -165,14 +165,14 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 			}*/else if (technologyAdapter == null) {
 			validityMessage = NO_TECHNOLOGY_ADAPTER;
 			return false;
-		} else if (technologyAdapter instanceof VirtualModelTechnologyAdapter) {
+		} else if (technologyAdapter instanceof FMLTechnologyAdapter) {
 			if (vmRes == null) {
 				return false;
 			} else {
 				validityMessage = "";
 				return true;
 			}
-		} else if (!(technologyAdapter instanceof VirtualModelTechnologyAdapter)) {
+		} else if (!(technologyAdapter instanceof FMLTechnologyAdapter)) {
 			if (getModelSlotClass() == null) {
 				validityMessage = NO_MODEL_SLOT_TYPE;
 				return false;
@@ -218,7 +218,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 	public boolean isVirtualModelModelSlot() {
 		// System.out.println("isTypeAwareModelSlot ? with " + getModelSlotClass());
 		// System.out.println("return " + (getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())));
-		return getModelSlotClass() != null && getModelSlotClass().equals(VirtualModelModelSlot.class);
+		return getModelSlotClass() != null && getModelSlotClass().equals(FMLModelSlot.class);
 	}
 
 	/**

@@ -122,7 +122,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeleteFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.VirtualModelModelSlot.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FMLModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.editionaction.ProcedureAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()

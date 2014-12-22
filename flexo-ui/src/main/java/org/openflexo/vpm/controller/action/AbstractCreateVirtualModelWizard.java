@@ -12,7 +12,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
@@ -167,7 +167,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 				return new ConfigureTypeAwareModelSlot(msEntry);
 			} else if (FreeModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureFreeModelSlot(msEntry);
-			} else if (VirtualModelModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+			} else if (FMLModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureVirtualModelModelSlot(msEntry);
 			} else {
 				logger.warning("Could not instantiate ConfigureModelSlot for " + msEntry);
@@ -317,7 +317,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 *
 	 */
 	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureVirtualModelModelSlot.fib")
-	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<VirtualModelModelSlot> {
+	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLModelSlot> {
 
 		public ConfigureVirtualModelModelSlot(ModelSlotEntry entry) {
 			super(entry);

@@ -34,20 +34,20 @@ import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
- * This class is used to stored the configuration of a {@link VirtualModelModelSlot} which has to be instantiated
+ * This class is used to stored the configuration of a {@link FMLModelSlot} which has to be instantiated
  * 
  * 
  * @author sylvain
  * 
  */
-public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanceConfiguration<VirtualModelModelSlot, VirtualModelInstance> {
+public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanceConfiguration<FMLModelSlot, VirtualModelInstance> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstanceConfiguration.class.getPackage().getName());
 
 	private final List<ModelSlotInstanceConfigurationOption> options;
 	private VirtualModelInstanceResource addressedVirtualModelInstanceResource;
 
-	protected VirtualModelModelSlotInstanceConfiguration(VirtualModelModelSlot ms, CreateVirtualModelInstance action) {
+	protected VirtualModelModelSlotInstanceConfiguration(FMLModelSlot ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
@@ -68,7 +68,7 @@ public class VirtualModelModelSlotInstanceConfiguration extends ModelSlotInstanc
 	}
 
 	@Override
-	public ModelSlotInstance<VirtualModelModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
+	public ModelSlotInstance<FMLModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
 		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
 		System.out.println("factory=" + factory);
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);

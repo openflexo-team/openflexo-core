@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.ViewPointFileBasedRepository;
 import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
@@ -86,7 +86,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public ViewPointFileBasedRepository getViewPointRepository() {
 		if (technologyAdapterService != null) {
-			VirtualModelTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			FMLTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return getRepository(ViewPointFileBasedRepository.class, vmTA);
 		}
 		return null;

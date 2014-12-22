@@ -98,7 +98,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(ViewPoint.ViewPointImpl.class)
 @XMLElement(xmlTag = "ViewPoint")
 public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>, FlexoMetaModel<ViewPoint>,
-		TechnologyObject<VirtualModelTechnologyAdapter> {
+		TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -777,7 +777,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 		}
 
 		@Override
-		public VirtualModelTechnologyAdapter getTechnologyAdapter() {
+		public FMLTechnologyAdapter getTechnologyAdapter() {
 			if (getResource() != null) {
 				return getResource().getTechnologyAdapter();
 			}

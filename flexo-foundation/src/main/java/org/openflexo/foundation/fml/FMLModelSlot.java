@@ -49,7 +49,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot class for the Openflexo built-in diagram technology adapter
+ * Implementation of the ModelSlot for a FML VirtualModel
  * 
  * @author sylvain, christophe
  * 
@@ -64,9 +64,9 @@ import org.openflexo.toolbox.StringUtils;
 @DeclareFetchRequests({ // All requests available through this model slot
 @DeclareFetchRequest(FML = "SelectFlexoConceptInstance", fetchRequestClass = SelectFlexoConceptInstance.class) })
 @ModelEntity
-@ImplementationClass(VirtualModelModelSlot.VirtualModelModelSlotImpl.class)
+@ImplementationClass(FMLModelSlot.VirtualModelModelSlotImpl.class)
 @XMLElement
-public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
+public interface FMLModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -90,18 +90,18 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
-	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements VirtualModelModelSlot {
+	public static abstract class VirtualModelModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements FMLModelSlot {
 
-		private static final Logger logger = Logger.getLogger(VirtualModelModelSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FMLModelSlot.class.getPackage().getName());
 
 		@Override
 		public String getStringRepresentation() {
-			return "VirtualModelModelSlot";
+			return "FMLModelSlot";
 		}
 
 		@Override
 		public Class getTechnologyAdapterClass() {
-			return VirtualModelTechnologyAdapter.class;
+			return FMLTechnologyAdapter.class;
 		}
 
 		@Override
@@ -124,7 +124,7 @@ public interface VirtualModelModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public ModelSlotInstanceConfiguration<? extends VirtualModelModelSlot, VirtualModelInstance> createConfiguration(
+		public ModelSlotInstanceConfiguration<? extends FMLModelSlot, VirtualModelInstance> createConfiguration(
 				CreateVirtualModelInstance action) {
 			return new VirtualModelModelSlotInstanceConfiguration(this, action);
 		}

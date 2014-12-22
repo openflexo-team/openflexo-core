@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fmlrt.rm.ViewResource;
 import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
 
@@ -48,7 +48,7 @@ public class ViewLibrary extends ViewRepository {
 	 * Create a new ViewLibrary.
 	 */
 	public ViewLibrary(FlexoProject project) {
-		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(VirtualModelTechnologyAdapter.class), project,
+		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class), project,
 				getExpectedViewLibraryDirectory(project));
 		this.project = project;
 		getRootFolder().setName(project.getName());

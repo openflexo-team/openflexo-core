@@ -31,7 +31,7 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
 import org.openflexo.foundation.fmlrt.VirtualModelInstance;
@@ -71,7 +71,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance extends DeleteAction<FMLModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -117,7 +117,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<VirtualModelMod
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<VirtualModelModelSlot, FlexoConceptInstance>
+	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FMLModelSlot, FlexoConceptInstance>
 			implements DeleteFlexoConceptInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());

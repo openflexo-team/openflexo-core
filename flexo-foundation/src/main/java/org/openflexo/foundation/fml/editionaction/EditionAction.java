@@ -36,7 +36,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fmlrt.ModelSlotInstance;
 import org.openflexo.foundation.fmlrt.VirtualModelInstance;
@@ -138,7 +138,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
 
-	public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots();
+	public List<FMLModelSlot> getAvailableVirtualModelModelSlots();
 
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
 
@@ -208,8 +208,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		}
 
 		@Override
-		public List<VirtualModelModelSlot> getAvailableVirtualModelModelSlots() {
-			return getAvailableModelSlots(VirtualModelModelSlot.class);
+		public List<FMLModelSlot> getAvailableVirtualModelModelSlots() {
+			return getAvailableModelSlots(FMLModelSlot.class);
 		}
 
 		@Override
@@ -591,7 +591,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction> applyValidation(EditionAction anAction) {
 			ModelSlot ms = anAction.getModelSlot();
-			if (ms instanceof VirtualModelModelSlot && "virtualModelInstance".equals(ms.getName())) {
+			if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(anAction);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction>(this, anAction,
 						"EditionAction_should_not_have_reflexive_model_slot_no_more", fixProposal);

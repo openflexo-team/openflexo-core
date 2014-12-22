@@ -14,7 +14,7 @@ import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -37,11 +37,11 @@ import org.openflexo.vpm.view.StandardFlexoConceptView;
 import org.openflexo.vpm.view.ViewPointView;
 import org.openflexo.vpm.view.VirtualModelView;
 
-public class VirtualModelTechnologyAdapterController extends TechnologyAdapterController<VirtualModelTechnologyAdapter> {
+public class VirtualModelTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
 
 	@Override
-	public Class<VirtualModelTechnologyAdapter> getTechnologyAdapterClass() {
-		return VirtualModelTechnologyAdapter.class;
+	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<VirtualModelTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<FMLTechnologyAdapter>> objectClass) {
 		if (ViewPoint.class.isAssignableFrom(objectClass)) {
 			return VPMIconLibrary.VIEWPOINT_ICON;
 		} else if (View.class.isAssignableFrom(objectClass)) {
@@ -157,7 +157,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	}
 
 	@Override
-	public boolean hasModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
+	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 
 		if (object instanceof ViewPoint || object instanceof FlexoConcept) {
 			return true;
@@ -167,7 +167,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	}
 
 	@Override
-	public String getWindowTitleforObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller) {
+	public String getWindowTitleforObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 		return object.toString();
 	}
 
@@ -179,7 +179,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 	 * @return
 	 */
 	@Override
-	public ModuleView<?> createModuleViewForObject(TechnologyObject<VirtualModelTechnologyAdapter> object, FlexoController controller,
+	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 		if (object instanceof ViewPoint) {
 			return new ViewPointView((ViewPoint) object, controller, perspective);
@@ -223,7 +223,7 @@ public class VirtualModelTechnologyAdapterController extends TechnologyAdapterCo
 
 		}*/
 
-		return new EmptyPanel<TechnologyObject<VirtualModelTechnologyAdapter>>(controller, perspective, object);
+		return new EmptyPanel<TechnologyObject<FMLTechnologyAdapter>>(controller, perspective, object);
 	}
 
 }

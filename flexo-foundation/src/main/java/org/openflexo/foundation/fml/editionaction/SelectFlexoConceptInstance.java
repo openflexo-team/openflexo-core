@@ -26,7 +26,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
@@ -57,7 +57,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(SelectFlexoConceptInstance.SelectFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelModelSlot, FlexoConceptInstance> {
+public interface SelectFlexoConceptInstance extends FetchRequest<FMLModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -73,7 +73,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<VirtualModelModelSlot, FlexoConceptInstance>
+	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLModelSlot, FlexoConceptInstance>
 			implements SelectFlexoConceptInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
@@ -126,8 +126,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 			// System.out.println("vm=" + getVirtualModel());
 			// System.out.println("ep=" + getFlexoConcept());
 			// System.out.println("ms=" + getModelSlot());
-			// if (getModelSlot() instanceof VirtualModelModelSlot) {
-			// System.out.println("ms.vm=" + ((VirtualModelModelSlot) getModelSlot()).getAddressedVirtualModel());
+			// if (getModelSlot() instanceof FMLModelSlot) {
+			// System.out.println("ms.vm=" + ((FMLModelSlot) getModelSlot()).getAddressedVirtualModel());
 			// }
 			if (flexoConceptType == null && flexoConceptTypeURI != null && getVirtualModel() != null) {
 				flexoConceptType = getVirtualModel().getFlexoConcept(flexoConceptTypeURI);
@@ -142,7 +142,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 			if (flexoConceptType == null && flexoConceptTypeURI != null && getFlexoConcept() instanceof VirtualModel) {
 				flexoConceptType = ((VirtualModel) getFlexoConcept()).getFlexoConcept(flexoConceptTypeURI);
 			}
-			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlot() instanceof VirtualModelModelSlot) {
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getModelSlot() instanceof FMLModelSlot) {
 				if (getModelSlot().getAddressedVirtualModel() != null) {
 					flexoConceptType = getModelSlot().getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				}
@@ -173,7 +173,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<VirtualModelMod
 		@Override
 		public List<FlexoConceptInstance> performAction(FlexoBehaviourAction action) {
 			VirtualModelInstance vmi = null;
-			if (getModelSlot() instanceof VirtualModelModelSlot) {
+			if (getModelSlot() instanceof FMLModelSlot) {
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());

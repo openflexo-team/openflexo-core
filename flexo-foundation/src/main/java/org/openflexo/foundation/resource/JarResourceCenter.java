@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.ViewPointJarBasedRepository;
-import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.annotations.Getter;
@@ -310,7 +310,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	@Override
 	public ViewPointJarBasedRepository getViewPointRepository() {
 		if (technologyAdapterService != null) {
-			VirtualModelTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(VirtualModelTechnologyAdapter.class);
+			FMLTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class);
 			return getRepository(ViewPointJarBasedRepository.class, vmTA);
 		}
 		return null;
