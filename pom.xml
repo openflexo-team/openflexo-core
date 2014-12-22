@@ -15,7 +15,7 @@
 		<connie.version>1.1</connie.version>
 		<pamela.version>1.1</pamela.version>
 		<diana.version>1.1</diana.version>
-		<flexoutils.version>1.1</flexoutils.version>
+		<openflexoutils.version>1.2-SNAPSHOT</openflexoutils.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
@@ -202,12 +202,12 @@
 			 <dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>openflexo-utils</artifactId>
-				<version>${flexoutils.version}</version>
+				<version>${openflexoutils.version}</version>
 			</dependency>
 			 <dependency>
 			 	<groupId>org.openflexo</groupId>
 			 	<artifactId>flexohelp</artifactId>
-			 	<version>${flexoutils.version}</version>
+			 	<version>${openflexoutils.version}</version>
 			 </dependency>
 		</dependencies>
   	</dependencyManagement>
