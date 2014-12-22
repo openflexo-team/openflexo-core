@@ -17,29 +17,4 @@ public class TestCommonFlexoDialogFibs extends GenericFIBTestCase {
 		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}
 
-	@Test
-	public void testChooseAndConfigureCreationSchemeDialog() {
-		validateFIB("Fib/Dialog/ChooseAndConfigureCreationSchemeDialog.fib");
-	}
-
-	@Test
-	public void testConfigureVirtualModelSlotInstanceDialog() {
-		validateFIB("Fib/Dialog/ConfigureVirtualModelSlotInstanceDialog.fib");
-	}
-
-	@Test
-	public void testConfigureModelSlotInstanceDialog() {
-		validateFIB("Fib/Dialog/ConfigureModelSlotInstanceDialog.fib");
-	}
-
-	@Test
-	public void testConfigureFreeModelSlotInstanceDialog() {
-		validateFIB("Fib/Dialog/ConfigureFreeModelSlotInstanceDialog.fib");
-	}
-
-	@Test
-	public void testConfigureTypeAwareModelSlotInstanceDialog() {
-		validateFIB("Fib/Dialog/ConfigureTypeAwareModelSlotInstanceDialog.fib");
-	}
-
 }
