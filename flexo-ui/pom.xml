@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexo-ui</artifactId>
 	<name>Openflexo-core : UI layer</name>
