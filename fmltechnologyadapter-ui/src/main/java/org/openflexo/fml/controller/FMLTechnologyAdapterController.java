@@ -49,7 +49,7 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
-public class VirtualModelTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
+public class FMLTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
