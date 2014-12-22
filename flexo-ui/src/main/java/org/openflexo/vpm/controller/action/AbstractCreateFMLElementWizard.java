@@ -4,15 +4,15 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptObject;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointObject;
-import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.AbstractCreateFlexoConcept;
-import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
-import org.openflexo.foundation.viewpoint.action.CreateViewPoint;
-import org.openflexo.foundation.viewpoint.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateViewPoint;
+import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.view.controller.FlexoController;
 
 /**

@@ -28,20 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.VirtualModelModelSlot;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fmlrt.ModelSlotInstance;
+import org.openflexo.foundation.fmlrt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.view.ModelSlotInstance;
-import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.FMLRepresentationContext;
-import org.openflexo.foundation.viewpoint.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.VirtualModelModelFactory;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -63,9 +63,9 @@ import org.openflexo.model.annotations.XMLAttribute;
  *            Type of resource data handled by this ModelSlot
  * 
  * @author Sylvain Guerin
- * @see org.openflexo.foundation.viewpoint.ViewPoint
- * @see org.openflexo.foundation.view.View
- * @see org.openflexo.foundation.view.ModelSlotInstance
+ * @see org.openflexo.foundation.fml.ViewPoint
+ * @see org.openflexo.foundation.fmlrt.View
+ * @see org.openflexo.foundation.fmlrt.ModelSlotInstance
  * */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)

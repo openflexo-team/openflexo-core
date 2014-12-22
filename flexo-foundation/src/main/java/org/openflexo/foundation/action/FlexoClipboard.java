@@ -8,13 +8,13 @@ import java.util.Map;
 import org.openflexo.fge.control.exceptions.CopyException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
+import org.openflexo.foundation.fmlrt.ActorReference;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.view.ActorReference;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.viewpoint.FlexoRole.RoleCloningStrategy;
-import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.ModelFactory;
 

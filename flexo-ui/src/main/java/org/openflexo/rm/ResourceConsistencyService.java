@@ -6,14 +6,14 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.fmlrt.rm.ViewResource;
+import org.openflexo.foundation.fmlrt.rm.ViewResourceImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.ResourceRegistered;
 import org.openflexo.foundation.resource.ResourceUnregistered;
-import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.view.rm.ViewResourceImpl;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 

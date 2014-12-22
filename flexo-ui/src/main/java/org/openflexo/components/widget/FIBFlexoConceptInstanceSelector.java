@@ -26,14 +26,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
-import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fmlrt.View;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fmlrt.rm.ViewResource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 

@@ -28,9 +28,9 @@ import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
-import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourObject;
-import org.openflexo.foundation.viewpoint.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourObject;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 

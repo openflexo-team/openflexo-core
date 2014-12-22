@@ -21,7 +21,7 @@ package org.openflexo.components.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
+import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;

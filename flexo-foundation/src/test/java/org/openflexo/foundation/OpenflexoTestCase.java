@@ -39,13 +39,13 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;

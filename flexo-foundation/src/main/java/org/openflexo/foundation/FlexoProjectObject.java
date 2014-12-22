@@ -21,8 +21,8 @@ package org.openflexo.foundation;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
-import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;

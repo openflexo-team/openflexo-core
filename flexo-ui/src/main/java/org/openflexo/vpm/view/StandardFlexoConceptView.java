@@ -20,7 +20,7 @@
 package org.openflexo.vpm.view;
 
 import org.openflexo.components.widget.CommonFIB;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 

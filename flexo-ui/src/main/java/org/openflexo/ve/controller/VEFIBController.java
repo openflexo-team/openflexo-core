@@ -3,11 +3,11 @@ package org.openflexo.ve.controller;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.action.SynchronizationSchemeAction;
-import org.openflexo.foundation.view.action.SynchronizationSchemeActionType;
-import org.openflexo.foundation.viewpoint.SynchronizationScheme;
-import org.openflexo.foundation.viewpoint.VirtualModel;
+import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fmlrt.action.SynchronizationSchemeAction;
+import org.openflexo.foundation.fmlrt.action.SynchronizationSchemeActionType;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;

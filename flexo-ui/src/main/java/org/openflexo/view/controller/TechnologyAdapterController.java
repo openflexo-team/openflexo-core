@@ -30,36 +30,36 @@ import javax.swing.ImageIcon;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptNature;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointNature;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelNature;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.editionaction.AddToListAction;
+import org.openflexo.foundation.fml.editionaction.ConditionalAction;
+import org.openflexo.foundation.fml.editionaction.DeleteAction;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.editionaction.IterationAction;
+import org.openflexo.foundation.fml.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstanceNature;
+import org.openflexo.foundation.fmlrt.View;
+import org.openflexo.foundation.fmlrt.ViewNature;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fmlrt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.FlexoConceptInstanceNature;
-import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.ViewNature;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.VirtualModelInstanceNature;
-import org.openflexo.foundation.viewpoint.FlexoBehaviour;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoConceptNature;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointNature;
-import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.VirtualModelNature;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.editionaction.AddToListAction;
-import org.openflexo.foundation.viewpoint.editionaction.ConditionalAction;
-import org.openflexo.foundation.viewpoint.editionaction.DeleteAction;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.IterationAction;
-import org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VEIconLibrary;
@@ -180,11 +180,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @return
 	 */
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
-		if (org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole.class.isAssignableFrom(editionActionClass)) {
+		if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.DECLARE_PATTERN_ROLE_ICON;
-		} else if (org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.DECLARE_PATTERN_ROLE_ICON;
-		} else if (org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
 			return VPMIconLibrary.ACTION_SCHEME_ICON;
 		} else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);

@@ -34,14 +34,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.ViewPointFileBasedRepository;
+import org.openflexo.foundation.fml.ViewPointRepository;
+import org.openflexo.foundation.fml.VirtualModelTechnologyAdapter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.MetaModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.ViewPointFileBasedRepository;
-import org.openflexo.foundation.viewpoint.ViewPointRepository;
-import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;

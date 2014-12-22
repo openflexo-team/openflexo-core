@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.view.VirtualModelInstanceNature;
+import org.openflexo.foundation.fmlrt.VirtualModelInstanceNature;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

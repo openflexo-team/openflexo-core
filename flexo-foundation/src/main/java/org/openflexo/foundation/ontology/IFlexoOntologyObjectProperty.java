@@ -28,8 +28,8 @@
  */
 package org.openflexo.foundation.ontology;
 
+import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 
 /**
  * Concept of Object Property.

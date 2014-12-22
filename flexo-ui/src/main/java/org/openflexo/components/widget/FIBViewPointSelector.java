@@ -23,10 +23,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.rm.ResourceLocator;
-
 import org.openflexo.rm.Resource;
 
 /**

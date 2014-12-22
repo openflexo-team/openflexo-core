@@ -7,8 +7,8 @@ import org.openflexo.antar.binding.BindingFactory;
 import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.JavaBindingFactory;
 import org.openflexo.antar.binding.SimplePathElement;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.TechnologySpecificCustomType;
 
 /**
  * This class represent the {@link BindingFactory} dedicated to handle technology-specific binding elements<br>

@@ -22,7 +22,7 @@ package org.openflexo.ve.view;
 import org.openflexo.components.widget.CommonFIB;
 import org.openflexo.fib.model.listener.FIBMouseClickListener;
 import org.openflexo.fib.view.FIBView;
-import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;

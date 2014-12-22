@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.openflexo.foundation.fml.ViewPointModelFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;

@@ -9,7 +9,8 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

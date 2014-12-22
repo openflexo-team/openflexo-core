@@ -20,6 +20,7 @@
 package org.openflexo.foundation;
 
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
+import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.remoteresources.FlexoUpdateService;
@@ -35,7 +36,6 @@ import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterServic
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 
 /**
  * Default implementation of {@link FlexoServiceManager}

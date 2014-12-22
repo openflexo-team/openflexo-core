@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel opaque="false" layout="border" borderTitle="Panel" darkLevel="0" data="" dataClassName="org.openflexo.foundation.viewpoint.VirtualModel" controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController" constraints="border(location=center)" visible="" name="VirtualModelStructuralPanel">
+<Panel opaque="false" layout="border" borderTitle="Panel" darkLevel="0" data="" dataClassName="org.openflexo.foundation.fml.VirtualModel" controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController" constraints="border(location=center)" visible="" name="VirtualModelStructuralPanel">
   <SplitPanel data="" constraints="border(location=center)" visible="">
     <ColSplit name="ColSplit" weight="0.0">
       <Leaf name="structural" weight="0.0" />
@@ -10,19 +10,19 @@
         <Leaf name="flexoConceptDetails" weight="0.0" />
       </RowSplit>
     </ColSplit>
-    <Browser root="data" iteratorClassName="org.openflexo.foundation.viewpoint.FlexoConcept" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true" rootVisible="true" showRootsHandle="true" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoConceptBrowser" data="" constraints="split(splitIdentifier=flexoConceptBrowser)" visible="" width="200" height="76">
-      <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
+    <Browser root="data" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true" rootVisible="true" showRootsHandle="true" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoConceptBrowser" data="" constraints="split(splitIdentifier=flexoConceptBrowser)" visible="" width="200" height="76">
+      <BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
         <Children data="data.allRootFlexoConcepts" visible="data.flexoConcepts!=null" cast="" name="children" />
         <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
         <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
       </BrowserElement>
-      <BrowserElement dataClassName="org.openflexo.foundation.viewpoint.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
+      <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
         <Children data="flexoConcept.childFlexoConcepts" visible="" cast="" name="children" />
         <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
         <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
       </BrowserElement>
     </Browser>
-    <Table iteratorClassName="org.openflexo.foundation.viewpoint.FlexoRole" visibleRowCount="3" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoRoleTable" index="0" data="data.flexoRoles" constraints="split(index=0;location=north;splitIdentifier=structural)" visible="">
+    <Table iteratorClassName="org.openflexo.foundation.fml.FlexoRole" visibleRowCount="3" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoRoleTable" index="0" data="data.flexoRoles" constraints="split(index=0;location=north;splitIdentifier=structural)" visible="">
       <IconColumn data="controller.iconForObject(iterator)" format="" title="icon" columnWidth="25" resizable="false" displayTitle="false" color="" bgColor="" tooltip="" valueChangedAction="" name="icon" />
       <TextFieldColumn isEditable="" data="iterator.roleName" format="" title="flexo_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" />
       <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />

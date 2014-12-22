@@ -28,8 +28,8 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;

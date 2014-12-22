@@ -2,8 +2,8 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.fml.TechnologySpecificCustomType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 
 public class IndividualOfClass<TA extends TechnologyAdapter> implements TechnologySpecificCustomType<TA> {
 

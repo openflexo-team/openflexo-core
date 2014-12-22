@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel layout="border" darkLevel="0" data=""
-	dataClassName="org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector"
+	dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
 	controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController"
 	constraints="border(location=center)" visible="" opaque="false">
 	<Panel layout="twocols" hGap="5" vGap="5" flowAlignment="LEADING"
@@ -51,7 +51,7 @@
 			darkLevel="0" index="1" data=""
 			constraints="split(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;splitIdentifier=left;weightX=0.0;weightY=0.0)"
 			visible="" opaque="false" name="InspectorPropertyBrowserPanel">
-			<Table iteratorClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry"
+			<Table iteratorClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				autoSelectFirstRow="true" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
 				selectionMode="MultipleIntervalSelection" selected=""
@@ -169,7 +169,7 @@
 			</Panel>
 			<Panel layout="twocols" borderLeft="5" borderRight="3"
 				titleFont="SansSerif,0,11" darkLevel="0" index="1"
-				data="InspectorPropertyTable.selected" dataClassName="org.openflexo.foundation.viewpoint.inspector.InspectorEntry"
+				data="InspectorPropertyTable.selected" dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 				visible="(InspectorPropertyTable.selected != null)" opaque="false"
 				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
@@ -241,7 +241,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="9"
 					data="($org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.ClassInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(EntryPanel.data.class.simpleName = &quot;ClassInspectorEntry&quot;)"
 					name="OntologyClassInspectorEntryPanel">
@@ -288,7 +288,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="10"
 					data="($org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.IndividualInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(EntryPanel.data.class.simpleName = &quot;IndividualInspectorEntry&quot;)"
 					name="OntologyIndividualInspectorEntryPanel">
@@ -341,7 +341,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="12"
 					data="($org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.PropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
 					name="OntologyPropertyInspectorEntryPanel1">
@@ -373,7 +373,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="14"
 					data="($org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.PropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
 					name="OntologyPropertyInspectorEntryPanel2">
@@ -432,7 +432,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="16"
 					data="($org.openflexo.foundation.viewpoint.inspector.ObjectPropertyInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.ObjectPropertyInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;)"
 					name="OntologyObjectPropertyInspectorEntryPanel">
@@ -491,7 +491,7 @@
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="18"
 					data="($org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry)EntryPanel.data"
-					dataClassName="org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry"
+					dataClassName="org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=18;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 					visible="(EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)"
 					name="OntologyDataPropertyInspectorEntryPanel">

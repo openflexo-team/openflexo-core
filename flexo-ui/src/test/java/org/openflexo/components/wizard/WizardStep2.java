@@ -2,7 +2,7 @@ package org.openflexo.components.wizard;
 
 import java.awt.Image;
 
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 

@@ -31,10 +31,10 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.logging.FlexoLogger;
 
 /**

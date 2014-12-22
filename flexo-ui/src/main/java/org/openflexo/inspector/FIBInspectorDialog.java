@@ -30,9 +30,9 @@ import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.inspector.ModuleInspectorController.InspectedObjectChanged;
 import org.openflexo.swing.WindowSynchronizer;

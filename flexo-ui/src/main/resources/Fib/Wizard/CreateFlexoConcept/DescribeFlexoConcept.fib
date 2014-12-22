@@ -27,7 +27,7 @@
 		index="4" localize="true"
 		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		createNewRowOnClick="false"
-		iteratorClassName="org.openflexo.foundation.viewpoint.action.AbstractCreateFlexoConcept$ParentFlexoConceptEntry"
+		iteratorClassName="org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept$ParentFlexoConceptEntry"
 		useScrollBar="false" data="data.parentFlexoConceptEntries"
 		autoSelectFirstRow="false" name="ParentFlexoConceptTable" readOnly="false">
 		<IconColumn id="6" data="controller.iconForObject(iterator)"

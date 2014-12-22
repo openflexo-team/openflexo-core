@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;

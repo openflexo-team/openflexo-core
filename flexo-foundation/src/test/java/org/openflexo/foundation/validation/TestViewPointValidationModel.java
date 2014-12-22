@@ -6,14 +6,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointValidationModel;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointValidationModel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
-import org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationRuleSet;
@@ -42,194 +42,194 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.technologyadapter.FreeModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.CloningScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.CloningScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoBehaviourObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviourObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.technologyadapter.TypeAwareModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.DeleteAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeleteAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.IntegerInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.IntegerInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.CreateFlexoConceptInstanceParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.CreateFlexoConceptInstanceParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.AbstractCreationScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.AbstractCreationScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.IndividualParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.IndividualParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ListParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ListParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AbstractAssertion.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AbstractAssertion.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptInstanceRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptInstanceRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConcept.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConcept.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AssignationAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AssignationAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstance.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.ExecutionAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.ExecutionAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptBehaviouralFacet.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddIndividual.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddIndividual.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.SelectFlexoConceptInstance.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.CheckboxInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptStructuralFacet.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptStructuralFacet.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.TextAreaInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPoint.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ViewPoint.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPointLocalizedEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ViewPointLocalizedEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.TechnologyObjectParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.TechnologyObjectParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.DeletionScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.DeletionScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.FloatInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.FloatInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddFlexoConceptInstanceParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstanceParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.VirtualModel.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.VirtualModel.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.ObjectPropertyAssertion.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AssignableAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AssignableAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ActionScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ActionScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddClass.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddClass.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.SelectIndividual.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.SelectIndividual.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FloatParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FloatParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.resource.ResourceData.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.AbstractActionScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.AbstractActionScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.DataPropertyAssertion.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.DataPropertyAssertion.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.PropertyParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.PropertyParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstance.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeleteFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.VirtualModelModelSlot.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.VirtualModelModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.ProcedureAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.ProcedureAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.DropDownParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.DropDownParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.DataPropertyParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.DataPropertyParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ObjectPropertyParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ObjectPropertyParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.TextFieldParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.TextFieldParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.RemoveFromListAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddToListAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddToListAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.FetchRequestCondition.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.FetchRequestCondition.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptConstraint.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptConstraint.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoBehaviourParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviourParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.InspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.InspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.NamedViewPointObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.NamedViewPointObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.PropertyInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.PropertyInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.FlexoConceptInspector.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.FlexoConceptInspector.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.CheckboxParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.CheckboxParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.ControlStructureAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.ControlStructureAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.MatchingCriteria.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.MatchingCriteria.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.PrimitiveRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.PrimitiveRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.IterationAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.IterationAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.FlexoProperty.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.ConditionalAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.ConditionalAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.ObjectPropertyInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.IntegerParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.IntegerParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.URIParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.URIParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.DataPropertyInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoConceptInstanceParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptInstanceParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.TextAreaParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.TextAreaParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPointObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ViewPointObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoBehaviour.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviour.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext().getModelEntity(org.openflexo.foundation.FlexoObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.OntologicObjectRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.OntologicObjectRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.FetchRequest.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.FetchRequest.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoBehaviourParameters.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviourParameters.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.DeclareFlexoRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.DeleteFlexoConceptInstanceParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeleteFlexoConceptInstanceParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.SynchronizationScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.SynchronizationScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.EditionAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.EditionAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ClassParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ClassParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ActionContainer.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ActionContainer.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.InnerModelSlotParameter.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.InnerModelSlotParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.FetchRequestIterationAction.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.AddConcept.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.AddConcept.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.IndividualInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.IndividualInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ViewPointLocalizedDictionary.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ViewPointLocalizedDictionary.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.FlexoRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FlexoRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.ClassInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.ClassInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.CreationScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.CreationScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.inspector.TextFieldInspectorEntry.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.technologyadapter.ModelSlot.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.editionaction.MatchFlexoConceptInstance.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.editionaction.MatchFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.NavigationScheme.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.NavigationScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.ClassRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.ClassRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.IndividualRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.IndividualRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.viewpoint.PropertyRole.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.PropertyRole.class) != null);
 
 	}
 

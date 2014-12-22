@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.UIManager;
 
 import org.openflexo.foundation.FlexoProperty;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;

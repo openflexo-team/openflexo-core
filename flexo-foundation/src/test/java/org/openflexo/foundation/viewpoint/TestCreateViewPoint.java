@@ -6,8 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
-import org.openflexo.foundation.viewpoint.ViewPoint.ViewPointImpl;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

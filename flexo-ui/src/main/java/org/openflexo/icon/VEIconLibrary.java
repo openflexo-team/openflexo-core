@@ -23,13 +23,13 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.ModelSlotInstance;
-import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.ViewObject;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fmlrt.ModelSlotInstance;
+import org.openflexo.foundation.fmlrt.View;
+import org.openflexo.foundation.fmlrt.ViewObject;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fmlrt.rm.ViewResource;
+import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ImageIconResource;
 

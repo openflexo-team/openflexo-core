@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
-import org.openflexo.foundation.viewpoint.action.CreateFlexoConcept;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fmlrt.VirtualModelInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.icon.VPMIconLibrary;
