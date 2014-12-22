@@ -11,10 +11,10 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.1</gina.version>
-		<connie.version>1.1</connie.version>
-		<pamela.version>1.1</pamela.version>
-		<diana.version>1.1</diana.version>
+		<gina.version>1.2-SNAPSHOT</gina.version>
+		<connie.version>1.2-SNAPSHOT</connie.version>
+		<pamela.version>1.2-SNAPSHOT</pamela.version>
+		<diana.version>1.2-SNAPSHOT</diana.version>
 		<openflexoutils.version>1.2-SNAPSHOT</openflexoutils.version>
 	</properties>
 	<scm>
