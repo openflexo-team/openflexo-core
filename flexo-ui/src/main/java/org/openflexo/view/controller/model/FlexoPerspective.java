@@ -54,9 +54,6 @@ import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
-import org.openflexo.vpm.view.StandardFlexoConceptView;
-import org.openflexo.vpm.view.ViewPointView;
-import org.openflexo.vpm.view.VirtualModelView;
 
 public abstract class FlexoPerspective extends ControllerModelObject {
 
@@ -179,7 +176,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				ViewPointNature nature = availableNatures.get(0);
 				return getModuleViewPointForViewPoint(viewPoint, nature);
 			}
-			return new ViewPointView(viewPoint, controller, this);
+			// return new ViewPointView(viewPoint, controller, this);
+			// TODO: check that FMLTechnologyAdapterController now handle this
 		}
 		if (object instanceof VirtualModel) {
 			VirtualModel virtualModel = (VirtualModel) object;
@@ -188,7 +186,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				VirtualModelNature nature = availableNatures.get(0);
 				return getModuleViewForVirtualModel(virtualModel, nature);
 			}
-			return new VirtualModelView(virtualModel, controller, this);
+			// return new VirtualModelView(virtualModel, controller, this);
+			// TODO: check that FMLTechnologyAdapterController now handle this
 		}
 		if (object instanceof FlexoConcept) {
 			FlexoConcept concept = (FlexoConcept) object;
@@ -197,7 +196,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				FlexoConceptNature nature = availableNatures.get(0);
 				return getModuleViewForFlexoConcept(concept, nature);
 			}
-			return new StandardFlexoConceptView(concept, controller, this);
+			// return new StandardFlexoConceptView(concept, controller, this);
+			// TODO: check that FMLTechnologyAdapterController now handle this
 		}
 		if (object instanceof TechnologyObject) {
 			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
