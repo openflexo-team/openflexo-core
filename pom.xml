@@ -11,11 +11,11 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.1-SNAPSHOT</gina.version>
-		<connie.version>1.1-SNAPSHOT</connie.version>
-		<pamela.version>1.1-SNAPSHOT</pamela.version>
-		<diana.version>1.1-SNAPSHOT</diana.version>
-		<flexoutils.version>1.1-SNAPSHOT</flexoutils.version>
+		<gina.version>1.1</gina.version>
+		<connie.version>1.1</connie.version>
+		<pamela.version>1.1</pamela.version>
+		<diana.version>1.1</diana.version>
+		<flexoutils.version>1.1</flexoutils.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
