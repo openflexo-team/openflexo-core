@@ -20,7 +20,6 @@ public class CommonFIB {
 	public static Resource VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
 
 	// General
-	public static Resource ONTOLOGY_VIEW_FIB = ResourceLocator.locateResource("Fib/OntologyView.fib");
 	public static Resource VIRTUAL_MODEL_INSTANCE_VIEW_FIB = ResourceLocator.locateResource("Fib/VirtualModelInstanceView.fib");
 
 }

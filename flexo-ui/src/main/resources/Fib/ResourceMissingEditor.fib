@@ -6,7 +6,7 @@
   </Panel>
 
   <Panel id="7" manageDynamicModel="true"  darkLevel="0" useScrollBar="false" protectContent="false" description="" layout="twocols" borderRight="2" border="empty" trackViewPortWidth="true" constraints="border(index=0;location=center)" borderBottom="2" borderTop="2" trackViewPortHeight="true">
-	 <Label id="8" data="data.missingResource.informations" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="Missing file" readOnly="false" />
+	 <Label id="8" data="data.missingResource.infos" manageDynamicModel="false" useScrollBar="false" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="Missing file" readOnly="false" />
 	 <File id="9" manageDynamicModel="true" useScrollBar="false" data="data.missingFile" mode="OpenMode" name="File" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="false" isDirectory="false" filter="" />
   	 <Button action="data.load()" buttonType="Trigger" label="Load resource" enable="true" localize="true" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" font="Lucida Grande,0,13"/>
   </Panel>   

@@ -132,11 +132,6 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testOntologyView() {
-		validateFIB("Fib/OntologyView.fib");
-	}
-
-	@Test
 	public void testPreferences() {
 		validateFIB("Fib/Preferences.fib");
 	}
