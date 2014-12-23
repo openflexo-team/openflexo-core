@@ -30,13 +30,13 @@ import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateFlexoRoleInitializer extends ActionInitializer<CreateFlexoRole, FlexoConceptObject, ViewPointObject> {
+public class CreateFlexoRoleInitializer extends ActionInitializer<CreateFlexoRole, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

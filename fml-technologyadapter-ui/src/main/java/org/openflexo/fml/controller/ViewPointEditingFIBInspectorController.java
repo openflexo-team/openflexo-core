@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.inspector;
+package org.openflexo.fml.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,9 +37,10 @@ import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
+import org.openflexo.inspector.FIBInspector;
+import org.openflexo.inspector.ModuleInspectorController;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
-import org.openflexo.view.controller.ViewPointEditingFIBController;
 
 /**
  * Represents the controller of a FIBInspector (FIBComponent) in the context of Swing graphical inspection

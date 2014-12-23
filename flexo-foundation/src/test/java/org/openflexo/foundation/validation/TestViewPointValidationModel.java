@@ -146,7 +146,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.inspector.InspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.NamedViewPointObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.NamedFMLObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.inspector.PropertyInspectorEntry.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
@@ -178,7 +178,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.TextAreaParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.ViewPointObject.class) != null);
+				.getModelEntity(org.openflexo.foundation.fml.FMLObject.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviour.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext().getModelEntity(org.openflexo.foundation.FlexoObject.class) != null);

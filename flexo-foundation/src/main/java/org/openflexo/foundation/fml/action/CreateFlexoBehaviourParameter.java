@@ -43,34 +43,34 @@ import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TechnologyObjectParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, ViewPointObject> {
+public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourParameter.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoBehaviourParameter, FlexoBehaviourObject, ViewPointObject> actionType = new FlexoActionType<CreateFlexoBehaviourParameter, FlexoBehaviourObject, ViewPointObject>(
+	public static FlexoActionType<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionType<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject>(
 			"create_behaviour_parameter", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoBehaviourParameter makeNewAction(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateFlexoBehaviourParameter makeNewAction(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateFlexoBehaviourParameter(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoBehaviourObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoBehaviourObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoBehaviourObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -91,7 +91,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 	private FlexoBehaviourParameter newParameter;
 
-	CreateFlexoBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

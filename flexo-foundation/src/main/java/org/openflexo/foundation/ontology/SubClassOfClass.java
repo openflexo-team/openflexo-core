@@ -49,7 +49,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	}
 
 	@Override
-	public TA getTechnologyAdapter() {
+	public TA getSpecificTechnologyAdapter() {
 		if (getOntologyClass() != null) {
 			return getOntologyClass().getTechnologyAdapter();
 		}

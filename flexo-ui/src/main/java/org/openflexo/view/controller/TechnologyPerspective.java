@@ -100,9 +100,7 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		System.out.println("?");
 		if (object instanceof TechnologyObject) {
-			System.out.println("oui");
 			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 			TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(technologyAdapter);
 			return tac.hasModuleViewForObject((TechnologyObject<TA>) object, getController());

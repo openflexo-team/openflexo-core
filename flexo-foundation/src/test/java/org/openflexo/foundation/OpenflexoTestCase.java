@@ -291,7 +291,7 @@ public abstract class OpenflexoTestCase {
 				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
 				/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
 					BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
-					System.out.println("Details: " + rule.retrieveIssueDetails((ViewPointObject) error.getValidable()));
+					System.out.println("Details: " + rule.retrieveIssueDetails((FMLObject) error.getValidable()));
 				}*/
 			}
 

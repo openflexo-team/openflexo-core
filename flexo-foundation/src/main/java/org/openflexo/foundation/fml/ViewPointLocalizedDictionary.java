@@ -52,7 +52,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPointLocalizedDictionary.ViewPointLocalizedDictionaryImpl.class)
 @XMLElement(xmlTag = "ViewPointLocalizedDictionary")
-public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openflexo.localization.LocalizedDelegate {
+public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
 
 	@PropertyIdentifier(type = ViewPoint.class)
 	public static final String OWNER_KEY = "owner";
@@ -88,7 +88,7 @@ public interface ViewPointLocalizedDictionary extends ViewPointObject, org.openf
 
 	public void deleteEntry(DynamicEntry entry);
 
-	public static abstract class ViewPointLocalizedDictionaryImpl extends ViewPointObjectImpl implements ViewPointLocalizedDictionary {
+	public static abstract class ViewPointLocalizedDictionaryImpl extends FMLObjectImpl implements ViewPointLocalizedDictionary {
 
 		private static final Logger logger = Logger.getLogger(ViewPointLocalizedDictionary.class.getPackage().getName());
 

@@ -36,7 +36,7 @@ import org.openflexo.model.validation.ValidationWarning;
 @ModelEntity
 @ImplementationClass(ViewPointLocalizedEntry.LocalizedEntryImpl.class)
 @XMLElement(xmlTag = "Localized")
-public interface ViewPointLocalizedEntry extends ViewPointObject {
+public interface ViewPointLocalizedEntry extends FMLObject {
 
 	@PropertyIdentifier(type = ViewPointLocalizedDictionary.class)
 	public static final String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
@@ -74,7 +74,7 @@ public interface ViewPointLocalizedEntry extends ViewPointObject {
 	@Setter(LOCALIZED_DICTIONARY_KEY)
 	public void setLocalizedDictionary(ViewPointLocalizedDictionary owner);
 
-	public static abstract class LocalizedEntryImpl extends ViewPointObjectImpl implements ViewPointLocalizedEntry {
+	public static abstract class LocalizedEntryImpl extends FMLObjectImpl implements ViewPointLocalizedEntry {
 
 		private ViewPointLocalizedDictionary _dictionary;
 

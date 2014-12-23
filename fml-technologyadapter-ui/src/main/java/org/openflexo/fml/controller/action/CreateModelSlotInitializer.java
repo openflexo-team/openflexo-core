@@ -29,14 +29,14 @@ import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, VirtualModel, ViewPointObject> {
+public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

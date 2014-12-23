@@ -340,7 +340,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		/**
 		 * Stores a chained collections of objects which are involved in validation
 		 */
-		private final ChainedCollection<ViewPointObject> validableObjects = null;
+		private final ChainedCollection<FMLObject> validableObjects = null;
 
 		/**
 		 * Creates a new VirtualModel on user request<br>

@@ -23,14 +23,14 @@ import java.util.EventObject;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.ShowFMLRepresentation;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLRepresentation, ViewPointObject, ViewPointObject> {
+public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

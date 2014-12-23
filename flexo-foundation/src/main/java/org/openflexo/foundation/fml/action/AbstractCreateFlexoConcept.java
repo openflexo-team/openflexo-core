@@ -30,7 +30,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
@@ -39,7 +39,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * @author sylvain
  * 
  */
-public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends ViewPointObject>
+public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
 		extends FlexoAction<A, T1, T2> implements LongRunningAction {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());

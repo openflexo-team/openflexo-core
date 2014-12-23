@@ -113,9 +113,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 */
 	public <A extends EditionAction<?, ?>> A createAction(Class<A> actionClass);
 
-	public TechnologyAdapter getTechnologyAdapter();
+	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter);
 
 	@Override
 	public Type getType();
@@ -335,7 +335,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
 			// Try to dynamically retrieve TechnologyAdapter if ServiceManager is accessible from here
 			if (technologyAdapter == null && getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
 				technologyAdapter = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
@@ -344,7 +344,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
@@ -580,7 +580,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		@Override
 		public String getModelSlotDescription() {
-			return getTechnologyAdapter().getName();
+			return getModelSlotTechnologyAdapter().getName();
 		}
 
 		@Override

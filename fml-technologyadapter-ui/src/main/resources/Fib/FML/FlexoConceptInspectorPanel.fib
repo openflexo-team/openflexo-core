@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel layout="border" darkLevel="0" data=""
 	dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
-	controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController"
+	controllerClassName="org.openflexo.fml.controller.ViewPointEditingFIBController"
 	constraints="border(location=center)" visible="" opaque="false">
 	<Panel layout="twocols" hGap="5" vGap="5" flowAlignment="LEADING"
 		borderTitle="Panel" borderTop="2" borderBottom="3" titleFont="SansSerif,0,11"

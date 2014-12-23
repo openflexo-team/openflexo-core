@@ -30,6 +30,7 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.validation.FixProposal;
@@ -38,14 +39,21 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Represents an object which is part of the model of a ViewPoint
+ * This is the root class for all objects involved in an FMLModel.<br>
+ * 
+ * It represents an object which is part of a ViewPoint. As such you securely access to the {@link ViewPoint} in which this object "lives".<br>
+ * 
+ * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
+ * A {@link FMLObject} is a {@link InnerResourceData} (in a ViewPoint or in a VirtualModel)<br>
+ * A {@link FMLObject} is a {@link TechnologyObject} (powered with {@link FMLTechnologyAdapter})
+ * 
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(ViewPointObject.ViewPointObjectImpl.class)
-public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceData {
+@ImplementationClass(FMLObject.FMLObjectImpl.class)
+public interface FMLObject extends FlexoObject, Bindable, InnerResourceData, TechnologyObject<FMLTechnologyAdapter> {
 
 	public FlexoServiceManager getServiceManager();
 
@@ -65,9 +73,9 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 
 	public ViewPointLocalizedDictionary getLocalizedDictionary();
 
-	public static abstract class ViewPointObjectImpl extends FlexoObjectImpl implements ViewPointObject {
+	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
-		private static final Logger logger = Logger.getLogger(ViewPointObject.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
 
 		@Override
 		public FlexoServiceManager getServiceManager() {
@@ -75,6 +83,11 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 				return getViewPoint().getViewPointLibrary().getServiceManager();
 			}
 			return null;
+		}
+
+		@Override
+		public FMLTechnologyAdapter getTechnologyAdapter() {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		}
 
 		@Override
@@ -169,7 +182,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		}
 	}
 
-	public static abstract class BindingMustBeValid<C extends ViewPointObject> extends ValidationRule<BindingMustBeValid<C>, C> {
+	public static abstract class BindingMustBeValid<C extends FMLObject> extends ValidationRule<BindingMustBeValid<C>, C> {
 		public BindingMustBeValid(String ruleName, Class<C> clazz) {
 			super(clazz, ruleName);
 		}
@@ -180,7 +193,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		public ValidationIssue<BindingMustBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				if (!getBinding(object).isValid()) {
-					ViewPointObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
+					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<C>(this);
 					// return new ValidationError<BindingMustBeValid<C>, C>(this, object, BindingMustBeValid.this.getRuleName(), "Binding: "
@@ -191,7 +204,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			return null;
 		}
 
-		public static class InvalidBindingIssue<C extends ViewPointObject> extends ValidationError<BindingMustBeValid<C>, C> {
+		public static class InvalidBindingIssue<C extends FMLObject> extends ValidationError<BindingMustBeValid<C>, C> {
 
 			public InvalidBindingIssue(BindingMustBeValid<C> rule, C anObject, FixProposal<BindingMustBeValid<C>, C>... fixProposals) {
 				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
@@ -211,7 +224,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			}
 		}
 
-		protected static class DeleteBinding<C extends ViewPointObject> extends FixProposal<BindingMustBeValid<C>, C> {
+		protected static class DeleteBinding<C extends FMLObject> extends FixProposal<BindingMustBeValid<C>, C> {
 
 			private final BindingMustBeValid<C> rule;
 
@@ -228,7 +241,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 		}
 	}
 
-	public static abstract class BindingIsRequiredAndMustBeValid<C extends ViewPointObject> extends
+	public static abstract class BindingIsRequiredAndMustBeValid<C extends FMLObject> extends
 			ValidationRule<BindingIsRequiredAndMustBeValid<C>, C> {
 		public BindingIsRequiredAndMustBeValid(String ruleName, Class<C> clazz) {
 			super(clazz, ruleName);
@@ -242,8 +255,8 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<C>(this, object);
 			} else if (!b.isValid()) {
-				ViewPointObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for "
-						+ object.getStringRepresentation() + ". Reason: " + b.invalidBindingReason());
+				FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
+						+ ". Reason: " + b.invalidBindingReason());
 				return new InvalidRequiredBindingIssue<C>(this, object);
 				// return new ValidationError<BindingIsRequiredAndMustBeValid<C>, C>(this, object,
 				// BindingIsRequiredAndMustBeValid.this.getRuleName(), "Binding: " + getBinding(object) + " reason: "
@@ -252,7 +265,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			return null;
 		}
 
-		public static class UndefinedRequiredBindingIssue<C extends ViewPointObject> extends
+		public static class UndefinedRequiredBindingIssue<C extends FMLObject> extends
 				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public UndefinedRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
@@ -274,8 +287,7 @@ public interface ViewPointObject extends FlexoObject, Bindable, InnerResourceDat
 			}
 		}
 
-		public static class InvalidRequiredBindingIssue<C extends ViewPointObject> extends
-				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+		public static class InvalidRequiredBindingIssue<C extends FMLObject> extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {

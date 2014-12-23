@@ -30,14 +30,14 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * Represents an object which is part of the model of a ViewPoint, and has a name, a description and can be identified by an URI
+ * Represents a {@link FMLObject} which has a name, a description and can be identified by an URI
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(NamedViewPointObject.NamedViewPointObjectImpl.class)
-public abstract interface NamedViewPointObject extends ViewPointObject {
+@ImplementationClass(NamedFMLObject.NamedFMLObjectImpl.class)
+public abstract interface NamedFMLObject extends FMLObject {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -50,7 +50,7 @@ public abstract interface NamedViewPointObject extends ViewPointObject {
 	public void setName(String name);
 
 	/**
-	 * Return the URI of the {@link NamedViewPointObject}<br>
+	 * Return the URI of the {@link NamedFMLObject}<br>
 	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 	 * eg<br>
 	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
@@ -61,31 +61,14 @@ public abstract interface NamedViewPointObject extends ViewPointObject {
 
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
-	public static abstract class NamedViewPointObjectImpl extends ViewPointObjectImpl implements NamedViewPointObject {
+	public static abstract class NamedFMLObjectImpl extends FMLObjectImpl implements NamedFMLObject {
 
-		private static final Logger logger = Logger.getLogger(NamedViewPointObject.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(NamedFMLObject.class.getPackage().getName());
 
 		private String name;
-		private String description;
-
-		public NamedViewPointObjectImpl(/*VirtualModelBuilder builder*/) {
-			super(/*builder*/);
-		}
-
-		/*public NamedViewPointObjectImpl(ViewPointBuilder builder) {
-			super(builder);
-		}*/
-
-		/*public NamedViewPointObjectImpl(ExampleDiagramBuilder builder) {
-			super(builder);
-		}
-
-		public NamedViewPointObjectImpl(DiagramPaletteBuilder builder) {
-			super(builder);
-		}*/
 
 		/**
-		 * Return the URI of the {@link NamedViewPointObject}<br>
+		 * Return the URI of the {@link NamedFMLObject}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme

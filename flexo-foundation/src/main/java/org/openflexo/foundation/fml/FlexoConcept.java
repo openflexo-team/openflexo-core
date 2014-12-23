@@ -347,7 +347,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		/**
 		 * Stores a chained collections of objects which are involved in validation
 		 */
-		private final ChainedCollection<ViewPointObject> validableObjects = null;
+		private final ChainedCollection<FMLObject> validableObjects = null;
 
 		private FlexoConceptBindingModel bindingModel;
 

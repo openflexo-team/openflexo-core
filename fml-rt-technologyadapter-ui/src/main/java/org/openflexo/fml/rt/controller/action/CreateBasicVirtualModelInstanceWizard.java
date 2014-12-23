@@ -247,7 +247,7 @@ public class CreateBasicVirtualModelInstanceWizard extends FlexoWizard {
 		}
 
 		public ImageIcon getTechnologyIcon() {
-			return getController().getTechnologyAdapterController(getModelSlot().getTechnologyAdapter()).getTechnologyBigIcon();
+			return getController().getTechnologyAdapterController(getModelSlot().getModelSlotTechnologyAdapter()).getTechnologyBigIcon();
 		}
 	}
 

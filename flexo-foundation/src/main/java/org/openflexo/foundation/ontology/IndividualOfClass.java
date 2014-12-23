@@ -54,7 +54,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	}
 
 	@Override
-	public TA getTechnologyAdapter() {
+	public TA getSpecificTechnologyAdapter() {
 		if (getOntologyClass() != null) {
 			return getOntologyClass().getTechnologyAdapter();
 		}

@@ -29,32 +29,32 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 
 @SuppressWarnings("serial")
-public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, FlexoConcept, ViewPointObject> {
+public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, FlexoConcept, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(DuplicateFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<DuplicateFlexoConcept, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DuplicateFlexoConcept, FlexoConcept, ViewPointObject>(
+	public static FlexoActionType<DuplicateFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionType<DuplicateFlexoConcept, FlexoConcept, FMLObject>(
 			"duplicate_flexo_concept", FlexoActionType.editGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DuplicateFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection,
+		public DuplicateFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new DuplicateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
 			return object != null && object.getClass().equals(FlexoConcept.class);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
@@ -64,7 +64,7 @@ public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, Fl
 		FlexoObjectImpl.addActionForClass(DuplicateFlexoConcept.actionType, FlexoConcept.class);
 	}
 
-	DuplicateFlexoConcept(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DuplicateFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

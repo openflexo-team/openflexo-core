@@ -365,7 +365,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			VirtualModelModelFactory factory = containerVirtualModel.getVirtualModelFactory();
 			MS returned = factory.newInstance(modelSlotClass);
 			// containerVirtualModel.addToModelSlots(returned);
-			returned.setTechnologyAdapter(this);
+			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
 		}
 		else {

@@ -1,4 +1,4 @@
-package org.openflexo.view.controller;
+package org.openflexo.fml.controller;
 
 import java.util.logging.Logger;
 
@@ -28,6 +28,9 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
+import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Represents a controller with basic ViewPoint edition facilities<br>
@@ -41,14 +44,10 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 
 	public ViewPointEditingFIBController(FIBComponent component) {
 		super(component);
-		// System.out.println("cree ici: " + Integer.toHexString(hashCode()));
-		// Thread.dumpStack();
 	}
 
 	public ViewPointEditingFIBController(FIBComponent component, FlexoController controller) {
 		super(component, controller);
-		// System.out.println("cree de la" + Integer.toHexString(hashCode()));
-		// Thread.dumpStack();
 	}
 
 	public ModelSlot createModelSlot(VirtualModel virtualModel) {
@@ -390,7 +389,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		} else {
-			TechnologyAdapter technologyAdapter = action.getModelSlot().getTechnologyAdapter();
+			TechnologyAdapter technologyAdapter = action.getModelSlot().getModelSlotTechnologyAdapter();
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);

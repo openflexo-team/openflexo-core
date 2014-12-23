@@ -36,5 +36,5 @@ public interface TechnologySpecificFlexoBehaviour extends FlexoBehaviour {
 	 * 
 	 * @return
 	 */
-	public TechnologyAdapter getTechnologyAdapter();
+	public TechnologyAdapter getSpecificTechnologyAdapter();
 }

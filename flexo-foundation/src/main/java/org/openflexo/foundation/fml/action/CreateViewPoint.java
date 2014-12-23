@@ -31,7 +31,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
@@ -46,29 +46,29 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> {
+public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateViewPoint.class.getPackage().getName());
 
-	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, ViewPointObject>(
+	public static FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject> actionType = new FlexoActionType<CreateViewPoint, RepositoryFolder<ViewPointResource>, FMLObject>(
 			"create_viewpoint", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateViewPoint makeNewAction(RepositoryFolder<ViewPointResource> focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateViewPoint makeNewAction(RepositoryFolder<ViewPointResource> focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateViewPoint(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<ViewPointResource> object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(RepositoryFolder<ViewPointResource> object, Vector<FMLObject> globalSelection) {
 			return object.getResourceRepository() instanceof ViewPointRepository;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<ViewPointResource> object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<ViewPointResource> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -83,7 +83,7 @@ public class CreateViewPoint extends AbstractCreateVirtualModel<CreateViewPoint,
 	private String newViewPointDescription;
 	private ViewPoint newViewPoint;
 
-	CreateViewPoint(RepositoryFolder focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateViewPoint(RepositoryFolder focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

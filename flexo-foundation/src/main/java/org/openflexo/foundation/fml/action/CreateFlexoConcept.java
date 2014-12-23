@@ -28,33 +28,33 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, VirtualModel, ViewPointObject> {
+public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConcept, VirtualModel, ViewPointObject> actionType = new FlexoActionType<CreateFlexoConcept, VirtualModel, ViewPointObject>(
+	public static FlexoActionType<CreateFlexoConcept, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, VirtualModel, FMLObject>(
 			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public CreateFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -70,7 +70,7 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	CreateFlexoConcept(VirtualModel focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoConcept(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

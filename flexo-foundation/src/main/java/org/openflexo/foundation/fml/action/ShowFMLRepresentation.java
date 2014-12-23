@@ -26,42 +26,42 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoGUIAction;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 
-public class ShowFMLRepresentation extends FlexoGUIAction<ShowFMLRepresentation, ViewPointObject, ViewPointObject> {
+public class ShowFMLRepresentation extends FlexoGUIAction<ShowFMLRepresentation, FMLObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ShowFMLRepresentation.class.getPackage().getName());
 
-	public static FlexoActionType<ShowFMLRepresentation, ViewPointObject, ViewPointObject> actionType = new FlexoActionType<ShowFMLRepresentation, ViewPointObject, ViewPointObject>(
+	public static FlexoActionType<ShowFMLRepresentation, FMLObject, FMLObject> actionType = new FlexoActionType<ShowFMLRepresentation, FMLObject, FMLObject>(
 			"show_flexo_modelling_language_representation", FlexoActionType.inspectGroup) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public ShowFMLRepresentation makeNewAction(ViewPointObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public ShowFMLRepresentation makeNewAction(FMLObject focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new ShowFMLRepresentation(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(ViewPointObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLObject object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(ViewPointObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLObject object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(ShowFMLRepresentation.actionType, ViewPointObject.class);
+		FlexoObjectImpl.addActionForClass(ShowFMLRepresentation.actionType, FMLObject.class);
 	}
 
-	protected ShowFMLRepresentation(ViewPointObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	protected ShowFMLRepresentation(FMLObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

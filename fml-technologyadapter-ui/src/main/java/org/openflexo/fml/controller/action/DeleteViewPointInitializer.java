@@ -26,7 +26,7 @@ import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.DeleteViewpoint;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -34,7 +34,7 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class DeleteViewPointInitializer extends ActionInitializer<DeleteViewpoint, ViewPoint, ViewPointObject> {
+public class DeleteViewPointInitializer extends ActionInitializer<DeleteViewpoint, ViewPoint, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

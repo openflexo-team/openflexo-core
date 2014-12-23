@@ -29,31 +29,31 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 
-public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoConcept, ViewPointObject> {
+public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoConcept, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteFlexoConcept, FlexoConcept, ViewPointObject> actionType = new FlexoActionType<DeleteFlexoConcept, FlexoConcept, ViewPointObject>(
+	public static FlexoActionType<DeleteFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionType<DeleteFlexoConcept, FlexoConcept, FMLObject>(
 			"delete_flexo_concept", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeleteFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public DeleteFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new DeleteFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
 			return object != null && object instanceof FlexoConcept && !(object instanceof VirtualModel);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoConcept object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
 			return isVisibleForSelection(object, globalSelection);
 		}
 
@@ -63,7 +63,7 @@ public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoCon
 		FlexoObjectImpl.addActionForClass(DeleteFlexoConcept.actionType, FlexoConcept.class);
 	}
 
-	DeleteFlexoConcept(FlexoConcept focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DeleteFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

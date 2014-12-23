@@ -109,7 +109,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<FMLRTTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		if (View.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIEW_ICON;
 		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {

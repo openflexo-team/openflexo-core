@@ -27,7 +27,7 @@ import javax.swing.Icon;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.rm.Resource;
@@ -35,7 +35,7 @@ import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateEditionActionInitializer extends ActionInitializer<CreateEditionAction, FlexoBehaviourObject, ViewPointObject> {
+public class CreateEditionActionInitializer extends ActionInitializer<CreateEditionAction, FlexoBehaviourObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

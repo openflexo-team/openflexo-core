@@ -12,7 +12,7 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
@@ -26,7 +26,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<CreateFlexoBehaviour, FlexoConceptObject, ViewPointObject> {
+public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourWizard.class.getPackage().getName());

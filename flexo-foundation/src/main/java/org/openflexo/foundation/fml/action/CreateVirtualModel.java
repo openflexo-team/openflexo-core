@@ -27,7 +27,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -35,29 +35,29 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, ViewPointObject> {
+public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtualModel, ViewPoint, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionType<CreateVirtualModel, ViewPoint, ViewPointObject> actionType = new FlexoActionType<CreateVirtualModel, ViewPoint, ViewPointObject>(
+	public static FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject> actionType = new FlexoActionType<CreateVirtualModel, ViewPoint, FMLObject>(
 			"create_virtual_model", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateVirtualModel makeNewAction(ViewPoint focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public CreateVirtualModel makeNewAction(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(ViewPoint object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(ViewPoint object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -75,7 +75,7 @@ public class CreateVirtualModel extends AbstractCreateVirtualModel<CreateVirtual
 
 	// private boolean createsOntology = false;
 
-	CreateVirtualModel(ViewPoint focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateVirtualModel(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel opaque="false" layout="border" darkLevel="0" data=""
 	dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary"
-	controllerClassName="org.openflexo.view.controller.ViewPointEditingFIBController"
+	controllerClassName="org.openflexo.fml.controller.ViewPointEditingFIBController"
 	constraints="border(location=center)" visible="">
 	<Table
 		iteratorClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary$DynamicEntry"

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
@@ -26,7 +26,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, VirtualModel, ViewPointObject> {
+public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, VirtualModel, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateModelSlotWizard.class.getPackage().getName());

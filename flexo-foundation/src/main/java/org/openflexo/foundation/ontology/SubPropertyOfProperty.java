@@ -50,7 +50,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 	}
 
 	@Override
-	public TA getTechnologyAdapter() {
+	public TA getSpecificTechnologyAdapter() {
 		if (getOntologyProperty() != null) {
 			return getOntologyProperty().getTechnologyAdapter();
 		}

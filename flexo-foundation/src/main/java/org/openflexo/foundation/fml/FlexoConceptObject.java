@@ -30,7 +30,7 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoConceptObject.FlexoConceptObjectImpl.class)
-public interface FlexoConceptObject extends NamedViewPointObject {
+public interface FlexoConceptObject extends NamedFMLObject {
 
 	public VirtualModelModelFactory getVirtualModelFactory();
 
@@ -47,7 +47,7 @@ public interface FlexoConceptObject extends NamedViewPointObject {
 	@Override
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
-	public abstract class FlexoConceptObjectImpl extends NamedViewPointObjectImpl implements FlexoConceptObject {
+	public abstract class FlexoConceptObjectImpl extends NamedFMLObjectImpl implements FlexoConceptObject {
 
 		@Override
 		public VirtualModelModelFactory getVirtualModelFactory() {

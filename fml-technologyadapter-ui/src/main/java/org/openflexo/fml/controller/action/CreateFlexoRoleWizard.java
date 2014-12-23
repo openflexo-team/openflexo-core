@@ -10,7 +10,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
@@ -25,7 +25,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<CreateFlexoRole, FlexoConceptObject, ViewPointObject> {
+public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<CreateFlexoRole, FlexoConceptObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoRoleWizard.class.getPackage().getName());

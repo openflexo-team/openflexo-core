@@ -97,9 +97,9 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoFacet;
 import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
@@ -1860,12 +1860,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_ICON;
 		}
 
-		// If object is a TechnologyObject, we delegate this to the right
-		// TechnologyAdapterController
-		if (object instanceof TechnologyObject<?>) {
-			return statelessIconForTechnologyObject((TechnologyObject<?>) object);
-		}
-
 		// If object is a resource and if this resource is loaded, use icon of
 		// loaded resource data
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
@@ -1892,8 +1886,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			return IconLibrary.INFORMATION_SPACE_ICON;
 		} else if (object instanceof ViewPointLibrary) {
 			return FMLIconLibrary.VIEWPOINT_LIBRARY_ICON;
-		} else if (object instanceof ViewPointObject) {
-			return FMLIconLibrary.iconForObject((ViewPointObject) object);
+		} else if (object instanceof FMLObject) {
+			return FMLIconLibrary.iconForObject((FMLObject) object);
 		} else if (object instanceof ViewPointResource) {
 			return FMLIconLibrary.iconForObject((ViewPointResource) object);
 		} else if (object instanceof VirtualModelResource) {
@@ -1943,6 +1937,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		} else if (object instanceof FlexoProjectReference) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		}
+
+		// If object is a TechnologyObject, we delegate this to the right
+		// TechnologyAdapterController
+		if (object instanceof TechnologyObject<?>) {
+			return statelessIconForTechnologyObject((TechnologyObject<?>) object);
+		}
+
 		logger.warning("Sorry, no icon defined for " + object + " " + (object != null ? object.getClass() : ""));
 		return null;
 	}

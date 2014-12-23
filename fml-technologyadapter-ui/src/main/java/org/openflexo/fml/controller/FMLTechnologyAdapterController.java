@@ -31,6 +31,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -44,6 +45,7 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -123,7 +125,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<FMLTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		if (ViewPoint.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.VIEWPOINT_ICON;
 		} else if (View.class.isAssignableFrom(objectClass)) {
@@ -196,7 +198,22 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
-		return object.toString();
+		if (object instanceof ViewPointLibrary) {
+			return FlexoLocalization.localizedForKey("view_point_library");
+		}
+		if (object instanceof ViewPoint) {
+			return ((ViewPoint) object).getName();
+		}
+		if (object instanceof VirtualModel) {
+			return ((VirtualModel) object).getName();
+		}
+		if (object instanceof FlexoConcept) {
+			return ((FlexoConcept) object).getName();
+		}
+		if (object != null) {
+			return object.toString();
+		}
+		return "null";
 	}
 
 	/**

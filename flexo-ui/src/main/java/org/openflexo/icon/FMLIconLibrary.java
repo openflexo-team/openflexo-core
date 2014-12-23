@@ -42,7 +42,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -176,10 +176,10 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
 
-	public static ImageIcon iconForObject(ViewPointObject object) {
+	public static ImageIcon iconForObject(FMLObject object) {
 
 		if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot().getTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}
@@ -189,7 +189,7 @@ public class FMLIconLibrary extends IconLibrary {
 		} else if (object instanceof VirtualModel) {
 			return VIRTUAL_MODEL_ICON;
 		} else if (object instanceof ModelSlot) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((ModelSlot) object).getTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((ModelSlot) object).getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 			}
@@ -238,7 +238,7 @@ public class FMLIconLibrary extends IconLibrary {
 				return DELETE_ICON;
 			} else if (((EditionAction) object).getModelSlot() != null) {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((EditionAction) object).getModelSlot()
-						.getTechnologyAdapter());
+						.getModelSlotTechnologyAdapter());
 				if (tac != null) {
 					ImageIcon returned = tac.getIconForEditionAction((Class<? extends EditionAction<?, ?>>) object.getClass());
 					if (returned != null) {
@@ -268,7 +268,7 @@ public class FMLIconLibrary extends IconLibrary {
 				return DELETION_SCHEME_ICON;
 			} else if (object instanceof TechnologySpecificFlexoBehaviour) {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificFlexoBehaviour) object)
-						.getTechnologyAdapter());
+						.getSpecificTechnologyAdapter());
 				if (tac != null) {
 					ImageIcon returned = tac.getIconForFlexoBehaviour((Class<? extends FlexoBehaviour>) object.getClass());
 					if (returned != null) {
@@ -284,7 +284,7 @@ public class FMLIconLibrary extends IconLibrary {
 			return UNKNOWN_ICON;
 		} else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
-					.getTechnologyAdapter());
+					.getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				Type accessedType = ((OntologicObjectRole<?>) object).getType();
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);

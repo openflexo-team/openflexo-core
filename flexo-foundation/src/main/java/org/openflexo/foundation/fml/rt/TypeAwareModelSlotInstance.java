@@ -97,7 +97,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		public M getAccessedResourceData() {
 			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
 				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getVirtualModelInstance()
-						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getTechnologyAdapter());
+						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {
 					accessedResourceData = modelResource.getModel();
 					resource = modelResource;

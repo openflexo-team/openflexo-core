@@ -37,7 +37,7 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
@@ -49,30 +49,30 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptObject, ViewPointObject> {
+public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoRole.class.getPackage().getName());
 
 	private List<Class<? extends FlexoRole<?>>> vmAvailableFlexoRoleTypes = null;
 
-	public static FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreateFlexoRole, FlexoConceptObject, ViewPointObject>(
+	public static FlexoActionType<CreateFlexoRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateFlexoRole, FlexoConceptObject, FMLObject>(
 			"create_flexo_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoRole makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public CreateFlexoRole makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoRole(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -93,7 +93,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	private FlexoRole<?> newFlexoRole;
 
-	CreateFlexoRole(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoRole(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		setModelSlot(retrieveDefaultModelSlot());
 	}
@@ -267,7 +267,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
 		if (modelSlot != null) {
-			return modelSlot.getTechnologyAdapter();
+			return modelSlot.getModelSlotTechnologyAdapter();
 		} else {
 			return getFlexoConcept().getVirtualModel().getTechnologyAdapter();
 		}

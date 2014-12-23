@@ -7,7 +7,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -25,7 +25,7 @@ import org.openflexo.view.controller.FlexoController;
  * @see CreateVirtualModel
  * @see CreateViewPoint
  */
-public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1, T2>, T1 extends FlexoConceptObject, T2 extends ViewPointObject>
+public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1, T2>, T1 extends FlexoConceptObject, T2 extends FMLObject>
 		extends FlexoWizard {
 
 	@SuppressWarnings("unused")

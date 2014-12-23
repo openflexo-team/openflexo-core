@@ -231,7 +231,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		/**
 		 * Stores a chained collections of objects which are involved in validation
 		 */
-		private final ChainedCollection<ViewPointObject> validableObjects = null;
+		private final ChainedCollection<FMLObject> validableObjects = null;
 
 		@Override
 		public FlexoBehaviourType getFlexoBehaviourType() {
@@ -295,7 +295,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		/**
-		 * Return the URI of the {@link NamedViewPointObject}<br>
+		 * Return the URI of the {@link NamedFMLObject}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
 		 * eg<br>
 		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme

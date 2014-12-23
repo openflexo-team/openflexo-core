@@ -29,30 +29,30 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 
-public class DeleteViewpoint extends FlexoAction<DeleteViewpoint, ViewPoint, ViewPointObject> {
+public class DeleteViewpoint extends FlexoAction<DeleteViewpoint, ViewPoint, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteViewpoint.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteViewpoint, ViewPoint, ViewPointObject> actionType = new FlexoActionType<DeleteViewpoint, ViewPoint, ViewPointObject>(
+	public static FlexoActionType<DeleteViewpoint, ViewPoint, FMLObject> actionType = new FlexoActionType<DeleteViewpoint, ViewPoint, FMLObject>(
 			"delete_view_point", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeleteViewpoint makeNewAction(ViewPoint focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+		public DeleteViewpoint makeNewAction(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new DeleteViewpoint(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(ViewPoint object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(ViewPoint object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(ViewPoint object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -62,7 +62,7 @@ public class DeleteViewpoint extends FlexoAction<DeleteViewpoint, ViewPoint, Vie
 		FlexoObjectImpl.addActionForClass(DeleteViewpoint.actionType, ViewPoint.class);
 	}
 
-	DeleteViewpoint(ViewPoint focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	DeleteViewpoint(ViewPoint focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

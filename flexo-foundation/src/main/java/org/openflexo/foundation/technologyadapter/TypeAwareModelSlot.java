@@ -197,7 +197,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
 			if (metaModelResource == null && StringUtils.isNotEmpty(metaModelURI) && getInformationSpace() != null) {
 				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getInformationSpace().getMetaModelWithURI(metaModelURI,
-						getTechnologyAdapter());
+						getModelSlotTechnologyAdapter());
 				logger.info("Looked-up " + metaModelResource + " for " + metaModelURI);
 			}
 			// Temporary hack to lookup parent slot (to be refactored)

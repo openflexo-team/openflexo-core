@@ -97,7 +97,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPoint.ViewPointImpl.class)
 @XMLElement(xmlTag = "ViewPoint")
-public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>, FlexoMetaModel<ViewPoint>,
+public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, FlexoMetaModel<ViewPoint>,
 		TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
@@ -189,7 +189,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends NamedViewPointObjectImpl implements ViewPoint {
+	public static abstract class ViewPointImpl extends NamedFMLObjectImpl implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 

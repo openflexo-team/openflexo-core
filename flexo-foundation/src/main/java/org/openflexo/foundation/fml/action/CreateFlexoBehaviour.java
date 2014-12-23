@@ -42,7 +42,7 @@ import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.ViewPointObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.task.Progress;
@@ -53,29 +53,29 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
 // TODO: rename as CreateFlexoBehaviour
-public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, FlexoConceptObject, ViewPointObject> {
+public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, ViewPointObject> actionType = new FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, ViewPointObject>(
+	public static FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateFlexoBehaviour, FlexoConceptObject, FMLObject>(
 			"create_flexo_behaviour", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoBehaviour makeNewAction(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection,
+		public CreateFlexoBehaviour makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateFlexoBehaviour(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<ViewPointObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -101,7 +101,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	private FlexoBehaviour newFlexoBehaviour;
 
-	CreateFlexoBehaviour(FlexoConceptObject focusedObject, Vector<ViewPointObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoBehaviour(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 		behaviourClassMap = new HashMap<Class<? extends FlexoBehaviour>, TechnologyAdapter>();
@@ -142,7 +142,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
 			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
 				if (!behaviourClassMap.containsKey(behaviour)) {
-					behaviourClassMap.put(behaviour, ms.getTechnologyAdapter());
+					behaviourClassMap.put(behaviour, ms.getModelSlotTechnologyAdapter());
 				}
 			}
 		}
@@ -157,7 +157,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
 			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
 				if (!behaviourClassMap.containsKey(behaviour)) {
-					behaviourClassMap.put(behaviour, ms.getTechnologyAdapter());
+					behaviourClassMap.put(behaviour, ms.getModelSlotTechnologyAdapter());
 				}
 			}
 		}

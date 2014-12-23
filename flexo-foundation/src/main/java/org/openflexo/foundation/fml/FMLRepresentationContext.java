@@ -9,14 +9,14 @@ public class FMLRepresentationContext {
 
 	private static int INDENTATION = 2;
 	// private int currentIndentation = 0;
-	private final HashMap<String, NamedViewPointObject> nameSpaces;
+	private final HashMap<String, NamedFMLObject> nameSpaces;
 
 	public FMLRepresentationContext() {
 		// currentIndentation = 0;
-		nameSpaces = new HashMap<String, NamedViewPointObject>();
+		nameSpaces = new HashMap<String, NamedFMLObject>();
 	}
 
-	public void addToNameSpaces(NamedViewPointObject object) {
+	public void addToNameSpaces(NamedFMLObject object) {
 		nameSpaces.put(object.getURI(), object);
 	}
 
@@ -85,7 +85,7 @@ public class FMLRepresentationContext {
 
 		}
 
-		/*public void append(ViewPointObject o) {
+		/*public void append(FMLObject o) {
 			FMLRepresentationContext subContext = context.makeSubContext();
 			String lr = o.getFMLRepresentation(subContext);
 			for (int i = 0; i < StringUtils.linesNb(lr); i++) {
