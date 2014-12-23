@@ -36,10 +36,10 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeAction;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
  * Modelize a call for execution of an FlexoBehaviour

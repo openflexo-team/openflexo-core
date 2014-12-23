@@ -32,7 +32,7 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.logging.FlexoLogger;

@@ -32,7 +32,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -75,7 +75,7 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.MODEL_SLOT_ICON;
+		return FMLIconLibrary.MODEL_SLOT_ICON;
 	}
 
 }

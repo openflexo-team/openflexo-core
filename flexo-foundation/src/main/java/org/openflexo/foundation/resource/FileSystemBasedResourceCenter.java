@@ -34,12 +34,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.ViewPointFileBasedRepository;
-import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.ViewPointFileBasedRepository;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
-import org.openflexo.foundation.technologyadapter.MetaModelRepository;
-import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -55,15 +52,16 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements
-		FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
 	private final File rootDirectory;
 
-	private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?>> modelRepositories = new HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?>>();
-	private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>>();
+	// private final HashMap<TechnologyAdapter, ModelRepository<?, ?, ?, ?, ?>> modelRepositories = new HashMap<TechnologyAdapter,
+	// ModelRepository<?, ?, ?, ?, ?>>();
+	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter,
+	// MetaModelRepository<?, ?, ?, ?>>();
 
 	private TechnologyAdapterService technologyAdapterService;
 
@@ -257,7 +255,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
-	protected  void fileModified(File file) {
+	protected void fileModified(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 		}
@@ -276,7 +274,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
-	protected  void fileDeleted(File file) {
+	protected void fileDeleted(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 		}

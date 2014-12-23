@@ -30,7 +30,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/VPM/CloningSchemePanel.fib")
+@FIBPanel("Fib/FML/CloningSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(CloningScheme.CloningSchemeImpl.class)
 @XMLElement

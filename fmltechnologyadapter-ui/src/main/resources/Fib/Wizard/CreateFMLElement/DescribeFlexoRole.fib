@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="gridbag" darkLevel="0"
+	dataClassName="org.openflexo.fml.controller.action.CreateFlexoRoleWizard$DescribeFlexoRole"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+	<Label label="name" align="right" index="1"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextField index="2" data="data.roleName"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		name="ModelSlotName" localize="true" columns="20" text="TextField">
+		<Dependancy componentName="PatternRoleTypeDD" />
+	</TextField>
+	<Label label="model_slot" align="right" index="3"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<DropDown index="4" data="data.modelSlot"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="ModelSlotDD" format="object.name"
+		icon="controller.getTechnologyAdapterController(object.technologyAdapter).technologyIcon"
+		localize="true" list="data.action.availableModelSlots" showIcon="true"
+		iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
+		autoSelectFirstRow="false" showReset="true" />
+	<Label label="flexo_role_type" align="right" index="5"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<DropDown index="6" data="data.flexoRoleClass"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="PatternRoleTypeDD" format="object.simpleName"
+		icon="controller.getTechnologyAdapterController(data.action.technologyAdapterForModelSlot).getIconForPatternRole(object)"
+		localize="true" list="data.action.availableFlexoRoleTypes" showIcon="true"
+		iteratorClassName="java.lang.Class" autoSelectFirstRow="true">
+	</DropDown>
+	<Label label="type" index="6"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.action.isIndividual" localize="true">
+	</Label>
+	<Custom componentClassName="org.openflexo.components.widget.FIBClassSelector"
+		localize="true" manageDynamicModel="true" index="11" data="data.individualType"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.action.isIndividual" opaque="false">
+		<Assignment variable="component.context" value="data.action.adressedFlexoMetaModel" />
+	</Custom>
+	<Label label="flexo_concept" index="11"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.action.isFlexoConceptInstance" localize="true">
+	</Label>
+	<Custom componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector"
+		localize="true" manageDynamicModel="true" index="12"
+		data="data.flexoConceptInstanceType"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.action.isFlexoConceptInstance">
+		<Assignment variable="component.virtualModel" value="data.action.modelSlotVirtualModel" />
+	</Custom>
+	<Label label="type" align="right" index="13"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" visible="data.action.isPrimitive" />
+	<DropDown index="14" data="data.primitiveType"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="PrimitiveDD" format="object.name"
+		localize="true" showIcon="true"
+		iteratorClassName="org.openflexo.foundation.fml.PrimitiveRole$PrimitiveType" autoSelectFirstRow="false" visible="data.action.isPrimitive">
+	</DropDown>
+	<Label label="description" align="right" index="15"
+		constraints="gridbag(anchor=north_east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextArea columns="6" rows="2" text="TextArea" index="12"
+		data="data.description"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+		verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+	<LocalizedDictionary>
+	</LocalizedDictionary>
+</Panel>

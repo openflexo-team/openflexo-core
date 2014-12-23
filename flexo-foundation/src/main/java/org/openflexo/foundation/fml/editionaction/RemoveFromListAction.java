@@ -35,7 +35,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -46,7 +46,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/VPM/RemoveFromListActionPanel.fib")
+@FIBPanel("Fib/FML/RemoveFromListActionPanel.fib")
 @ModelEntity
 @ImplementationClass(RemoveFromListAction.RemoveFromListActionImpl.class)
 @XMLElement

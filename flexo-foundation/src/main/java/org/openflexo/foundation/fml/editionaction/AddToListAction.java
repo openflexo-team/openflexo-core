@@ -35,7 +35,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.ViewPointObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.EditionAction.EditionActionImpl;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,7 +45,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/VPM/AddToListActionPanel.fib")
+@FIBPanel("Fib/FML/AddToListActionPanel.fib")
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
 @XMLElement

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false" height="500" name="main" layout="gridbag" controllerClassName="org.openflexo.view.controller.FlexoFIBController" border="empty" trackViewPortWidth="true" font="Lucida Grande,0,11" width="800" dataClassName="org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceWizard$ConfigureTypeAwareModelSlot" titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
+  <LocalizedDictionary id="1">
+    <Localized id="2" value="Null resource center" lang="English" key="null_resource_center" />
+    <Localized id="3" value="null_resource_center" lang="French" key="null_resource_center" />
+    <Localized id="4" value="null_resource_center" lang="Dutch" key="null_resource_center" />
+    <Localized id="5" value="Null model resource" lang="English" key="null_model_resource" />
+    <Localized id="6" value="La resource du modèle est nulle" lang="French" key="null_model_resource" />
+    <Localized id="7" value="null_model_resource" lang="Dutch" key="null_model_resource" />
+    <Localized id="8" value="Uri is null" lang="English" key="uri_is_null" />
+    <Localized id="9" value="L'uri est nulle" lang="French" key="uri_is_null" />
+    <Localized id="10" value="uri_is_null" lang="Dutch" key="uri_is_null" />
+    <Localized id="11" value="Relative path is null" lang="English" key="relative_path_is_null" />
+    <Localized id="12" value="Le chemin relatif est nul" lang="French" key="relative_path_is_null" />
+    <Localized id="13" value="relative_path_is_null" lang="Dutch" key="relative_path_is_null" />
+    <Localized id="14" value="File name is null" lang="English" key="file_name_is_null" />
+    <Localized id="15" value="Le nom du fichier est nul" lang="French" key="file_name_is_null" />
+    <Localized id="16" value="file_name_is_null" lang="Dutch" key="file_name_is_null" />
+    <Localized id="17" value="Space in uri" lang="English" key="space_in_uri" />
+    <Localized id="18" value="Espaces dans l'uri" lang="French" key="space_in_uri" />
+    <Localized id="19" value="space_in_uri" lang="Dutch" key="space_in_uri" />
+    <Localized id="20" value="Configure model slot" lang="English" key="configure_model_slot" />
+    <Localized id="21" value="Configuration de la connexion au modèle" lang="French" key="configure_model_slot" />
+    <Localized id="22" value="configure_model_slot" lang="Dutch" key="configure_model_slot" />
+    <Localized id="23" value="Model slot name" lang="English" key="model_slot_name" />
+    <Localized id="24" value="Nom du connecteur de modèle" lang="French" key="model_slot_name" />
+    <Localized id="25" value="model_slot_name" lang="Dutch" key="model_slot_name" />
+    <Localized id="26" value="Technology" lang="English" key="technology" />
+    <Localized id="27" value="Technologie" lang="French" key="technology" />
+    <Localized id="28" value="technology" lang="Dutch" key="technology" />
+    <Localized id="29" value="Select an option" lang="English" key="select_an_option" />
+    <Localized id="30" value="Sélectionner une option" lang="French" key="select_an_option" />
+    <Localized id="31" value="select_an_option" lang="Dutch" key="select_an_option" />
+    <Localized id="32" value="Select existing model" lang="English" key="SelectExistingModel" />
+    <Localized id="33" value="Sélectionner un modèle existant" lang="French" key="SelectExistingModel" />
+    <Localized id="34" value="SelectExistingModel" lang="Dutch" key="SelectExistingModel" />
+    <Localized id="35" value="Create private new model" lang="English" key="CreatePrivateNewModel" />
+    <Localized id="36" value="Créer un nouveau modèle propre au projet courant" lang="French" key="CreatePrivateNewModel" />
+    <Localized id="37" value="CreatePrivateNewModel" lang="Dutch" key="CreatePrivateNewModel" />
+    <Localized id="38" value="Create shared new model" lang="English" key="CreateSharedNewModel" />
+    <Localized id="39" value="Créer un nouveau modèle partageable" lang="French" key="CreateSharedNewModel" />
+    <Localized id="40" value="CreateSharedNewModel" lang="Dutch" key="CreateSharedNewModel" />
+    <Localized id="41" value="Leave this model empty" lang="English" key="LeaveEmpty" />
+    <Localized id="42" value="Ne pas renseigner" lang="French" key="LeaveEmpty" />
+    <Localized id="43" value="LeaveEmpty" lang="Dutch" key="LeaveEmpty" />
+    <Localized id="44" value="Automatic configuration" lang="English" key="Autoconfigure" />
+    <Localized id="45" value="Configuration automatique" lang="French" key="Autoconfigure" />
+    <Localized id="46" value="Autoconfigure" lang="Dutch" key="Autoconfigure" />
+    <Localized id="47" value="&lt;html&gt;Retrieve an existing model from a given ResourceCenter.&lt;/html&gt;" lang="English" key="SelectExistingModel_description" />
+    <Localized id="48" value="Accèder à un modèle existant mis à disposition par un centre de resources Openflexo." lang="French" key="SelectExistingModel_description" />
+    <Localized id="49" value="SelectExistingModel_description" lang="Dutch" key="SelectExistingModel_description" />
+    <Localized id="50" value="&lt;html&gt;&lt;center&gt;Create a dedicated model in the scope of current project.&lt;br&gt;The model will be managed in the project directory and should not be concurrently accessed&lt;/center&gt;&lt;/html&gt;" lang="English" key="CreatePrivateNewModel_description" />
+    <Localized id="51" value="&lt;html&gt;&lt;center&gt;Créer un modèle dédié au sein du project courant.&lt;br&gt;Le modèle sera géré et stocké dans le répertoire de projet courant et ne devra pas être accédé concurrentiellement.&lt;/center&gt;&lt;/html&gt;" lang="French" key="CreatePrivateNewModel_description" />
+    <Localized id="52" value="CreatePrivateNewModel_description" lang="Dutch" key="CreatePrivateNewModel_description" />
+    <Localized id="53" value="&lt;html&gt;&lt;center&gt;Created a new model which might be shared with other users and/or applications.&lt;br&gt;A ResourceCenter accessible for push should be selected, and will be the location where the new model will be stored.&lt;/center&gt;&lt;/html&gt;" lang="English" key="CreateSharedNewModel_description" />
+    <Localized id="54" value="&lt;html&gt;&lt;center&gt;Créer un modèle qui sera partagé avec d'autres utilisateurs et/ou d'autres applications.&lt;br&gt;Un centre de resource accessible en mode &quot;push&quot; doit être sélectionné, et sera le lieu de stockage du nouveau modèle.&lt;/center&gt;&lt;/html&gt;" lang="French" key="CreateSharedNewModel_description" />
+    <Localized id="55" value="CreateSharedNewModel_description" lang="Dutch" key="CreateSharedNewModel_description" />
+    <Localized id="56" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;" lang="English" key="LeaveEmptyDescription" />
+    <Localized id="57" value="LeaveEmptyDescription" lang="French" key="LeaveEmptyDescription" />
+    <Localized id="58" value="LeaveEmptyDescription" lang="Dutch" key="LeaveEmptyDescription" />
+    <Localized id="59" value="Autoconfigure_decription" lang="English" key="Autoconfigure_decription" />
+    <Localized id="60" value="Autoconfigure_decription" lang="French" key="Autoconfigure_decription" />
+    <Localized id="61" value="Autoconfigure_decription" lang="Dutch" key="Autoconfigure_decription" />
+    <Localized id="62" value="&lt;html&gt;&lt;center&gt;A default configuration is available.&lt;br&gt;Let Openflexo manage this configuration for you.&lt;/center&gt;&lt;/html&gt;" lang="English" key="Autoconfigure_description" />
+    <Localized id="63" value="&lt;html&gt;&lt;center&gt;Une configuration par défaut est disponible.&lt;br&gt;Laisser Openflexo gérer cette configuration.&lt;/center&gt;&lt;/html&gt;" lang="French" key="Autoconfigure_description" />
+    <Localized id="64" value="Autoconfigure_decription" lang="Dutch" key="Autoconfigure_description" />
+    <Localized id="65" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do&lt;/center&gt;&lt;/html&gt;" lang="English" key="LeaveEmpty_Description" />
+    <Localized id="66" value="LeaveEmptyDescription" lang="French" key="LeaveEmpty_Description" />
+    <Localized id="67" value="LeaveEmptyDescription" lang="Dutch" key="LeaveEmpty_Description" />
+    <Localized id="68" value="&lt;html&gt;&lt;center&gt;Leave the model slot empty.&lt;br&gt;Use this option if you would like to later generate this model or if you would like to decide later what to do.&lt;/center&gt;&lt;/html&gt;" lang="English" key="LeaveEmpty_description" />
+    <Localized id="69" value="&lt;html&gt;&lt;center&gt;Ne pas renseigner ce connecteur de modèle.&lt;br&gt;Vous pouvez utiliser cette option pour générer le modèle plus tard, ou bien décider plus tard quoi faire.&lt;/center&gt;&lt;/html&gt;" lang="French" key="LeaveEmpty_description" />
+    <Localized id="70" value="LeaveEmptyDescription" lang="Dutch" key="LeaveEmpty_description" />
+    <Localized id="71" lang="English" key="" />
+    <Localized id="72" lang="French" key="" />
+    <Localized id="73" lang="Dutch" key="" />
+    <Localized id="74" value="Select existing virtual model" lang="English" key="SelectExistingVirtualModel" />
+    <Localized id="75" value="Sélectionner un modèle virtuel" lang="French" key="SelectExistingVirtualModel" />
+    <Localized id="76" value="SelectExistingVirtualModel" lang="Dutch" key="SelectExistingVirtualModel" />
+    <Localized id="77" value="Select existing model" lang="English" key="Select existing model" />
+    <Localized id="78" value="Select existing model" lang="French" key="Select existing model" />
+    <Localized id="79" value="Select existing model" lang="Dutch" key="Select existing model" />
+    <Localized id="80" value="Create private new model" lang="English" key="Create private new model" />
+    <Localized id="81" value="Create private new model" lang="French" key="Create private new model" />
+    <Localized id="82" value="Create private new model" lang="Dutch" key="Create private new model" />
+    <Localized id="83" value="Create shared new model" lang="English" key="Create shared new model" />
+    <Localized id="84" value="Create shared new model" lang="French" key="Create shared new model" />
+    <Localized id="85" value="Create shared new model" lang="Dutch" key="Create shared new model" />
+    <Localized id="86" value="model_uri" lang="English" key="model_uri" />
+    <Localized id="87" value="model_uri" lang="French" key="model_uri" />
+    <Localized id="88" value="model_uri" lang="Dutch" key="model_uri" />
+    <Localized id="89" value="relative_path" lang="English" key="relative_path" />
+    <Localized id="90" value="relative_path" lang="French" key="relative_path" />
+    <Localized id="91" value="relative_path" lang="Dutch" key="relative_path" />
+    <Localized id="92" value="File name" lang="English" key="file_name" />
+    <Localized id="93" value="Nom de fichier" lang="French" key="file_name" />
+    <Localized id="94" value="File name" lang="Dutch" key="file_name" />
+    <Localized id="95" value="Model" lang="English" key="model" />
+    <Localized id="96" value="Modèle" lang="French" key="model" />
+    <Localized id="97" value="Model" lang="Dutch" key="model" />
+    <Localized id="98" value="Resource center" lang="English" key="resource_center" />
+    <Localized id="99" value="Centre des ressources" lang="French" key="resource_center" />
+    <Localized id="100" value="Resource center" lang="Dutch" key="resource_center" />
+    <Localized id="101" value="Meta model" lang="English" key="meta_model" />
+    <Localized id="102" value="Métamodèle" lang="French" key="meta_model" />
+    <Localized id="103" value="meta_model" lang="Dutch" key="meta_model" />
+    <Localized id="104" value="Sélectionner un modèle existant" lang="English" key="Sélectionner un modèle existant" />
+    <Localized id="105" value="Sélectionner un modèle existant" lang="French" key="Sélectionner un modèle existant" />
+    <Localized id="106" value="Sélectionner un modèle existant" lang="Dutch" key="Sélectionner un modèle existant" />
+    <Localized id="107" value="Créer un nouveau modèle propre au projet courant" lang="English" key="Créer un nouveau modèle propre au projet courant" />
+    <Localized id="108" value="Créer un nouveau modèle propre au projet courant" lang="French" key="Créer un nouveau modèle propre au projet courant" />
+    <Localized id="109" value="Créer un nouveau modèle propre au projet courant" lang="Dutch" key="Créer un nouveau modèle propre au projet courant" />
+    <Localized id="110" value="Créer un nouveau modèle partageable" lang="English" key="Créer un nouveau modèle partageable" />
+    <Localized id="111" value="Créer un nouveau modèle partageable" lang="French" key="Créer un nouveau modèle partageable" />
+    <Localized id="112" value="Créer un nouveau modèle partageable" lang="Dutch" key="Créer un nouveau modèle partageable" />
+    <Localized id="113" value="&lt;html&gt;Retrieve an existing virtual model already defined.&lt;/html&gt;" lang="English" key="SelectExistingVirtualModel_description" />
+    <Localized id="114" value="&lt;html&gt;Accèder à un modèle virtuel existant.&lt;/html&gt;" lang="French" key="SelectExistingVirtualModel_description" />
+    <Localized id="115" value="SelectExistingVirtualModel_description" lang="Dutch" key="SelectExistingVirtualModel_description" />
+    <Localized id="116" value="Creates new virtual model" lang="English" key="CreateNewVirtualModel" />
+    <Localized id="117" value="Créer un nouveau modèle virtuel" lang="French" key="CreateNewVirtualModel" />
+    <Localized id="118" value="CreateNewVirtualModel" lang="Dutch" key="CreateNewVirtualModel" />
+    <Localized id="119" value="Virtual model instance" lang="English" key="virtual_model_instance" />
+    <Localized id="120" value="Instance de modèle virtuel" lang="French" key="virtual_model_instance" />
+    <Localized id="121" value="virtual_model_instance" lang="Dutch" key="virtual_model_instance" />
+    <Localized id="122" value="Creates a new virtual model instance conform to required virtual model" lang="English" key="CreateNewVirtualModel_description" />
+    <Localized id="123" value="&lt;html&gt;&lt;center&gt;Créer une nouvelle instance modèle virtuel conforme au modèle virtuel désiré.&lt;/center&gt;&lt;/html&gt;" lang="French" key="CreateNewVirtualModel_description" />
+    <Localized id="124" value="CreateNewVirtualModel_description" lang="Dutch" key="CreateNewVirtualModel_description" />
+  </LocalizedDictionary>
+  <Label id="125" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="1" localize="true" align="left" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="model_slot_name" readOnly="false" />
+  <TextField id="126" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.modelSlot.name" columns="6" name="VirtualModelNameTextField" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" index="2" localize="true" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" readOnly="true" validateOnReturn="false" />
+  <Label id="127" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="3" localize="true" align="left" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="technology" readOnly="false" />
+  <TextField id="128" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.modelSlot.metaModelURI" columns="7" name="MetaModelTF" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" index="3" localize="true" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" readOnly="true" validateOnReturn="false" />
+  <Label id="129" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="4" localize="true" align="left" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="meta_model" readOnly="false" />
+  <TextField id="130" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.modelSlot.technologyAdapter.name" columns="7" name="VirtualModelTitleTextField" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" index="4" localize="true" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" readOnly="true" validateOnReturn="false" />
+  <Label id="131" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="5" localize="true" align="left" constraints="gridbag(anchor=north_east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="select_an_option" readOnly="false" />
+  <RadioButtonList id="132" manageDynamicModel="false" columns="1" controllerClassName="org.openflexo.fib.controller.FIBController" index="5" localize="true" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" format="object.name" showText="true" iteratorClassName="org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration$ModelSlotInstanceConfigurationOption" vGap="-2" showIcon="false" useScrollBar="false" data="data.configuration.option" staticList="" autoSelectFirstRow="true" name="OptionRadioButtonList" hGap="0" list="data.configuration.availableOptions" readOnly="false" />
+  <Label id="133" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="5" localize="true" align="left" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="" readOnly="false" />
+  <Panel id="134" darkLevel="0" useScrollBar="false" borderLeft="2" protectContent="false" height="50" layout="border" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" borderRight="2" trackViewPortWidth="true" index="5" width="14" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=10;padX=0;padY=0;weightX=1.0;weightY=0.0)" borderBottom="2" titleFont="Lucida Grande,0,11" borderTop="2" trackViewPortHeight="true">
+    <Label id="135" manageDynamicModel="false" useScrollBar="false" data="data.configuration.option.descriptionKey" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" font="SansSerif,2,11" align="center" constraints="border(location=center)" label="" readOnly="false" />
+  </Panel>
+  <Label id="136" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" index="6" localize="true" align="left" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="" readOnly="false" />
+  <Panel id="137" darkLevel="0" useScrollBar="false" borderLeft="2" protectContent="false" layout="gridbag" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" borderRight="2" trackViewPortWidth="true" index="6" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" borderBottom="2" borderTitle="" titleFont="Lucida Grande,0,11" borderTop="2" trackViewPortHeight="true">
+    <Panel id="138" darkLevel="0" useScrollBar="false" borderLeft="2" protectContent="false" name="SelectExistingResourcePanel" layout="twocols" controllerClassName="org.openflexo.fib.controller.FIBController" border="empty" borderRight="2" trackViewPortWidth="true" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" borderBottom="2" borderTitle="" titleFont="Lucida Grande,0,11" borderTop="2" trackViewPortHeight="true">
+      <Label id="139" visible="((OptionRadioButtonList.selected.name = &quot;SelectExistingModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="resource_center" readOnly="false" />
+      <Custom id="140" visible="((OptionRadioButtonList.selected.name = &quot;SelectExistingModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="true" useScrollBar="false" data="data.configuration.resourceCenter" componentClassName="org.openflexo.components.widget.FIBResourceCenterSelector" name="ResourceCenterSelector" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false">
+        <Assignment id="141" mandatory="true" variable="component.serviceManager" />
+        <Assignment id="142" mandatory="true" variable="component.selectableCondition" />
+        <Assignment id="143" mandatory="true" value="controller.flexoController.applicationContext.resourceCenterService" variable="component.resourceCenterService" />
+      </Custom>
+      <Label id="144" visible="(OptionRadioButtonList.selected.name = &quot;SelectExistingModel&quot;)" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="model" readOnly="false" />
+      <Custom id="145" visible="(OptionRadioButtonList.selected.name = &quot;SelectExistingModel&quot;)" manageDynamicModel="true" useScrollBar="false" data="data.configuration.modelResource" componentClassName="org.openflexo.components.widget.FIBModelSelector" name="ModelSelector" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false">
+        <Assignment id="146" mandatory="true" variable="component.serviceManager" />
+        <Assignment id="147" mandatory="true" value="data.modelSlot.technologyAdapter" variable="component.technologyAdapter" />
+        <Assignment id="148" mandatory="true" value="data.action.virtualModel.viewPoint.viewPointLibrary.serviceManager.informationSpace" variable="component.informationSpace" />
+        <Assignment id="149" mandatory="true" variable="component.selectableCondition" />
+        <Assignment id="150" mandatory="true" value="data.modelSlot.metaModelResource" variable="component.metaModelResource" />
+      </Custom>
+      <Label id="151" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="resource_uri" readOnly="false" />
+      <TextField id="152" passwd="false" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" data="data.configuration.modelUri" columns="7" name="ResourceURITF1" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false" validateOnReturn="false" />
+      <Label id="153" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="relative_path" readOnly="false" />
+      <TextField id="154" passwd="false" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" data="data.configuration.relativePath" columns="7" name="RelativePathTF1" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false" validateOnReturn="false" />
+      <Label id="155" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="file_name" readOnly="false" />
+      <TextField id="156" passwd="false" visible="((OptionRadioButtonList.selected.name = &quot;CreatePrivateNewModel&quot;) | (OptionRadioButtonList.selected.name = &quot;CreateSharedNewModel&quot;))" manageDynamicModel="false" useScrollBar="false" data="data.configuration.filename" columns="7" name="FileNameTF1" controllerClassName="org.openflexo.fib.controller.FIBController" text="TextField" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false" validateOnReturn="false" />
+    </Panel>
+  </Panel>
+</Panel>

@@ -12,11 +12,11 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -40,7 +40,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.VIEWPOINT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.VIEWPOINT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeViewPoint getDescribeViewPoint() {
@@ -58,7 +58,7 @@ public class CreateViewPointWizard extends AbstractCreateVirtualModelWizard<Crea
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeViewPoint.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeViewPoint.fib")
 	public class DescribeViewPoint extends WizardStep {
 
 		public ApplicationContext getServiceManager() {

@@ -12,7 +12,7 @@ import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction.ParameterValues;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction.ParameterValues;
 
 public class FlexoBehaviourParameterValuePathElement extends SimplePathElement implements PropertyChangeListener {
 

@@ -36,16 +36,19 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
-import org.openflexo.foundation.fmlrt.ModelSlotInstance;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeAction;
-import org.openflexo.foundation.fmlrt.action.CreationSchemeAction;
-import org.openflexo.foundation.fmlrt.action.DeletionSchemeAction;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fmlrt.action.NavigationSchemeAction;
-import org.openflexo.foundation.fmlrt.action.SynchronizationSchemeAction;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
+import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -138,7 +141,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
 
-	public List<FMLModelSlot> getAvailableVirtualModelModelSlots();
+	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
 
@@ -208,8 +211,8 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		}
 
 		@Override
-		public List<FMLModelSlot> getAvailableVirtualModelModelSlots() {
-			return getAvailableModelSlots(FMLModelSlot.class);
+		public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots() {
+			return getAvailableModelSlots(FMLRTModelSlot.class);
 		}
 
 		@Override
@@ -591,7 +594,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction> applyValidation(EditionAction anAction) {
 			ModelSlot ms = anAction.getModelSlot();
-			if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
+			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(anAction);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, EditionAction>(this, anAction,
 						"EditionAction_should_not_have_reflexive_model_slot_no_more", fixProposal);

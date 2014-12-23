@@ -11,9 +11,9 @@ import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.action.CreateView;
-import org.openflexo.foundation.fmlrt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

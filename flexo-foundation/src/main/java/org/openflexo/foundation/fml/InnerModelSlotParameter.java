@@ -23,6 +23,7 @@ package org.openflexo.foundation.fml;
 import java.util.List;
 
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -87,7 +88,7 @@ public abstract interface InnerModelSlotParameter<MS extends ModelSlot<?>> exten
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter> applyValidation(
 				InnerModelSlotParameter aParameter) {
 			ModelSlot ms = aParameter.getModelSlot();
-			if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
+			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aParameter);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, InnerModelSlotParameter>(this, aParameter,
 						"Parameter_should_not_have_reflexive_model_slot_no_more", fixProposal);

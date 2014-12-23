@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.ViewLibrary;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
-import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 

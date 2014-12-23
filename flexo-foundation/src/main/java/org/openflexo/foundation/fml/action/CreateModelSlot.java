@@ -31,9 +31,9 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -100,9 +100,9 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 
 		/*if (technologyAdapter instanceof FMLTechnologyAdapter) {
 			FMLTechnologyAdapter virtualModelTechnologyAdapter = (FMLTechnologyAdapter) technologyAdapter;
-			newModelSlot = virtualModelTechnologyAdapter.makeModelSlot(FMLModelSlot.class, getFocusedObject());
+			newModelSlot = virtualModelTechnologyAdapter.makeModelSlot(FMLRTModelSlot.class, getFocusedObject());
 			newModelSlot.setName(modelSlotName);
-			((FMLModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+			((FMLRTModelSlot) newModelSlot).setVirtualModelResource(vmRes);
 			newModelSlot.setIsRequired(required);
 			newModelSlot.setIsReadOnly(readOnly);
 			newModelSlot.setDescription(description);
@@ -116,8 +116,8 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 				newModelSlot = technologyAdapter.createNewModelSlot((ViewPoint) getFocusedObject());
 			}*/
 			newModelSlot.setName(modelSlotName);
-			if (newModelSlot instanceof FMLModelSlot) {
-				((FMLModelSlot) newModelSlot).setVirtualModelResource(vmRes);
+			if (newModelSlot instanceof FMLRTModelSlot) {
+				((FMLRTModelSlot) newModelSlot).setVirtualModelResource(vmRes);
 
 			} else if (newModelSlot instanceof TypeAwareModelSlot) {
 				((TypeAwareModelSlot) newModelSlot).setMetaModelResource(mmRes);
@@ -218,7 +218,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 	public boolean isVirtualModelModelSlot() {
 		// System.out.println("isTypeAwareModelSlot ? with " + getModelSlotClass());
 		// System.out.println("return " + (getModelSlotClass() != null && TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())));
-		return getModelSlotClass() != null && getModelSlotClass().equals(FMLModelSlot.class);
+		return getModelSlotClass() != null && getModelSlotClass().equals(FMLRTModelSlot.class);
 	}
 
 	/**

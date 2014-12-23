@@ -27,7 +27,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -36,7 +36,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/VPM/NavigationSchemePanel.fib")
+@FIBPanel("Fib/FML/NavigationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
 @XMLElement

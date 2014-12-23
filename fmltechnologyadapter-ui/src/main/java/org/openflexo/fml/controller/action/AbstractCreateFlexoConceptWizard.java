@@ -12,7 +12,7 @@ import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
@@ -55,7 +55,7 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureAdditionalStepsForNewFlexoConcept.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureAdditionalStepsForNewFlexoConcept.fib")
 	public class ConfigureAdditionalStepsForNewFlexoConcept extends WizardStep {
 
 		private boolean defineSomeRoles = false;

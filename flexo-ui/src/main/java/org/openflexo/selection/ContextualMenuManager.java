@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fmlrt.action.DeletionSchemeActionType;
-import org.openflexo.foundation.fmlrt.action.NavigationSchemeActionType;
-import org.openflexo.foundation.fmlrt.action.SynchronizationSchemeActionType;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.action.EditionAction;
 

@@ -31,13 +31,14 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
-import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceImpl;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.View;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -298,7 +299,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * @return
 	 */
 	// Not used anymore, but supported implicitely
-	// public FMLModelSlot getReflexiveModelSlot();
+	// public FMLRTModelSlot getReflexiveModelSlot();
 
 	/**
 	 * Return flag indicating if supplied BindingVariable is set at runtime
@@ -1017,7 +1018,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel> applyValidation(VirtualModel vm) {
 			for (ModelSlot ms : vm.getModelSlots()) {
-				if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
+				if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 					RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(vm);
 					return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, VirtualModel>(this, vm,
 							"virtual_model_should_not_have_reflexive_model_slot_no_more", fixProposal);

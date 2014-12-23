@@ -56,7 +56,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/VPM/AddIndividualPanel.fib")
+@FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
 public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends AddConcept<MS, T> {

@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
@@ -62,30 +64,38 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
 	public void loadAvailableTechnologyAdapters() {
+
+		// Load all other technology adapters found in the classpath (using java ServiceLoader)
+		// (Those TA are found using META-INF informations collected in classpath)
 		ServiceLoader<TechnologyAdapter> loader = ServiceLoader.load(TechnologyAdapter.class);
+
 		if (loadedAdapters == null) {
+
 			loadedAdapters = new Hashtable<Class, TechnologyAdapter>();
 			technologyContextManagers = new Hashtable<TechnologyAdapter, TechnologyContextManager>();
+
 			logger.info("Loading available technology adapters...");
+
+			// First load the FML technology adapter
+			FMLTechnologyAdapter fmlTechnologyAdapter = new FMLTechnologyAdapter();
+			registerTechnologyAdapter(fmlTechnologyAdapter);
+
+			// First load the FML@runtime technology adapter
+			FMLRTTechnologyAdapter fmlRTTechnologyAdapter = new FMLRTTechnologyAdapter();
+			registerTechnologyAdapter(fmlRTTechnologyAdapter);
+
+			// Then the other TA
 			Iterator<TechnologyAdapter> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapter technologyAdapter = iterator.next();
 				registerTechnologyAdapter(technologyAdapter);
 			}
-			// TODO: remove this hack to load DiagramTechnologyAdapter.
-			// Guillaume ?
-			/*
-			 * if (getTechnologyAdapter(DiagramTechnologyAdapter.class) == null)
-			 * { DiagramTechnologyAdapter diagramTechnologyAdapter = new
-			 * DiagramTechnologyAdapter();
-			 * registerTechnologyAdapter(diagramTechnologyAdapter); }
-			 */
 			logger.info("Loading available technology adapters. Done.");
-		}else{
+		} else {
 			Iterator<TechnologyAdapter> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapter technologyAdapter = iterator.next();
-				if(!loadedAdapters.containsKey(technologyAdapter.getClass())){
+				if (!loadedAdapters.containsKey(technologyAdapter.getClass())) {
 					registerTechnologyAdapter(technologyAdapter);
 				}
 				logger.info("Loading available technology adapters. Done.");
@@ -107,9 +117,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}*/
 
-	
 	private void registerTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-		logger.info("Found " + technologyAdapter);
+		logger.fine("Found " + technologyAdapter);
 		technologyAdapter.setTechnologyAdapterService(this);
 		TechnologyContextManager tcm = technologyAdapter.createTechnologyContextManager(getFlexoResourceCenterService());
 		if (tcm != null) {
@@ -190,7 +199,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			rc.initialize(this);
 		}
 	}
-	
+
 	/*@Override
 	public void initialize(ServiceLoader<TechnologyAdapter> loader) {
 		loadAvailableTechnologyAdapters(loader);
@@ -311,14 +320,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<ModelRepository<?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
-		List<ModelRepository<?, ?, ?, ?>> returned = new ArrayList<ModelRepository<?, ?, ?, ?>>();
+	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+		List<ModelRepository<?, ?, ?, ?, ?>> returned = new ArrayList<ModelRepository<?, ?, ?, ?, ?>>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
 			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
 			if (repCollection != null) {
 				for (ResourceRepository<?> rep : repCollection) {
 					if (rep instanceof ModelRepository) {
-						returned.add((ModelRepository<?, ?, ?, ?>) rep);
+						returned.add((ModelRepository<?, ?, ?, ?, ?>) rep);
 					}
 				}
 			}

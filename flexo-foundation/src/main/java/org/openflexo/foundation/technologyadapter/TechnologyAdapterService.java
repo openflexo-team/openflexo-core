@@ -69,7 +69,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * 
 	 * @return
 	 */
-	public TechnologyContextManager getTechnologyContextManager(TechnologyAdapter technologyAdapter);
+	public <TA extends TechnologyAdapter> TechnologyContextManager<TA> getTechnologyContextManager(TA technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link ModelRepository} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -78,7 +78,7 @@ public interface TechnologyAdapterService extends FlexoService {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter);
+	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link MetaModelRepository} discovered in the scope of {@link FlexoServiceManager}, related to

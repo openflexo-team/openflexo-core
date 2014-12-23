@@ -2,10 +2,10 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fmlrt.ActorReference;
-import org.openflexo.foundation.fmlrt.ConceptActorReference;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.ConceptActorReference;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 import org.openflexo.model.annotations.Getter;

@@ -26,7 +26,7 @@ import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fmlrt.View;
+import org.openflexo.foundation.fml.rt.View;
 
 /**
  * This is the {@link BindingModel} exposed by a ViewPoint<br>

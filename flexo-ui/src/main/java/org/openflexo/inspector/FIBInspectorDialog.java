@@ -30,7 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.icon.IconLibrary;

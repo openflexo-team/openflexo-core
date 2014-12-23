@@ -12,7 +12,6 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
@@ -20,7 +19,8 @@ import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -72,7 +72,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureModelSlots.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureModelSlots.fib")
 	public class ConfigureModelSlots extends WizardStep implements PropertyChangeListener {
 
 		public ConfigureModelSlots() {
@@ -167,7 +167,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 				return new ConfigureTypeAwareModelSlot(msEntry);
 			} else if (FreeModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureFreeModelSlot(msEntry);
-			} else if (FMLModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
+			} else if (FMLRTModelSlot.class.isAssignableFrom(msEntry.getModelSlotClass())) {
 				return new ConfigureVirtualModelModelSlot(msEntry);
 			} else {
 				logger.warning("Could not instantiate ConfigureModelSlot for " + msEntry);
@@ -250,7 +250,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureTypeAwareModelSlot.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureTypeAwareModelSlot.fib")
 	public class ConfigureTypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ConfigureModelSlot<TypeAwareModelSlot<M, MM>> {
 
@@ -296,7 +296,7 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureFreeModelSlot.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureFreeModelSlot.fib")
 	public class ConfigureFreeModelSlot extends ConfigureModelSlot<FreeModelSlot<?>> {
 
 		public ConfigureFreeModelSlot(ModelSlotEntry entry) {
@@ -316,8 +316,8 @@ public abstract class AbstractCreateVirtualModelWizard<A extends AbstractCreateV
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureVirtualModelModelSlot.fib")
-	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLModelSlot> {
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureVirtualModelModelSlot.fib")
+	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLRTModelSlot> {
 
 		public ConfigureVirtualModelModelSlot(ModelSlotEntry entry) {
 			super(entry);

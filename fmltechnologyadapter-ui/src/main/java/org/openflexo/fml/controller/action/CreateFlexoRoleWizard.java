@@ -15,12 +15,12 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -56,7 +56,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_ROLE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ROLE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeFlexoRole getDescribeFlexoRole() {
@@ -74,7 +74,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeFlexoRole.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib")
 	public class DescribeFlexoRole extends WizardStep {
 
 		public ApplicationContext getServiceManager() {

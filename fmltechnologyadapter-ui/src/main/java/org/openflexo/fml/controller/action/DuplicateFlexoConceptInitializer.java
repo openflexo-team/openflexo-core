@@ -29,7 +29,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -71,7 +71,7 @@ public class DuplicateFlexoConceptInitializer extends ActionInitializer<Duplicat
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.FLEXO_CONCEPT_ICON;
+		return FMLIconLibrary.FLEXO_CONCEPT_ICON;
 	}
 
 }

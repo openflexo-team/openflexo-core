@@ -22,7 +22,7 @@ package org.openflexo.components.widget;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fmlrt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
 

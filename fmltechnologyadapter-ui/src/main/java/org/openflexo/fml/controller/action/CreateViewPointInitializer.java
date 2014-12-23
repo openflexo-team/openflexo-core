@@ -33,7 +33,7 @@ import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -77,7 +77,7 @@ public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoin
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.VIEWPOINT_ICON;
+		return FMLIconLibrary.VIEWPOINT_ICON;
 	}
 
 }

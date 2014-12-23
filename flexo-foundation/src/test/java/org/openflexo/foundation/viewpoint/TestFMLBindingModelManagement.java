@@ -60,8 +60,6 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.FMLModelSlot;
-import org.openflexo.foundation.fml.VirtualModelModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
@@ -80,28 +78,30 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
-import org.openflexo.foundation.fml.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.editionaction.IterationAction;
-import org.openflexo.foundation.fml.editionaction.MatchFlexoConceptInstance;
-import org.openflexo.foundation.fml.editionaction.MatchingCriteria;
-import org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeAction;
-import org.openflexo.foundation.fmlrt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fmlrt.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.CreateView;
-import org.openflexo.foundation.fmlrt.action.CreationSchemeAction;
-import org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
-import org.openflexo.foundation.fmlrt.rm.ViewResource;
-import org.openflexo.foundation.fmlrt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
+import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.rm.ResourceLocator;
@@ -607,7 +607,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		CreateModelSlot createMS1 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
 				FMLTechnologyAdapter.class));
-		createMS1.setModelSlotClass(FMLModelSlot.class);
+		createMS1.setModelSlotClass(FMLRTModelSlot.class);
 		createMS1.setModelSlotName("vm1");
 		createMS1.setVmRes((VirtualModelResource) virtualModel1.getResource());
 		createMS1.doAction();
@@ -617,14 +617,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		CreateModelSlot createMS2 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
 				FMLTechnologyAdapter.class));
-		createMS2.setModelSlotClass(FMLModelSlot.class);
+		createMS2.setModelSlotClass(FMLRTModelSlot.class);
 		createMS2.setModelSlotName("vm2");
 		createMS2.setVmRes((VirtualModelResource) virtualModel2.getResource());
 		createMS2.doAction();
 		assertTrue(createMS2.hasActionExecutionSucceeded());
 
-		// VirtualModel should have two FMLModelSlot
-		assertEquals(2, virtualModel3.getModelSlots(FMLModelSlot.class).size());
+		// VirtualModel should have two FMLRTModelSlot
+		assertEquals(2, virtualModel3.getModelSlots(FMLRTModelSlot.class).size());
 
 		CreateFlexoRole createRoleInVM3 = CreateFlexoRole.actionType.makeNewAction(virtualModel3, null, editor);
 		createRoleInVM3.setRoleName("aStringInVM3");
@@ -1557,15 +1557,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 3");
 		createVMI3.setVirtualModel(virtualModel3);
 
-		FMLModelSlot ms1 = (FMLModelSlot) virtualModel3.getModelSlot("vm1");
-		VirtualModelModelSlotInstanceConfiguration ms1Configuration = (VirtualModelModelSlotInstanceConfiguration) createVMI3
+		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
+		FMLRTModelSlotInstanceConfiguration ms1Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms1);
 		ms1Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		ms1Configuration.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) vmi1.getResource());
 		assertTrue(ms1Configuration.isValidConfiguration());
 
-		FMLModelSlot ms2 = (FMLModelSlot) virtualModel3.getModelSlot("vm2");
-		VirtualModelModelSlotInstanceConfiguration ms2Configuration = (VirtualModelModelSlotInstanceConfiguration) createVMI3
+		FMLRTModelSlot ms2 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm2");
+		FMLRTModelSlotInstanceConfiguration ms2Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
 				.getModelSlotInstanceConfiguration(ms2);
 		ms2Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		ms2Configuration.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) vmi2.getResource());

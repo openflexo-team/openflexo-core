@@ -35,20 +35,18 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointNature;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.ViewNature;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
-import org.openflexo.foundation.fmlrt.VirtualModelInstanceNature;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewNature;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
-import org.openflexo.ve.view.ViewModuleView;
-import org.openflexo.ve.view.VirtualModelInstanceView;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -148,7 +146,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				ViewNature nature = availableNatures.get(0);
 				return getModuleViewForView(view, nature);
 			}
-			return new ViewModuleView(view, controller, this);
+			// TODO: check that FMLTechnologyAdapterController now handle this
+			// return new ViewModuleView(view, controller, this);
 		}
 		if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance vmi = (VirtualModelInstance) object;
@@ -157,7 +156,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				VirtualModelInstanceNature nature = availableNatures.get(0);
 				return getModuleViewForVirtualModelInstance(vmi, nature);
 			}
-			return new VirtualModelInstanceView(vmi, controller, this);
+			// TODO: check that FMLTechnologyAdapterController now handle this
+			// return new VirtualModelInstanceView(vmi, controller, this);
 		}
 		if (object instanceof FlexoConceptInstance) {
 			FlexoConceptInstance vmi = (FlexoConceptInstance) object;
@@ -167,7 +167,8 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 				return getModuleViewForFlexoConceptInstance(vmi, nature);
 			}
 			// No default view for a FlexoConceptInstance !
-			return new EmptyPanel<FlexoObject>(controller, this, object);
+			// return new EmptyPanel<FlexoObject>(controller, this, object);
+			// TODO: check that FMLTechnologyAdapterController now handle this
 		}
 		if (object instanceof ViewPoint) {
 			ViewPoint viewPoint = (ViewPoint) object;

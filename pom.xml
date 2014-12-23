@@ -25,7 +25,8 @@
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
-		<module>fmltechnologyadapter-ui</module>
+		<module>fml-technologyadapter-ui</module>
+		<module>fml-rt-technologyadapter-ui</module>
 		<module>flexodocresourcecenter</module>
 		<module>flexodocresourcemanager</module>
     </modules>

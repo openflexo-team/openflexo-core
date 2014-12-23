@@ -23,43 +23,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fmlrt.rm.ViewResource;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 
-// Merge of ViewLibrary and ViewPointLibrary ???
 public class FMLTechnologyContextManager extends TechnologyContextManager<FMLTechnologyAdapter> {
 
-	/** Stores all known DiagramSpecification where key is the URI of DiagramSpecification */
 	protected Map<String, ViewPointResource> viewPoints = new HashMap<String, ViewPointResource>();
-	/** Stores all known Diagrams where key is the URI of Diagram */
-	protected Map<String, ViewResource> views = new HashMap<String, ViewResource>();
 
 	public FMLTechnologyContextManager(FMLTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
-	}
-
-	@Override
-	public FMLTechnologyAdapter getTechnologyAdapter() {
-		return (FMLTechnologyAdapter) super.getTechnologyAdapter();
 	}
 
 	public ViewPointResource getViewPointResource(String uri) {
 		return viewPoints.get(uri);
 	}
 
-	public ViewResource getViewResource(String uri) {
-		return views.get(uri);
-	}
-
 	public void registerViewPoint(ViewPointResource viewPointResource) {
 		registerResource(viewPointResource);
 		viewPoints.put(viewPointResource.getURI(), viewPointResource);
-	}
-
-	public void registerView(ViewResource viewResource) {
-		registerResource(viewResource);
-		views.put(viewResource.getURI(), viewResource);
 	}
 
 }

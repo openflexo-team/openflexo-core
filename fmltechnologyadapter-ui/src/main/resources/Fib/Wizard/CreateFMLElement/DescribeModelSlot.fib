@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="gridbag" darkLevel="0"
+	dataClassName="org.openflexo.fml.controller.action.CreateModelSlotWizard$DescribeModelSlot"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+	<Label label="name" align="right" index="1"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextField index="2" data="data.modelSlotName"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		name="ModelSlotName" localize="true" columns="20" text="TextField">
+	</TextField>
+	<Label label="technology_adapter" index="3"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<DropDown index="4" data="data.technologyAdapter"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="TechnologyAdapterDD" format="object.name"
+		icon="controller.getTechnologyAdapterController(object).technologyIcon"
+		localize="true"
+		list="data.serviceManager.technologyAdapterService.technologyAdapters"
+		showIcon="true"
+		iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+		autoSelectFirstRow="true" />
+	<Label label="model_slot_type" index="4"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="(TechnologyAdapterDD.data.class.simpleName != &quot;VirtualModelTechnologyAdapter&quot;)"
+		localize="true" />
+	<DropDown index="4" data="data.modelSlotClass"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		visible="(TechnologyAdapterDD.data.class.simpleName != &quot;VirtualModelTechnologyAdapter&quot;)"
+		name="modelSlotTypeDD" format="object.simpleName" localize="true"
+		list="data.technologyAdapter.availableModelSlotTypes"
+		iteratorClassName="java.lang.Class" autoSelectFirstRow="true">
+	</DropDown>
+	<Label label="virtual_model" index="8"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.isVirtualModelModelSlot" name="VirtualModelLabel"
+		localize="true" />
+	<Custom componentClassName="org.openflexo.components.widget.FIBVirtualModelSelector"
+		localize="true" manageDynamicModel="true" name="VirtualModelSelector"
+		index="9" data="data.vmRes"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		visible="data.isVirtualModelModelSlot">
+		<Assignment variable="component.viewPoint"
+			value="data.viewPoint.resource" />
+		<!--  <Dependancy componentName="TechnologyAdapterDD" />
+		<Dependancy componentName="modelSlotTypeDD" />-->
+	</Custom>
+	<Label label="metamodel" index="10"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.isTypeAwareModelSlot" localize="true">
+	</Label>
+	<Custom componentClassName="org.openflexo.components.widget.FIBMetaModelSelector"
+		data="data.mmRes" localize="true" manageDynamicModel="true"
+		name="MetaModelSelector" index="11"
+		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		visible="data.isTypeAwareModelSlot">
+		<Assignment variable="component.informationSpace"
+			value="data.serviceManager.informationSpace" />
+		<Assignment variable="component.technologyAdapter" value="TechnologyAdapterDD.selected" />
+		<!--  <Dependancy componentName="TechnologyAdapterDD" />
+		<Dependancy componentName="modelSlotTypeDD" />-->
+	</Custom>
+	<CheckBox selected="true" index="7" data="data.required"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="requiredCB" localize="true" />
+	<Label label="required" index="8"
+		constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<CheckBox selected="true" index="9" data="data.readOnly"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		name="readOnlyCB" localize="true" />
+	<Label label="read_only" index="10"
+		constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<Label label="description" align="right" index="11"
+		constraints="gridbag(anchor=north_east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextArea columns="6" rows="2" text="TextArea" index="12"
+		data="data.description"
+		constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=12;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+		useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+		verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+	<Panel layout="border" borderTitle="Panel" titleFont="Lucida Grande,2,11"
+		darkLevel="0" index="13"
+		constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=13;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		font="Lucida Grande,2,11" />
+	<LocalizedDictionary>
+		<Localized key="creates_model_slot" lang="English" value="Create Model Slot" />
+		<Localized key="creates_model_slot" lang="French"
+			value="Créer un Model Slot" />
+		<Localized key="creates_model_slot" lang="Dutch" value="Create Model Slot" />
+		<Localized key="model_slot_type" lang="English" value="Model Slot type" />
+		<Localized key="model_slot_type" lang="French" value="Type de Model Slot" />
+		<Localized key="model_slot_type" lang="Dutch" value="Create Model Slot" />
+		<Localized key="required" lang="English" value="Required" />
+		<Localized key="required" lang="French" value="Exigé" />
+		<Localized key="required" lang="Dutch" value="Required" />
+		<Localized key="read_only" lang="English" value="Read only" />
+		<Localized key="read_only" lang="French" value="Lecture seule" />
+		<Localized key="read_only" lang="Dutch" value="Read only" />
+		<Localized key="Openflexo built-in diagram technology adapter"
+			lang="English" value="Openflexo built-in diagram technology adapter" />
+		<Localized key="Openflexo built-in diagram technology adapter"
+			lang="French" value="Openflexo built-in diagram technology adapter" />
+		<Localized key="Openflexo built-in diagram technology adapter"
+			lang="Dutch" value="Openflexo built-in diagram technology adapter" />
+		<Localized key="EMF technology adapter" lang="English"
+			value="EMF technology adapter" />
+		<Localized key="EMF technology adapter" lang="French"
+			value="EMF technology adapter" />
+		<Localized key="EMF technology adapter" lang="Dutch"
+			value="EMF technology adapter" />
+		<Localized key="OWL technology adapter" lang="English"
+			value="OWL technology adapter" />
+		<Localized key="OWL technology adapter" lang="French"
+			value="OWL technology adapter" />
+		<Localized key="OWL technology adapter" lang="Dutch"
+			value="OWL technology adapter" />
+		<Localized key="XSD/XML technology adapter" lang="English"
+			value="XSD/XML technology adapter" />
+		<Localized key="XSD/XML technology adapter" lang="French"
+			value="XSD/XML technology adapter" />
+		<Localized key="XSD/XML technology adapter" lang="Dutch"
+			value="XSD/XML technology adapter" />
+		<Localized key="Openflexo built-in virtual model technology adapter"
+			lang="English" value="Openflexo built-in virtual model technology adapter" />
+		<Localized key="Openflexo built-in virtual model technology adapter"
+			lang="French" value="Openflexo built-in virtual model technology adapter" />
+		<Localized key="Openflexo built-in virtual model technology adapter"
+			lang="Dutch" value="Openflexo built-in virtual model technology adapter" />
+		<Localized key="Excel technology adapter" lang="English"
+			value="Excel technology adapter" />
+		<Localized key="Excel technology adapter" lang="French"
+			value="Excel technology adapter" />
+		<Localized key="Excel technology adapter" lang="Dutch"
+			value="Excel technology adapter" />
+		<Localized key="Openflexo diagram" lang="English" value="Openflexo diagram" />
+		<Localized key="Openflexo diagram" lang="French" value="Openflexo diagram" />
+		<Localized key="Openflexo diagram" lang="Dutch" value="Openflexo diagram" />
+		<Localized key="Openflexo virtual model" lang="English"
+			value="Openflexo virtual model" />
+		<Localized key="Openflexo virtual model" lang="French"
+			value="Openflexo virtual model" />
+		<Localized key="Openflexo virtual model" lang="Dutch"
+			value="Openflexo virtual model" />
+
+	</LocalizedDictionary>
+</Panel>

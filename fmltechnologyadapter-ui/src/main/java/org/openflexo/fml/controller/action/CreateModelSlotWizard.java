@@ -9,19 +9,19 @@ import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -54,7 +54,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeModelSlot getDescribeModelSlot() {
@@ -72,7 +72,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeModelSlot.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib")
 	public class DescribeModelSlot extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
@@ -244,7 +244,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 		}
 
 		public boolean isVirtualModelModelSlot() {
-			return getModelSlotClass() != null && getModelSlotClass().equals(FMLModelSlot.class);
+			return getModelSlotClass() != null && getModelSlotClass().equals(FMLRTModelSlot.class);
 		}
 
 	}

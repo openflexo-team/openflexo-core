@@ -18,10 +18,10 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -59,7 +59,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_BEHAVIOUR_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeFlexoBehaviour getDescribeFlexoBehaviour() {
@@ -77,7 +77,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeFlexoBehaviour.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoBehaviour.fib")
 	public class DescribeFlexoBehaviour extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
@@ -168,7 +168,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/ConfigureFlexoBehaviourParameters.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureFlexoBehaviourParameters.fib")
 	public class ConfigureFlexoBehaviourParameters extends WizardStep implements PropertyChangeListener {
 
 		public ConfigureFlexoBehaviourParameters() {

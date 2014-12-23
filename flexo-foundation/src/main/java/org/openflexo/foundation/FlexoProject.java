@@ -41,7 +41,7 @@ import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.ProjectDataResource.ProjectDataResourceImpl;
 import org.openflexo.foundation.ProjectDirectoryResource.ProjectDirectoryResourceImpl;
 import org.openflexo.foundation.converter.FlexoObjectReferenceConverter;
-import org.openflexo.foundation.fmlrt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.DuplicateExternalRepositoryNameException;

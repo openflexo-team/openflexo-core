@@ -22,7 +22,7 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link AddFlexoConceptInstanceParameter}<br>

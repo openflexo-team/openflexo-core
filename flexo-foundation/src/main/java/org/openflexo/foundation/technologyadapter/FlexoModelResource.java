@@ -21,16 +21,16 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity
 @XMLElement
-public interface FlexoModelResource<M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public interface FlexoModelResource<M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter>
 		extends TechnologyAdapterResource<M, TA> {
 
 	public static final String META_MODEL_RESOURCE = "metaModelResource";
 
 	@Getter(value = META_MODEL_RESOURCE, ignoreType = true)
-	public FlexoMetaModelResource<M, MM, TA> getMetaModelResource();
+	public FlexoMetaModelResource<M, MM, TAMM> getMetaModelResource();
 
 	@Setter(META_MODEL_RESOURCE)
-	public void setMetaModelResource(FlexoMetaModelResource<M, MM, TA> aMetaModelResource);
+	public void setMetaModelResource(FlexoMetaModelResource<M, MM, TAMM> aMetaModelResource);
 
 	/**
 	 * Return the model this resource is storing (same as {@link #getModel()}

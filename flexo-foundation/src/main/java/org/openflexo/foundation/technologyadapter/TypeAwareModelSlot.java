@@ -7,13 +7,13 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.editionaction.AddIndividual;
-import org.openflexo.foundation.fmlrt.ModelSlotInstance;
-import org.openflexo.foundation.fmlrt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fmlrt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.Getter;
@@ -51,14 +51,14 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	public FlexoMetaModelResource<M, MM, ?> getMetaModelResource();
 
 	public void setMetaModelResource(FlexoMetaModelResource<M, MM, ?> metaModelResource);
-	
+
 	public Class<? extends FlexoMetaModel<?>> getMetaModelClass();
 
-	public FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
+	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
 			FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
-	public FlexoModelResource<M, MM, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath, String filename,
-			String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
+	public FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
+			String filename, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 	/**
 	 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
@@ -186,11 +186,11 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public abstract FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename,
+		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename,
 				String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override
-		public abstract FlexoModelResource<M, MM, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
+		public abstract FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
 				String filename, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override

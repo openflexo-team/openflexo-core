@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -33,7 +33,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
-@FIBPanel("Fib/VPM/ProcedureActionPanel.fib")
+@FIBPanel("Fib/FML/ProcedureActionPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ProcedureAction.ProcedureActionImpl.class)
 @Deprecated

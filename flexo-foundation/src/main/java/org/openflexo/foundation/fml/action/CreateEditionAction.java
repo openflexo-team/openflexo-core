@@ -35,15 +35,15 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.editionaction.IterationAction;
-import org.openflexo.foundation.fml.editionaction.MatchFlexoConceptInstance;
-import org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 
@@ -111,9 +111,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class);
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.ExecutionAction.class);
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class);
-		builtInActions.add(org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance.class);
-		builtInActions.add(org.openflexo.foundation.fml.editionaction.MatchFlexoConceptInstance.class);
-		builtInActions.add(org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance.class);
+		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.class);
+		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance.class);
+		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance.class);
 		builtInActions.add(DeleteAction.class);
 
 		controlActions = new ArrayList<Class<? extends EditionAction>>();

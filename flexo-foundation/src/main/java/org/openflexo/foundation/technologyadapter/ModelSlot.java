@@ -34,13 +34,13 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fmlrt.ModelSlotInstance;
-import org.openflexo.foundation.fmlrt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -64,12 +64,12 @@ import org.openflexo.model.annotations.XMLAttribute;
  * 
  * @author Sylvain Guerin
  * @see org.openflexo.foundation.fml.ViewPoint
- * @see org.openflexo.foundation.fmlrt.View
- * @see org.openflexo.foundation.fmlrt.ModelSlotInstance
+ * @see org.openflexo.foundation.fml.rt.View
+ * @see org.openflexo.foundation.fml.rt.ModelSlotInstance
  * */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
-@Imports({ @Import(FMLModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
+@Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
 public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD> {
 
 	@PropertyIdentifier(type = VirtualModel.class)

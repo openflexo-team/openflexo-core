@@ -9,10 +9,10 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -37,7 +37,7 @@ public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeVirtualModel getDescribeVirtualModel() {
@@ -55,7 +55,7 @@ public class CreateVirtualModelWizard extends AbstractCreateVirtualModelWizard<C
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeVirtualModel.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeVirtualModel.fib")
 	public class DescribeVirtualModel extends WizardStep {
 
 		public ApplicationContext getServiceManager() {

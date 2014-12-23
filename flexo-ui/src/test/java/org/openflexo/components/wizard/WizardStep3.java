@@ -5,7 +5,7 @@ import java.awt.Image;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.icon.IconLibrary;
 
-@FIBPanel("Fib/TestFlexoWizardStep3.fib")
+@FIBPanel("FibWizard/TestFlexoWizardStep3.fib")
 public class WizardStep3 extends WizardStep {
 
 	@Override

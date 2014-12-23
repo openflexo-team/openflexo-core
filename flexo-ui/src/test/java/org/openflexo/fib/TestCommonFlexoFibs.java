@@ -17,8 +17,18 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testConflictedResourceEditor() {
+		validateFIB("Fib/ConflictedResourceEditor.fib");
+	}
+
+	@Test
 	public void testDescriptionWidget() {
 		validateFIB("Fib/DescriptionWidget.fib");
+	}
+
+	@Test
+	public void testReviewUnsavedDialog() {
+		validateFIB("Fib/Dialog/ReviewUnsavedDialog.fib");
 	}
 
 	@Test
@@ -77,13 +87,13 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFlexoConceptInstanceSelector() {
-		validateFIB("Fib/FlexoConceptInstanceSelector.fib");
+	public void testFlexoCreateURL() {
+		validateFIB("Fib/FlexoCreateURL.fib");
 	}
 
 	@Test
-	public void testFlexoConceptSelector() {
-		validateFIB("Fib/FlexoConceptSelector.fib");
+	public void testFlexoMarketEditor() {
+		validateFIB("Fib/FlexoMarketEditor.fib");
 	}
 
 	@Test
@@ -121,14 +131,24 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 		validateFIB("Fib/ModelSelector.fib");
 	}
 
-	/*@Test
+	@Test
 	public void testOntologyView() {
 		validateFIB("Fib/OntologyView.fib");
-	}*/
+	}
 
 	@Test
 	public void testPreferences() {
 		validateFIB("Fib/Preferences.fib");
+	}
+
+	@Test
+	public void testAdvancedPrefs() {
+		validateFIB("Fib/Prefs/AdvancedPrefs.fib");
+	}
+
+	@Test
+	public void testGeneralPreferences() {
+		validateFIB("Fib/Prefs/GeneralPreferences.fib");
 	}
 
 	@Test
@@ -152,6 +172,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testResourceMissingEditor() {
+		validateFIB("Fib/ResourceMissingEditor.fib");
+	}
+
+	@Test
 	public void testResourceSelector() {
 		validateFIB("Fib/ResourceSelector.fib");
 	}
@@ -167,38 +192,18 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewFolderSelector() {
-		validateFIB("Fib/ViewFolderSelector.fib");
-	}
-
-	@Test
-	public void testViewPointSelector() {
-		validateFIB("Fib/ViewPointSelector.fib");
-	}
-
-	@Test
-	public void testViewSelector() {
-		validateFIB("Fib/ViewSelector.fib");
-	}
-
-	@Test
-	public void testVirtualModelInstanceSelector() {
-		validateFIB("Fib/VirtualModelInstanceSelector.fib");
-	}
-
-	@Test
-	public void testVirtualModelInstanceView() {
-		validateFIB("Fib/VirtualModelInstanceView.fib");
-	}
-
-	@Test
-	public void testVirtualModelSelector() {
-		validateFIB("Fib/VirtualModelSelector.fib");
-	}
-
-	@Test
 	public void testWelcomePanel() {
 		validateFIB("Fib/WelcomePanel.fib");
+	}
+
+	@Test
+	public void testFIBProjectResourcesBrowser() {
+		validateFIB("Fib/Widget/FIBProjectResourcesBrowser.fib");
+	}
+
+	@Test
+	public void testWizardPanel() {
+		validateFIB("Fib/WizardPanel.fib");
 	}
 
 }

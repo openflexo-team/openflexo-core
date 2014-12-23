@@ -32,7 +32,7 @@ import org.openflexo.model.annotations.ModelEntity;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/VPM/CloneIndividualPanel.fib")
+@FIBPanel("Fib/FML/CloneIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(CloneIndividual.CloneIndividualImpl.class)
 public abstract interface CloneIndividual extends AddIndividual {

@@ -10,10 +10,10 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -42,7 +42,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(VPMIconLibrary.FLEXO_CONCEPT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	public DescribeFlexoConcept getDescribeFlexoConcept() {
@@ -55,7 +55,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFlexoConcept/DescribeFlexoConcept.fib")
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoConcept.fib")
 	public class DescribeFlexoConcept extends WizardStep {
 
 		public ApplicationContext getServiceManager() {

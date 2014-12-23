@@ -32,7 +32,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -75,7 +75,7 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
+		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 
 }

@@ -20,8 +20,8 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -33,7 +33,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/VPM/SynchronizationSchemePanel.fib")
+@FIBPanel("Fib/FML/SynchronizationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(SynchronizationScheme.SynchronizationSchemeImpl.class)
 @XMLElement

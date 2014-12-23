@@ -3,7 +3,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.antar.binding.CustomType;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
  * Represent the type of an FlexoBehaviour

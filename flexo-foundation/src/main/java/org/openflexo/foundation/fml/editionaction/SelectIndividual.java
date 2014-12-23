@@ -49,7 +49,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <MM>
  * @param <T>
  */
-@FIBPanel("Fib/VPM/SelectIndividualPanel.fib")
+@FIBPanel("Fib/FML/SelectIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(SelectIndividual.SelectIndividualImpl.class)
 public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends

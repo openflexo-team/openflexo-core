@@ -39,7 +39,7 @@ import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBModelFactory;
 import org.openflexo.fib.model.FIBWidget;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;

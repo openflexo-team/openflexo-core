@@ -28,12 +28,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fmlrt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
-import org.openflexo.foundation.fmlrt.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fmlrt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -55,7 +55,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	protected List<ModelSlotInstanceConfigurationOption> options;
 
 	protected FlexoResourceCenter<?> resourceCenter;
-	protected FlexoModelResource<M, MM, ?> modelResource;
+	protected FlexoModelResource<M, MM, ?, ?> modelResource;
 	protected String modelUri;
 	protected String relativePath;
 	protected String filename;
@@ -78,7 +78,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	}
 
 	/*@Override
-	public void setOption(org.openflexo.foundation.fmlrt.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
+	public void setOption(org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
 		super.setOption(option);
 		if (option == DefaultModelSlotInstanceConfigurationOption.SelectExistingModel) {
 			modelUri = null;
@@ -158,7 +158,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		return null;
 	}
 
-	private FlexoModelResource<M, MM, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot,
+	private FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(TypeAwareModelSlotInstance<M, MM, MS> msInstance, MS modelSlot,
 			FlexoProject project) {
 		return modelSlot.createProjectSpecificEmptyModel(project, getFilename(), getModelUri(), modelSlot.getMetaModelResource());
 	}
@@ -171,7 +171,7 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 	public abstract boolean isURIEditable();
 
 	@Override
-	public FlexoModelResource<M, MM, ?> getResource() {
+	public FlexoModelResource<M, MM, ?, ?> getResource() {
 		return getModelResource();
 	}
 
@@ -187,13 +187,13 @@ public abstract class TypeAwareModelSlotInstanceConfiguration<M extends FlexoMod
 		}
 	}
 
-	public FlexoModelResource<M, MM, ?> getModelResource() {
+	public FlexoModelResource<M, MM, ?, ?> getModelResource() {
 		return modelResource;
 	}
 
-	public void setModelResource(FlexoModelResource<M, MM, ?> modelResource) {
+	public void setModelResource(FlexoModelResource<M, MM, ?, ?> modelResource) {
 		if (this.modelResource != modelResource) {
-			FlexoModelResource<M, MM, ?> oldValue = this.modelResource;
+			FlexoModelResource<M, MM, ?, ?> oldValue = this.modelResource;
 			this.modelResource = modelResource;
 			getPropertyChangeSupport().firePropertyChange("modelResource", oldValue, modelResource);
 		}

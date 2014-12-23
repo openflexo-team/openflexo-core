@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.fmlrt.ActorReference;
+import org.openflexo.foundation.fml.rt.ActorReference;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

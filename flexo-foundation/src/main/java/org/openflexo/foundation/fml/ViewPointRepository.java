@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fmlrt.ViewRepository;
+import org.openflexo.foundation.fml.rt.ViewRepository;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 

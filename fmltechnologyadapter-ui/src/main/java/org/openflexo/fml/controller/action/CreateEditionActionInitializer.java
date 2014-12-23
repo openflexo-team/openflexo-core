@@ -29,7 +29,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.ActionInitializer;
@@ -68,7 +68,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
+		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 
 }

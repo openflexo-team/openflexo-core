@@ -50,7 +50,7 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TechnologyContextManager.class.getPackage().getName());
 
-	private final TechnologyAdapter adapter;
+	private final TA adapter;
 	private final FlexoResourceCenterService resourceCenterService;
 
 	/** Stores all known resources where key is the URI of resource */
@@ -90,7 +90,7 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 		}
 	}
 
-	public TechnologyContextManager(TechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
+	public TechnologyContextManager(TA adapter, FlexoResourceCenterService resourceCenterService) {
 		this.adapter = adapter;
 		this.resourceCenterService = resourceCenterService;
 		individualsOfClass = new Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA>>();
@@ -102,7 +102,7 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 		return getResourceCenterService().getServiceManager();
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		return adapter;
 	}
 

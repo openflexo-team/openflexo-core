@@ -94,8 +94,7 @@ public class InformationSpace extends FlexoServiceImpl {
 	 *            the URI of the resource
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable
-	FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
+	public @Nullable FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
 		if (getServiceManager() != null) {
 			for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
 				FlexoResource<?> res = rc.retrieveResource(uri, null);
@@ -117,8 +116,8 @@ public class InformationSpace extends FlexoServiceImpl {
 	 *            appropriate type verifications.
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable
-	<T extends ResourceData<T>> FlexoResource<T> getResource(@Nonnull String uri, FlexoVersion version, @Nonnull Class<T> type) {
+	public @Nullable <T extends ResourceData<T>> FlexoResource<T> getResource(@Nonnull String uri, FlexoVersion version,
+			@Nonnull Class<T> type) {
 		// TODO: a better type checking would be better
 		return (FlexoResource<T>) getResource(uri, version);
 	}
@@ -143,9 +142,9 @@ public class InformationSpace extends FlexoServiceImpl {
 	}
 
 	// TODO: also handle version parameter
-	public FlexoModelResource<?, ?, ?> getModelWithURI(String uri) {
+	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri) {
 		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-			FlexoModelResource<?, ?, ?> returned = getModelWithURI(uri, ta);
+			FlexoModelResource<?, ?, ?, ?> returned = getModelWithURI(uri, ta);
 			if (returned != null) {
 				return returned;
 			}
@@ -154,7 +153,7 @@ public class InformationSpace extends FlexoServiceImpl {
 	}
 
 	// TODO: also handle version parameter
-	public FlexoModelResource<?, ?, ?> getModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
+	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
 		if (technologyAdapter == null) {
 			logger.warning("Unexpected null " + technologyAdapter);
 			return null;
@@ -162,7 +161,7 @@ public class InformationSpace extends FlexoServiceImpl {
 			// logger.warning("Unexpected null technologyContextManager for " + technologyAdapter);
 			return null;
 		}
-		return (FlexoModelResource<?, ?, ?>) technologyAdapter.getTechnologyContextManager().getResourceWithURI(uri);
+		return (FlexoModelResource<?, ?, ?, ?>) technologyAdapter.getTechnologyContextManager().getResourceWithURI(uri);
 	}
 
 	/**
@@ -172,7 +171,7 @@ public class InformationSpace extends FlexoServiceImpl {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllModelRepositories(technologyAdapter);
 		}

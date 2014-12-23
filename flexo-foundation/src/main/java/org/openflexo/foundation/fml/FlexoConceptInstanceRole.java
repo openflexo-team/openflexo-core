@@ -4,9 +4,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.ModelObjectActorReference;
-import org.openflexo.foundation.fmlrt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -49,7 +50,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public FMLModelSlot getVirtualModelModelSlot();
+	public FMLRTModelSlot getVirtualModelModelSlot();
 
 	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
 			FlexoConceptInstanceRole {
@@ -217,12 +218,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public FMLModelSlot getModelSlot() {
-			FMLModelSlot returned = (FMLModelSlot) super.getModelSlot();
+		public FMLRTModelSlot getModelSlot() {
+			FMLRTModelSlot returned = (FMLRTModelSlot) super.getModelSlot();
 			/* This is not true any-more => when no ModelSlot is set, Role is from current VirtualModel
 			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(FMLModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(FMLModelSlot.class).get(0);
+				if (getVirtualModel() != null && getVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
+					return getVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
 				}
 			}
 			 */
@@ -230,11 +231,11 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public FMLModelSlot getVirtualModelModelSlot() {
+		public FMLRTModelSlot getVirtualModelModelSlot() {
 			return getModelSlot();
 		}
 
-		public void setVirtualModelModelSlot(FMLModelSlot modelSlot) {
+		public void setVirtualModelModelSlot(FMLRTModelSlot modelSlot) {
 			setModelSlot(modelSlot);
 		}
 

@@ -383,7 +383,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 			if (isLoading) {
 				return;
 			}
-			if(!isLoading){
+			if (!isLoading) {
 				isLoading = true;
 				if (getResource() != null) {
 					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
@@ -393,7 +393,7 @@ public interface ViewPoint extends NamedViewPointObject, ResourceData<ViewPoint>
 					}
 				}
 			}
-			
+
 			isLoading = false;
 		}
 

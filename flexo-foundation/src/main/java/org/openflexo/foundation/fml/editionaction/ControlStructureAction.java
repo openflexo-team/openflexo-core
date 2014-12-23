@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.binding.ControlStructureActionBindingModel;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;

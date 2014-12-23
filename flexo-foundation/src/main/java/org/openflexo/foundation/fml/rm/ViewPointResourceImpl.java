@@ -717,7 +717,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			// Replace the Diagram Model Slot by a Virtual Model Model slot
 			for (Element thisMs : thisModelSlots) {
 				if (hasSameID(thisMs, thisID) && thisMs.getName().equals("DiagramModelSlot")) {
-					thisMs.setName("FMLModelSlot");
+					thisMs.setName("FMLRTModelSlot");
 					thisMs.getAttributes().add(new Attribute("virtualModelURI", newThisUri));
 					thisMs.getAttributes().add(new Attribute("name", "virtualModelInstance"));
 					thisMs.getAttributes().add(new Attribute("id", Integer.toString(thisID)));
@@ -1015,7 +1015,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						element.setName("ModelSlot_SemanticsPowerpointModelSlot");
 					} else if (element.getName().equals("OWLModelSlot")) {
 						element.setName("ModelSlot_OWLModelSlot");
-					} else if (element.getName().equals("FMLModelSlot")) {
+					} else if (element.getName().equals("FMLRTModelSlot")) {
 						element.setName("ModelSlot_VirtualModelModelSlot");
 					}
 				} else {
@@ -1038,7 +1038,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					} else if (element.getName().equals("AddressedDiagramModelSlot")) {
 						element.setName("TypedDiagramModelSlot");
 					} else if (element.getName().equals("AddressedVirtualModelModelSlot")) {
-						element.setName("FMLModelSlot");
+						element.setName("FMLRTModelSlot");
 					}
 				}
 			}
@@ -1131,7 +1131,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						if (element.getName().equals("ModelSlot_VirtualModelModelSlot")) {
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
 						}
-						if (element.getName().equals("FMLModelSlot")) {
+						if (element.getName().equals("FMLRTModelSlot")) {
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
 						}
 						if (attribute.getName().equals("virtualModelInstance")) {
@@ -1296,7 +1296,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		for (Content content : document.getDescendants()) {
 			if (content instanceof Element) {
 				Element element = (Element) content;
-				if (element.getName().equals("AddressedVirtualModelModelSlot") || element.getName().equals("FMLModelSlot")) {
+				if (element.getName().equals("AddressedVirtualModelModelSlot") || element.getName().equals("FMLRTModelSlot")) {
 					if (element.getAttribute("name") != null
 							&& (element.getAttributeValue("name").equals("this") || element.getAttributeValue("name").equals(
 									"virtualModelInstance")) && element.getAttribute("virtualModelURI") != null) {

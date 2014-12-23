@@ -32,7 +32,7 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointObject;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -75,7 +75,7 @@ public class CreateVirtualModelInitializer extends ActionInitializer<CreateVirtu
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return VPMIconLibrary.VIRTUAL_MODEL_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 	}
 
 }

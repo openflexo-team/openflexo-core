@@ -26,15 +26,14 @@ import javax.swing.ImageIcon;
 import org.openflexo.components.widget.FIBProjectResourcesBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.ViewLibrary;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.inspector.FIBInspectorPanel;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.ve.view.VirtualModelInstanceView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class ProjectResourcesPerspective extends FlexoPerspective {
@@ -72,12 +71,12 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		return IconLibrary.OPENFLEXO_NOTEXT_16;
 	}
 
-	public VirtualModelInstanceView getCurrentVirtualModelInstanceView() {
+	/*public VirtualModelInstanceView getCurrentVirtualModelInstanceView() {
 		if (getController() != null && getController().getCurrentModuleView() instanceof VirtualModelInstanceView) {
 			return (VirtualModelInstanceView) getController().getCurrentModuleView();
 		}
 		return null;
-	}
+	}*/
 
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {

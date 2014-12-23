@@ -68,7 +68,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	}
 
 	private void registerTechnologyAdapterController(TechnologyAdapterController<?> technologyAdapterController) {
-		logger.info("Loading " + technologyAdapterController.getClass());
+		logger.fine("Loading " + technologyAdapterController.getClass());
 		technologyAdapterController.setTechnologyAdapterService(this);
 
 		if (loadedAdapters.containsKey(technologyAdapterController.getClass())) {
@@ -119,8 +119,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			}
 			
 		}*/
-		
-		
+
 		return null;
 	}
 

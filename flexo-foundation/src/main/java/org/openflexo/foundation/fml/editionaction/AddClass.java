@@ -43,7 +43,7 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/VPM/AddClassPanel.fib")
+@FIBPanel("Fib/FML/AddClassPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddClass.AddClassImpl.class)
 public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyClass> extends AddConcept<MS, T> {

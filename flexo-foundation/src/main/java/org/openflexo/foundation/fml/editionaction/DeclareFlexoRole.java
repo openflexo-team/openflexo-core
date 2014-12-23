@@ -30,7 +30,7 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -41,7 +41,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/VPM/DeclarePatternRolePanel.fib")
+@FIBPanel("Fib/FML/DeclarePatternRolePanel.fib")
 @ModelEntity
 @ImplementationClass(DeclareFlexoRole.DeclareFlexoRoleImpl.class)
 @XMLElement

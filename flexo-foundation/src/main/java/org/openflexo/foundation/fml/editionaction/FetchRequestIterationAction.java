@@ -28,7 +28,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.binding.FetchRequestIterationActionBindingModel;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -41,7 +41,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/VPM/FetchRequestIterationActionPanel.fib")
+@FIBPanel("Fib/FML/FetchRequestIterationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(FetchRequestIterationAction.FetchRequestIterationActionImpl.class)
 @XMLElement

@@ -10,7 +10,7 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParametersType;
-import org.openflexo.foundation.fmlrt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 public class FlexoBehaviourParametersDefinitionsPathElement extends SimplePathElement {
 	static final Logger logger = Logger.getLogger(FlexoBehaviourParametersDefinitionsPathElement.class.getPackage().getName());

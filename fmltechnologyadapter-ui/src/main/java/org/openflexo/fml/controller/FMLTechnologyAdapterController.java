@@ -30,18 +30,18 @@ import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
-import org.openflexo.foundation.fmlrt.View;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VEIconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -77,12 +77,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new ActionContainerPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
-		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelInstancePasteHandler());
 	}
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON;
+		return IconLibrary.OPENFLEXO_NOTEXT_32;
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
-		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		return IconLibrary.OPENFLEXO_NOTEXT_16;
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getModelIcon() {
-		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		return FMLIconLibrary.VIEWPOINT_ICON;
 	}
 
 	/**
@@ -112,7 +111,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getMetaModelIcon() {
-		return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		return FMLIconLibrary.VIEWPOINT_ICON;
 	}
 
 	/**
@@ -124,19 +123,19 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<FMLTechnologyAdapter>> objectClass) {
 		if (ViewPoint.class.isAssignableFrom(objectClass)) {
-			return VPMIconLibrary.VIEWPOINT_ICON;
+			return FMLIconLibrary.VIEWPOINT_ICON;
 		} else if (View.class.isAssignableFrom(objectClass)) {
-			return VEIconLibrary.VIEW_ICON;
+			return FMLRTIconLibrary.VIEW_ICON;
 		} else if (VirtualModel.class.isAssignableFrom(objectClass)) {
-			return VPMIconLibrary.VIRTUAL_MODEL_ICON;
+			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 		} else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
-			return VPMIconLibrary.FLEXO_CONCEPT_ICON;
+			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
 		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
-			return VEIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
-			return VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
-		return IconFactory.getImageIcon(VEIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
+		return IconFactory.getImageIcon(IconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
 	}
 
 	/**
@@ -148,7 +147,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {
 		if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
-			return VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return null;
 	}
@@ -156,11 +155,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(VEIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
@@ -168,17 +167,17 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.ACTION_SCHEME_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
 		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.DELETE_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
 		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.CREATION_SCHEME_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
 		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.NAVIGATION_SCHEME_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
 		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
 		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(VPMIconLibrary.CLONING_SCHEME_ICON);
+			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}

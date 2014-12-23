@@ -8,7 +8,7 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.localization.FlexoLocalization;
 
 public class EPIRendererPathElement extends SimplePathElement {

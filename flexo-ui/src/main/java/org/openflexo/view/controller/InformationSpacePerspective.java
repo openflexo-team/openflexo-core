@@ -28,7 +28,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.icon.VPMIconLibrary;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class InformationSpacePerspective extends FlexoPerspective {
@@ -57,7 +57,7 @@ public class InformationSpacePerspective extends FlexoPerspective {
 	 */
 	@Override
 	public ImageIcon getActiveIcon() {
-		return VPMIconLibrary.INFORMATION_SPACE_ICON;
+		return FMLIconLibrary.INFORMATION_SPACE_ICON;
 	}
 
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {

@@ -289,7 +289,8 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			for (FlexoResourceCenter rc : getResourceCenters()) {
 				// Register Viewpoint file based viewpoint resources
-				ViewPointFileBasedRepository vprfb = (ViewPointFileBasedRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);
+				ViewPointFileBasedRepository vprfb = (ViewPointFileBasedRepository) rc.getRepository(ViewPointFileBasedRepository.class,
+						vmTA);
 				for (ViewPointResource vpRes : vprfb.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
 					registerViewPoint(vpRes);

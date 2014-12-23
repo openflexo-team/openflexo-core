@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.inspector.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.foundation.fml.rt.View" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
+  <TabPanel name="Tab" constraints="border(location=center)">
+    <Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+      <Label label="title" index="0" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)" name="TitleLabel" localize="true" />
+      <TextField index="1" data="data.title" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)" name="Title" localize="true" validateOnReturn="true" columns="10" />
+      <Label label="name" index="2" constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)" name="NameLabel" localize="true" />
+      <TextField index="3" data="data.name" constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)" name="Name" readOnly="true" localize="true" columns="10" />
+      <Label label="viewpoint" index="4" constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)" name="ViewpointnameLabel" localize="true" />
+      <TextField index="5" data="data.viewPoint.name" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;location=right)" name="Viewpointname" readOnly="true" localize="true" columns="10" />
+      <Label label="version" index="6" constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;location=left)" name="ViewpointVersionLabel" localize="true" />
+      <TextField index="7" data="data.viewPoint.version.toString" constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;location=right)" name="ViewpointVersion" readOnly="true" localize="true" columns="10" />
+      <!--  <Label label="index" index="8" constraints="twocols(expandHorizontally=false;expandVertically=false;index=8;location=left)" name="IndexLabel" localize="true" />
+      <Number numberType="IntegerType" columns="5" index="9" data="data.index" constraints="twocols(expandHorizontally=false;expandVertically=false;index=9;location=right)" name="Index" localize="true" />-->
+    </Tab>
+    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+  </TabPanel>
+  <LocalizedDictionary>
+    <Localized key="Graphics" lang="French" value="Graphisme" />
+    <Localized key="draw_working_area" lang="English" value="Draw working area" />
+    <Localized key="draw_working_area" lang="French" value="Espace de dessin" />
+    <Localized key="draw_working_area" lang="Dutch" value="Draw working area" />
+    <Localized key="Advanced" lang="French" value="Avancé" />
+    <Localized key="Basic" lang="French" value="Basique" />
+    <Localized key="name" lang="English" value="Name" />
+    <Localized key="name" lang="French" value="Nom" />
+    <Localized key="name" lang="Dutch" value="Name" />
+    <Localized key="viewpoint" lang="English" value="View point" />
+    <Localized key="viewpoint" lang="French" value="Point de vue" />
+    <Localized key="viewpoint" lang="Dutch" value="View point" />
+    <Localized key="width" lang="English" value="Width" />
+    <Localized key="width" lang="French" value="Largeur" />
+    <Localized key="width" lang="Dutch" value="Width" />
+    <Localized key="height" lang="English" value="Height" />
+    <Localized key="height" lang="French" value="Hauteur" />
+    <Localized key="height" lang="Dutch" value="Height" />
+    <Localized key="background_color" lang="English" value="Background color" />
+    <Localized key="background_color" lang="French" value="Couleur de l'arrière-plan" />
+    <Localized key="background_color" lang="Dutch" value="Background color" />
+    <Localized key="title" lang="English" value="Title" />
+    <Localized key="title" lang="French" value="Titre" />
+    <Localized key="title" lang="Dutch" value="Title" />
+    <Localized key="version" lang="English" value="Version" />
+    <Localized key="version" lang="French" value="Version" />
+    <Localized key="version" lang="Dutch" value="Version" />
+    <Localized key="index" lang="English" value="Index" />
+    <Localized key="index" lang="French" value="Index" />
+    <Localized key="index" lang="Dutch" value="Index" />
+    <Localized key="Drawing" lang="English" value="Drawing" />
+    <Localized key="Drawing" lang="French" value="Dessin" />
+    <Localized key="Drawing" lang="Dutch" value="Drawing" />
+    <Localized key="Basic" lang="English" value="Basic" />
+    <Localized key="Basic" lang="Dutch" value="Basis" />
+    <Localized key="Advanced" lang="English" value="Advanced" />
+    <Localized key="Advanced" lang="Dutch" value="Geavanceerd" />
+    <Localized key="Graphics" lang="English" value="Graphics" />
+    <Localized key="Graphics" lang="Dutch" value="Graphics" />
+  </LocalizedDictionary>
+  <Parameter name="title" value="View" />
+</Panel>

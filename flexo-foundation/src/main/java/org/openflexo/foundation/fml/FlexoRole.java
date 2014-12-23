@@ -24,8 +24,9 @@ import java.lang.reflect.Type;
 
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fmlrt.ActorReference;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -304,7 +305,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		@Override
 		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
 			ModelSlot ms = aRole.getModelSlot();
-			if (ms instanceof FMLModelSlot && "virtualModelInstance".equals(ms.getName())) {
+			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
 				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole>(this, aRole,
 						"FlexoRole_should_not_have_reflexive_model_slot_no_more", fixProposal);

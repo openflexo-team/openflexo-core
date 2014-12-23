@@ -8,7 +8,7 @@ import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fmlrt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {

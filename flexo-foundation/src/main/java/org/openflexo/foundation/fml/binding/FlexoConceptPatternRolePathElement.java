@@ -30,7 +30,7 @@ import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fmlrt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 public class FlexoConceptPatternRolePathElement<PR extends FlexoRole<?>> extends SimplePathElement {
 

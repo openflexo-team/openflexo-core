@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="border" titleFont="Lucida Grande,0,13" darkLevel="0" dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstance" controllerClassName="org.openflexo.fml.rt.controller.VEFIBController" name="VirtualModelInstanceView">
+  <Panel layout="border" hGap="5" vGap="5" flowAlignment="LEADING" darkLevel="0" constraints="border(location=north)">
+    <Label label="virtual_model" constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=west)" localize="true" />
+    <TextField data="data.name" constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" localize="true" columns="7" text="TextField" />
+    <Button buttonIcon="controller.iconForObject(data.virtualModel.getSynchronizationScheme())" buttonType="Trigger" label="synchronize" localize="true" enable="data.virtualModel.hasSynchronizationScheme" clickAction="controller.synchronizeVirtualModelInstance(data)" name="SynchronizeButton" constraints="border(location=east)" opaque="false" />
+  </Panel>
+  <SplitPanel constraints="border(location=center)">
+    <RowSplit name="RowSplit" weight="0.0">
+      <Leaf name="left" weight="0.5" />
+      <Divider />
+      <ColSplit name="ColSplit" weight="0.5">
+        <Leaf name="top" weight="0.5" />
+        <Divider />
+        <Leaf name="bottom" weight="0.5" />
+      </ColSplit>
+    </RowSplit>
+    <Browser root="data.virtualModel" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)" name="FlexoConceptBrowser" constraints="split(splitIdentifier=top)" opaque="false">
+      <BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" isEditable="false" filtered="false" defaultVisible="true" name="virtualModel">
+        <Children data="virtualModel.allRootFlexoConcepts" name="children" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" isEditable="false" filtered="false" defaultVisible="true" name="flexoConcept">
+        <Children data="flexoConcept.childFlexoConcepts" name="children" />
+      </BrowserElement>
+    </Browser>
+    <Table iteratorClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(FlexoConceptInstancesTable.selected,event)" name="FlexoConceptInstancesTable" data="data.getFlexoConceptInstances(FlexoConceptBrowser.selected)" constraints="split(splitIdentifier=left)" opaque="false">
+      <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
+      <LabelColumn data="iterator.flexoID.toString" title="id" columnWidth="30" resizable="false" displayTitle="true" name="label" />
+      <LabelColumn data="iterator.stringRepresentation" title="flexo_concept_instances" columnWidth="400" resizable="true" displayTitle="true" name="label" />
+      <Dependancy componentName="FlexoConceptBrowser" />
+      <Dependancy componentName="SynchronizeButton" />
+    </Table>
+    <Panel layout="border" borderTitle="Panel" darkLevel="0" index="1" data="FlexoConceptInstancesTable.selected" dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0;weightY=1.0)" name="FlexoConceptInstanceDetails">
+      <Table iteratorClassName="org.openflexo.foundation.fml.rt.ActorReference" visibleRowCount="5" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="false" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="41,90,209" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" index="1" data="FlexoConceptInstanceDetails.data.actors" constraints="border( weightY=1.0;anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0)" opaque="false">
+        <IconColumn data="controller.iconForObject(iterator.modellingElement)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
+        <LabelColumn data="iterator.roleName" title="pattern_role" columnWidth="100" resizable="true" displayTitle="true" font="Lucida Grande,0,13" name="label" />
+        <LabelColumn data="iterator.modellingElement" title="actor" columnWidth="300" resizable="true" displayTitle="true" name="label" />
+        <Dependancy componentName="FlexoConceptInstancesTable" />
+        <Dependancy componentName="FlexoConceptInstanceDetails" />
+        <LocalizedDictionary />
+      </Table>
+      <Label label="label" index="1" data="FlexoConceptInstancesTable.selected.stringRepresentation" constraints="border(location=north)" localize="true" />
+      <Dependancy componentName="FlexoConceptInstancesTable" />
+    </Panel>
+  </SplitPanel>
+  <LocalizedDictionary>
+    <Localized key="flexo_concept_instances" lang="English" value="FlexoConcept instances" />
+    <Localized key="flexo_concept_instances" lang="French" value="FlexoConcept instances" />
+    <Localized key="flexo_concept_instances" lang="Dutch" value="flexo_concept_instances" />
+    <Localized key="virtual_model" lang="English" value="Virtual Model" />
+    <Localized key="virtual_model" lang="French" value="Virtual Model" />
+    <Localized key="virtual_model" lang="Dutch" value="virtual_model" />
+    <Localized key="synchronize" lang="English" value="Synchronize..." />
+    <Localized key="synchronize" lang="French" value="Synchroniser..." />
+    <Localized key="synchronize" lang="Dutch" value="Synchronize..." />
+    <Localized key="id" lang="English" value="Id" />
+    <Localized key="id" lang="French" value="Id" />
+    <Localized key="id" lang="Dutch" value="Id" />
+    <Localized key="pattern_role" lang="English" value="Pattern Role" />
+    <Localized key="pattern_role" lang="French" value="Pattern Role" />
+    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
+    <Localized key="actor" lang="English" value="Actor" />
+    <Localized key="actor" lang="French" value="Acteur" />
+    <Localized key="actor" lang="Dutch" value="actor" />
+  </LocalizedDictionary>
+</Panel>

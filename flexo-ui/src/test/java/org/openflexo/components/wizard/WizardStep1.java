@@ -6,7 +6,7 @@ import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/TestFlexoWizardStep1.fib")
+@FIBPanel("FibWizard/TestFlexoWizardStep1.fib")
 public class WizardStep1 extends WizardStep {
 
 	private String firstName;
