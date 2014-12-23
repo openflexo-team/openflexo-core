@@ -52,9 +52,21 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 		super(technologyAdapter.getName(), controller);
 		this.technologyAdapter = technologyAdapter;
 
-		technologyBrowser = new FIBTechnologyBrowser<TA>(technologyAdapter, controller);
+		technologyBrowser = makeTechnologyBrowser();
 		setTopLeftView(technologyBrowser);
 
+	}
+
+	/**
+	 * Internally called to make technology browser<br>
+	 * This job is delegated to the {@link TechnologyAdapterController}
+	 * 
+	 * @return
+	 */
+	private FIBTechnologyBrowser<TA> makeTechnologyBrowser() {
+		TechnologyAdapterController<TA> tac = getController().getApplicationContext().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(technologyAdapter);
+		return tac.makeTechnologyBrowser(getController());
 	}
 
 	/**
@@ -88,7 +100,9 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
+		System.out.println("?");
 		if (object instanceof TechnologyObject) {
+			System.out.println("oui");
 			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 			TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(technologyAdapter);
 			return tac.hasModuleViewForObject((TechnologyObject<TA>) object, getController());

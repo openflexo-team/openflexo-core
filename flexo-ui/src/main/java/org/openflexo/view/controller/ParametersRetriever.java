@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.components.widget.FIBFlexoConceptInstanceSelector;
 import org.openflexo.components.widget.FIBIndividualSelector;
 import org.openflexo.components.widget.FIBPropertySelector;
 import org.openflexo.fib.controller.FIBController.Status;
@@ -70,12 +69,12 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.IndividualParameter;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
+import org.openflexo.foundation.fml.ListParameter.ListType;
 import org.openflexo.foundation.fml.ObjectPropertyParameter;
 import org.openflexo.foundation.fml.PropertyParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.ListParameter.ListType;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -105,7 +104,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	public ParametersRetriever(FlexoBehaviourAction<?, ES, ?> action) {
 		this.action = action;
-		if(action!=null){
+		if (action != null) {
 			action.retrieveDefaultParameters();
 		}
 	}
@@ -190,7 +189,14 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		} else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
-			epiSelector.setComponentClass(FIBFlexoConceptInstanceSelector.class);
+			Class fciSelectorClass;
+			try {
+				fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
+				epiSelector.setComponentClass(fciSelectorClass);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.project"),
 					new DataBinding<Object>("data.editor.project"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
@@ -202,9 +208,9 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
 					"component.virtualModel"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
 					+ ".modelSlotVirtualModel"), true));
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.viewpointLibrary"),
-					new DataBinding<Object>("data.serviceManager.viewpointLibrary"), true));
-			
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
+					"component.viewpointLibrary"), new DataBinding<Object>("data.serviceManager.viewpointLibrary"), true));
+
 			return registerWidget(epiSelector, parameter, panel, index);
 		} else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();

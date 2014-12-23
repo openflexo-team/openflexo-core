@@ -1568,7 +1568,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public void objectWasDoubleClicked(Object object) {
-		// logger.info("Object was double-clicked: " + object);
+		logger.info("Object was double-clicked: " + object);
 		if (object instanceof FlexoResource<?>) {
 			// FlexoObject resourceData = null;
 			if (((FlexoResource<?>) object).isLoadable() && !((FlexoResource<?>) object).isLoaded()) {
@@ -1579,6 +1579,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				selectAndFocusObjectAsTask((FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData());
 			}
 		}
+		logger.info("getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)="
+				+ getCurrentPerspective().hasModuleViewForObject((FlexoObject) object));
 		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
 			// Try to display object in view
 			selectAndFocusObjectAsTask((FlexoObject) object);

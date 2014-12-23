@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -60,10 +61,10 @@ import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.FMLRTIconLibrary;
-import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
@@ -488,6 +489,16 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	public void installTechnologyPerspective(FlexoController controller) {
 		controller.addToPerspectives(getTechnologyPerspective(controller));
+	}
+
+	/**
+	 * Override when required
+	 * 
+	 * @param controller
+	 * @return
+	 */
+	protected FIBTechnologyBrowser<TA> makeTechnologyBrowser(FlexoController controller) {
+		return new FIBTechnologyBrowser<TA>(getTechnologyAdapter(), controller);
 	}
 
 }

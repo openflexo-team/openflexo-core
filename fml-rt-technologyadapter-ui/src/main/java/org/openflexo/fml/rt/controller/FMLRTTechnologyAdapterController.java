@@ -10,6 +10,7 @@ import org.openflexo.fml.rt.controller.action.DeleteVirtualModelInstanceInitiali
 import org.openflexo.fml.rt.controller.action.MoveViewInitializer;
 import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
+import org.openflexo.fml.rt.controller.view.ViewModuleView;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -166,10 +167,13 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof VirtualModelInstance) {
+		if (object instanceof View) {
 			return true;
-		}
-		// TODO not applicable
+		} else if (object instanceof VirtualModelInstance) {
+			return true;
+		} /*else if (object instanceof FlexoConceptInstance) {
+			// NO module view yet
+			}*/
 		return false;
 	}
 
@@ -188,9 +192,17 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
-		if (object instanceof VirtualModelInstance) {
-			return new VirtualModelInstanceView((VirtualModelInstance) object, controller, perspective);
+
+		if (object instanceof View) {
+			View view = (View) object;
+			return new ViewModuleView(view, controller, perspective);
+		} else if (object instanceof VirtualModelInstance) {
+			VirtualModelInstance vmi = (VirtualModelInstance) object;
+			return new VirtualModelInstanceView(vmi, controller, perspective);
+		} else if (object instanceof FlexoConceptInstance) {
+			// NO module view yet
 		}
+
 		return new EmptyPanel<TechnologyObject<FMLRTTechnologyAdapter>>(controller, perspective, object);
 	}
 

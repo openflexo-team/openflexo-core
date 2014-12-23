@@ -44,7 +44,7 @@
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		visible="data.action.isFlexoConceptInstance" localize="true">
 	</Label>
-	<Custom componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector"
+	<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 		localize="true" manageDynamicModel="true" index="12"
 		data="data.flexoConceptInstanceType"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"

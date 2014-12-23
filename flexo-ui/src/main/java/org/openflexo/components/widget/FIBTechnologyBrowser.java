@@ -42,4 +42,8 @@ public class FIBTechnologyBrowser<TA extends TechnologyAdapter> extends FIBBrows
 	public FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller) {
 		super(technologyAdapter, controller, FIB_FILE);
 	}
+
+	protected FIBTechnologyBrowser(TechnologyAdapter technologyAdapter, FlexoController controller, Resource fibFile) {
+		super(technologyAdapter, controller, fibFile);
+	}
 }

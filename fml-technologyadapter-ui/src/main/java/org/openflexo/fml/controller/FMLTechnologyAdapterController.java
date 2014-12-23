@@ -2,6 +2,7 @@ package org.openflexo.fml.controller;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
@@ -17,6 +18,7 @@ import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.ViewPointView;
 import org.openflexo.fml.controller.view.VirtualModelView;
+import org.openflexo.fml.controller.widget.FIBViewPointLibraryBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -81,7 +83,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return IconLibrary.OPENFLEXO_NOTEXT_32;
+		return FMLIconLibrary.VIEWPOINT_MEDIUM_ICON;
 	}
 
 	/**
@@ -91,7 +93,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
-		return IconLibrary.OPENFLEXO_NOTEXT_16;
+		return FMLIconLibrary.VIEWPOINT_ICON;
 	}
 
 	/**
@@ -252,4 +254,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return new EmptyPanel<TechnologyObject<FMLTechnologyAdapter>>(controller, perspective, object);
 	}
 
+	@Override
+	protected FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser(FlexoController controller) {
+		return new FIBViewPointLibraryBrowser(getTechnologyAdapter(), controller);
+	}
 }

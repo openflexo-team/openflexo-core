@@ -129,6 +129,12 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	}
 
 	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+
+		if (object instanceof FlexoConcept) {
+			System.out.println("hop avec " + object);
+			System.out.println("");
+		}
+
 		if (object instanceof FlexoProject) {
 			FlexoProject project = (FlexoProject) object;
 			List<ProjectNature> availableNatures = getSpecificNaturesForProject(project);

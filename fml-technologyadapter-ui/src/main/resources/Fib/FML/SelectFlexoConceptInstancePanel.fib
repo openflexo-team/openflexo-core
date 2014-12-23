@@ -21,7 +21,7 @@
     <Assignment variable="component.bindable" value="data" />
   </Custom>
   <Label label="flexo_concept" index="8" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
-  <Custom componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector" localize="true" manageDynamicModel="true" name="AddFlexoConceptActionPanel" index="9" data="data.flexoConceptType" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" opaque="false" minWidth="200" minHeight="25">
+  <Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector" localize="true" manageDynamicModel="true" name="AddFlexoConceptActionPanel" index="9" data="data.flexoConceptType" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" opaque="false" minWidth="200" minHeight="25">
     <Assignment variable="component.viewPointLibrary" value="data.viewPointLibrary" />
     <Assignment variable="component.viewPoint" value="data.viewPoint" />
     <Dependancy componentName="SelectFlexoConceptDropDown" />

@@ -74,7 +74,7 @@
 		clickAction="" doubleClickAction="" rightClickAction=""
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" />
-	<Custom componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector"
+	<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 		format="" icon="" tooltip="" localize="true" enable=""
 		manageDynamicModel="true" opaque="false" clickAction=""
 		doubleClickAction="" rightClickAction="" enterPressedAction=""

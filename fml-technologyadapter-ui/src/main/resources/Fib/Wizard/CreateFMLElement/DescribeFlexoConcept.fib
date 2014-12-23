@@ -35,7 +35,7 @@
 			resizable="false" showIcon="false" />
 		<CustomColumn id="7" customRendering="false"
 			data="iterator.parentConcept" format="object.name"
-			componentClassName="org.openflexo.components.widget.FIBFlexoConceptSelector"
+			componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
 			columnWidth="80" resizable="true" showIcon="false">
 			<ColumnAssignment id="12" mandatory="true"

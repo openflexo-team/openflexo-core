@@ -17,11 +17,12 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.components.widget;
+package org.openflexo.fml.rt.controller.widget;
 
 import java.io.File;
 import java.util.logging.Logger;
 
+import org.openflexo.components.widget.FIBProjectObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.View;

@@ -17,14 +17,14 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.components.widget;
+package org.openflexo.fml.controller.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -34,13 +34,13 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewLibraryBrowser extends FIBBrowserView<ViewLibrary> {
-	static final Logger logger = Logger.getLogger(FIBViewLibraryBrowser.class.getPackage().getName());
+public class FIBViewPointLibraryBrowser extends FIBTechnologyBrowser<FMLTechnologyAdapter> {
+	static final Logger logger = Logger.getLogger(FIBViewPointLibraryBrowser.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewLibraryBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewPointLibraryBrowser.fib");
 
-	public FIBViewLibraryBrowser(ViewLibrary viewLibrary, FlexoController controller) {
-		super(viewLibrary, controller, FIB_FILE);
+	public FIBViewPointLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
+		super(technologyAdapter, controller, FIB_FILE);
 	}
 
 	// Please uncomment this for a live test
@@ -58,10 +58,18 @@ public class FIBViewLibraryBrowser extends FIBBrowserView<ViewLibrary> {
 			e.printStackTrace();
 		}
 
-		FlexoEditor projectEditor = loadProject(new FileResource("TestProjects/1.6/Test1.6.prj"));
-		FlexoProject project = projectEditor.getProject();
+		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
+			@Override
+			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
+				return null;
+			}
 
-		final ViewLibrary viewLibrary = project.getViewLibrary();
+			@Override
+			protected FlexoEditor createApplicationEditor() {
+				return null;
+			}
+		};
+		final ViewPointLibrary viewPointLibrary = serviceManager.getViewPointLibrary();
 
 		// System.out.println("Resource centers=" + viewPointLibrary.getResourceCenterService().getResourceCenters());
 		// System.exit(-1);
@@ -69,7 +77,7 @@ public class FIBViewLibraryBrowser extends FIBBrowserView<ViewLibrary> {
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
-				return makeArray(viewLibrary);
+				return makeArray(viewPointLibrary);
 			}
 
 			@Override
