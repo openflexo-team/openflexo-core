@@ -7,7 +7,7 @@
         <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-rt-technologyadapter-ui</artifactId>
-	<name>Openflexo-core : UI layer</name>
+	<name>FML@runtime technology adapter : UI layer</name>
 	<build>
 		<plugins>
 			<plugin>
