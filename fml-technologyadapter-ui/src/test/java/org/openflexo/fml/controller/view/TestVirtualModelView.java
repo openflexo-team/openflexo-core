@@ -1,4 +1,4 @@
-package org.openflexo.fib.widget;
+package org.openflexo.fml.controller.view;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,15 +24,15 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
-import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
@@ -76,7 +76,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibResource = ResourceLocator.locateResource("Fib/VPM/VirtualModelView.fib");
+		fibResource = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
 		assertTrue(fibResource != null);
 	}
 

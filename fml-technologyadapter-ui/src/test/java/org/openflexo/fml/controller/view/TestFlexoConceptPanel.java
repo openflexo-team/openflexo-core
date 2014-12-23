@@ -1,4 +1,4 @@
-package org.openflexo.fib.widget;
+package org.openflexo.fml.controller.view;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -16,10 +16,10 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -57,7 +57,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibResource = ResourceLocator.locateResource("Fib/VPM/FlexoConceptPanel.fib");
+		fibResource = ResourceLocator.locateResource("Fib/FML/FlexoConceptPanel.fib");
 		assertTrue(fibResource != null);
 	}
 

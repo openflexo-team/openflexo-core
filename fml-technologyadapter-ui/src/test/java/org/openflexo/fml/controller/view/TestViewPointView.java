@@ -1,4 +1,4 @@
-package org.openflexo.fib.widget;
+package org.openflexo.fml.controller.view;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,7 +47,7 @@ public class TestViewPointView extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibFileName = "Fib/VPM/ViewPointView.fib";
+		fibFileName = "Fib/FML/ViewPointView.fib";
 		assertTrue(ResourceLocator.locateResource(fibFileName) != null);
 	}
 

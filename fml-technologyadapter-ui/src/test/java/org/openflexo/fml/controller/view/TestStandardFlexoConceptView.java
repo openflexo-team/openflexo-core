@@ -1,4 +1,4 @@
-package org.openflexo.fib.widget;
+package org.openflexo.fml.controller.view;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,20 +20,19 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
-import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
@@ -43,26 +42,30 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * Test FlexoConceptPanel fib
+ * Test StandardFlexoConceptView fib
  * 
  * @author sylvain
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
+public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	private static GraphicalContextDelegate gcDelegate;
 
 	private static Resource fibResource;
 
+	static FlexoEditor editor;
+
 	static FlexoConcept flexoConceptA;
+	static FlexoConcept flexoConceptB;
+	static FlexoConcept flexoConceptC;
+	static FlexoConcept flexoConceptD;
+	static FlexoConcept flexoConceptE;
 
 	static CreationScheme creationScheme;
 	static DeletionScheme deletionScheme;
 	static NavigationScheme navigationScheme;
 	static ActionScheme actionScheme;
-
-	static FlexoEditor editor;
 
 	@BeforeClass
 	public static void setupClass() {
@@ -74,7 +77,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	@TestOrder(1)
 	public void testLoadWidget() {
 
-		fibResource = ResourceLocator.locateResource("Fib/VPM/FlexoBehaviourPanel.fib");
+		fibResource = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
 		assertTrue(fibResource != null);
 	}
 
@@ -99,6 +102,22 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
 		System.out.println("flexoConceptA=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
+
+		flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
+		System.out.println("flexoConceptB=" + flexoConceptB);
+		assertNotNull(flexoConceptB);
+
+		flexoConceptC = virtualModel.getFlexoConcept("FlexoConceptC");
+		System.out.println("flexoConceptC=" + flexoConceptC);
+		assertNotNull(flexoConceptC);
+
+		flexoConceptD = virtualModel.getFlexoConcept("FlexoConceptD");
+		System.out.println("flexoConceptD=" + flexoConceptD);
+		assertNotNull(flexoConceptD);
+
+		flexoConceptE = virtualModel.getFlexoConcept("FlexoConceptE");
+		System.out.println("flexoConceptE=" + flexoConceptE);
+		assertNotNull(flexoConceptE);
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
@@ -206,34 +225,51 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testInstanciateWidgetForCreationScheme() {
+	public void testInstanciateWidgetForConceptA() {
 
-		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, creationScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptA, FlexoConcept.class);
 
-		gcDelegate.addTab("CreationScheme", widget.getController());
+		gcDelegate.addTab("FlexoConceptA", widget.getController());
 	}
 
 	@Test
 	@TestOrder(5)
-	public void testInstanciateWidgetForActionScheme() {
+	public void testInstanciateWidgetForConceptB() {
 
-		FIBJPanel<FlexoBehaviour> widget = instanciateFIB(fibResource, actionScheme, FlexoBehaviour.class);
+		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptB, FlexoConcept.class);
 
-		gcDelegate.addTab("ActionScheme", widget.getController());
+		gcDelegate.addTab("FlexoConceptB", widget.getController());
 	}
 
 	@Test
 	@TestOrder(6)
-	public void testInstanciateWidgetForDeclarePatternRole() {
+	public void testInstanciateWidgetForConceptC() {
 
-		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(ResourceLocator.locateResource("Fib/VPM/DeclarePatternRolePanel.fib"),
-				(DeclareFlexoRole) creationScheme.getActions().get(0), DeclareFlexoRole.class);
+		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptC, FlexoConcept.class);
 
-		gcDelegate.addTab("DeclareFlexoRole", widget.getController());
+		gcDelegate.addTab("FlexoConceptC", widget.getController());
+	}
+
+	@Test
+	@TestOrder(7)
+	public void testInstanciateWidgetForConceptD() {
+
+		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptD, FlexoConcept.class);
+
+		gcDelegate.addTab("FlexoConceptD", widget.getController());
+	}
+
+	@Test
+	@TestOrder(8)
+	public void testInstanciateWidgetForConceptE() {
+
+		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptE, FlexoConcept.class);
+
+		gcDelegate.addTab("FlexoConceptE", widget.getController());
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestFlexoBehaviourPanel.class.getSimpleName());
+		gcDelegate = new GraphicalContextDelegate(TestStandardFlexoConceptView.class.getSimpleName());
 	}
 
 	@AfterClass
