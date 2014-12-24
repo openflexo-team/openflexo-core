@@ -31,8 +31,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.ViewPointJarBasedRepository;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.annotations.Getter;
@@ -54,11 +54,13 @@ import org.openflexo.toolbox.IProgress;
 
 /**
  * A Jar resource center references a set of resources inside a Jar.
+ * 
  * @author Vincent
  *
  * @param <R>
  */
-public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<InJarResourceImpl> {
+public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>> implements
+		FlexoResourceCenter<InJarResourceImpl> {
 
 	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
 
@@ -66,16 +68,17 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 * A jar file the resource center might interpret
 	 */
 	private final JarFile jarFile;
-	
+
 	/**
 	 * A JarResource is the main element of a JarResource center. It contains a set of InJarResource elements.
 	 */
 	private JarResourceImpl jarResourceImpl;
-	
+
 	private TechnologyAdapterService technologyAdapterService;
-	
+
 	/**
 	 * Contructor based on a given JarResource
+	 * 
 	 * @param jarResourceImpl
 	 */
 	public JarResourceCenter(JarResourceImpl jarResourceImpl) {
@@ -83,42 +86,45 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		setOwner(this);
 		this.jarFile = jarResourceImpl.getJarfile();
 		this.jarResourceImpl = jarResourceImpl;
-		
+
 	}
-	
+
 	/**
 	 * Constructor based on a given jarFile
+	 * 
 	 * @param jarFile
 	 */
 	public JarResourceCenter(JarFile jarFile) {
 		super(null);
 		setOwner(this);
-		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
-		jarResourceImpl= (JarResourceImpl) locator.locateResource(jarFile.getName());
-		if(jarResourceImpl==null){
+		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
+				.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
+		jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
+		if (jarResourceImpl == null) {
 			try {
-				jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),jarFile);
+				jarResourceImpl = new JarResourceImpl(ResourceLocator.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class),
+						jarFile);
 			} catch (MalformedURLException e) {
-				logger.warning("Unable to create a Jar Resource Center for jar "+jarFile.getName());
+				logger.warning("Unable to create a Jar Resource Center for jar " + jarFile.getName());
 			}
 		}
 		this.jarFile = jarFile;
 		locator.getJarResourcesList().put(jarResourceImpl.getRelativePath(), jarResourceImpl);
 	}
-	
+
 	public JarResourceImpl getJarResourceImpl() {
 		return jarResourceImpl;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " jar=" + (jarResourceImpl != null ? jarResourceImpl.toString(): null);
+		return super.toString() + " jar=" + (jarResourceImpl != null ? jarResourceImpl.toString() : null);
 	}
 
 	@Override
 	public void initialize(TechnologyAdapterService technologyAdapterService) {
 
-		//logger.info("*********** INITIALIZING new JarResourceResourceCenter on " + getJarResource());
+		// logger.info("*********** INITIALIZING new JarResourceResourceCenter on " + getJarResource());
 
 		logger.info("Initializing " + technologyAdapterService);
 		this.technologyAdapterService = technologyAdapterService;
@@ -204,65 +210,61 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
 		return getResource(uri);
 	}
-	
+
 	/**
 	 * Add all the jars from the class path to resource centers
+	 * 
 	 * @param rcService
 	 */
-	public static void addAllJarFromClassPathResourceCenters(FlexoResourceCenterService rcService){	
-		for(JarFile file : ClassPathUtils.getClassPathJarFiles()){		
-			addJarFileInResourceCenter(file,rcService);
+	public static void addAllJarFromClassPathResourceCenters(FlexoResourceCenterService rcService) {
+		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
+			addJarFileInResourceCenter(file, rcService);
 		}
 	}
-	
+
 	/**
-	 * Add the first jar from the class path found with this name
-	 * Example : path of the jar in the class path : c:/a/b/c/org/openflexo/myjar.jar
-	 * Name : org.openflexo.myjar
-	 * Return the c:/a/b/c/org/openflexo/myjar.jar
+	 * Add the first jar from the class path found with this name Example : path of the jar in the class path :
+	 * c:/a/b/c/org/openflexo/myjar.jar Name : org.openflexo.myjar Return the c:/a/b/c/org/openflexo/myjar.jar
+	 * 
 	 * @param rcService
 	 */
-	public static void addNamedJarFromClassPathResourceCenters(FlexoResourceCenterService rcService, String name){	
-		for(JarFile file : ClassPathUtils.getClassPathJarFiles()){	
+	public static void addNamedJarFromClassPathResourceCenters(FlexoResourceCenterService rcService, String name) {
+		for (JarFile file : ClassPathUtils.getClassPathJarFiles()) {
 			System.out.println(file.getName());
-			if((file.getName().endsWith(name+".jar")) ||
-					(name.endsWith(".jar") && file.getName().endsWith(name))){
-				addJarFileInResourceCenter(file,rcService);
+			if ((file.getName().endsWith(name + ".jar")) || (name.endsWith(".jar") && file.getName().endsWith(name))) {
+				addJarFileInResourceCenter(file, rcService);
 			}
-		} 
+		}
 	}
-	
+
 	/**
 	 * Add a resource center from a jar file
+	 * 
 	 * @param jarFile
 	 * @param rcService
 	 */
-	public static void addJarFileInResourceCenter(JarFile jarFile,FlexoResourceCenterService rcService){
+	public static void addJarFileInResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService) {
 		logger.info("Try to create a resource center from a jar file : " + jarFile.getName());
 		rcService.addToResourceCenters(new JarResourceCenter(jarFile));
 		rcService.storeDirectoryResourceCenterLocations();
 	}
-	
-	
 
 	@Override
-	public Collection<? extends FlexoResource<?>> getAllResources(
-			IProgress progress) {
+	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void publishResource(FlexoResource<?> resource,
-			FlexoVersion newVersion, IProgress progress) throws Exception {
+	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update() throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@ModelEntity
@@ -293,7 +295,7 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		}
 
 	}
-		
+
 	@Override
 	public String getDefaultBaseURI() {
 		// TODO Auto-generated method stub
@@ -308,14 +310,14 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	// TODO Remove this
 	@Override
-	public ViewPointJarBasedRepository getViewPointRepository() {
+	public ViewPointRepository getViewPointRepository() {
 		if (technologyAdapterService != null) {
 			FMLTechnologyAdapter vmTA = technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class);
-			return getRepository(ViewPointJarBasedRepository.class, vmTA);
+			return getRepository(ViewPointRepository.class, vmTA);
 		}
 		return null;
 	}
-	
+
 	private JarResourceCenterEntry entry;
 
 	@Override

@@ -41,6 +41,7 @@ import org.openflexo.foundation.resource.ResourceRepository;
 public abstract class TechnologyAdapterFileResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
 		extends FileResourceRepository<R> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterFileResourceRepository.class.getPackage().getName());
 
 	private final TA technologyAdapter;
@@ -65,11 +66,11 @@ public abstract class TechnologyAdapterFileResourceRepository<R extends Technolo
 		return technologyAdapter;
 	}
 
-	public FlexoResourceCenter getResourceCenter() {
+	public FlexoResourceCenter<?> getResourceCenter() {
 		return resourceCenter;
 	}
 
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
 		this.resourceCenter = resourceCenter;
 	}
 

@@ -78,18 +78,10 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return this.getServiceManager().getViewPointLibrary();
 	}
 
-	public <I> ViewPointFileBasedRepository getViewPointFileBasedRepository(final FlexoResourceCenter<I> resourceCenter) {
-		ViewPointFileBasedRepository viewPointRepository = resourceCenter.getRepository(ViewPointFileBasedRepository.class, this);
+	public <I> ViewPointRepository getViewPointRepository(final FlexoResourceCenter<I> resourceCenter) {
+		ViewPointRepository viewPointRepository = resourceCenter.getRepository(ViewPointRepository.class, this);
 		if (viewPointRepository == null) {
-			viewPointRepository = this.createViewPointFileBasedRepository(resourceCenter);
-		}
-		return viewPointRepository;
-	}
-
-	public <I> ViewPointJarBasedRepository getViewPointJarBasedRepository(final FlexoResourceCenter<I> resourceCenter) {
-		ViewPointJarBasedRepository viewPointRepository = resourceCenter.getRepository(ViewPointJarBasedRepository.class, this);
-		if (viewPointRepository == null) {
-			viewPointRepository = this.createViewPointJarBasedRepository(resourceCenter);
+			viewPointRepository = this.createViewPointRepository(resourceCenter);
 		}
 		return viewPointRepository;
 	}
@@ -97,8 +89,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 
-		final ViewPointJarBasedRepository viewPointJarBasedRepository = getViewPointJarBasedRepository(resourceCenter);
-		final ViewPointFileBasedRepository viewPointFileBasedRepository = getViewPointFileBasedRepository(resourceCenter);
+		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
 
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
@@ -173,14 +164,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, getServiceManager());
-				ViewPointFileBasedRepository viewPointFileBasedRepository = getViewPointFileBasedRepository(resourceCenter);
-				registerResource(vpRes, viewPointFileBasedRepository, candidateElement);
-				referenceResource(vpRes, resourceCenter);
-				return vpRes;
 			} else if (candidateElement instanceof InJarResourceImpl) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, this.getServiceManager());
-				ViewPointJarBasedRepository viewPointJarBasedRepository = getViewPointJarBasedRepository(resourceCenter);
-				registerResource(vpRes, viewPointJarBasedRepository, candidateElement);
+			}
+			if (vpRes != null) {
+				ViewPointRepository viewPointFileBasedRepository = getViewPointRepository(resourceCenter);
+				registerResource(vpRes, viewPointFileBasedRepository, candidateElement);
 				referenceResource(vpRes, resourceCenter);
 				return vpRes;
 			}
@@ -224,19 +213,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	/**
 	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 */
-	public ViewPointJarBasedRepository createViewPointJarBasedRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewPointJarBasedRepository returned = new ViewPointJarBasedRepository(resourceCenter, this.getTechnologyAdapterService()
-				.getServiceManager());
-		resourceCenter.registerRepository(returned, ViewPointJarBasedRepository.class, this);
-		return returned;
-	}
-
-	/**
-	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
-	 */
-	public ViewPointFileBasedRepository createViewPointFileBasedRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewPointFileBasedRepository returned = new ViewPointFileBasedRepository(this, resourceCenter);
-		resourceCenter.registerRepository(returned, ViewPointFileBasedRepository.class, this);
+	public ViewPointRepository createViewPointRepository(final FlexoResourceCenter<?> resourceCenter) {
+		final ViewPointRepository returned = new ViewPointRepository(this, resourceCenter);
+		resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
 		return returned;
 	}
 

@@ -19,13 +19,14 @@
  */
 package org.openflexo.foundation.fml;
 
-import java.io.IOException;
-import java.util.Collection;
+import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.ViewRepository;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterFileResourceRepository;
 
 /**
  * A {@link ViewRepository} contains some resources storing viewpoint, and contained in a given {@link FlexoResourceCenter}
@@ -33,24 +34,36 @@ import org.openflexo.foundation.resource.RepositoryFolder;
  * @author sylvain
  * 
  */
-public interface ViewPointRepository<VP extends ViewPointResource> {
+public class ViewPointRepository extends TechnologyAdapterFileResourceRepository<ViewPointResource, FMLTechnologyAdapter, ViewPoint> {
 
-	public FlexoResourceCenter getResourceCenter(); 
+	private static final Logger logger = Logger.getLogger(ModelRepository.class.getPackage().getName());
 
-	public void setResourceCenter(FlexoResourceCenter resourceCenter);
-	
-	public Collection<ViewPointResource> getAllResources();
-	
-	public void registerResource(ViewPointResource flexoResource);
-	
-	public void registerResource(ViewPointResource resource, RepositoryFolder<ViewPointResource> parentFolder);
+	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
 
-	public void unregisterResource(ViewPointResource flexoResource);
-	
-	public ViewPointLibrary getViewPointLibrary();
-	
-	public RepositoryFolder<VP> getRootFolder();
-	
-	public RepositoryFolder<VP> getRepositoryFolder(Object element, boolean createWhenNonExistent) throws IOException;
+	private FlexoResourceCenter<?> resourceCenter;
+	private final FlexoServiceManager serviceManager;
 
+	public ViewPointRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+		super(adapter, resourceCenter);
+		this.serviceManager = adapter.getServiceManager();
+	}
+
+	@Override
+	public FlexoResourceCenter<?> getResourceCenter() {
+		return resourceCenter;
+	}
+
+	@Override
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		this.resourceCenter = resourceCenter;
+	}
+
+	public ViewPointLibrary getViewPointLibrary() {
+		return serviceManager.getViewPointLibrary();
+	}
+
+	@Override
+	public String getDefaultBaseURI() {
+		return DEFAULT_BASE_URI;
+	}
 }

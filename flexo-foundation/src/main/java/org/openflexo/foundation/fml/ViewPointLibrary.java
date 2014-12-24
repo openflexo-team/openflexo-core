@@ -177,13 +177,9 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter rc : resourceCenters) {
-			ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointFileBasedRepository.class, vmTA);
+			ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
 			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
 				vprfb.unregisterResource(vpRes);
-			}
-			ViewPointRepository vprjb = (ViewPointRepository) rc.getRepository(ViewPointJarBasedRepository.class, vmTA);
-			if ((vprjb != null) && (vprjb.getAllResources().contains(vpRes))) {
-				vprjb.unregisterResource(vpRes);
 			}
 		}
 		setChanged();
@@ -288,16 +284,9 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			// found
 			FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			for (FlexoResourceCenter rc : getResourceCenters()) {
-				// Register Viewpoint file based viewpoint resources
-				ViewPointFileBasedRepository vprfb = (ViewPointFileBasedRepository) rc.getRepository(ViewPointFileBasedRepository.class,
-						vmTA);
+				// Register Viewpoint viewpoint resources
+				ViewPointRepository vprfb = (ViewPointRepository) rc.getRepository(ViewPointRepository.class, vmTA);
 				for (ViewPointResource vpRes : vprfb.getAllResources()) {
-					vpRes.setViewPointLibrary(this);
-					registerViewPoint(vpRes);
-				}
-				// Register Viewpoint jar based viewpoint resources
-				ViewPointJarBasedRepository vprjb = (ViewPointJarBasedRepository) rc.getRepository(ViewPointJarBasedRepository.class, vmTA);
-				for (ViewPointResource vpRes : vprjb.getAllResources()) {
 					vpRes.setViewPointLibrary(this);
 					registerViewPoint(vpRes);
 				}
