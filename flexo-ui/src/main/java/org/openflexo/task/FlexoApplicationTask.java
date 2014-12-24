@@ -3,6 +3,7 @@ package org.openflexo.task;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.view.controller.FlexoController;
 
@@ -20,6 +21,17 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 	public FlexoApplicationTask(String title, FlexoService service) {
 		super(title);
 		this.service = service;
+	}
+
+	public FlexoService getService() {
+		return service;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		if (getService() != null) {
+			return getService().getServiceManager();
+		}
+		return null;
 	}
 
 	@Override

@@ -173,6 +173,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
 				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				Progress.progress(FlexoLocalization.localizedForKey("initializing") + " " + rc);
 				rc.initialize(this);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());

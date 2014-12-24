@@ -29,6 +29,8 @@ import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ProjectClosed;
+import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -91,6 +93,20 @@ public abstract class FlexoServiceManager {
 				s.receiveNotification(caller, notification);
 			}
 		}
+		if (notification instanceof ProjectLoaded) {
+			resourceCenterAdded(((ProjectLoaded) notification).getProject());
+		}
+		if (notification instanceof ProjectClosed) {
+			resourceCenterRemoved(((ProjectClosed) notification).getProject());
+		}
+	}
+
+	protected void resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+		getResourceCenterService().addToResourceCenters(resourceCenter);
+	}
+
+	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+		getResourceCenterService().removeFromResourceCenters(resourceCenter);
 	}
 
 	public <S extends FlexoService> S getService(Class<S> serviceClass) {

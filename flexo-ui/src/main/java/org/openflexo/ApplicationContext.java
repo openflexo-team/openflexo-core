@@ -26,6 +26,8 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.project.ProjectLoader;
+import org.openflexo.rm.AddResourceCenterTask;
+import org.openflexo.rm.RemoveResourceCenterTask;
 import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.task.TaskManagerPanel;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
@@ -54,10 +56,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public ApplicationContext() {
 		super();
-		
+
 		registerModuleLoaderService();
 		registerPreferencesService();
-		
+
 		applicationEditor = createApplicationEditor();
 		try {
 			ProjectLoader projectLoader = new ProjectLoader();
@@ -125,12 +127,11 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	public FlexoUpdateService getFlexoUpdateService() {
 		return getService(FlexoUpdateService.class);
 	}
-	
+
 	public ResourceConsistencyService getResourceConsistencyService() {
 		return getService(ResourceConsistencyService.class);
 	}
-	
-	
+
 	public final TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
 		return getService(TechnologyAdapterControllerService.class);
 	}
@@ -166,7 +167,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	protected abstract DocResourceManager createDocResourceManager();
 
 	protected abstract FlexoServerInstanceManager createFlexoServerInstanceManager();
-	
+
 	protected abstract ResourceConsistencyService createResourceConsistencyService();
 
 	@Override
@@ -186,7 +187,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				}else if(rc instanceof JarResourceCenter){
+				} else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
@@ -194,6 +195,18 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
+	}
+
+	@Override
+	protected void resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+		AddResourceCenterTask addRCTask = new AddResourceCenterTask(getResourceCenterService(), resourceCenter);
+		getTaskManager().scheduleExecution(addRCTask);
+	}
+
+	@Override
+	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+		RemoveResourceCenterTask removeRCTask = new RemoveResourceCenterTask(getResourceCenterService(), resourceCenter);
+		getTaskManager().scheduleExecution(removeRCTask);
 	}
 
 	private boolean defaultPackagedResourceCenterIsNotInstalled;

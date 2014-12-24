@@ -130,12 +130,12 @@ public class ProjectLoader extends FlexoServiceImpl implements HasPropertyChange
 	 */
 	public LoadProjectTask loadProject(File projectDirectory, boolean asImportedProject, FlexoTask... tasksToBeExecutedBefore) {
 
-		LoadProjectTask returned = new LoadProjectTask(this, projectDirectory, asImportedProject);
+		LoadProjectTask loadProject = new LoadProjectTask(this, projectDirectory, asImportedProject);
 		for (FlexoTask task : tasksToBeExecutedBefore) {
-			returned.addToDependantTasks(task);
+			loadProject.addToDependantTasks(task);
 		}
-		getServiceManager().getTaskManager().scheduleExecution(returned);
-		return returned;
+		getServiceManager().getTaskManager().scheduleExecution(loadProject);
+		return loadProject;
 
 	}
 
