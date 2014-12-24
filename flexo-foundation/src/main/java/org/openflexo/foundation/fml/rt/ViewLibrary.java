@@ -30,7 +30,9 @@ import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 
 /**
- * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}
+ * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}<br>
+ * 
+ * This is a {@link ViewRepository} associated to a {@link FlexoProject} (the associated ResourceCenter is the project itself)
  * 
  * @author sylvain
  */
@@ -76,7 +78,10 @@ public class ViewLibrary extends ViewRepository {
 	 * @return a newly created view library
 	 */
 	public static ViewLibrary createNewViewLibrary(FlexoProject project) {
-		return new ViewLibrary(project);
+		ViewLibrary returned = new ViewLibrary(project);
+		project.registerRepository(returned, ViewLibrary.class, project.getServiceManager().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		return returned;
 	}
 
 	public FlexoProject getProject() {
