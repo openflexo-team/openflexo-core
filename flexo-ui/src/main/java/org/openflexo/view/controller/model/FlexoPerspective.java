@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -594,5 +595,14 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	}
 
 	public abstract String getWindowTitleforObject(FlexoObject object, FlexoController controller);
+
+	/**
+	 * Override when required
+	 * 
+	 * @param project
+	 */
+	public void updateEditor(FlexoEditor from, FlexoEditor to) {
+		// Do nothing here
+	}
 
 }

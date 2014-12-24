@@ -417,6 +417,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			((InteractiveFlexoEditor) to).registerControllerActionInitializer(getControllerActionInitializer());
 		}
 		getPropertyChangeSupport().firePropertyChange(EDITOR, from, to);
+
+		for (FlexoPerspective perspective : getControllerModel().getPerspectives()) {
+			perspective.updateEditor(from, to);
+		}
+
 	}
 
 	public abstract FlexoObject getDefaultObjectToSelect(FlexoProject project);

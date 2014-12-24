@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBProjectResourcesBrowser;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.View;
@@ -104,8 +105,15 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		return tac.getWindowTitleforObject(object, controller);
 	}
 
-	public void setProject(FlexoProject project) {
+	private void setProject(FlexoProject project) {
 		projectResourcesBrowser.setRootObject(project);
 	}
 
+	@Override
+	public void updateEditor(FlexoEditor from, FlexoEditor to) {
+		super.updateEditor(from, to);
+		if (to != null) {
+			setProject(to.getProject());
+		}
+	}
 }
