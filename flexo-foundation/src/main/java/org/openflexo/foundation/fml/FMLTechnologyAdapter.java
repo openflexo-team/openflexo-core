@@ -97,8 +97,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
 
-		final ViewPointJarBasedRepository viewPointJarBasedRepository = this.getViewPointJarBasedRepository(resourceCenter);
-		final ViewPointFileBasedRepository viewPointFileBasedRepository = this.getViewPointFileBasedRepository(resourceCenter);
+		final ViewPointJarBasedRepository viewPointJarBasedRepository = getViewPointJarBasedRepository(resourceCenter);
+		final ViewPointFileBasedRepository viewPointFileBasedRepository = getViewPointFileBasedRepository(resourceCenter);
 
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();

@@ -104,7 +104,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		}
 		ViewRepository viewRepository = resourceCenter.getRepository(ViewRepository.class, this);
 		if (viewRepository == null) {
-			viewRepository = this.createViewRepository(resourceCenter);
+			viewRepository = createViewRepository(resourceCenter);
 		}
 		return viewRepository;
 	}
