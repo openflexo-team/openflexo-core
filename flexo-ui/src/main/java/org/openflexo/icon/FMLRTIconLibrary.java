@@ -43,6 +43,12 @@ public class FMLRTIconLibrary extends IconLibrary {
 
 	private static final Logger logger = Logger.getLogger(FMLRTIconLibrary.class.getPackage().getName());
 
+	public static final ImageIconResource FML_RT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/FML-RT.png"));
+	public static final ImageIconResource FML_RT_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/FML-RT_32x32.png"));
+	public static final ImageIconResource FML_RT_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/FML-RT_64x64.png"));
+
 	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/ViewLibrary.png"));
 	public static final ImageIconResource VIEW_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/View.png"));
