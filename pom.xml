@@ -25,6 +25,7 @@
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
+		<!--  <module>fml-parser</module>-->
 		<module>fml-technologyadapter-ui</module>
 		<module>fml-rt-technologyadapter-ui</module>
 		<module>flexodocresourcecenter</module>
@@ -78,6 +79,12 @@
 				<artifactId>flexoutils</artifactId>
 				<version>${connie.version}</version>
 				<classifier>tests</classifier>
+			</dependency>
+
+			<dependency>
+				<groupId>sablecc</groupId>
+				<artifactId>sablecc</artifactId>
+				<version>3.2-1</version>
 			</dependency>
 
 			<dependency>
