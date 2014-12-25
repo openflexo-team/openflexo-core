@@ -166,14 +166,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			e.printStackTrace();
 		}
 
-		// This is now done in the ServiceManager
-		// We add the newly created project as a ResourceCenter
-		// serviceManager.getResourceCenterService().addToResourceCenters(project);
-
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (nature != null) {
 			nature.givesNature(project, editor);
 		}
+
+		// We add the newly created project as a ResourceCenter
+		serviceManager.resourceCenterAdded(project);
 
 		return editor;
 	}
@@ -221,10 +220,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			e.printStackTrace();
 		}
 
-		// This is now done in the ServiceManager
 		// We add the newly created project as a ResourceCenter
-		// Progress.progress(FlexoLocalization.localizedForKey("scan_project_for_technology_adapters"));
-		// serviceManager.getResourceCenterService().addToResourceCenters(project);
+		serviceManager.resourceCenterAdded(project);
 
 		return editor;
 	}
