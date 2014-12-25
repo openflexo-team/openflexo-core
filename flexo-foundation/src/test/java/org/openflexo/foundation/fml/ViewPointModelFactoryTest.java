@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.view;
+package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.fail;
 
@@ -25,25 +25,26 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.ViewPointModelFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
- * Test instanciation of VirtualModelInstanceModelFactory<br>
+ * Test instanciation of FIBModelFactory<br>
+ * TODO: instanciate all widgets
  * 
  */
-public class VirtualModelInstanceModelFactoryTest {
+public class ViewPointModelFactoryTest {
 
-	private static final Logger logger = FlexoLogger.getLogger(VirtualModelInstanceModelFactoryTest.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(ViewPointModelFactoryTest.class.getPackage().getName());
 
 	@Test
-	public void testInstantiateVirtualModelModelFactory() {
+	public void testInstanciateViewPointModelFactory() {
 		try {
 			System.out.println("Instanciating ViewPointModelFactory");
-			VirtualModelInstanceModelFactory factory = new VirtualModelInstanceModelFactory(null, null, null);
+			ViewPointModelFactory factory = new ViewPointModelFactory(null, null);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();

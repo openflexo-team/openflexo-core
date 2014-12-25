@@ -19,7 +19,7 @@
  *
  */
 
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -1,4 +1,4 @@
-package org.openflexo.foundation.viewpoint;
+package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

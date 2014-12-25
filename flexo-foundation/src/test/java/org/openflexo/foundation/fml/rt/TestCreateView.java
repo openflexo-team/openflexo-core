@@ -1,4 +1,4 @@
-package org.openflexo.foundation.view;
+package org.openflexo.foundation.fml.rt;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -9,11 +9,12 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateView;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -24,24 +25,30 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTimeTestCase {
+public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 
-	private static ViewPoint viewPoint;
+	private static ViewPoint newViewPoint;
 	private static FlexoEditor editor;
 	private static FlexoProject project;
 	private static View newView;
 
 	/**
-	 * Retrieve the ViewPoint
+	 * Instantiate a ViewPoint
 	 */
 	@Test
 	@TestOrder(1)
-	public void testLoadViewPoint() {
+	public void testCreateViewPoint() {
 		instanciateTestServiceManager();
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
-		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
-		assertNotNull(viewPoint);
+		System.out.println("ResourceCenter= " + resourceCenter);
+		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
+				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
+		assertNotNull(newViewPoint);
+		assertNotNull(newViewPoint.getResource());
+		ViewPointResource resource = ((ViewPointResource) newViewPoint.getResource());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
+		//assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory()!=null);
+		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
 	}
 
 	@Test
@@ -63,7 +70,7 @@ public class TestCreateViewFromExistingViewPoint extends OpenflexoProjectAtRunTi
 		CreateView action = CreateView.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
 		action.setNewViewName("MyView");
 		action.setNewViewTitle("Test creation of a new view");
-		action.setViewpointResource((ViewPointResource) viewPoint.getResource());
+		action.setViewpointResource((ViewPointResource) newViewPoint.getResource());
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());
 		newView = action.getNewView();
