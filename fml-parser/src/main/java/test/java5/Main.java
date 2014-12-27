@@ -15,51 +15,41 @@
  * limitations under the License.
  */
 
-import org.sablecc.grammars.java_1_5.lexer.*;
-import org.sablecc.grammars.java_1_5.parser.*;
-import org.sablecc.grammars.java_1_5.node.*;
-import org.sablecc.grammars.java_1_5.analysis.*;
+package test.java5;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.PushbackReader;
+
 import org.sablecc.sablecc.lexer.Lexer;
+import org.sablecc.sablecc.node.Start;
+import org.sablecc.sablecc.parser.Parser;
 
-import java.io.*;
+public class Main {
+	public static void main(String[] arguments) throws Exception {
+		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
-public class Main
-{
-    public static void main(String[] arguments) throws Exception
-    {
-	BufferedReader stdin = new BufferedReader
-	    (new InputStreamReader(System.in));
+		String line;
+		while ((line = stdin.readLine()) != null) {
+			FileReader in = new FileReader(line);
 
-	String line;
-	while((line = stdin.readLine()) != null)
-	    {
-		FileReader in = new FileReader(line);
+			try {
+				UnicodePreprocessor preprocessor = new UnicodePreprocessor(new PushbackReader(new BufferedReader(in), 1024));
 
-		try
-		    {
-		UnicodePreprocessor preprocessor = new UnicodePreprocessor
-		    (new PushbackReader
-		     (new BufferedReader
-		      (in), 1024));
-		
-		System.out.print(line + ": ");
-		Lexer lexer = new Lexer(new PushbackReader(preprocessor, 1024));
-		Parser parser = new Parser(lexer);
-		try
-		    {
-			Start ast = parser.parse();
-			System.out.println("OK.");
-		    }
-		catch(Exception e)
-		    {
-			System.out.println("****** Error *****.");
-			throw e;
-		    }
-		    }
-		finally
-		    {
-			in.close();
-		    }
-	    }
-    }
+				System.out.print(line + ": ");
+				Lexer lexer = new Lexer(new PushbackReader(preprocessor, 1024));
+				Parser parser = new Parser(lexer);
+				try {
+					Start ast = parser.parse();
+					System.out.println("OK.");
+				} catch (Exception e) {
+					System.out.println("****** Error *****.");
+					throw e;
+				}
+			} finally {
+				in.close();
+			}
+		}
+	}
 }
