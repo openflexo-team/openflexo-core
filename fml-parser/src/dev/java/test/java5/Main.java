@@ -22,12 +22,13 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.PushbackReader;
 
-import org.sablecc.sablecc.lexer.Lexer;
-import org.sablecc.sablecc.node.Start;
-import org.sablecc.sablecc.parser.Parser;
+import org.sablecc.grammars.java_1_5.lexer.Lexer;
+import org.sablecc.grammars.java_1_5.node.Start;
+import org.sablecc.grammars.java_1_5.parser.Parser;
 
 public class Main {
 	public static void main(String[] arguments) throws Exception {
+		// /Users/sylvain/git/openflexo-core/fml-parser/src/dev/java/test/java5/Main.java
 		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
 		String line;
