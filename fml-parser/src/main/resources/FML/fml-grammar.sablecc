@@ -323,12 +323,18 @@ Productions
 
   flexo_concept_member_declaration =
     {flexo_role}     	flexo_role_declaration |
-    //{flexo_behaviour}   flexo_behaviour_declaration |
+    {flexo_behaviour}   flexo_behaviour_declaration |
     {empty}    semi;
 
   model_slot_declaration = [annotations]:annotation* modelslot identifier as ta_identifier l_par fml_value_pairs? r_par semi;
  
   flexo_role_declaration = [annotations]:annotation* role identifier as ta_identifier l_par fml_value_pairs? r_par semi;
+ 
+  flexo_behaviour_declaration = [annotations]:annotation* ta_identifier identifier l_par fml_value_pairs? r_par flexo_behaviour_body;
+ 
+  flexo_behaviour_body =
+    {block} block |
+    {empty} semi;
  
   fml_value_pairs =
     {one}       fml_value_pair |
