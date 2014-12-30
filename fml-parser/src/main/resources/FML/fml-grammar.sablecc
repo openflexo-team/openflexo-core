@@ -351,23 +351,23 @@ Productions
     slash identifier;*/
  
  
-  type_declaration =
+  /*type_declaration =
     {class}     class_declaration |
     {interface} interface_declaration |
-    {empty}     semi;
+    {empty}     semi;*/
 
   annotation =
     {normal_annotation}         normal_annotation |
     {marker_annotation}         marker_annotation |
     {single_element_annotation} single_element_annotation;
 
-  class_declaration =
+  /*class_declaration =
     {normal_class} normal_class_declaration |
-    {enum}         enum_declaration;
+    {enum}         enum_declaration;*/
 
-  interface_declaration =
+  /*interface_declaration =
     {normal_interface} normal_interface_declaration |
-    {annotation_type}  annotation_type_declaration;
+    {annotation_type}  annotation_type_declaration;*/
 
   normal_annotation =
     at identifier [additional_identifiers]:additional_identifier* l_par element_value_pairs? r_par;
@@ -378,17 +378,17 @@ Productions
   single_element_annotation =
     at identifier [additional_identifiers]:additional_identifier* l_par element_value r_par;
 
-  normal_class_declaration =
-    [modifiers]:modifier* class_token identifier type_parameters? super? interfaces? class_body;
+  /*normal_class_declaration =
+    [modifiers]:modifier* class_token identifier type_parameters? super? interfaces? class_body;*/
 
-  enum_declaration =
-    [modifiers]:modifier* enum identifier interfaces? enum_body;
+  /*enum_declaration =
+    [modifiers]:modifier* enum identifier interfaces? enum_body;*/
 
-  normal_interface_declaration =
-    [modifiers]:modifier* interface identifier type_parameters? extends_interfaces? interface_body;
+  /*normal_interface_declaration =
+    [modifiers]:modifier* interface identifier type_parameters? extends_interfaces? interface_body;*/
 
-  annotation_type_declaration =
-    [modifiers]:modifier* at interface identifier annotation_type_body;
+  /*annotation_type_declaration =
+    [modifiers]:modifier* at interface identifier annotation_type_body;*/
 
   element_value_pairs =
     {one}                            element_value_pair |
@@ -412,24 +412,24 @@ Productions
     {one}                            identifier [additional_identifiers]:additional_identifier* |
     {many} super_type_list comma identifier [additional_identifiers]:additional_identifier*;
 
-  interfaces =
-    implements interface_type_list;
+  /*interfaces =
+    implements interface_type_list;*/
 
-  class_body =
-    l_brc [class_body_declarations]:class_body_declaration* r_brc;
+  /*class_body =
+    l_brc [class_body_declarations]:class_body_declaration* r_brc;*/
 
-  enum_body =
-    l_brc enum_constants? comma? enum_body_declarations? r_brc;
+  /*enum_body =
+    l_brc enum_constants? comma? enum_body_declarations? r_brc;*/
 
-  extends_interfaces =
+  /*extends_interfaces =
     {one}  extends                  identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? |
-    {many} extends_interfaces comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
+    {many} extends_interfaces comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;*/
 
-  interface_body =
+  /*interface_body =
     l_brc [interface_member_declarations]:interface_member_declaration* r_brc;
 
   annotation_type_body =
-    l_brc [annotation_type_element_declarations]:annotation_type_element_declaration* r_brc;
+    l_brc [annotation_type_element_declarations]:annotation_type_element_declaration* r_brc;*/
 
   element_value_pair =
     identifier assign element_value;
@@ -465,33 +465,33 @@ Productions
     {many} interface_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
 
 
-  class_body_declaration =
+  /*class_body_declaration =
     {member}               class_member_declaration |
     {instance_initializer} instance_initializer |
     {static_initializer}   static_initializer |
-    {constructor}          constructor_declaration;
+    {constructor}          constructor_declaration;*/
 
-  enum_constants =
+ /* enum_constants =
     {one}                       enum_constant |
-    {many} enum_constants comma enum_constant;
+    {many} enum_constants comma enum_constant;*/
 
-  enum_body_declarations =
-    semi [class_body_declarations]:class_body_declaration*;
+  /*enum_body_declarations =
+    semi [class_body_declarations]:class_body_declaration*;*/
 
-  interface_member_declaration =
+ /* interface_member_declaration =
      {constant}  constant_declaration |
      {method}    abstract_method_declaration |
-     {class}     class_declaration |
-     {interface} interface_declaration |
-     {empty}     semi;
+     //{class}     class_declaration |
+     //{interface} interface_declaration |
+     {empty}     semi;*/
 
-  annotation_type_element_declaration =
+ /* annotation_type_element_declaration =
     {primitive_method} [modifiers]:modifier* primitive_type                                                                                                             [dims]:dim*               identifier l_par r_par default_value? semi |
     {reference_method} [modifiers]:modifier* [identifier1]:identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* [identifier2]:identifier l_par r_par default_value? semi |
     {constant}         constant_declaration |
-    {class}            class_declaration |
-    {interface}        interface_declaration |
-    {empty}            semi;
+    //{class}            class_declaration |
+    //{interface}        interface_declaration |
+    {empty}            semi;*/
 
   conditional_or_expression =
     {simple}                                                                                          conditional_and_expression |
@@ -533,8 +533,8 @@ Productions
   class_member_declaration =
     {field}     field_declaration |
     {method}    method_declaration |
-    {class}     class_declaration |
-    {interface} interface_declaration |
+    //{class}     class_declaration |
+    //{interface} interface_declaration |
     {empty}     semi;
 
   instance_initializer =
@@ -546,8 +546,8 @@ Productions
   constructor_declaration =
     [modifiers]:modifier* constructor_declarator throws? constructor_body;
 
-  enum_constant =
-    [modifiers]:modifier* identifier arguments? class_body?;
+  /*enum_constant =
+    [modifiers]:modifier* identifier arguments? class_body?;*/
 
   constant_declaration =
     {primitive} [modifiers]:modifier* primitive_type                                                                                               [dims]:dim* variable_declarators semi |
@@ -683,7 +683,7 @@ Productions
 
   block_statement =
     {variable_declaration} local_variable_declaration_statement |
-    {class_declaration}    class_declaration |
+    //{class_declaration}    class_declaration |
     {statement}            statement;
 
   formal_parameter_list =
@@ -900,7 +900,7 @@ Productions
     {class}      identifier [additional_identifiers]:additional_identifier* dot this |
     {expression} l_par expression                                                 r_par |
     {identifier} l_par identifier [additional_identifiers]:additional_identifier* r_par |
-    {instance}   class_instance_creation_expression |
+   // {instance}   class_instance_creation_expression |
     {field}      field_access |
     {method}     method_invocation |
     {array}      array_access;
@@ -1000,11 +1000,11 @@ Productions
     {string}         string_literal |
     {null}           null_literal;
 
-  class_instance_creation_expression =
+ /* class_instance_creation_expression =
     {simple}                                                                                  new [type_arguments1]:type_arguments?               identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* [type_arguments2]:type_arguments? l_par argument_list? r_par class_body? |
     {primary}    primary                                                                  dot new [type_arguments1]:type_arguments?               identifier                                                                                   [type_arguments2]:type_arguments? l_par argument_list? r_par class_body? |
     {identifier} [identifier1]:identifier [additional_identifiers]:additional_identifier* dot new [type_arguments1]:type_arguments? [identifier2]:identifier                                                                                   [type_arguments2]:type_arguments? l_par argument_list? r_par class_body?;
-
+*/
   method_invocation =
     {simple}                   identifier [additional_identifiers]:additional_identifier*                                                                                     l_par argument_list? r_par |
     {primary}    primary     dot non_wild_type_arguments? identifier                                                                                                          l_par argument_list? r_par |
@@ -1048,8 +1048,8 @@ Productions
     {pre_decrement}     pre_decrement_expression |
     {post_increment}    post_increment_expression |
     {post_decrement}    post_decrement_expression |
-    {method_invocation} method_invocation |
-    {instance_creation} class_instance_creation_expression;
+    {method_invocation} method_invocation /*|
+    {instance_creation} class_instance_creation_expression*/;
 
   switch_block =
     l_brc [switch_block_statement_groups]:switch_block_statement_group* [switch_labels]:switch_label* r_brc;
