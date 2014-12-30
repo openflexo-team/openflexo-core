@@ -210,7 +210,7 @@ Tokens
   goto = 'goto';
   if = 'if';
   implements = 'implements';
-  import = 'import';
+  //import = 'import';
   instanceof = 'instanceof';
   int = 'int';
   interface = 'interface';
@@ -238,9 +238,13 @@ Tokens
   volatile = 'volatile';
   while = 'while';
   
+  // FML keywords
   namespace = 'namespace';
+  viewpoint = 'ViewPoint';
   virtualmodel = 'VirtualModel';
-   
+  use = 'use';
+  as = 'as';
+  import = 'import';   
  
   // literals
 
@@ -292,17 +296,21 @@ Ignored Tokens
 
 Productions
 
-  //url = ( 'https' | 'http' ) '://' host ( ':' port )? '/' ( identifier '/' )*;
-  
-  //url = (http) '://' host ( ':' port )? '/' ( identifier '/' )*;
-
-  compilation_unit = namespace_declaration? main_declaration;
+  compilation_unit = namespace_declaration? [use_declarations]:use_declaration* [import_declarations]:import_declaration* main_declaration;
 
   namespace_declaration = namespace url semi;
 
- // url = http '://' identifier [additional_identifiers]:additional_identifier*;
+  use_declaration = use [technology_adapter]:identifier [technology_adapter_additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
 
-  main_declaration = virtualmodel l_brc [class_body_declarations]:class_body_declaration* r_brc;
+  import_declaration = import url as identifier semi;
+
+  main_declaration =
+    {viewpoint}	viewpoint_declaration |
+    {virtualmodel}	virtual_model_declaration;    
+
+  viewpoint_declaration = [annotations]:annotation*  viewpoint identifier super? l_brc [class_body_declarations]:class_body_declaration* r_brc;
+
+  virtual_model_declaration = [annotations]:annotation* virtualmodel identifier super? l_brc [class_body_declarations]:class_body_declaration* r_brc;
 
  // normal_class_declaration =
  //   [modifiers]:modifier* class_token identifier type_parameters? super? interfaces? class_body;
@@ -310,14 +318,8 @@ Productions
  // compilation_unit =
  //   package_declaration? [import_declarations]:import_declaration* [type_declarations]:type_declaration*;
 
-  package_declaration =
-    [modifiers]:modifier* package identifier [additional_identifiers]:additional_identifier* semi;
-
-  import_declaration =
-    {single}        single_type_import_declaration |
-    {single_demand} type_import_on_demand_declaration |
-    {static}        single_static_import_declaration |
-    {static_demand} static_import_on_demand_declaration;
+ // package_declaration =
+ //   [modifiers]:modifier* package identifier [additional_identifiers]:additional_identifier* semi;
 
   type_declaration =
     {class}     class_declaration |
@@ -328,18 +330,6 @@ Productions
     {normal_annotation}         normal_annotation |
     {marker_annotation}         marker_annotation |
     {single_element_annotation} single_element_annotation;
-
-  single_type_import_declaration =
-    import identifier [additional_identifiers]:additional_identifier* semi;
-
-  type_import_on_demand_declaration =
-    import identifier [additional_identifiers]:additional_identifier* dot star semi;
-
-  single_static_import_declaration =
-    import static identifier [additional_identifiers]:additional_identifier+ semi;
-
-  static_import_on_demand_declaration =
-    import static identifier [additional_identifiers]:additional_identifier* dot star semi;
 
   class_declaration =
     {normal_class} normal_class_declaration |
@@ -386,7 +376,11 @@ Productions
     {ushr} lt type_parameter_list_ushr ushr;
 
   super =
-    extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
+    extends super_type_list;
+
+  super_type_list =
+    {one}                            identifier [additional_identifiers]:additional_identifier* |
+    {many} super_type_list comma identifier [additional_identifiers]:additional_identifier*;
 
   interfaces =
     implements interface_type_list;
@@ -439,6 +433,7 @@ Productions
   interface_type_list =
     {one}                            identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? |
     {many} interface_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
+
 
   class_body_declaration =
     {member}               class_member_declaration |
