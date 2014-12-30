@@ -1,7 +1,10 @@
 package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AFlexoRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.AModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDeclaration;
 import org.openflexo.foundation.fml.parser.node.AUseDeclaration;
 import org.openflexo.foundation.fml.parser.node.AViewpointDeclaration;
@@ -52,4 +55,26 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		System.out.println("Annotations = " + node.getAnnotations());
 	}
 
+	@Override
+	public void outAModelSlotDeclaration(AModelSlotDeclaration node) {
+		super.outAModelSlotDeclaration(node);
+		System.out.println("Tiens, un ModelSlotDeclaration: " + node);
+		System.out.println("line=" + node.getModelslot().getLine());
+		System.out.println("pos=" + node.getModelslot().getPos());
+
+	}
+
+	@Override
+	public void outAFlexoConceptDeclaration(AFlexoConceptDeclaration node) {
+		super.outAFlexoConceptDeclaration(node);
+		System.out.println("Tiens, un FlexoConceptDeclaration: " + node);
+		System.out.println("Annotations du FlexoConcept = " + node.getAnnotations());
+	}
+
+	@Override
+	public void outAFlexoRoleDeclaration(AFlexoRoleDeclaration node) {
+		super.outAFlexoRoleDeclaration(node);
+		System.out.println("Tiens, un FlexoRoleDeclaration: " + node);
+		System.out.println("Annotations du FlexoRole = " + node.getAnnotations());
+	}
 }

@@ -6,18 +6,43 @@ use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
 import http://www.openflexo.org/Tests/ViewPoints/ViewPoint1 as ViewPoint1;
 import http://www.openflexo.org/Tests/OWL/Ontology1.owl as Ontology1;
 
+//Declare a new VirtualModel
+//URI of VirtualModel is computed from namespace and virtualmodel name
+//URI is here http://www.openflexo.org/Tests/FML/Test1/Test1VM
+
 @Version("1.1")
 @Author("Sylvain")
 @Description("This is a description of VirtualModel")
 
 VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 
-	//ModelSlot ontology as OWL::OWLModelSlot(import=Ontology1);
+	ModelSlot ontology as OWL::OWLModelSlot(importOntology=Ontology1);
+
+	@Version("1.2")
+	@Description("This is the first concept")
+	FlexoConcept Concept1 {
+
+		@Description("This is the description of the role")
+		Role individual as OWL::OWLIndividualRole(type=Ontology1/Type1);
+
+		/*FML::CreationScheme create(OWL::IndividualOfClass(type=Ontology1/Type1) anIndividual) {
+			individual = anIndividual;
+		}
+
+		FML::DeletionScheme delete() {
+			OWL::deleteAction(individual); // equ to OWL::deleteAction(object=individual);
+		}
+
+		FML::ActionScheme action(int anInteger) {
+			i = 6;
+			bidule=machin;
+			this.bidule=machin;
+			truc.bidule=machin;
+			truc.bidule=machin.chose(truc,machin,truc);
+		}*/
+	}
 }
 
-// Declare a new VirtualModel
-// URI of VirtualModel is computed from namespace and virtualmodel name
-// URI is here http://www.openflexo.org/Tests/FML/Test1/Test1VM
 /*VirtualModel Test1VM {
 
 	ModelSlot ontology as OWL::OWLModelSlot(import=Ontology1);

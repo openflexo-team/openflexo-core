@@ -245,6 +245,9 @@ Tokens
   use = 'use';
   as = 'as';
   import = 'import';   
+  modelslot = 'ModelSlot';   
+  flexoconcept = 'FlexoConcept';   
+  role = 'Role';   
  
   // literals
 
@@ -277,13 +280,8 @@ Tokens
   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
   end_of_line_comment = '//' input_character* line_terminator?;
 
-  //http = 'http://';
-  //https = 'https://';
-  //protocol = ('http://' | 'https://');
-  //url = 'http://' java_letter (java_letter_or_digit)*;
-  //url = ('http://' | 'https://') java_letter (java_letter_or_digit* '/')*;
-
   url = 'http://' unicode_letter (url_letter_or_digit)*;
+  ta_identifier = (java_letter*) '::' (java_letter*);
 
 
 Ignored Tokens
@@ -305,22 +303,48 @@ Productions
   import_declaration = import url as identifier semi;
 
   main_declaration =
-    {viewpoint}	viewpoint_declaration |
-    {virtualmodel}	virtual_model_declaration;    
+    {view_point}	viewpoint_declaration |
+    {virtual_model}	virtual_model_declaration |
+    {flexo_concept}	flexo_concept_declaration;    
 
-  viewpoint_declaration = [annotations]:annotation*  viewpoint identifier super? l_brc [class_body_declarations]:class_body_declaration* r_brc;
+  viewpoint_declaration = [annotations]:annotation*  viewpoint identifier super? l_brc [virtual_model_body_declarations]:virtual_model_body_declaration* r_brc;
 
-  virtual_model_declaration = [annotations]:annotation* virtualmodel identifier super? l_brc [class_body_declarations]:class_body_declaration* r_brc;
+  virtual_model_declaration = [annotations]:annotation* virtualmodel identifier super? l_brc [virtual_model_body_declarations]:virtual_model_body_declaration* r_brc;
 
- // normal_class_declaration =
- //   [modifiers]:modifier* class_token identifier type_parameters? super? interfaces? class_body;
+  flexo_concept_declaration = [annotations]:annotation* flexoconcept identifier super? l_brc [flexo_concept_body_declarations]:flexo_concept_body_declaration* r_brc;
 
- // compilation_unit =
- //   package_declaration? [import_declarations]:import_declaration* [type_declarations]:type_declaration*;
+  virtual_model_body_declaration =
+    {model_slot_member}        model_slot_declaration |
+    {flexo_concept}        	   flexo_concept_declaration |
+    {flexo_concept_member}     flexo_concept_member_declaration;
 
- // package_declaration =
- //   [modifiers]:modifier* package identifier [additional_identifiers]:additional_identifier* semi;
+  flexo_concept_body_declaration =
+    {flexo_concept_member}     flexo_concept_member_declaration;
 
+  flexo_concept_member_declaration =
+    {flexo_role}     	flexo_role_declaration |
+    //{flexo_behaviour}   flexo_behaviour_declaration |
+    {empty}    semi;
+
+  model_slot_declaration = [annotations]:annotation* modelslot identifier as ta_identifier l_par fml_value_pairs? r_par semi;
+ 
+  flexo_role_declaration = [annotations]:annotation* role identifier as ta_identifier l_par fml_value_pairs? r_par semi;
+ 
+  fml_value_pairs =
+    {one}       fml_value_pair |
+    {many}      fml_value_pairs comma fml_value_pair;
+
+  fml_value_pair =
+    identifier assign fml_value;
+
+  fml_value =
+    {conditional}       conditional_expression |
+    {identifier}        identifier [additional_identifiers]:additional_identifier*;
+ 
+  /* additional_fml_identifier =
+    slash identifier;*/
+ 
+ 
   type_declaration =
     {class}     class_declaration |
     {interface} interface_declaration |
