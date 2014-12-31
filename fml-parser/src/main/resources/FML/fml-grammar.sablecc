@@ -330,7 +330,7 @@ Productions
  
   flexo_role_declaration = [annotations]:annotation* role identifier as ta_identifier l_par fml_value_pairs? r_par semi;
  
-  flexo_behaviour_declaration = [annotations]:annotation* ta_identifier identifier l_par fml_value_pairs? r_par flexo_behaviour_body;
+  flexo_behaviour_declaration = [annotations]:annotation* ta_identifier identifier l_par formal_arguments_list? r_par flexo_behaviour_body;
  
   flexo_behaviour_body =
     {block} block |
@@ -350,6 +350,17 @@ Productions
   /* additional_fml_identifier =
     slash identifier;*/
  
+  /*flexo_behaviour_arguments =
+     l_par formal_arguments_list? r_par;*/
+  
+  formal_arguments_list =
+    {one}                          formal_argument |
+    {many} formal_arguments_list comma formal_argument;
+  
+  formal_argument =
+    {primitive} primitive_type                                                                                                             [dims1]:dim*               identifier [dims2]:dim* |
+    {reference} [identifier1]:identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims1]:dim* [identifier2]:identifier [dims2]:dim* |
+    {technology_specific} technology_specific_type [dims1]:dim* identifier [dims2]:dim*;
  
   /*type_declaration =
     {class}     class_declaration |
@@ -630,6 +641,9 @@ Productions
 
   method_declarator =
     identifier l_par formal_parameter_list? r_par [dims]:dim*;
+
+  technology_specific_type =
+    ta_identifier l_par fml_value_pairs? r_par;
 
   primitive_type =
     {numeric} numeric_type |

@@ -21,44 +21,19 @@ VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 	@Version("1.2")
 	@Description("This is the first concept")
 	FlexoConcept Concept1 {
-
-		@Description("This is the description of the role")
-		Role individual as OWL::OWLIndividualRole(type=Ontology1/Type1);
-
-		/*FML::CreationScheme create(OWL::IndividualOfClass(type=Ontology1/Type1) anIndividual) {
-			individual = anIndividual;
-		}
-
-		FML::DeletionScheme delete() {
-			OWL::deleteAction(individual); // equ to OWL::deleteAction(object=individual);
-		}
-
-		FML::ActionScheme action(int anInteger) {
-			i = 6;
-			bidule=machin;
-			this.bidule=machin;
-			truc.bidule=machin;
-			truc.bidule=machin.chose(truc,machin,truc);
-		}*/
-	}
-}
-
-/*VirtualModel Test1VM {
-
-	ModelSlot ontology as OWL::OWLModelSlot(import=Ontology1);
-
-	Concept Concept1 {
-		Role individual as OWL::OWLIndividualRole(type=Ontology1/Type1);
 		
-		FML::CreationScheme create(OWL::IndividualOfClass(type=Ontology1/Type1) anIndividual) {
+		@Description("This is the description of the role")
+		Role individual as OWL::OWLIndividualRole(type=Ontology1.Type1);
+
+		FML::CreationScheme create(OWL::IndividualOfClass(type=Ontology1.Type1) anIndividual) {
 			individual = anIndividual;
 		}
 
 		FML::DeletionScheme delete() {
-			OWL::deleteAction(individual); // equ to OWL::deleteAction(object=individual);
+			//OWL::deleteAction(individual); // equ to OWL::deleteAction(object=individual);
 		}
 
-		FML::ActionScheme action() {
+		FML::ActionScheme action(int anInteger, SomeClass anOtherArgument) {
 			i = 6;
 			bidule=machin;
 			this.bidule=machin;
@@ -66,9 +41,11 @@ VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 			truc.bidule=machin.chose(truc,machin,truc);
 		}
 	}
-  
-	Concept Concept2 {
+	
+	@Version("1.2")
+	@Description("This is the second concept")
+	FlexoConcept Concept2 {
 		Role individual as OWL::OWLIndividual(type=Ontology1/Type2);
 	}
-  
-}*/
+
+}
