@@ -8,6 +8,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.AFlexoBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFlexoRoleDeclaration;
@@ -145,5 +146,11 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outATechnologySpecificFormalArgument(ATechnologySpecificFormalArgument node) {
 		super.outATechnologySpecificFormalArgument(node);
 		System.out.println("arg3:" + node);
+	}
+
+	@Override
+	public void outABlock(ABlock node) {
+		super.outABlock(node);
+		System.out.println("########## BLOCK:" + node);
 	}
 }

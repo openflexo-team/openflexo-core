@@ -461,30 +461,15 @@ Productions
   type_arguments_ushr_no_gt =
     lt actual_type_argument_list;
 
-  class_member_declaration =
-    {field}     field_declaration |
-    {method}    method_declaration |
-    //{class}     class_declaration |
-    //{interface} interface_declaration |
-    {empty}     semi;
-
   instance_initializer =
     block;
 
   static_initializer =
     static block;
 
-  constructor_declaration =
-    [modifiers]:modifier* constructor_declarator throws? constructor_body;
-
   constant_declaration =
     {primitive} [modifiers]:modifier* primitive_type                                                                                               [dims]:dim* variable_declarators semi |
     {reference} [modifiers]:modifier* identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* variable_declarators semi;
-
-  abstract_method_declaration =
-    {primitive} [modifiers]:modifier* type_parameters? primitive_type                                                                                               [dims]:dim* method_declarator throws? semi |
-    {reference} [modifiers]:modifier* type_parameters? identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* method_declarator throws? semi |
-    {void}      [modifiers]:modifier* type_parameters? void                                                                                                                     method_declarator throws? semi;
 
   default_value =
     default element_value;
@@ -530,24 +515,11 @@ Productions
     {one}                                  actual_type_argument_ushr_no_gt |
     {many} actual_type_argument_list comma actual_type_argument_ushr_no_gt;
 
-  field_declaration =
-    {primitive} [modifiers]:modifier* primitive_type                                                                                               [dims]:dim* variable_declarators semi |
-    {reference} [modifiers]:modifier* identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* variable_declarators semi;
-
-  method_declaration =
-    method_header method_body;
-
   block =
     l_brc [block_statements]:block_statement* r_brc;
 
-  constructor_declarator =
-    type_parameters? identifier l_par formal_parameter_list? r_par;
-
   throws =
     throws_token exception_type_list;
-
-  constructor_body =
-    l_brc explicit_constructor_invocation? [block_statements]:block_statement* r_brc;
 
   arguments =
     l_par argument_list? r_par;
@@ -555,9 +527,6 @@ Productions
   variable_declarators =
     {one}                             variable_declarator |
     {many} variable_declarators comma variable_declarator;
-
-  method_declarator =
-    identifier l_par formal_parameter_list? r_par [dims]:dim*;
 
   technology_specific_type =
     ta_identifier l_par fml_value_pairs? r_par;
@@ -603,15 +572,6 @@ Productions
     {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt |
     {wildcard}  wildcard_ushr_no_gt;
 
-  method_header =
-    {primitive} [modifiers]:modifier* type_parameters? primitive_type                                                                                               [dims]:dim* method_declarator throws? |
-    {reference} [modifiers]:modifier* type_parameters? identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* method_declarator throws? |
-    {void}      [modifiers]:modifier* type_parameters? void                                                                                                                     method_declarator throws?;
-
-  method_body =
-    {block} block |
-    {empty} semi;
-
   block_statement =
     {variable_declaration} local_variable_declaration_statement |
     {statement}            statement;
@@ -623,12 +583,6 @@ Productions
   exception_type_list =
     {one}                            exception_type |
     {many} exception_type_list comma exception_type;
-
-  explicit_constructor_invocation =
-    {this}                                                                      non_wild_type_arguments? this        l_par argument_list? r_par semi |
-    {super}                                                                     non_wild_type_arguments? super_token l_par argument_list? r_par semi |
-    {primary}    primary                                                    dot non_wild_type_arguments? super_token l_par argument_list? r_par semi |
-    {identifier} identifier [additional_identifiers]:additional_identifier* dot non_wild_type_arguments? super_token l_par argument_list? r_par semi;
 
   argument_list =
     {one_ex}                      expression |
