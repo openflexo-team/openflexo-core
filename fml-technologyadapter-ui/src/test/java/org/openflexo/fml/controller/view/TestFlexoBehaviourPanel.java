@@ -97,7 +97,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		assertNotNull(virtualModel);
 
 		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConceptA=" + flexoConceptA);
+		System.out.println("flexoConcept=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
 		editor = new DefaultFlexoEditor(null, serviceManager);
@@ -126,7 +126,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		createCreationScheme.doAction();
 		creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction1.doAction();
@@ -134,7 +135,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		action1.setAssignation(new DataBinding<Object>("aString"));
 		action1.setObject(new DataBinding<Object>("'foo'"));
 
-		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction2.doAction();
@@ -142,7 +144,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		action2.setAssignation(new DataBinding<Object>("aBoolean"));
 		action2.setObject(new DataBinding<Object>("true"));
 
-		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setBuiltInActionClass(AssignationAction.class);
 		createEditionAction3.doAction();
@@ -164,7 +167,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		assertNotNull(param);
 		assertTrue(actionScheme.getParameters().contains(param));
 
-		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
 		createConditionAction1.setControlActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
@@ -182,7 +186,8 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		declarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
 		declarePatternRoleInCondition1.setObject(new DataBinding<Object>("8"));
 
-		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
 		createConditionAction2.setControlActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();

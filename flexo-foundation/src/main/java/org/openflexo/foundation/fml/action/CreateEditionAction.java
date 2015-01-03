@@ -31,10 +31,9 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ActionContainer;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -47,37 +46,36 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 
-public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoBehaviourObject, FMLObject> {
+public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
-	public static FlexoActionType<CreateEditionAction, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionType<CreateEditionAction, FlexoBehaviourObject, FMLObject>(
+	public static FlexoActionType<CreateEditionAction, FMLControlGraph, FMLObject> actionType = new FlexoActionType<CreateEditionAction, FMLControlGraph, FMLObject>(
 			"create_edition_action", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateEditionAction makeNewAction(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
+		public CreateEditionAction makeNewAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateEditionAction(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoBehaviourObject object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLControlGraph object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoBehaviourObject object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLControlGraph object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, FlexoBehaviour.class);
-		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, EditionAction.class);
+		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, FMLControlGraph.class);
+		// FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, EditionAction.class);
 	}
 
 	public static enum CreateEditionActionChoice {
@@ -102,7 +100,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 	private final List<Class<? extends EditionAction>> builtInActions;
 	private final List<Class<? extends EditionAction>> controlActions;
 
-	CreateEditionAction(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 		builtInActions = new ArrayList<Class<? extends EditionAction>>();
@@ -142,8 +140,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 	public List<Class<? extends EditionAction>> getModelSlotSpecificActions() {
 		if (modelSlot != null) {
 			return modelSlot.getAvailableEditionActionTypes();
-		}
-		else {
+		} else {
 			// TODO : when modelSlot is null, return AvailableEditionActionTypes for VirtualModel
 		}
 		return null;
@@ -163,19 +160,19 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 		newEditionAction = makeEditionAction();
 
 		if (newEditionAction != null) {
-			if ((getFocusedObject() instanceof ActionContainer) && (getLayoutChoice() == LayoutChoice.InsertInside)) {
+			getFocusedObject().sequentiallyAppend(newEditionAction);
+
+			/*if ((getFocusedObject() instanceof ActionContainer) && (getLayoutChoice() == LayoutChoice.InsertInside)) {
 				((ActionContainer) getFocusedObject()).addToActions(newEditionAction);
-			}
-			else if (getFocusedObject() instanceof EditionAction) {
+			} else if (getFocusedObject() instanceof EditionAction) {
 				ActionContainer container = ((EditionAction) getFocusedObject()).getActionContainer();
 				int index = container.getIndex((EditionAction) getFocusedObject());
 				if (getLayoutChoice() == LayoutChoice.InsertAfter) {
 					container.insertActionAtIndex(newEditionAction, index + 1);
-				}
-				else {
+				} else {
 					container.insertActionAtIndex(newEditionAction, index);
 				}
-			}
+			}*/
 		}
 
 		else {
@@ -200,41 +197,41 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 	@Override
 	public boolean isValid() {
 		switch (actionChoice) {
-			case BuiltInAction:
-				if (builtInActionClass == null) {
-					validityMessage = NO_ACTION_TYPE_SELECTED;
-					return false;
-				}
-				return true;
-			case ControlAction:
-				if (controlActionClass == null) {
-					validityMessage = NO_ACTION_TYPE_SELECTED;
-					return false;
-				}
-				return true;
-			case ModelSlotSpecificAction:
-				if (modelSlot == null) {
-					validityMessage = NO_MODEL_SLOT;
-					return false;
-				}
-				if (modelSlotSpecificActionClass == null) {
-					validityMessage = NO_ACTION_TYPE_SELECTED;
-					return false;
-				}
-				return true;
-			case RequestAction:
-				if (modelSlot == null) {
-					validityMessage = NO_MODEL_SLOT;
-					return false;
-				}
-				if (requestActionClass == null) {
-					validityMessage = NO_ACTION_TYPE_SELECTED;
-					return false;
-				}
-				return true;
-
-			default:
+		case BuiltInAction:
+			if (builtInActionClass == null) {
+				validityMessage = NO_ACTION_TYPE_SELECTED;
 				return false;
+			}
+			return true;
+		case ControlAction:
+			if (controlActionClass == null) {
+				validityMessage = NO_ACTION_TYPE_SELECTED;
+				return false;
+			}
+			return true;
+		case ModelSlotSpecificAction:
+			if (modelSlot == null) {
+				validityMessage = NO_MODEL_SLOT;
+				return false;
+			}
+			if (modelSlotSpecificActionClass == null) {
+				validityMessage = NO_ACTION_TYPE_SELECTED;
+				return false;
+			}
+			return true;
+		case RequestAction:
+			if (modelSlot == null) {
+				validityMessage = NO_MODEL_SLOT;
+				return false;
+			}
+			if (requestActionClass == null) {
+				validityMessage = NO_ACTION_TYPE_SELECTED;
+				return false;
+			}
+			return true;
+
+		default:
+			return false;
 		}
 
 	}
@@ -243,93 +240,79 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FlexoB
 		EditionAction returned;
 		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
 		switch (actionChoice) {
-			case BuiltInAction:
-				if (builtInActionClass == null) {
-					logger.warning("Unexpected " + builtInActionClass);
-					return null;
-				}
-				if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newAssignationAction();
-				}
-				else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newAddToListAction();
-				}
-				else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newRemoveFromListAction();
-				}
-				else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newExecutionAction();
-				}
-				else if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newDeclareFlexoRole();
-				}
-				else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newAddFlexoConceptInstance();
-				}
-				else if (MatchFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newMatchFlexoConceptInstance();
-				}
-				else if (SelectFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newSelectFlexoConceptInstance();
-				}
-				else if (DeleteAction.class.isAssignableFrom(builtInActionClass)) {
-					return factory.newDeleteAction();
-				}
-				else {
-					logger.warning("Unexpected " + builtInActionClass);
-					return null;
-				}
-			case ControlAction:
-				if (controlActionClass == null) {
-					logger.warning("Unexpected " + controlActionClass);
-					return null;
-				}
-				if (ConditionalAction.class.isAssignableFrom(controlActionClass)) {
-					return factory.newConditionalAction();
-				}
-				else if (IterationAction.class.isAssignableFrom(controlActionClass)) {
-					return factory.newIterationAction();
-				}
-				else if (FetchRequestIterationAction.class.isAssignableFrom(controlActionClass) && requestActionClass != null
-				/*&& modelSlot != null*/) {
-					returned = factory.newFetchRequestIterationAction();
-					FetchRequest request = null;
-					if (modelSlot != null) {
-						request = modelSlot.makeFetchRequest(requestActionClass);
-						request.setModelSlot(modelSlot);
-						returned.setModelSlot(modelSlot);
-					}
-					else if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
-						request = factory.newSelectFlexoConceptInstanceAction();
-					}
-					if (request != null) {
-						((FetchRequestIterationAction) returned).setFetchRequest(request);
-					}
-					return returned;
-				}
-				else {
-					logger.warning("Unexpected " + controlActionClass);
-					return null;
-				}
-			case ModelSlotSpecificAction:
-				if (modelSlotSpecificActionClass != null && modelSlot != null) {
-					returned = modelSlot.makeEditionAction(modelSlotSpecificActionClass);
+		case BuiltInAction:
+			if (builtInActionClass == null) {
+				logger.warning("Unexpected " + builtInActionClass);
+				return null;
+			}
+			if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newAssignationAction();
+			} else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newAddToListAction();
+			} else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newRemoveFromListAction();
+			} else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newExecutionAction();
+			} else if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newDeclareFlexoRole();
+			} else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newAddFlexoConceptInstance();
+			} else if (MatchFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newMatchFlexoConceptInstance();
+			} else if (SelectFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newSelectFlexoConceptInstance();
+			} else if (DeleteAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newDeleteAction();
+			} else {
+				logger.warning("Unexpected " + builtInActionClass);
+				return null;
+			}
+		case ControlAction:
+			if (controlActionClass == null) {
+				logger.warning("Unexpected " + controlActionClass);
+				return null;
+			}
+			if (ConditionalAction.class.isAssignableFrom(controlActionClass)) {
+				return factory.newConditionalAction();
+			} else if (IterationAction.class.isAssignableFrom(controlActionClass)) {
+				return factory.newIterationAction();
+			} else if (FetchRequestIterationAction.class.isAssignableFrom(controlActionClass) && requestActionClass != null
+			/*&& modelSlot != null*/) {
+				returned = factory.newFetchRequestIterationAction();
+				FetchRequest request = null;
+				if (modelSlot != null) {
+					request = modelSlot.makeFetchRequest(requestActionClass);
+					request.setModelSlot(modelSlot);
 					returned.setModelSlot(modelSlot);
-					return returned;
+				} else if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
+					request = factory.newSelectFlexoConceptInstanceAction();
 				}
-				break;
-			case RequestAction:
-				if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
-					return factory.newSelectFlexoConceptInstanceAction();
+				if (request != null) {
+					((FetchRequestIterationAction) returned).setFetchRequest(request);
 				}
-				else if (requestActionClass != null && modelSlot != null) {
-					returned = modelSlot.makeFetchRequest(requestActionClass);
-					returned.setModelSlot(modelSlot);
-					return returned;
-				}
+				return returned;
+			} else {
+				logger.warning("Unexpected " + controlActionClass);
+				return null;
+			}
+		case ModelSlotSpecificAction:
+			if (modelSlotSpecificActionClass != null && modelSlot != null) {
+				returned = modelSlot.makeEditionAction(modelSlotSpecificActionClass);
+				returned.setModelSlot(modelSlot);
+				return returned;
+			}
+			break;
+		case RequestAction:
+			if (SelectFlexoConceptInstance.class.isAssignableFrom(requestActionClass)) {
+				return factory.newSelectFlexoConceptInstanceAction();
+			} else if (requestActionClass != null && modelSlot != null) {
+				returned = modelSlot.makeFetchRequest(requestActionClass);
+				returned.setModelSlot(modelSlot);
+				return returned;
+			}
 
-			default:
-				break;
+		default:
+			break;
 		}
 
 		logger.warning("Cannot build EditionAction");

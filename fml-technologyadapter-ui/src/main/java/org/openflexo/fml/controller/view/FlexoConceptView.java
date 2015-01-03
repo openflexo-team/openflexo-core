@@ -30,6 +30,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -106,7 +107,10 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 				mainTabPanel.setSelectedIndex(0);
 			}
 			if (flexoBehaviourTable != null) {
-				flexoBehaviourTable.setSelected(((EditionAction) object).getFlexoBehaviour());
+				FMLControlGraphOwner rootOwner = ((EditionAction) object).getRootOwner();
+				if (rootOwner instanceof FlexoBehaviour) {
+					flexoBehaviourTable.setSelected(rootOwner);
+				}
 			}
 			// this is not a tab any more
 			// editionSchemePanel.setSelectedIndex(1);

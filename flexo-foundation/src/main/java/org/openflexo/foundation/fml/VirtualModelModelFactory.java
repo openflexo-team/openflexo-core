@@ -28,6 +28,9 @@ import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ConditionalAction;
@@ -113,7 +116,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
-		if(virtualModelResource!=null){
+		if (virtualModelResource != null) {
 			this.virtualModelResource = virtualModelResource;
 			addConverter(new RelativePathResourceConverter(virtualModelResource.getFlexoIODelegate().getParentPath()));
 		}
@@ -222,6 +225,17 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 
 	public DeletionScheme newDeletionScheme() {
 		return newInstance(DeletionScheme.class);
+	}
+
+	public Sequence newSequence(FMLControlGraph cg1, FMLControlGraph cg2) {
+		Sequence returned = newInstance(Sequence.class);
+		returned.setControlGraph1(cg1);
+		returned.setControlGraph2(cg2);
+		return returned;
+	}
+
+	public EmptyControlGraph newEmptyControlGraph() {
+		return newInstance(EmptyControlGraph.class);
 	}
 
 	public AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
@@ -421,7 +435,9 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	}
 
 	public ConditionalAction newConditionalAction() {
-		return newInstance(ConditionalAction.class);
+		ConditionalAction returned = newInstance(ConditionalAction.class);
+		returned.setThenControlGraph(newEmptyControlGraph());
+		return returned;
 	}
 
 	public IterationAction newIterationAction() {

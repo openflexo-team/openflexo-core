@@ -22,14 +22,20 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -43,10 +49,14 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
 @XMLElement
-public interface ConditionalAction extends ControlStructureAction {
+public interface ConditionalAction extends ControlStructureAction, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITION_KEY = "condition";
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	public static final String THEN_CONTROL_GRAPH_KEY = "thenControlGraph";
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	public static final String ELSE_CONTROL_GRAPH_KEY = "elseControlGraph";
 
 	@Getter(value = CONDITION_KEY)
 	@XMLAttribute
@@ -54,6 +64,24 @@ public interface ConditionalAction extends ControlStructureAction {
 
 	@Setter(CONDITION_KEY)
 	public void setCondition(DataBinding<Boolean> condition);
+
+	@Getter(value = THEN_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	@XMLElement(context = "ThenControlGraph_")
+	public FMLControlGraph getThenControlGraph();
+
+	@Setter(THEN_CONTROL_GRAPH_KEY)
+	public void setThenControlGraph(FMLControlGraph aControlGraph);
+
+	@Getter(value = ELSE_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	@XMLElement(context = "ElseControlGraph_")
+	public FMLControlGraph getElseControlGraph();
+
+	@Setter(ELSE_CONTROL_GRAPH_KEY)
+	public void setElseControlGraph(FMLControlGraph aControlGraph);
 
 	public static abstract class ConditionalActionImpl extends ControlStructureActionImpl implements ConditionalAction {
 
@@ -63,6 +91,47 @@ public interface ConditionalAction extends ControlStructureAction {
 
 		public ConditionalActionImpl() {
 			super();
+		}
+
+		@Override
+		public void setThenControlGraph(FMLControlGraph aControlGraph) {
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(THEN_CONTROL_GRAPH_KEY);
+			}
+			performSuperSetter(THEN_CONTROL_GRAPH_KEY, aControlGraph);
+		}
+
+		@Override
+		public void setElseControlGraph(FMLControlGraph aControlGraph) {
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(ELSE_CONTROL_GRAPH_KEY);
+			}
+			performSuperSetter(ELSE_CONTROL_GRAPH_KEY, aControlGraph);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getThenControlGraph();
+			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getElseControlGraph();
+			}
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
+			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setThenControlGraph(controlGraph);
+			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setElseControlGraph(controlGraph);
+			}
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			return getBindingModel();
 		}
 
 		@Override

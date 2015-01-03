@@ -32,6 +32,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
  * @author sylvain
  * 
  */
+@Deprecated
 public class FetchRequestIterationActionBindingModel extends ControlStructureActionBindingModel {
 
 	private final FetchRequestIterationActionBindingVariable iteratorBindingVariable;

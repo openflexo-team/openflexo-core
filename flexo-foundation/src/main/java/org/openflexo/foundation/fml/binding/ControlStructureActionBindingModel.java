@@ -32,6 +32,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
  * @author sylvain
  * 
  */
+@Deprecated
 public class ControlStructureActionBindingModel extends ActionContainerBindingModel {
 
 	private final ControlStructureAction editionAction;

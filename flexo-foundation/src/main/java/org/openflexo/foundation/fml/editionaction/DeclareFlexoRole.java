@@ -122,6 +122,13 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object>
 			return getDeclaredObject(action);
 		}
 
+		@Override
+		public String toString() {
+			return "DeclareFlexoRole(" + getName() + "/" + hash() + ")["
+					+ (getAssignation() != null ? getAssignation().toString() : "null") + "="
+					+ (getObject() != null ? getObject().toString() : "null") + "]";
+		}
+
 	}
 
 	@DefineValidationRule

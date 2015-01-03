@@ -7,9 +7,8 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
@@ -26,7 +25,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(MatchingCriteria.MatchingCriteriaImpl.class)
 @XMLElement
-public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
+public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
@@ -65,7 +64,7 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 	@Override
 	public MatchingCriteriaBindingModel getBindingModel();
 
-	public static abstract class MatchingCriteriaImpl extends FlexoBehaviourObjectImpl implements MatchingCriteria {
+	public static abstract class MatchingCriteriaImpl extends FlexoConceptObjectImpl implements MatchingCriteria {
 
 		private static final Logger logger = Logger.getLogger(MatchingCriteria.class.getPackage().getName());
 
@@ -91,14 +90,6 @@ public interface MatchingCriteria extends FlexoBehaviourObject, Bindable {
 		public FlexoConcept getFlexoConcept() {
 			if (getAction() != null) {
 				return getAction().getFlexoConcept();
-			}
-			return null;
-		}
-
-		@Override
-		public FlexoBehaviour getFlexoBehaviour() {
-			if (getAction() != null) {
-				return getAction().getFlexoBehaviour();
 			}
 			return null;
 		}

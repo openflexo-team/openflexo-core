@@ -47,30 +47,16 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.foundation.fml.ActionScheme;
-import org.openflexo.foundation.fml.CheckboxParameter;
-import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewType;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
@@ -157,9 +143,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	public void testCreateViewPoint() {
 		viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
 				serviceManager.getViewPointLibrary());
-		//assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
-		//assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
-		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory()!=null);
+		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
+		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
+		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getFlexoIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
@@ -605,8 +591,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		// Now we create the vm1 model slot
 		CreateModelSlot createMS1 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
-		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-				FMLTechnologyAdapter.class));
+		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
 		createMS1.setModelSlotClass(FMLRTModelSlot.class);
 		createMS1.setModelSlotName("vm1");
 		createMS1.setVmRes((VirtualModelResource) virtualModel1.getResource());
@@ -615,8 +600,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		// Now we create the vm2 model slot
 		CreateModelSlot createMS2 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
-		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-				FMLTechnologyAdapter.class));
+		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
 		createMS2.setModelSlotClass(FMLRTModelSlot.class);
 		createMS2.setModelSlotName("vm2");
 		createMS2.setVmRes((VirtualModelResource) virtualModel2.getResource());
@@ -675,7 +659,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createCreationScheme.doAction();
 		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction1.doAction();
@@ -686,7 +671,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(action1.getAssignation().isValid());
 		assertTrue(action1.getObject().isValid());
 
-		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction2.doAction();
@@ -697,7 +683,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(action2.getAssignation().isValid());
 		assertTrue(action2.getObject().isValid());
 
-		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setBuiltInActionClass(AssignationAction.class);
 		createEditionAction3.doAction();
@@ -799,7 +786,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
 		createConditionAction1.setControlActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
@@ -819,7 +807,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		declarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anIntegerInA"));
 		declarePatternRoleInCondition1.setObject(new DataBinding<Object>("8"));
 
-		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme, null, editor);
+		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
+				editor);
 		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
 		createConditionAction2.setControlActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();
@@ -997,8 +986,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		CreateEditionAction createSelectFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(actionScheme, null,
-				editor);
+		CreateEditionAction createSelectFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(
+				actionScheme.getControlGraph(), null, editor);
 		createSelectFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createSelectFlexoConceptInstanceAction.setBuiltInActionClass(SelectFlexoConceptInstance.class);
 		createSelectFlexoConceptInstanceAction.doAction();
@@ -1087,8 +1076,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType.makeNewAction(actionScheme, null,
-				editor);
+		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType.makeNewAction(
+				actionScheme.getControlGraph(), null, editor);
 		createSelectFetchRequestIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
 		createSelectFetchRequestIterationAction.setControlActionClass(FetchRequestIterationAction.class);
 		createSelectFetchRequestIterationAction.setRequestActionClass(SelectFlexoConceptInstance.class);
@@ -1228,8 +1217,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
 
-		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType.makeNewAction(actionScheme, null,
-				editor);
+		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType.makeNewAction(
+				actionScheme.getControlGraph(), null, editor);
 		createSelectFetchRequestIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
 		createSelectFetchRequestIterationAction.setControlActionClass(FetchRequestIterationAction.class);
 		createSelectFetchRequestIterationAction.setRequestActionClass(SelectFlexoConceptInstance.class);
@@ -1279,7 +1268,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(creationSchemeParam2);
 		assertTrue(creationScheme.getParameters().contains(creationSchemeParam2));
 
-		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction1.doAction();
@@ -1290,7 +1280,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(action1.getAssignation().isValid());
 		assertTrue(action1.getObject().isValid());
 
-		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme, null, editor);
+		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
 		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createEditionAction2.doAction();
@@ -1512,9 +1503,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 
 		assertNotNull(project.getResource(newView.getURI()));
@@ -1529,9 +1520,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		vmi1 = createVMI1.getNewVirtualModelInstance();
 		assertNotNull(vmi1);
 		assertNotNull(vmi1.getResource());
-		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 		assertEquals(virtualModel1, vmi1.getFlexoConcept());
 		assertEquals(virtualModel1, vmi1.getVirtualModel());
@@ -1545,9 +1536,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		vmi2 = createVMI2.getNewVirtualModelInstance();
 		assertNotNull(vmi2);
 		assertNotNull(vmi2.getResource());
-		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 		assertEquals(virtualModel2, vmi2.getFlexoConcept());
 		assertEquals(virtualModel2, vmi2.getVirtualModel());
@@ -1576,9 +1567,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		vmi3 = createVMI3.getNewVirtualModelInstance();
 		assertNotNull(vmi3);
 		assertNotNull(vmi3.getResource());
-		//assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		//assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory()!=null);
+		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
+		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
+		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
 		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
 		assertEquals(virtualModel3, vmi3.getFlexoConcept());
 		assertEquals(virtualModel3, vmi3.getVirtualModel());

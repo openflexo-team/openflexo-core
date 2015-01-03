@@ -35,6 +35,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -42,7 +43,6 @@ import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.task.Progress;
@@ -64,8 +64,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoBehaviour makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
+		public CreateFlexoBehaviour makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoBehaviour(focusedObject, globalSelection, editor);
 		}
 
@@ -248,6 +247,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
 			performCreateParameters();
+			newFlexoBehaviour.setControlGraph(factory.newEmptyControlGraph());
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		} else {
 			throw new InvalidParameterException("flexoBehaviourClass is null");

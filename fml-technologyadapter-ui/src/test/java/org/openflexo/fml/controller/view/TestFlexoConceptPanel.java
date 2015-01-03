@@ -80,7 +80,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 		assertNotNull(virtualModel);
 
 		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConceptA=" + flexoConceptA);
+		System.out.println("flexoConcept=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
 		flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");

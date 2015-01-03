@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  * 
  */
+@Deprecated
 public abstract class ActionContainerBindingModel extends BindingModel implements PropertyChangeListener {
 
 	private final ActionContainer actionContainer;

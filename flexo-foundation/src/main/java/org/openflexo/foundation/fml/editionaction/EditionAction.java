@@ -32,11 +32,10 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ActionContainer;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -82,7 +81,7 @@ import org.openflexo.model.validation.ValidationWarning;
 		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
 		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
-public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FlexoBehaviourObject {
+public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
 	public static final String ACTION_CONTAINER_KEY = "actionContainer";
@@ -137,7 +136,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 	// public void rebuildInferedBindingModel();
 
-	public int getIndex();
+	// public int getIndex();
 
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
 
@@ -148,8 +147,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 	@Override
 	public EditionActionBindingModel getBindingModel();
 
-	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FlexoBehaviourObjectImpl implements
-			EditionAction<MS, T> {
+	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FMLControlGraphImpl implements EditionAction<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(EditionAction.class.getPackage().getName());
 
@@ -172,7 +170,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 			return null;
 		}
 
-		@Override
+		/*@Override
 		public FlexoBehaviour getFlexoBehaviour() {
 			if (getActionContainer() instanceof FlexoBehaviour) {
 				return (FlexoBehaviour) getActionContainer();
@@ -180,12 +178,15 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 				return getActionContainer().getFlexoBehaviour();
 			}
 			return null;
-		}
+		}*/
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getFlexoBehaviour() != null) {
+			/*if (getFlexoBehaviour() != null) {
 				return getFlexoBehaviour().getVirtualModel();
+			}*/
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}
@@ -339,34 +340,40 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getFlexoBehaviour() == null) {
-				return null;
+			if (getOwner() != null) {
+				return getOwner().getFlexoConcept();
 			}
-			return getFlexoBehaviour().getFlexoConcept();
+			return null;
 		}
 
 		public Type getActionClass() {
 			return getClass();
 		}
 
-		@Override
+		/*@Override
 		public int getIndex() {
 			if (getFlexoBehaviour() != null && getFlexoBehaviour().getActions() != null) {
 				return getFlexoBehaviour().getActions().indexOf(this);
 			}
 			return -1;
-		}
+		}*/
 
 		@Override
-		public final EditionActionBindingModel getBindingModel() {
+		public EditionActionBindingModel getBindingModel() {
 			if (bindingModel == null) {
 				bindingModel = makeBindingModel();
 			}
 			return bindingModel;
 		}
 
+		@Override
 		protected EditionActionBindingModel makeBindingModel() {
 			return new EditionActionBindingModel(this);
+		}
+
+		@Override
+		public EditionActionBindingModel getInferedBindingModel() {
+			return getBindingModel();
 		}
 
 		/*@Override
@@ -567,6 +574,13 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends Flex
 			insertActionAtCurrentIndex(newAction);
 			return null;
 		}
+
+		/*@Override
+		public void setOwner(FMLControlGraphOwner owner) {
+			System.out.println("BEGIN / EditionAction, on set le owner de " + this + " avec " + owner);
+			performSuperSetter(OWNER_KEY, owner);
+			System.out.println("END / EditionAction, on a sette le owner de " + this + " avec " + owner);
+		}*/
 
 	}
 

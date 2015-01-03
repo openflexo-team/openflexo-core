@@ -38,7 +38,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourBindingModel extends ActionContainerBindingModel {
+public class FlexoBehaviourBindingModel extends BindingModel {
 
 	private final FlexoBehaviour flexoBehaviour;
 
@@ -49,7 +49,7 @@ public class FlexoBehaviourBindingModel extends ActionContainerBindingModel {
 	public static final String PARAMETERS_DEFINITION_PROPERTY = "parametersDefinitions";
 
 	public FlexoBehaviourBindingModel(FlexoBehaviour flexoBehaviour) {
-		super(flexoBehaviour, flexoBehaviour.getFlexoConcept() != null ? flexoBehaviour.getFlexoConcept().getBindingModel() : null);
+		super(flexoBehaviour.getFlexoConcept() != null ? flexoBehaviour.getFlexoConcept().getBindingModel() : null);
 
 		this.flexoBehaviour = flexoBehaviour;
 
@@ -59,6 +59,10 @@ public class FlexoBehaviourBindingModel extends ActionContainerBindingModel {
 		parametersDefinitionBindingVariable = new FlexoBehaviourParametersDefinitionBindingVariable(flexoBehaviour);
 		addToBindingVariables(parametersDefinitionBindingVariable);
 
+		if (flexoBehaviour != null && flexoBehaviour.getPropertyChangeSupport() != null) {
+			flexoBehaviour.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+
 	}
 
 	/**
@@ -66,6 +70,11 @@ public class FlexoBehaviourBindingModel extends ActionContainerBindingModel {
 	 */
 	@Override
 	public void delete() {
+
+		if (flexoBehaviour != null && flexoBehaviour.getPropertyChangeSupport() != null) {
+			flexoBehaviour.getPropertyChangeSupport().removePropertyChangeListener(this);
+		}
+
 		super.delete();
 	}
 

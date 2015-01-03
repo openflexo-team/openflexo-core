@@ -29,8 +29,9 @@ import org.openflexo.antar.binding.Function;
 import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.binding.ActionContainerBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -65,7 +66,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
-public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function {
+public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function, FMLControlGraphOwner {
 
 	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
 	// public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
@@ -88,6 +89,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
+
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	public static final String CONTROL_GRAPH_KEY = "controlGraph";
+
+	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	@XMLElement
+	public FMLControlGraph getControlGraph();
+
+	@Setter(CONTROL_GRAPH_KEY)
+	public void setControlGraph(FMLControlGraph aControlGraph);
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_BEHAVIOURS_KEY)
@@ -150,7 +162,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);*/
 
-	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_SCHEME_KEY)
+	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
 	@XMLElement
 	public List<FlexoBehaviourParameter> getParameters();
 
@@ -424,7 +436,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			setChanged();
 			notifyChange("actions", null, actions);
 		}
-		*/
+		 */
 
 		@Override
 		public void actionFirst(EditionAction<?, ?> a) {
@@ -583,10 +595,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			this.skipConfirmationPanel = skipConfirmationPanel;
 		}
 
-		@Override
+		/*@Override
 		public ActionContainerBindingModel getControlGraphBindingModel() {
 			return getBindingModel();
-		}
+		}*/
 
 		/**
 		 * Return the FlexoBehaviour's specific {@link BindingModel}.<br>
@@ -613,6 +625,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				createBindingModel();
 			}
 			return _bindingModel;*/
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			if (controlGraph == getControlGraph()) {
+				return getBindingModel();
+			}
+			return null;
 		}
 
 		/*@Override
@@ -793,6 +813,30 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				index++;
 			}
 			return testName;
+		}
+
+		@Deprecated
+		@Override
+		public void addToActions(EditionAction<?, ?> anAction) {
+			FMLControlGraph controlGraph = getControlGraph();
+			if (controlGraph == null) {
+				// If control graph is null, action will be new new control graph
+				setControlGraph(anAction);
+			} else {
+				// Otherwise, sequentially append action
+				controlGraph.sequentiallyAppend(anAction);
+			}
+			performSuperAdder(ACTIONS_KEY, anAction);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			return getControlGraph();
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+			setControlGraph(controlGraph);
 		}
 
 	}

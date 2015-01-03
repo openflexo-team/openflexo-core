@@ -210,7 +210,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			if (getBaseURI().isSet() && getBaseURI().isValid()) {
 				List<FlexoBehaviourParameter> returned = new ArrayList<FlexoBehaviourParameter>();
 				for (BindingValue bv : getBaseURI().getExpression().getAllBindingValues()) {
-					FlexoBehaviourParameter p = getScheme().getParameter(bv.getVariableName());
+					FlexoBehaviourParameter p = getBehaviour().getParameter(bv.getVariableName());
 					if (p != null) {
 						returned.add(p);
 					}

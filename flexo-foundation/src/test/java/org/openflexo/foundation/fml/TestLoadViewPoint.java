@@ -69,7 +69,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 		assertNotNull(virtualModel);
 
 		FlexoConcept flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConceptA=" + flexoConceptA);
+		System.out.println("flexoConcept=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
 		FlexoConcept flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
@@ -136,7 +136,7 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 		assertNotNull(virtualModel);
 
 		FlexoConcept flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConceptA=" + flexoConceptA);
+		System.out.println("flexoConcept=" + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
 		FlexoConcept flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");

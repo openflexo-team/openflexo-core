@@ -32,6 +32,7 @@ import org.openflexo.foundation.fml.editionaction.IterationAction;
  * @author sylvain
  * 
  */
+@Deprecated
 public class IterationActionBindingModel extends ControlStructureActionBindingModel {
 
 	private final IterationActionBindingVariable iteratorBindingVariable;

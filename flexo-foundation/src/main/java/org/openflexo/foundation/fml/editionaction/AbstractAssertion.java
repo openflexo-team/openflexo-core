@@ -24,9 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.AbstractAssertionBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -39,7 +38,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssertion.AbstractAssertionImpl.class)
-public abstract interface AbstractAssertion extends FlexoBehaviourObject {
+public abstract interface AbstractAssertion extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = AddIndividual.class)
 	public static final String ACTION_KEY = "action";
@@ -63,7 +62,7 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 	@Override
 	public AbstractAssertionBindingModel getBindingModel();
 
-	public static abstract class AbstractAssertionImpl extends FlexoBehaviourObjectImpl implements AbstractAssertion {
+	public static abstract class AbstractAssertionImpl extends FlexoConceptObjectImpl implements AbstractAssertion {
 
 		// private AddIndividual<?, ?> _action;
 		private DataBinding<Boolean> conditional;
@@ -89,9 +88,9 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 		}*/
 
 		@Override
-		public FlexoBehaviour getFlexoBehaviour() {
+		public FlexoConcept getFlexoConcept() {
 			if (getAction() != null) {
-				return getAction().getFlexoBehaviour();
+				return getAction().getFlexoConcept();
 			}
 			return null;
 		}
@@ -120,10 +119,10 @@ public abstract interface AbstractAssertion extends FlexoBehaviourObject {
 			return true;
 		}
 
-		@Override
+		/*@Override
 		public FlexoConcept getFlexoConcept() {
 			return getFlexoBehaviour() != null ? getFlexoBehaviour().getFlexoConcept() : null;
-		}
+		}*/
 
 		@Override
 		public AbstractAssertionBindingModel getBindingModel() {

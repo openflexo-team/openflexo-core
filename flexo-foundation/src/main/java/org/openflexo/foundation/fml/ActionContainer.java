@@ -42,6 +42,8 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
+// TODO: this should disappear to be replaced by FMLControlGraph
+@Deprecated
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActionContainer.ActionContainerImpl.class)
 public interface ActionContainer extends FlexoBehaviourObject {

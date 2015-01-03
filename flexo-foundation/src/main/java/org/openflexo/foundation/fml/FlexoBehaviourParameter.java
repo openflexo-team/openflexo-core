@@ -93,7 +93,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_REQUIRED_KEY = "isRequired";
 	@PropertyIdentifier(type = FlexoBehaviour.class)
-	public static final String FLEXO_BEHAVIOUR_SCHEME_KEY = "flexoBehaviourScheme";
+	public static final String FLEXO_BEHAVIOUR_KEY = "flexoBehaviour";
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -153,12 +153,12 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public int getIndex();
 
-	@Getter(value = FLEXO_BEHAVIOUR_SCHEME_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
+	@Getter(value = FLEXO_BEHAVIOUR_KEY, inverse = FlexoBehaviour.PARAMETERS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
-	public FlexoBehaviour getScheme();
+	public FlexoBehaviour getBehaviour();
 
-	@Setter(FLEXO_BEHAVIOUR_SCHEME_KEY)
-	public void setScheme(FlexoBehaviour scheme);
+	@Setter(FLEXO_BEHAVIOUR_KEY)
+	public void setBehaviour(FlexoBehaviour flexoBehaviour);
 
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
@@ -167,7 +167,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		private String label;
 		// private boolean usePaletteLabelAsDefaultValue;
 
-		private FlexoBehaviour _scheme;
+		// private FlexoBehaviour _scheme;
 
 		private DataBinding<Boolean> conditional;
 		private DataBinding<?> defaultValue;
@@ -209,25 +209,25 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return DEFAULT_VALUE;
 		}
 
-		@Override
-		public void setScheme(FlexoBehaviour scheme) {
+		/*@Override
+		public void setBehaviour(FlexoBehaviour scheme) {
 			_scheme = scheme;
-		}
+		}*/
 
 		@Override
 		public FlexoBehaviour getFlexoBehaviour() {
-			return _scheme;
+			return getBehaviour();
 		}
 
-		@Override
-		public FlexoBehaviour getScheme() {
+		/*@Override
+		public FlexoBehaviour getBehaviour() {
 			return getFlexoBehaviour();
-		}
+		}*/
 
 		@Override
 		public VirtualModel getVirtualModel() {
-			if (getScheme() != null) {
-				return getScheme().getVirtualModel();
+			if (getBehaviour() != null) {
+				return getBehaviour().getVirtualModel();
 			}
 			return null;
 		}
@@ -276,8 +276,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public int getIndex() {
-			if (getScheme() != null) {
-				return getScheme().getParameters().indexOf(this);
+			if (getBehaviour() != null) {
+				return getBehaviour().getParameters().indexOf(this);
 			}
 			return -1;
 		}
@@ -304,13 +304,13 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			return getScheme() != null ? getScheme().getFlexoConcept() : null;
+			return getBehaviour() != null ? getBehaviour().getFlexoConcept() : null;
 		}
 
 		@Override
 		public BindingModel getBindingModel() {
-			if (getScheme() != null) {
-				return getScheme().getBindingModel();
+			if (getBehaviour() != null) {
+				return getBehaviour().getBindingModel();
 			}
 			return null;
 		}

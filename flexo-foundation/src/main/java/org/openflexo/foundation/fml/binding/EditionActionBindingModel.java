@@ -19,58 +19,23 @@
  */
 package org.openflexo.foundation.fml.binding;
 
-import java.beans.PropertyChangeEvent;
-
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
- * This {@link BindingModel} is based on ActionContainer's {@link BindingModel}
+ * This is the {@link BindingModel} used by a {@link EditionAction}<br>
  * 
  * @author sylvain
  * 
  */
-public class EditionActionBindingModel extends BindingModel {
-
-	private final EditionAction<?, ?> editionAction;
+public class EditionActionBindingModel extends ControlGraphBindingModel<EditionAction<?, ?>> {
 
 	public EditionActionBindingModel(EditionAction<?, ?> editionAction) {
-		super(editionAction.getActionContainer() != null ? editionAction.getActionContainer().getControlGraphBindingModel() : null);
-
-		this.editionAction = editionAction;
-
-		if (editionAction != null && editionAction.getPropertyChangeSupport() != null) {
-			editionAction.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-
-	}
-
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	@Override
-	public void delete() {
-		if (editionAction != null && editionAction.getPropertyChangeSupport() != null) {
-			editionAction.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		super.delete();
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-		if (evt.getSource() == editionAction) {
-			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
-				// The FlexoBehaviour changes it's FlexoConcept
-				setBaseBindingModel(editionAction.getActionContainer() != null ? editionAction.getActionContainer()
-						.getControlGraphBindingModel() : null);
-			}
-		}
+		super(editionAction);
 	}
 
 	public EditionAction<?, ?> getEditionAction() {
-		return editionAction;
+		return super.getControlGraph();
 	}
 
 }
