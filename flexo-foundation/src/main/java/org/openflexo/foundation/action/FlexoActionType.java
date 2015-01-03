@@ -272,8 +272,6 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Cannot execute " + getLocalizedName() + " on " + object.getClass().getName()
 						+ " because action is not registered on this object type");
-				Thread.dumpStack();
-				System.out.println("hop: " + object.getActionList());
 			}
 			return false;
 		}
