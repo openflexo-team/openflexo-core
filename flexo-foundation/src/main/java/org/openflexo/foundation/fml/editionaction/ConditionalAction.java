@@ -213,6 +213,20 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return null;
 		}
 
+		@Deprecated
+		@Override
+		public void addToActions(EditionAction<?, ?> anAction) {
+			FMLControlGraph controlGraph = getThenControlGraph();
+			if (controlGraph == null) {
+				// If control graph is null, action will be new new control graph
+				setThenControlGraph(anAction);
+			} else {
+				// Otherwise, sequentially append action
+				controlGraph.sequentiallyAppend(anAction);
+			}
+			// performSuperAdder(ACTIONS_KEY, anAction);
+		}
+
 	}
 
 	@DefineValidationRule

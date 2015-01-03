@@ -33,7 +33,11 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -48,12 +52,14 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
 @XMLElement
-public interface IterationAction extends ControlStructureAction {
+public interface IterationAction extends ControlStructureAction, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ITERATION_KEY = "iteration";
 	@PropertyIdentifier(type = String.class)
 	public static final String ITERATOR_NAME_KEY = "iteratorName";
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
 	@Getter(value = ITERATION_KEY)
 	@XMLAttribute
@@ -70,6 +76,14 @@ public interface IterationAction extends ControlStructureAction {
 	public void setIteratorName(String iteratorName);
 
 	public Type getItemType();
+
+	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	@XMLElement
+	public FMLControlGraph getControlGraph();
+
+	@Setter(CONTROL_GRAPH_KEY)
+	public void setControlGraph(FMLControlGraph aControlGraph);
 
 	public static abstract class IterationActionImpl extends ControlStructureActionImpl implements IterationAction {
 
@@ -222,6 +236,31 @@ public interface IterationAction extends ControlStructureAction {
 			// TODO Auto-generated method stub
 			return super.getControlGraphBindingModel();
 		}*/
+
+		@Deprecated
+		@Override
+		public void addToActions(EditionAction<?, ?> anAction) {
+			FMLControlGraph controlGraph = getControlGraph();
+			if (controlGraph == null) {
+				// If control graph is null, action will be new new control graph
+				setControlGraph(anAction);
+			} else {
+				// Otherwise, sequentially append action
+				controlGraph.sequentiallyAppend(anAction);
+			}
+			// performSuperAdder(ACTIONS_KEY, anAction);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			return getControlGraph();
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+			setControlGraph(controlGraph);
+		}
+
 	}
 
 	@DefineValidationRule

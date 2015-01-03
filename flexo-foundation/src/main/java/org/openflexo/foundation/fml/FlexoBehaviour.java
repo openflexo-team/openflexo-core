@@ -826,7 +826,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				// Otherwise, sequentially append action
 				controlGraph.sequentiallyAppend(anAction);
 			}
-			performSuperAdder(ACTIONS_KEY, anAction);
+			// performSuperAdder(ACTIONS_KEY, anAction);
 		}
 
 		@Override

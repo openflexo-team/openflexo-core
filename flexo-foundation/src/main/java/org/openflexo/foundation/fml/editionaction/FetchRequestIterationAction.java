@@ -45,6 +45,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FetchRequestIterationAction.FetchRequestIterationActionImpl.class)
 @XMLElement
+@Deprecated
 public interface FetchRequestIterationAction extends ControlStructureAction {
 
 	@PropertyIdentifier(type = String.class)
