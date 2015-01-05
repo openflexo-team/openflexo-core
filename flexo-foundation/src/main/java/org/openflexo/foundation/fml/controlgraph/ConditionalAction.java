@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
@@ -29,8 +29,8 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -134,6 +134,12 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return getBindingModel();
 		}
 
+		// No need to rebuild a BindingModel here, since nothing is appened to the context
+		@Override
+		protected ControlGraphBindingModel<?> makeInferedBindingModel() {
+			return getBindingModel();
+		}
+
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
@@ -216,6 +222,18 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Deprecated
 		@Override
 		public void addToActions(EditionAction<?, ?> anAction) {
+			FMLControlGraphConverter.addToActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
+		}
+
+		@Deprecated
+		@Override
+		public void removeFromActions(EditionAction<?, ?> anAction) {
+			FMLControlGraphConverter.removeFromActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
+		}
+
+		/*@Deprecated
+		@Override
+		public void addToActions(EditionAction<?, ?> anAction) {
 			FMLControlGraph controlGraph = getThenControlGraph();
 			if (controlGraph == null) {
 				// If control graph is null, action will be new new control graph
@@ -225,6 +243,22 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 				controlGraph.sequentiallyAppend(anAction);
 			}
 			// performSuperAdder(ACTIONS_KEY, anAction);
+		}
+
+		@Deprecated
+		@Override
+		public void removeFromActions(EditionAction<?, ?> anAction) {
+			anAction.delete();
+		}*/
+
+		@Override
+		public void reduce() {
+			if (getThenControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getThenControlGraph()).reduce();
+			}
+			if (getElseControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getElseControlGraph()).reduce();
+			}
 		}
 
 	}

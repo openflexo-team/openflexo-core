@@ -69,10 +69,29 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	@Setter(OWNER_CONTEXT_KEY)
 	public void setOwnerContext(String context);
 
+	/**
+	 * Build and return a String encoding this {@link FMLControlGraph} in FML textual language
+	 * 
+	 * @param context
+	 * @return
+	 */
 	@Override
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
+	/**
+	 * Sequentially append supplied control graph to this control graph<br>
+	 * This method is generic and will be handled differently by subclasses to perform the most adapted job to the sequential semantics
+	 * 
+	 * @param controlGraph
+	 */
 	public void sequentiallyAppend(FMLControlGraph controlGraph);
+
+	/**
+	 * Delete this control graph<br>
+	 * Also perform structural modifications to parent control graph and reduce structure when possible
+	 */
+	@Override
+	public boolean delete(Object... context);
 
 	/**
 	 * Return {@link BindingModel} to be used in the context of this {@link FMLControlGraph}<br>
@@ -127,16 +146,71 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
+			VirtualModelModelFactory factory = getVirtualModelFactory();
+			if (factory == null) {
+				System.err.println("Prout,la facotry est null");
+			}
+			// We first store actual owning context
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
+
+			// Following statement is really important, we need first to "disconnect" actual control graph
+			// Before to build the new sequence !!!
+			owner.setControlGraph(null, ownerContext);
+
+			replaceWith(factory.newSequence(this, controlGraph), owner, ownerContext);
+
+			/*FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
 			VirtualModelModelFactory factory = getVirtualModelFactory();
+			if (factory == null) {
+				System.err.println("Prout,la facotry est null");
+			}
 			// Following statement is really important, we need first to "disconnect" actual control graph
 			owner.setControlGraph(null, ownerContext);
 			// Then we create the sequence
 			Sequence sequence = factory.newSequence(this, controlGraph);
 			sequence.setOwnerContext(ownerContext);
-			owner.setControlGraph(sequence, ownerContext);
+			owner.setControlGraph(sequence, ownerContext);*/
 
+		}
+
+		/**
+		 * Internally used to replace in owner's context this control graph by supplied control graph
+		 * 
+		 * @param cg
+		 */
+		protected void replaceWith(FMLControlGraph cg, FMLControlGraphOwner owner, String ownerContext) {
+
+			// Following statement is really important, we need first to "disconnect" actual control graph
+			// Before to build the new sequence !!!
+			// owner.setControlGraph(null, ownerContext);
+
+			// We connect control graph
+			cg.setOwnerContext(ownerContext);
+			owner.setControlGraph(cg, ownerContext);
+		}
+
+		@Override
+		public boolean delete(Object... context) {
+
+			// We first store actual owning context
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+
+			// Following statement is really important, we need first to "disconnect" actual control graph
+			// owner.setControlGraph(null, ownerContext);
+
+			// Now we instanciate new EmptyControlGraph, and perform the replacement
+			VirtualModelModelFactory factory = getVirtualModelFactory();
+			replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
+
+			// We reduce owner
+			owner.reduce();
+
+			// Now this control graph should be dereferenced
+			// We finally call super delete, and this control graph will be really deleted
+			return performSuperDelete(context);
 		}
 
 		@Override

@@ -48,8 +48,9 @@ public class FetchRequestBindingModel extends EditionActionBindingModel {
 				if (getEditionAction().getEmbeddingIteration() != null) {
 					setBaseBindingModel(getEditionAction().getEmbeddingIteration().getBindingModel());
 				} else {
-					setBaseBindingModel(getEditionAction().getActionContainer() != null ? getEditionAction().getActionContainer()
-							.getControlGraphBindingModel() : null);
+					// Already done in superclass
+					// setBaseBindingModel(getEditionAction().getOwner() != null ? getEditionAction().getOwner().getBaseBindingModel(
+					// getEditionAction()) : null);
 				}
 			}
 		}

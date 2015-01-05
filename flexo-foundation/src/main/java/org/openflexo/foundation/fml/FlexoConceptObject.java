@@ -44,6 +44,12 @@ public interface FlexoConceptObject extends NamedFMLObject {
 	@Override
 	public String getStringRepresentation();
 
+	/**
+	 * Build and return a String encoding this {@link FMLObject} in FML textual language
+	 * 
+	 * @param context
+	 * @return
+	 */
 	@Override
 	public String getFMLRepresentation(FMLRepresentationContext context);
 

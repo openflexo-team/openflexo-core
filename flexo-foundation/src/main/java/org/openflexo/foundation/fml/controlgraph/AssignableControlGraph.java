@@ -17,25 +17,26 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.controlgraph;
+
+import java.lang.reflect.Type;
 
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Interface implemented by all {@link EditionAction} setting an object property value to an object (interface used to share GUI)
+ * Abstract class representing an {@link FMLControlGraph} with the particularity of returning a value which can be assigned
  * 
  * @author sylvain
  * 
  */
-public interface SetObjectPropertyValueAction<T> extends SetPropertyValueAction<T> {
+@ModelEntity(isAbstract = true)
+public interface AssignableControlGraph<T> extends FMLControlGraph {
 
-	public DataBinding<?> getObject();
+	public DataBinding<? super T> getAssignation();
 
-	public void setObject(DataBinding<?> object);
+	public void setAssignation(DataBinding<? super T> assignation);
 
-	public IFlexoOntologyObjectProperty getObjectProperty();
-
-	public void setObjectProperty(IFlexoOntologyObjectProperty aProperty);
+	public Type getAssignableType();
 
 }

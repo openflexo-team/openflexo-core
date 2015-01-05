@@ -39,8 +39,17 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 			FMLControlGraphOwner owner = getOwner();
-			controlGraph.setOwnerContext(getOwnerContext());
-			owner.setControlGraph(controlGraph, getOwnerContext());
+			String ownerContext = getOwnerContext();
+
+			// controlGraph.setOwnerContext(getOwnerContext());
+			// owner.setControlGraph(controlGraph, getOwnerContext());
+
+			// Following statement is really important, we need first to "disconnect" actual control graph
+			// Before to build the new sequence !!!
+			owner.setControlGraph(null, ownerContext);
+
+			replaceWith(controlGraph, owner, ownerContext);
+
 		}
 
 	}

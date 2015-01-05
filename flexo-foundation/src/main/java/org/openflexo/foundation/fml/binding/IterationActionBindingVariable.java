@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.fml.editionaction.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 
 /**
  * BindingVariable associated to a {@link IterationAction} iterator

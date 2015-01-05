@@ -22,7 +22,7 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.fml.editionaction.ControlStructureAction;
+import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 
 /**
@@ -32,15 +32,10 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
  * @author sylvain
  * 
  */
-@Deprecated
-public class ControlStructureActionBindingModel extends ActionContainerBindingModel {
+public class ControlStructureActionBindingModel<CG extends ControlStructureAction> extends ControlGraphBindingModel<CG> {
 
-	private final ControlStructureAction editionAction;
-
-	public ControlStructureActionBindingModel(ControlStructureAction editionAction) {
-		super(editionAction, editionAction.getActionContainer() != null ? editionAction.getActionContainer().getControlGraphBindingModel()
-				: null);
-		this.editionAction = editionAction;
+	public ControlStructureActionBindingModel(CG editionAction) {
+		super(editionAction);
 	}
 
 	/**
@@ -54,16 +49,16 @@ public class ControlStructureActionBindingModel extends ActionContainerBindingMo
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		if (evt.getSource() == editionAction) {
+		if (evt.getSource() == getEditionAction()) {
 			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY)) {
-				setBaseBindingModel(editionAction.getActionContainer() != null ? editionAction.getActionContainer()
-						.getControlGraphBindingModel() : null);
+				setBaseBindingModel(getEditionAction().getOwner() != null ? getEditionAction().getOwner().getBaseBindingModel(
+						getEditionAction()) : null);
 			}
 		}
 	}
 
-	public ControlStructureAction getEditionAction() {
-		return editionAction;
+	public CG getEditionAction() {
+		return getControlGraph();
 	}
 
 }

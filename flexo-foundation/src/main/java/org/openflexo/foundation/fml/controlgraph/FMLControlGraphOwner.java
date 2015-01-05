@@ -21,7 +21,6 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
@@ -31,11 +30,23 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FMLControlGraphOwner.FMLControlGraphOwnerImpl.class)
+// @ImplementationClass(FMLControlGraphOwner.FMLControlGraphOwnerImpl.class)
 public abstract interface FMLControlGraphOwner extends FlexoConceptObject {
 
+	/**
+	 * Return control graph identified by supplied owner's context
+	 * 
+	 * @param ownerContext
+	 * @return
+	 */
 	public FMLControlGraph getControlGraph(String ownerContext);
 
+	/**
+	 * Sets control graph identified by supplied owner's context
+	 * 
+	 * @param controlGraph
+	 * @param ownerContext
+	 */
 	public void setControlGraph(FMLControlGraph controlGraph, String ownerContext);
 
 	/**
@@ -46,7 +57,14 @@ public abstract interface FMLControlGraphOwner extends FlexoConceptObject {
 	 */
 	public BindingModel getBaseBindingModel(FMLControlGraph controlGraph);
 
-	public static abstract class FMLControlGraphOwnerImpl extends FlexoConceptObjectImpl implements FMLControlGraphOwner {
+	/**
+	 * This method will apply reduction rules to the current control graph<br>
+	 * This means that adequate structural modifications will be performed to reduce the complexity of this control graph owner<br>
+	 * (unnecessary EmptyControlGraph will be removed, for example)
+	 */
+	public void reduce();
 
-	}
+	/*public static abstract class FMLControlGraphOwnerImpl extends FlexoConceptObjectImpl implements FMLControlGraphOwner {
+
+	}*/
 }

@@ -70,18 +70,18 @@
               <Children data="flexoBehaviour.actions" name="children" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
             </BrowserElement>
-            <BrowserElement dataClassName="org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction" label="fetchRequestIterationAction.stringRepresentation" icon="controller.iconForObject(fetchRequestIterationAction)" isEditable="false" filtered="false" defaultVisible="true" name="fetchRequestIterationAction">
+            <BrowserElement dataClassName="org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction" label="fetchRequestIterationAction.stringRepresentation" icon="controller.iconForObject(fetchRequestIterationAction)" isEditable="false" filtered="false" defaultVisible="true" name="fetchRequestIterationAction">
               <Children data="fetchRequestIterationAction.fetchRequest" name="fetchRequest" />
               <Children data="fetchRequestIterationAction.actions" name="children" />
               <BrowserRemoveAction method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
             </BrowserElement>
-            <BrowserElement dataClassName="org.openflexo.foundation.fml.editionaction.ControlStructureAction" label="controlStructure.stringRepresentation" icon="controller.iconForObject(controlStructure)" isEditable="false" filtered="false" defaultVisible="true" name="controlStructure">
+            <BrowserElement dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction" label="controlStructure.stringRepresentation" icon="controller.iconForObject(controlStructure)" isEditable="false" filtered="false" defaultVisible="true" name="controlStructure">
               <Children data="controlStructure.actions" name="children" />
               <BrowserRemoveAction method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />
             </BrowserElement>
-            <BrowserElement dataClassName="org.openflexo.foundation.fml.editionaction.IterationAction" label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)" isEditable="false" filtered="false" defaultVisible="true" name="interationAction">
+            <BrowserElement dataClassName="org.openflexo.foundation.fml.controlgraph.IterationAction" label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)" isEditable="false" filtered="false" defaultVisible="true" name="interationAction">
               <Children data="interationAction.actions" name="children" />
               <BrowserRemoveAction method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
               <BrowserAddAction method="controller.createEditionAction(selected)" name="add_action" />

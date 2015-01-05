@@ -22,8 +22,8 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.IterationAction;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
@@ -32,8 +32,7 @@ import org.openflexo.foundation.fml.editionaction.IterationAction;
  * @author sylvain
  * 
  */
-@Deprecated
-public class IterationActionBindingModel extends ControlStructureActionBindingModel {
+public class IterationActionBindingModel extends EditionActionBindingModel {
 
 	private final IterationActionBindingVariable iteratorBindingVariable;
 

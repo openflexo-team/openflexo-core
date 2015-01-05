@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -28,6 +28,8 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.binding.FetchRequestIterationActionBindingModel;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -46,12 +48,14 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FetchRequestIterationAction.FetchRequestIterationActionImpl.class)
 @XMLElement
 @Deprecated
-public interface FetchRequestIterationAction extends ControlStructureAction {
+public interface FetchRequestIterationAction extends ControlStructureAction, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String ITERATOR_NAME_KEY = "iteratorName";
 	@PropertyIdentifier(type = FetchRequest.class)
 	public static final String FETCH_REQUEST_KEY = "fetchRequest";
+	@PropertyIdentifier(type = FMLControlGraph.class)
+	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
 	@Getter(value = ITERATOR_NAME_KEY)
 	@XMLAttribute
@@ -70,6 +74,15 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 	public void setFetchRequest(FetchRequest<?, ?> fetchRequest);
 
 	public Type getItemType();
+
+	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	@XMLElement(context = "IterationControlGraph_")
+	@Embedded
+	public FMLControlGraph getControlGraph();
+
+	@Setter(CONTROL_GRAPH_KEY)
+	public void setControlGraph(FMLControlGraph aControlGraph);
 
 	public static abstract class FetchRequestIterationActionImpl extends ControlStructureActionImpl implements FetchRequestIterationAction {
 
@@ -197,7 +210,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction {
 		}
 
 		@Override
-		protected FetchRequestIterationActionBindingModel makeControlGraphBindingModel() {
+		protected FetchRequestIterationActionBindingModel makeInferedBindingModel() {
 			return new FetchRequestIterationActionBindingModel(this);
 		}
 

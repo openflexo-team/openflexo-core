@@ -59,6 +59,12 @@ public abstract interface NamedFMLObject extends FMLObject {
 	 */
 	public String getURI();
 
+	/**
+	 * Build and return a String encoding this {@link FMLObject} in FML textual language
+	 * 
+	 * @param context
+	 * @return
+	 */
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
 	public static abstract class NamedFMLObjectImpl extends FMLObjectImpl implements NamedFMLObject {

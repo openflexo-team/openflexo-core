@@ -28,7 +28,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
  * @author sylvain
  * 
  */
-public interface SetDataPropertyValueAction extends SetPropertyValueAction {
+public interface SetDataPropertyValueAction<T> extends SetPropertyValueAction<T> {
 
 	public DataBinding<?> getValue();
 

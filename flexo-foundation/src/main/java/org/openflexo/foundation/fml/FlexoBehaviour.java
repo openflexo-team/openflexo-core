@@ -31,6 +31,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -40,6 +41,7 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DeserializationFinalizer;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -95,7 +97,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
-	@XMLElement
+	@XMLElement(context = "BehaviourControlGraph_")
+	@Embedded
 	public FMLControlGraph getControlGraph();
 
 	@Setter(CONTROL_GRAPH_KEY)
@@ -635,6 +638,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return null;
 		}
 
+		@Override
+		public void reduce() {
+			if (getControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getControlGraph()).reduce();
+			}
+		}
+
 		/*@Override
 		public BindingModel getInferedBindingModel() {
 			return getBindingModel();
@@ -818,7 +828,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Deprecated
 		@Override
 		public void addToActions(EditionAction<?, ?> anAction) {
-			FMLControlGraph controlGraph = getControlGraph();
+			/*FMLControlGraph controlGraph = getControlGraph();
 			if (controlGraph == null) {
 				// If control graph is null, action will be new new control graph
 				setControlGraph(anAction);
@@ -826,7 +836,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				// Otherwise, sequentially append action
 				controlGraph.sequentiallyAppend(anAction);
 			}
-			// performSuperAdder(ACTIONS_KEY, anAction);
+			// performSuperAdder(ACTIONS_KEY, anAction);*/
+			FMLControlGraphConverter.addToActions(this, null, anAction);
+		}
+
+		@Deprecated
+		@Override
+		public void removeFromActions(EditionAction<?, ?> anAction) {
+			FMLControlGraphConverter.removeFromActions(this, null, anAction);
+			// anAction.delete();
 		}
 
 		@Override

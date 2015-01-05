@@ -17,12 +17,15 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.controlgraph;
 
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ActionContainer;
-import org.openflexo.foundation.fml.binding.ControlStructureActionBindingModel;
+import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.EditionAction.EditionActionImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -30,14 +33,15 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ControlStructureAction.ControlStructureActionImpl.class)
-public abstract interface ControlStructureAction extends EditionAction<ModelSlot<?>, Object>, ActionContainer {
+public abstract interface ControlStructureAction extends EditionAction<ModelSlot<?>, Object>, FMLControlGraph, ActionContainer {
 
 	public static abstract class ControlStructureActionImpl extends EditionActionImpl<ModelSlot<?>, Object> implements
 			ControlStructureAction {
 
 		private static final Logger logger = Logger.getLogger(ControlStructureAction.class.getPackage().getName());
 
-		private ControlStructureActionBindingModel controlGraphBindingModel;
+		// private ControlStructureActionBindingModel controlGraphBindingModel;
+		private ControlGraphBindingModel<?> inferedBindingModel;
 
 		// private Vector<EditionAction<?, ?>> actions;
 
@@ -78,16 +82,26 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}*/
 
 		@Override
+		public ControlGraphBindingModel<?> getInferedBindingModel() {
+			if (inferedBindingModel == null) {
+				inferedBindingModel = makeInferedBindingModel();
+			}
+			return inferedBindingModel;
+		}
+
+		protected abstract ControlGraphBindingModel<?> makeInferedBindingModel();
+
+		/*@Override
 		public ControlStructureActionBindingModel getControlGraphBindingModel() {
 			if (controlGraphBindingModel == null) {
-				controlGraphBindingModel = makeControlGraphBindingModel();
+				controlGraphBindingModel = makeInferedBindingModel();
 			}
 			return controlGraphBindingModel;
 		}
 
 		protected ControlStructureActionBindingModel makeControlGraphBindingModel() {
 			return new ControlStructureActionBindingModel(this);
-		}
+		}*/
 
 		@Override
 		public void variableAdded(AssignableAction action) {

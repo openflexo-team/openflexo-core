@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Vector;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.foundation.fml.binding.ActionContainerBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -97,7 +96,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 
 	public boolean isAFirstAction(EditionAction<?, ?> a);
 
-	public ActionContainerBindingModel getControlGraphBindingModel();
+	// public ActionContainerBindingModel getControlGraphBindingModel();
 
 	@Implementation
 	public static abstract class ActionContainerImpl extends FlexoBehaviourObjectImpl implements ActionContainer {

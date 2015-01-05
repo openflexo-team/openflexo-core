@@ -19,7 +19,12 @@
  */
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -29,6 +34,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Encodes a sequence as a sequential definition of two control graphs
@@ -64,6 +70,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	@Setter(CONTROL_GRAPH2_KEY)
 	public void setControlGraph2(FMLControlGraph aControlGraph);
 
+	/**
+	 * When this sequence represents a sequence of more than two control graphs, resulting structure is a sequence of sequence of
+	 * sequence... This method allows to retrieve a flattened list of all chained control graphs
+	 * 
+	 * @return a flattened list of all chained control graphs
+	 */
+	public List<FMLControlGraph> getFlattenedSequence();
+
 	public static abstract class SequenceImpl extends FMLControlGraphImpl implements Sequence {
 
 		@Override
@@ -86,6 +100,27 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
 			getControlGraph2().sequentiallyAppend(controlGraph);
+		}
+
+		@Override
+		public void reduce() {
+			// We first store actual owning context
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+
+			// We reduce each control graphs
+			if (getControlGraph1() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getControlGraph1()).reduce();
+			}
+			if (getControlGraph2() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getControlGraph2()).reduce();
+			}
+
+			if (getControlGraph1() instanceof EmptyControlGraph) {
+				replaceWith(getControlGraph2(), owner, ownerContext);
+			} else if (getControlGraph2() instanceof EmptyControlGraph) {
+				replaceWith(getControlGraph1(), owner, ownerContext);
+			}
 		}
 
 		@Override
@@ -118,12 +153,30 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			return null;
 		}
 
-		/*@Override
-		public void setOwner(FMLControlGraphOwner owner) {
-			System.out.println("BEGIN / Sequence, on set le owner de " + this + " avec " + owner);
-			performSuperSetter(OWNER_KEY, owner);
-			System.out.println("END / Sequence, on a sette le owner de " + this + " avec " + owner);
-		}*/
+		@Override
+		public List<FMLControlGraph> getFlattenedSequence() {
+			List<FMLControlGraph> returned = new ArrayList<FMLControlGraph>();
+			if (getControlGraph1() instanceof Sequence) {
+				returned.addAll(((Sequence) getControlGraph1()).getFlattenedSequence());
+			} else {
+				returned.add(getControlGraph1());
+			}
+			if (getControlGraph2() instanceof Sequence) {
+				returned.addAll(((Sequence) getControlGraph2()).getFlattenedSequence());
+			} else {
+				returned.add(getControlGraph2());
+			}
+			return returned;
+		}
 
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			for (FMLControlGraph cg : getFlattenedSequence()) {
+				out.append(cg.getFMLRepresentation(context), context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+			}
+			return out.toString();
+		}
 	}
 }

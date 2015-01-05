@@ -135,7 +135,7 @@
 			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="editionAction" />
 		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.editionaction.ControlStructureAction"
+			dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 			label="" icon="controller.iconForObject(controlStructureAction)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""

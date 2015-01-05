@@ -31,7 +31,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * @author sylvain
  * 
  */
-public interface SetPropertyValueAction {
+public interface SetPropertyValueAction<T> {
 
 	public Type getSubjectType();
 
@@ -45,7 +45,7 @@ public interface SetPropertyValueAction {
 
 	public ModelSlot getModelSlot();
 
-	public DataBinding<Object> getAssignation();
+	public DataBinding<? super T> getAssignation();
 
 	public DataBinding<Boolean> getConditional();
 

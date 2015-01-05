@@ -19,11 +19,11 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -177,6 +177,12 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(action1, seq1.getControlGraph1());
 		assertEquals(action2, seq1.getControlGraph2());
 
+		VirtualModelModelFactory factory = ((VirtualModelResource) creationScheme.getVirtualModel().getResource()).getFactory();
+		FMLControlGraph controlGraph = creationScheme.getControlGraph();
+
+		String cg = factory.stringRepresentation(creationScheme);
+		System.out.println("creationScheme:\n" + cg);
+
 		assertTrue(seq1.getBindingModel().getBaseBindingModel() == creationScheme.getBindingModel());
 		assertEquals(seq1.getBindingModel(), action1.getBindingModel().getBaseBindingModel());
 		assertEquals(seq1.getControlGraph1().getInferedBindingModel(), action2.getBindingModel().getBaseBindingModel());
@@ -193,11 +199,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertTrue(flexoConcept.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConcept.getCreationSchemes().contains(creationScheme));
 
-		VirtualModelModelFactory factory = ((VirtualModelResource) creationScheme.getVirtualModel().getResource()).getFactory();
-		FMLControlGraph controlGraph = creationScheme.getControlGraph();
-
-		// String cg = factory.stringRepresentation(creationScheme);
-		// System.out.println("Control graph:\n" + cg);
+		cg = factory.stringRepresentation(creationScheme);
+		System.out.println("creationScheme:\n" + cg);
 
 		assertTrue(controlGraph instanceof Sequence);
 		assertTrue(((Sequence) controlGraph).getControlGraph1() instanceof DeclareFlexoRole);
@@ -219,6 +222,23 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(creationScheme, action3.getRootOwner());
 		assertEquals(creationScheme, seq1.getRootOwner());
 		assertEquals(creationScheme, seq2.getRootOwner());
+
+		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+
+		// We check that getFlattenedSequence() is correct for a chained sequence structure
+		assertEquals(3, seq1.getFlattenedSequence().size());
+		assertSameList(seq1.getFlattenedSequence(), action1, action2, action3);
+
+		// We test here control graph deletion and reduction
+		action2.delete();
+
+		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+
+		assertEquals(2, seq1.getFlattenedSequence().size());
+		assertSameList(seq1.getFlattenedSequence(), action1, action3);
+
 	}
 
 	@Test
@@ -300,7 +320,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		declarePatternRole2InCondition2.setObject(new DataBinding<Object>("3"));
 
 		String debug = factory.stringRepresentation(actionScheme);
-		System.out.println("ActionScheme:\n" + debug);
+		System.out.println("actionScheme:\n" + debug);
 
 		FMLControlGraph controlGraph = actionScheme.getControlGraph();
 

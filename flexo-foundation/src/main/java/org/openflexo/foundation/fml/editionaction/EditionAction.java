@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
@@ -34,8 +35,12 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -145,7 +150,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
 
 	@Override
-	public EditionActionBindingModel getBindingModel();
+	public BindingModel getBindingModel();
 
 	public static abstract class EditionActionImpl<MS extends ModelSlot<?>, T> extends FMLControlGraphImpl implements EditionAction<MS, T> {
 
@@ -159,7 +164,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 
 		// private BindingModel inferedBindingModel = null;
 
-		private EditionActionBindingModel bindingModel;
+		private ControlGraphBindingModel<?> bindingModel;
 
 		public EditionActionImpl() {
 			super();
@@ -359,7 +364,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 		}*/
 
 		@Override
-		public EditionActionBindingModel getBindingModel() {
+		public ControlGraphBindingModel<?> getBindingModel() {
 			if (bindingModel == null) {
 				bindingModel = makeBindingModel();
 			}
@@ -367,12 +372,12 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 		}
 
 		@Override
-		protected EditionActionBindingModel makeBindingModel() {
+		protected ControlGraphBindingModel<?> makeBindingModel() {
 			return new EditionActionBindingModel(this);
 		}
 
 		@Override
-		public EditionActionBindingModel getInferedBindingModel() {
+		public ControlGraphBindingModel<?> getInferedBindingModel() {
 			return getBindingModel();
 		}
 

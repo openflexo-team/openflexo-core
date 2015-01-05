@@ -28,19 +28,19 @@ import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.editionaction.IterationAction;
 import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
@@ -441,11 +441,15 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	}
 
 	public IterationAction newIterationAction() {
-		return newInstance(IterationAction.class);
+		IterationAction returned = newInstance(IterationAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
 	}
 
 	public FetchRequestIterationAction newFetchRequestIterationAction() {
-		return newInstance(FetchRequestIterationAction.class);
+		FetchRequestIterationAction returned = newInstance(FetchRequestIterationAction.class);
+		returned.setControlGraph(newEmptyControlGraph());
+		return returned;
 	}
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstanceAction() {

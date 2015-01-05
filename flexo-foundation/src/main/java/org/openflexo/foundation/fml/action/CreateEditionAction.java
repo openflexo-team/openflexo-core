@@ -33,13 +33,14 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.editionaction.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.editionaction.IterationAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -160,7 +161,16 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		newEditionAction = makeEditionAction();
 
 		if (newEditionAction != null) {
+
+			FMLControlGraphOwner owner = getFocusedObject().getOwner();
+			String ownerContext = getFocusedObject().getOwnerContext();
+
+			System.out.println(">>>>> OK, je rajoute l'action " + newEditionAction + " au graphe de controle " + getFocusedObject());
+			System.out.println("owner=" + owner + " context=" + ownerContext);
+
 			getFocusedObject().sequentiallyAppend(newEditionAction);
+
+			System.out.println("Maintenant, j'ai ca: " + owner.getControlGraph(ownerContext));
 
 			/*if ((getFocusedObject() instanceof ActionContainer) && (getLayoutChoice() == LayoutChoice.InsertInside)) {
 				((ActionContainer) getFocusedObject()).addToActions(newEditionAction);

@@ -6,8 +6,8 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
 
 /**
  * BindingVariable associated to an {@link FetchRequestIterationAction} iterator

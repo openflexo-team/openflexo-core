@@ -71,6 +71,7 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 		if (evt.getSource() == controlGraph) {
 			if (evt.getPropertyName().equals(FMLControlGraph.OWNER_KEY) || evt.getPropertyName().equals(FMLControlGraph.OWNER_CONTEXT_KEY)) {
 				// The control graph changes it's owner or context
+				System.out.println("owner=" + controlGraph.getOwner());
 				setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
 			}
 		} else if (evt.getSource() == controlGraph.getOwner()) {

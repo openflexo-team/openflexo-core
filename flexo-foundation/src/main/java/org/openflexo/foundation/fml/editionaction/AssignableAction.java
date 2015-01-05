@@ -26,6 +26,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.BindingValue;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.controlgraph.AssignableControlGraph;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -41,14 +42,14 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract class representing an EditionAction with the particularity of returning a value which can be assigned
+ * Abstract class representing an {@link EditionAction} with the particularity of returning a value which can be assigned
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AssignableAction.AssignableActionImpl.class)
-public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends EditionAction<MS, T> {
+public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends EditionAction<MS, T>, AssignableControlGraph<T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VARIABLE_NAME_KEY = "variableName";
@@ -62,12 +63,14 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	@Setter(VARIABLE_NAME_KEY)
 	public void setVariableName(String variableName);
 
+	@Override
 	@Getter(value = ASSIGNATION_KEY)
 	@XMLAttribute
-	public DataBinding<?> getAssignation();
+	public DataBinding<? super T> getAssignation();
 
+	@Override
 	@Setter(ASSIGNATION_KEY)
-	public void setAssignation(DataBinding<?> assignation);
+	public void setAssignation(DataBinding<? super T> assignation);
 
 	public boolean getIsVariableDeclaration();
 
@@ -75,6 +78,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 	public FlexoRole<?> getFlexoRole();
 
+	@Override
 	public Type getAssignableType();
 
 	public static abstract class AssignableActionImpl<MS extends ModelSlot<?>, T> extends EditionActionImpl<MS, T> implements
@@ -82,7 +86,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
 
-		private DataBinding<Object> assignation;
+		private DataBinding<? super T> assignation;
 
 		private String variableName = null;
 
@@ -101,7 +105,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 		public abstract Type getAssignableType();
 
 		@Override
-		public DataBinding<Object> getAssignation() {
+		public DataBinding<? super T> getAssignation() {
 			if (assignation == null) {
 				if (StringUtils.isNotEmpty(variableName)) {
 					updateVariableAssignation();
@@ -122,7 +126,7 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 		}
 
 		@Override
-		public void setAssignation(DataBinding<?> assignation) {
+		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
 				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
 						DataBinding.BindingDefinitionType.GET_SET) {

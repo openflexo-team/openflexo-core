@@ -62,12 +62,13 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.editionaction.IterationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -698,7 +699,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(flexoConceptA.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConceptA.getCreationSchemes().contains(creationScheme));
 
-		assertEquals(3, creationScheme.getActions().size());
+		// assertEquals(3, creationScheme.getActions().size());
 
 		System.out.println("FML=\n" + creationScheme.getFMLRepresentation());
 
@@ -799,7 +800,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(conditional1);
 		assertTrue(conditional1.getCondition().isValid());
 
-		CreateEditionAction createDeclareFlexoRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(conditional1, null, editor);
+		CreateEditionAction createDeclareFlexoRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
+				conditional1.getThenControlGraph(), null, editor);
 		createDeclareFlexoRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclareFlexoRoleInCondition1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclareFlexoRoleInCondition1.doAction();
@@ -820,7 +822,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(12, conditional2.getBindingModel().getBindingVariablesCount());
 
-		CreateEditionAction createDeclareFlexoRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
+		CreateEditionAction createDeclareFlexoRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(
+				conditional2.getThenControlGraph(), null, editor);
 		createDeclareFlexoRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclareFlexoRoleInCondition2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclareFlexoRoleInCondition2.doAction();
@@ -830,7 +833,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(12, declareFlexoRoleInCondition2.getBindingModel().getBindingVariablesCount());
 
-		CreateEditionAction createIterationInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
+		CreateEditionAction createIterationInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2.getThenControlGraph(),
+				null, editor);
 		createIterationInCondition2.actionChoice = CreateEditionActionChoice.ControlAction;
 		createIterationInCondition2.setControlActionClass(IterationAction.class);
 		createIterationInCondition2.doAction();
@@ -842,10 +846,12 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(iteration.getIteration().isValid());
 
 		assertEquals(12, iteration.getBindingModel().getBindingVariablesCount());
-		assertEquals(13, iteration.getControlGraphBindingModel().getBindingVariablesCount());
-		assertNotNull(iteration.getControlGraphBindingModel().bindingVariableNamed("fci"));
+		// assertEquals(13, iteration.getControlGraphBindingModel().getBindingVariablesCount());
+		assertEquals(13, iteration.getInferedBindingModel().getBindingVariablesCount());
+		assertNotNull(iteration.getInferedBindingModel().bindingVariableNamed("fci"));
 
-		CreateEditionAction createDeclareFlexoRoleInIteration1 = CreateEditionAction.actionType.makeNewAction(iteration, null, editor);
+		CreateEditionAction createDeclareFlexoRoleInIteration1 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
+				null, editor);
 		createDeclareFlexoRoleInIteration1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclareFlexoRoleInIteration1.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclareFlexoRoleInIteration1.doAction();
@@ -854,13 +860,22 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		declareFlexoRoleInIteration1.setAssignation(new DataBinding<Object>("aStringInA"));
 		declareFlexoRoleInIteration1.setObject(new DataBinding<Object>("\"foo\""));
 
-		assertEquals(13, declareFlexoRoleInIteration1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declareFlexoRoleInIteration1.getBindingModel().bindingVariableNamed("fci"));
+		VirtualModelModelFactory factory = actionScheme.getVirtualModelFactory();
+		System.out.println("actionScheme =\n" + factory.stringRepresentation(actionScheme));
+		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+		System.out.println("bm=" + declareFlexoRoleInIteration1.getInferedBindingModel());
+		System.out.println("iteration.getControlGraph()=" + iteration.getControlGraph());
+		System.out.println("declareFlexoRoleInIteration1=" + declareFlexoRoleInIteration1);
+		System.out.println("declareFlexoRoleInIteration1.getOwner()=" + declareFlexoRoleInIteration1.getOwner());
+
+		assertEquals(13, declareFlexoRoleInIteration1.getInferedBindingModel().getBindingVariablesCount());
+		assertNotNull(declareFlexoRoleInIteration1.getInferedBindingModel().bindingVariableNamed("fci"));
 
 		assertTrue(declareFlexoRoleInIteration1.getAssignation().isValid());
 		assertTrue(declareFlexoRoleInIteration1.getObject().isValid());
 
-		CreateEditionAction createDeclareFlexoRoleInIteration2 = CreateEditionAction.actionType.makeNewAction(iteration, null, editor);
+		CreateEditionAction createDeclareFlexoRoleInIteration2 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
+				null, editor);
 		createDeclareFlexoRoleInIteration2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclareFlexoRoleInIteration2.setBuiltInActionClass(DeclareFlexoRole.class);
 		createDeclareFlexoRoleInIteration2.doAction();
@@ -875,11 +890,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(declareFlexoRoleInIteration2.getAssignation().isValid());
 		assertTrue(declareFlexoRoleInIteration2.getObject().isValid());
 
-		assertEquals(2, actionScheme.getActions().size());
-		assertEquals(1, conditional1.getActions().size());
-		assertEquals(2, conditional2.getActions().size());
+		System.out.println(factory.stringRepresentation(actionScheme));
 
 		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+
+		assertTrue(actionScheme.getControlGraph() instanceof Sequence);
+		assertEquals(2, ((Sequence) actionScheme.getControlGraph()).getFlattenedSequence().size());
+		assertTrue(conditional1.getThenControlGraph() instanceof DeclareFlexoRole);
+		assertTrue(conditional2.getThenControlGraph() instanceof Sequence);
+		assertEquals(2, ((Sequence) conditional2.getThenControlGraph()).getFlattenedSequence().size());
 
 		// Test renaming iteratorName
 		iteration.setIteratorName("iteratorHasChanged");

@@ -22,8 +22,8 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link EditionAction}<br>
@@ -33,7 +33,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestIterationAction;
  * 
  */
 @Deprecated
-public class FetchRequestIterationActionBindingModel extends ControlStructureActionBindingModel {
+public class FetchRequestIterationActionBindingModel extends ControlStructureActionBindingModel<FetchRequestIterationAction> {
 
 	private final FetchRequestIterationActionBindingVariable iteratorBindingVariable;
 
@@ -58,7 +58,7 @@ public class FetchRequestIterationActionBindingModel extends ControlStructureAct
 
 	@Override
 	public FetchRequestIterationAction getEditionAction() {
-		return (FetchRequestIterationAction) super.getEditionAction();
+		return super.getEditionAction();
 	}
 
 	public FetchRequestIterationActionBindingVariable getIteratorBindingVariable() {
