@@ -25,6 +25,7 @@ import java.util.Vector;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -54,17 +55,17 @@ public interface ActionContainer extends FlexoBehaviourObject {
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement
-	public List<EditionAction<?, ?>> getActions();
+	public List<EditionAction> getActions();
 
 	@Setter(ACTIONS_KEY)
-	public void setActions(List<EditionAction<?, ?>> actions);
+	public void setActions(List<EditionAction> actions);
 
 	@Adder(ACTIONS_KEY)
 	@PastingPoint
-	public void addToActions(EditionAction<?, ?> aAction);
+	public void addToActions(EditionAction aAction);
 
 	@Remover(ACTIONS_KEY)
-	public void removeFromActions(EditionAction<?, ?> aAction);
+	public void removeFromActions(EditionAction aAction);
 
 	@Override
 	public FlexoBehaviour getFlexoBehaviour();
@@ -74,40 +75,40 @@ public interface ActionContainer extends FlexoBehaviourObject {
 
 	// public BindingModel getInferedBindingModel();
 
-	public int getIndex(EditionAction<?, ?> action);
+	public int getIndex(EditionAction action);
 
-	public void insertActionAtIndex(EditionAction<?, ?> action, int index);
+	public void insertActionAtIndex(EditionAction action, int index);
 
-	public void actionFirst(EditionAction<?, ?> a);
+	public void actionFirst(EditionAction a);
 
-	public void actionUp(EditionAction<?, ?> a);
+	public void actionUp(EditionAction a);
 
-	public void actionDown(EditionAction<?, ?> a);
+	public void actionDown(EditionAction a);
 
-	public void actionLast(EditionAction<?, ?> a);
+	public void actionLast(EditionAction a);
 
-	public <A extends EditionAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot);
+	public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot);
 
-	public EditionAction<?, ?> deleteAction(EditionAction<?, ?> anAction);
+	public EditionAction deleteAction(EditionAction anAction);
 
 	public void variableAdded(AssignableAction action);
 
-	public boolean isALastAction(EditionAction<?, ?> a);
+	public boolean isALastAction(EditionAction a);
 
-	public boolean isAFirstAction(EditionAction<?, ?> a);
+	public boolean isAFirstAction(EditionAction a);
 
 	// public ActionContainerBindingModel getControlGraphBindingModel();
 
 	@Implementation
 	public static abstract class ActionContainerImpl extends FlexoBehaviourObjectImpl implements ActionContainer {
 		@Override
-		public int getIndex(EditionAction<?, ?> action) {
+		public int getIndex(EditionAction action) {
 			return getActions().indexOf(action);
 		}
 
 		/* 
 		@Override
-		public void insertActionAtIndex(EditionAction<?, ?> action, int index) {
+		public void insertActionAtIndex(EditionAction action, int index) {
 			// action.setScheme(getEditionScheme());
 			action.setActionContainer(this);
 			getActions().add(index, action);
@@ -115,14 +116,14 @@ public interface ActionContainer extends FlexoBehaviourObject {
 		}
 
 		@Override
-		public void actionFirst(EditionAction<?, ?> a) {
+		public void actionFirst(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(0, a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		@Override
-		public void actionUp(EditionAction<?, ?> a) {
+		public void actionUp(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > 0) {
 				getActions().remove(a);
@@ -132,7 +133,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 		}
 
 		@Override
-		public void actionDown(EditionAction<?, ?> a) {
+		public void actionDown(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > -1) {
 				getActions().remove(a);
@@ -142,18 +143,18 @@ public interface ActionContainer extends FlexoBehaviourObject {
 		}
 
 		@Override
-		public void actionLast(EditionAction<?, ?> a) {
+		public void actionLast(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}*/
 
 		@Override
-		public boolean isALastAction(EditionAction<?, ?> a) {
+		public boolean isALastAction(EditionAction a) {
 			boolean isLast = false;
 			if (a != null) {
 				if (getIndex(a) == -1) {
-					for (EditionAction<?, ?> ea : getActions()) {
+					for (EditionAction ea : getActions()) {
 						if (ea instanceof ActionContainer) {
 							isLast = ((ActionContainer) ea).isALastAction(a);
 						}
@@ -166,11 +167,11 @@ public interface ActionContainer extends FlexoBehaviourObject {
 		}
 
 		@Override
-		public boolean isAFirstAction(EditionAction<?, ?> a) {
+		public boolean isAFirstAction(EditionAction a) {
 			boolean isFirst = false;
 			if (a != null) {
 				if (getIndex(a) == -1) {
-					for (EditionAction<?, ?> ea : getActions()) {
+					for (EditionAction ea : getActions()) {
 						if (ea instanceof ActionContainer) {
 							isFirst = ((ActionContainer) ea).isAFirstAction(a);
 						}

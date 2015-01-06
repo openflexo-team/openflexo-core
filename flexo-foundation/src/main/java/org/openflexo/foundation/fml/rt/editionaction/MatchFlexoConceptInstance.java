@@ -42,8 +42,6 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -81,7 +79,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSlot, FlexoConceptInstance> {
+public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -92,10 +90,12 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
+	@Override
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
 	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
 
+	@Override
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
 
@@ -148,7 +148,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<FMLRTModelSlot, FlexoConceptInstance> implements
+	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance> implements
 			MatchFlexoConceptInstance, PropertyChangeListener {
 
 		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
@@ -156,14 +156,6 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
-
-		// private Vector<MatchingCriteria> matchingCriterias = new Vector<MatchingCriteria>();
-		// private Vector<CreateFlexoConceptInstanceParameter> parameters = new Vector<CreateFlexoConceptInstanceParameter>();
-		// private final boolean updatingParameters = false;
-
-		public MatchFlexoConceptInstanceImpl() {
-			super();
-		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {

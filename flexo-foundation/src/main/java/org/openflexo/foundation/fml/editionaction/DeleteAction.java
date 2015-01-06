@@ -32,7 +32,6 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -46,30 +45,25 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement
-public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> extends EditionAction<MS, T> {
+public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
 
 	@Getter(value = OBJECT_KEY)
 	@XMLAttribute
-	public DataBinding<?> getObject();
+	public DataBinding<T> getObject();
 
 	@Setter(OBJECT_KEY)
-	public void setObject(DataBinding<?> object);
+	public void setObject(DataBinding<T> object);
 
 	public FlexoRole getFlexoRole();
 
-	public static abstract class DeleteActionImpl<MS extends ModelSlot<?>, T extends FlexoObject> extends EditionActionImpl<MS, T>
-			implements DeleteAction<MS, T> {
+	public static abstract class DeleteActionImpl<T extends FlexoObject> extends EditionActionImpl implements DeleteAction<T> {
 
 		private static final Logger logger = Logger.getLogger(DeleteAction.class.getPackage().getName());
 
-		private DataBinding<?> object;
-
-		public DeleteActionImpl() {
-			super();
-		}
+		private DataBinding<T> object;
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -92,20 +86,20 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public DataBinding<?> getObject() {
+		public DataBinding<T> getObject() {
 			if (object == null) {
-				object = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				object = new DataBinding<T>(this, FlexoObject.class, BindingDefinitionType.GET);
 				object.setBindingName("object");
 			}
 			return object;
 		}
 
 		@Override
-		public void setObject(DataBinding<?> object) {
+		public void setObject(DataBinding<T> object) {
 			if (object != null) {
 				object.setOwner(this);
 				object.setBindingName("object");
-				object.setDeclaredType(Object.class);
+				object.setDeclaredType(FlexoObject.class);
 				object.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.object = object;
@@ -128,7 +122,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		public T execute(FlexoBehaviourAction action) {
 			T objectToDelete = null;
 			try {
-				objectToDelete = (T) getObject().getBindingValue(action);
+				objectToDelete = getObject().getBindingValue(action);
 			} catch (TypeMismatchException e1) {
 				e1.printStackTrace();
 			} catch (NullReferenceException e1) {
@@ -149,12 +143,6 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 			return objectToDelete;
 		}
 
-		/*@Override
-		public void finalizePerformAction(FlexoBehaviourAction action, T initialContext) {
-			// TODO Auto-generated method stub
-
-		}*/
-
 	}
 
 	@DefineValidationRule
@@ -164,7 +152,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public DataBinding<Object> getBinding(DeleteAction object) {
+		public DataBinding<?> getBinding(DeleteAction object) {
 			return object.getObject();
 		}
 

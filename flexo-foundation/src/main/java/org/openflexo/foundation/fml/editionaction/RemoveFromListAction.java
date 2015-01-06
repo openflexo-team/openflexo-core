@@ -32,7 +32,7 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -45,28 +45,33 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(RemoveFromListAction.RemoveFromListActionImpl.class)
 @XMLElement
-public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends AssignableAction<MS, Object> {
+public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String LIST_KEY = "list";
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getValue();
+	public DataBinding<T> getValue();
 
 	@Setter(VALUE_KEY)
-	public void setValue(DataBinding<?> value);
+	public void setValue(DataBinding<T> value);
 
-	public static abstract class RemoveFromListActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<MS, Object> implements
-			RemoveFromListAction<MS, T> {
+	@Getter(value = LIST_KEY)
+	@XMLAttribute
+	public DataBinding<? extends List<T>> getList();
+
+	@Setter(LIST_KEY)
+	public void setList(DataBinding<? extends List<T>> list);
+
+	public static abstract class RemoveFromListActionImpl<T> extends AssignableActionImpl<T> implements RemoveFromListAction<T> {
 
 		private static final Logger logger = Logger.getLogger(RemoveFromListAction.class.getPackage().getName());
 
-		private DataBinding<?> value;
-
-		public RemoveFromListActionImpl() {
-			super();
-		}
+		private DataBinding<T> value;
+		private DataBinding<? extends List<T>> list;
 
 		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -75,12 +80,7 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 			return out.toString();
 		}*/
 
-		/*@Override
-		public boolean isAssignationRequired() {
-			return true;
-		}*/
-
-		public Object getDeclaredObject(FlexoBehaviourAction action) {
+		public T getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
 				return getValue().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -94,16 +94,40 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 		}
 
 		@Override
-		public DataBinding<?> getValue() {
+		public DataBinding<? extends List<T>> getList() {
+
+			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
+			if (list == null) {
+				list = new DataBinding<List<T>>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list.setBindingName("list");
+			}
+			return list;
+		}
+
+		@Override
+		public void setList(DataBinding<? extends List<T>> list) {
+
+			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
+			if (list != null) {
+				list.setOwner(this);
+				list.setBindingName("list");
+				list.setDeclaredType(new ParameterizedTypeImpl(List.class, Object.class));
+				list.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.list = list;
+		}
+
+		@Override
+		public DataBinding<T> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, Object.class, BindingDefinitionType.GET);
+				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
 				value.setBindingName("value");
 			}
 			return value;
 		}
 
 		@Override
-		public void setValue(DataBinding<?> value) {
+		public void setValue(DataBinding<T> value) {
 			if (value != null) {
 				value.setOwner(this);
 				value.setBindingName("value");
@@ -122,29 +146,64 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) {
-			return getDeclaredObject(action);
+		public T execute(FlexoBehaviourAction<?, ?, ?> action) {
+			logger.info("performing RemoveFromListAction");
+
+			DataBinding<? extends List<T>> list = getList();
+			T objToRemove = getDeclaredObject(action);
+
+			try {
+
+				if (list != null) {
+					List<T> listObj = list.getBindingValue(action);
+					if (objToRemove != null) {
+						listObj.remove(objToRemove);
+					} else {
+						logger.warning("Won't add null object to list");
+
+					}
+				} else {
+					logger.warning("Cannot perform Assignation as assignation is null");
+				}
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return objToRemove;
+		}
+	}
+
+	@DefineValidationRule
+	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<RemoveFromListAction> {
+		public ValueBindingIsRequiredAndMustBeValid() {
+			super("'value'_binding_is_not_valid", RemoveFromListAction.class);
 		}
 
-		/*@Override
-		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			if (dataBinding == getValue()) {
-				updateVariableAssignation();
-			}
-			super.notifiedBindingChanged(dataBinding);
-		}*/
-
-		public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<RemoveFromListAction> {
-			public ValueBindingIsRequiredAndMustBeValid() {
-				super("'value'_binding_is_not_valid", RemoveFromListAction.class);
-			}
-
-			@Override
-			public DataBinding<Object> getBinding(RemoveFromListAction object) {
-				return object.getValue();
-			}
-
+		@Override
+		public DataBinding<?> getBinding(RemoveFromListAction object) {
+			return object.getValue();
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class ListBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<RemoveFromListAction> {
+		public ListBindingIsRequiredAndMustBeValid() {
+			super("'list'_binding_is_not_valid", RemoveFromListAction.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(RemoveFromListAction object) {
+			return object.getList();
+		}
+
+	}
+
 }

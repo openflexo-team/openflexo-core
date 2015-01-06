@@ -22,7 +22,8 @@ package org.openflexo.foundation.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.editionaction.AddIndividual.AddIndividualImpl;
+import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
+import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
@@ -35,15 +36,16 @@ import org.openflexo.model.annotations.ModelEntity;
 @FIBPanel("Fib/FML/CloneIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(CloneIndividual.CloneIndividualImpl.class)
-public abstract interface CloneIndividual extends AddIndividual {
+public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
+		AddIndividual<MS, T> {
 
-	public static abstract class CloneIndividualImpl extends AddIndividualImpl implements CloneIndividual {
+	public static abstract class CloneIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
+			AddIndividualImpl<MS, T> implements CloneIndividual<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(CloneIndividual.class.getPackage().getName());
 
 		public CloneIndividualImpl() {
 			super();
 		}
-
 	}
 }

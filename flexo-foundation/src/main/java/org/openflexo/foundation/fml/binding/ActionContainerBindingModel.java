@@ -21,8 +21,6 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
@@ -53,7 +51,7 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 
 		this.actionContainer = actionContainer;
 
-		declarationBindingVariables = new HashMap<AssignableAction<?, ?>, DeclarationBindingVariable>();
+		// declarationBindingVariables = new HashMap<AssignableAction<?, ?>, DeclarationBindingVariable>();
 
 		if (actionContainer != null && actionContainer.getPropertyChangeSupport() != null) {
 			actionContainer.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -71,11 +69,11 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		if (actionContainer != null && actionContainer.getPropertyChangeSupport() != null) {
 			actionContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		for (AssignableAction<?, ?> a : declarationBindingVariables.keySet()) {
+		/*for (AssignableAction<?, ?> a : declarationBindingVariables.keySet()) {
 			a.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 
-		declarationBindingVariables.clear();
+		declarationBindingVariables.clear();*/
 
 		super.delete();
 	}
@@ -88,7 +86,7 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 				// Actions were touched
 				// updateAssignationVariables();
 			}
-		} else if (evt.getSource() instanceof AssignableAction<?, ?>) {
+		} else if (evt.getSource() instanceof AssignableAction<?>) {
 			// Something has changed in any of contained actions
 			// updateAssignationVariables();
 		}
@@ -98,13 +96,13 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		return actionContainer;
 	}
 
-	private final Map<AssignableAction<?, ?>, DeclarationBindingVariable> declarationBindingVariables;
+	// private final Map<AssignableAction<?>, DeclarationBindingVariable> declarationBindingVariables;
 
 	/*private void updateAssignationVariables() {
 
 		List<AssignableAction<?, ?>> assignationToBeDeleted = new ArrayList<AssignableAction<?, ?>>(declarationBindingVariables.keySet());
 
-		for (final EditionAction<?, ?> a : actionContainer.getActions()) {
+		for (final EditionAction a : actionContainer.getActions()) {
 			if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
 				if (assignationToBeDeleted.contains(a)) {
 					assignationToBeDeleted.remove(a);

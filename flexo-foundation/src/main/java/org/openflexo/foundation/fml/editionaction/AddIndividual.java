@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -58,7 +57,8 @@ import org.openflexo.toolbox.StringUtils;
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
-public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends AddConcept<MS, T> {
+public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
+		AddConcept<MS, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String INDIVIDUAL_NAME_KEY = "individualName";
@@ -136,7 +136,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
-	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
+	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
 			AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
@@ -186,22 +186,15 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public abstract Class<T> getOntologyIndividualClass();
 
 		@Override
-		public IndividualRole getFlexoRole() {
-			FlexoRole superFlexoRole = super.getFlexoRole();
-			if (superFlexoRole instanceof IndividualRole) {
-				return (IndividualRole) superFlexoRole;
-			} else if (superFlexoRole != null) {
-				// logger.warning("Unexpected pattern role of type " + superPatternRole.getClass().getSimpleName());
-				return null;
-			}
-			return null;
+		public IndividualRole<T> getFlexoRole() {
+			return (IndividualRole<T>) super.getFlexoRole();
 		}
 
-		public IFlexoOntologyClass getType() {
+		public IFlexoOntologyClass<?> getType() {
 			return getOntologyClass();
 		}
 
-		public void setType(IFlexoOntologyClass type) {
+		public void setType(IFlexoOntologyClass<?> type) {
 			setOntologyClass(type);
 		}
 
@@ -213,7 +206,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			} else {
 				if (getFlexoRole() != null) {
 					// System.out.println("Je reponds avec le pattern role " + getPatternRole());
-					IFlexoOntologyClass t = getFlexoRole().getOntologicType();
+					IFlexoOntologyClass<?> t = getFlexoRole().getOntologicType();
 					setOntologyClass(t);
 					return t;
 				}

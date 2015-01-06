@@ -30,7 +30,6 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -41,22 +40,21 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssignationAction.AbstractAssignationActionImpl.class)
 @XMLElement
-public interface AbstractAssignationAction<T> extends AssignableAction<ModelSlot<?>, T>, FMLControlGraphOwner {
+public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = AssignableAction.class)
 	public static final String ASSIGNABLE_ACTION_KEY = "assignableAction";
 
 	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "AssignableAction_")
-	public AssignableAction<?, T> getAssignableAction();
+	public AssignableAction<T> getAssignableAction();
 
 	@Setter(ASSIGNABLE_ACTION_KEY)
-	public void setAssignableAction(AssignableAction<?, T> assignableAction);
+	public void setAssignableAction(AssignableAction<T> assignableAction);
 
 	public DataBinding<? super T> getAssignation();
 
-	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<ModelSlot<?>, T> implements
-			AbstractAssignationAction<T> {
+	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
 
@@ -91,7 +89,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<ModelSlot
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
 
 			if (controlGraph instanceof AssignableAction) {
-				setAssignableAction((AssignableAction<?, T>) controlGraph);
+				setAssignableAction((AssignableAction<T>) controlGraph);
 			}
 		}
 

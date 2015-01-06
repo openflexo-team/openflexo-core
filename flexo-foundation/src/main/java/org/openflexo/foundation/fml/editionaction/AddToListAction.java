@@ -33,7 +33,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -46,7 +46,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
 @XMLElement
-public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionAction<MS, Object> {
+public interface AddToListAction<T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
@@ -62,22 +62,17 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 
 	@Getter(value = LIST_KEY)
 	@XMLAttribute
-	public DataBinding<List<T>> getList();
+	public DataBinding<? extends List<T>> getList();
 
 	@Setter(LIST_KEY)
-	public void setList(DataBinding<List<T>> list);
+	public void setList(DataBinding<? extends List<T>> list);
 
-	public static abstract class AddToListActionImpl<MS extends ModelSlot<?>, T> extends EditionActionImpl<MS, Object> implements
-			AddToListAction<MS, T> {
+	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T> implements AddToListAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AddToListAction.class.getPackage().getName());
 
 		private DataBinding<T> value;
-		private DataBinding<List<T>> list;
-
-		public AddToListActionImpl() {
-			super();
-		}
+		private DataBinding<? extends List<T>> list;
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -115,7 +110,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public DataBinding<List<T>> getList() {
+		public DataBinding<? extends List<T>> getList() {
 
 			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list == null) {
@@ -126,7 +121,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public void setList(DataBinding<List<T>> list) {
+		public void setList(DataBinding<? extends List<T>> list) {
 
 			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list != null) {
@@ -166,32 +161,22 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) {
+		public T execute(FlexoBehaviourAction<?, ?, ?> action) {
 			logger.info("performing AddToListAction");
 
-			DataBinding<List<T>> list = getList();
+			DataBinding<? extends List<T>> list = getList();
 			T objToAdd = getDeclaredObject(action);
 
 			try {
 
 				if (list != null) {
-					Object listObj = list.getBindingValue(action);
-					if (listObj instanceof List) {
-						if (objToAdd != null) {
-							((List) listObj).add(objToAdd);
-						} else {
-							logger.warning("Won't add null object to list");
-
-						}
+					List<T> listObj = list.getBindingValue(action);
+					if (objToAdd != null) {
+						listObj.add(objToAdd);
 					} else {
-						if (listObj == null) {
-							logger.warning("Cannot add object to a null target : " + list.getUnparsedBinding());
-						} else {
-							logger.warning("Cannot add object to a non list target : " + listObj.toString());
-						}
-						return null;
-					}
+						logger.warning("Won't add null object to list");
 
+					}
 				} else {
 					logger.warning("Cannot perform Assignation as assignation is null");
 				}
@@ -228,35 +213,32 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 			super.notifiedBindingChanged(dataBinding);
 		}
 
-		public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
-			public ValueBindingIsRequiredAndMustBeValid() {
-				super("'value'_binding_is_not_valid", AddToListAction.class);
-			}
+	}
 
-			@Override
-			public DataBinding<Object> getBinding(AddToListAction object) {
-				return object.getValue();
-			}
-
+	@DefineValidationRule
+	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
+		public ValueBindingIsRequiredAndMustBeValid() {
+			super("'value'_binding_is_not_valid", AddToListAction.class);
 		}
 
-		public static class ListBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
-			public ListBindingIsRequiredAndMustBeValid() {
-				super("'list'_binding_is_not_valid", AddToListAction.class);
-			}
-
-			@Override
-			public DataBinding<Object> getBinding(AddToListAction object) {
-				return object.getList();
-			}
-
+		@Override
+		public DataBinding<?> getBinding(AddToListAction object) {
+			return object.getValue();
 		}
-
-		/*@Override
-		public void finalizePerformAction(FlexoBehaviourAction action, Object initialContext) {
-			// TODO Auto-generated method stub
-
-		}*/
 
 	}
+
+	@DefineValidationRule
+	public static class ListBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
+		public ListBindingIsRequiredAndMustBeValid() {
+			super("'list'_binding_is_not_valid", AddToListAction.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(AddToListAction object) {
+			return object.getList();
+		}
+
+	}
+
 }

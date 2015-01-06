@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,7 +44,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ExpressionAction.ExpressionActionImpl.class)
 @XMLElement
-public interface ExpressionAction<MS extends ModelSlot<?>, T> extends AssignableAction<MS, T> {
+public interface ExpressionAction<T> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String EXPRESSION_KEY = "expression";
@@ -60,8 +59,7 @@ public interface ExpressionAction<MS extends ModelSlot<?>, T> extends Assignable
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class ExpressionActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<MS, T> implements
-			ExpressionAction<MS, T> {
+	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 

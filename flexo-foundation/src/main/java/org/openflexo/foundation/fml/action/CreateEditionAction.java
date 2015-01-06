@@ -39,9 +39,9 @@ import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -98,16 +99,16 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	public String description;
 	public CreateEditionActionChoice actionChoice = CreateEditionActionChoice.BuiltInAction;
 	private LayoutChoice layoutChoice;
-	private ModelSlot modelSlot;
+	private ModelSlot<?> modelSlot;
 	private Class<? extends EditionAction> builtInActionClass;
-	private Class<? extends EditionAction> controlActionClass;
-	private Class<? extends EditionAction> modelSlotSpecificActionClass;
-	private Class<? extends FetchRequest> requestActionClass;
+	private Class<? extends ControlStructureAction> controlActionClass;
+	private Class<? extends TechnologySpecificAction<?, ?>> modelSlotSpecificActionClass;
+	private Class<? extends FetchRequest<?, ?>> requestActionClass;
 
 	private EditionAction newEditionAction;
 
 	private final List<Class<? extends EditionAction>> builtInActions;
-	private final List<Class<? extends EditionAction>> controlActions;
+	private final List<Class<? extends ControlStructureAction>> controlActions;
 
 	CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -125,10 +126,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance.class);
 		builtInActions.add(DeleteAction.class);
 
-		controlActions = new ArrayList<Class<? extends EditionAction>>();
+		controlActions = new ArrayList<Class<? extends ControlStructureAction>>();
 		controlActions.add(ConditionalAction.class);
 		controlActions.add(IterationAction.class);
-		controlActions.add(FetchRequestIterationAction.class);
+		// controlActions.add(FetchRequestIterationAction.class);
 
 		// If the model slot is empty, then now it is the currentVirtualModel that is referenced
 		/*
@@ -144,7 +145,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return builtInActions;
 	}
 
-	public List<Class<? extends EditionAction>> getControlActions() {
+	public List<Class<? extends ControlStructureAction>> getControlActions() {
 		return controlActions;
 	}
 
@@ -315,8 +316,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				return factory.newConditionalAction();
 			} else if (IterationAction.class.isAssignableFrom(controlActionClass)) {
 				return factory.newIterationAction();
-			} else if (FetchRequestIterationAction.class.isAssignableFrom(controlActionClass) && requestActionClass != null
-			/*&& modelSlot != null*/) {
+			} /*else if (FetchRequestIterationAction.class.isAssignableFrom(controlActionClass) && requestActionClass != null) {
 				returned = factory.newFetchRequestIterationAction();
 				FetchRequest request = null;
 				if (modelSlot != null) {
@@ -330,14 +330,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 					((FetchRequestIterationAction) returned).setFetchRequest(request);
 				}
 				return returned;
-			} else {
+				} else {
 				logger.warning("Unexpected " + controlActionClass);
 				return null;
-			}
+				}*/
 		case ModelSlotSpecificAction:
 			if (modelSlotSpecificActionClass != null && modelSlot != null) {
 				returned = modelSlot.makeEditionAction(modelSlotSpecificActionClass);
-				returned.setModelSlot(modelSlot);
+				((TechnologySpecificAction) returned).setModelSlot(modelSlot);
 				return returned;
 			}
 			break;
@@ -346,7 +346,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				return factory.newSelectFlexoConceptInstanceAction();
 			} else if (requestActionClass != null && modelSlot != null) {
 				returned = modelSlot.makeFetchRequest(requestActionClass);
-				returned.setModelSlot(modelSlot);
+				((FetchRequest) returned).setModelSlot(modelSlot);
 				return returned;
 			}
 
@@ -373,11 +373,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		this.layoutChoice = layoutChoice;
 	}
 
-	public ModelSlot getModelSlot() {
+	public ModelSlot<?> getModelSlot() {
 		return modelSlot;
 	}
 
-	public void setModelSlot(ModelSlot modelSlot) {
+	public void setModelSlot(ModelSlot<?> modelSlot) {
 		this.modelSlot = modelSlot;
 	}
 
@@ -393,7 +393,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return controlActionClass;
 	}
 
-	public void setControlActionClass(Class<? extends EditionAction> controlActionClass) {
+	public void setControlActionClass(Class<? extends ControlStructureAction> controlActionClass) {
 		this.controlActionClass = controlActionClass;
 	}
 
@@ -401,15 +401,15 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return modelSlotSpecificActionClass;
 	}
 
-	public void setModelSlotSpecificActionClass(Class<? extends EditionAction> modelSlotSpecificActionClass) {
+	public void setModelSlotSpecificActionClass(Class<? extends TechnologySpecificAction<?, ?>> modelSlotSpecificActionClass) {
 		this.modelSlotSpecificActionClass = modelSlotSpecificActionClass;
 	}
 
-	public Class<? extends FetchRequest> getRequestActionClass() {
+	public Class<? extends FetchRequest<?, ?>> getRequestActionClass() {
 		return requestActionClass;
 	}
 
-	public void setRequestActionClass(Class<? extends FetchRequest> requestActionClass) {
+	public void setRequestActionClass(Class<? extends FetchRequest<?, ?>> requestActionClass) {
 		this.requestActionClass = requestActionClass;
 	}
 

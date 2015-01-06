@@ -33,8 +33,6 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.editionaction.DeleteAction.DeleteActionImpl;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
@@ -73,7 +71,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface DeleteFlexoConceptInstance extends DeleteAction<FMLRTModelSlot, FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -119,8 +117,8 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FMLRTModelSlot,
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FMLRTModelSlot, FlexoConceptInstance>
-			implements DeleteFlexoConceptInstance {
+	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FlexoConceptInstance> implements
+			DeleteFlexoConceptInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
 
@@ -282,7 +280,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FMLRTModelSlot,
 			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
 
 			try {
-				FlexoConceptInstance objectToDelete = (FlexoConceptInstance) getObject().getBindingValue(action);
+				FlexoConceptInstance objectToDelete = getObject().getBindingValue(action);
 				// if VmInstance is null, use the one of the EPI
 				if (objectToDelete != null) {
 					vmInstance = objectToDelete.getVirtualModelInstance();

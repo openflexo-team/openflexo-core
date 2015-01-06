@@ -11,7 +11,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 @Deprecated
 public class FMLControlGraphConverter {
 
-	public static void addToActions(FMLControlGraphOwner owner, String ownerContext, EditionAction<?, ?> anAction) {
+	public static void addToActions(FMLControlGraphOwner owner, String ownerContext, EditionAction anAction) {
 		FMLControlGraph controlGraph = owner.getControlGraph(ownerContext);
 		if (controlGraph == null) {
 			// If control graph is null, action will be new new control graph
@@ -23,7 +23,7 @@ public class FMLControlGraphConverter {
 
 	}
 
-	public static void removeFromActions(FMLControlGraphOwner owner, String ownerContext, EditionAction<?, ?> anAction) {
+	public static void removeFromActions(FMLControlGraphOwner owner, String ownerContext, EditionAction anAction) {
 		anAction.delete();
 	}
 }

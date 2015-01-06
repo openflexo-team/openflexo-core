@@ -15,5 +15,5 @@ public @interface DeclareEditionAction {
 
 	public String FML();
 
-	public Class<? extends EditionAction<?, ?>> editionActionClass();
+	public Class<? extends EditionAction> editionActionClass();
 }

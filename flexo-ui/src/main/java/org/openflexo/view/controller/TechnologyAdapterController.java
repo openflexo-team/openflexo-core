@@ -40,13 +40,7 @@ import org.openflexo.foundation.fml.ViewPointNature;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.controlgraph.IterationAction;
-import org.openflexo.foundation.fml.editionaction.AddToListAction;
-import org.openflexo.foundation.fml.editionaction.DeleteAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
 import org.openflexo.foundation.fml.rt.View;
@@ -180,32 +174,33 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param object
 	 * @return
 	 */
-	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
-		if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(editionActionClass)) {
+	public ImageIcon getIconForEditionAction(Class<? extends TechnologySpecificAction<?, ?>> editionActionClass) {
+		/*if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DECLARE_PATTERN_ROLE_ICON;
 		} else if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DECLARE_PATTERN_ROLE_ICON;
 		} else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ACTION_SCHEME_ICON;
-		} else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		} else*/if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
-		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		} /*else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
-		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+			} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+			} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DELETE_ICON;
-		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+			} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
-		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+			} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (FetchRequestIterationAction.class.isAssignableFrom(editionActionClass)) {
+			} */
+		/*else if (FetchRequestIterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		}
+		}*/
 		return null;
 
 	}

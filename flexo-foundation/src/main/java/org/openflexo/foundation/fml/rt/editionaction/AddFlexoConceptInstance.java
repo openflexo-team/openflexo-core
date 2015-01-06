@@ -37,9 +37,6 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -77,19 +74,19 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface AddFlexoConceptInstance extends AssignableAction<FMLRTModelSlot, FlexoConceptInstance> {
+public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance> {
 
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
+	@Override
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
 	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
 
+	@Override
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
 
@@ -123,8 +120,8 @@ public interface AddFlexoConceptInstance extends AssignableAction<FMLRTModelSlot
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class AddFlexoConceptInstanceImpl extends AssignableActionImpl<FMLRTModelSlot, FlexoConceptInstance>
-			implements AddFlexoConceptInstance {
+	public static abstract class AddFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance> implements
+			AddFlexoConceptInstance {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
@@ -132,10 +129,6 @@ public interface AddFlexoConceptInstance extends AssignableAction<FMLRTModelSlot
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();
-
-		public AddFlexoConceptInstanceImpl() {
-			super();
-		}
 
 		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction action) {
 			try {
@@ -152,29 +145,6 @@ public interface AddFlexoConceptInstance extends AssignableAction<FMLRTModelSlot
 				e.printStackTrace();
 			}
 			return null;
-		}
-
-		private DataBinding<VirtualModelInstance> virtualModelInstance;
-
-		@Override
-		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName("virtualModelInstance");
-			}
-			return virtualModelInstance;
-		}
-
-		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			this.virtualModelInstance = aVirtualModelInstance;
 		}
 
 		@Override

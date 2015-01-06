@@ -29,7 +29,6 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,7 +44,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 @Deprecated
 // Use AssignationAction instead
-public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object> {
+public interface DeclareFlexoRole extends AssignableAction<Object> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -57,7 +56,7 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object>
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<?> object);
 
-	public static abstract class DeclareFlexoRoleImpl extends AssignableActionImpl<ModelSlot<?>, Object> implements DeclareFlexoRole {
+	public static abstract class DeclareFlexoRoleImpl extends AssignableActionImpl<Object> implements DeclareFlexoRole {
 
 		private static final Logger logger = Logger.getLogger(DeclareFlexoRole.class.getPackage().getName());
 

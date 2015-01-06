@@ -29,6 +29,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -42,7 +43,6 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
-import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.FloatInspectorEntry;
@@ -179,7 +180,8 @@ public class FMLIconLibrary extends IconLibrary {
 	public static ImageIcon iconForObject(FMLObject object) {
 
 		if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
+					.getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}
@@ -236,11 +238,11 @@ public class FMLIconLibrary extends IconLibrary {
 					return IconFactory.getImageIcon(baseIcon, DELETE);
 				}
 				return DELETE_ICON;
-			} else if (((EditionAction) object).getModelSlot() != null) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((EditionAction) object).getModelSlot()
-						.getModelSlotTechnologyAdapter());
+			} else if ((object instanceof TechnologySpecificAction) && (((TechnologySpecificAction<?, ?>) object).getModelSlot() != null)) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificAction<?, ?>) object)
+						.getModelSlot().getModelSlotTechnologyAdapter());
 				if (tac != null) {
-					ImageIcon returned = tac.getIconForEditionAction((Class<? extends EditionAction<?, ?>>) object.getClass());
+					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?>>) object.getClass());
 					if (returned != null) {
 						return returned;
 					} else {

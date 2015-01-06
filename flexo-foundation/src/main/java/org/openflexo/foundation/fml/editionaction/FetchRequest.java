@@ -52,7 +52,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FetchRequest.FetchRequestImpl.class)
-public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends AssignableAction<MS, List<T>> {
+public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends TechnologySpecificAction<MS, List<T>> {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
@@ -76,26 +76,22 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 
 	public void deleteCondition(FetchRequestCondition aCondition);
 
+	@Deprecated
 	public FetchRequestIterationAction getEmbeddingIteration();
 
+	@Deprecated
 	public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration);
 
 	public Type getFetchedType();
 
-	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<MS, List<T>> implements
+	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends TechnologySpecificActionImpl<MS, List<T>> implements
 			FetchRequest<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
 
-		// private Vector<FetchRequestCondition> conditions;
-
 		// null in fetch request is not embedded in an iteration
+		@Deprecated
 		private FetchRequestIterationAction embeddingIteration;
-
-		public FetchRequestImpl() {
-			super();
-			// conditions = new Vector<FetchRequestCondition>();
-		}
 
 		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -197,11 +193,13 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 			}
 		}
 
+		@Deprecated
 		@Override
 		public FetchRequestIterationAction getEmbeddingIteration() {
 			return embeddingIteration;
 		}
 
+		@Deprecated
 		@Override
 		public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration) {
 			if (this.embeddingIteration != embeddingIteration) {

@@ -310,7 +310,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param action
 	 */
-	public <T> void hasPerformedAction(EditionAction<?, T> action, T object) {
+	public <T> void hasPerformedAction(EditionAction action, T object) {
 	}
 
 	/**

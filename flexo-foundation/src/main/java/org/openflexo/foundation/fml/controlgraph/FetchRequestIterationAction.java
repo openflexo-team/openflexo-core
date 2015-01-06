@@ -187,7 +187,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 		}
 
 		/*@Override
-		public void addToActions(EditionAction<?, ?> action) {
+		public void addToActions(EditionAction action) {
 			// Big hack to prevent XMLCoDe to also append FetchRequest to the list of embedded actions
 			// Should be removed either by the fixing of XMLCoDe or by the switch to PAMELA
 			if (getFetchRequest() != action) {
@@ -196,7 +196,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 		}*/
 
 		@Override
-		public void addToActions(EditionAction<?, ?> action) {
+		public void addToActions(EditionAction action) {
 			if (getFetchRequest() != action) {
 				performSuperAdder(ACTIONS_KEY, action);
 			}

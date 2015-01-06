@@ -25,27 +25,27 @@ import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ControlStructureAction.ControlStructureActionImpl.class)
-public abstract interface ControlStructureAction extends EditionAction<ModelSlot<?>, Object>, FMLControlGraph, ActionContainer {
+public abstract interface ControlStructureAction extends EditionAction, FMLControlGraph, ActionContainer {
 
-	public static abstract class ControlStructureActionImpl extends EditionActionImpl<ModelSlot<?>, Object> implements
-			ControlStructureAction {
+	public static abstract class ControlStructureActionImpl extends EditionActionImpl implements ControlStructureAction {
 
 		private static final Logger logger = Logger.getLogger(ControlStructureAction.class.getPackage().getName());
 
 		// private ControlStructureActionBindingModel controlGraphBindingModel;
 		private ControlGraphBindingModel<?> inferedBindingModel;
 
-		// private Vector<EditionAction<?, ?>> actions;
+		// private Vector<EditionAction> actions;
 
 		public ControlStructureActionImpl() {
 			super();
-			// actions = new Vector<EditionAction<?, ?>>();
+			// actions = new Vector<EditionAction>();
 		}
 
 		/*@Override
@@ -56,7 +56,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		/*@Override
 		public void rebuildInferedBindingModel() {
 			super.rebuildInferedBindingModel();
-			for (EditionAction<?, ?> action : getActions()) {
+			for (EditionAction action : getActions()) {
 				action.rebuildInferedBindingModel();
 			}
 
@@ -65,7 +65,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		/*@Override
 		protected BindingModel buildInferedBindingModel() {
 			BindingModel returned = super.buildInferedBindingModel();
-			for (final EditionAction<?, ?> a : getActions()) {
+			for (final EditionAction a : getActions()) {
 				if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
 					returned.addToBindingVariables(new BindingVariable(((AssignableAction) a).getVariableName(), ((AssignableAction) a)
 							.getAssignableType(), true) {
@@ -107,14 +107,14 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		@Override
-		public void actionFirst(EditionAction<?, ?> a) {
+		public void actionFirst(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(0, a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		@Override
-		public void actionUp(EditionAction<?, ?> a) {
+		public void actionUp(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > 0) {
 				getActions().remove(a);
@@ -124,7 +124,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		@Override
-		public void actionDown(EditionAction<?, ?> a) {
+		public void actionDown(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > -1) {
 				getActions().remove(a);
@@ -134,26 +134,26 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		@Override
-		public void actionLast(EditionAction<?, ?> a) {
+		public void actionLast(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		/*@Override
-		public Vector<EditionAction<?, ?>> getActions() {
+		public Vector<EditionAction> getActions() {
 			return actions;
 		}
 
 		@Override
-		public void setActions(Vector<EditionAction<?, ?>> actions) {
+		public void setActions(Vector<EditionAction> actions) {
 			this.actions = actions;
 			setChanged();
 			notifyObservers();
 		}
 
 		@Override
-		public void addToActions(EditionAction<?, ?> action) {
+		public void addToActions(EditionAction action) {
 			// action.setScheme(getEditionScheme());
 			action.setActionContainer(this);
 			actions.add(action);
@@ -163,7 +163,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}
 
 		@Override
-		public void removeFromActions(EditionAction<?, ?> action) {
+		public void removeFromActions(EditionAction action) {
 			// action.setScheme(null);
 			action.setActionContainer(null);
 			actions.remove(action);
@@ -173,12 +173,12 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		}*/
 
 		/*	@Override
-			public int getIndex(EditionAction<?, ?> action) {
+			public int getIndex(EditionAction action) {
 				return getActions().indexOf(action);
 			}
 
 			@Override
-			public void insertActionAtIndex(EditionAction<?, ?> action, int index) {
+			public void insertActionAtIndex(EditionAction action, int index) {
 				// action.setScheme(getEditionScheme());
 				action.setActionContainer(this);
 				getActions().add(index, action);
@@ -188,7 +188,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public void actionFirst(EditionAction<?, ?> a) {
+			public void actionFirst(EditionAction a) {
 				getActions().remove(a);
 				getActions().add(0, a);
 				setChanged();
@@ -196,7 +196,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public void actionUp(EditionAction<?, ?> a) {
+			public void actionUp(EditionAction a) {
 				int index = getActions().indexOf(a);
 				if (index > 0) {
 					getActions().remove(a);
@@ -207,7 +207,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public void actionDown(EditionAction<?, ?> a) {
+			public void actionDown(EditionAction a) {
 				int index = getActions().indexOf(a);
 				if (index > 0) {
 					getActions().remove(a);
@@ -218,7 +218,7 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			}
 
 			@Override
-			public void actionLast(EditionAction<?, ?> a) {
+			public void actionLast(EditionAction a) {
 				getActions().remove(a);
 				getActions().add(a);
 				setChanged();
@@ -372,14 +372,14 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 		 * @return newly created {@link EditionAction}
 		 */
 		@Override
-		public <A extends EditionAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
+		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
 			A newAction = modelSlot.createAction(actionClass);
 			addToActions(newAction);
 			return newAction;
 		}
 
 		@Override
-		public EditionAction<?, ?> deleteAction(EditionAction<?, ?> anAction) {
+		public EditionAction deleteAction(EditionAction anAction) {
 			removeFromActions(anAction);
 			anAction.delete();
 			return anAction;

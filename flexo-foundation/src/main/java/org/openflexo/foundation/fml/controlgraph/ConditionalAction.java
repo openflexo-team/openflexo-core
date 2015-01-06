@@ -224,19 +224,19 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Deprecated
 		@Override
-		public void addToActions(EditionAction<?, ?> anAction) {
+		public void addToActions(EditionAction anAction) {
 			FMLControlGraphConverter.addToActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
 		}
 
 		@Deprecated
 		@Override
-		public void removeFromActions(EditionAction<?, ?> anAction) {
+		public void removeFromActions(EditionAction anAction) {
 			FMLControlGraphConverter.removeFromActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
 		}
 
 		/*@Deprecated
 		@Override
-		public void addToActions(EditionAction<?, ?> anAction) {
+		public void addToActions(EditionAction anAction) {
 			FMLControlGraph controlGraph = getThenControlGraph();
 			if (controlGraph == null) {
 				// If control graph is null, action will be new new control graph
@@ -250,7 +250,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Deprecated
 		@Override
-		public void removeFromActions(EditionAction<?, ?> anAction) {
+		public void removeFromActions(EditionAction anAction) {
 			anAction.delete();
 		}*/
 

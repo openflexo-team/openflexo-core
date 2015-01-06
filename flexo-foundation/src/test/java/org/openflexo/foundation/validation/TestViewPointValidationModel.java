@@ -11,7 +11,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointValidationModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -70,8 +69,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.editionaction.ExecutionAction.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptObject.class) != null);
@@ -123,8 +120,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 				.getModelEntity(org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.rt.FMLRTModelSlot.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.editionaction.ProcedureAction.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.DropDownParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
@@ -188,8 +183,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 				.getModelEntity(org.openflexo.foundation.fml.editionaction.FetchRequest.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoBehaviourParameters.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
@@ -286,8 +279,8 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testDeclareFlexoRoleValidationRules() throws ModelDefinitionException {
-		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(DeclareFlexoRole.class);
+	public void testAssignationActionValidationRules() throws ModelDefinitionException {
+		ValidationRuleSet<?> ruleSet = validationModel.getRuleSet(AssignationAction.class);
 		assertNotNull(ruleSet);
 		System.out.println("ruleSet=" + ruleSet + " size=" + ruleSet.getRulesCount());
 		for (ValidationRule r : ruleSet.getRules()) {

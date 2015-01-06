@@ -195,7 +195,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction<?, ?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -215,7 +215,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction<?, ?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
+		((ExpressionAction<?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
 
 		assertEquals(2, actionScheme.getActions().size());
 

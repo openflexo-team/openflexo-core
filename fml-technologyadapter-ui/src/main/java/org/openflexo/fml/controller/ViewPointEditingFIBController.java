@@ -24,6 +24,7 @@ import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
@@ -346,13 +347,13 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return parameterToDelete;
 	}
 
-	public void actionFirst(EditionAction<?, ?> action) {
+	public void actionFirst(EditionAction action) {
 		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionFirst(action);
 		}
 	}
 
-	public void actionUp(EditionAction<?, ?> action) {
+	public void actionUp(EditionAction action) {
 		if (action != null && action.getActionContainer() != null) {
 			action.getActionContainer().actionUp(action);
 		}
@@ -361,13 +362,13 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		}
 	}
 
-	public void actionDown(EditionAction<?, ?> action) {
+	public void actionDown(EditionAction action) {
 		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionDown(action);
 		}
 	}
 
-	public void actionLast(EditionAction<?, ?> action) {
+	public void actionLast(EditionAction action) {
 		if (action.getActionContainer() != null) {
 			action.getActionContainer().actionLast(action);
 		}
@@ -381,30 +382,23 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 		return selectedObject instanceof EditionAction;
 	}
 
-	public Resource fibForEditionAction(EditionAction<?, ?> action) {
+	public Resource fibForEditionAction(EditionAction action) {
 		if (action == null) {
 			return null;
 		}
-		if (action.getModelSlot() == null) {
-			// No specific TechnologyAdapter, lookup in generic libraries
-			return getFIBPanelForObject(action);
-		} else {
-			TechnologyAdapter technologyAdapter = action.getModelSlot().getModelSlotTechnologyAdapter();
+		if (action instanceof TechnologySpecificAction) {
+			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlot().getModelSlotTechnologyAdapter();
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
 			} else
 				// No specific TechnologyAdapter, lookup in generic libraries
 				return getFIBPanelForObject(action);
+		} else {
+			// No specific TechnologyAdapter, lookup in generic libraries
+			return getFIBPanelForObject(action);
 		}
 
-		/*System.out.println("ModelSlot=" + action.getModelSlot());
-		if (action.getModelSlot() != null) {
-			System.out.println("TA=" + action.getModelSlot().getTechnologyAdapter());
-		}
-		FileResource fibFile = new FileResource("Fib/" + action.getClass().getSimpleName() + "Panel.fib");
-		System.out.println("J'essaie " + fibFile + " ca marche ? " + fibFile.exists());
-		return fibFile;*/
 	}
 
 	public Resource fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {

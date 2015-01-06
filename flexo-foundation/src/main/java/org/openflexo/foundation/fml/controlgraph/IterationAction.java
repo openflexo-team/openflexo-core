@@ -255,19 +255,19 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 		@Deprecated
 		@Override
-		public void addToActions(EditionAction<?, ?> anAction) {
+		public void addToActions(EditionAction anAction) {
 			FMLControlGraphConverter.addToActions(this, CONTROL_GRAPH_KEY, anAction);
 		}
 
 		@Deprecated
 		@Override
-		public void removeFromActions(EditionAction<?, ?> anAction) {
+		public void removeFromActions(EditionAction anAction) {
 			FMLControlGraphConverter.removeFromActions(this, CONTROL_GRAPH_KEY, anAction);
 		}
 
 		/*@Deprecated
 		@Override
-		public void addToActions(EditionAction<?, ?> anAction) {
+		public void addToActions(EditionAction anAction) {
 			FMLControlGraph controlGraph = getControlGraph();
 			if (controlGraph == null) {
 				// If control graph is null, action will be new new control graph
@@ -281,7 +281,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 		@Deprecated
 		@Override
-		public void removeFromActions(EditionAction<?, ?> anAction) {
+		public void removeFromActions(EditionAction anAction) {
 			anAction.delete();
 		}*/
 

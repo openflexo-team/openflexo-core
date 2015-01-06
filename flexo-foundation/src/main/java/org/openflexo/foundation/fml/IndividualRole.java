@@ -23,7 +23,7 @@ import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(IndividualRole.IndividualRoleImpl.class)
-public interface IndividualRole<I extends IFlexoOntologyIndividual> extends OntologicObjectRole<I> {
+public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRole<I> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CONCEPT_URI_KEY = "conceptURI";
@@ -35,11 +35,11 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual> extends Onto
 	@Setter(CONCEPT_URI_KEY)
 	public void _setConceptURI(String conceptURI);
 
-	public IFlexoOntologyClass getOntologicType();
+	public IFlexoOntologyClass<?> getOntologicType();
 
-	public void setOntologicType(IFlexoOntologyClass ontologyClass);
+	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
 
-	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual> extends OntologicObjectRoleImpl<I> implements
+	public static abstract class IndividualRoleImpl<I extends IFlexoOntologyIndividual<?>> extends OntologicObjectRoleImpl<I> implements
 			IndividualRole<I> {
 
 		public IndividualRoleImpl() {

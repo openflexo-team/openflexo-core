@@ -46,7 +46,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 @Deprecated
 // Use ExpressionAction instead
-public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableAction<MS, FlexoObject> {
+public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableAction<FlexoObject> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String EXECUTION_KEY = "execution";
@@ -58,7 +58,7 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 	@Setter(EXECUTION_KEY)
 	public void setExecution(DataBinding<?> execution);
 
-	public static abstract class ExecutionActionImpl<MS extends ModelSlot<?>> extends AssignableActionImpl<MS, FlexoObject> implements
+	public static abstract class ExecutionActionImpl<MS extends ModelSlot<?>> extends AssignableActionImpl<FlexoObject> implements
 			ExecutionAction<MS> {
 
 		private static final Logger logger = Logger.getLogger(ExecutionAction.class.getPackage().getName());

@@ -35,6 +35,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
@@ -226,7 +227,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		private String name;
 		private String label;
 		// private String description;
-		// private Vector<EditionAction<?, ?>> actions;
+		// private Vector<EditionAction> actions;
 		// private Vector<FlexoBehaviourParameter> parameters;
 		private boolean skipConfirmationPanel = false;
 
@@ -356,19 +357,19 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}*/
 
 		/*@Override
-		public Vector<EditionAction<?, ?>> getActions() {
+		public Vector<EditionAction> getActions() {
 			return actions;
 		}
 
 		@Override
-		public void setActions(Vector<EditionAction<?, ?>> actions) {
+		public void setActions(Vector<EditionAction> actions) {
 			this.actions = actions;
 			setChanged();
 			notifyObservers();
 		}
 
 		@Override
-		public void addToActions(EditionAction<?, ?> action) {
+		public void addToActions(EditionAction action) {
 			// action.setScheme(this);
 			action.setActionContainer(this);
 			actions.add(action);
@@ -378,7 +379,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public void removeFromActions(EditionAction<?, ?> action) {
+		public void removeFromActions(EditionAction action) {
 			// action.setScheme(null);
 			action.setActionContainer(null);
 			actions.remove(action);
@@ -442,14 +443,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		 */
 
 		@Override
-		public void actionFirst(EditionAction<?, ?> a) {
+		public void actionFirst(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(0, a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
 		}
 
 		@Override
-		public void actionUp(EditionAction<?, ?> a) {
+		public void actionUp(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > 0) {
 				getActions().remove(a);
@@ -459,7 +460,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public void actionDown(EditionAction<?, ?> a) {
+		public void actionDown(EditionAction a) {
 			int index = getActions().indexOf(a);
 			if (index > -1) {
 				getActions().remove(a);
@@ -469,7 +470,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public void actionLast(EditionAction<?, ?> a) {
+		public void actionLast(EditionAction a) {
 			getActions().remove(a);
 			getActions().add(a);
 			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
@@ -570,7 +571,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		 * @return newly created {@link EditionAction}
 		 */
 		@Override
-		public <A extends EditionAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
+		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
 			A newAction = modelSlot.createAction(actionClass);
 			addToActions(newAction);
 			return newAction;
@@ -827,7 +828,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		@Deprecated
 		@Override
-		public void addToActions(EditionAction<?, ?> anAction) {
+		public void addToActions(EditionAction anAction) {
 			/*FMLControlGraph controlGraph = getControlGraph();
 			if (controlGraph == null) {
 				// If control graph is null, action will be new new control graph
@@ -842,7 +843,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		@Deprecated
 		@Override
-		public void removeFromActions(EditionAction<?, ?> anAction) {
+		public void removeFromActions(EditionAction anAction) {
 			FMLControlGraphConverter.removeFromActions(this, null, anAction);
 			// anAction.delete();
 		}

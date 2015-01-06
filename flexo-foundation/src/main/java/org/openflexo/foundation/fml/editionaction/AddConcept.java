@@ -33,10 +33,10 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddConcept.AddConceptImpl.class)
-public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> extends AssignableAction<MS, T> {
+public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> extends TechnologySpecificAction<MS, T> {
 
-	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<?, ?>, T> extends AssignableActionImpl<MS, T> implements
-			AddConcept<MS, T> {
+	public static abstract class AddConceptImpl<MS extends TypeAwareModelSlot<?, ?>, T> extends TechnologySpecificActionImpl<MS, T>
+			implements AddConcept<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddConcept.class.getPackage().getName());
 
@@ -44,9 +44,9 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 			super();
 		}
 
-		public abstract IFlexoOntologyClass getOntologyClass();
+		public abstract IFlexoOntologyClass<?> getOntologyClass();
 
-		public abstract void setOntologyClass(IFlexoOntologyClass ontologyClass);
+		public abstract void setOntologyClass(IFlexoOntologyClass<?> ontologyClass);
 
 		/*public IFlexoOntologyConcept getOntologyObject(FlexoProject project)
 		{

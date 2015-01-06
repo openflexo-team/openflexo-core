@@ -23,9 +23,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.controlgraph.AssignableControlGraph;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -34,14 +35,19 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * Abstract class representing an {@link EditionAction} with the particularity of returning a value which can be assigned
+ * Abstract class representing an {@link EditionAction} with the particularity of returning a value which can be assigned<br>
+ * This value is of type T.<br>
+ * An {@link AssignableAction} might be embedded in an {@link AbstractAssignationAction} ({@link AssignationAction} or
+ * {@link DeclarationAction}) as right-hand side.
  * 
  * @author sylvain
  * 
+ * @param <T>
+ *            type of assignable
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AssignableAction.AssignableActionImpl.class)
-public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends EditionAction<MS, T>, AssignableControlGraph<T> {
+public abstract interface AssignableAction<T> extends EditionAction, AssignableControlGraph<T> {
 
 	@Deprecated
 	@PropertyIdentifier(type = String.class)
@@ -68,11 +74,14 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	@Setter(DEPRECATED_ASSIGNATION_KEY)
 	public void setDeprecatedAssignation(DataBinding<? super T> assignation);
 
-	// @Deprecated
-	// public boolean getIsVariableDeclaration();
-
-	// @Deprecated
-	// public void setIsVariableDeclaration(boolean flag);
+	/**
+	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
+	 * 
+	 * @param action
+	 * @return
+	 */
+	@Override
+	public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 	/**
 	 * Return role to which this action is bound with an assignation, if this action is the right-hand side of an {@link AssignationAction}
@@ -82,18 +91,9 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class AssignableActionImpl<MS extends ModelSlot<?>, T> extends EditionActionImpl<MS, T> implements
-			AssignableAction<MS, T> {
+	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
-
-		// private DataBinding<? super T> assignation;
-
-		// private String variableName = null;
-
-		/*public AssignableActionImpl() {
-			super();
-		}*/
 
 		/**
 		 * Return role to which this action is bound with an assignation, if this action is the right-hand side of an
@@ -108,210 +108,18 @@ public abstract interface AssignableAction<MS extends ModelSlot<?>, T> extends E
 			return null;
 		}
 
-		/*public boolean isAssignationRequired() {
-			return false;
-		}*/
-
-		/*@Override
-		public abstract EditionActionType getEditionActionType();*/
-
 		@Override
 		public abstract Type getAssignableType();
 
-		/*@Override
-		public DataBinding<? super T> getAssignation() {
-			if (assignation == null) {
-				if (StringUtils.isNotEmpty(variableName)) {
-					updateVariableAssignation();
-				} else {
-					assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
-						@Override
-						public Type getDeclaredType() {
-							return getAssignableType();
-						}
-					};
-					assignation.setDeclaredType(getAssignableType());
-					assignation.setBindingName("assignation");
-					assignation.setMandatory(isAssignationRequired());
-				}
-			}
-			assignation.setDeclaredType(getAssignableType());
-			return assignation;
-		}
-
+		/**
+		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
+		 * 
+		 * @param action
+		 * @return
+		 */
 		@Override
-		public void setAssignation(DataBinding<? super T> assignation) {
-			if (assignation != null) {
-				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET) {
-					@Override
-					public Type getDeclaredType() {
-						return getAssignableType();
-					}
-				};
-			}
-			// this.assignation = assignation;
-			notifiedBindingChanged(this.assignation);
-		}*/
-
-		/*@Override
-		public FlexoRole<?> getFlexoRole() {
-			if (getFlexoConcept() == null) {
-				return null;
-			}
-			if (assignation != null && assignation.isBindingValue()) {
-				BindingValue bindingValue = (BindingValue) assignation.getExpression();
-				if (bindingValue.getBindingPath().size() == 0) {
-					return getFlexoConcept().getFlexoRole(bindingValue.getVariableName());
-				}
-			}
-			return null;
-		}*/
-
-		/*@Override
-		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName()
-					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
-		}*/
-
-		/*@Override
-		public String getVariableName() {
-			return variableName;
-		}
-
-		@Override
-		public void setVariableName(String variableName) {
-			if (!FlexoObjectImpl.areSameValue(variableName, this.variableName)) {
-				this.variableName = variableName;
-				if (StringUtils.isNotEmpty(variableName)) {
-					updateVariableAssignation();
-				}
-				if (getActionContainer() != null) {
-					getActionContainer().variableAdded(this);
-				}
-			}
-		}
-
-		@Override
-		public boolean getIsVariableDeclaration() {
-			return StringUtils.isNotEmpty(getVariableName());
-		}
-
-		@Override
-		public void setIsVariableDeclaration(boolean flag) {
-			if (flag != getIsVariableDeclaration()) {
-				if (flag) {
-					if (StringUtils.isEmpty(getVariableName())) {
-						setVariableName("newVariable");
-					}
-				} else {
-					if (StringUtils.isNotEmpty(getVariableName())) {
-						setVariableName(null);
-						getAssignation().reset();
-					}
-				}
-				getPropertyChangeSupport().firePropertyChange("isVariableDeclaration", !flag, flag);
-			}
-		}*/
-
-		/*@Override
-		public void finalizePerformAction(org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction action, T initialContext) {
-			if (getIsVariableDeclaration()) {
-				System.out.println("Setting variable " + getVariableName() + " with " + initialContext);
-				action.declareVariable(getVariableName(), initialContext);
-			}
-		}*/
-
-		/*@Override
-		protected final BindingModel buildInferedBindingModel() {
-			BindingModel returned = super.buildInferedBindingModel();
-			if (getIsVariableDeclaration()) {
-				returned.addToBindingVariables(new BindingVariable(getVariableName(), getAssignableType()) {
-					@Override
-					public Object getBindingValue(Object target, BindingEvaluationContext context) {
-						logger.info("What should i return for " + getVariableName() + " ? target " + target + " context=" + context);
-						return super.getBindingValue(target, context);
-					}
-
-					@Override
-					public Type getType() {
-						return getAssignableType();
-					}
-				});
-			}
-			return returned;
-		}*/
+		public abstract T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 	}
-
-	/*@DefineValidationRule
-	public static class AssignationBindingMustBeValidOrVariable<A extends AssignableAction<?, ?>> extends
-			ValidationRule<AssignationBindingMustBeValidOrVariable<A>, A> {
-
-		public AssignationBindingMustBeValidOrVariable() {
-			super(AssignableAction.class, "'assign'_binding_is_not_valid");
-		}
-
-		@Override
-		public ValidationIssue<AssignationBindingMustBeValidOrVariable<A>, A> applyValidation(A object) {
-
-			DataBinding<?> assignation = object.getAssignation();
-
-			if (object.getIsVariableDeclaration()) {
-				return null;
-			}
-
-			if (assignation != null && assignation.isSet()) {
-				if (!assignation.isValid()) {
-					DeleteBinding<A> deleteBinding = new DeleteBinding<A>(this);
-
-					return new InvalidBindingIssue<A>(this, object, deleteBinding);
-				}
-			}
-			return null;
-		}
-
-		public static class InvalidBindingIssue<A extends AssignableAction<?, ?>> extends
-				ValidationError<AssignationBindingMustBeValidOrVariable<A>, A> {
-
-			private final A assignableAction;
-
-			public InvalidBindingIssue(AssignationBindingMustBeValidOrVariable<A> rule, A anObject,
-					FixProposal<AssignationBindingMustBeValidOrVariable<A>, A>... fixProposals) {
-				super(rule, anObject, "binding_'($binding.bindingName)'_is_not_valid: ($binding)", fixProposals);
-				assignableAction = anObject;
-			}
-
-			public DataBinding<?> getBinding() {
-				return assignableAction.getAssignation();
-			}
-
-			public String getReason() {
-				return getBinding().invalidBindingReason();
-			}
-
-			@Override
-			public String getDetailedInformations() {
-				return "($reason)";
-			}
-		}
-
-		protected static class DeleteBinding<A extends AssignableAction<?, ?>> extends
-				FixProposal<AssignationBindingMustBeValidOrVariable<A>, A> {
-
-			private final AssignationBindingMustBeValidOrVariable<A> rule;
-
-			public DeleteBinding(AssignationBindingMustBeValidOrVariable<A> rule) {
-				super("delete_this_binding");
-				this.rule = rule;
-			}
-
-			@Override
-			protected void fixAction() {
-				getValidable().getAssignation().reset();
-			}
-
-		}
-	}*/
 
 }

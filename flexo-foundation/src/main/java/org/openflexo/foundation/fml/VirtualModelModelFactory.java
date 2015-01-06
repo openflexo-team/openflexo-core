@@ -438,29 +438,43 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		return newInstance(AssignationAction.class);
 	}
 
-	public <T> AssignationAction<T> newAssignationAction(AssignableAction<?, T> assignableAction) {
+	public <T> AssignationAction<T> newAssignationAction(AssignableAction<T> assignableAction) {
 		AssignationAction<T> returned = newAssignationAction();
 		returned.setAssignableAction(assignableAction);
 		return returned;
 	}
 
-	public <T> AssignationAction<T> newAssignationAction(DataBinding<?> expression) {
+	public <T> AssignationAction<T> newAssignationAction(DataBinding<T> expression) {
 		AssignationAction<T> returned = newAssignationAction();
-		returned.setAssignableAction((ExpressionAction) newExpressionAction(expression));
+		returned.setAssignableAction(newExpressionAction(expression));
 		return returned;
 	}
 
-	public DeclarationAction<?> newDeclarationAction() {
+	public <T> DeclarationAction<T> newDeclarationAction() {
 		return newInstance(DeclarationAction.class);
 	}
 
-	public ExpressionAction<?, ?> newExpressionAction() {
+	public <T> DeclarationAction<T> newDeclarationAction(String variableName, AssignableAction<T> assignableAction) {
+		DeclarationAction<T> returned = newDeclarationAction();
+		returned.setVariableName(variableName);
+		returned.setAssignableAction(assignableAction);
+		return returned;
+	}
+
+	public <T> DeclarationAction<T> newDeclarationAction(String variableName, DataBinding<T> expression) {
+		DeclarationAction<T> returned = newDeclarationAction();
+		returned.setVariableName(variableName);
+		returned.setAssignableAction(newExpressionAction(expression));
+		return returned;
+	}
+
+	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
 	}
 
-	public ExpressionAction<?, ?> newExpressionAction(DataBinding<?> expression) {
-		ExpressionAction<?, ?> returned = newInstance(ExpressionAction.class);
-		returned.setExpression((DataBinding) expression);
+	public <T> ExpressionAction<T> newExpressionAction(DataBinding<T> expression) {
+		ExpressionAction<T> returned = newExpressionAction();
+		returned.setExpression(expression);
 		return returned;
 	}
 

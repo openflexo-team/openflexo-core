@@ -28,13 +28,13 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
  * @author sylvain
  * 
  */
-public class EditionActionBindingModel extends ControlGraphBindingModel<EditionAction<?, ?>> {
+public class EditionActionBindingModel extends ControlGraphBindingModel<EditionAction> {
 
-	public EditionActionBindingModel(EditionAction<?, ?> editionAction) {
+	public EditionActionBindingModel(EditionAction editionAction) {
 		super(editionAction);
 	}
 
-	public EditionAction<?, ?> getEditionAction() {
+	public EditionAction getEditionAction() {
 		return super.getControlGraph();
 	}
 
