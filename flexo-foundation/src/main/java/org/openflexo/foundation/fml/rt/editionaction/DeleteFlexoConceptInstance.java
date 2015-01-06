@@ -275,7 +275,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FMLRTModelSlot,
 		}
 
 		@Override
-		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
+		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
 			logger.info("Perform performDeleteFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 

@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FetchRequestBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -98,7 +97,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 			// conditions = new Vector<FetchRequestCondition>();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			if (getAssignation().isSet()) {
@@ -106,7 +105,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Assig
 			}
 			out.append(getImplementedInterface().getSimpleName(), context);
 			return out.toString();
-		}
+		}*/
 
 		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
 			if (getConditions().size() > 0) {

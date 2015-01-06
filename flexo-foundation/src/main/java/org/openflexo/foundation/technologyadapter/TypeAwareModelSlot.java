@@ -128,7 +128,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 			Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
 			AddIndividual<? extends TypeAwareModelSlot, ?> returned = makeEditionAction(addIndividualClass);
 
-			returned.setAssignation(new DataBinding(patternRole.getRoleName()));
+			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));
 			if (creationScheme.getParameter("uri") != null) {
 				returned.setIndividualName(new DataBinding("parameters.uri"));
 			}

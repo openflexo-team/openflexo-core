@@ -42,7 +42,7 @@ public class FlexoBehaviourParametersDefinitionsPathElement extends SimplePathEl
 			return ((FlexoBehaviour) target).getParameters();
 		}
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getEditionScheme().getParameters();
+			return ((FlexoBehaviourAction) target).getFlexoBehaviour().getParameters();
 		}
 		logger.warning("Please implement me, target=" + target + " of " + target.getClass() + " context=" + context);
 		return null;

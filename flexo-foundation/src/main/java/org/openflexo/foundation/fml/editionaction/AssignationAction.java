@@ -19,19 +19,21 @@
  */
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
-import org.openflexo.antar.expr.NullReferenceException;
-import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.antar.expr.BindingValue;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -45,105 +47,127 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
 @XMLElement
-public interface AssignationAction<T> extends AssignableAction<ModelSlot<?>, T> {
+public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VALUE_KEY = "value";
+	public static final String ASSIGNATION_KEY = "assignation";
 
-	@Getter(value = VALUE_KEY)
-	@XMLAttribute
-	public DataBinding<T> getValue();
+	@Override
+	@Getter(value = ASSIGNATION_KEY)
+	@XMLAttribute(xmlTag = "assign")
+	public DataBinding<? super T> getAssignation();
 
-	@Setter(VALUE_KEY)
-	public void setValue(DataBinding<T> value);
+	@Setter(ASSIGNATION_KEY)
+	public void setAssignation(DataBinding<? super T> assignation);
 
-	public static abstract class AssignationActionImpl<T> extends AssignableActionImpl<ModelSlot<?>, T> implements AssignationAction<T> {
+	@Override
+	public FlexoRole<T> getFlexoRole();
+
+	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignationAction.class.getPackage().getName());
 
-		private DataBinding<T> value;
+		private DataBinding<? super T> assignation;
 
-		public AssignationActionImpl() {
-			super();
+		@Override
+		public DataBinding<? super T> getAssignation() {
+			if (assignation == null) {
+
+				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
+					@Override
+					public Type getDeclaredType() {
+						return getAssignableType();
+					}
+				};
+				assignation.setDeclaredType(getAssignableType());
+				assignation.setBindingName("assignation");
+				assignation.setMandatory(true);
+
+			}
+			assignation.setDeclaredType(getAssignableType());
+			return assignation;
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getAssignation().toString() + " = " + getValue().toString() + ";", context);
-			return out.toString();
+		public void setAssignation(DataBinding<? super T> assignation) {
+			if (assignation != null) {
+				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
+						DataBinding.BindingDefinitionType.GET_SET) {
+					@Override
+					public Type getDeclaredType() {
+						return getAssignableType();
+					}
+				};
+				assignation.setDeclaredType(getAssignableType());
+				assignation.setBindingName("assignation");
+				assignation.setMandatory(true);
+			}
+			notifiedBindingChanged(this.assignation);
 		}
 
 		@Override
-		public boolean isAssignationRequired() {
-			return true;
-		}
-
-		public Object getDeclaredObject(FlexoBehaviourAction action) {
-			try {
-				return getValue().getBindingValue(action);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+		public FlexoRole<T> getFlexoRole() {
+			if (getFlexoConcept() == null) {
+				return null;
+			}
+			if (assignation != null && assignation.isBindingValue()) {
+				BindingValue bindingValue = (BindingValue) assignation.getExpression();
+				if (bindingValue.getBindingPath().size() == 0) {
+					return (FlexoRole<T>) getFlexoConcept().getFlexoRole(bindingValue.getVariableName());
+				}
 			}
 			return null;
 		}
 
 		@Override
-		public DataBinding<T> getValue() {
-			if (value == null) {
-				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
-				value.setBindingName("value");
+		public T execute(FlexoBehaviourAction action) throws FlexoException {
+			T value = getAssignationValue(action);
+			try {
+				getAssignation().setBindingValue(value, action);
+			} catch (Exception e) {
+				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
+				e.printStackTrace();
+				throw new FlexoException(e);
 			}
+
+			// TODO: check if following statements are necessary (i think it should not)
+			if (getFlexoRole() != null && value instanceof FlexoObject) {
+				if (action instanceof ActionSchemeAction) {
+					((ActionSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
+							(FlexoRole) getFlexoRole());
+				}
+				if (action instanceof CreationSchemeAction) {
+					((CreationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
+							(FlexoRole) getFlexoRole());
+				}
+				if (action instanceof DeletionSchemeAction) {
+					((DeletionSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
+							(FlexoRole) getFlexoRole());
+				}
+				if (action instanceof NavigationSchemeAction) {
+					((NavigationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
+							(FlexoRole) getFlexoRole());
+				}
+				if (action instanceof SynchronizationSchemeAction) {
+					((SynchronizationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
+							(FlexoRole) getFlexoRole());
+				}
+			}
+
 			return value;
-		}
-
-		@Override
-		public void setValue(DataBinding<T> value) {
-			if (value != null) {
-				value.setOwner(this);
-				value.setBindingName("value");
-				value.setDeclaredType(Object.class);
-				value.setBindingDefinitionType(BindingDefinitionType.GET);
-			}
-			this.value = value;
-		}
-
-		@Override
-		public Type getAssignableType() {
-			if (getValue().isSet() && getValue().isValid()) {
-				return getValue().getAnalyzedType();
-			}
-			return Object.class;
-		}
-
-		@Override
-		public T performAction(FlexoBehaviourAction action) {
-			return (T) getDeclaredObject(action);
-		}
-
-		@Override
-		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			if (dataBinding == getValue()) {
-				updateVariableAssignation();
-			}
-			super.notifiedBindingChanged(dataBinding);
 		}
 
 	}
 
 	@DefineValidationRule
-	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
-		public ValueBindingIsRequiredAndMustBeValid() {
-			super("'value'_binding_is_required_and_must_be_valid", AssignationAction.class);
+	public static class AssignationBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AssignationAction> {
+		public AssignationBindingIsRequiredAndMustBeValid() {
+			super("'assignation'_binding_is_required_and_must_be_valid", AssignationAction.class);
 		}
 
 		@Override
 		public DataBinding<Object> getBinding(AssignationAction object) {
-			return object.getValue();
+			return object.getAssignation();
 		}
 
 	}

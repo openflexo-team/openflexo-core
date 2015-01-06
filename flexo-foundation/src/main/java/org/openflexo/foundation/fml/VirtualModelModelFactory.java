@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
@@ -35,11 +36,14 @@ import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.ExecutionAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
@@ -430,8 +434,34 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		return newInstance(AddToListAction.class);
 	}
 
-	public AssignationAction newAssignationAction() {
+	public <T> AssignationAction<T> newAssignationAction() {
 		return newInstance(AssignationAction.class);
+	}
+
+	public <T> AssignationAction<T> newAssignationAction(AssignableAction<?, T> assignableAction) {
+		AssignationAction<T> returned = newAssignationAction();
+		returned.setAssignableAction(assignableAction);
+		return returned;
+	}
+
+	public <T> AssignationAction<T> newAssignationAction(DataBinding<?> expression) {
+		AssignationAction<T> returned = newAssignationAction();
+		returned.setAssignableAction((ExpressionAction) newExpressionAction(expression));
+		return returned;
+	}
+
+	public DeclarationAction<?> newDeclarationAction() {
+		return newInstance(DeclarationAction.class);
+	}
+
+	public ExpressionAction<?, ?> newExpressionAction() {
+		return newInstance(ExpressionAction.class);
+	}
+
+	public ExpressionAction<?, ?> newExpressionAction(DataBinding<?> expression) {
+		ExpressionAction<?, ?> returned = newInstance(ExpressionAction.class);
+		returned.setExpression((DataBinding) expression);
+		return returned;
 	}
 
 	public ConditionalAction newConditionalAction() {

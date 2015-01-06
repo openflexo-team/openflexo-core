@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
@@ -164,20 +165,21 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			return returned;
 		}*/
 
-		private List<?> fetchItems(FlexoBehaviourAction action) {
+		private List<?> fetchItems(FlexoBehaviourAction action) throws FlexoException {
 			if (getFetchRequest() != null) {
-				return getFetchRequest().performAction(action);
+				return getFetchRequest().execute(action);
 			}
 			return Collections.emptyList();
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) throws FlexoException {
 			List<?> items = fetchItems(action);
 			if (items != null) {
 				for (Object item : items) {
 					action.declareVariable(getIteratorName(), item);
-					performBatchOfActions(getActions(), action);
+					getControlGraph().execute(action);
+					// performBatchOfActions(getActions(), action);
 				}
 			}
 			action.dereferenceVariable(getIteratorName());

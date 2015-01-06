@@ -193,10 +193,10 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 
 		@Override
 		public ValidationIssue<AddClassActionMustDefineAnOntologyClass, AddClass> applyValidation(AddClass action) {
-			if (action.getOntologyClass() == null) {
+			if (action.getOntologyClass() == null && action.getOwner() instanceof AssignationAction) {
 				Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>> v = new Vector<FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass>>();
 				for (ClassRole pr : action.getFlexoConcept().getClassRoles()) {
-					v.add(new SetsPatternRole(pr));
+					v.add(new SetsFlexoRole(pr));
 				}
 				return new ValidationError<AddClassActionMustDefineAnOntologyClass, AddClass>(this, action,
 						"add_individual_action_does_not_define_any_ontology_class", v);
@@ -204,23 +204,23 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 			return null;
 		}
 
-		protected static class SetsPatternRole extends FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass> {
+		protected static class SetsFlexoRole extends FixProposal<AddClassActionMustDefineAnOntologyClass, AddClass> {
 
-			private final ClassRole patternRole;
+			private final ClassRole flexoRole;
 
-			public SetsPatternRole(ClassRole patternRole) {
-				super("assign_action_to_pattern_role_($patternRole.patternRoleName)");
-				this.patternRole = patternRole;
+			public SetsFlexoRole(ClassRole flexoRole) {
+				super("assign_action_to_flexo_role_($flexoRole.flexoRoleName)");
+				this.flexoRole = flexoRole;
 			}
 
-			public ClassRole getPatternRole() {
-				return patternRole;
+			public ClassRole getFlexoRole() {
+				return flexoRole;
 			}
 
 			@Override
 			protected void fixAction() {
 				AddClass<?, ?> action = getValidable();
-				action.setAssignation(new DataBinding<Object>(patternRole.getRoleName()));
+				((AssignationAction) action.getOwner()).setAssignation(new DataBinding<Object>(flexoRole.getRoleName()));
 			}
 
 		}

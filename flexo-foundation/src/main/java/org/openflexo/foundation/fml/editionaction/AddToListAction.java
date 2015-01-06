@@ -30,11 +30,8 @@ import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.editionaction.EditionAction.EditionActionImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -169,7 +166,7 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) {
 			logger.info("performing AddToListAction");
 
 			DataBinding<List<T>> list = getList();
@@ -255,11 +252,11 @@ public interface AddToListAction<MS extends ModelSlot<?>, T> extends EditionActi
 
 		}
 
-		@Override
+		/*@Override
 		public void finalizePerformAction(FlexoBehaviourAction action, Object initialContext) {
 			// TODO Auto-generated method stub
 
-		}
+		}*/
 
 	}
 }

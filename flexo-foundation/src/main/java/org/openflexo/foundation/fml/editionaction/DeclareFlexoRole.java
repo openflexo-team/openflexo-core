@@ -27,8 +27,6 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -45,6 +43,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeclareFlexoRole.DeclareFlexoRoleImpl.class)
 @XMLElement
+@Deprecated
+// Use AssignationAction instead
 public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -67,17 +67,17 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object>
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getAssignation().toString() + " = " + getObject().toString() + ";", context);
 			return out.toString();
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public boolean isAssignationRequired() {
 			return true;
-		}
+		}*/
 
 		public Object getDeclaredObject(FlexoBehaviourAction action) {
 			try {
@@ -118,14 +118,14 @@ public interface DeclareFlexoRole extends AssignableAction<ModelSlot<?>, Object>
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) {
 			return getDeclaredObject(action);
 		}
 
 		@Override
 		public String toString() {
 			return "DeclareFlexoRole(" + getName() + "/" + hash() + ")["
-					+ (getAssignation() != null ? getAssignation().toString() : "null") + "="
+					+ (getDeprecatedAssignation() != null ? getDeprecatedAssignation().toString() : "null") + "="
 					+ (getObject() != null ? getObject().toString() : "null") + "]";
 		}
 

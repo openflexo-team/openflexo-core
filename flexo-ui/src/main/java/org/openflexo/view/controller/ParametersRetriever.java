@@ -112,7 +112,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean isSkipable() {
 		boolean successfullyRetrievedDefaultParameters = action.retrieveDefaultParameters();
 
-		if (successfullyRetrievedDefaultParameters && action.getEditionScheme().getSkipConfirmationPanel()) {
+		if (successfullyRetrievedDefaultParameters && action.getFlexoBehaviour().getSkipConfirmationPanel()) {
 			return true;
 		}
 
@@ -123,7 +123,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 		FIBComponent component = makeFIB(true, true);
 		FIBDialog dialog = FIBDialog.instanciateDialog(component, action, null, true, FlexoLocalization.getMainLocalizer());
-		if (!action.getEditionScheme().getDefinePopupDefaultSize()) {
+		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
 		dialog.showDialog();
@@ -389,11 +389,11 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			return fibModelFactory.newFIBPanel();
 		}
 
-		final FlexoBehaviour flexoBehaviour = action.getEditionScheme();
+		final FlexoBehaviour flexoBehaviour = action.getFlexoBehaviour();
 
 		FIBPanel returned = fibModelFactory.newFIBPanel();
-		returned.setDataType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getEditionScheme()));
-		returned.setBindingFactory(action.getEditionScheme().getBindingFactory());
+		returned.setDataType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+		returned.setBindingFactory(action.getFlexoBehaviour().getBindingFactory());
 
 		returned.setLayout(Layout.twocols);
 		returned.setDataClass(action.getClass());

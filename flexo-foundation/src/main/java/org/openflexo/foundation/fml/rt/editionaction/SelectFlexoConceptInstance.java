@@ -23,13 +23,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.editionaction.FetchRequest.FetchRequestImpl;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -43,7 +42,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a given
@@ -75,8 +73,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, FlexoConceptInstance>
-			implements SelectFlexoConceptInstance {
+	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, FlexoConceptInstance> implements
+			SelectFlexoConceptInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
 
@@ -90,15 +88,15 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
+			/*if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
-			}
+			}*/
 			out.append(getClass().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			if (getAssignation().isSet()) {
+			/*if (getAssignation().isSet()) {
 				out.append(")", context);
-			}
+			}*/
 			return out.toString();
 		}
 
@@ -169,11 +167,11 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName()
 					+ (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
-					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
+			/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
 		}
 
 		@Override
-		public List<FlexoConceptInstance> performAction(FlexoBehaviourAction action) {
+		public List<FlexoConceptInstance> execute(FlexoBehaviourAction action) {
 			VirtualModelInstance vmi = null;
 			if (getModelSlot() instanceof FMLRTModelSlot) {
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());

@@ -35,15 +35,14 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.URIParameter;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -149,8 +148,8 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
-	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<FMLRTModelSlot, FlexoConceptInstance>
-			implements MatchFlexoConceptInstance, PropertyChangeListener {
+	public static abstract class MatchFlexoConceptInstanceImpl extends AssignableActionImpl<FMLRTModelSlot, FlexoConceptInstance> implements
+			MatchFlexoConceptInstance, PropertyChangeListener {
 
 		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
 
@@ -169,18 +168,18 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
+			/*if (getAssignation().isSet()) {
 				out.append(getAssignation().toString() + " = (", context);
-			}
+			}*/
 			out.append(getImplementedInterface().getSimpleName() + " as "
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "no type specified") + " "
 					+ getMatchingCriteriasFMLRepresentation(context) + " using "
 					+ (getCreationScheme() != null ? getCreationScheme().getFlexoConcept().getName() : "no creation scheme specified")
 					+ ":" + (getCreationScheme() != null ? getCreationScheme().getName() : "no creation scheme specified") + "("
 					+ getCreationSchemeParametersFMLRepresentation(context) + ")", context);
-			if (getAssignation().isSet()) {
+			/*if (getAssignation().isSet()) {
 				out.append(")", context);
-			}
+			}*/
 			return out.toString();
 		}
 
@@ -545,7 +544,7 @@ public interface MatchFlexoConceptInstance extends AssignableAction<FMLRTModelSl
 		}
 
 		@Override
-		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
+		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
 			logger.fine("Perform perform MatchFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			Hashtable<FlexoRole, Object> criterias = new Hashtable<FlexoRole, Object>();

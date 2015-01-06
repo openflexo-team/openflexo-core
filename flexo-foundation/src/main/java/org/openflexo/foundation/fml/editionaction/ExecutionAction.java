@@ -28,8 +28,6 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -46,6 +44,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ExecutionAction.ExecutionActionImpl.class)
 @XMLElement
+@Deprecated
+// Use ExpressionAction instead
 public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableAction<MS, FlexoObject> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -69,12 +69,12 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append((getAssignation().isSet() ? getAssignation().toString() + " = " : "") + getExecution().toString() + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public DataBinding<?> getExecution() {
@@ -105,7 +105,7 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 		}
 
 		@Override
-		public FlexoObject performAction(FlexoBehaviourAction action) {
+		public FlexoObject execute(FlexoBehaviourAction action) {
 			try {
 				getExecution().execute(action);
 			} catch (TypeMismatchException e) {

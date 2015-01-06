@@ -19,7 +19,6 @@
  */
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -124,7 +122,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	public boolean retrieveMissingDefaultParameters() {
 		boolean returned = true;
-		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (getParameterValue(parameter) == null) {
 				logger.warning("Found not initialized parameter " + parameter);
@@ -169,7 +167,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	}
 
 	@Override
-	public CreationScheme getEditionScheme() {
+	public CreationScheme getFlexoBehaviour() {
 		return getCreationScheme();
 	}
 
@@ -187,18 +185,18 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
 	 * related {@link FlexoBehaviour}<br>
 	 */
-	@Override
+	/*@Override
 	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
 		Object assignedObject = super.performAction(action, performedActions);
 		if (assignedObject != null && action instanceof AssignableAction) {
 			AssignableAction assignableAction = (AssignableAction) action;
-			if (assignableAction.getFlexoRole() != null /*&& assignedObject instanceof FlexoObject*/) {
-				getFlexoConceptInstance().setObjectForFlexoRole(/*(FlexoObject)*/assignedObject, assignableAction.getFlexoRole());
+			if (assignableAction.getFlexoRole() != null) {
+				getFlexoConceptInstance().setObjectForFlexoRole(assignedObject, assignableAction.getFlexoRole());
 			}
 		}
 
 		return assignedObject;
-	}
+	}*/
 
 	@Override
 	public Object getValue(BindingVariable variable) {

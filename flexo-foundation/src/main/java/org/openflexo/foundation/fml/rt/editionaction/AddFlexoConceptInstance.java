@@ -282,7 +282,7 @@ public interface AddFlexoConceptInstance extends AssignableAction<FMLRTModelSlot
 		}
 
 		@Override
-		public FlexoConceptInstance performAction(FlexoBehaviourAction action) {
+		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
 			logger.info("Perform performAddFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
 			logger.info("VirtualModelInstance: " + vmInstance);

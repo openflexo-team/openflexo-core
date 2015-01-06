@@ -30,6 +30,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
@@ -74,7 +75,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 	@Setter(ITERATION_KEY)
 	public void setIteration(DataBinding<List<?>> iteration);
 
-	@Getter(value = ITERATION_CONTROL_GRAPH_KEY)
+	@Getter(value = ITERATION_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "Iteration_")
 	public AssignableControlGraph<List<?>> getIterationControlGraph();
 
@@ -214,13 +215,14 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) throws FlexoException {
 			List<?> items = evaluateIteration(action);
 			if (items != null) {
 				for (Object item : items) {
 					System.out.println("> working with " + getIteratorName() + "=" + item);
 					action.declareVariable(getIteratorName(), item);
-					performBatchOfActions(getActions(), action);
+					getControlGraph().execute(action);
+					// performBatchOfActions(getActions(), action);
 				}
 			}
 			action.dereferenceVariable(getIteratorName());

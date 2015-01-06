@@ -28,8 +28,8 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -125,7 +125,7 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 		}
 
 		@Override
-		public T performAction(FlexoBehaviourAction action) {
+		public T execute(FlexoBehaviourAction action) {
 			T objectToDelete = null;
 			try {
 				objectToDelete = (T) getObject().getBindingValue(action);
@@ -149,11 +149,11 @@ public interface DeleteAction<MS extends ModelSlot<?>, T extends FlexoObject> ex
 			return objectToDelete;
 		}
 
-		@Override
+		/*@Override
 		public void finalizePerformAction(FlexoBehaviourAction action, T initialContext) {
 			// TODO Auto-generated method stub
 
-		}
+		}*/
 
 	}
 

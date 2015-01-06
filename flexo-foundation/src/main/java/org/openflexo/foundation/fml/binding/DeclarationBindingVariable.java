@@ -6,21 +6,21 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 
 /**
- * BindingVariable associated to an {@link AssignableAction}
+ * BindingVariable associated to an {@link DeclarationAction}
  * 
  * @author sylvain
  * 
  */
-public class AssignationBindingVariable extends BindingVariable implements PropertyChangeListener {
-	static final Logger logger = Logger.getLogger(AssignationBindingVariable.class.getPackage().getName());
+public class DeclarationBindingVariable extends BindingVariable implements PropertyChangeListener {
+	static final Logger logger = Logger.getLogger(DeclarationBindingVariable.class.getPackage().getName());
 
-	private final AssignableAction<?, ?> action;
+	private final DeclarationAction<?> action;
 	private Type lastKnownType = null;
 
-	public AssignationBindingVariable(AssignableAction<?, ?> action) {
+	public DeclarationBindingVariable(DeclarationAction<?> action) {
 		super(action.getVariableName(), action.getAssignableType(), true);
 		this.action = action;
 		if (action != null) {
@@ -49,14 +49,14 @@ public class AssignationBindingVariable extends BindingVariable implements Prope
 		return getAction().getAssignableType();
 	}
 
-	public AssignableAction<?, ?> getAction() {
+	public DeclarationAction<?> getAction() {
 		return action;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getAction()) {
-			if (evt.getPropertyName().equals(AssignableAction.VARIABLE_NAME_KEY)) {
+			if (evt.getPropertyName().equals(DeclarationAction.VARIABLE_NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}

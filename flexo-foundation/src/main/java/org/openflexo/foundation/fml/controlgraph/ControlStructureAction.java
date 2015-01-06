@@ -25,8 +25,6 @@ import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction.EditionActionImpl;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -387,10 +385,10 @@ public abstract interface ControlStructureAction extends EditionAction<ModelSlot
 			return anAction;
 		}
 
-		@Override
+		/*@Override
 		public final void finalizePerformAction(FlexoBehaviourAction action, Object initialContext) {
 			// Not applicable for ControlStructureAction
-		};
+		};*/
 
 	}
 }

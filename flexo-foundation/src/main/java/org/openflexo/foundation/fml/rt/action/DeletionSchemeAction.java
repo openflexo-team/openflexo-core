@@ -139,7 +139,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	}*/
 
 	@Override
-	public DeletionScheme getEditionScheme() {
+	public DeletionScheme getFlexoBehaviour() {
 		return getDeletionScheme();
 	}
 

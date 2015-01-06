@@ -21,21 +21,17 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Abstract class representing an {@link FMLControlGraph} with the particularity of returning a value which can be assigned
+ * Abstract class representing an {@link FMLControlGraph} with the particularity of returning a value which can be assigned<br>
+ * Note that assignable type must be compatible with T parameter
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 public interface AssignableControlGraph<T> extends FMLControlGraph {
-
-	public DataBinding<? super T> getAssignation();
-
-	public void setAssignation(DataBinding<? super T> assignation);
 
 	public Type getAssignableType();
 

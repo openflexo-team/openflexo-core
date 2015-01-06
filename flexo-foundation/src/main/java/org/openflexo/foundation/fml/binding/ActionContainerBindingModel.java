@@ -21,9 +21,7 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.openflexo.antar.binding.BindingEvaluationContext;
@@ -31,7 +29,6 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -56,13 +53,13 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 
 		this.actionContainer = actionContainer;
 
-		assignationBindingVariables = new HashMap<AssignableAction<?, ?>, AssignationBindingVariable>();
+		declarationBindingVariables = new HashMap<AssignableAction<?, ?>, DeclarationBindingVariable>();
 
 		if (actionContainer != null && actionContainer.getPropertyChangeSupport() != null) {
 			actionContainer.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		updateAssignationVariables();
+		// updateAssignationVariables();
 
 	}
 
@@ -74,11 +71,11 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		if (actionContainer != null && actionContainer.getPropertyChangeSupport() != null) {
 			actionContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		for (AssignableAction<?, ?> a : assignationBindingVariables.keySet()) {
+		for (AssignableAction<?, ?> a : declarationBindingVariables.keySet()) {
 			a.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 
-		assignationBindingVariables.clear();
+		declarationBindingVariables.clear();
 
 		super.delete();
 	}
@@ -89,11 +86,11 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		if (evt.getSource() == actionContainer) {
 			if (evt.getPropertyName().equals(ActionContainer.ACTIONS_KEY)) {
 				// Actions were touched
-				updateAssignationVariables();
+				// updateAssignationVariables();
 			}
 		} else if (evt.getSource() instanceof AssignableAction<?, ?>) {
 			// Something has changed in any of contained actions
-			updateAssignationVariables();
+			// updateAssignationVariables();
 		}
 	}
 
@@ -101,33 +98,33 @@ public abstract class ActionContainerBindingModel extends BindingModel implement
 		return actionContainer;
 	}
 
-	private final Map<AssignableAction<?, ?>, AssignationBindingVariable> assignationBindingVariables;
+	private final Map<AssignableAction<?, ?>, DeclarationBindingVariable> declarationBindingVariables;
 
-	private void updateAssignationVariables() {
+	/*private void updateAssignationVariables() {
 
-		List<AssignableAction<?, ?>> assignationToBeDeleted = new ArrayList<AssignableAction<?, ?>>(assignationBindingVariables.keySet());
+		List<AssignableAction<?, ?>> assignationToBeDeleted = new ArrayList<AssignableAction<?, ?>>(declarationBindingVariables.keySet());
 
 		for (final EditionAction<?, ?> a : actionContainer.getActions()) {
 			if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
 				if (assignationToBeDeleted.contains(a)) {
 					assignationToBeDeleted.remove(a);
 				} else {
-					AssignationBindingVariable bv = new AssignationBindingVariable((AssignableAction<?, ?>) a);
+					DeclarationBindingVariable bv = new DeclarationBindingVariable((AssignableAction<?, ?>) a);
 					addToBindingVariables(bv);
-					assignationBindingVariables.put((AssignableAction<?, ?>) a, bv);
+					declarationBindingVariables.put((AssignableAction<?, ?>) a, bv);
 					a.getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
 		}
 
 		for (AssignableAction<?, ?> a : assignationToBeDeleted) {
-			AssignationBindingVariable bvToRemove = assignationBindingVariables.get(a);
+			DeclarationBindingVariable bvToRemove = declarationBindingVariables.get(a);
 			removeFromBindingVariables(bvToRemove);
-			assignationBindingVariables.remove(a);
+			declarationBindingVariables.remove(a);
 			bvToRemove.delete();
 			a.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 
-	}
+	}*/
 
 }

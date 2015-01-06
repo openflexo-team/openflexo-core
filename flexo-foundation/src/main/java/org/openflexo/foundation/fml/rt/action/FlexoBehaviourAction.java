@@ -46,7 +46,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -94,7 +93,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	// TODO: we must order this if dependancies are not resolved using basic sequence
 	public boolean retrieveDefaultParameters() {
 		boolean returned = true;
-		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			Object defaultValue = parameter.getDefaultValue(this);
@@ -122,7 +121,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @return
 	 */
 	public boolean areRequiredParametersSetAndValid() {
-		FlexoBehaviour flexoBehaviour = getEditionScheme();
+		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			if (!parameter.isValid(this, parameterValues.get(parameter))) {
 				return false;
@@ -139,8 +138,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public FlexoConcept getFlexoConcept() {
-		if (getEditionScheme() != null) {
-			return getEditionScheme().getFlexoConcept();
+		if (getFlexoBehaviour() != null) {
+			return getFlexoBehaviour().getFlexoConcept();
 		}
 		return null;
 	}
@@ -208,7 +207,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return parameterListValues.get(parameter);
 	}
 
-	public abstract FB getEditionScheme();
+	public abstract FB getFlexoBehaviour();
 
 	public VirtualModelInstance getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
@@ -226,9 +225,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public abstract FlexoConceptInstance getFlexoConceptInstance();
 
 	/**
-	 * This is the internal code performing execution of the control graph of {@link EditionAction} defined to be the execution control
-	 * graph of related {@link FlexoBehaviour}<br>
-	 * Recursively invoke {@link #performAction(EditionAction, Hashtable)}
+	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
 	protected void applyEditionActions() throws FlexoException {
 
@@ -238,10 +235,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			logger.info("Parameter " + param.getName() + " value=" + parameterValues.get(param));
 		}*/
 
-		Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
+		/*Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
 
 		FB es = getEditionScheme();
-
+		
 		// Perform actions
 		if (es != null) {
 			for (EditionAction action : es.getActions()) {
@@ -250,28 +247,18 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				}
 			}
 			// Otherwise, we just ignore the action
-		}
-		else {
+		} else {
 			logger.warning("Trying to execute an Action with null Behaviour");
 		}
 
 		// Finalize actions
 		for (EditionAction action : performedActions.keySet()) {
 			action.finalizePerformAction(this, performedActions.get(action));
-		}
-
-		// Hack to be removed (implements model resources as FlexoResource interface !!!)
-		/*System.out.println("HACK !!!!!!! saving the models...");
-		for (ModelSlotInstance<?, ?> instance : getFlexoConceptInstance().getVirtualModelInstance().getModelSlotInstances()) {
-			System.out.println("Slot " + instance + " model " + instance.getModel());
-			if (instance.getModel() instanceof FlexoFileResource) {
-				try {
-					((FlexoFileResource) instance.getModel()).save(null);
-				} catch (SaveResourceException e) {
-					e.printStackTrace();
-				}
-			}
 		}*/
+
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
+			getFlexoBehaviour().getControlGraph().execute(this);
+		}
 
 	}
 
@@ -319,40 +306,48 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	/**
+	 * Override when required
+	 * 
+	 * @param action
+	 */
+	public <T> void hasPerformedAction(EditionAction<?, T> action, T object) {
+	}
+
+	/**
 	 * This is the internal code performing execution of a single {@link EditionAction} defined to be part of the execution control graph of
 	 * related {@link FlexoBehaviour}<br>
 	 * 
 	 * @throws FlexoException
 	 */
-	protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
+	/*protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
 
-		Object assignedObject = action.performAction(this);
+		Object assignedObject = action.execute(this);
 
 		if (assignedObject != null) {
 			performedActions.put(action, assignedObject);
-		}
+		}*/
 
-		if (assignedObject != null && action instanceof AssignableAction) {
-			AssignableAction assignableAction = (AssignableAction) action;
-			if (assignableAction.getIsVariableDeclaration()) {
-				System.out.println("Setting variable " + assignableAction.getVariableName() + " with value " + assignedObject + " of "
-						+ (assignedObject != null ? assignedObject.getClass() : "null"));
-				declareVariable(assignableAction.getVariableName(), assignedObject);
-			}
-			if (assignableAction.getAssignation().isSet() && assignableAction.getAssignation().isValid()) {
-				try {
-					assignableAction.getAssignation().setBindingValue(assignedObject, this);
-				} catch (Exception e) {
-					logger.warning("Unexpected assignation issue, " + assignableAction.getAssignation() + " object=" + assignedObject
-							+ " exception: " + e);
-					e.printStackTrace();
-					throw new FlexoException(e);
-				}
+	/*if (assignedObject != null && action instanceof AssignableAction) {
+		AssignableAction assignableAction = (AssignableAction) action;
+		if (assignableAction.getIsVariableDeclaration()) {
+			System.out.println("Setting variable " + assignableAction.getVariableName() + " with value " + assignedObject + " of "
+					+ (assignedObject != null ? assignedObject.getClass() : "null"));
+			declareVariable(assignableAction.getVariableName(), assignedObject);
+		}
+		if (assignableAction.getAssignation().isSet() && assignableAction.getAssignation().isValid()) {
+			try {
+				assignableAction.getAssignation().setBindingValue(assignedObject, this);
+			} catch (Exception e) {
+				logger.warning("Unexpected assignation issue, " + assignableAction.getAssignation() + " object=" + assignedObject
+						+ " exception: " + e);
+				e.printStackTrace();
+				throw new FlexoException(e);
 			}
 		}
+	}*/
 
-		return assignedObject;
-	}
+	/*	return assignedObject;
+	}*/
 
 	@Override
 	public Object getValue(BindingVariable variable) {
@@ -363,9 +358,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
-			return getEditionScheme().getParameters();
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+			return getFlexoBehaviour().getParameters();
 		}
 
 		// Not found at this level, delegate it to the FlexoConceptInstance
@@ -401,12 +395,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY + " in " + this + " of "
 					+ getClass());
 			return;

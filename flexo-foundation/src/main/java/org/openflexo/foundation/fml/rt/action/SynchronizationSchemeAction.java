@@ -70,7 +70,7 @@ public class SynchronizationSchemeAction extends
 	}
 
 	@Override
-	public SynchronizationScheme getEditionScheme() {
+	public SynchronizationScheme getFlexoBehaviour() {
 		return getSynchronizationScheme();
 	}
 

@@ -66,7 +66,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 	}
 
 	@Override
-	public AbstractActionScheme getEditionScheme() {
+	public AbstractActionScheme getFlexoBehaviour() {
 		return getActionScheme();
 	}
 

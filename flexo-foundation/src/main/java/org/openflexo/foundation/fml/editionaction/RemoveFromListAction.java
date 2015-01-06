@@ -29,12 +29,7 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.editionaction.AssignableAction.AssignableActionImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -73,17 +68,17 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getAssignation().toString() + " = " + getValue().toString() + ";", context);
 			return out.toString();
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public boolean isAssignationRequired() {
 			return true;
-		}
+		}*/
 
 		public Object getDeclaredObject(FlexoBehaviourAction action) {
 			try {
@@ -127,17 +122,17 @@ public interface RemoveFromListAction<MS extends ModelSlot<?>, T> extends Assign
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) {
 			return getDeclaredObject(action);
 		}
 
-		@Override
+		/*@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			if (dataBinding == getValue()) {
 				updateVariableAssignation();
 			}
 			super.notifiedBindingChanged(dataBinding);
-		}
+		}*/
 
 		public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<RemoveFromListAction> {
 			public ValueBindingIsRequiredAndMustBeValid() {

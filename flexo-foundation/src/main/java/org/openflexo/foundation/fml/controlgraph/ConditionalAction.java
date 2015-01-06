@@ -26,6 +26,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
@@ -212,11 +213,13 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object performAction(FlexoBehaviourAction action) {
+		public Object execute(FlexoBehaviourAction action) throws FlexoException {
 			if (evaluateCondition(action)) {
-				performBatchOfActions(getActions(), action);
+				return getThenControlGraph().execute(action);
+				// performBatchOfActions(getActions(), action);
+			} else {
+				return getElseControlGraph().execute(action);
 			}
-			return null;
 		}
 
 		@Deprecated

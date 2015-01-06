@@ -22,8 +22,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,7 +29,7 @@ import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -44,12 +42,7 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.action.NavigationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -82,10 +75,10 @@ import org.openflexo.model.validation.ValidationWarning;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 @Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class),
-		@Import(DeclareFlexoRole.class), @Import(AssignationAction.class), @Import(ExecutionAction.class),
+		@Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ExpressionAction.class),
 		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
-		@Import(RemoveFromListAction.class), @Import(ProcedureAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class),
-		@Import(IterationAction.class), @Import(FetchRequestIterationAction.class) })
+		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
+		@Import(FetchRequestIterationAction.class) })
 public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
@@ -120,22 +113,22 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 
 	/**
 	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
-	 * Note than returned object will be used to be further reinjected in finalizer
 	 * 
 	 * @param action
 	 * @return
 	 */
-	public T performAction(FlexoBehaviourAction<?, ?, ?> action);
+	@Override
+	public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 	/**
 	 * Provides hooks after executing edition action in the context provided by supplied {@link FlexoBehaviourAction}
 	 * 
 	 * @param action
 	 * @param initialContext
-	 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
+	 *            the object that was returned during {@link #execute(FlexoBehaviourAction)} call
 	 * @return
 	 */
-	public void finalizePerformAction(FlexoBehaviourAction<?, ?, ?> action, T initialContext);
+	// public void finalizePerformAction(FlexoBehaviourAction<?, ?, ?> action, T initialContext);
 
 	// public BindingModel getInferedBindingModel();
 
@@ -264,7 +257,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 		 * @param action
 		 * @return
 		 */
-		public static void performBatchOfActions(Collection<EditionAction<?, ?>> actions, FlexoBehaviourAction<?, ?, ?> contextAction) {
+		/*public static void performBatchOfActions(Collection<EditionAction<?, ?>> actions, FlexoBehaviourAction<?, ?, ?> contextAction) {
 
 			Hashtable<EditionAction<?, ?>, Object> performedActions = new Hashtable<EditionAction<?, ?>, Object>();
 
@@ -320,7 +313,7 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 			for (EditionAction editionAction : performedActions.keySet()) {
 				editionAction.finalizePerformAction(contextAction, performedActions.get(editionAction));
 			}
-		}
+		}*/
 
 		/**
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
@@ -330,18 +323,18 @@ public abstract interface EditionAction<MS extends ModelSlot<?>, T> extends FMLC
 		 * @return
 		 */
 		@Override
-		public abstract T performAction(FlexoBehaviourAction action);
+		public abstract T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 		/**
 		 * Provides hooks after executing edition action in the context provided by supplied {@link FlexoBehaviourAction}
 		 * 
 		 * @param action
 		 * @param initialContext
-		 *            the object that was returned during {@link #performAction(FlexoBehaviourAction)} call
+		 *            the object that was returned during {@link #execute(FlexoBehaviourAction)} call
 		 * @return
 		 */
-		@Override
-		public abstract void finalizePerformAction(FlexoBehaviourAction action, T initialContext);
+		// @Override
+		// public abstract void finalizePerformAction(FlexoBehaviourAction action, T initialContext);
 
 		@Override
 		public FlexoConcept getFlexoConcept() {

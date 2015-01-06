@@ -65,7 +65,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 	}
 
 	@Override
-	public NavigationScheme getEditionScheme() {
+	public NavigationScheme getFlexoBehaviour() {
 		return getNavigationScheme();
 	}
 

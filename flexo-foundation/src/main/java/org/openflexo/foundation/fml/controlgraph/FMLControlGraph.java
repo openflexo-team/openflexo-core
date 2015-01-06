@@ -22,12 +22,14 @@ package org.openflexo.foundation.fml.controlgraph;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
@@ -113,6 +115,14 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	public BindingModel getInferedBindingModel();
 
 	public FMLControlGraphOwner getRootOwner();
+
+	/**
+	 * Execute this control graph in the context provided by supplied {@link FlexoBehaviourAction}<br>
+	 * 
+	 * @param action
+	 * @return
+	 */
+	public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 

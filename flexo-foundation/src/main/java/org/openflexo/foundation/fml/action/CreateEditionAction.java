@@ -19,12 +19,17 @@
  */
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.Bindable;
+import org.openflexo.antar.binding.BindingFactory;
+import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -38,6 +43,9 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -47,7 +55,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 
-public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> {
+public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> implements Bindable {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
@@ -105,11 +113,13 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		super(actionType, focusedObject, globalSelection, editor);
 
 		builtInActions = new ArrayList<Class<? extends EditionAction>>();
+		builtInActions.add(org.openflexo.foundation.fml.editionaction.ExpressionAction.class);
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.AssignationAction.class);
+		builtInActions.add(org.openflexo.foundation.fml.editionaction.DeclarationAction.class);
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.AddToListAction.class);
 		builtInActions.add(org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class);
-		builtInActions.add(org.openflexo.foundation.fml.editionaction.ExecutionAction.class);
-		builtInActions.add(org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class);
+		// builtInActions.add(org.openflexo.foundation.fml.editionaction.ExecutionAction.class);
+		// builtInActions.add(org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class);
 		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.class);
 		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance.class);
 		builtInActions.add(org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance.class);
@@ -158,7 +168,24 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add edition action, modelSlot=" + modelSlot + " actionChoice=" + actionChoice);
 
-		newEditionAction = makeEditionAction();
+		EditionAction baseEditionAction = makeEditionAction();
+
+		if (baseEditionAction instanceof AssignableAction) {
+			if (getAssignation() != null && getAssignation().isSet()) {
+				AssignationAction<?> newAssignationAction = getFocusedObject().getVirtualModelFactory().newAssignationAction();
+				newAssignationAction.setAssignableAction((AssignableAction) baseEditionAction);
+				newAssignationAction.setAssignation((DataBinding) getAssignation());
+				newEditionAction = newAssignationAction;
+			} else if (getDeclarationVariableName() != null) {
+				DeclarationAction<?> newDeclarationAction = getFocusedObject().getVirtualModelFactory().newDeclarationAction();
+				newDeclarationAction.setAssignableAction((AssignableAction) baseEditionAction);
+				newDeclarationAction.setVariableName(getDeclarationVariableName());
+				newEditionAction = newDeclarationAction;
+			}
+		}
+		if (newEditionAction == null) {
+			newEditionAction = baseEditionAction;
+		}
 
 		if (newEditionAction != null) {
 
@@ -257,15 +284,17 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			}
 			if (org.openflexo.foundation.fml.editionaction.AssignationAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAssignationAction();
+			} else if (org.openflexo.foundation.fml.editionaction.ExpressionAction.class.isAssignableFrom(builtInActionClass)) {
+				return factory.newExpressionAction();
 			} else if (org.openflexo.foundation.fml.editionaction.AddToListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddToListAction();
 			} else if (org.openflexo.foundation.fml.editionaction.RemoveFromListAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newRemoveFromListAction();
-			} else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
+			} /*else if (org.openflexo.foundation.fml.editionaction.ExecutionAction.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newExecutionAction();
-			} else if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(builtInActionClass)) {
+				} else if (org.openflexo.foundation.fml.editionaction.DeclareFlexoRole.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newDeclareFlexoRole();
-			} else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
+				}*/else if (AddFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newAddFlexoConceptInstance();
 			} else if (MatchFlexoConceptInstance.class.isAssignableFrom(builtInActionClass)) {
 				return factory.newMatchFlexoConceptInstance();
@@ -384,4 +413,77 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		this.requestActionClass = requestActionClass;
 	}
 
+	private DataBinding<?> assignation = null;
+	private String declarationVariableName = null;
+
+	private Type getAssignableType() {
+		return Object.class;
+	}
+
+	public DataBinding<?> getAssignation() {
+		if (assignation == null) {
+
+			assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
+				@Override
+				public Type getDeclaredType() {
+					return getAssignableType();
+				}
+			};
+			assignation.setDeclaredType(getAssignableType());
+			assignation.setBindingName("assignation");
+			assignation.setMandatory(true);
+
+		}
+		assignation.setDeclaredType(getAssignableType());
+		return assignation;
+	}
+
+	public void setAssignation(DataBinding<?> assignation) {
+		if (assignation != null) {
+			this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
+					DataBinding.BindingDefinitionType.GET_SET) {
+				@Override
+				public Type getDeclaredType() {
+					return getAssignableType();
+				}
+			};
+			assignation.setDeclaredType(getAssignableType());
+			assignation.setBindingName("assignation");
+			assignation.setMandatory(true);
+		}
+		notifiedBindingChanged(this.assignation);
+	}
+
+	public String getDeclarationVariableName() {
+		return declarationVariableName;
+	}
+
+	public void setDeclarationVariableName(String declarationVariableName) {
+		if ((declarationVariableName == null && this.declarationVariableName != null)
+				|| (declarationVariableName != null && !declarationVariableName.equals(this.declarationVariableName))) {
+			String oldValue = this.declarationVariableName;
+			this.declarationVariableName = declarationVariableName;
+			getPropertyChangeSupport().firePropertyChange("declarationVariableName", oldValue, declarationVariableName);
+		}
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return getFocusedObject().getBindingFactory();
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		return getFocusedObject().getBindingModel();
+	}
+
+	@Override
+	public void notifiedBindingChanged(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
+		// TODO
+	}
+
+	@Override
+	public void notifiedBindingDecoded(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
+		// TODO
+	}
 }

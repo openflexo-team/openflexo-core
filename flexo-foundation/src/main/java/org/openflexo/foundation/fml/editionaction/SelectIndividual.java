@@ -22,8 +22,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -82,7 +80,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			if (getAssignation().isSet()) {
@@ -95,7 +93,7 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 				out.append(")", context);
 			}
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public IndividualOfClass getFetchedType() {
@@ -152,10 +150,10 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}*/
 
-		@Override
+		/*@Override
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
-		}
+		}*/
 	}
 }

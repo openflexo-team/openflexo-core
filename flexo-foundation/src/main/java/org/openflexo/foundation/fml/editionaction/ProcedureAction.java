@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -101,11 +100,11 @@ public interface ProcedureAction<MS extends ModelSlot<?>, T> extends EditionActi
 
 		}
 
-		@Override
+		/*@Override
 		public void finalizePerformAction(FlexoBehaviourAction action, T initialContext) {
 			// TODO Auto-generated method stub
 
-		}
+		}*/
 
 	}
 
