@@ -41,7 +41,6 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
@@ -182,11 +181,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	@Finder(collection = PARAMETERS_KEY, attribute = FlexoBehaviourParameter.NAME_KEY)
 	public FlexoBehaviourParameter getParameter(String name);
-
-	@DeserializationFinalizer
-	public void finalizeEditionSchemeDeserialization();
-
-	// public void updateBindingModels();
 
 	public FlexoBehaviourType getFlexoBehaviourType();
 
@@ -583,7 +577,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public void finalizeEditionSchemeDeserialization() {
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
 			// updateBindingModels();
 		}
 

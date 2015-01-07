@@ -31,6 +31,8 @@ import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.model.annotations.DeserializationFinalizer;
+import org.openflexo.model.annotations.DeserializationInitializer;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.validation.FixProposal;
@@ -72,6 +74,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData, Tec
 	// public void notifyBindingModelChanged();
 
 	public ViewPointLocalizedDictionary getLocalizedDictionary();
+
+	@DeserializationInitializer
+	public void initializeDeserialization(VirtualModelModelFactory factory);
+
+	@DeserializationFinalizer
+	public void finalizeDeserialization();
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -179,6 +187,22 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData, Tec
 		@Override
 		public String getStringRepresentation() {
 			return getFactory().stringRepresentation(this);
+		}
+
+		private VirtualModelModelFactory deserializationFactory;
+
+		@Override
+		public void initializeDeserialization(VirtualModelModelFactory factory) {
+			deserializationFactory = factory;
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+			deserializationFactory = null;
+		}
+
+		public VirtualModelModelFactory getDeserializationFactory() {
+			return deserializationFactory;
 		}
 	}
 

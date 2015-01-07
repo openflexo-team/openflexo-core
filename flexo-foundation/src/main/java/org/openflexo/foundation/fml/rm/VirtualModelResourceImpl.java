@@ -19,10 +19,10 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
@@ -251,7 +251,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public void stopDeserializing() {
 		for (FlexoConcept fc : getLoadedResourceData().getFlexoConcepts()) {
-			fc.finalizeFlexoConceptDeserialization();
+			fc.finalizeDeserialization();
 		}
 		super.stopDeserializing();
 	}

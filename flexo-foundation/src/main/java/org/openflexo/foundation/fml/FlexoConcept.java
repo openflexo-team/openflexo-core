@@ -40,7 +40,6 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
@@ -236,11 +235,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 	@Remover(FLEXO_CONCEPT_CONSTRAINTS_KEY)
 	public void removeFromFlexoConceptConstraints(FlexoConceptConstraint aFlexoConceptConstraint);
-
-	@DeserializationFinalizer
-	public void finalizeFlexoConceptDeserialization();
-
-	// public void updateBindingModel();
 
 	public boolean isRoot();
 
@@ -779,13 +773,14 @@ public interface FlexoConcept extends FlexoConceptObject {
 		}
 
 		@Override
-		public void finalizeFlexoConceptDeserialization() {
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
 			// createBindingModel();
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
-				es.finalizeEditionSchemeDeserialization();
+				es.finalizeDeserialization();
 			}
 			for (FlexoRole pr : getFlexoRoles()) {
-				pr.finalizeFlexoRoleDeserialization();
+				pr.finalizeDeserialization();
 			}
 			// updateBindingModel();
 		}

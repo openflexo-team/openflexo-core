@@ -31,7 +31,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -94,9 +93,6 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(ModelSlot<?> modelSlot);
-
-	@DeserializationFinalizer
-	public void finalizeFlexoRoleDeserialization();
 
 	public Type getType();
 
@@ -241,7 +237,8 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		public abstract String getPreciseType();
 
 		@Override
-		public void finalizeFlexoRoleDeserialization() {
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
 		}
 
 		@Override

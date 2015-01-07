@@ -58,7 +58,6 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
@@ -206,9 +205,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 	@Finder(collection = MODEL_SLOTS_KEY, attribute = ModelSlot.NAME_KEY)
 	public ModelSlot<?> getModelSlot(String modelSlotName);
-
-	@DeserializationFinalizer
-	public void finalizeDeserialization();
 
 	public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType);
 
@@ -406,6 +402,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public VirtualModelModelFactory getVirtualModelFactory() {
+			if (isDeserializing()) {
+				return deserializationFactory;
+			}
 			if (getResource() != null) {
 				return getResource().getFactory();
 			} else {
@@ -413,11 +412,18 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			}
 		}
 
+		private VirtualModelModelFactory deserializationFactory;
+
+		@Override
+		public void initializeDeserialization(VirtualModelModelFactory factory) {
+			deserializationFactory = factory;
+		}
+
 		@Override
 		public void finalizeDeserialization() {
-			finalizeFlexoConceptDeserialization();
+			super.finalizeDeserialization();
 			for (FlexoConcept ep : getFlexoConcepts()) {
-				ep.finalizeFlexoConceptDeserialization();
+				ep.finalizeDeserialization();
 			}
 			// Ensure access to reflexive model slot
 			// getReflexiveModelSlot();

@@ -60,7 +60,7 @@ public interface FlexoConceptObject extends NamedFMLObject {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getVirtualModelFactory();
 			}
-			return null;
+			return getDeserializationFactory();
 		}
 
 		@Override
