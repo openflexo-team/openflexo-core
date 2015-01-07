@@ -35,8 +35,8 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -193,7 +193,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -213,9 +213,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction<?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
-
-		assertEquals(2, actionScheme.getActions().size());
+		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
 
 	}
 
@@ -239,10 +237,10 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testInstanciateWidgetForDeclarePatternRole() {
+	public void testInstanciateWidgetForAssignationAction() {
 
-		FIBJPanel<DeclareFlexoRole> widget = instanciateFIB(ResourceLocator.locateResource("Fib/FML/DeclarePatternRolePanel.fib"),
-				(DeclareFlexoRole) creationScheme.getActions().get(0), DeclareFlexoRole.class);
+		FIBJPanel<AssignationAction> widget = instanciateFIB(ResourceLocator.locateResource("Fib/FML/AssignationActionPanel.fib"),
+				(AssignationAction) ((Sequence) creationScheme.getControlGraph()).getControlGraph1(), AssignationAction.class);
 
 		gcDelegate.addTab("DeclareFlexoRole", widget.getController());
 	}
