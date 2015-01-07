@@ -26,6 +26,8 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.BindingValue;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
@@ -155,6 +157,15 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			}
 
 			return value;
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append((getAssignation() != null ? getAssignation().toString() + " = " : "")
+					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "<no_assignable_action>") + ";",
+					context);
+			return out.toString();
 		}
 
 	}

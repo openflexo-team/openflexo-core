@@ -145,14 +145,18 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("if " + getCondition().toString() + "", context);
-			out.append(" {", context);
+			out.append("{", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			for (EditionAction action : getActions()) {
-				out.append(action.getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}
-
+			out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
+			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("}", context);
+			if (getElseControlGraph() != null) {
+				out.append("else {", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getElseControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}
 			return out.toString();
 		}
 
@@ -213,13 +217,16 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) throws FlexoException {
+		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
 			if (evaluateCondition(action)) {
 				return getThenControlGraph().execute(action);
 				// performBatchOfActions(getActions(), action);
 			} else {
-				return getElseControlGraph().execute(action);
+				if (getElseControlGraph() != null) {
+					return getElseControlGraph().execute(action);
+				}
 			}
+			return null;
 		}
 
 		@Deprecated

@@ -41,7 +41,6 @@ import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -189,28 +188,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 
 		if (newEditionAction != null) {
-
-			FMLControlGraphOwner owner = getFocusedObject().getOwner();
-			String ownerContext = getFocusedObject().getOwnerContext();
-
-			System.out.println(">>>>> OK, je rajoute l'action " + newEditionAction + " au graphe de controle " + getFocusedObject());
-			System.out.println("owner=" + owner + " context=" + ownerContext);
-
 			getFocusedObject().sequentiallyAppend(newEditionAction);
-
-			System.out.println("Maintenant, j'ai ca: " + owner.getControlGraph(ownerContext));
-
-			/*if ((getFocusedObject() instanceof ActionContainer) && (getLayoutChoice() == LayoutChoice.InsertInside)) {
-				((ActionContainer) getFocusedObject()).addToActions(newEditionAction);
-			} else if (getFocusedObject() instanceof EditionAction) {
-				ActionContainer container = ((EditionAction) getFocusedObject()).getActionContainer();
-				int index = container.getIndex((EditionAction) getFocusedObject());
-				if (getLayoutChoice() == LayoutChoice.InsertAfter) {
-					container.insertActionAtIndex(newEditionAction, index + 1);
-				} else {
-					container.insertActionAtIndex(newEditionAction, index);
-				}
-			}*/
 		}
 
 		else {

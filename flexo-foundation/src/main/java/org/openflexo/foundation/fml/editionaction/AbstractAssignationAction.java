@@ -25,8 +25,6 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -57,13 +55,6 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getAssignation().toString() + " = " + getAssignableAction().getFMLRepresentation() + ";", context);
-			return out.toString();
-		}
 
 		public T getAssignationValue(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
 			if (getAssignableAction() != null) {
@@ -100,6 +91,15 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 		@Override
 		public void reduce() {
+		}
+
+		@Override
+		public void setAssignableAction(AssignableAction<T> assignableAction) {
+			performSuperSetter(ASSIGNABLE_ACTION_KEY, assignableAction);
+			if (assignableAction == null) {
+				System.out.println("Prout alors");
+				Thread.dumpStack();
+			}
 		}
 	}
 

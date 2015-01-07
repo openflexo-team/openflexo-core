@@ -173,7 +173,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 		}
 
 		@Override
-		protected ControlGraphBindingModel<?> makeBindingModel() {
+		protected final ControlGraphBindingModel<?> makeBindingModel() {
 			return new EditionActionBindingModel(this);
 		}
 

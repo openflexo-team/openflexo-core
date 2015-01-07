@@ -394,8 +394,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		private synchronized void updateParameters() {
 
-			System.out.println("on met a jour les parametres pour " + getCreationScheme());
-
 			isUpdatingParameters = true;
 			if (getCreationScheme() == null) {
 				for (CreateFlexoConceptInstanceParameter p : new ArrayList<CreateFlexoConceptInstanceParameter>(getParameters())) {

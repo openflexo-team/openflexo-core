@@ -22,6 +22,8 @@ package org.openflexo.foundation.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
@@ -71,6 +73,13 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		protected ControlGraphBindingModel<?> makeInferedBindingModel() {
 			return new DeclarationActionBindingModel(this);
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("<Type> " + getVariableName() + " = " + getAssignableAction().getFMLRepresentation() + ";", context);
+			return out.toString();
 		}
 
 	}

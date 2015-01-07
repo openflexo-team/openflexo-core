@@ -19,13 +19,15 @@
  */
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.controlgraph.AssignableControlGraph;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -47,7 +49,7 @@ import org.openflexo.model.annotations.XMLAttribute;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AssignableAction.AssignableActionImpl.class)
-public abstract interface AssignableAction<T> extends EditionAction, AssignableControlGraph<T> {
+public abstract interface AssignableAction<T> extends EditionAction {
 
 	@Deprecated
 	@PropertyIdentifier(type = String.class)
@@ -88,8 +90,26 @@ public abstract interface AssignableAction<T> extends EditionAction, AssignableC
 	 */
 	public FlexoRole<T> getFlexoRole();
 
-	@Override
+	/**
+	 * Return type resulting of execution of this action
+	 * 
+	 * @return
+	 */
 	public Type getAssignableType();
+
+	/**
+	 * Return boolean indicating if assignable type resulting of this action is iterable
+	 * 
+	 * @return
+	 */
+	public boolean isIterable();
+
+	/**
+	 * Return type of iterated items when assignable type resulting of this action is iterable
+	 * 
+	 * @return
+	 */
+	public Type getIteratorType();
 
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
@@ -110,6 +130,25 @@ public abstract interface AssignableAction<T> extends EditionAction, AssignableC
 
 		@Override
 		public abstract Type getAssignableType();
+
+		@Override
+		public boolean isIterable() {
+			if (!TypeUtils.isTypeAssignableFrom(List.class, getAssignableType())) {
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public Type getIteratorType() {
+			if (!isIterable()) {
+				return null;
+			}
+			if (getAssignableType() instanceof ParameterizedType) {
+				return TypeUtils.getTypeArgument(getAssignableType(), List.class, 0);
+			}
+			return Object.class;
+		}
 
 		/**
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>

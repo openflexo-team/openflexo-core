@@ -23,7 +23,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -51,10 +54,10 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 	@Getter(value = EXPRESSION_KEY)
 	@XMLAttribute
-	public DataBinding<? super T> getExpression();
+	public DataBinding<T> getExpression();
 
 	@Setter(EXPRESSION_KEY)
-	public void setExpression(DataBinding<? super T> expression);
+	public void setExpression(DataBinding<T> expression);
 
 	@Override
 	public Type getAssignableType();
@@ -63,7 +66,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
-		private DataBinding<? super T> expression;
+		private DataBinding<T> expression;
 
 		@Override
 		public Type getAssignableType() {
@@ -74,9 +77,9 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public DataBinding<? super T> getExpression() {
+		public DataBinding<T> getExpression() {
 			if (expression == null) {
-				expression = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				expression = new DataBinding<T>(this, Object.class, DataBinding.BindingDefinitionType.GET);
 				expression.setBindingName("expression");
 				expression.setMandatory(true);
 			}
@@ -84,9 +87,9 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public void setExpression(DataBinding<? super T> expression) {
+		public void setExpression(DataBinding<T> expression) {
 			if (expression != null) {
-				this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
+				this.expression = new DataBinding<T>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
 				expression.setBindingName("expression");
 				expression.setMandatory(true);
 			}
@@ -97,6 +100,21 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName()
 					+ (StringUtils.isNotEmpty(getExpression().toString()) ? " (" + getExpression().toString() + ")" : "");
+		}
+
+		@Override
+		public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+			try {
+				return getExpression().getBindingValue(action);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new FlexoException(e);
+			}
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return getExpression().toString();
 		}
 
 	}

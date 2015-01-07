@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.binding.FetchRequestBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -123,6 +122,11 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 		}
 
 		@Override
+		public Type getIteratorType() {
+			return getFetchedType();
+		}
+
+		@Override
 		public abstract Type getFetchedType();
 
 		@Override
@@ -209,10 +213,14 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			}
 		}
 
-		@Override
-		protected FetchRequestBindingModel makeBindingModel() {
-			return new FetchRequestBindingModel(this);
-		}
+		/*private FetchRequestBindingModel inferedBindingModel = null;
 
+		@Override
+		public FetchRequestBindingModel getInferedBindingModel() {
+			if (inferedBindingModel == null) {
+				inferedBindingModel = new FetchRequestBindingModel(this);
+			}
+			return inferedBindingModel;
+		}*/
 	}
 }

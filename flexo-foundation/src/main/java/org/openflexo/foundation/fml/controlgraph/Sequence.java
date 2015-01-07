@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -172,11 +174,22 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			boolean isFirst = true;
 			for (FMLControlGraph cg : getFlattenedSequence()) {
+				if (!isFirst) {
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
 				out.append(cg.getFMLRepresentation(context), context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
+				isFirst = false;
 			}
 			return out.toString();
+		}
+
+		@Override
+		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+			getControlGraph1().execute(action);
+			getControlGraph2().execute(action);
+			return null;
 		}
 	}
 }

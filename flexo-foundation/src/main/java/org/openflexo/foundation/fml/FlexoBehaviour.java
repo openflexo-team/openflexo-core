@@ -288,10 +288,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {",
 					context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			for (EditionAction action : getActions()) {
-				out.append(action.getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}
+			out.append(getControlGraph().getFMLRepresentation(context), context, 1);
+			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("}", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
