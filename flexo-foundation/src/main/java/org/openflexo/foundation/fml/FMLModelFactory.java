@@ -27,6 +27,7 @@ import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -57,6 +58,7 @@ import org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry;
 import org.openflexo.foundation.fml.inspector.PropertyInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -93,26 +95,31 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 // TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl,
-// because this is required for the FlexoConceptPreviewComponent to retrieve a VirtualModelModelFactory
+// because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class VirtualModelModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
+public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<AbstractVirtualModelResource<?>> {
 
-	protected static final Logger logger = Logger.getLogger(VirtualModelModelFactory.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
-	private VirtualModelResource virtualModelResource;
+	private AbstractVirtualModelResource<?> abstractVirtualModelResource;
 	private IgnoreLoadingEdits ignoreHandler = null;
 	private FlexoUndoManager undoManager = null;
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	/*public VirtualModelModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
+	/*public FMLModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
 		this(editingContext, taService, null);
 	}*/
 
+	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
+			throws ModelDefinitionException {
+		this(abstractVirtualModelResource, serviceManager.getEditingContext(), serviceManager.getTechnologyAdapterService());
+	}
+
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public VirtualModelModelFactory(VirtualModelResource virtualModelResource, EditingContext editingContext,
+	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, EditingContext editingContext,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(retrieveTechnologySpecificClasses(taService));
 		setEditingContext(editingContext);
@@ -120,23 +127,22 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
 		addConverter(FGEUtils.STEPPED_DIMENSION_CONVERTER);
-		if (virtualModelResource != null) {
-			this.virtualModelResource = virtualModelResource;
-			addConverter(new RelativePathResourceConverter(virtualModelResource.getFlexoIODelegate().getParentPath()));
+		if (abstractVirtualModelResource != null) {
+			this.abstractVirtualModelResource = abstractVirtualModelResource;
+			addConverter(new RelativePathResourceConverter(abstractVirtualModelResource.getFlexoIODelegate().getParentPath()));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initVirtualModelFactory(this);
 		}
-
 	}
 
 	@Override
-	public VirtualModelResource getResource() {
+	public AbstractVirtualModelResource<?> getResource() {
 		return getVirtualModelResource();
 	}
 
-	public VirtualModelResource getVirtualModelResource() {
-		return virtualModelResource;
+	public AbstractVirtualModelResource<?> getVirtualModelResource() {
+		return abstractVirtualModelResource;
 	}
 
 	/**
@@ -149,6 +155,7 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(ViewPoint.class);
 		classes.add(VirtualModel.class);
 		/*classes.add(FlexoConceptStructuralFacet.class);
 		classes.add(FlexoConceptBehaviouralFacet.class);
@@ -328,12 +335,6 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 
 	public FlexoConceptInstanceParameter newFlexoConceptInstanceParameter() {
 		return newInstance(FlexoConceptInstanceParameter.class);
-	}
-
-	public FlexoBehaviourParameters newFlexoBehaviourParameters(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameters returned = newInstance(FlexoBehaviourParameters.class);
-		returned.setFlexoBehaviour(flexoBehaviour);
-		return returned;
 	}
 
 	public FetchRequestCondition newFetchRequestCondition() {
@@ -530,6 +531,21 @@ public class VirtualModelModelFactory extends FGEModelFactoryImpl implements Pam
 			}
 		} else {
 			logger.warning("Could not access resource beeing deserialized");
+		}
+		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+			// Always set a ViewPointLocalizedDictionary for a ViewPoint
+			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
+			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		}
+	}
+
+	@Override
+	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
+		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
+		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {
+			// Always set a ViewPointLocalizedDictionary for a ViewPoint
+			ViewPointLocalizedDictionary localizedDictionary = newInstance(ViewPointLocalizedDictionary.class);
+			((ViewPoint) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
 		}
 	}
 

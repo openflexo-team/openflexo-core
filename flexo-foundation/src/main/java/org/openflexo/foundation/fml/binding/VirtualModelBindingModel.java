@@ -29,7 +29,7 @@ import java.util.Map;
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rt.View;
@@ -51,16 +51,14 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  */
 public class VirtualModelBindingModel extends FlexoConceptBindingModel implements PropertyChangeListener {
 
-	private final VirtualModel virtualModel;
+	private final AbstractVirtualModel<?> virtualModel;
 
-	private final BindingVariable reflexiveAccessBindingVariable;
-	private final BindingVariable viewBindingVariable;
-	private final BindingVariable virtualModelInstanceBindingVariable;
+	private BindingVariable reflexiveAccessBindingVariable;
+	private BindingVariable virtualModelInstanceBindingVariable;
 
 	private final Map<ModelSlot<?>, ModelSlotBindingVariable> modelSlotVariablesMap;
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "virtualModelDefinition";
-	public static final String VIEW_PROPERTY = "view";
 	public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
 
 	/**
@@ -68,25 +66,27 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	 * 
 	 * @param viewPoint
 	 */
-	public VirtualModelBindingModel(VirtualModel virtualModel) {
-		super(virtualModel.getViewPoint() != null ? virtualModel.getViewPoint().getBindingModel() : null, virtualModel);
+	protected VirtualModelBindingModel(AbstractVirtualModel<?> virtualModel) {
+		super(virtualModel.getViewPoint() != null && virtualModel != virtualModel.getViewPoint() ? virtualModel.getViewPoint()
+				.getBindingModel() : null, virtualModel);
 		this.virtualModel = virtualModel;
 		if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
 			virtualModel.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+		modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
+		updateModelSlotVariables();
+	}
+
+	public VirtualModelBindingModel(VirtualModel virtualModel) {
+		this((AbstractVirtualModel<?>) virtualModel);
 		virtualModelInstanceBindingVariable = new BindingVariable(VIRTUAL_MODEL_INSTANCE_PROPERTY,
 				VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
 		addToBindingVariables(virtualModelInstanceBindingVariable);
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, VirtualModel.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
-		viewBindingVariable = new BindingVariable(VIEW_PROPERTY, virtualModel.getViewPoint() != null ? ViewType.getViewType(virtualModel
-				.getViewPoint()) : View.class);
-		addToBindingVariables(viewBindingVariable);
-		modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
-		updateModelSlotVariables();
 	}
 
-	public VirtualModel getVirtualModel() {
+	public AbstractVirtualModel<?> getVirtualModel() {
 		return virtualModel;
 	}
 
@@ -105,10 +105,6 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		return reflexiveAccessBindingVariable;
 	}
 
-	public BindingVariable getViewBindingVariable() {
-		return viewBindingVariable;
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// System.out.println("Hop, je recois " + evt.getPropertyName() + " source =" + evt.getSource() + " evt=" + evt);
@@ -117,8 +113,8 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 			if (evt.getPropertyName().equals(VirtualModel.VIEW_POINT_KEY)) {
 				// The VirtualModel changes it's ViewPoint
 				setBaseBindingModel(virtualModel.getViewPoint() != null ? virtualModel.getViewPoint().getBindingModel() : null);
-				viewBindingVariable.setType(virtualModel.getViewPoint() != null ? ViewType.getViewType(virtualModel.getViewPoint())
-						: View.class);
+				// viewBindingVariable.setType(virtualModel.getViewPoint() != null ? ViewType.getViewType(virtualModel.getViewPoint())
+				// : View.class);
 				virtualModelInstanceBindingVariable.setType(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
 			} else if (evt.getPropertyName().equals(VirtualModel.MODEL_SLOTS_KEY)) {
 				// Model Slot were modified in related flexoConcept

@@ -100,8 +100,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
-			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
-				return getFlexoConcept().getVirtualModel().getModelSlots(msType);
+			if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+				return getFlexoConcept().getOwningVirtualModel().getModelSlots(msType);
 			} else if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
 			}

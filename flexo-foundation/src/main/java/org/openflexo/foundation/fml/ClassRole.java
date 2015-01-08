@@ -82,7 +82,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 
 		@Override
 		public IFlexoOntologyClass getOntologicType() {
-			return getVirtualModel().getOntologyClass(_getConceptURI());
+			return getOwningVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
 		@Override

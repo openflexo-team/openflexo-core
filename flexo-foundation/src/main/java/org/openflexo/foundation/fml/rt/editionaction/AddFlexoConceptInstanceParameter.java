@@ -11,7 +11,6 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.AddFlexoConceptInstanceParameterBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -146,8 +145,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			}
-			else if (getValue().isValid()) {
+			} else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -158,8 +156,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 					e.printStackTrace();
 				}
 				return null;
-			}
-			else {
+			} else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;
@@ -172,24 +169,6 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 			}
 			return bindingModel;
 		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getAction() != null) {
-				return getAction().getVirtualModel();
-			}
-			return null;
-		}
-
-		/*@Override
-		public AddFlexoConceptInstance getAction() {
-			return action;
-		}
-
-		@Override
-		public void setAction(AddFlexoConceptInstance action) {
-			this.action = action;
-		}*/
 
 		@Override
 		public FlexoBehaviourParameter getParam() {
@@ -241,8 +220,7 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 			// Should return an issue only if parameter is required
 			if (object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
-			}
-			else
+			} else
 				return null;
 		}
 

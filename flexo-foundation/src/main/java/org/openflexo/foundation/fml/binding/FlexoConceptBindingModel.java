@@ -73,7 +73,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	 * @param flexoConcept
 	 */
 	public FlexoConceptBindingModel(final FlexoConcept flexoConcept) {
-		this(flexoConcept.getVirtualModel() != null ? flexoConcept.getVirtualModel().getBindingModel() : null, flexoConcept);
+		this(flexoConcept.getOwner() != null ? flexoConcept.getOwningVirtualModel().getBindingModel() : null, flexoConcept);
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, FlexoConcept.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
 		// TODO : Dirty, this should be fix when we have a clean type management system for the VM
@@ -130,28 +130,24 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 		if (evt.getSource() == flexoConcept) {
-			if (evt.getPropertyName().equals(FlexoConcept.VIRTUAL_MODEL_KEY)) {
+			if (evt.getPropertyName().equals(FlexoConcept.OWNER_KEY)) {
 				// The FlexoConcept changes it's VirtualModel
-				setBaseBindingModel(flexoConcept.getVirtualModel() != null ? flexoConcept.getVirtualModel().getBindingModel() : null);
+				setBaseBindingModel(flexoConcept.getOwner() != null ? flexoConcept.getOwner().getBindingModel() : null);
 				flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
 				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
-			}
-			else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_ROLES_KEY)) {
+			} else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_ROLES_KEY)) {
 				// Roles were modified in related flexoConcept
 				updateRoleVariables();
-			}
-			else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
+			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
 				updateRoleVariables();
 			}
-		}
-		else if (knownParentConcepts.contains(evt.getSource())) {
+		} else if (knownParentConcepts.contains(evt.getSource())) {
 			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_ROLES_KEY)) {
 				// Roles were modified in any of parent FlexoConcept
 				updateRoleVariables();
-			}
-			else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
+			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
 				updateRoleVariables();
 			}
@@ -165,8 +161,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		for (FlexoRole<?> r : flexoConcept.getAllRoles()) {
 			if (rolesToBeDeleted.contains(r)) {
 				rolesToBeDeleted.remove(r);
-			}
-			else if (roleVariablesMap.get(r) == null) {
+			} else if (roleVariablesMap.get(r) == null) {
 				FlexoRoleBindingVariable bv = new FlexoRoleBindingVariable(r);
 				addToBindingVariables(bv);
 				roleVariablesMap.put(r, bv);
@@ -190,8 +185,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		for (FlexoConcept p : flexoConcept.getAllParentFlexoConcepts()) {
 			if (parentConceptsNotToListenAnymore.contains(p)) {
 				parentConceptsNotToListenAnymore.remove(p);
-			}
-			else {
+			} else {
 				if (!knownParentConcepts.contains(p) && p.getPropertyChangeSupport() != null) {
 					p.getPropertyChangeSupport().addPropertyChangeListener(this);
 					knownParentConcepts.add(p);

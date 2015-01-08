@@ -109,11 +109,11 @@ public interface TechnologyAdapterService extends FlexoService {
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass);
 
 	/**
-	 * Instanciate a new instance of {@link VirtualModelModelFactory} enriched with all concepts found in all available
+	 * Instanciate a new instance of {@link FMLModelFactory} enriched with all concepts found in all available
 	 * {@link TechnologyAdapter}
 	 * 
 	 * @return
 	 */
-	// public VirtualModelModelFactory getVirtualModelModelFactory();
+	// public FMLModelFactory getVirtualModelModelFactory();
 
 }

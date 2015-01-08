@@ -360,13 +360,13 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Instanciate a new instance of {@link VirtualModelModelFactory} enriched with all concepts found in all available
+	 * Instanciate a new instance of {@link FMLModelFactory} enriched with all concepts found in all available
 	 * {@link TechnologyAdapter}
 	 * 
 	 * @return
 	 */
 	/*@Override
-	public VirtualModelModelFactory getVirtualModelModelFactory() {
+	public FMLModelFactory getVirtualModelModelFactory() {
 		return null;
 	}*/
 

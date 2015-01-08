@@ -130,8 +130,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 			if (super.getModelSlot() instanceof FMLRTModelSlot) {
 				FMLRTModelSlot returned = super.getModelSlot();
 				if (returned == null) {
-					if (getVirtualModel() != null && getVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
-						return getVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
+					if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
+						return getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
 					}
 				}
 				return returned;
@@ -141,7 +141,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 		@Override
 		public List<FMLRTModelSlot> getAccessibleModelSlots() {
-			return getVirtualModel().getModelSlots(FMLRTModelSlot.class);
+			return getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class);
 		}
 
 	}

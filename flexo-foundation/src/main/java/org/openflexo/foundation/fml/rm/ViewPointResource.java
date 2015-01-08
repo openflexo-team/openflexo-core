@@ -4,11 +4,6 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.ViewPointModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
-import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -18,8 +13,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ViewPointResourceImpl.class)
 @XMLElement
-public interface ViewPointResource extends PamelaResource<ViewPoint, ViewPointModelFactory>, DirectoryContainerResource<ViewPoint>,
-		TechnologyAdapterResource<ViewPoint, FMLTechnologyAdapter> {
+public interface ViewPointResource extends AbstractVirtualModelResource<ViewPoint> {
 
 	public static final String VIEWPOINT_SUFFIX = ".viewpoint";
 

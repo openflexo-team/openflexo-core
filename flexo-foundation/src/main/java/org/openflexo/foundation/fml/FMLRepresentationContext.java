@@ -9,14 +9,14 @@ public class FMLRepresentationContext {
 
 	private static int INDENTATION = 2;
 	// private int currentIndentation = 0;
-	private final HashMap<String, NamedFMLObject> nameSpaces;
+	private final HashMap<String, FMLObject> nameSpaces;
 
 	public FMLRepresentationContext() {
 		// currentIndentation = 0;
-		nameSpaces = new HashMap<String, NamedFMLObject>();
+		nameSpaces = new HashMap<String, FMLObject>();
 	}
 
-	public void addToNameSpaces(NamedFMLObject object) {
+	public void addToNameSpaces(FMLObject object) {
 		nameSpaces.put(object.getURI(), object);
 	}
 

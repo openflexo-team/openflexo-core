@@ -82,9 +82,9 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 		@Override
 		public MS getModelSlot() {
 			MS returned = super.getModelSlot();
-			if (returned == null && getVirtualModel() != null) {
+			if (returned == null && getOwningVirtualModel() != null) {
 				@SuppressWarnings("rawtypes")
-				List<TypeAwareModelSlot> msList = getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+				List<TypeAwareModelSlot> msList = getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 				if (msList.size() > 0) {
 					return (MS) msList.get(0);
 				}

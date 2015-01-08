@@ -1,11 +1,6 @@
 package org.openflexo.foundation.fml.rm;
 
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
-import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -13,16 +8,17 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(VirtualModelResourceImpl.class)
 @XMLElement
-public interface VirtualModelResource extends PamelaResource<VirtualModel, VirtualModelModelFactory>,
-		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter>, DirectoryContainerResource<VirtualModel> {
+public interface VirtualModelResource extends AbstractVirtualModelResource<VirtualModel> {
 
 	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
-	//public static final String DIRECTORY = "directory";
+
+	// public static final String DIRECTORY = "directory";
 
 	/**
 	 * Return virtual model stored by this resource<br>
 	 * Load the resource data when unloaded
 	 */
+	@Override
 	public VirtualModel getVirtualModel();
 
 	/**

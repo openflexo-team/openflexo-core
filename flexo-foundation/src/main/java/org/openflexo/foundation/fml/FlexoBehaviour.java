@@ -190,8 +190,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	public FlexoBehaviourParametersValuesType getFlexoBehaviourParametersValuesType();
 
-	public FlexoBehaviourParameters getFlexoBehaviourParameters();
-
 	public String getSignature();
 
 	@Override
@@ -220,14 +218,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 		private String name;
 		private String label;
-		// private String description;
-		// private Vector<EditionAction> actions;
-		// private Vector<FlexoBehaviourParameter> parameters;
 		private boolean skipConfirmationPanel = false;
-
-		// private FlexoConcept _flexoConcept;
-
-		private FlexoBehaviourParameters flexoBehaviourParameters;
 
 		private boolean definePopupDefaultSize = false;
 		private int width = 800;
@@ -261,14 +252,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public FlexoBehaviourParametersValuesType getFlexoBehaviourParametersValuesType() {
 			return flexoBehaviourParametersValuesType;
-		}
-
-		@Override
-		public FlexoBehaviourParameters getFlexoBehaviourParameters() {
-			if (flexoBehaviourParameters == null && getVirtualModelFactory() != null) {
-				flexoBehaviourParameters = getVirtualModelFactory().newFlexoBehaviourParameters(this);
-			}
-			return flexoBehaviourParameters;
 		}
 
 		@Override
@@ -545,7 +528,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return null;
 		}*/
 
-		@Override
+		/*@Override
 		public VirtualModel getVirtualModel() {
 			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
 				return getFlexoConcept().getVirtualModel();
@@ -554,7 +537,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				return (VirtualModel) getFlexoConcept();
 			}
 			return null;
-		}
+		}*/
 
 		/**
 		 * Creates a new {@link EditionAction} of supplied class, and add it at the end of action list<br>

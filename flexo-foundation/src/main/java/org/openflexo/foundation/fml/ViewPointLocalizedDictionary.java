@@ -115,9 +115,14 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 		}*/
 
 		@Override
-		public ViewPoint getViewPoint() {
+		public ViewPoint getResourceData() {
 			return getOwner();
 		}
+
+		/*@Override
+		public ViewPoint getViewPoint() {
+			return getOwner();
+		}*/
 
 		/*@Override
 		public Vector<ViewPointLocalizedEntry> getEntries() {

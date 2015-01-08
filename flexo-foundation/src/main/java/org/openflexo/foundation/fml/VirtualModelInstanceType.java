@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
  */
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
-	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
+	public VirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		super(aVirtualModel);
 		this.flexoConcept = aVirtualModel;
 	}
@@ -59,11 +59,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		return "VirtualModel" + ":" + flexoConcept;
 	}
 
-	public static Type getVirtualModelInstanceType(VirtualModel aVirtualModel) {
+	public static Type getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		if (aVirtualModel != null) {
 			return aVirtualModel.getInstanceType();
-		}
-		else {
+		} else {
 			logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
 			return null;
 		}

@@ -27,34 +27,35 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, VirtualModel, FMLObject> {
+public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConcept, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, VirtualModel, FMLObject>(
+	public static FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject>(
 			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoConcept makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateFlexoConcept makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -70,14 +71,14 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	CreateFlexoConcept(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateFlexoConcept(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 
-		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+		FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
 
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());

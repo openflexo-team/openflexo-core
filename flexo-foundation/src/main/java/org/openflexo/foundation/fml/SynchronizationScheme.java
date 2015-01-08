@@ -41,13 +41,9 @@ public interface SynchronizationScheme extends AbstractActionScheme {
 
 	public VirtualModel getSynchronizedVirtualModel();
 
-	public void setSynchronizedVirtualModel(VirtualModel virtualModel);
+	public void setSynchronizedVirtualModel(AbstractVirtualModel<?> virtualModel);
 
 	public static abstract class SynchronizationSchemeImpl extends AbstractActionSchemeImpl implements SynchronizationScheme {
-
-		public SynchronizationSchemeImpl() {
-			super();
-		}
 
 		@Override
 		public VirtualModel getSynchronizedVirtualModel() {
@@ -55,7 +51,7 @@ public interface SynchronizationScheme extends AbstractActionScheme {
 		}
 
 		@Override
-		public void setSynchronizedVirtualModel(VirtualModel virtualModel) {
+		public void setSynchronizedVirtualModel(AbstractVirtualModel<?> virtualModel) {
 			setFlexoConcept(virtualModel);
 		}
 

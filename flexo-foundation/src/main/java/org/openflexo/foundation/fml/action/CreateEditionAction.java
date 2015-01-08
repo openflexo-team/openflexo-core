@@ -37,7 +37,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -254,7 +254,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	private EditionAction makeEditionAction() {
 		EditionAction returned;
-		VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+		FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
 		switch (actionChoice) {
 		case BuiltInAction:
 			if (builtInActionClass == null) {

@@ -23,26 +23,42 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Represents an object which is part of the model of an FlexoConcept
+ * Root class for any object which is part of the model of an {@link FlexoConcept}<br>
+ * A {@link FlexoConceptObject} "lives" in a {@link FlexoConcept} ecosystem<br>
+ * Note that you can safely invoke {@link #getFlexoConcept()} which should return non-null value.
+ * 
  * 
  * @author sylvain
  * 
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoConceptObject.FlexoConceptObjectImpl.class)
-public interface FlexoConceptObject extends NamedFMLObject {
+public interface FlexoConceptObject extends FMLObject {
 
-	public VirtualModelModelFactory getVirtualModelFactory();
+	// TODO: renamed to getFMLModelFactory()
+	public FMLModelFactory getVirtualModelFactory();
 
+	/**
+	 * Return the {@link FlexoConcept} in which this {@link FMLObject} is defined
+	 * 
+	 * @return
+	 */
 	public FlexoConcept getFlexoConcept();
 
-	@Override
+	/**
+	 * Return the {@link AbstractVirtualModel} in which {@link FlexoConcept} of this {@link FMLObject} is defined
+	 * 
+	 * @return
+	 */
+	public AbstractVirtualModel<?> getOwningVirtualModel();
+
+	/*@Override
 	public ViewPoint getViewPoint();
 
-	public VirtualModel getVirtualModel();
+	public VirtualModel getVirtualModel();*/
 
-	@Override
-	public String getStringRepresentation();
+	// @Override
+	// public String getStringRepresentation();
 
 	/**
 	 * Build and return a String encoding this {@link FMLObject} in FML textual language
@@ -53,20 +69,25 @@ public interface FlexoConceptObject extends NamedFMLObject {
 	@Override
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
-	public abstract class FlexoConceptObjectImpl extends NamedFMLObjectImpl implements FlexoConceptObject {
+	public abstract class FlexoConceptObjectImpl extends FMLObjectImpl implements FlexoConceptObject {
 
 		@Override
-		public VirtualModelModelFactory getVirtualModelFactory() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getVirtualModelFactory();
+		public FMLModelFactory getVirtualModelFactory() {
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getVirtualModelFactory();
 			}
 			return getDeserializationFactory();
 		}
 
+		/**
+		 * Return
+		 * 
+		 * @return
+		 */
 		@Override
 		public abstract FlexoConcept getFlexoConcept();
 
-		@Override
+		/*@Override
 		public ViewPoint getViewPoint() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getViewPoint();
@@ -76,38 +97,36 @@ public interface FlexoConceptObject extends NamedFMLObject {
 			}
 			return null;
 
-		}
+		}*/
 
 		@Override
-		public VirtualModel getResourceData() {
-			return getVirtualModel();
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
+		public AbstractVirtualModel<?> getResourceData() {
+			if (this instanceof VirtualModelObject) {
+				return ((VirtualModelObject) this).getVirtualModel();
+			}
 			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
+				return getFlexoConcept().getOwner();
+			}
+			return null;
+		}
+
+		@Override
+		public final AbstractVirtualModel<?> getOwningVirtualModel() {
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwner();
 			}
 			return null;
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#"
+			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "." + getClass().getSimpleName();
 		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
-		@Override
-		public void setChanged() {
-			super.setChanged();
-			if (getVirtualModel() != null) {
-				getVirtualModel().setIsModified();
-			}
 		}
 
 	}

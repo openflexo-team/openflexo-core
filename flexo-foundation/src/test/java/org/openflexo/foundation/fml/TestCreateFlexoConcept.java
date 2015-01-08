@@ -62,6 +62,11 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getFlexoIODelegate().exists());
+
+		assertEquals(newViewPoint, newViewPoint.getViewPoint());
+		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
+		assertEquals(null, newViewPoint.getOwningVirtualModel());
+		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
 	}
 
 	/**
@@ -73,6 +78,11 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
+
+		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
+		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());
+		assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
 	}
 
 	/**
@@ -101,10 +111,17 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		System.out.println("FlexoConcept A = " + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
+		assertEquals(newViewPoint, flexoConceptA.getViewPoint());
+		assertEquals(newVirtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(newVirtualModel, flexoConceptA.getOwningVirtualModel());
+		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
+		assertEquals(newVirtualModel, flexoConceptA.getResourceData());
+
 		((VirtualModelResource) newVirtualModel.getResource()).save(null);
 
 		// System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFile());
 		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().toString());
+
 	}
 
 	/**
@@ -233,23 +250,44 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
+		PrimitiveRole<String> role1 = (PrimitiveRole<String>) createPR1.getNewFlexoRole();
+		assertNotNull(role1);
 
 		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
 		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
+		PrimitiveRole<Boolean> role2 = (PrimitiveRole<Boolean>) createPR2.getNewFlexoRole();
+		assertNotNull(role2);
 
 		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
 		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
+		PrimitiveRole<Integer> role3 = (PrimitiveRole<Integer>) createPR3.getNewFlexoRole();
+		assertNotNull(role3);
 
 		assertEquals(3, flexoConceptA.getFlexoRoles().size());
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR1.getNewFlexoRole()));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR2.getNewFlexoRole()));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR3.getNewFlexoRole()));
+		assertTrue(flexoConceptA.getFlexoRoles().contains(role1));
+		assertTrue(flexoConceptA.getFlexoRoles().contains(role2));
+		assertTrue(flexoConceptA.getFlexoRoles().contains(role3));
+
+		assertEquals(newViewPoint, role1.getViewPoint());
+		assertEquals(newVirtualModel, role1.getOwningVirtualModel());
+		assertEquals(flexoConceptA, role1.getFlexoConcept());
+		assertEquals(newVirtualModel, role1.getResourceData());
+
+		assertEquals(newViewPoint, role2.getViewPoint());
+		assertEquals(newVirtualModel, role2.getOwningVirtualModel());
+		assertEquals(flexoConceptA, role2.getFlexoConcept());
+		assertEquals(newVirtualModel, role2.getResourceData());
+
+		assertEquals(newViewPoint, role3.getViewPoint());
+		assertEquals(newVirtualModel, role3.getOwningVirtualModel());
+		assertEquals(flexoConceptA, role3.getFlexoConcept());
+		assertEquals(newVirtualModel, role3.getResourceData());
 
 	}
 
@@ -294,6 +332,14 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		assertTrue(flexoConceptA.getFlexoBehaviours().contains(creationScheme));
 		assertTrue(flexoConceptA.getCreationSchemes().contains(creationScheme));
+
+		assertEquals(newViewPoint, creationScheme.getViewPoint());
+		assertEquals(newVirtualModel, creationScheme.getOwningVirtualModel());
+		assertEquals(flexoConceptA, creationScheme.getFlexoConcept());
+
+		assertEquals(newViewPoint, action1.getViewPoint());
+		assertEquals(newVirtualModel, action1.getOwningVirtualModel());
+		assertEquals(flexoConceptA, action1.getFlexoConcept());
 
 	}
 

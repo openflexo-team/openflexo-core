@@ -142,7 +142,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		private FlexoConcept _pattern;
+		// private FlexoConcept _pattern;
 
 		private ModelSlot<?> modelSlot;
 
@@ -173,32 +173,6 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		}
 
 		@Override
-		public void setFlexoConcept(FlexoConcept pattern) {
-			_pattern = pattern;
-		}
-
-		@Override
-		public FlexoConcept getFlexoConcept() {
-			return _pattern;
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			FlexoConcept concept = getFlexoConcept();
-
-			if (concept != null) {
-				if (concept instanceof VirtualModel) {
-					// the role belongs to a FlexoConcept that is a VirtualModel
-					return (VirtualModel) concept;
-				} else {
-					// the role belongs to a FlexoConcept that belongs to a VirtualModel
-					return getFlexoConcept().getVirtualModel();
-				}
-			}
-			return null;
-		}
-
-		@Override
 		public String getRoleName() {
 			return getName();
 		}
@@ -208,17 +182,6 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 			setName(patternRoleName);
 		}
 
-		/*@Override
-		public void setName(String name) {
-			if (requireChange(getName(), name)) {
-				super.setName(name);
-				// When name of role has changed, we needs to update the BindingModel
-				//if (getFlexoConcept() != null) {
-				//	getFlexoConcept().updateBindingModel();
-				//}
-			}
-		}*/
-
 		@Override
 		public String toString() {
 			return getClass().getSimpleName()
@@ -226,7 +189,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 					+ getRoleName()
 					+ "[container="
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() + "/"
-							+ (getFlexoConcept().getVirtualModel() != null ? getFlexoConcept().getVirtualModel().getName() : "null")
+							+ (getFlexoConcept().getOwningVirtualModel() != null ? getFlexoConcept().getOwningVirtualModel().getName() : "null")
 							: "null") + "][" + Integer.toHexString(hashCode()) + "]";
 		}
 

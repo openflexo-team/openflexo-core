@@ -177,7 +177,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(action1, seq1.getControlGraph1());
 		assertEquals(action2, seq1.getControlGraph2());
 
-		VirtualModelModelFactory factory = ((VirtualModelResource) creationScheme.getVirtualModel().getResource()).getFactory();
+		FMLModelFactory factory = ((VirtualModelResource) creationScheme.getOwningVirtualModel().getResource()).getFactory();
 		FMLControlGraph controlGraph = creationScheme.getControlGraph();
 
 		String cg = factory.stringRepresentation(creationScheme);
@@ -270,7 +270,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
 
-		VirtualModelModelFactory factory = ((VirtualModelResource) actionScheme.getVirtualModel().getResource()).getFactory();
+		FMLModelFactory factory = ((VirtualModelResource) actionScheme.getOwningVirtualModel().getResource()).getFactory();
 
 		// String cg = factory.stringRepresentation(actionScheme);
 		// System.out.println("1 - Control graph:\n" + cg);

@@ -110,8 +110,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 		@Override
 		public IFlexoOntologyStructuralProperty getOntologyProperty() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyObjectProperty(_getObjectPropertyURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyObjectProperty(_getObjectPropertyURI());
 			}
 			return null;
 		}

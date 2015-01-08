@@ -38,6 +38,7 @@ import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
+import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
@@ -809,7 +810,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return null;
 			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIEW_PROPERTY)) {
+			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
 			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
@@ -848,8 +849,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIEW_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
+			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
 				return;
 			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this

@@ -26,7 +26,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -156,7 +156,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			if (factory == null) {
 				System.err.println("Prout,la facotry est null");
 			}
@@ -172,7 +172,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 
 			/*FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			if (factory == null) {
 				System.err.println("Prout,la facotry est null");
 			}
@@ -212,7 +212,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			// owner.setControlGraph(null, ownerContext);
 
 			// Now we instanciate new EmptyControlGraph, and perform the replacement
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
 
 			// We reduce owner

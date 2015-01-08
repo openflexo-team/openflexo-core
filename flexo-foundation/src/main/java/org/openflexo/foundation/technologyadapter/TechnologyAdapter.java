@@ -30,7 +30,7 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
@@ -362,7 +362,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
 		// NPE Protection
 		if (containerVirtualModel != null) {
-			VirtualModelModelFactory factory = containerVirtualModel.getVirtualModelFactory();
+			FMLModelFactory factory = containerVirtualModel.getVirtualModelFactory();
 			MS returned = factory.newInstance(modelSlotClass);
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
@@ -429,7 +429,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	// Override when required
-	public void initVirtualModelFactory(VirtualModelModelFactory virtualModelModelFactory) {
+	public void initVirtualModelFactory(FMLModelFactory fMLModelFactory) {
 	}
 
 	/**

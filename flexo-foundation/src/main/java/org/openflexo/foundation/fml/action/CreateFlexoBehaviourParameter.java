@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.TechnologyObjectParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -120,7 +120,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 		if (flexoBehaviourParameterClass != null) {
 
-			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+			FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
 			newParameter = factory.newInstance(flexoBehaviourParameterClass);
 			newParameter.setName(getParameterName());
 			getFlexoBehaviour().addToParameters(newParameter);

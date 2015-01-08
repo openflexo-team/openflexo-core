@@ -106,7 +106,7 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 
 		@Override
 		public IFlexoOntologyClass getConcept() {
-			return getVirtualModel().getOntologyClass(_getConceptURI());
+			return getOwningVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
 		@Override
@@ -169,8 +169,8 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 		public TypeAwareModelSlot<?, ?> getModelSlot() {
 			TypeAwareModelSlot<?, ?> returned = super.getModelSlot();
 			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
+				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
+					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
 				}
 			}
 			return returned;
@@ -184,7 +184,7 @@ public interface ClassParameter extends InnerModelSlotParameter<TypeAwareModelSl
 		@SuppressWarnings("rawtypes")
 		@Override
 		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
-			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+			return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 	}
 }

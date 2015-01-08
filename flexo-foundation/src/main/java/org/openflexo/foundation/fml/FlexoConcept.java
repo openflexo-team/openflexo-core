@@ -57,7 +57,6 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
-import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,10 +76,10 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
-public interface FlexoConcept extends FlexoConceptObject {
+public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+	@PropertyIdentifier(type = AbstractVirtualModel.class)
+	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = List.class)
@@ -96,13 +95,12 @@ public interface FlexoConcept extends FlexoConceptObject {
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
 
-	@Override
-	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
+	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
-	public VirtualModel getVirtualModel();
+	public AbstractVirtualModel<?> getOwner();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	@Setter(OWNER_KEY)
+	public void setOwner(AbstractVirtualModel<?> virtualModel);
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -319,31 +317,19 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
 
-		// private List<FlexoRole<?>> patternRoles;
-		// private List<FlexoBehaviour> editionSchemes;
-		// private List<FlexoConceptConstraint> flexoConceptConstraints;
 		private FlexoConceptInspector inspector;
-
-		// private OntologicObjectRole primaryConceptRole;
-		// private GraphicalElementPatternRole primaryRepresentationRole;
-
-		private VirtualModel virtualModel;
-
-		private final FlexoConcept parentFlexoConcept = null;
-		// private final Vector<FlexoConcept> childFlexoConcepts = new
-		// Vector<FlexoConcept>();
 
 		private FlexoConceptStructuralFacet structuralFacet;
 		private FlexoConceptBehaviouralFacet behaviouralFacet;
 
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
 
-		/**
-		 * Stores a chained collections of objects which are involved in validation
-		 */
-		private final ChainedCollection<FMLObject> validableObjects = null;
-
 		private FlexoConceptBindingModel bindingModel;
+
+		@Override
+		public AbstractVirtualModel<?> getVirtualModel() {
+			return getOwner();
+		}
 
 		@Override
 		public final boolean hasNature(FlexoConceptNature nature) {
@@ -357,7 +343,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public FlexoConceptStructuralFacet getStructuralFacet() {
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			if (structuralFacet == null && factory != null) {
 				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
 				structuralFacet = factory.newFlexoConceptStructuralFacet(this);
@@ -368,7 +354,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			if (behaviouralFacet == null && factory != null) {
 				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
 				behaviouralFacet = factory.newFlexoConceptBehaviouralFacet(this);
@@ -387,8 +373,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
-			if (getVirtualModel() != null) {
-				getVirtualModel().removeFromFlexoConcepts(this);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().removeFromFlexoConcepts(this);
 			}
 			performSuperDelete(context);
 			deleteObservers();
@@ -397,7 +383,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 		@Override
 		public String getStringRepresentation() {
-			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#" + getName();
+			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#" + getName();
 		}
 
 		/**
@@ -410,8 +396,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 */
 		@Override
 		public String getURI() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getURI() + "#" + getName();
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getURI() + "#" + getName();
 			} else {
 				return "null#" + getName();
 			}
@@ -565,9 +551,9 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Override
 		public FlexoBehaviour getFlexoBehaviourForURI(String uri) {
 
-			if (uri != null && !uri.isEmpty() && getVirtualModel() != null) {
-				if (uri.contains(getVirtualModel().getURI())) {
-					String behaviourname = uri.replace(getVirtualModel().getURI(), "").substring(1);
+			if (uri != null && !uri.isEmpty() && getOwningVirtualModel() != null) {
+				if (uri.contains(getOwningVirtualModel().getURI())) {
+					String behaviourname = uri.replace(getOwningVirtualModel().getURI(), "").substring(1);
 					System.out.println("XTOF :: je récupère " + behaviourname);
 					return getFlexoBehaviour(behaviourname);
 				} else {
@@ -753,19 +739,19 @@ public interface FlexoConcept extends FlexoConceptObject {
 			this.inspector = inspector;
 		}
 
-		@Override
-		public VirtualModel getVirtualModel() {
+		/*@Override
+		public AbstractVirtualModel<?> getParentVirtualModel() {
 			return virtualModel;
 		}
 
 		@Override
-		public void setVirtualModel(VirtualModel virtualModel) {
+		public void setParentVirtualModel(AbstractVirtualModel<?> virtualModel) {
 			if (this.virtualModel != virtualModel) {
-				VirtualModel oldVirtualModel = this.virtualModel;
+				AbstractVirtualModel<?> oldVirtualModel = this.virtualModel;
 				this.virtualModel = virtualModel;
-				getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODEL_KEY, oldVirtualModel, virtualModel);
+				getPropertyChangeSupport().firePropertyChange(PARENT_VIRTUAL_MODEL_KEY, oldVirtualModel, virtualModel);
 			}
-		}
+		}*/
 
 		@Override
 		public String toString() {
@@ -798,7 +784,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Deprecated
 		public void save() {
 			try {
-				getVirtualModel().getResource().save(null);
+				getOwningVirtualModel().getResource().save(null);
 			} catch (SaveResourceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

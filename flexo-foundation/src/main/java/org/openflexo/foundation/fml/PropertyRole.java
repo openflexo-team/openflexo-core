@@ -82,8 +82,8 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 		@Override
 		public IFlexoOntologyStructuralProperty getParentProperty() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyProperty(_getParentPropertyURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyProperty(_getParentPropertyURI());
 			}
 			return null;
 		}
@@ -105,7 +105,7 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 		@Override
 		public IFlexoOntologyClass getDomain() {
-			return getVirtualModel().getOntologyClass(_getDomainURI());
+			return getOwningVirtualModel().getOntologyClass(_getDomainURI());
 		}
 
 		@Override
@@ -150,8 +150,8 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 		public TypeAwareModelSlot<?, ?> getModelSlot() {
 			TypeAwareModelSlot<?, ?> returned = super.getModelSlot();
 			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
+				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
+					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
 				}
 			}
 			return returned;

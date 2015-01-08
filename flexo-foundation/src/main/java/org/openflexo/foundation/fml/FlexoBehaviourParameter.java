@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingDefinition;
 import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
@@ -183,7 +182,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public String getStringRepresentation() {
-			return (getVirtualModel() != null ? getVirtualModel().getStringRepresentation() : "null") + "#"
+			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "."
 					+ (getFlexoBehaviour() != null ? getFlexoBehaviour().getName() : "null") + "." + getName();
 		}
@@ -191,7 +190,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		@Override
 		public abstract Type getType();
 
-		private final BindingDefinition CONDITIONAL = new BindingDefinition("conditional", Boolean.class,
+		/*private final BindingDefinition CONDITIONAL = new BindingDefinition("conditional", Boolean.class,
 				DataBinding.BindingDefinitionType.GET, false);
 		private final BindingDefinition DEFAULT_VALUE = new BindingDefinition("defaultValue", Object.class,
 				DataBinding.BindingDefinitionType.GET, false) {
@@ -207,7 +206,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		public BindingDefinition getDefaultValueBindingDefinition() {
 			return DEFAULT_VALUE;
-		}
+		}*/
 
 		/*@Override
 		public void setBehaviour(FlexoBehaviour scheme) {
@@ -224,13 +223,13 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			return getFlexoBehaviour();
 		}*/
 
-		@Override
+		/*@Override
 		public VirtualModel getVirtualModel() {
 			if (getBehaviour() != null) {
 				return getBehaviour().getVirtualModel();
 			}
 			return null;
-		}
+		}*/
 
 		@Override
 		public String getLabel() {

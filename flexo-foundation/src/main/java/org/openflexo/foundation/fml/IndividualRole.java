@@ -109,8 +109,8 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 		@Override
 		public IFlexoOntologyClass getOntologicType() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyClass(_getConceptURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyClass(_getConceptURI());
 			}
 			return null;
 		}

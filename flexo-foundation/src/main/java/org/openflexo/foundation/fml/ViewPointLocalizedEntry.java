@@ -105,13 +105,22 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 		}
 
 		@Override
-		public ViewPoint getViewPoint() {
+		public ViewPoint getResourceData() {
 			if (getLocalizedDictionary() != null) {
 				return getLocalizedDictionary().getViewPoint();
 			} else {
 				return null;
 			}
 		}
+
+		/*@Override
+		public ViewPoint getViewPoint() {
+			if (getLocalizedDictionary() != null) {
+				return getLocalizedDictionary().getViewPoint();
+			} else {
+				return null;
+			}
+		}*/
 
 		@Override
 		public String getKey() {

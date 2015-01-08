@@ -74,8 +74,8 @@ public interface OntologicObjectRole<T extends IFlexoOntologyObject> extends Fle
 				returned = (TypeAwareModelSlot<?, ?>) super.getModelSlot();
 			}
 			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
+				if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
+					return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
 				}
 			}
 			return returned;

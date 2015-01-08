@@ -70,7 +70,7 @@ public abstract interface ObjectPropertyRole<P extends IFlexoOntologyObjectPrope
 		}
 
 		public IFlexoOntologyClass getRange() {
-			return getVirtualModel().getOntologyClass(_getRangeURI());
+			return getOwningVirtualModel().getOntologyClass(_getRangeURI());
 		}
 
 		public void setRange(IFlexoOntologyClass c) {

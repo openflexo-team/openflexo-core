@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -148,11 +148,11 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	}
 
 	private void addFlexoConceptFlexoBehaviours(FlexoConcept flexoConcept) {
-		behaviourClassMap.put(ActionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(CloningScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(CreationScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(DeletionScheme.class, flexoConcept.getVirtualModel().getTechnologyAdapter());
-		for (ModelSlot<?> ms : flexoConcept.getVirtualModel().getModelSlots()) {
+		behaviourClassMap.put(ActionScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(CreationScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(DeletionScheme.class, flexoConcept.getOwningVirtualModel().getTechnologyAdapter());
+		for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots()) {
 			List<Class<? extends FlexoBehaviour>> msBehaviours = ms.getAvailableFlexoBehaviourTypes();
 			for (Class<? extends FlexoBehaviour> behaviour : msBehaviours) {
 				if (!behaviourClassMap.containsKey(behaviour)) {
@@ -242,7 +242,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		if (flexoBehaviourClass != null) {
 
-			VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+			FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());

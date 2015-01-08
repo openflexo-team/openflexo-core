@@ -103,7 +103,7 @@ public interface ObjectPropertyParameter extends PropertyParameter {
 
 		@Override
 		public IFlexoOntologyClass getRange() {
-			return getVirtualModel().getOntologyClass(_getRangeURI());
+			return getOwningVirtualModel().getOntologyClass(_getRangeURI());
 		}
 
 		@Override

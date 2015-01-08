@@ -75,9 +75,9 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 			if (returned != null) {
 				return returned;
 			} else {
-				if (getFlexoBehaviour() != null && getFlexoBehaviour().getVirtualModel() != null) {
-					if (getFlexoBehaviour().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
-						return getFlexoBehaviour().getVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
+				if (getFlexoBehaviour() != null && getFlexoBehaviour().getOwningVirtualModel() != null) {
+					if (getFlexoBehaviour().getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).size() > 0) {
+						return getFlexoBehaviour().getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class).get(0);
 					}
 				}
 			}
@@ -112,7 +112,7 @@ public interface URIParameter extends InnerModelSlotParameter<TypeAwareModelSlot
 		@SuppressWarnings("rawtypes")
 		@Override
 		public List<TypeAwareModelSlot> getAccessibleModelSlots() {
-			return getVirtualModel().getModelSlots(TypeAwareModelSlot.class);
+			return getOwningVirtualModel().getModelSlots(TypeAwareModelSlot.class);
 		}
 
 		@Override

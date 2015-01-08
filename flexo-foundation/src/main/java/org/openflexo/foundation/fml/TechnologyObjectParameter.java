@@ -57,7 +57,7 @@ public interface TechnologyObjectParameter<MS extends ModelSlot<?>> extends Inne
 		
 		@Override
 		public List<ModelSlot> getAccessibleModelSlots(){
-			return  getVirtualModel().getModelSlots(ModelSlot.class);
+			return  getOwningVirtualModel().getModelSlots(ModelSlot.class);
 		}
 	}
 }

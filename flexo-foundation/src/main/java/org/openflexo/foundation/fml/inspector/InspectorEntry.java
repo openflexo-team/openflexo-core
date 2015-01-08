@@ -26,7 +26,6 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -146,14 +145,6 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		}
 
 		public abstract Class<?> getDefaultDataClass();
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			return null;
-		}
 
 		@Override
 		public FlexoConcept getFlexoConcept() {

@@ -31,7 +31,6 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -115,14 +114,6 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		@Override
 		public String getURI() {
-			return null;
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
 			return null;
 		}
 
@@ -229,11 +220,6 @@ public abstract interface EditionAction extends FMLControlGraph {
 		@Override
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName();
-		}
-
-		@Override
-		public String toString() {
-			return getStringRepresentation();
 		}
 
 		/*@Override

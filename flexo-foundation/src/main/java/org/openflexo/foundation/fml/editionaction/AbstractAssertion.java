@@ -26,7 +26,6 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.AbstractAssertionBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
@@ -91,14 +90,6 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 		public FlexoConcept getFlexoConcept() {
 			if (getAction() != null) {
 				return getAction().getFlexoConcept();
-			}
-			return null;
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getAction() != null) {
-				return getAction().getVirtualModel();
 			}
 			return null;
 		}

@@ -14,7 +14,7 @@ public class FlexoConceptInstanceBindingVariable extends BindingVariable {
 	private int index;
 
 	public FlexoConceptInstanceBindingVariable(FlexoConcept anFlexoConcept, int index) {
-		super(anFlexoConcept.getVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
+		super(anFlexoConcept.getOwningVirtualModel().getName() + "_" + anFlexoConcept.getName() + "_" + index, FlexoConceptInstanceType
 				.getFlexoConceptInstanceType(anFlexoConcept));
 		this.flexoConcept = anFlexoConcept;
 	}

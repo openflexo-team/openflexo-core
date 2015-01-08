@@ -26,6 +26,7 @@ import org.openflexo.antar.binding.BindingEvaluationContext;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rt.View;
 
 /**
@@ -40,13 +41,16 @@ import org.openflexo.foundation.fml.rt.View;
  * @author sylvain
  * 
  */
-public class ViewPointBindingModel extends BindingModel implements PropertyChangeListener {
+public class ViewPointBindingModel extends VirtualModelBindingModel implements PropertyChangeListener {
 
-	private final ViewPoint viewPoint;
+	// private final ViewPoint viewPoint;
 
 	private final BindingVariable reflexiveAccessBindingVariable;
 
 	public static final String REFLEXIVE_ACCESS_PROPERTY = "viewPointDefinition";
+	public static final String VIEW_PROPERTY = "view";
+
+	private final BindingVariable viewBindingVariable;
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a ViewPoint
@@ -54,17 +58,24 @@ public class ViewPointBindingModel extends BindingModel implements PropertyChang
 	 * @param viewPoint
 	 */
 	public ViewPointBindingModel(ViewPoint viewPoint) {
-		super();
-		this.viewPoint = viewPoint;
-		if (viewPoint != null && viewPoint.getPropertyChangeSupport() != null) {
+		super(viewPoint);
+		// this.viewPoint = viewPoint;
+		/*if (viewPoint != null && viewPoint.getPropertyChangeSupport() != null) {
 			viewPoint.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
+		}*/
+		viewBindingVariable = new BindingVariable(VIEW_PROPERTY, viewPoint != null ? ViewType.getViewType(viewPoint) : View.class);
+		addToBindingVariables(viewBindingVariable);
+
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, ViewPoint.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
 	}
 
 	public ViewPoint getViewPoint() {
-		return viewPoint;
+		return (ViewPoint) getVirtualModel();
+	}
+
+	public BindingVariable getViewBindingVariable() {
+		return viewBindingVariable;
 	}
 
 	/**
@@ -73,6 +84,7 @@ public class ViewPointBindingModel extends BindingModel implements PropertyChang
 	 * 
 	 * @return
 	 */
+	@Override
 	public BindingVariable getReflexiveAccessBindingVariable() {
 		return reflexiveAccessBindingVariable;
 	}
@@ -80,16 +92,17 @@ public class ViewPointBindingModel extends BindingModel implements PropertyChang
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
+
 	}
 
 	/**
 	 * Delete this {@link BindingModel}
 	 */
-	@Override
+	/*@Override
 	public void delete() {
 		super.delete();
 		if (viewPoint != null && viewPoint.getPropertyChangeSupport() != null) {
 			viewPoint.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-	}
+	}*/
 }

@@ -30,6 +30,9 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -37,10 +40,8 @@ import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -129,7 +130,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		} else {
 			FlexoConcept fc = (FlexoConcept) this.getFocusedObject();
 			if (fc != null) {
-				VirtualModel vm = fc.getVirtualModel();
+				AbstractVirtualModel<?> vm = fc.getOwningVirtualModel();
 				if (vm != null) {
 					return vmAvailableFlexoRoleTypes;
 				}
@@ -148,7 +149,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
 			} else {
-				VirtualModelModelFactory factory = getFocusedObject().getVirtualModelFactory();
+				FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
 
@@ -208,7 +209,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		return PrimitiveRole.class.isAssignableFrom(flexoRoleClass);
 	}
 
-	public VirtualModel getModelSlotVirtualModel() {
+	public AbstractVirtualModel<?> getModelSlotVirtualModel() {
 		if (modelSlot instanceof FMLRTModelSlot) {
 			if (((FMLRTModelSlot) modelSlot).getVirtualModelResource() != null) {
 				return ((FMLRTModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
@@ -223,8 +224,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null) {
-			return getFocusedObject().getVirtualModel().getModelSlots();
+		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+			return getFocusedObject().getOwningVirtualModel().getModelSlots();
 		}
 		return null;
 	}
@@ -232,9 +233,9 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private ModelSlot<?> retrieveDefaultModelSlot() {
 		if (getFocusedObject() instanceof VirtualModel && ((VirtualModel) getFocusedObject()).getModelSlots().size() > 0) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots().get(0);
-		} else if (getFocusedObject() != null && getFocusedObject().getVirtualModel() != null
-				&& getFocusedObject().getVirtualModel().getModelSlots().size() > 0) {
-			return getFocusedObject().getVirtualModel().getModelSlots().get(0);
+		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
+				&& getFocusedObject().getOwningVirtualModel().getModelSlots().size() > 0) {
+			return getFocusedObject().getOwningVirtualModel().getModelSlots().get(0);
 		}
 		return null;
 	}
@@ -269,7 +270,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		if (modelSlot != null) {
 			return modelSlot.getModelSlotTechnologyAdapter();
 		} else {
-			return getFlexoConcept().getVirtualModel().getTechnologyAdapter();
+			return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
 		}
 	}
 

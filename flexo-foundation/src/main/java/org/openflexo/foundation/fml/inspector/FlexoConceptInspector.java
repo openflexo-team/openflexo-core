@@ -31,7 +31,6 @@ import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
 import org.openflexo.antar.binding.DefaultBindable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
 import org.openflexo.logging.FlexoLogger;
@@ -181,14 +180,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 				_flexoConcept = flexoConcept;
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_KEY, old, flexoConcept);
 			}
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			return null;
 		}
 
 		@Override

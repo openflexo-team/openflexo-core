@@ -42,10 +42,7 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -97,8 +94,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(ViewPoint.ViewPointImpl.class)
 @XMLElement(xmlTag = "ViewPoint")
-public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, FlexoMetaModel<ViewPoint>,
-		TechnologyObject<FMLTechnologyAdapter> {
+public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -118,17 +114,21 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 	@Setter(VIEW_POINT_URI_KEY)
 	public void setViewPointURI(String viewPointURI);
 
+	@Override
 	@Getter(value = VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public FlexoVersion getVersion();
 
+	@Override
 	@Setter(VERSION_KEY)
 	public void setVersion(FlexoVersion version);
 
+	@Override
 	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
 	@XMLAttribute
 	public FlexoVersion getModelVersion();
 
+	@Override
 	@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);
 
@@ -157,6 +157,7 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 	 * @param flexoConceptId
 	 * @return
 	 */
+	@Override
 	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
@@ -189,7 +190,7 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends NamedFMLObjectImpl implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -319,59 +320,17 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 		}
 
 		@Override
-		public String toString() {
-			return "ViewPoint:" + getViewPointURI();
-		}
-
-		@Override
-		public String getName() {
-			if (getResource() != null) {
-				return getResource().getName();
-			}
-			return super.getName();
-		}
-
-		@Override
-		public void setName(String name) {
-			if (requireChange(getName(), name)) {
-				if (getResource() != null) {
-					getResource().setName(name);
-				} else {
-					super.setName(name);
-				}
-			}
-		}
-
-		@Override
-		public FlexoVersion getVersion() {
-			if (getResource() != null) {
-				return getResource().getVersion();
-			}
-			return null;
-		}
-
-		@Override
-		public void setVersion(FlexoVersion aVersion) {
-			if (requireChange(getVersion(), aVersion)) {
-				if (getResource() != null) {
-					getResource().setVersion(aVersion);
-				}
-			}
-		}
-
-		@Override
 		public ViewPointLibrary getViewPointLibrary() {
 			if (getResource() != null) {
 				return getResource().getViewPointLibrary();
 			}
 			return null;
-			// return _library;
 		}
 
-		@Override
+		/*@Override
 		public ViewPointImpl getViewPoint() {
 			return this;
-		}
+		}*/
 
 		private boolean isLoading = false;
 
@@ -494,26 +453,6 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 		}
 
 		/**
-		 * Return {@link DiagramSpecification} with supplied name or URI
-		 * 
-		 * @return
-		 */
-		/*public DiagramSpecification getDiagramSpecificationNamed(String diagramSpecificationName) {
-			loadVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getVirtualModels()) {
-				if (vm instanceof DiagramSpecification) {
-					if (vm.getName().equals(diagramSpecificationName)) {
-						return (DiagramSpecification) vm;
-					}
-					if (vm.getURI().equals(diagramSpecificationName)) {
-						return (DiagramSpecification) vm;
-					}
-				}
-			}
-			return null;
-		}*/
-
-		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
 		 * @param flexoConceptId
@@ -531,29 +470,8 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 			return null;
 		}
 
-		// Return a default diagram specification (temporary hack to ensure compatibility with old versions)
-		/*@Deprecated
-		public DiagramSpecification getDefaultDiagramSpecification() {
-			loadVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getVirtualModels()) {
-				if (vm instanceof DiagramSpecification) {
-					return (DiagramSpecification) vm;
-				}
-			}
-			// OK, lets create a default one
-			// DiagramSpecification ds = new DiagramSpecification(this);
-			// addToVirtualModels(ds);
-			return null;
-		}*/
-
 		@Override
 		public ViewPointLocalizedDictionary getLocalizedDictionary() {
-			// localized dictionnary is no longer created at this point
-			// this is now managed in the ViewPointModelFactory
-			/*if (localizedDictionary == null && getResource() != null && getResource().getFactory() != null) {
-				localizedDictionary = getResource().getFactory().newInstance(ViewPointLocalizedDictionary.class);
-				localizedDictionary.setOwner(this);
-			}*/
 			return localizedDictionary;
 		}
 
@@ -605,78 +523,10 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 			return bindingModel;
 		}
 
-		/*public void updateBindingModel() {
-			logger.fine("updateBindingModel()");
-			bindingModel = null;
-			createBindingModel();
-		}*/
-
-		/*private void createBindingModel() {
-			bindingModel = new ViewPointBindingModel(this);
-			for (VirtualModel vm : getVirtualModels()) {
-				bindingModel.addToBindingVariables(new BindingVariable(vm.getName(), Object.class));
-			}
-		}*/
-
 		@Override
 		public FlexoConceptBindingFactory getBindingFactory() {
 			return bindingFactory;
 		}
-
-		// ==========================================================================
-		// ============================== Model Slots ===============================
-		// ==========================================================================
-
-		/*public void setModelSlots(List<ModelSlot> modelSlots) {
-			this.modelSlots = modelSlots;
-		}
-
-		public List<ModelSlot> getModelSlots() {
-			return modelSlots;
-		}
-
-		public void addToModelSlots(ModelSlot modelSlot) {
-			modelSlots.add(modelSlot);
-			modelSlot.setViewPoint(this);
-			setChanged();
-			notifyObservers(new ModelSlotAdded(modelSlot, this));
-		}
-
-		public void removeFromModelSlots(ModelSlot modelSlot) {
-			modelSlots.remove(modelSlot);
-			modelSlot.setViewPoint(null);
-			setChanged();
-			notifyObservers(new ModelSlotRemoved(modelSlot, this));
-		}
-
-		public <MS extends ModelSlot> List<MS> getModelSlots(Class<MS> msType) {
-			List<MS> returned = new ArrayList<MS>();
-			for (ModelSlot ms : getModelSlots()) {
-				if (TypeUtils.isTypeAssignableFrom(msType, ms.getClass())) {
-					returned.add((MS) ms);
-				}
-			}
-			return returned;
-		}
-
-		public ModelSlot getModelSlot(String modelSlotName) {
-			for (ModelSlot ms : getModelSlots()) {
-				if (ms.getName().equals(modelSlotName)) {
-					return ms;
-				}
-			}
-			return null;
-		}
-
-		public List<ModelSlot> getRequiredModelSlots() {
-			List<ModelSlot> requiredModelSlots = new ArrayList<ModelSlot>();
-			for (ModelSlot modelSlot : getModelSlots()) {
-				if (modelSlot.getIsRequired()) {
-					requiredModelSlots.add(modelSlot);
-				}
-			}
-			return modelSlots;
-		}*/
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
@@ -788,6 +638,7 @@ public interface ViewPoint extends NamedFMLObject, ResourceData<ViewPoint>, Flex
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			return getVirtualModels();
 		}
+
 	}
 
 	@DefineValidationRule

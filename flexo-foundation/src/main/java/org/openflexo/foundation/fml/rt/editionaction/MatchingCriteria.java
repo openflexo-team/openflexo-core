@@ -10,7 +10,6 @@ import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -154,24 +153,6 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 			}
 			return bindingModel;
 		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getAction() != null) {
-				return getAction().getVirtualModel();
-			}
-			return null;
-		}
-
-		/*@Override
-		public MatchFlexoConceptInstance getAction() {
-			return action;
-		}
-
-		@Override
-		public void setAction(MatchFlexoConceptInstance action) {
-			this.action = action;
-		}*/
 
 		@Override
 		public FlexoRole getFlexoRole() {

@@ -101,8 +101,8 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 		@Override
 		public IFlexoOntologyStructuralProperty getOntologyProperty() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyProperty(_getDataPropertyURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyProperty(_getDataPropertyURI());
 			}
 			return null;
 		}

@@ -28,13 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
+import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -43,6 +44,8 @@ import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -71,10 +74,10 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD> {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, VirtualModelObject {
 
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+	@PropertyIdentifier(type = AbstractVirtualModel.class)
+	public static final String OWNER_KEY = "owner";
 
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_REQUIRED_KEY = "isRequired";
@@ -82,14 +85,17 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public static final String IS_READ_ONLY_KEY = "isReadOnly";
 
 	@Override
-	public VirtualModelModelFactory getVirtualModelFactory();
+	public FMLModelFactory getVirtualModelFactory();
 
-	@Override
-	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
-	public VirtualModel getVirtualModel();
+	/**
+	 * Return the VirtualModel in which this ModelSlot is declared
+	 */
+	@Getter(value = OWNER_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	public AbstractVirtualModel<?> getOwner();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	@Setter(OWNER_KEY)
+	public void setOwner(AbstractVirtualModel<?> virtualModel);
 
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -201,8 +207,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private boolean isRequired;
 		private boolean isReadOnly;
 		private TechnologyAdapter technologyAdapter;
-		private ViewPoint viewPoint;
-		private VirtualModel virtualModel;
 
 		private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
@@ -210,7 +214,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private List<Class<? extends EditionAction>> availableFetchRequestActionTypes;
 
 		@Override
-		public VirtualModelModelFactory getVirtualModelFactory() {
+		public AbstractVirtualModel<?> getVirtualModel() {
+			return getOwner();
+		}
+
+		@Override
+		public FMLModelFactory getVirtualModelFactory() {
 			return getVirtualModel().getVirtualModelFactory();
 		}
 
@@ -232,30 +241,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass) {
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(patternRoleClass);
-		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			return virtualModel;
-		}
-
-		@Override
-		public void setVirtualModel(VirtualModel virtualModel) {
-			this.virtualModel = virtualModel;
-		}
-
-		@Override
-		public ViewPoint getViewPoint() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getViewPoint();
-			}
-			return viewPoint;
-		}
-
-		public void setViewPoint(ViewPoint viewPoint) {
-			this.viewPoint = viewPoint;
 		}
 
 		@Override
@@ -499,7 +486,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <EA extends EditionAction> EA makeEditionAction(Class<EA> editionActionClass) {
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(editionActionClass);
 		}
 
@@ -513,7 +500,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
-			VirtualModelModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getVirtualModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
 

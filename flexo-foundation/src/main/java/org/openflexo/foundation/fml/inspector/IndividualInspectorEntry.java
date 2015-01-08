@@ -125,8 +125,8 @@ public interface IndividualInspectorEntry extends InspectorEntry {
 
 		@Override
 		public IFlexoOntologyClass getConcept() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getOntologyClass(_getConceptURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyClass(_getConceptURI());
 			}
 			return null;
 		}

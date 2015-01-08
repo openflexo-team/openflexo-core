@@ -81,7 +81,7 @@ public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, Fl
 
 		newFlexoConcept = (FlexoConcept) getFocusedObject().cloneObject();
 		newFlexoConcept.setName(newName);
-		getFocusedObject().getVirtualModel().addToFlexoConcepts(newFlexoConcept);
+		getFocusedObject().getOwningVirtualModel().addToFlexoConcepts(newFlexoConcept);
 
 	}
 

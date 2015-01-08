@@ -201,8 +201,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public IFlexoOntologyClass getOntologyClass() {
 			// System.out.println("AddIndividual: ontologyClassURI=" + ontologyClassURI);
-			if (StringUtils.isNotEmpty(ontologyClassURI) && getVirtualModel() != null) {
-				return getVirtualModel().getOntologyClass(ontologyClassURI);
+			if (StringUtils.isNotEmpty(ontologyClassURI) && getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
 				if (getFlexoRole() != null) {
 					// System.out.println("Je reponds avec le pattern role " + getPatternRole());

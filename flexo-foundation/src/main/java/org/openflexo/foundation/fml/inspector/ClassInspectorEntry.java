@@ -106,7 +106,7 @@ public interface ClassInspectorEntry extends InspectorEntry {
 
 		@Override
 		public IFlexoOntologyClass getConcept() {
-			return getVirtualModel().getOntologyClass(_getConceptURI());
+			return getOwningVirtualModel().getOntologyClass(_getConceptURI());
 		}
 
 		@Override

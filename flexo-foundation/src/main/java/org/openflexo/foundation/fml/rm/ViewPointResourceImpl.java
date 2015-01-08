@@ -50,6 +50,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.ViewPointModelFactory;
@@ -80,7 +81,7 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
-public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint, ViewPointModelFactory> implements ViewPointResource {
+public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint, FMLModelFactory> implements ViewPointResource {
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
@@ -110,7 +111,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 
 			returned.setServiceManager(serviceManager);
-			returned.setFactory(new ViewPointModelFactory(returned,serviceManager.getEditingContext()));
+			returned.setFactory(new FMLModelFactory(returned,serviceManager));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -168,7 +169,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
-			returned.setFactory(new ViewPointModelFactory(returned,serviceManager.getEditingContext()));
+			returned.setFactory(new FMLModelFactory(returned,serviceManager));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
@@ -219,7 +220,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
-			returned.setFactory(new ViewPointModelFactory(returned,serviceManager.getEditingContext()));
+			returned.setFactory(new FMLModelFactory(returned,serviceManager));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {

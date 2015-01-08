@@ -129,8 +129,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			// if (getModelSlot() instanceof FMLRTModelSlot) {
 			// System.out.println("ms.vm=" + ((FMLRTModelSlot) getModelSlot()).getAddressedVirtualModel());
 			// }
-			if (flexoConceptType == null && flexoConceptTypeURI != null && getVirtualModel() != null) {
-				flexoConceptType = getVirtualModel().getFlexoConcept(flexoConceptTypeURI);
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getOwningVirtualModel() != null) {
+				flexoConceptType = getOwningVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				/*if (!isUpdatingBindingModels) {
 					isUpdatingBindingModels = true;
 					for (FlexoBehaviour s : getFlexoConcept().getEditionSchemes()) {

@@ -19,16 +19,24 @@
  */
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.nature.FlexoNature;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Interface defining the nature of a {@link VirtualModel}<br>
+ * Root class for any object which is part of the model of an {@link FlexoConcept}<br>
+ * A {@link VirtualModelObject} "lives" in a {@link VirtualModel} ecosystem<br>
+ * Note that you can safely invoke {@link #getFlexoConcept()} which should return non-null value.
  * 
- * A {@link VirtualModelNature} might be seen as an interpretation of a given {@link VirtualModel}
  * 
  * @author sylvain
  * 
  */
-public interface VirtualModelNature extends FlexoNature<AbstractVirtualModel<?>> {
+@ModelEntity(isAbstract = true)
+public interface VirtualModelObject extends FlexoConceptObject {
 
+	/**
+	 * Return the {@link AbstractVirtualModel} in which this {@link FMLObject} is defined
+	 * 
+	 * @return
+	 */
+	public AbstractVirtualModel<?> getVirtualModel();
 }

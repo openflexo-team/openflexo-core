@@ -1,5 +1,6 @@
 package org.openflexo.foundation.fml;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -9,8 +10,6 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -35,6 +34,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
 	static ViewPoint newViewPoint;
 	static ViewPointResource newViewPointResource;
@@ -50,10 +50,17 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
 				serviceManager.getViewPointLibrary());
 		newViewPointResource = (ViewPointResource) newViewPoint.getResource();
-		//assertTrue(newViewPointResource.getDirectory().exists());
-		//assertTrue(newViewPointResource.getFile().exists());
-		assertTrue(newViewPointResource.getDirectory()!=null);
+		// assertTrue(newViewPointResource.getDirectory().exists());
+		// assertTrue(newViewPointResource.getFile().exists());
+		assertTrue(newViewPointResource.getDirectory() != null);
 		assertTrue(newViewPointResource.getFlexoIODelegate().exists());
+
+		assertEquals(newViewPoint, newViewPoint.getViewPoint());
+		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
+		assertEquals(null, newViewPoint.getOwningVirtualModel());
+		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
+		assertEquals(newViewPoint, newViewPoint.getResourceData());
+
 	}
 
 	/**
@@ -62,9 +69,16 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 	@Test
 	@TestOrder(2)
 	public void testCreateVirtualModel() throws SaveResourceException {
-		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
+		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, newViewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
+
+		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
+		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());
+		assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
+		assertEquals(newVirtualModel, newVirtualModel.getResourceData());
+
 	}
 
 	/**
@@ -97,6 +111,22 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 
 		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
+
+		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getViewPoint());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getVirtualModel());
+		assertEquals(null, reloadedViewPoint.getOwningVirtualModel());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
+
+		VirtualModel reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
+		assertNotNull(reloadedVirtualModel);
+
+		assertEquals(reloadedViewPoint, reloadedVirtualModel.getViewPoint());
+		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getVirtualModel());
+		assertEquals(null, reloadedVirtualModel.getOwningVirtualModel());
+		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getFlexoConcept());
+		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getResourceData());
 
 	}
 

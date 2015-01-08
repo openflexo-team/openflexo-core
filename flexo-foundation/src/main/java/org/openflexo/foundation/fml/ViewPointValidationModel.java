@@ -56,7 +56,7 @@ public class ViewPointValidationModel extends FlexoValidationModel {
 	 * @throws ModelDefinitionException
 	 */
 	private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = (taService != null ? VirtualModelModelFactory.retrieveTechnologySpecificClasses(taService)
+		List<Class<?>> classes = (taService != null ? FMLModelFactory.retrieveTechnologySpecificClasses(taService)
 				: new ArrayList<Class<?>>());
 		classes.add(ViewPoint.class);
 		classes.add(VirtualModel.class);

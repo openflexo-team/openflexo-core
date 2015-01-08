@@ -11,7 +11,6 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.binding.DeleteFlexoConceptInstanceParameterBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -169,24 +168,6 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			}
 			return bindingModel;
 		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getAction() != null) {
-				return getAction().getVirtualModel();
-			}
-			return null;
-		}
-
-		/*@Override
-		public DeleteFlexoConceptInstance getAction() {
-			return action;
-		}
-
-		@Override
-		public void setAction(DeleteFlexoConceptInstance action) {
-			this.action = action;
-		}*/
 
 		@Override
 		public FlexoBehaviourParameter getParam() {

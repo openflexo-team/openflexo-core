@@ -19,10 +19,10 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelModelFactory;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
@@ -44,8 +44,8 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
-public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, VirtualModelModelFactory> implements
-		VirtualModelResource, AccessibleProxyObject {
+public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource,
+		AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
@@ -64,8 +64,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
-					.getTechnologyAdapterService()));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -113,8 +112,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
-					.getTechnologyAdapterService()));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -157,8 +155,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new VirtualModelModelFactory(returned, serviceManager.getEditingContext(), serviceManager
-					.getTechnologyAdapterService()));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;
 		} catch (ModelDefinitionException e) {

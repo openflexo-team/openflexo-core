@@ -109,7 +109,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public IFlexoOntologyClass getOntologyClass() {
 			if (StringUtils.isNotEmpty(ontologyClassURI)) {
-				return getVirtualModel().getOntologyClass(ontologyClassURI);
+				return getOwningVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
 				if (getFlexoRole() instanceof ClassRole) {
 					return getFlexoRole().getOntologicType();

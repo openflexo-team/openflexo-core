@@ -115,7 +115,7 @@ public interface PropertyInspectorEntry extends InspectorEntry {
 
 		@Override
 		public IFlexoOntologyStructuralProperty getParentProperty() {
-			return getVirtualModel().getOntologyProperty(_getParentPropertyURI());
+			return getOwningVirtualModel().getOntologyProperty(_getParentPropertyURI());
 		}
 
 		@Override
@@ -135,7 +135,7 @@ public interface PropertyInspectorEntry extends InspectorEntry {
 
 		@Override
 		public IFlexoOntologyClass getDomain() {
-			return getVirtualModel().getOntologyClass(_getDomainURI());
+			return getOwningVirtualModel().getOntologyClass(_getDomainURI());
 		}
 
 		@Override

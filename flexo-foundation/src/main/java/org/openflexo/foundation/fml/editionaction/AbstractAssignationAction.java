@@ -93,14 +93,6 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 		public void reduce() {
 		}
 
-		@Override
-		public void setAssignableAction(AssignableAction<T> assignableAction) {
-			performSuperSetter(ASSIGNABLE_ACTION_KEY, assignableAction);
-			if (assignableAction == null) {
-				System.out.println("Prout alors");
-				Thread.dumpStack();
-			}
-		}
 	}
 
 	// @DefineValidationRule

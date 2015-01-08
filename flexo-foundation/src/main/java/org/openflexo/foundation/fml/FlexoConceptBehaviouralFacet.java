@@ -51,11 +51,6 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 			return getFlexoConcept().getBindingModel();
 		}
 
-		/*@Override
-		public Collection<? extends Validable> getEmbeddedValidableObjects() {
-			return getFlexoConcept().getEditionSchemes();
-		}*/
-
 		@Override
 		public FlexoConcept getObject() {
 			return getFlexoConcept();
@@ -66,12 +61,5 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 			return getFlexoConcept().getURI();
 		}
 
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			return null;
-		}
 	}
 }

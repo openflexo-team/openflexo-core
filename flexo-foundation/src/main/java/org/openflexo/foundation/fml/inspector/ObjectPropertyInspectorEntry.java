@@ -107,7 +107,7 @@ public interface ObjectPropertyInspectorEntry extends PropertyInspectorEntry {
 
 		@Override
 		public IFlexoOntologyClass getRange() {
-			return getVirtualModel().getOntologyClass(_getRangeURI());
+			return getOwningVirtualModel().getOntologyClass(_getRangeURI());
 		}
 
 		@Override
