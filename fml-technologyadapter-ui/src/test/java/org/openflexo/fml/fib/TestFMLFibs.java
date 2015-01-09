@@ -42,6 +42,11 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDeclarationActionPanel() {
+		validateFIB("Fib/FML/DeclarationActionPanel.fib");
+	}
+
+	@Test
 	public void testCloningSchemePanel() {
 		validateFIB("Fib/FML/CloningSchemePanel.fib");
 	}
@@ -57,11 +62,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDeclarePatternRolePanel() {
-		validateFIB("Fib/FML/DeclarePatternRolePanel.fib");
-	}
-
-	@Test
 	public void testDeleteFlexoConceptInstancePanel() {
 		validateFIB("Fib/FML/DeleteFlexoConceptInstancePanel.fib");
 	}
@@ -74,11 +74,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testDeletionSchemePanel() {
 		validateFIB("Fib/FML/DeletionSchemePanel.fib");
-	}
-
-	@Test
-	public void testExecutionActionPanel() {
-		validateFIB("Fib/FML/ExecutionActionPanel.fib");
 	}
 
 	@Test
@@ -119,11 +114,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testNavigationSchemePanel() {
 		validateFIB("Fib/FML/NavigationSchemePanel.fib");
-	}
-
-	@Test
-	public void testProcedureActionPanel() {
-		validateFIB("Fib/FML/ProcedureActionPanel.fib");
 	}
 
 	/*@Test

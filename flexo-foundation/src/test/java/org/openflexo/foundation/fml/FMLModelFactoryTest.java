@@ -25,12 +25,12 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
+import org.openflexo.model.exceptions.MissingImplementationException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
@@ -45,15 +45,18 @@ public class FMLModelFactoryTest {
 	@Test
 	public void testInstantiateVirtualModelModelFactory() {
 		try {
-			System.out.println("Instanciating ViewPointModelFactory");
+			System.out.println("Instanciating FMLModelFactory");
 			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
 			FMLModelFactory factory = new FMLModelFactory(null, null, taService);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();
-				System.out.println("> Found " + e.getImplementedInterface());
 			}
+			factory.checkMethodImplementations();
 		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (MissingImplementationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}

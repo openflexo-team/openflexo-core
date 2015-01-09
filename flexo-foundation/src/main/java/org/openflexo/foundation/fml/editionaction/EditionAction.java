@@ -83,10 +83,12 @@ public abstract interface EditionAction extends FMLControlGraph {
 	@Setter(ACTION_CONTAINER_KEY)
 	public void setActionContainer(ActionContainer actionContainer);
 
+	@Deprecated
 	@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
 	public DataBinding<Boolean> getConditional();
 
+	@Deprecated
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
@@ -108,6 +110,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		private static final Logger logger = Logger.getLogger(EditionAction.class.getPackage().getName());
 
+		@Deprecated
 		private DataBinding<Boolean> conditional;
 
 		private ControlGraphBindingModel<?> bindingModel;
@@ -197,6 +200,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return returned;
 		}*/
 
+		@Deprecated
 		@Override
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
@@ -206,6 +210,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return conditional;
 		}
 
+		@Deprecated
 		@Override
 		public void setConditional(DataBinding<Boolean> conditional) {
 			if (conditional != null) {

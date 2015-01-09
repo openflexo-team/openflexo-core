@@ -11,9 +11,8 @@ import org.openflexo.model.annotations.Setter;
  * 
  * @param <RD>
  */
-@ModelEntity
-public interface ResourceData<RD extends ResourceData<RD>> /*extends AccessibleProxyObject, DeletableProxyObject, KeyValueCoding,
-CloneableProxyObject*/{
+@ModelEntity(isAbstract = true)
+public interface ResourceData<RD extends ResourceData<RD>> {
 
 	public static final String FLEXO_RESOURCE = "flexoResource";
 

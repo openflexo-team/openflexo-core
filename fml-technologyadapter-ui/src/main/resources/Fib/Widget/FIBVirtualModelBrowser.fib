@@ -14,26 +14,23 @@
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole" label="flexoRole.name" icon="controller.iconForObject(flexoRole)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoRole" />
     <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour" label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
-      <Children data="flexoBehaviour.flexoBehaviourParameters" visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
-      <Children data="flexoBehaviour.actions" visible="" cast="" name="actions" />
+      <Children data="flexoBehaviour.parameters" visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
+      <Children data="flexoBehaviour.actions" name="actions" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector" label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
-      <Children data="inspector.entries" visible="" cast="" name="entries" />
+      <Children data="inspector.entries" name="entries" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry" label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter" label="" icon="controller.iconForObject(flexoBehaviourParameter)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviourParameter" />
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction" label="" icon="controller.iconForObject(editionAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionAction" />
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction" label="" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
-      <Children data="controlStructureAction.actions" visible="" cast="" name="children" />
+    <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter" icon="controller.iconForObject(flexoBehaviourParameter)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviourParameter" />
+    <BrowserElement dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction" icon="controller.iconForObject(editionAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="editionAction" />
+    <BrowserElement dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction" icon="controller.iconForObject(controlStructureAction)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="controlStructureAction">
+      <Children data="controlStructureAction.actions" name="children" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet" label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
-      <Children data="flexoConceptStructuralFacet.flexoConcept.flexoRoles" visible="" cast="" name="flexoRoles" />
+      <Children data="flexoConceptStructuralFacet.flexoConcept.flexoRoles" name="flexoRoles" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet" label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConceptBehaviouralFacet">
-      <Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours" visible="" cast="" name="flexoBehaviours" />
-    </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameters" label="&quot;Parameters&quot;" icon="controller.iconForObject(flexoBehaviourParameters)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviourParameters">
-      <Children data="flexoBehaviourParameters.flexoBehaviour.parameters" visible="" cast="" name="children" />
+      <Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours" name="flexoBehaviours" />
     </BrowserElement>
   </Browser>
   <LocalizedDictionary />

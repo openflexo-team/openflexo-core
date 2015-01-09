@@ -148,11 +148,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testNamedViewPointObjectInspector() {
-		validateFIB("Inspectors/FML/NamedFMLObject.inspector");
-	}
-
-	@Test
 	public void testNavigationSchemeInspector() {
 		validateFIB("Inspectors/FML/NavigationScheme.inspector");
 	}

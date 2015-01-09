@@ -107,7 +107,7 @@
 			label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
-			<Children data="flexoBehaviour.flexoBehaviourParameters"
+			<Children data="flexoBehaviour.parameters"
 				visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
 			<Children data="flexoBehaviour.actions" visible="" cast=""
 				name="actions" />
@@ -161,28 +161,6 @@
 			<Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
 				visible="" cast="" name="flexoBehaviours" />
 		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameters"
-			label="&quot;Parameters&quot;" icon="controller.iconForObject(flexoBehaviourParameters)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont=""
-			name="flexoBehaviourParameters">
-			<Children data="flexoBehaviourParameters.flexoBehaviour.parameters"
-				visible="" cast="" name="children" />
-		</BrowserElement>
-		<!-- <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.ExampleDiagramShape" 
-			label="shape.name" icon="controller.iconForObject(shape)" isEditable="false" 
-			filtered="false" defaultVisible="true" name="shape"> <Children data="shape.childs" 
-			name="childs" /> </BrowserElement> <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.ExampleDiagramConnector" 
-			label="connector.name" icon="controller.iconForObject(connector)" isEditable="false" 
-			filtered="false" defaultVisible="true" name="connector"> <Children data="connector.childs" 
-			name="childs" /> </BrowserElement> <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.DiagramPaletteElement" 
-			label="element.name" icon="controller.iconForObject(element)" isEditable="false" 
-			filtered="false" defaultVisible="true" name="element"> <Children data="element.overridingGraphicalRepresentations" 
-			name="overridingGR" /> </BrowserElement> <BrowserElement dataClassName="org.openflexo.technologyadapter.diagram.fml.DiagramPaletteElement$OverridingGraphicalRepresentation" 
-			icon="controller.iconForObject(overridingGraphicalRepresentation)" isEditable="false" 
-			filtered="false" defaultVisible="true" name="overridingGraphicalRepresentation" 
-			/> -->
 	</Browser>
 	<LocalizedDictionary />
 </Panel>
