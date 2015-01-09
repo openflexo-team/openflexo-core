@@ -31,11 +31,11 @@ VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 
 		FML::DeletionScheme delete() {
 			
-			OWL::OWLIndividualOfClass(type=Ontology1.Type1) monType = ontology::CreateOWLIndividual(type=Ontology.Type1);
+			//OWL::OWLIndividualOfClass(type=Ontology1.Type1) monType = ontology::CreateOWLIndividual(type=Ontology.Type1);
 			
-			for (OWL::OWLIndividualOfClass(type=Ontology1.Type1) unIndividual : ontology.AllIndividualsOfType(OWL::OWLIndividualOfClass(type=Ontology1.Type1))) {
+			/*for (OWL::OWLIndividualOfClass(type=Ontology1.Type1) unIndividual : ontology.AllIndividualsOfType(OWL::OWLIndividualOfClass(type=Ontology1.Type1))) {
 				// du code
-			}
+			}*/
 			
 			//ontology::deleteAction(individual); // equ to ontology::deleteAction(object=individual);
 		}
