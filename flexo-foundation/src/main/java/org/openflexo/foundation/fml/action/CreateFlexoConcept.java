@@ -78,7 +78,7 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 
-		FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
 		newFlexoConcept = factory.newFlexoConcept();
 		newFlexoConcept.setName(getNewFlexoConceptName());

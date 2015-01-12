@@ -36,8 +36,8 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ActionContainer;
-import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.ControlStructureAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -172,12 +172,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		if (baseEditionAction instanceof AssignableAction) {
 			if (getAssignation() != null && getAssignation().isSet()) {
-				AssignationAction<?> newAssignationAction = getFocusedObject().getVirtualModelFactory().newAssignationAction();
+				AssignationAction<?> newAssignationAction = getFocusedObject().getFMLModelFactory().newAssignationAction();
 				newAssignationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newAssignationAction.setAssignation((DataBinding) getAssignation());
 				newEditionAction = newAssignationAction;
 			} else if (getDeclarationVariableName() != null) {
-				DeclarationAction<?> newDeclarationAction = getFocusedObject().getVirtualModelFactory().newDeclarationAction();
+				DeclarationAction<?> newDeclarationAction = getFocusedObject().getFMLModelFactory().newDeclarationAction();
 				newDeclarationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newDeclarationAction.setVariableName(getDeclarationVariableName());
 				newEditionAction = newDeclarationAction;
@@ -254,7 +254,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	private EditionAction makeEditionAction() {
 		EditionAction returned;
-		FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		switch (actionChoice) {
 		case BuiltInAction:
 			if (builtInActionClass == null) {

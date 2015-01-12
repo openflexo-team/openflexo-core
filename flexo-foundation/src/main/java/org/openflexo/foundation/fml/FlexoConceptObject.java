@@ -35,8 +35,8 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(FlexoConceptObject.FlexoConceptObjectImpl.class)
 public interface FlexoConceptObject extends FMLObject {
 
-	// TODO: renamed to getFMLModelFactory()
-	public FMLModelFactory getVirtualModelFactory();
+	@Override
+	public FMLModelFactory getFMLModelFactory();
 
 	/**
 	 * Return the {@link FlexoConcept} in which this {@link FMLObject} is defined
@@ -52,14 +52,6 @@ public interface FlexoConceptObject extends FMLObject {
 	 */
 	public AbstractVirtualModel<?> getOwningVirtualModel();
 
-	/*@Override
-	public ViewPoint getViewPoint();
-
-	public VirtualModel getVirtualModel();*/
-
-	// @Override
-	// public String getStringRepresentation();
-
 	/**
 	 * Build and return a String encoding this {@link FMLObject} in FML textual language
 	 * 
@@ -72,9 +64,9 @@ public interface FlexoConceptObject extends FMLObject {
 	public abstract class FlexoConceptObjectImpl extends FMLObjectImpl implements FlexoConceptObject {
 
 		@Override
-		public FMLModelFactory getVirtualModelFactory() {
+		public FMLModelFactory getFMLModelFactory() {
 			if (getOwningVirtualModel() != null) {
-				return getOwningVirtualModel().getVirtualModelFactory();
+				return getOwningVirtualModel().getFMLModelFactory();
 			}
 			return getDeserializationFactory();
 		}
@@ -86,18 +78,6 @@ public interface FlexoConceptObject extends FMLObject {
 		 */
 		@Override
 		public abstract FlexoConcept getFlexoConcept();
-
-		/*@Override
-		public ViewPoint getViewPoint() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getViewPoint();
-			}
-			if (getFlexoConcept() != null && getFlexoConcept() != this) {
-				return getFlexoConcept().getViewPoint();
-			}
-			return null;
-
-		}*/
 
 		@Override
 		public AbstractVirtualModel<?> getResourceData() {

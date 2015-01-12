@@ -408,8 +408,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						if (existingParam != null) {
 							parametersToRemove.remove(existingParam);
 						} else {
-							if (getVirtualModelFactory() != null) {
-								addToParameters(getVirtualModelFactory().newCreateFlexoConceptInstanceParameter(p));
+							if (getFMLModelFactory() != null) {
+								addToParameters(getFMLModelFactory().newCreateFlexoConceptInstanceParameter(p));
 							}
 						}
 					}
@@ -493,7 +493,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						criteriasToRemove.remove(existingCriteria);
 					} else {
 						System.out.println("ADD " + role.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-						addToMatchingCriterias(getVirtualModelFactory().newMatchingCriteria(role));
+						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(role));
 					}
 				}
 				for (MatchingCriteria removeThis : criteriasToRemove) {
@@ -516,7 +516,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						criteriasToRemove.remove(existingCriteria);
 					} else {
 						System.out.println("ADD2 " + pr.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-						addToMatchingCriterias(getVirtualModelFactory().newMatchingCriteria(pr));
+						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(pr));
 					}
 				}
 			}

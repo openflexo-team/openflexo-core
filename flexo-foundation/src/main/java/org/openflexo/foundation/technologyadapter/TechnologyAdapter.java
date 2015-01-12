@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
@@ -362,13 +362,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
 		// NPE Protection
 		if (containerVirtualModel != null) {
-			FMLModelFactory factory = containerVirtualModel.getVirtualModelFactory();
+			FMLModelFactory factory = containerVirtualModel.getFMLModelFactory();
 			MS returned = factory.newInstance(modelSlotClass);
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
-		}
-		else {
+		} else {
 			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
 			return null;
 		}
@@ -405,8 +404,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				File candidateFile = null;
 				if (resource instanceof DirectoryContainerResource) {
 					candidateFile = ResourceLocator.retrieveResourceAsFile(((DirectoryContainerResource<?>) resource).getDirectory());
-				}
-				else {
+				} else {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
 				((ResourceRepository) resourceCenter).registerResource(resource,

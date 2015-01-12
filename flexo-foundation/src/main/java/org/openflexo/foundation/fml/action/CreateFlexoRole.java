@@ -149,7 +149,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
 			} else {
-				FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
+				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
 

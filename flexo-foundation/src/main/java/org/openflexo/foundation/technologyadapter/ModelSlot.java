@@ -85,7 +85,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public static final String IS_READ_ONLY_KEY = "isReadOnly";
 
 	@Override
-	public FMLModelFactory getVirtualModelFactory();
+	public FMLModelFactory getFMLModelFactory();
 
 	/**
 	 * Return the VirtualModel in which this ModelSlot is declared
@@ -219,11 +219,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public FMLModelFactory getVirtualModelFactory() {
-			return getVirtualModel().getVirtualModelFactory();
-		}
-
-		@Override
 		public String getURI() {
 			if (getVirtualModel() != null) {
 				return getVirtualModel().getURI() + "." + getName();
@@ -241,7 +236,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass) {
-			FMLModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(patternRoleClass);
 		}
 
@@ -486,7 +481,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <EA extends EditionAction> EA makeEditionAction(Class<EA> editionActionClass) {
-			FMLModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(editionActionClass);
 		}
 
@@ -500,7 +495,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
-			FMLModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
 
@@ -573,9 +568,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		@Override
 		public String getModelSlotName() {
-			if (getVirtualModelFactory() != null) {
-				if (getVirtualModelFactory().getModelEntityForInstance(this) != null) {
-					return getVirtualModelFactory().getModelEntityForInstance(this).getImplementedInterface().getSimpleName();
+			if (getFMLModelFactory() != null) {
+				if (getFMLModelFactory().getModelEntityForInstance(this) != null) {
+					return getFMLModelFactory().getModelEntityForInstance(this).getImplementedInterface().getSimpleName();
 				}
 			}
 			return getClass().getSimpleName();

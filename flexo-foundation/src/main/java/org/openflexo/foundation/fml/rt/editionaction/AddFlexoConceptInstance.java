@@ -240,8 +240,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
 					} else {
-						if (getVirtualModelFactory() != null) {
-							addToParameters(getVirtualModelFactory().newAddFlexoConceptInstanceParameter(p));
+						if (getFMLModelFactory() != null) {
+							addToParameters(getFMLModelFactory().newAddFlexoConceptInstanceParameter(p));
 						}
 					}
 				}

@@ -109,7 +109,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 	public static final String MODEL_SLOTS_KEY = "modelSlots";
 
 	@Override
-	public FMLModelFactory getVirtualModelFactory();
+	public FMLModelFactory getFMLModelFactory();
 
 	/**
 	 * Return resource for this virtual model
@@ -331,14 +331,14 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 		}
 
 		@Override
-		public FMLModelFactory getVirtualModelFactory() {
+		public FMLModelFactory getFMLModelFactory() {
 			if (isDeserializing()) {
 				return deserializationFactory;
 			}
 			if (getResource() != null) {
 				return getResource().getFactory();
 			} else {
-				return super.getVirtualModelFactory();
+				return super.getFMLModelFactory();
 			}
 		}
 
@@ -514,7 +514,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 		}
 
 		public SynchronizationScheme createSynchronizationScheme() {
-			SynchronizationScheme newSynchronizationScheme = getVirtualModelFactory().newSynchronizationScheme();
+			SynchronizationScheme newSynchronizationScheme = getFMLModelFactory().newSynchronizationScheme();
 			newSynchronizationScheme.setSynchronizedVirtualModel(this);
 			newSynchronizationScheme.setName("synchronization");
 			addToFlexoBehaviours(newSynchronizationScheme);

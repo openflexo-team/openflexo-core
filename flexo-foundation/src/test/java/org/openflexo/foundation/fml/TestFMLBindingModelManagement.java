@@ -846,7 +846,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createIterationInCondition2.doAction();
 		IterationAction iteration = (IterationAction) createIterationInCondition2.getNewEditionAction();
 		assertNotNull(iteration);
-		iteration.setIterationAction(iteration.getVirtualModelFactory().newExpressionAction(
+		iteration.setIterationAction(iteration.getFMLModelFactory().newExpressionAction(
 				new DataBinding<List<?>>("virtualModelInstance.flexoConceptInstances")));
 		iteration.setIteratorName("fci");
 
@@ -867,7 +867,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(declareFlexoRoleInIteration1);
 		((ExpressionAction) declareFlexoRoleInIteration1.getAssignableAction()).setExpression(new DataBinding<Object>("\"foo\""));
 
-		FMLModelFactory factory = actionScheme.getVirtualModelFactory();
+		FMLModelFactory factory = actionScheme.getFMLModelFactory();
 		System.out.println("actionScheme =\n" + factory.stringRepresentation(actionScheme));
 		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
 		System.out.println("bm=" + declareFlexoRoleInIteration1.getInferedBindingModel());
@@ -935,7 +935,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		String ownerContext = declareFlexoRoleInIteration2.getOwnerContext();
 
 		// We replace the declareFlexoRoleInIteration2 by an empty cg
-		EmptyControlGraph emptyControlGraph = declareFlexoRoleInIteration2.getVirtualModelFactory().newEmptyControlGraph();
+		EmptyControlGraph emptyControlGraph = declareFlexoRoleInIteration2.getFMLModelFactory().newEmptyControlGraph();
 		owner.setControlGraph(emptyControlGraph, ownerContext);
 
 		// We check that the binding model is now empty
@@ -1135,8 +1135,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createIterationAction.doAction();
 		IterationAction fetchRequestIteration = (IterationAction) createIterationAction.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getVirtualModelFactory()
-				.newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
@@ -1287,8 +1286,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createSelectFetchRequestIterationAction.doAction();
 		IterationAction fetchRequestIteration = (IterationAction) createSelectFetchRequestIterationAction.getNewEditionAction();
 
-		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getVirtualModelFactory()
-				.newSelectFlexoConceptInstance();
+		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
@@ -1767,7 +1765,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		ActionScheme actionScheme = flexoConceptA.getFlexoBehaviours(ActionScheme.class).get(0);
 		assertNotNull(actionScheme);
 
-		System.out.println("Applying " + actionScheme.getVirtualModelFactory().stringRepresentation(actionScheme));
+		System.out.println("Applying " + actionScheme.getFMLModelFactory().stringRepresentation(actionScheme));
 
 		System.out.println("Soit en FML:\n" + actionScheme.getFMLRepresentation());
 

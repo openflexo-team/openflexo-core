@@ -35,6 +35,7 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -44,7 +45,6 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -242,7 +242,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		if (flexoBehaviourClass != null) {
 
-			FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
+			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());

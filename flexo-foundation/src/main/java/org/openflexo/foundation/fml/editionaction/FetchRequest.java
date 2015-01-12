@@ -161,7 +161,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 
 		@Override
 		public FetchRequestCondition createCondition() {
-			FetchRequestCondition newCondition = getVirtualModelFactory().newFetchRequestCondition();
+			FetchRequestCondition newCondition = getFMLModelFactory().newFetchRequestCondition();
 			addToConditions(newCondition);
 			return newCondition;
 		}

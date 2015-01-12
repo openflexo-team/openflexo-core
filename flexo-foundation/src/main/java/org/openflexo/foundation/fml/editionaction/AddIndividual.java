@@ -254,7 +254,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 		@Override
 		public DataPropertyAssertion createDataPropertyAssertion() {
-			DataPropertyAssertion newDataPropertyAssertion = getVirtualModelFactory().newDataPropertyAssertion();
+			DataPropertyAssertion newDataPropertyAssertion = getFMLModelFactory().newDataPropertyAssertion();
 			addToDataAssertions(newDataPropertyAssertion);
 			return newDataPropertyAssertion;
 		}
@@ -268,7 +268,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 		@Override
 		public ObjectPropertyAssertion createObjectPropertyAssertion() {
-			ObjectPropertyAssertion newObjectPropertyAssertion = getVirtualModelFactory().newObjectPropertyAssertion();
+			ObjectPropertyAssertion newObjectPropertyAssertion = getFMLModelFactory().newObjectPropertyAssertion();
 			addToObjectAssertions(newObjectPropertyAssertion);
 			return newObjectPropertyAssertion;
 		}

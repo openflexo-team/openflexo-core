@@ -32,6 +32,8 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.ClassParameter;
 import org.openflexo.foundation.fml.DropDownParameter;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -43,8 +45,6 @@ import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.TechnologyObjectParameter;
 import org.openflexo.foundation.fml.TextAreaParameter;
 import org.openflexo.foundation.fml.TextFieldParameter;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -120,7 +120,7 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 		if (flexoBehaviourParameterClass != null) {
 
-			FMLModelFactory factory = getFocusedObject().getVirtualModelFactory();
+			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newParameter = factory.newInstance(flexoBehaviourParameterClass);
 			newParameter.setName(getParameterName());
 			getFlexoBehaviour().addToParameters(newParameter);

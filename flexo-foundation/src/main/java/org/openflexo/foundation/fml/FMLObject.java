@@ -99,7 +99,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 
 	public ViewPointLibrary getViewPointLibrary();
 
-	public FMLModelFactory getFactory();
+	public FMLModelFactory getFMLModelFactory();
 
 	/**
 	 * Build and return a String encoding this {@link FMLObject} in FML textual language
@@ -288,13 +288,13 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		}
 
 		@Override
-		public FMLModelFactory getFactory() {
+		public FMLModelFactory getFMLModelFactory() {
 			return ((ViewPointResource) getResourceData().getResource()).getFactory();
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			return getFactory().stringRepresentation(this);
+			return getFMLModelFactory().stringRepresentation(this);
 		}
 
 		private FMLModelFactory deserializationFactory;

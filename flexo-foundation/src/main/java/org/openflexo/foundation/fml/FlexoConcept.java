@@ -343,7 +343,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public FlexoConceptStructuralFacet getStructuralFacet() {
-			FMLModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getFMLModelFactory();
 			if (structuralFacet == null && factory != null) {
 				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
 				structuralFacet = factory.newFlexoConceptStructuralFacet(this);
@@ -354,7 +354,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
-			FMLModelFactory factory = getVirtualModelFactory();
+			FMLModelFactory factory = getFMLModelFactory();
 			if (behaviouralFacet == null && factory != null) {
 				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
 				behaviouralFacet = factory.newFlexoConceptBehaviouralFacet(this);
@@ -683,7 +683,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public DeletionScheme generateDefaultDeletionScheme() {
-			DeletionScheme newDeletionScheme = getVirtualModelFactory().newDeletionScheme();
+			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("deletion");
 			Vector<FlexoRole> rolesToDelete = new Vector<FlexoRole>();
 			for (FlexoRole pr : getFlexoRoles()) {
@@ -714,7 +714,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 			});
 			for (FlexoRole pr : rolesToDelete) {
-				DeleteAction a = getVirtualModelFactory().newDeleteAction();
+				DeleteAction a = getFMLModelFactory().newDeleteAction();
 				a.setObject(new DataBinding<Object>(pr.getRoleName()));
 				newDeletionScheme.addToActions(a);
 			}
@@ -724,8 +724,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public FlexoConceptInspector getInspector() {
-			if (inspector == null && getVirtualModelFactory() != null) {
-				inspector = getVirtualModelFactory().newFlexoConceptInspector(this);
+			if (inspector == null && getFMLModelFactory() != null) {
+				inspector = getFMLModelFactory().newFlexoConceptInspector(this);
 				inspector.setInspectorTitle(getName());
 			}
 			return inspector;

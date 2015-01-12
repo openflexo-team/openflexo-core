@@ -96,7 +96,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public void createConstraint(FlexoConcept flexoConcept) {
-		FlexoConceptConstraint constraint = flexoConcept.getVirtualModelFactory().newFlexoConceptConstraint();
+		FlexoConceptConstraint constraint = flexoConcept.getFMLModelFactory().newFlexoConceptConstraint();
 		flexoConcept.addToFlexoConceptConstraints(constraint);
 	}
 
@@ -121,28 +121,28 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public SynchronizationScheme createSynchronizationScheme(VirtualModel virtualModel) {
-		SynchronizationScheme newEditionScheme = virtualModel.getVirtualModelFactory().newSynchronizationScheme();
+		SynchronizationScheme newEditionScheme = virtualModel.getFMLModelFactory().newSynchronizationScheme();
 		newEditionScheme.setName("synchronization");
 		virtualModel.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public CreationScheme createCreationScheme(FlexoConcept flexoConcept) {
-		CreationScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCreationScheme();
+		CreationScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCreationScheme();
 		newEditionScheme.setName("creation");
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public DeletionScheme createDeletionScheme(FlexoConcept flexoConcept) {
-		DeletionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newDeletionScheme();
+		DeletionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newDeletionScheme();
 		newEditionScheme.setName("deletion");
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
 
 	public ActionScheme createActionScheme(FlexoConcept flexoConcept) {
-		ActionScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newActionScheme();
+		ActionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newActionScheme();
 		newEditionScheme.setName("action");
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -155,7 +155,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
-		CloningScheme newEditionScheme = flexoConcept.getVirtualModelFactory().newCloningScheme();
+		CloningScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCloningScheme();
 		newEditionScheme.setName("clone");
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -208,7 +208,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newURIParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newURIParameter();
 		newParameter.setName("uri");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("uri");
@@ -217,7 +217,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createTextFieldParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextFieldParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextFieldParameter();
 		newParameter.setName("textField");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -226,7 +226,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createTextAreaParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTextAreaParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextAreaParameter();
 		newParameter.setName("textArea");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -235,7 +235,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createIntegerParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIntegerParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIntegerParameter();
 		newParameter.setName("integer");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -244,7 +244,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createCheckBoxParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newCheckboxParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newCheckboxParameter();
 		newParameter.setName("checkbox");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -253,7 +253,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createDropDownParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDropDownParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDropDownParameter();
 		newParameter.setName("dropdown");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -262,7 +262,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newIndividualParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIndividualParameter();
 		newParameter.setName("individual");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -271,7 +271,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newClassParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newClassParameter();
 		newParameter.setName("class");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -280,7 +280,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newPropertyParameter();
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -289,7 +289,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newObjectPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newObjectPropertyParameter();
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -298,7 +298,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newDataPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDataPropertyParameter();
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -315,7 +315,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}*/
 
 	public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newTechnologyObjectParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTechnologyObjectParameter();
 		newParameter.setName("technologyObject");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -324,7 +324,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createListParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newListParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newListParameter();
 		newParameter.setName("list");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -333,7 +333,7 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createFlexoConceptInstanceParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getVirtualModelFactory().newFlexoConceptInstanceParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");

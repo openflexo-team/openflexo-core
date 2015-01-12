@@ -261,7 +261,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 							parametersToRemove.remove(existingParam);
 						} else {
 							isUpdating = true;
-							addToParameters(getVirtualModelFactory().newDeleteFlexoConceptInstanceParameter(p));
+							addToParameters(getFMLModelFactory().newDeleteFlexoConceptInstanceParameter(p));
 						}
 					}
 				}

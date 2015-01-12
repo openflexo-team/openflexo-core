@@ -219,7 +219,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public TextFieldInspectorEntry createNewTextField() {
-			TextFieldInspectorEntry newEntry = getVirtualModelFactory().newTextFieldInspectorEntry();
+			TextFieldInspectorEntry newEntry = getFMLModelFactory().newTextFieldInspectorEntry();
 			newEntry.setName("textfield");
 			// newEntry.setLabel("textfield");
 			addToEntries(newEntry);
@@ -228,7 +228,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public TextAreaInspectorEntry createNewTextArea() {
-			TextAreaInspectorEntry newEntry = getVirtualModelFactory().newTextAreaInspectorEntry();
+			TextAreaInspectorEntry newEntry = getFMLModelFactory().newTextAreaInspectorEntry();
 			newEntry.setName("textarea");
 			// newEntry.setLabel("textarea");
 			addToEntries(newEntry);
@@ -237,7 +237,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public IntegerInspectorEntry createNewInteger() {
-			IntegerInspectorEntry newEntry = getVirtualModelFactory().newIntegerInspectorEntry();
+			IntegerInspectorEntry newEntry = getFMLModelFactory().newIntegerInspectorEntry();
 			newEntry.setName("integer");
 			// newEntry.setLabel("integer");
 			addToEntries(newEntry);
@@ -246,7 +246,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public CheckboxInspectorEntry createNewCheckbox() {
-			CheckboxInspectorEntry newEntry = getVirtualModelFactory().newCheckboxInspectorEntry();
+			CheckboxInspectorEntry newEntry = getFMLModelFactory().newCheckboxInspectorEntry();
 			newEntry.setName("checkbox");
 			// newEntry.setLabel("checkbox");
 			addToEntries(newEntry);
@@ -255,7 +255,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public IndividualInspectorEntry createNewIndividual() {
-			IndividualInspectorEntry newEntry = getVirtualModelFactory().newIndividualInspectorEntry();
+			IndividualInspectorEntry newEntry = getFMLModelFactory().newIndividualInspectorEntry();
 			newEntry.setName("individual");
 			// newEntry.setLabel("individual");
 			addToEntries(newEntry);
@@ -264,7 +264,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public ClassInspectorEntry createNewClass() {
-			ClassInspectorEntry newEntry = getVirtualModelFactory().newClassInspectorEntry();
+			ClassInspectorEntry newEntry = getFMLModelFactory().newClassInspectorEntry();
 			newEntry.setName("class");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -273,7 +273,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public PropertyInspectorEntry createNewProperty() {
-			PropertyInspectorEntry newEntry = getVirtualModelFactory().newPropertyInspectorEntry();
+			PropertyInspectorEntry newEntry = getFMLModelFactory().newPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -282,7 +282,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public ObjectPropertyInspectorEntry createNewObjectProperty() {
-			ObjectPropertyInspectorEntry newEntry = getVirtualModelFactory().newObjectPropertyInspectorEntry();
+			ObjectPropertyInspectorEntry newEntry = getFMLModelFactory().newObjectPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
@@ -291,7 +291,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 		@Override
 		public DataPropertyInspectorEntry createNewDataProperty() {
-			DataPropertyInspectorEntry newEntry = getVirtualModelFactory().newDataPropertyInspectorEntry();
+			DataPropertyInspectorEntry newEntry = getFMLModelFactory().newDataPropertyInspectorEntry();
 			newEntry.setName("property");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);

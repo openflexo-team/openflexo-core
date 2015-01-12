@@ -206,7 +206,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			getDictForLang(language).put(key, value);
 			ViewPointLocalizedEntry entry = getLocalizedEntry(language, key);
 			if (entry == null) {
-				ViewPointLocalizedEntry newEntry = getViewPoint().getFactory().newInstance(ViewPointLocalizedEntry.class);
+				ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
 				newEntry.setLanguage(language.getName());
 				newEntry.setKey(key);
 				newEntry.setValue(value);
@@ -287,7 +287,7 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 				index++;
 			}
 
-			ViewPointLocalizedEntry newEntry = getViewPoint().getFactory().newInstance(ViewPointLocalizedEntry.class);
+			ViewPointLocalizedEntry newEntry = getViewPoint().getFMLModelFactory().newInstance(ViewPointLocalizedEntry.class);
 			newEntry.setLanguage(FlexoLocalization.getCurrentLanguage().getName());
 			newEntry.setKey(newKey);
 			newEntry.setValue(newKey);
