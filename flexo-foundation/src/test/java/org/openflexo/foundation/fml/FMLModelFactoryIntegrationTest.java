@@ -39,7 +39,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class FMLModelFactoryIntegrationTest extends AbstractModelFactoryIntegrationTest {
+public class FMLModelFactoryIntegrationTest extends AbstractModelFactoryIntegrationTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(FMLModelFactoryIntegrationTest.class.getPackage().getName());
 

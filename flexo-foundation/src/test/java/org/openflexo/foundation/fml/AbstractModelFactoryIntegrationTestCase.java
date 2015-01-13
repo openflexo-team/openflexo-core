@@ -24,7 +24,6 @@ import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
 
-import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -32,16 +31,14 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.exceptions.MissingImplementationException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.test.OrderedRunner;
 
 /**
  * Abstract test case for FMLModelFactory<br>
  * 
  */
-@RunWith(OrderedRunner.class)
-public class AbstractModelFactoryIntegrationTest extends OpenflexoTestCase {
+public class AbstractModelFactoryIntegrationTestCase extends OpenflexoTestCase {
 
-	private static final Logger logger = FlexoLogger.getLogger(AbstractModelFactoryIntegrationTest.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(AbstractModelFactoryIntegrationTestCase.class.getPackage().getName());
 
 	protected void testVirtualModelModelFactoryWithTechnologyAdapter(TechnologyAdapter ta) {
 		assertNotNull(ta);
@@ -54,23 +51,6 @@ public class AbstractModelFactoryIntegrationTest extends OpenflexoTestCase {
 				assertNotNull(factory.getModelContext().getModelEntity(modelSlotClass));
 			}
 			factory.checkMethodImplementations();
-
-			/*if (ta instanceof FMLRTTechnologyAdapter) {
-				System.out.println("prout");
-
-				ModelEntity<EditionAction> e1 = factory.getModelContext().getModelEntity(EditionAction.class);
-				System.out.println("e1=" + e1);
-				e1.checkMethodImplementations(factory);
-
-				ModelEntity<AssignationAction> e2 = factory.getModelContext().getModelEntity(AssignationAction.class);
-				System.out.println("e2=" + e2);
-				e2.checkMethodImplementations(factory);
-
-				AssignationAction a = factory.newAssignationAction();
-				a.getFlattenedSequence();
-
-				System.exit(-1);
-			}*/
 
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
