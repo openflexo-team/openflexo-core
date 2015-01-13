@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false" opaque="false" name="FlexoConceptPanel" layout="twocols" controllerClassName="org.openflexo.fml.controller.ViewPointEditingFIBController" border="empty" trackViewPortWidth="true" font="SansSerif,0,12" dataClassName="org.openflexo.foundation.fml.FlexoConcept" titleFont="SansSerif,0,12" trackViewPortHeight="true">
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false" opaque="false" name="FlexoConceptPanel" layout="twocols" controllerClassName="org.openflexo.fml.controller.FMLFIBController" border="empty" trackViewPortWidth="true" font="SansSerif,0,12" dataClassName="org.openflexo.foundation.fml.FlexoConcept" titleFont="SansSerif,0,12" trackViewPortHeight="true">
   <LocalizedDictionary id="1">
     <Localized id="2" value="Constraint" lang="English" key="constraint" />
     <Localized id="3" value="constraint" lang="French" key="constraint" />

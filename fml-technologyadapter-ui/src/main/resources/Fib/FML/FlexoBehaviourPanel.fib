@@ -2,7 +2,7 @@
 <Panel layout="border" borderTitle="Actions" borderTop="10"
 	titleFont="SansSerif,0,11" darkLevel="0" protectContent="true" index="0"
 	dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-	controllerClassName="org.openflexo.fml.controller.ViewPointEditingFIBController"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	constraints="split(index=0;location=center;splitIdentifier=bottom)"
 	name="FlexoBehaviourPanel">
 	<TabPanel index="0" constraints="border(location=center)"

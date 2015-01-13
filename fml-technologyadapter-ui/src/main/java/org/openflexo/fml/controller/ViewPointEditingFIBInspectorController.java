@@ -48,7 +48,7 @@ import org.openflexo.rm.Resource;
  * @author sylvain
  * 
  */
-public class ViewPointEditingFIBInspectorController extends ViewPointEditingFIBController {
+public class ViewPointEditingFIBInspectorController extends FMLFIBController {
 
 	private static final Logger logger = FlexoLogger.getLogger(ViewPointEditingFIBInspectorController.class.getPackage().getName());
 

@@ -34,20 +34,20 @@ import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
- * Represents a controller with basic ViewPoint edition facilities<br>
- * Extends FlexoFIBController by supporting features relative to ViewPoint edition
+ * Represents a controller with basic FML edition facilities<br>
+ * Extends FlexoFIBController by supporting features relative to FML edition
  * 
  * @author sylvain
  */
-public class ViewPointEditingFIBController extends FlexoFIBController {
+public class FMLFIBController extends FlexoFIBController {
 
-	protected static final Logger logger = FlexoLogger.getLogger(ViewPointEditingFIBController.class.getPackage().getName());
+	protected static final Logger logger = FlexoLogger.getLogger(FMLFIBController.class.getPackage().getName());
 
-	public ViewPointEditingFIBController(FIBComponent component) {
+	public FMLFIBController(FIBComponent component) {
 		super(component);
 	}
 
-	public ViewPointEditingFIBController(FIBComponent component, FlexoController controller) {
+	public FMLFIBController(FIBComponent component, FlexoController controller) {
 		super(component, controller);
 	}
 
@@ -168,6 +168,9 @@ public class ViewPointEditingFIBController extends FlexoFIBController {
 	}
 
 	public EditionAction createEditionAction(FMLControlGraph object) {
+
+		System.out.println("On cree une EditionAction pour " + object + " owner=" + object.getOwner());
+
 		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
 		createEditionAction.doAction();
 		return createEditionAction.getNewEditionAction();
