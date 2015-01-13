@@ -51,7 +51,6 @@ import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
-import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -664,8 +663,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction1.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction1.setEditionActionClass(ExpressionAction.class);
 		createEditionAction1.setAssignation(new DataBinding<Object>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
@@ -677,8 +676,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction2.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction2.setEditionActionClass(ExpressionAction.class);
 		createEditionAction2.setAssignation(new DataBinding<Object>("aBooleanInA"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
@@ -690,8 +689,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction3.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction3.setEditionActionClass(ExpressionAction.class);
 		createEditionAction3.setAssignation(new DataBinding<Object>("anIntegerInA"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
@@ -794,8 +793,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
-		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction1.setControlActionClass(ConditionalAction.class);
+		// createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction1.setEditionActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag == true"));
@@ -807,8 +806,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createDeclareFlexoRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
 				conditional1.getThenControlGraph(), null, editor);
-		createDeclareFlexoRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclareFlexoRoleInCondition1.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclareFlexoRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclareFlexoRoleInCondition1.setEditionActionClass(ExpressionAction.class);
 		createDeclareFlexoRoleInCondition1.setAssignation(new DataBinding<Object>("anIntegerInA"));
 		createDeclareFlexoRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclareFlexoRoleInCondition1
@@ -817,8 +816,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
-		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction2.setControlActionClass(ConditionalAction.class);
+		// createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction2.setEditionActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();
 		ConditionalAction conditional2 = (ConditionalAction) createConditionAction2.getNewEditionAction();
 		conditional2.setCondition(new DataBinding<Boolean>("parameters.aFlag == false"));
@@ -830,8 +829,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createDeclareFlexoRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(
 				conditional2.getThenControlGraph(), null, editor);
-		createDeclareFlexoRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclareFlexoRoleInCondition2.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclareFlexoRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclareFlexoRoleInCondition2.setEditionActionClass(ExpressionAction.class);
 		createDeclareFlexoRoleInCondition2.setAssignation(new DataBinding<Object>("anIntegerInA"));
 		createDeclareFlexoRoleInCondition2.doAction();
 		AssignationAction<?> declareFlexoRoleInCondition2 = (AssignationAction<?>) createDeclareFlexoRoleInCondition2.getNewEditionAction();
@@ -841,8 +840,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createIterationInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2.getThenControlGraph(),
 				null, editor);
-		createIterationInCondition2.actionChoice = CreateEditionActionChoice.ControlAction;
-		createIterationInCondition2.setControlActionClass(IterationAction.class);
+		// createIterationInCondition2.actionChoice = CreateEditionActionChoice.ControlAction;
+		createIterationInCondition2.setEditionActionClass(IterationAction.class);
 		createIterationInCondition2.doAction();
 		IterationAction iteration = (IterationAction) createIterationInCondition2.getNewEditionAction();
 		assertNotNull(iteration);
@@ -859,8 +858,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createDeclareFlexoRoleInIteration1 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
 				null, editor);
-		createDeclareFlexoRoleInIteration1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclareFlexoRoleInIteration1.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclareFlexoRoleInIteration1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclareFlexoRoleInIteration1.setEditionActionClass(ExpressionAction.class);
 		createDeclareFlexoRoleInIteration1.setAssignation(new DataBinding<Object>("aStringInA"));
 		createDeclareFlexoRoleInIteration1.doAction();
 		AssignationAction<?> declareFlexoRoleInIteration1 = (AssignationAction<?>) createDeclareFlexoRoleInIteration1.getNewEditionAction();
@@ -883,8 +882,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createDeclareFlexoRoleInIteration2 = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(),
 				null, editor);
-		createDeclareFlexoRoleInIteration2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclareFlexoRoleInIteration2.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclareFlexoRoleInIteration2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclareFlexoRoleInIteration2.setEditionActionClass(ExpressionAction.class);
 		createDeclareFlexoRoleInIteration2.setAssignation(new DataBinding<Object>("anOtherBooleanInA"));
 		createDeclareFlexoRoleInIteration2.doAction();
 		AssignationAction<?> declareFlexoRoleInIteration2 = (AssignationAction<?>) createDeclareFlexoRoleInIteration2.getNewEditionAction();
@@ -1037,8 +1036,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createSelectFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(
 				actionScheme.getControlGraph(), null, editor);
-		createSelectFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createSelectFlexoConceptInstanceAction.setBuiltInActionClass(SelectFlexoConceptInstance.class);
+		// createSelectFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createSelectFlexoConceptInstanceAction.setEditionActionClass(SelectFlexoConceptInstance.class);
 		createSelectFlexoConceptInstanceAction.doAction();
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
@@ -1128,8 +1127,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createIterationAction = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
-		createIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
-		createIterationAction.setControlActionClass(IterationAction.class);
+		// createIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
+		createIterationAction.setEditionActionClass(IterationAction.class);
 
 		// createSelectFetchRequestIterationAction.setRequestActionClass(SelectFlexoConceptInstance.class);
 		createIterationAction.doAction();
@@ -1163,8 +1162,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createAssignationAction = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration.getControlGraph(),
 				null, editor);
-		createAssignationAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createAssignationAction.setBuiltInActionClass(ExpressionAction.class);
+		// createAssignationAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createAssignationAction.setEditionActionClass(ExpressionAction.class);
 		createAssignationAction.setDeclarationVariableName("name");
 		createAssignationAction.doAction();
 		DeclarationAction<?> assignation1 = (DeclarationAction<?>) createAssignationAction.getNewEditionAction();
@@ -1172,8 +1171,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createAssignationAction2 = CreateEditionAction.actionType.makeNewAction(
 				fetchRequestIteration.getControlGraph(), null, editor);
-		createAssignationAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createAssignationAction2.setBuiltInActionClass(ExpressionAction.class);
+		// createAssignationAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createAssignationAction2.setEditionActionClass(ExpressionAction.class);
 		createAssignationAction2.setAssignation(new DataBinding<Object>("item.aStringInA"));
 		createAssignationAction2.doAction();
 		AssignationAction<?> assignation2 = (AssignationAction<?>) createAssignationAction2.getNewEditionAction();
@@ -1281,8 +1280,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType.makeNewAction(
 				actionScheme.getControlGraph(), null, editor);
-		createSelectFetchRequestIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
-		createSelectFetchRequestIterationAction.setControlActionClass(IterationAction.class);
+		// createSelectFetchRequestIterationAction.actionChoice = CreateEditionActionChoice.ControlAction;
+		createSelectFetchRequestIterationAction.setEditionActionClass(IterationAction.class);
 		createSelectFetchRequestIterationAction.doAction();
 		IterationAction fetchRequestIteration = (IterationAction) createSelectFetchRequestIterationAction.getNewEditionAction();
 
@@ -1298,8 +1297,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createMatchFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration,
 				null, editor);
-		createMatchFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createMatchFlexoConceptInstanceAction.setBuiltInActionClass(MatchFlexoConceptInstance.class);
+		// createMatchFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createMatchFlexoConceptInstanceAction.setEditionActionClass(MatchFlexoConceptInstance.class);
 		createMatchFlexoConceptInstanceAction.doAction();
 		MatchFlexoConceptInstance matchFlexoConceptInstance = (MatchFlexoConceptInstance) createMatchFlexoConceptInstanceAction
 				.getNewEditionAction();
@@ -1331,8 +1330,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction1.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction1.setEditionActionClass(ExpressionAction.class);
 		createEditionAction1.setAssignation(new DataBinding<Object>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
@@ -1343,8 +1342,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction2.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction2.setEditionActionClass(ExpressionAction.class);
 		createEditionAction2.setAssignation(new DataBinding<Object>("aBooleanInA"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();

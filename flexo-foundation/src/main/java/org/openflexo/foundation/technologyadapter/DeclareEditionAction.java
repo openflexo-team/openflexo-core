@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -15,5 +15,5 @@ public @interface DeclareEditionAction {
 
 	public String FML();
 
-	public Class<? extends EditionAction> editionActionClass();
+	public Class<? extends TechnologySpecificAction<?, ?>> editionActionClass();
 }

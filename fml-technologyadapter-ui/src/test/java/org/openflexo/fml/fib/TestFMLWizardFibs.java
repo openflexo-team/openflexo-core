@@ -13,6 +13,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testChooseEditionActionClass() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ChooseEditionActionClass.fib");
+	}
+
+	@Test
 	public void testConfigureAdditionalStepsForNewFlexoConcept() {
 		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureAdditionalStepsForNewFlexoConcept.fib");
 	}

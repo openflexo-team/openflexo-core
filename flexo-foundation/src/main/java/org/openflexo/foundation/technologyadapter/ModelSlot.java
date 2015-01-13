@@ -131,9 +131,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
-	public List<Class<? extends EditionAction>> getAvailableEditionActionTypes();
+	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
 
-	public List<Class<? extends EditionAction>> getAvailableFetchRequestActionTypes();
+	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes();
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
@@ -155,7 +155,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 * @param editionActionClass
 	 * @return
 	 */
-	public abstract <EA extends EditionAction> EA makeEditionAction(Class<EA> editionActionClass);
+	public abstract <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
 
 	/**
 	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
@@ -212,8 +212,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
-		private List<Class<? extends EditionAction>> availableEditionActionTypes;
-		private List<Class<? extends EditionAction>> availableFetchRequestActionTypes;
+		private List<Class<? extends TechnologySpecificAction<?, ?>>> availableEditionActionTypes;
+		private List<Class<? extends FetchRequest<?, ?>>> availableFetchRequestActionTypes;
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
@@ -386,20 +386,20 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public List<Class<? extends EditionAction>> getAvailableEditionActionTypes() {
+		public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes() {
 			if (availableEditionActionTypes == null) {
 				availableEditionActionTypes = computeAvailableEditionActionTypes();
 			}
 			return availableEditionActionTypes;
 		}
 
-		private List<Class<? extends EditionAction>> computeAvailableEditionActionTypes() {
-			availableEditionActionTypes = new ArrayList<Class<? extends EditionAction>>();
+		private List<Class<? extends TechnologySpecificAction<?, ?>>> computeAvailableEditionActionTypes() {
+			availableEditionActionTypes = new ArrayList<Class<? extends TechnologySpecificAction<?, ?>>>();
 			appendEditionActionTypes(availableEditionActionTypes, getClass());
 			return availableEditionActionTypes;
 		}
 
-		private void appendEditionActionTypes(List<Class<? extends EditionAction>> aList, Class<?> cl) {
+		private void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
 				for (DeclareEditionAction editionActionDeclaration : allEditionActions.value()) {
@@ -448,20 +448,20 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public List<Class<? extends EditionAction>> getAvailableFetchRequestActionTypes() {
+		public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (availableFetchRequestActionTypes == null) {
 				availableFetchRequestActionTypes = computeAvailableFetchRequestActionTypes();
 			}
 			return availableFetchRequestActionTypes;
 		}
 
-		private List<Class<? extends EditionAction>> computeAvailableFetchRequestActionTypes() {
-			availableFetchRequestActionTypes = new ArrayList<Class<? extends EditionAction>>();
+		private List<Class<? extends FetchRequest<?, ?>>> computeAvailableFetchRequestActionTypes() {
+			availableFetchRequestActionTypes = new ArrayList<Class<? extends FetchRequest<?, ?>>>();
 			appendFetchRequestActionTypes(availableFetchRequestActionTypes, getClass());
 			return availableFetchRequestActionTypes;
 		}
 
-		private void appendFetchRequestActionTypes(List<Class<? extends EditionAction>> aList, Class<?> cl) {
+		private void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
 				for (DeclareFetchRequest fetchRequestDeclaration : allFetchRequestActions.value()) {
@@ -487,7 +487,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 * @return
 		 */
 		@Override
-		public final <EA extends EditionAction> EA makeEditionAction(Class<EA> editionActionClass) {
+		public final <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(editionActionClass);
 		}

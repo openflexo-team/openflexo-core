@@ -13,11 +13,6 @@ public class TestFMLDialogFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testCreateEditionActionDialog() {
-		validateFIB("Fib/Dialog/CreateEditionActionDialog.fib");
-	}
-
-	@Test
 	public void testShowFMLRepresentationDialog() {
 		validateFIB("Fib/Dialog/ShowFMLRepresentationDialog.fib");
 	}

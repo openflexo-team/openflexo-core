@@ -24,14 +24,15 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
+import org.openflexo.components.wizard.Wizard;
+import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -39,7 +40,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public static Resource CREATE_EDITION_ACTION_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateEditionActionDialog.fib");
+	// public static Resource CREATE_EDITION_ACTION_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateEditionActionDialog.fib");
 
 	public CreateEditionActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateEditionAction.actionType, actionInitializer);
@@ -50,7 +51,15 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 		return new FlexoActionInitializer<CreateEditionAction>() {
 			@Override
 			public boolean run(EventObject e, CreateEditionAction action) {
-				return instanciateAndShowDialog(action, CREATE_EDITION_ACTION_DIALOG_FIB);
+				Wizard wizard = new CreateEditionActionWizard(action, getController());
+				WizardDialog dialog = new WizardDialog(wizard);
+				dialog.showDialog();
+				if (dialog.getStatus() != Status.VALIDATED) {
+					// Operation cancelled
+					return false;
+				}
+				return true;
+				// return instanciateAndShowDialog(action, CREATE_EDITION_ACTION_DIALOG_FIB);
 			}
 		};
 	}

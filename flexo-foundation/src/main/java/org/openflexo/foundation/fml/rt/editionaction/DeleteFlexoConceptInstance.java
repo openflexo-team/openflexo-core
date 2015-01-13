@@ -20,6 +20,7 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -33,11 +34,16 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -71,7 +77,8 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
-public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptInstance> {
+public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptInstance>,
+		TechnologySpecificAction<FMLRTModelSlot, FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
@@ -328,6 +335,47 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
 			}
+			return null;
+		}
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			return null;
+		}
+
+		@Override
+		public ModelSlotInstance<FMLRTModelSlot, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Type getAssignableType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isIterable() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public Type getIteratorType() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 

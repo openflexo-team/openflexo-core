@@ -14,7 +14,6 @@ import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
-import org.openflexo.foundation.fml.action.CreateEditionAction.CreateEditionActionChoice;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -151,8 +150,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction1.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction1.setEditionActionClass(ExpressionAction.class);
 		createEditionAction1.setAssignation(new DataBinding<Object>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
@@ -164,8 +163,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createEditionAction2 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction2.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction2.setEditionActionClass(ExpressionAction.class);
 		createEditionAction2.setAssignation(new DataBinding<Object>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
@@ -189,8 +188,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
-		createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createEditionAction3.setBuiltInActionClass(ExpressionAction.class);
+		// createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction3.setEditionActionClass(ExpressionAction.class);
 		createEditionAction3.setAssignation(new DataBinding<Object>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
@@ -264,8 +263,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
-		createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction1.setControlActionClass(ConditionalAction.class);
+		// createConditionAction1.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction1.setEditionActionClass(ConditionalAction.class);
 		createConditionAction1.doAction();
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
@@ -280,8 +279,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
 				conditional1.getThenControlGraph(), null, editor);
-		createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition1.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
@@ -290,8 +289,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
-		createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
-		createConditionAction2.setControlActionClass(ConditionalAction.class);
+		// createConditionAction2.actionChoice = CreateEditionActionChoice.ControlAction;
+		createConditionAction2.setEditionActionClass(ConditionalAction.class);
 		createConditionAction2.doAction();
 		ConditionalAction conditional2 = (ConditionalAction) createConditionAction2.getNewEditionAction();
 		conditional2.setCondition(new DataBinding<Boolean>("parameters.aFlag = false"));
@@ -301,8 +300,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(
 				conditional2.getThenControlGraph(), null, editor);
-		createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRoleInCondition2.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclarePatternRoleInCondition2.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
@@ -312,8 +311,8 @@ public class TestControlGraph extends OpenflexoTestCase {
 		conditional2.setElseControlGraph(factory.newEmptyControlGraph());
 		CreateEditionAction createDeclarePatternRole2InCondition2 = CreateEditionAction.actionType.makeNewAction(
 				conditional2.getElseControlGraph(), null, editor);
-		createDeclarePatternRole2InCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
-		createDeclarePatternRole2InCondition2.setBuiltInActionClass(ExpressionAction.class);
+		// createDeclarePatternRole2InCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createDeclarePatternRole2InCondition2.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRole2InCondition2.setAssignation(new DataBinding<Object>("anInteger"));
 		createDeclarePatternRole2InCondition2.doAction();
 		AssignationAction<?> declarePatternRole2InCondition2 = (AssignationAction<?>) createDeclarePatternRole2InCondition2
