@@ -389,7 +389,7 @@ public class FMLFIBController extends FlexoFIBController {
 		if (action == null) {
 			return null;
 		}
-		if (action instanceof TechnologySpecificAction) {
+		if (action instanceof TechnologySpecificAction && ((TechnologySpecificAction<?, ?>) action).getModelSlot() != null) {
 			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlot().getModelSlotTechnologyAdapter();
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
