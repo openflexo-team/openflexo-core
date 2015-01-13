@@ -243,6 +243,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
+		public AbstractVirtualModel<?> getOwningVirtualModel() {
+			return getVirtualModel();
+		}
+
+		@Override
 		public abstract Type getType();
 
 		/**

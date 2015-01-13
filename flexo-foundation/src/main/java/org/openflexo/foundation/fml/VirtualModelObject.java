@@ -22,9 +22,9 @@ package org.openflexo.foundation.fml;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * Root class for any object which is part of the model of an {@link FlexoConcept}<br>
+ * Root class for any object which is part of the model of an {@link VirtualModel}<br>
  * A {@link VirtualModelObject} "lives" in a {@link VirtualModel} ecosystem<br>
- * Note that you can safely invoke {@link #getFlexoConcept()} which should return non-null value.
+ * Note that you can safely invoke {@link #getVirtualModel()} which should return non-null value.
  * 
  * 
  * @author sylvain
@@ -39,4 +39,5 @@ public interface VirtualModelObject extends FlexoConceptObject {
 	 * @return
 	 */
 	public AbstractVirtualModel<?> getVirtualModel();
+
 }

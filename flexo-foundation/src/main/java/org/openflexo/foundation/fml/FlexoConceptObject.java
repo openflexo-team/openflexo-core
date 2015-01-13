@@ -91,7 +91,7 @@ public interface FlexoConceptObject extends FMLObject {
 		}
 
 		@Override
-		public final AbstractVirtualModel<?> getOwningVirtualModel() {
+		public AbstractVirtualModel<?> getOwningVirtualModel() {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getOwner();
 			}
