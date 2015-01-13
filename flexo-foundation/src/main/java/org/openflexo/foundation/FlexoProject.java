@@ -166,13 +166,13 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			e.printStackTrace();
 		}
 
+		// We add the newly created project as a ResourceCenter
+		serviceManager.resourceCenterAdded(project);
+
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (nature != null) {
 			nature.givesNature(project, editor);
 		}
-
-		// We add the newly created project as a ResourceCenter
-		serviceManager.resourceCenterAdded(project);
 
 		return editor;
 	}
