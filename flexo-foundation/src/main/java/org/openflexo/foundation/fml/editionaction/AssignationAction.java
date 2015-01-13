@@ -53,6 +53,9 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ASSIGNATION_KEY = "assignation";
+	@Deprecated
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DEPRECATED_VALUE_KEY = "value";
 
 	@Getter(value = ASSIGNATION_KEY)
 	@XMLAttribute(xmlTag = "assign")
@@ -60,6 +63,15 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@Setter(ASSIGNATION_KEY)
 	public void setAssignation(DataBinding<? super T> assignation);
+
+	@Deprecated
+	@Getter(value = DEPRECATED_VALUE_KEY)
+	@XMLAttribute
+	public DataBinding<T> getDeprecatedValue();
+
+	@Deprecated
+	@Setter(DEPRECATED_VALUE_KEY)
+	public void setDeprecatedValue(DataBinding<T> value);
 
 	@Override
 	public FlexoRole<T> getFlexoRole();
@@ -73,7 +85,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public DataBinding<? super T> getAssignation() {
 			if (assignation == null) {
-
 				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
 					@Override
 					public Type getDeclaredType() {

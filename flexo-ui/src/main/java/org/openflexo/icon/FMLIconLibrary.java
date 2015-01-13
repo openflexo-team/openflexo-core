@@ -45,15 +45,13 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
-import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.ExecutionAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
@@ -155,8 +153,8 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
-	public static final ImageIconResource DECLARE_PATTERN_ROLE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/DeclarePatternRoleIcon.png"));
+	public static final ImageIconResource EXPRESSION_ACTION_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/ExpressionActionIcon.png"));
 	public static final ImageIconResource CONDITIONAL_ACTION_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ConditionalActionIcon.png"));
 	public static final ImageIconResource ITERATION_ACTION_ICON = new ImageIconResource(
@@ -178,6 +176,9 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
 
 	public static ImageIcon iconForObject(FMLObject object) {
+		if (object == null) {
+			return null;
+		}
 
 		if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
@@ -219,17 +220,13 @@ public class FMLIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);
 			} else if (object instanceof RemoveFromListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-			} else if (object instanceof DeclareFlexoRole) {
-				return DECLARE_PATTERN_ROLE_ICON;
+			} else if (object instanceof ExpressionAction) {
+				return EXPRESSION_ACTION_ICON;
 			} else if (object instanceof AssignationAction) {
-				return DECLARE_PATTERN_ROLE_ICON;
-			} else if (object instanceof ExecutionAction) {
-				return ACTION_SCHEME_ICON;
+				return iconForObject(((AssignationAction) object).getAssignableAction());
 			} else if (object instanceof ConditionalAction) {
 				return CONDITIONAL_ACTION_ICON;
 			} else if (object instanceof IterationAction) {
-				return ITERATION_ACTION_ICON;
-			} else if (object instanceof FetchRequestIterationAction) {
 				return ITERATION_ACTION_ICON;
 			} else if (object instanceof DeleteAction) {
 				FlexoRole pr = ((DeleteAction) object).getFlexoRole();

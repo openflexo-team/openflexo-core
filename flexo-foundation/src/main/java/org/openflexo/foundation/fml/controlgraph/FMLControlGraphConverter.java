@@ -42,6 +42,22 @@ public class FMLControlGraphConverter {
 				anAction = action;
 			}
 		}
+		if (anAction instanceof AssignationAction && ((AssignationAction) anAction).getDeprecatedAssignation() != null
+				&& ((AssignationAction) anAction).getDeprecatedAssignation().isSet()) {
+			AssignableAction assignationAction = (AssignableAction) anAction;
+			AssignationAction action = owner.getFMLModelFactory().newAssignationAction(((AssignationAction) anAction).getDeprecatedValue());
+			action.initializeDeserialization(owner.getFMLModelFactory());
+			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
+			action.setAssignation(assignationAction.getDeprecatedAssignation());
+			anAction = action;
+		}
+
+		if (anAction instanceof EditionAction && anAction.getConditional() != null && anAction.getConditional().isSet()) {
+			ConditionalAction action = owner.getFMLModelFactory().newConditionalAction();
+			action.setCondition(anAction.getConditional());
+			action.setThenControlGraph(anAction);
+			anAction = action;
+		}
 
 		FMLControlGraph controlGraph = owner.getControlGraph(ownerContext);
 		if (controlGraph == null) {
