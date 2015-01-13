@@ -19,12 +19,16 @@
  */
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.util.List;
+
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.BindingVariable;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -123,6 +127,13 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 * @return
 	 */
 	public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+
+	/**
+	 * This method allows to retrieve a flattened list of all chained control graphs
+	 * 
+	 * @return a flattened list of all chained control graphs
+	 */
+	public List<? extends FMLControlGraph> getFlattenedSequence();
 
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 
@@ -228,5 +239,14 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			}
 			return getOwner();
 		}
+
+		@Deprecated
+		public FlexoBehaviour getFlexoBehaviour() {
+			if (getRootOwner() instanceof FlexoBehaviourObject) {
+				return ((FlexoBehaviourObject) getRootOwner()).getFlexoBehaviour();
+			}
+			return null;
+		}
+
 	}
 }

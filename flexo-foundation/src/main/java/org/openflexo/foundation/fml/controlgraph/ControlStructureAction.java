@@ -28,56 +28,24 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ControlStructureAction.ControlStructureActionImpl.class)
+@Imports({ @Import(ConditionalAction.class), @Import(IterationAction.class) })
 public abstract interface ControlStructureAction extends EditionAction, FMLControlGraph, ActionContainer {
 
 	public static abstract class ControlStructureActionImpl extends EditionActionImpl implements ControlStructureAction {
 
 		private static final Logger logger = Logger.getLogger(ControlStructureAction.class.getPackage().getName());
 
-		// private ControlStructureActionBindingModel controlGraphBindingModel;
 		private ControlGraphBindingModel<?> inferedBindingModel;
-
-		// private Vector<EditionAction> actions;
 
 		public ControlStructureActionImpl() {
 			super();
-			// actions = new Vector<EditionAction>();
 		}
-
-		/*@Override
-		public List<FlexoRole> getAvailablePatternRoles() {
-			return getFlexoConcept().getPatternRoles();
-		}*/
-
-		/*@Override
-		public void rebuildInferedBindingModel() {
-			super.rebuildInferedBindingModel();
-			for (EditionAction action : getActions()) {
-				action.rebuildInferedBindingModel();
-			}
-
-		}*/
-
-		/*@Override
-		protected BindingModel buildInferedBindingModel() {
-			BindingModel returned = super.buildInferedBindingModel();
-			for (final EditionAction a : getActions()) {
-				if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
-					returned.addToBindingVariables(new BindingVariable(((AssignableAction) a).getVariableName(), ((AssignableAction) a)
-							.getAssignableType(), true) {
-						@Override
-						public Type getType() {
-							return ((AssignableAction) a).getAssignableType();
-						}
-					});
-				}
-			}
-			return returned;
-		}*/
 
 		@Override
 		public ControlGraphBindingModel<?> getInferedBindingModel() {
@@ -88,18 +56,6 @@ public abstract interface ControlStructureAction extends EditionAction, FMLContr
 		}
 
 		protected abstract ControlGraphBindingModel<?> makeInferedBindingModel();
-
-		/*@Override
-		public ControlStructureActionBindingModel getControlGraphBindingModel() {
-			if (controlGraphBindingModel == null) {
-				controlGraphBindingModel = makeInferedBindingModel();
-			}
-			return controlGraphBindingModel;
-		}
-
-		protected ControlStructureActionBindingModel makeControlGraphBindingModel() {
-			return new ControlStructureActionBindingModel(this);
-		}*/
 
 		@Override
 		public void variableAdded(AssignableAction action) {

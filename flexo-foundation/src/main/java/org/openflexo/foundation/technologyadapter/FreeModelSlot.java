@@ -3,8 +3,8 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -128,5 +128,10 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 
 		public abstract Object retrieveObjectWithURI(FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>> msInstance, String objectURI);
 
+		@Override
+		public String getPreciseType() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

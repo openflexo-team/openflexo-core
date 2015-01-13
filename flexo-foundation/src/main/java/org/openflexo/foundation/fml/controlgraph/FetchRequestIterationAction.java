@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -220,6 +221,28 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 		protected FetchRequestIterationActionBindingModel makeBindingModel() {
 			return new FetchRequestIterationActionBindingModel(this);
 		}*/
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void reduce() {
+			// TODO Auto-generated method stub
+		}
 
 	}
 }

@@ -102,6 +102,11 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			return null;
 		}
 
+		@Override
+		public Type getAssignableType() {
+			return getValueType();
+		}
+
 		public Type getListType() {
 			if (getValue().isSet() && getValue().isValid()) {
 				return new ParameterizedTypeImpl(List.class, getValueType());

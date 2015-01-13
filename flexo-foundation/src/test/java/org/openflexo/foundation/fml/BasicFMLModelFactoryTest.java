@@ -38,9 +38,9 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * Here the model factory is instanciated with no TechnologyAdapters
  * 
  */
-public class FMLModelFactoryTest {
+public class BasicFMLModelFactoryTest {
 
-	private static final Logger logger = FlexoLogger.getLogger(FMLModelFactoryTest.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(BasicFMLModelFactoryTest.class.getPackage().getName());
 
 	@Test
 	public void testInstantiateVirtualModelModelFactory() {

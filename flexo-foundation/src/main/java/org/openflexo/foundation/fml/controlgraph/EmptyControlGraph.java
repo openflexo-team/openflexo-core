@@ -19,6 +19,11 @@
  */
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -37,6 +42,12 @@ public interface EmptyControlGraph extends FMLControlGraph {
 	public static abstract class EmptyControlGraphImpl extends FMLControlGraphImpl implements EmptyControlGraph {
 
 		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
@@ -52,5 +63,15 @@ public interface EmptyControlGraph extends FMLControlGraph {
 
 		}
 
+		@Override
+		public List<? extends FMLControlGraph> getFlattenedSequence() {
+			return Collections.emptyList();
+		}
+
+		@Override
+		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+			// Nothing to do
+			return null;
+		}
 	}
 }

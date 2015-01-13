@@ -45,8 +45,8 @@ public interface SetPropertyValueAction<T> {
 
 	public ModelSlot getModelSlot();
 
-	public DataBinding<? super T> getAssignation();
+	// public DataBinding<? super T> getAssignation();
 
-	public DataBinding<Boolean> getConditional();
+	// public DataBinding<Boolean> getConditional();
 
 }

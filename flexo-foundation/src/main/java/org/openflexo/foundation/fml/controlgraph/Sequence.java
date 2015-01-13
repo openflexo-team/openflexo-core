@@ -78,9 +78,16 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	 * 
 	 * @return a flattened list of all chained control graphs
 	 */
+	@Override
 	public List<FMLControlGraph> getFlattenedSequence();
 
 	public static abstract class SequenceImpl extends FMLControlGraphImpl implements Sequence {
+
+		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 		@Override
 		public void setControlGraph1(FMLControlGraph aControlGraph) {

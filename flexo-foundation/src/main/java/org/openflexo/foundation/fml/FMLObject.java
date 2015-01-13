@@ -77,9 +77,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 
 	/**
 	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
+	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
 	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
+	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
 	 * 
 	 * @return String representing unique URI of this object
 	 */
@@ -146,13 +146,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 
 		/**
 		 * Return the URI of the {@link NamedFMLObject}<br>
-		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
 		 * eg<br>
-		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyEditionScheme
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
 		 * 
 		 * @return String representing unique URI of this object
 		 */
-		// TODO: change to abstract
 		@Override
 		public abstract String getURI();
 

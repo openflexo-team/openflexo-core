@@ -39,7 +39,9 @@ import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
@@ -171,7 +173,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 * @param flexoRoleClass
 	 * @return
 	 */
-	public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass);
+	public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
@@ -586,6 +588,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			return RoleCloningStrategy.Reference;
 		}
 
+		@Override
+		public boolean defaultBehaviourIsToBeDeleted() {
+			return false;
+		}
+
+		@Override
+		public ActorReference<RD> makeActorReference(RD object, FlexoConceptInstance epi) {
+			return null;
+		}
 	}
 
 }

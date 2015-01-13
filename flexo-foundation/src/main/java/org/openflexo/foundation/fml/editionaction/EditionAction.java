@@ -22,6 +22,8 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
@@ -44,7 +46,6 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -241,7 +242,8 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		private void insertActionAtCurrentIndex(EditionAction editionAction) {
 			if (getActionContainer() != null) {
-				getActionContainer().insertActionAtIndex(editionAction, getActionContainer().getIndex(this) + 1);
+				// getActionContainer().insertActionAtIndex(editionAction, getActionContainer().getIndex(this) + 1);
+				getActionContainer().addToActions(editionAction);
 			}
 		}
 
@@ -372,6 +374,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return null;
 		}
 
+		@Override
+		public List<? extends EditionAction> getFlattenedSequence() {
+			return Collections.singletonList(this);
+		}
+
 		/*@Override
 		public void setOwner(FMLControlGraphOwner owner) {
 			System.out.println("BEGIN / EditionAction, on set le owner de " + this + " avec " + owner);
@@ -381,7 +388,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 	}
 
-	@DefineValidationRule
+	/*@DefineValidationRule
 	public static class ConditionalBindingMustBeValid extends BindingMustBeValid<EditionAction> {
 		public ConditionalBindingMustBeValid() {
 			super("'conditional'_binding_is_not_valid", EditionAction.class);
@@ -392,6 +399,6 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return object.getConditional();
 		}
 
-	}
+	}*/
 
 }

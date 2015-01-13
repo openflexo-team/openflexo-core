@@ -561,5 +561,15 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			return null;
 		}
 
+		@Override
+		public ViewPoint getMetaModel() {
+			return getViewPoint();
+		}
+
+		@Override
+		public Object getObject(String objectURI) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

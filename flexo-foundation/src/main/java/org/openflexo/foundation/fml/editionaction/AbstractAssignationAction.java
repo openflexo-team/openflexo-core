@@ -23,7 +23,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
@@ -50,7 +49,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 	@Setter(ASSIGNABLE_ACTION_KEY)
 	public void setAssignableAction(AssignableAction<T> assignableAction);
 
-	public DataBinding<? super T> getAssignation();
+	// public DataBinding<? super T> getAssignation();
 
 	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
 

@@ -68,14 +68,14 @@ public interface FlexoProperty extends FlexoObject {
 	public int integerValue();
 
 	public int integerValue(int defaultValue);
-	
+
 	public void setIntegerValue(int value);
 
 	public Integer getIntegerValue();
 
 	public Boolean getBooleanValue();
 
-	public static abstract class FlexoPropertyImpl extends FlexoObservable implements FlexoProperty {
+	public static abstract class FlexoPropertyImpl extends FlexoObjectImpl implements FlexoProperty {
 
 		private FlexoObject owner;
 
@@ -144,7 +144,7 @@ public interface FlexoProperty extends FlexoObject {
 			}
 			return booleanValue();
 		}
-		
+
 		@Override
 		public Boolean getBooleanValue() {
 			if (getValue() == null) {
@@ -162,7 +162,7 @@ public interface FlexoProperty extends FlexoObject {
 		public int integerValue() {
 			return Integer.parseInt(getValue());
 		}
-		
+
 		@Override
 		public int integerValue(int defaultValue) {
 			if (getIntegerValue() == null) {

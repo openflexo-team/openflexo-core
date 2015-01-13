@@ -77,7 +77,7 @@ public interface ActionContainer extends FlexoBehaviourObject {
 
 	public int getIndex(EditionAction action);
 
-	public void insertActionAtIndex(EditionAction action, int index);
+	// public void insertActionAtIndex(EditionAction action, int index);
 
 	public void actionFirst(EditionAction a);
 

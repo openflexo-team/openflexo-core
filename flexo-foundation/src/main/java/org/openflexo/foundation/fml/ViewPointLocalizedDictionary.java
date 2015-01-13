@@ -105,6 +105,12 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}*/
 		}
 
+		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 		/*public ViewPointLocalizedDictionaryImpl() {
 			super();
 			_entries = new Vector<ViewPointLocalizedEntry>();
@@ -178,6 +184,11 @@ public interface ViewPointLocalizedDictionary extends FMLObject, org.openflexo.l
 			}
 			return key;
 		}*/
+
+		@Override
+		public String getLocalizedForKeyAndLanguage(String key, Language language, boolean createsNewEntriesIfNonExistant) {
+			return getLocalizedForKeyAndLanguage(key, language);
+		}
 
 		@Override
 		public String getLocalizedForKeyAndLanguage(String key, Language language) {

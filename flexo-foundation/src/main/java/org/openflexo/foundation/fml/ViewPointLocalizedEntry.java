@@ -123,6 +123,12 @@ public interface ViewPointLocalizedEntry extends FMLObject {
 		}*/
 
 		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public String getKey() {
 			return key;
 		}

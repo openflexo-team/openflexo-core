@@ -11,7 +11,6 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointValidationModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationRule;
@@ -283,6 +282,6 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 			System.out.println("> " + r);
 		}
 		assertTrue(ruleSet.containsRuleClass(AssignationAction.AssignationBindingIsRequiredAndMustBeValid.class));
-		assertTrue(ruleSet.containsRuleClass(EditionAction.ConditionalBindingMustBeValid.class));
+		// assertTrue(ruleSet.containsRuleClass(EditionAction.ConditionalBindingMustBeValid.class));
 	}
 }

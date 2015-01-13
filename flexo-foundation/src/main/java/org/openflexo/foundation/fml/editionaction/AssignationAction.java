@@ -54,7 +54,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ASSIGNATION_KEY = "assignation";
 
-	@Override
 	@Getter(value = ASSIGNATION_KEY)
 	@XMLAttribute(xmlTag = "assign")
 	public DataBinding<? super T> getAssignation();

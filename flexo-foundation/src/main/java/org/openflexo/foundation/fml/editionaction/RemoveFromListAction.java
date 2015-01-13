@@ -31,7 +31,6 @@ import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -139,10 +138,14 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 		@Override
 		public Type getAssignableType() {
-			if (getValue().isSet() && getValue().isValid()) {
+			/*if (getValue().isSet() && getValue().isValid()) {
 				return new ParameterizedTypeImpl(List.class, getValue().getAnalyzedType());
 			}
-			return new ParameterizedTypeImpl(List.class, IFlexoOntologyIndividual.class);
+			return new ParameterizedTypeImpl(List.class, IFlexoOntologyIndividual.class);*/
+			if (getValue().isSet() && getValue().isValid()) {
+				return getValue().getAnalyzedType();
+			}
+			return Object.class;
 		}
 
 		@Override
