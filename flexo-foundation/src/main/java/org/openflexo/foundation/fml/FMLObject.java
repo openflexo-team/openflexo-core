@@ -116,6 +116,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 	 */
 	public String getFMLRepresentation();
 
+	/**
+	 * Return a string representation suitable for a common user<br>
+	 * This representation will used in all GUIs
+	 */
 	public String getStringRepresentation();
 
 	// public void notifyBindingModelChanged();

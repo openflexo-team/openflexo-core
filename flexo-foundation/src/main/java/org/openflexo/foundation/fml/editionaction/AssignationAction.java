@@ -178,6 +178,11 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			return out.toString();
 		}
 
+		@Override
+		public String getStringRepresentation() {
+			return getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
+		}
+
 	}
 
 	@DefineValidationRule

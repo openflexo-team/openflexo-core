@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel opaque="false" layout="twocols" borderTitle="Panel"
+	borderLeft="10" titleFont="SansSerif,0,11" darkLevel="0" index="5"
+	data="" dataClassName="org.openflexo.foundation.fml.editionaction.ExpressionAction"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+	visible="" name="DeclareVariablePanel">
+	<Label label="Expression" index="2" data=""
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		localize="true" />
+	<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+		localize="true" manageDynamicModel="true" opaque="false" name="AssignCC"
+		index="3" data="data.expression"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)">
+		<Assignment variable="component.bindable" value="data" />
+	</Custom>
+	<TextArea columns="6" rows="2" text="TextArea" index="9"
+		data="data.description"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		localize="true" />
+
+	<LocalizedDictionary>
+	</LocalizedDictionary>
+</Panel>

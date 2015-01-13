@@ -96,7 +96,7 @@
 							isEditable="false" filtered="false" defaultVisible="true"
 							name="flexoBehaviour">
 							<Children data="flexoBehaviour.controlGraph.flattenedSequence" name="children" />
-							<BrowserAddAction method="controller.createEditionAction(selected)"
+							<BrowserAddAction method="controller.createEditionAction(selected.controlGraph)"
 								name="add_action" />
 						</BrowserElement>
 						<BrowserElement
@@ -128,6 +128,8 @@
 							label="editionAction.stringRepresentation" icon="controller.iconForObject(editionAction)"
 							isEditable="false" filtered="false" defaultVisible="true"
 							name="editionAction">
+							<BrowserAddAction method="controller.createEditionAction(selected)"
+								name="add_action" />
 							<BrowserRemoveAction
 								method="selected.actionContainer.removeFromActions(selected)"
 								name="delete_action" />

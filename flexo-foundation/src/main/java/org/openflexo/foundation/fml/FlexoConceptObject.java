@@ -98,6 +98,10 @@ public interface FlexoConceptObject extends FMLObject {
 			return null;
 		}
 
+		/**
+		 * Return a string representation suitable for a common user<br>
+		 * This representation will used in all GUIs
+		 */
 		@Override
 		public String getStringRepresentation() {
 			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
