@@ -1,10 +1,10 @@
+package org.openflexo.foundation.fml.parser;
+
 import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openflexo.foundation.OpenflexoTestCase;
-import org.openflexo.foundation.fml.parser.FMLParser;
-import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
