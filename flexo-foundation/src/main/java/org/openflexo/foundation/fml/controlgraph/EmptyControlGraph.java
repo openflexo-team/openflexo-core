@@ -60,6 +60,7 @@ public interface EmptyControlGraph extends FMLControlGraph {
 			owner.setControlGraph(null, ownerContext);
 
 			replaceWith(controlGraph, owner, ownerContext);
+			owner.controlGraphChanged(controlGraph);
 
 		}
 

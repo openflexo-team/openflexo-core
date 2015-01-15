@@ -199,6 +199,8 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 		WizardStep previousStep = getPreviousStep(currentStep);
 		currentStep = previousStep;
 
+		currentStep.reactivate();
+
 		if (currentStep.isTransitionalStep()) {
 			currentStep.discardTransition();
 		}

@@ -39,6 +39,7 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -54,6 +55,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
@@ -223,14 +225,39 @@ public abstract interface EditionAction extends FMLControlGraph {
 			this.conditional = conditional;
 		}
 
-		/**
-		 * Return a string representation suitable for a common user<br>
-		 * This representation will used in all GUIs
-		 */
-		@Override
-		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName();
+		public final String getHeaderContext() {
+			Sequence s = getParentFlattenedSequence();
+			if (s != null && s.getFlattenedSequence().get(0) == this) {
+				if (StringUtils.isNotEmpty(disambiguate(s.getOwnerContext()))) {
+					return "[" + disambiguate(s.getOwnerContext()) + "] ";
+				}
+			}
+			if (StringUtils.isNotEmpty(disambiguate(getOwnerContext()))) {
+				return "[" + disambiguate(getOwnerContext()) + "] ";
+			}
+			return "";
 		}
+
+		private String disambiguate(String context) {
+			if (context == null) {
+				return null;
+			}
+			if (context.equals(Sequence.CONTROL_GRAPH1_KEY)) {
+				return null;
+			}
+			if (context.equals(Sequence.CONTROL_GRAPH2_KEY)) {
+				return null;
+			}
+			if (context.equals(ConditionalAction.THEN_CONTROL_GRAPH_KEY)) {
+				return "then";
+			}
+			if (context.equals(ConditionalAction.ELSE_CONTROL_GRAPH_KEY)) {
+				return "else";
+			}
+			return null;
+		}
+
+		public abstract String editionActionRepresentation();
 
 		/*@Override
 		public ActionContainer getActionContainer() {

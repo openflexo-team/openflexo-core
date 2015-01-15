@@ -5,18 +5,16 @@
 	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 	visible="" name="DeclarationActionPanel">
-	<Label label="action_type" align="right" index="0" data=""
+	<Label label="declaration_type" align="right" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 		visible="" format="" icon="" tooltip="" localize="true" enable=""
 		clickAction="" doubleClickAction="" rightClickAction=""
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" />
-	<TextField index="1" data="data.implementedInterface.simpleName"
+	<TextField index="1" data="data.declarationTypeAsString"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 		visible="" readOnly="true" format="" icon="" tooltip="" localize="true"
-		enable="" clickAction="" doubleClickAction="" rightClickAction=""
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" columns="6" text="TextField" editable="" />
+		columns="6" text="TextField" editable="" />
 	<Label label="variable_name" index="2" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 		visible="" format="" icon="" tooltip="" localize="true" enable=""
@@ -29,19 +27,15 @@
 		doubleClickAction="" rightClickAction="" enterPressedAction=""
 		valueChangedAction="" valueTransform="" valueValidator="" columns="7"
 		text="TextField" editable=""/>
-	<Label label="description" align="right" index="8" data=""
-		constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-		visible="" format="" icon="" tooltip="" localize="true" enable=""
-		clickAction="" doubleClickAction="" rightClickAction=""
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" />
-	<TextArea columns="6" rows="2" text="TextArea" index="9"
-		data="data.description"
+	<FIBReferencedComponent
+		dynamicComponentFile="controller.fibForEditionAction(data.assignableAction)"
+		localize="true" manageDynamicModel="true" name="AssignableActionWidget"
+		index="15" data="data.assignableAction"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-		visible="" format="" icon="" tooltip="" localize="true" enable=""
-		clickAction="" doubleClickAction="" rightClickAction=""
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" editable="" />
+		opaque="false">
+		<ReferenceAssignment mandatory="true"
+			variable="controller.flexoController" value="controller.flexoController" />
+	</FIBReferencedComponent>
 	<LocalizedDictionary>
 		<Localized key="object" lang="English" value="Object" />
 		<Localized key="object" lang="French" value="Objet" />

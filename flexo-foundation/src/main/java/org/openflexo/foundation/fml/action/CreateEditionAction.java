@@ -19,6 +19,8 @@
  */
 package org.openflexo.foundation.fml.action;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import org.openflexo.antar.binding.Bindable;
 import org.openflexo.antar.binding.BindingFactory;
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -40,6 +43,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
@@ -58,7 +62,8 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> implements Bindable {
+public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject> implements Bindable,
+		PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
@@ -87,131 +92,74 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	static {
 		FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, FMLControlGraph.class);
-		// FlexoObjectImpl.addActionForClass(CreateEditionAction.actionType, EditionAction.class);
 	}
-
-	/*public static enum CreateEditionActionChoice {
-		BuiltInAction, ModelSlotSpecificAction, RequestAction, ControlAction
-	}*/
-
-	/*public static enum LayoutChoice {
-		InsertAfter, InsertBefore, InsertInside;
-	}*/
-
-	// public String description;
-	// public CreateEditionActionChoice actionChoice = CreateEditionActionChoice.BuiltInAction;
-	// private LayoutChoice layoutChoice;
 
 	private ModelSlot<?> modelSlot;
 	private Class<? extends EditionAction> editionActionClass;
-
-	/*private Class<? extends EditionAction> builtInActionClass;
-	private Class<? extends ControlStructureAction> controlActionClass;
-	private Class<? extends TechnologySpecificAction<?, ?>> modelSlotSpecificActionClass;
-	private Class<? extends FetchRequest<?, ?>> requestActionClass;*/
+	private Class<? extends FetchRequest<?, ?>> fetchRequestClass;
 
 	private EditionAction newEditionAction;
 
 	private final List<Class<? extends EditionAction>> availableActions;
+	private final List<Class<? extends FetchRequest<?, ?>>> availableFetchRequests;
 
-	// private final List<Class<? extends EditionAction>> builtInActions;
-	// private final List<Class<? extends ControlStructureAction>> controlActions;
+	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter> editionActionForTechnologyAdapterMap;
+	private final HashMap<Class<? extends EditionAction>, EditionAction> editionActionMap;
 
-	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter> editionActionClassMap;
+	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter ta) {
+		availableActions.add(availableActionClass);
+		editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
+		if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
+			availableFetchRequests.add((Class<FetchRequest<?, ?>>) availableActionClass);
+		}
+	}
 
 	CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 		availableActions = new ArrayList<Class<? extends EditionAction>>();
-		editionActionClassMap = new HashMap<Class<? extends EditionAction>, TechnologyAdapter>();
+		availableFetchRequests = new ArrayList<Class<? extends FetchRequest<?, ?>>>();
+		editionActionForTechnologyAdapterMap = new HashMap<Class<? extends EditionAction>, TechnologyAdapter>();
+		editionActionMap = new HashMap<Class<? extends EditionAction>, EditionAction>();
 
 		// availableActions.add(AssignationAction.class);
 		// availableActions.add(DeclarationAction.class);
 
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-
-		availableActions.add(ConditionalAction.class);
-		editionActionClassMap.put(ConditionalAction.class, fmlTA);
-
-		availableActions.add(IterationAction.class);
-		editionActionClassMap.put(IterationAction.class, fmlTA);
-
-		availableActions.add(ExpressionAction.class);
-		editionActionClassMap.put(ExpressionAction.class, fmlTA);
-
-		availableActions.add(AddToListAction.class);
-		editionActionClassMap.put(AddToListAction.class, fmlTA);
-
-		availableActions.add(RemoveFromListAction.class);
-		editionActionClassMap.put(RemoveFromListAction.class, fmlTA);
-
-		availableActions.add(AddFlexoConceptInstance.class);
-		editionActionClassMap.put(AddFlexoConceptInstance.class, fmlTA);
-
-		availableActions.add(MatchFlexoConceptInstance.class);
-		editionActionClassMap.put(MatchFlexoConceptInstance.class, fmlTA);
-
-		availableActions.add(SelectFlexoConceptInstance.class);
-		editionActionClassMap.put(SelectFlexoConceptInstance.class, fmlTA);
-
-		availableActions.add(DeleteAction.class);
-		editionActionClassMap.put(DeleteAction.class, fmlTA);
+		addToAvailableActions(ConditionalAction.class, fmlTA);
+		addToAvailableActions(IterationAction.class, fmlTA);
+		addToAvailableActions(ExpressionAction.class, fmlTA);
+		addToAvailableActions(AddToListAction.class, fmlTA);
+		addToAvailableActions(RemoveFromListAction.class, fmlTA);
+		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(SelectFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(DeleteAction.class, fmlTA);
 
 		if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 			for (ModelSlot<?> ms : getFocusedObject().getOwner().getOwningVirtualModel().getModelSlots()) {
-				availableActions.addAll(ms.getAvailableEditionActionTypes());
 				for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : ms.getAvailableEditionActionTypes()) {
-					editionActionClassMap.put(eaClass, ms.getModelSlotTechnologyAdapter());
+					addToAvailableActions(eaClass, ms.getModelSlotTechnologyAdapter());
 				}
 			}
 		}
 
-		// controlActions = new ArrayList<Class<? extends ControlStructureAction>>();
-		// controlActions.add(FetchRequestIterationAction.class);
-
-		// If the model slot is empty, then now it is the currentVirtualModel that is referenced
-		/*
-		System.out.println("focusedObject=" + focusedObject);
-		System.out.println("focusedObject.getVirtualModel()=" + focusedObject.getVirtualModel());
-		if (modelSlot == null && !focusedObject.getVirtualModel().getModelSlots().isEmpty()) {
-			modelSlot = focusedObject.getVirtualModel().getModelSlots().get(0);
-		}
-		*/
 	}
 
 	public List<Class<? extends EditionAction>> getAvailableActionClasses() {
 		return availableActions;
 	}
 
-	/*public List<Class<? extends EditionAction>> getBuiltInActions() {
-		return builtInActions;
+	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestClasses() {
+		return availableFetchRequests;
 	}
-
-	public List<Class<? extends ControlStructureAction>> getControlActions() {
-		return controlActions;
-	}
-
-	public List<Class<? extends EditionAction>> getModelSlotSpecificActions() {
-		if (modelSlot != null) {
-			return modelSlot.getAvailableEditionActionTypes();
-		} else {
-			// TODO : when modelSlot is null, return AvailableEditionActionTypes for VirtualModel
-		}
-		return null;
-	}
-
-	public List<Class<? extends EditionAction>> getRequestActions() {
-		if (modelSlot != null) {
-			return modelSlot.getAvailableFetchRequestActionTypes();
-		}
-		return null;
-	}*/
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Add edition action, modelSlot=" + modelSlot + " editionActionClass=" + editionActionClass);
 
-		EditionAction baseEditionAction = makeEditionAction();
+		newEditionAction = null;
+		EditionAction baseEditionAction = getBaseEditionAction();
 
 		if (baseEditionAction instanceof AssignableAction) {
 			if (getAssignation() != null && getAssignation().isSet()) {
@@ -241,7 +189,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public TechnologyAdapter getTechnologyAdapter(Class<? extends EditionAction> editionActionClass) {
-		TechnologyAdapter returned = editionActionClassMap.get(editionActionClass);
+		TechnologyAdapter returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
 		if (returned != null) {
 			return returned;
 		}
@@ -250,6 +198,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public Class<? extends EditionAction> getEditionActionClass() {
+		if (editionActionClass == null) {
+			setEditionActionClass(ExpressionAction.class);
+		}
 		return editionActionClass;
 	}
 
@@ -259,21 +210,78 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			Class<? extends EditionAction> oldValue = this.editionActionClass;
 			this.editionActionClass = editionActionClass;
 			getPropertyChangeSupport().firePropertyChange("editionActionClass", oldValue, editionActionClass);
+			// baseEditionAction = makeEditionAction();
+			getPropertyChangeSupport().firePropertyChange("baseEditionAction", oldValue, editionActionClass);
+			getPropertyChangeSupport().firePropertyChange("isAssignableAction", !isAssignableAction(), isAssignableAction());
+			getPropertyChangeSupport().firePropertyChange("isIterationAction", !isIterationAction(), isIterationAction());
+			getPropertyChangeSupport().firePropertyChange("modelSlot", getModelSlot() != null ? null : true, getModelSlot());
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 		}
+	}
+
+	public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+		return fetchRequestClass;
+	}
+
+	public void setFetchRequestClass(Class<? extends FetchRequest<?, ?>> fetchRequestClass) {
+		if ((fetchRequestClass == null && this.fetchRequestClass != null)
+				|| (fetchRequestClass != null && !fetchRequestClass.equals(this.fetchRequestClass))) {
+			Class<? extends FetchRequest<?, ?>> oldValue = this.fetchRequestClass;
+			this.fetchRequestClass = fetchRequestClass;
+			getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+		}
+	}
+
+	public EditionAction getBaseEditionAction() {
+		EditionAction returned = editionActionMap.get(getEditionActionClass());
+		if (returned == null) {
+			returned = makeEditionAction();
+			editionActionMap.put(editionActionClass, returned);
+			returned.getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+		return returned;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof EditionAction) {
+			getPropertyChangeSupport().firePropertyChange("declarationVariableName", null, getDeclarationVariableName());
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getDeclarationVariableName());
+		}
+	}
+
+	public String getStringRepresentation() {
+		EditionAction baseEditionAction = getBaseEditionAction();
+
+		if (baseEditionAction instanceof AssignableAction) {
+			if (isAssignation()) {
+				return getAssignation() + " = " + baseEditionAction.getStringRepresentation();
+			} else if (isVariableDeclaration()) {
+				return TypeUtils.simpleRepresentation(((AssignableAction) baseEditionAction).getAssignableType()) + " "
+						+ getDeclarationVariableName() + " = " + baseEditionAction.getStringRepresentation();
+			} else {
+				return baseEditionAction.getStringRepresentation();
+			}
+		}
+		return "?";
+	}
+
+	@Override
+	public boolean delete() {
+		for (EditionAction ea : editionActionMap.values()) {
+			ea.getPropertyChangeSupport().removePropertyChangeListener(this);
+			ea.delete();
+		}
+		editionActionMap.clear();
+		editionActionForTechnologyAdapterMap.clear();
+		availableActions.clear();
+		return super.delete();
 	}
 
 	public EditionAction getNewEditionAction() {
 		return newEditionAction;
 	}
-
-	/*private String validityMessage = NO_ACTION_TYPE_SELECTED;
-
-	private static final String NO_MODEL_SLOT = FlexoLocalization.localizedForKey("please_choose_a_model_slot");
-	private static final String NO_ACTION_TYPE_SELECTED = FlexoLocalization.localizedForKey("please_select_an_action_type");
-
-	public String getValidityMessage() {
-		return validityMessage;
-	}*/
 
 	@Override
 	public boolean isValid() {
@@ -322,6 +330,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	}
 
+	private DefaultFMLControlGraphOwner owner;
+
 	private EditionAction makeEditionAction() {
 		EditionAction returned = null;
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
@@ -350,10 +360,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = factory.newConditionalAction();
 		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newIterationAction();
-		} else if (FetchRequest.class.isAssignableFrom(editionActionClass)) {
-			returned = modelSlot.makeFetchRequest((Class<FetchRequest<?, ?>>) editionActionClass);
-		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass)) {
-			returned = modelSlot.makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
+		} else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?>>) editionActionClass);
+		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
 		}
 
 		if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
@@ -361,6 +371,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 
 		if (returned != null) {
+
+			owner = factory.newInstance(DefaultFMLControlGraphOwner.class);
+			owner.setConceptObject(getFocusedObject());
+			returned.setOwner(owner);
+
 			return returned;
 		}
 
@@ -369,21 +384,32 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	}
 
-	/*public LayoutChoice getLayoutChoice() {
-		if (layoutChoice == null) {
-			if (getFocusedObject() instanceof ActionContainer) {
-				return LayoutChoice.InsertInside;
+	public List<ModelSlot<?>> getAvailableModelSlotsForSelectedAction() {
+		List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
+		if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
+			for (ModelSlot<?> ms : getFocusedObject().getOwner().getOwningVirtualModel().getModelSlots()) {
+				if (ms.getAvailableEditionActionTypes().contains(getEditionActionClass())) {
+					returned.add(ms);
+				}
 			}
-			return LayoutChoice.InsertAfter;
 		}
-		return layoutChoice;
-	}*/
-
-	/*public void setLayoutChoice(LayoutChoice layoutChoice) {
-		this.layoutChoice = layoutChoice;
-	}*/
+		return returned;
+	}
 
 	public ModelSlot<?> getModelSlot() {
+		List<ModelSlot<?>> availableMS = getAvailableModelSlotsForSelectedAction();
+		if (modelSlot == null) {
+			if (availableMS.size() > 0) {
+				return getAvailableModelSlotsForSelectedAction().get(0);
+			}
+		}
+		if (modelSlot != null && !availableMS.contains(modelSlot)) {
+			if (availableMS.size() > 0) {
+				modelSlot = getAvailableModelSlotsForSelectedAction().get(0);
+			} else {
+				modelSlot = null;
+			}
+		}
 		return modelSlot;
 	}
 
@@ -468,7 +494,42 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		notifiedBindingChanged(this.assignation);
 	}
 
+	private String getDefaultVariableName() {
+
+		String baseName = getBaseVariableName();
+		String current = baseName;
+		int i = 2;
+
+		while (getFocusedObject().getInferedBindingModel().bindingVariableNamed(current) != null) {
+			current = baseName + i;
+			i++;
+		}
+
+		return current;
+	}
+
+	private String getBaseVariableName() {
+
+		if (getBaseEditionAction() instanceof AssignableAction) {
+			Type assignableType = ((AssignableAction) getBaseEditionAction()).getAssignableType();
+			String typeAsString = TypeUtils.simpleRepresentation(assignableType);
+			if (assignableType instanceof Class) {
+				if (typeAsString.startsWith("a") || typeAsString.startsWith("e") || typeAsString.startsWith("i")
+						|| typeAsString.startsWith("o") || typeAsString.startsWith("u")) {
+					return "an" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
+				} else {
+					return "a" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
+				}
+			}
+		}
+
+		return "variable";
+	}
+
 	public String getDeclarationVariableName() {
+		if (declarationVariableName == null) {
+			return getDefaultVariableName();
+		}
 		return declarationVariableName;
 	}
 
@@ -478,6 +539,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			String oldValue = this.declarationVariableName;
 			this.declarationVariableName = declarationVariableName;
 			getPropertyChangeSupport().firePropertyChange("declarationVariableName", oldValue, declarationVariableName);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 		}
 	}
 
@@ -488,16 +550,73 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	@Override
 	public BindingModel getBindingModel() {
-		return getFocusedObject().getBindingModel();
+		// System.out.println("prout pour " + getFocusedObject().getStringRepresentation());
+		// System.out.println("je retourne " + getFocusedObject().getInferedBindingModel());
+		return getFocusedObject().getInferedBindingModel();
+
+		/*System.out.println("prout pour " + getFocusedObject().getStringRepresentation());
+		// return getFocusedObject().getOwner().getBaseBindingModel(getBaseEditionAction());
+		if (getFocusedObject() != null && getFocusedObject().getOwner() != null) {
+			FMLControlGraphOwner owner = getFocusedObject().getOwner();
+			if (owner instanceof FMLControlGraph) {
+				System.out.println("je retourne pour " + owner + " " + ((FMLControlGraph) owner).getInferedBindingModel());
+				return ((FMLControlGraph) owner).getInferedBindingModel();
+			}
+			return owner.getBindingModel();
+		}
+		return null;*/
 	}
 
 	@Override
 	public void notifiedBindingChanged(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
-		// TODO
+		getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 	}
 
 	@Override
 	public void notifiedBindingDecoded(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
 		// TODO
 	}
+
+	public boolean isAssignableAction() {
+		return getBaseEditionAction() instanceof AssignableAction;
+	}
+
+	public boolean isIterationAction() {
+		return getBaseEditionAction() instanceof IterationAction;
+	}
+
+	public boolean isIterationExpressionAction() {
+		return getBaseEditionAction() instanceof IterationAction
+				&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof ExpressionAction;
+	}
+
+	public boolean isVariableDeclaration() {
+		return isVariableDeclaration;
+	}
+
+	public void setVariableDeclaration(boolean isVariableDeclaration) {
+		if (isVariableDeclaration != this.isVariableDeclaration) {
+			boolean oldValue = this.isVariableDeclaration;
+			this.isVariableDeclaration = isVariableDeclaration;
+			getPropertyChangeSupport().firePropertyChange("isVariableDeclaration", oldValue, isVariableDeclaration);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+		}
+	}
+
+	private boolean isVariableDeclaration = false;
+	private boolean isAssignation = false;
+
+	public boolean isAssignation() {
+		return isAssignation;
+	}
+
+	public void setAssignation(boolean isAssignation) {
+		if (isAssignation != this.isAssignation) {
+			boolean oldValue = this.isAssignation;
+			this.isAssignation = isAssignation;
+			getPropertyChangeSupport().firePropertyChange("isAssignation", oldValue, isAssignation);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+		}
+	}
+
 }

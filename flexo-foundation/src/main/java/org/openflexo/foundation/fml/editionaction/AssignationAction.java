@@ -180,7 +180,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
+			return getHeaderContext() + getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
 		}
 
 	}

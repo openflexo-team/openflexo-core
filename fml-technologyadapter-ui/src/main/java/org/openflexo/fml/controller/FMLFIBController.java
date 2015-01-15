@@ -22,6 +22,8 @@ import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.DeleteFlexoConcept;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -168,10 +170,29 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public EditionAction createEditionAction(FMLControlGraph object) {
-
-		System.out.println("On cree une EditionAction pour " + object + " owner=" + object.getOwner());
-
 		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
+	public EditionAction createEditionActionInThenControlGraph(ConditionalAction conditional) {
+		if (conditional.getThenControlGraph() == null) {
+			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+			conditional.setThenControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getThenControlGraph(), null,
+				getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
+	public EditionAction createEditionActionInElseControlGraph(ConditionalAction conditional) {
+		if (conditional.getElseControlGraph() == null) {
+			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+			conditional.setElseControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getElseControlGraph(), null,
+				getEditor());
 		createEditionAction.doAction();
 		return createEditionAction.getNewEditionAction();
 	}

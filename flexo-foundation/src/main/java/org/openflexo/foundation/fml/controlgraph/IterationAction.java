@@ -318,6 +318,15 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
 		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			if (dataBinding == getIteration()) {
+				getPropertyChangeSupport().firePropertyChange(ITERATION_KEY, null, getIteration());
+			}
+			super.notifiedBindingChanged(dataBinding);
+		}
+
 	}
 
 	@DefineValidationRule

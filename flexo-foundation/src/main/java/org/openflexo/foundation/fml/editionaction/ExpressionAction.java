@@ -35,7 +35,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * An {@link EditionAction} which can be represented as an expression
@@ -98,8 +97,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName()
-					+ (StringUtils.isNotEmpty(getExpression().toString()) ? " (" + getExpression().toString() + ")" : "");
+			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "");
 		}
 
 		@Override

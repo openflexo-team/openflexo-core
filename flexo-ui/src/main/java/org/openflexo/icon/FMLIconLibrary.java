@@ -46,8 +46,8 @@ import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
-import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -222,8 +222,8 @@ public class FMLIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.NEGATIVE_MARKER);
 			} else if (object instanceof ExpressionAction) {
 				return EXPRESSION_ACTION_ICON;
-			} else if (object instanceof AssignationAction) {
-				return iconForObject(((AssignationAction) object).getAssignableAction());
+			} else if (object instanceof AbstractAssignationAction) {
+				return iconForObject(((AbstractAssignationAction) object).getAssignableAction());
 			} else if (object instanceof ConditionalAction) {
 				return CONDITIONAL_ACTION_ICON;
 			} else if (object instanceof IterationAction) {

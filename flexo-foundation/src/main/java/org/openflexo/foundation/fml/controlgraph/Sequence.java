@@ -109,6 +109,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 
 			getControlGraph2().sequentiallyAppend(controlGraph);
+			getOwner().controlGraphChanged(this);
 		}
 
 		@Override

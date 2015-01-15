@@ -1,22 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
-	layout="twocols" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	layout="border" controllerClassName="org.openflexo.fml.controller.FMLFIBController"
 	border="empty" trackViewPortWidth="true"
 	dataClassName="org.openflexo.fml.controller.action.CreateEditionActionWizard$ChooseEditionActionClass"
 	trackViewPortHeight="true">
 	<LocalizedDictionary id="1" />
-	<RadioButtonList id="3" manageDynamicModel="false"
-		columns="1" controllerClassName="org.openflexo.fib.controller.FIBController"
-		index="2" localize="true"
-		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		format="object.simpleName" showText="true" iteratorClassName="java.lang.Class"
-		vGap="-2" showIcon="true" useScrollBar="false" data="data.editionActionClass"
-		autoSelectFirstRow="false" hGap="0"
-		icon="controller.getTechnologyAdapterController(data.action.getTechnologyAdapter(object)).getIconForEditionAction(object)"
-		list="data.action.availableActionClasses" readOnly="false" />
-	<Panel id="5" darkLevel="1" useScrollBar="false" protectContent="false"
+	<Panel id="2" darkLevel="0" useScrollBar="false" protectContent="false"
 		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
-		borderRight="2" border="rounded3d" trackViewPortWidth="true"
-		constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-		borderBottom="2" borderTop="2" trackViewPortHeight="true" />
+		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
+		borderTitle="Panel" trackViewPortHeight="true">
+		<RadioButtonList id="3" manageDynamicModel="false"
+			columns="1" controllerClassName="org.openflexo.fib.controller.FIBController"
+			index="2" localize="true"
+			constraints="border(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			format="object.simpleName" showText="true" iteratorClassName="java.lang.Class"
+			vGap="-2" showIcon="true" useScrollBar="true" data="data.editionActionClass"
+			autoSelectFirstRow="false" hGap="0"
+			icon="controller.getTechnologyAdapterController(data.action.getTechnologyAdapter(object)).getIconForEditionAction(object)"
+			list="data.action.availableActionClasses" readOnly="false" />
+	</Panel>
+	<Panel id="4" darkLevel="0" useScrollBar="false" protectContent="false"
+		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
+		borderRight="2" border="empty" trackViewPortWidth="true"
+		constraints="border(location=center)" borderBottom="2" borderTop="2"
+		trackViewPortHeight="true">
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" data="data.action.stringRepresentation" columns="7"
+			controllerClassName="org.openflexo.fib.controller.FIBController"
+			constraints="border(location=south)" readOnly="true"
+			validateOnReturn="false" />
+		<Panel id="5" darkLevel="1" visible="data.action.isAssignableAction"
+			useScrollBar="false" protectContent="false" layout="twocols"
+			controllerClassName="org.openflexo.fib.controller.FIBController"
+			borderRight="2" border="rounded3d" trackViewPortWidth="true"
+			constraints="border(location=north)" borderBottom="2" borderTop="2"
+			trackViewPortHeight="true">
+			<CheckBox id="6" manageDynamicModel="false" useScrollBar="false"
+				data="data.action.isVariableDeclaration" enable="(!(data.action.isAssignation))"
+				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
+				negate="false" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				readOnly="false" />
+			<Panel id="7" darkLevel="0" vGap="0" useScrollBar="false"
+				protectContent="false" hGap="0" layout="border"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				border="empty" flowAlignment="LEADING" trackViewPortWidth="true"
+				index="2"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				trackViewPortHeight="true">
+				<Label id="8" manageDynamicModel="false" useScrollBar="false"
+					controllerClassName="org.openflexo.fib.controller.FIBController"
+					localize="true" align="left" constraints="border(location=west)"
+					label="declare_new_variable" readOnly="false" />
+				<TextField id="9" passwd="false" manageDynamicModel="false"
+					useScrollBar="false" data="data.declarationVariableName" columns="7"
+					enable="(data.action.isVariableDeclaration &amp; (!(data.action.isAssignation)))"
+					controllerClassName="org.openflexo.fib.controller.FIBController"
+					text="TextField" localize="true" constraints="border(location=center)"
+					readOnly="false" validateOnReturn="false" />
+			</Panel>
+			<CheckBox id="10" manageDynamicModel="false" useScrollBar="false"
+				data="data.action.isAssignation" enable="(!(data.action.isVariableDeclaration))"
+				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
+				negate="false" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				readOnly="false" />
+			<Panel id="11" darkLevel="0" useScrollBar="false"
+				protectContent="false" layout="border"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				border="empty" trackViewPortWidth="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				trackViewPortHeight="true">
+				<Label id="12" manageDynamicModel="false" useScrollBar="false"
+					controllerClassName="org.openflexo.fib.controller.FIBController"
+					localize="true" align="left" constraints="border(location=west)"
+					label="assign_to" readOnly="false" />
+				<Custom id="13" manageDynamicModel="true" useScrollBar="false"
+					data="data.action.assignation"
+					enable="(data.action.isAssignation &amp; (!(data.action.isVariableDeclaration)))"
+					componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+					opaque="false" name="AddIndividualAssignationCC"
+					controllerClassName="org.openflexo.fib.controller.FIBController"
+					index="3" localize="true" constraints="border(location=center)"
+					readOnly="false">
+					<Assignment id="14" mandatory="true" value="data.action"
+						variable="component.bindable" />
+				</Custom>
+			</Panel>
+		</Panel>
+		<Panel darkLevel="1" visible="data.action.isIterationAction"
+			useScrollBar="false" protectContent="false" layout="twocols"
+			controllerClassName="org.openflexo.fib.controller.FIBController"
+			borderRight="2" border="rounded3d" trackViewPortWidth="true"
+			constraints="border(location=west)" borderBottom="2" borderTop="2"
+			trackViewPortHeight="true">
+			<Label label="iterate_on" index="4"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<RadioButtonList manageDynamicModel="true" columns="1"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				index="5" localize="true" name="iterationTypeRBL"
+				constraints="border(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				showText="true" iteratorClassName="java.lang.String"
+				vGap="-2" showIcon="true" useScrollBar="true"
+				autoSelectFirstRow="true" hGap="0" staticList="expression,fetch_request"
+				readOnly="false" />
+			<Label label="iteration" index="6"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" visible="iterationTypeRBL.data='expression'" />
+			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				localize="true" manageDynamicModel="true" index="7" data="data.iterationExpression"
+				visible="iterationTypeRBL.data='expression'"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data.action" />
+			</Custom>
+			<Label label="fetch_request" index="8"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" visible="iterationTypeRBL.data='fetch_request'" />
+			<RadioButtonList manageDynamicModel="false" columns="1"
+				index="9" localize="true" visible="iterationTypeRBL.data='fetch_request'"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				format="object.simpleName" showText="true" iteratorClassName="java.lang.Class"
+				vGap="-2" showIcon="true" useScrollBar="true" data="data.fetchRequestClass"
+				autoSelectFirstRow="false" hGap="0"
+				icon="controller.getTechnologyAdapterController(data.action.getTechnologyAdapter(object)).getIconForEditionAction(object)"
+				list="data.action.availableFetchRequestClasses" readOnly="false" />
+		</Panel>
+		<Panel id="15" darkLevel="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			useScrollBar="true" protectContent="false" layout="border"
+			controllerClassName="org.openflexo.fib.controller.FIBController"
+			border="rounded3d" trackViewPortWidth="true" constraints="border(location=center)"
+			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED">
+			<FIBReferencedComponent id="16"
+				manageDynamicModel="true" useScrollBar="false"
+				data="data.action.baseEditionAction" opaque="false" name="EditionActionWidget"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				index="15" localize="true"
+				dynamicComponentFile="controller.fibForEditionAction(data.action.baseEditionAction)"
+				constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+				readOnly="false">
+				<ReferenceAssignment id="17" mandatory="true"
+					value="controller.flexoController" variable="controller.flexoController" />
+			</FIBReferencedComponent>
+		</Panel>
+	</Panel>
 </Panel>

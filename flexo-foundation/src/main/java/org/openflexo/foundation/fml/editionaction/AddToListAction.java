@@ -199,21 +199,21 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			return objToAdd;
 		}
 
-		protected void updateVariableValue() {
+		/*protected void updateVariableValue() {
 			value = new DataBinding<T>("value", this, getValueType(), BindingDefinitionType.GET_SET);
 		}
 
 		protected void updateVariableList() {
 			list = new DataBinding<List<T>>("list", this, getListType(), BindingDefinitionType.GET_SET);
-		}
+		}*/
 
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			if (dataBinding == getValue()) {
-				updateVariableValue();
+				// updateVariableValue();
 			}
 			if (dataBinding == getList()) {
-				updateVariableList();
+				// updateVariableList();
 			}
 			super.notifiedBindingChanged(dataBinding);
 		}

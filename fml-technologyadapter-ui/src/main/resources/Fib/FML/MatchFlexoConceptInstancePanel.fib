@@ -124,19 +124,6 @@
 		<Dependancy componentName="CreationSchemeDropDown" />
 		<LocalizedDictionary />
 	</Table>
-	<Label label="description" align="right" index="14" data=""
-		constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-		visible="" format="" icon="" tooltip="" localize="true" enable=""
-		clickAction="" doubleClickAction="" rightClickAction=""
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" />
-	<TextArea columns="6" rows="2" text="TextArea" index="15"
-		data="data.description"
-		constraints="twocols(expandHorizontally=true;expandVertically=true;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-		visible="" format="" icon="" tooltip="" localize="true" enable=""
-		clickAction="" doubleClickAction="" rightClickAction=""
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" editable="" />
 	<LocalizedDictionary>
 		<Localized key="Assign" lang="English" value="Assign" />
 		<Localized key="Assign" lang="French" value="Assign" />

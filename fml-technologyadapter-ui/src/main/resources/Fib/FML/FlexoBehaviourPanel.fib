@@ -116,12 +116,17 @@
 							label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
 							isEditable="false" filtered="false" defaultVisible="true"
 							name="interationAction">
-							<Children data="interationAction.thenControlGraph.flattenedSequence" name="children" />
+							<Children data="interationAction.thenControlGraph.flattenedSequence" name="thenChildren" />
+							<Children data="interationAction.elseControlGraph.flattenedSequence" name="elseChildren" />
 							<BrowserRemoveAction
 								method="selected.actionContainer.removeFromActions(selected)"
 								name="delete_action" />
 							<BrowserAddAction method="controller.createEditionAction(selected)"
 								name="add_action" />
+							<BrowserAddAction method="controller.createEditionActionInThenControlGraph(selected)"
+								name="add_action_in_then_control_graph" />
+							<BrowserAddAction method="controller.createEditionActionInElseControlGraph(selected)"
+								name="add_action_in_else_control_graph" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"

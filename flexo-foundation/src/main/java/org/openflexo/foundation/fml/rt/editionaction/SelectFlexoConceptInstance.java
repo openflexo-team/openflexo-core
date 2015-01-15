@@ -19,9 +19,13 @@
  */
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.antar.expr.NullReferenceException;
+import org.openflexo.antar.expr.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -62,6 +66,16 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
+
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLAttribute
+	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
+
+	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
+
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
 	public String _getFlexoConceptTypeURI();
@@ -83,6 +97,29 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 
 		public SelectFlexoConceptInstanceImpl() {
 			super();
+		}
+
+		private DataBinding<VirtualModelInstance> virtualModelInstance;
+
+		@Override
+		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
+			if (virtualModelInstance == null) {
+				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
+						DataBinding.BindingDefinitionType.GET);
+				virtualModelInstance.setBindingName("virtualModelInstance");
+			}
+			return virtualModelInstance;
+		}
+
+		@Override
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
+			if (aVirtualModelInstance != null) {
+				aVirtualModelInstance.setOwner(this);
+				aVirtualModelInstance.setBindingName("virtualModelInstance");
+				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.virtualModelInstance = aVirtualModelInstance;
 		}
 
 		@Override
@@ -170,20 +207,35 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
 		}
 
-		@Override
-		public List<FlexoConceptInstance> execute(FlexoBehaviourAction action) {
-			VirtualModelInstance vmi = null;
+		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
+			if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
+				try {
+					return getVirtualModelInstance().getBindingValue(action);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
 			if (getModelSlot() instanceof FMLRTModelSlot) {
 				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
-					vmi = (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();
+					return (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();
 				} else {
 					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
 				}
-			} else {
-				vmi = action.getVirtualModelInstance();
 			}
+
+			return action.getVirtualModelInstance();
+
+		}
+
+		@Override
+		public List<FlexoConceptInstance> execute(FlexoBehaviourAction<?, ?, ?> action) {
+			VirtualModelInstance vmi = getVirtualModelInstance(action);
 			if (vmi != null) {
 				System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
 				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), action);

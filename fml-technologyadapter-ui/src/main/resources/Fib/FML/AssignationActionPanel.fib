@@ -14,18 +14,6 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)">
 		<Assignment variable="component.bindable" value="data" />
 	</Custom>
-	<!-- <Label label="action_type" align="right" index="0" data="" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" 
-		localize="true" /> <TextField index="1" data="data.assignableAction.implementedInterface.simpleName" 
-		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" 
-		readOnly="true" localize="true" columns="6" text="TextField" /> <Label label="description" 
-		align="right" index="8" data="" constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" 
-		visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" 
-		doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" 
-		valueTransform="" valueValidator="" /> <TextArea columns="6" rows="2" text="TextArea" 
-		index="9" data="data.description" constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" 
-		visible="" format="" icon="" tooltip="" localize="true" enable="" clickAction="" 
-		doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" 
-		valueTransform="" valueValidator="" editable="" /> -->
 	<FIBReferencedComponent
 		dynamicComponentFile="controller.fibForEditionAction(data.assignableAction)"
 		localize="true" manageDynamicModel="true" name="AssignableActionWidget"

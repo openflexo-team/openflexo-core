@@ -21,6 +21,9 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import org.openflexo.antar.binding.BindingModel;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.model.annotations.Implementation;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
@@ -30,7 +33,7 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-// @ImplementationClass(FMLControlGraphOwner.FMLControlGraphOwnerImpl.class)
+@Imports({ @Import(DefaultFMLControlGraphOwner.class) })
 public abstract interface FMLControlGraphOwner extends FlexoConceptObject {
 
 	/**
@@ -64,7 +67,21 @@ public abstract interface FMLControlGraphOwner extends FlexoConceptObject {
 	 */
 	public void reduce();
 
-	/*public static abstract class FMLControlGraphOwnerImpl extends FlexoConceptObjectImpl implements FMLControlGraphOwner {
+	/**
+	 * Called when the structure of supplied control graph has changed
+	 */
+	public void controlGraphChanged(FMLControlGraph controlGraph);
 
-	}*/
+	@Implementation
+	public abstract class FMLControlGraphOwnerImpl implements FMLControlGraphOwner {
+		@Override
+		public void controlGraphChanged(FMLControlGraph controlGraph) {
+			if (this instanceof FMLControlGraph) {
+				FMLControlGraph cg = (FMLControlGraph) this;
+				cg.getPropertyChangeSupport().firePropertyChange("flattenedSequence", null, cg.getFlattenedSequence());
+				cg.getOwner().controlGraphChanged(cg.getOwner().getControlGraph(cg.getOwnerContext()));
+			}
+		}
+
+	}
 }

@@ -135,6 +135,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 */
 	public List<? extends FMLControlGraph> getFlattenedSequence();
 
+	public Sequence getParentFlattenedSequence();
+
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 
 		private ControlGraphBindingModel<?> bindingModel;
@@ -177,20 +179,10 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			// Before to build the new sequence !!!
 			owner.setControlGraph(null, ownerContext);
 
-			replaceWith(factory.newSequence(this, controlGraph), owner, ownerContext);
-
-			/*FMLControlGraphOwner owner = getOwner();
-			String ownerContext = getOwnerContext();
-			FMLModelFactory factory = getFMLModelFactory();
-			if (factory == null) {
-				System.err.println("Prout,la facotry est null");
-			}
-			// Following statement is really important, we need first to "disconnect" actual control graph
-			owner.setControlGraph(null, ownerContext);
-			// Then we create the sequence
 			Sequence sequence = factory.newSequence(this, controlGraph);
-			sequence.setOwnerContext(ownerContext);
-			owner.setControlGraph(sequence, ownerContext);*/
+			replaceWith(sequence, owner, ownerContext);
+
+			owner.controlGraphChanged(sequence);
 
 		}
 
@@ -246,6 +238,17 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 				return ((FlexoBehaviourObject) getRootOwner()).getFlexoBehaviour();
 			}
 			return null;
+		}
+
+		@Override
+		public Sequence getParentFlattenedSequence() {
+			Sequence returned = null;
+			FMLControlGraphOwner p = getOwner();
+			while (p instanceof Sequence) {
+				returned = (Sequence) p;
+				p = returned.getOwner();
+			}
+			return returned;
 		}
 
 	}

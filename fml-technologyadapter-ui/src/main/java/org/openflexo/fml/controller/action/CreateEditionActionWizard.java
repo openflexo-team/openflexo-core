@@ -2,16 +2,22 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -27,6 +33,11 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 	private final ChooseEditionActionClass chooseEditionActionClass;
 
 	private static final Dimension DIMENSIONS = new Dimension(700, 500);
+
+	private static final String NO_EDITION_ACTION_TYPE = FlexoLocalization
+			.localizedForKey("please_choose_an_edition_action_or_control_structure");
+	private static final String DUPLICATED_VARIABLE_NAME = FlexoLocalization
+			.localizedForKey("this_variable_name_shadow_an_other_identifier");
 
 	public CreateEditionActionWizard(CreateEditionAction action, FlexoController controller) {
 		super(action, controller);
@@ -59,7 +70,23 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 	 *
 	 */
 	@FIBPanel("Fib/Wizard/CreateFMLElement/ChooseEditionActionClass.fib")
-	public class ChooseEditionActionClass extends WizardStep {
+	public class ChooseEditionActionClass extends WizardStep implements PropertyChangeListener {
+
+		public ChooseEditionActionClass() {
+			getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+
+		@Override
+		public void done() {
+			getAction().getPropertyChangeSupport().removePropertyChangeListener(this);
+			super.done();
+		}
+
+		@Override
+		public void reactivate() {
+			getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+			super.reactivate();
+		}
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
@@ -77,24 +104,18 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 		@Override
 		public boolean isValid() {
 
-			/*if (StringUtils.isEmpty(getFlexoBehaviourName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+			if (getEditionActionClass() == null) {
+				setIssueMessage(NO_EDITION_ACTION_TYPE, IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
-				return false;
-			} else if (getFlexoBehaviourClass() == null) {
-				setIssueMessage(NO_BEHAVIOUR_TYPE, IssueMessageType.ERROR);
-				return false;
-			} else if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(RECOMMANDED_DESCRIPTION, IssueMessageType.WARNING);
 			}
 
-			if (!getFlexoBehaviourName().substring(0, 1).toLowerCase().equals(getFlexoBehaviourName().substring(0, 1))) {
-				setIssueMessage(DISCOURAGED_NAME, IssueMessageType.WARNING);
-			}*/
+			if (getAction().isVariableDeclaration()
+					&& getFocusedObject().getInferedBindingModel().bindingVariableNamed(getAction().getDeclarationVariableName()) != null) {
+				setIssueMessage(DUPLICATED_VARIABLE_NAME, IssueMessageType.ERROR);
+				return false;
+			}
 
-			return false;
+			return true;
 		}
 
 		public Class<? extends EditionAction> getEditionActionClass() {
@@ -108,6 +129,53 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 				getPropertyChangeSupport().firePropertyChange("editionActionClass", oldValue, editionActionClass);
 				checkValidity();
 			}
+		}
+
+		public String getDeclarationVariableName() {
+			return getAction().getDeclarationVariableName();
+		}
+
+		public void setDeclarationVariableName(String declarationVariableName) {
+			if (getDeclarationVariableName() != declarationVariableName) {
+				String oldValue = getDeclarationVariableName();
+				getAction().setDeclarationVariableName(declarationVariableName);
+				getPropertyChangeSupport().firePropertyChange("declarationVariableName", oldValue, declarationVariableName);
+				checkValidity();
+			}
+		}
+
+		public DataBinding<?> getIterationExpression() {
+			if (getAction().isIterationExpressionAction()) {
+				return ((ExpressionAction) ((IterationAction) getAction().getBaseEditionAction()).getIterationAction()).getExpression();
+			}
+			return null;
+		}
+
+		public void setIterationExpression(DataBinding<?> expression) {
+			if (getAction().isIterationExpressionAction()) {
+				((ExpressionAction) ((IterationAction) getAction().getBaseEditionAction()).getIterationAction()).setExpression(expression);
+				getPropertyChangeSupport().firePropertyChange("iterationAction", null, getIterationExpression());
+				checkValidity();
+			}
+		}
+
+		public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+			return getAction().getFetchRequestClass();
+		}
+
+		public void setFetchRequestClass(Class<? extends FetchRequest<?, ?>> fetchRequestClass) {
+			if (getFetchRequestClass() != fetchRequestClass) {
+				Class<? extends FetchRequest<?, ?>> oldValue = getFetchRequestClass();
+				getAction().setFetchRequestClass(fetchRequestClass);
+				getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
+				checkValidity();
+			}
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			getPropertyChangeSupport().firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+			checkValidity();
 		}
 
 	}

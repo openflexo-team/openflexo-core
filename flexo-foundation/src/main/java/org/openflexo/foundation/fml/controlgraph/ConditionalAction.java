@@ -211,9 +211,9 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Override
 		public String getStringRepresentation() {
 			if (getCondition().isSet() && getCondition().isValid()) {
-				return getCondition() + " ?";
+				return getHeaderContext() + getCondition() + " ?";
 			}
-			return super.getStringRepresentation();
+			return getHeaderContext() + " ? ";
 		}
 
 		@Override
@@ -269,6 +269,14 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			if (getElseControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getElseControlGraph()).reduce();
 			}
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			if (dataBinding == getCondition()) {
+				getPropertyChangeSupport().firePropertyChange(CONDITION_KEY, null, getCondition());
+			}
+			super.notifiedBindingChanged(dataBinding);
 		}
 
 	}
