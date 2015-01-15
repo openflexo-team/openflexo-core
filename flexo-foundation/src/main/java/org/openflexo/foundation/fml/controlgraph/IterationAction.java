@@ -238,10 +238,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 		@Override
 		public String getStringRepresentation() {
-			if (getIteration().isSet() && getIteration().isValid()) {
-				return getIteratorName() + " : " + getIteration();
-			}
-			return super.getStringRepresentation();
+			return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
 		}
 
 		@Override

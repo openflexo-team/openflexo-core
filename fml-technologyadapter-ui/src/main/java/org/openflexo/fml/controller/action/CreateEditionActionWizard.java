@@ -16,7 +16,6 @@ import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.icon.FMLIconLibrary;
@@ -136,7 +135,7 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 		}
 
 		public void setDeclarationVariableName(String declarationVariableName) {
-			if (getDeclarationVariableName() != declarationVariableName) {
+			if (!declarationVariableName.equals(getDeclarationVariableName())) {
 				String oldValue = getDeclarationVariableName();
 				getAction().setDeclarationVariableName(declarationVariableName);
 				getPropertyChangeSupport().firePropertyChange("declarationVariableName", oldValue, declarationVariableName);
@@ -145,16 +144,29 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 		}
 
 		public DataBinding<?> getIterationExpression() {
-			if (getAction().isIterationExpressionAction()) {
-				return ((ExpressionAction) ((IterationAction) getAction().getBaseEditionAction()).getIterationAction()).getExpression();
+			return getAction().getIterationExpression();
+		}
+
+		public void setIterationExpression(DataBinding<?> expression) {
+			if (!expression.equals(getIterationExpression())) {
+				getAction().setIterationExpression(expression);
+				getPropertyChangeSupport().firePropertyChange("iterationExpression", null, getIterationExpression());
+				checkValidity();
+			}
+		}
+
+		public String getIteratorName() {
+			if (getAction().isIterationAction()) {
+				return ((IterationAction) getAction().getBaseEditionAction()).getIteratorName();
 			}
 			return null;
 		}
 
-		public void setIterationExpression(DataBinding<?> expression) {
-			if (getAction().isIterationExpressionAction()) {
-				((ExpressionAction) ((IterationAction) getAction().getBaseEditionAction()).getIterationAction()).setExpression(expression);
-				getPropertyChangeSupport().firePropertyChange("iterationAction", null, getIterationExpression());
+		public void setIteratorName(String iteratorName) {
+			if (!iteratorName.equals(getIteratorName())) {
+				String oldValue = getIteratorName();
+				((IterationAction) getAction().getBaseEditionAction()).setIteratorName(iteratorName);
+				getPropertyChangeSupport().firePropertyChange("iteratorName", oldValue, iteratorName);
 				checkValidity();
 			}
 		}

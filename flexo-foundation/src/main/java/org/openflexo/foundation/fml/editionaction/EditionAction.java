@@ -225,6 +225,15 @@ public abstract interface EditionAction extends FMLControlGraph {
 			this.conditional = conditional;
 		}
 
+		/**
+		 * Return a string representation suitable for a common user<br>
+		 * This representation will used in all GUIs
+		 */
+		@Override
+		public String getStringRepresentation() {
+			return getHeaderContext() + getImplementedInterface().getSimpleName();
+		}
+
 		public final String getHeaderContext() {
 			Sequence s = getParentFlattenedSequence();
 			if (s != null && s.getFlattenedSequence().get(0) == this) {

@@ -243,6 +243,16 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return returned;
 	}
 
+	public FetchRequest<?, ?> getFetchRequestAction() {
+		if (isIterationAction()) {
+			if (getIterationType() == IterationType.FetchRequest
+					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof FetchRequest) {
+				return (FetchRequest<?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() instanceof EditionAction) {
@@ -264,7 +274,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				return baseEditionAction.getStringRepresentation();
 			}
 		}
-		return "?";
+
+		return baseEditionAction.getStringRepresentation();
 	}
 
 	@Override
@@ -360,6 +371,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = factory.newConditionalAction();
 		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newIterationAction();
+			updateIteration((IterationAction) returned);
 		} else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?>>) editionActionClass);
 		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
@@ -454,6 +466,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}*/
 
 	private DataBinding<?> assignation = null;
+	private DataBinding<?> iterationExpression = null;
 	private String declarationVariableName = null;
 
 	private Type getAssignableType() {
@@ -585,9 +598,45 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return getBaseEditionAction() instanceof IterationAction;
 	}
 
-	public boolean isIterationExpressionAction() {
-		return getBaseEditionAction() instanceof IterationAction
-				&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof ExpressionAction;
+	public static enum IterationType {
+		Expression, FetchRequest;
+	}
+
+	public IterationType getIterationType() {
+		return iterationType;
+	}
+
+	public void setIterationType(IterationType iterationType) {
+		if (iterationType != this.iterationType) {
+			IterationType oldValue = this.iterationType;
+			this.iterationType = iterationType;
+			updateIteration();
+			getPropertyChangeSupport().firePropertyChange("iterationType", oldValue, iterationType);
+		}
+	}
+
+	private void updateIteration() {
+		IterationAction iterationAction = (IterationAction) editionActionMap.get(IterationAction.class);
+		if (iterationAction != null) {
+			updateIteration(iterationAction);
+		}
+	}
+
+	private void updateIteration(IterationAction iterationAction) {
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
+		if (iterationAction != null) {
+			switch (getIterationType()) {
+			case Expression:
+				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+				iterationAction.setIterationAction(exp);
+				break;
+			case FetchRequest:
+				FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+				iterationAction.setIterationAction(fetchRequest);
+			default:
+				break;
+			}
+		}
 	}
 
 	public boolean isVariableDeclaration() {
@@ -605,6 +654,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	private boolean isVariableDeclaration = false;
 	private boolean isAssignation = false;
+	private IterationType iterationType = IterationType.Expression;
 
 	public boolean isAssignation() {
 		return isAssignation;
@@ -617,6 +667,30 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			getPropertyChangeSupport().firePropertyChange("isAssignation", oldValue, isAssignation);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 		}
+	}
+
+	public DataBinding<?> getIterationExpression() {
+		if (iterationExpression == null) {
+
+			iterationExpression = new DataBinding<Object>(this, List.class, DataBinding.BindingDefinitionType.GET);
+			iterationExpression.setBindingName("iterationExpression");
+			iterationExpression.setMandatory(true);
+
+		}
+		iterationExpression.setDeclaredType(getAssignableType());
+		return iterationExpression;
+	}
+
+	public void setIterationExpression(DataBinding<?> iterationExpression) {
+		if (iterationExpression != null) {
+			this.iterationExpression = new DataBinding<Object>(iterationExpression.toString(), this, List.class,
+					DataBinding.BindingDefinitionType.GET);
+			iterationExpression.setBindingName("iterationExpression");
+			iterationExpression.setMandatory(true);
+		}
+		updateIteration();
+		notifiedBindingChanged(this.assignation);
+		getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 	}
 
 }
