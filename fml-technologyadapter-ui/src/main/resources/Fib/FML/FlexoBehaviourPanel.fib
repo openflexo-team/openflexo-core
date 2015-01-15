@@ -110,6 +110,8 @@
 								name="delete_action" />
 							<BrowserAddAction method="controller.createEditionAction(selected)"
 								name="add_action" />
+							<BrowserAddAction method="controller.createEditionActionInIteration(selected)"
+								name="add_action_inside_iteration" />
 						</BrowserElement>
 						<BrowserElement
 							dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
@@ -139,34 +141,6 @@
 								method="selected.actionContainer.removeFromActions(selected)"
 								name="delete_action" />
 						</BrowserElement>
-						<!--  <BrowserElement
-							dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
-							label="controlStructure.stringRepresentation" icon="controller.iconForObject(controlStructure)"
-							isEditable="false" filtered="false" defaultVisible="true"
-							name="controlStructure">
-							<Children data="controlStructure.actions" name="children" />
-							<BrowserRemoveAction
-								method="selected.actionContainer.removeFromActions(selected)"
-								name="delete_action" />
-							<BrowserAddAction method="controller.createEditionAction(selected)"
-								name="add_action" />
-						</BrowserElement>-->
-						<!--  <BrowserElement
-							dataClassName="org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction"
-							label="fetchRequestIterationAction.stringRepresentation" icon="controller.iconForObject(fetchRequestIterationAction)"
-							isEditable="false" filtered="false" defaultVisible="true"
-							name="fetchRequestIterationAction">
-							<Children data="fetchRequestIterationAction.fetchRequest"
-								name="fetchRequest" />
-							<Children data="fetchRequestIterationAction.actions"
-								name="children" />
-							<BrowserRemoveAction
-								method="selected.actionContainer.removeFromActions(selected)"
-								name="delete_action" />
-							<BrowserAddAction method="controller.createEditionAction(selected)"
-								name="add_action" />
-						</BrowserElement>-->
-						
 					</Browser>
 				</Panel>
 			</SplitPanel>
