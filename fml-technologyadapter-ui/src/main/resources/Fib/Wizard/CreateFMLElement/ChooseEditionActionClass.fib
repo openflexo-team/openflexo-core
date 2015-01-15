@@ -8,7 +8,7 @@
 	<Panel id="2" darkLevel="0" useScrollBar="true" protectContent="false"
 		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
 		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
-		borderTitle="Panel" trackViewPortHeight="true" >
+		borderTitle="Panel" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
 		<RadioButtonList id="3" manageDynamicModel="false"
 			columns="1" controllerClassName="org.openflexo.fib.controller.FIBController"
 			index="2" localize="true"
