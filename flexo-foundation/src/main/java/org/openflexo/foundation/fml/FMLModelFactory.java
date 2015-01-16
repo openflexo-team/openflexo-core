@@ -30,13 +30,9 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviour;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
@@ -49,9 +45,12 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
+import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
@@ -164,26 +163,26 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				classes.add(modelSlotClass);
 				DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
 				if (prDeclarations != null) {
-					for (DeclareFlexoRole prDeclaration : prDeclarations.value()) {
-						classes.add(prDeclaration.flexoRoleClass());
+					for (Class<? extends FlexoRole> roleClass : prDeclarations.value()) {
+						classes.add(roleClass);
 					}
 				}
 				DeclareFlexoBehaviours fbDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviours.class);
 				if (fbDeclarations != null) {
-					for (DeclareFlexoBehaviour fbDeclaration : fbDeclarations.value()) {
-						classes.add(fbDeclaration.flexoBehaviourClass());
+					for (Class<? extends FlexoBehaviour> behaviourClass : fbDeclarations.value()) {
+						classes.add(behaviourClass);
 					}
 				}
 				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
 				if (eaDeclarations != null) {
-					for (DeclareEditionAction eaDeclaration : eaDeclarations.value()) {
-						classes.add(eaDeclaration.editionActionClass());
+					for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
+						classes.add(editionActionClass);
 					}
 				}
 				DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
 				if (frDeclarations != null) {
-					for (DeclareFetchRequest frDeclaration : frDeclarations.value()) {
-						classes.add(frDeclaration.fetchRequestClass());
+					for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : frDeclarations.value()) {
+						classes.add(fetchRequestClass);
 					}
 				}
 			}

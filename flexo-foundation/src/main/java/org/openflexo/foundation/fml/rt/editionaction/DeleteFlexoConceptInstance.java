@@ -33,6 +33,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -77,6 +78,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstance.DeleteFlexoConceptInstanceImpl.class)
 @XMLElement
+@FML("DeleteFlexoConceptInstance")
 public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptInstance>,
 		TechnologySpecificAction<FMLRTModelSlot, FlexoConceptInstance> {
 

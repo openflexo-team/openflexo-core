@@ -24,10 +24,8 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareActorReference;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.converter.DataBindingConverter;
@@ -62,7 +60,7 @@ public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModel
 			addConverter(new RelativePathResourceConverter(virtualModelInstanceResource.getFlexoIODelegate().getParentPath()));
 			addConverter(virtualModelInstanceResource.getProject().getObjectReferenceConverter());
 		}
-		
+
 	}
 
 	/**
@@ -82,8 +80,8 @@ public class VirtualModelInstanceModelFactory extends DefaultPamelaResourceModel
 					classes.add(modelSlotClass);
 					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);
 					if (arDeclarations != null) {
-						for (DeclareActorReference arDeclaration : arDeclarations.value()) {
-							classes.add(arDeclaration.actorReferenceClass());
+						for (Class<? extends ActorReference> arClass : arDeclarations.value()) {
+							classes.add(arClass);
 						}
 					}
 				}

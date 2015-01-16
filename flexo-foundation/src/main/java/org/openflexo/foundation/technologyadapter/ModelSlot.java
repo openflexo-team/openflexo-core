@@ -36,13 +36,9 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
-import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviour;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -358,7 +354,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private List<Class<? extends FlexoRole<?>>> computeAvailableFlexoRoleTypes() {
 			availableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
-			appendDeclarePatternRoles(availableFlexoRoleTypes, getClass());
+			appendDeclareFlexoRoles(availableFlexoRoleTypes, getClass());
 			return availableFlexoRoleTypes;
 
 			/*Class<?> cl = getClass();
@@ -374,21 +370,21 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			return availableFlexoRoleTypes;*/
 		}
 
-		private void appendDeclarePatternRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
+		private void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
 				DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
-				for (DeclareFlexoRole flexoRoleDeclaration : allFlexoRoles.value()) {
-					if (!availableFlexoRoleTypes.contains(flexoRoleDeclaration.flexoRoleClass())) {
-						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) flexoRoleDeclaration.flexoRoleClass());
+				for (Class<? extends FlexoRole> roleClass : allFlexoRoles.value()) {
+					if (!availableFlexoRoleTypes.contains(roleClass)) {
+						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) roleClass);
 					}
 				}
 			}
 			if (cl.getSuperclass() != null) {
-				appendDeclarePatternRoles(aList, cl.getSuperclass());
+				appendDeclareFlexoRoles(aList, cl.getSuperclass());
 			}
 
 			for (Class superInterface : cl.getInterfaces()) {
-				appendDeclarePatternRoles(aList, superInterface);
+				appendDeclareFlexoRoles(aList, superInterface);
 			}
 
 		}
@@ -410,9 +406,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-				for (DeclareEditionAction editionActionDeclaration : allEditionActions.value()) {
-					if (!availableEditionActionTypes.contains(editionActionDeclaration.editionActionClass())) {
-						availableEditionActionTypes.add(editionActionDeclaration.editionActionClass());
+				for (Class<? extends TechnologySpecificAction<?, ?>> editionActionClass : allEditionActions.value()) {
+					if (!availableEditionActionTypes.contains(editionActionClass)) {
+						availableEditionActionTypes.add(editionActionClass);
 					}
 				}
 			}
@@ -441,9 +437,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private void appendFlexoBehaviourTypes(List<Class<? extends FlexoBehaviour>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFlexoBehaviours.class)) {
 				DeclareFlexoBehaviours allFlexoBehaviours = cl.getAnnotation(DeclareFlexoBehaviours.class);
-				for (DeclareFlexoBehaviour flexoBehaviourDeclaration : allFlexoBehaviours.value()) {
-					if (!availableFlexoBehaviourTypes.contains(flexoBehaviourDeclaration.flexoBehaviourClass())) {
-						availableFlexoBehaviourTypes.add(flexoBehaviourDeclaration.flexoBehaviourClass());
+				for (Class<? extends FlexoBehaviour> flexoBehaviourClass : allFlexoBehaviours.value()) {
+					if (!availableFlexoBehaviourTypes.contains(flexoBehaviourClass)) {
+						availableFlexoBehaviourTypes.add(flexoBehaviourClass);
 					}
 				}
 			}
@@ -472,9 +468,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
-				for (DeclareFetchRequest fetchRequestDeclaration : allFetchRequestActions.value()) {
-					if (!availableFetchRequestActionTypes.contains(fetchRequestDeclaration.fetchRequestClass())) {
-						availableFetchRequestActionTypes.add(fetchRequestDeclaration.fetchRequestClass());
+				for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : allFetchRequestActions.value()) {
+					if (!availableFetchRequestActionTypes.contains(fetchRequestClass)) {
+						availableFetchRequestActionTypes.add(fetchRequestClass);
 					}
 				}
 			}

@@ -31,7 +31,6 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareModelSlot;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
@@ -344,9 +343,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		availableModelSlotTypes = new ArrayList<Class<? extends ModelSlot<?>>>();
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareModelSlots.class)) {
+
 			DeclareModelSlots allModelSlots = cl.getAnnotation(DeclareModelSlots.class);
-			for (DeclareModelSlot modelSlotDeclaration : allModelSlots.value()) {
-				availableModelSlotTypes.add(modelSlotDeclaration.modelSlotClass());
+			for (Class<? extends ModelSlot<?>> msClass : allModelSlots.value()) {
+				availableModelSlotTypes.add(msClass);
 			}
 		}
 		return availableModelSlotTypes;

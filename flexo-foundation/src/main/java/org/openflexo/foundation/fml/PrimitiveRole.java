@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.PrimitiveActorReference;
@@ -21,6 +22,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
 @XMLElement
+@FML("PrimitiveRole")
 public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 	public static enum PrimitiveType {

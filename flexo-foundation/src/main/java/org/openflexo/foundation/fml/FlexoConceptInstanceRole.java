@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
@@ -23,6 +24,7 @@ import org.openflexo.model.validation.ValidationWarning;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
 @XMLElement
+@FML("FlexoConceptInstanceRole")
 public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = String.class)

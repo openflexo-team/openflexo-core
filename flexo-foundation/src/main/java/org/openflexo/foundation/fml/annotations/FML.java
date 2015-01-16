@@ -1,23 +1,26 @@
 package org.openflexo.foundation.fml.annotations;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.fml.FlexoRole;
-
 /**
- * Annotation used to provide to a {@link ModelSLot} the list of all {@link FlexoRole} to consider
+ * This annotation is used to indicate that annotated type is managed as part of FML language.<br>
+ * value() used as element identifier in FML syntax
  * 
  * @author sylvain
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Target(value = ElementType.TYPE)
-public @interface DeclareFlexoRoles {
+public @interface FML {
 
-	public Class<? extends FlexoRole>[] value();
+	/**
+	 * The identifier in FML syntax
+	 * 
+	 * @return the property identifier of this getter
+	 */
+	public String value();
+
 }

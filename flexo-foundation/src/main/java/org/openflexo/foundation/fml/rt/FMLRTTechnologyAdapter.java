@@ -27,7 +27,6 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyContextManager;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareModelSlot;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -47,9 +46,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
  * @author sylvain
  * 
  */
-@DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "FMLRTModelSlot", modelSlotClass = FMLRTModelSlot.class), // Classical type-safe interpretation
-})
+@DeclareModelSlots({ FMLRTModelSlot.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());

@@ -31,12 +31,10 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
@@ -59,18 +57,13 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain, christophe
  * 
  */
-@DeclareFlexoRoles({ // All pattern roles available through this model slot
-@DeclareFlexoRole(FML = "FlexoConceptInstanceRole", flexoRoleClass = FlexoConceptInstanceRole.class), // FlexoConceptInstance
-		@DeclareFlexoRole(FML = "PrimitiveRole", flexoRoleClass = PrimitiveRole.class) // PrimitiveRole
-})
-@DeclareEditionActions({ // All edition actions available through this model slot
-@DeclareEditionAction(FML = "AddFlexoConceptInstance", editionActionClass = AddFlexoConceptInstance.class),
-		@DeclareEditionAction(FML = "DeleteFlexoConceptInstance", editionActionClass = DeleteFlexoConceptInstance.class) })
-@DeclareFetchRequests({ // All requests available through this model slot
-@DeclareFetchRequest(FML = "SelectFlexoConceptInstance", fetchRequestClass = SelectFlexoConceptInstance.class) })
+@DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
+@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class })
+@DeclareFetchRequests({ SelectFlexoConceptInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
 @XMLElement
+@FML("FMLRTModelSlot")
 public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	@PropertyIdentifier(type = String.class)
