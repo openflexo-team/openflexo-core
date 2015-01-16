@@ -16,7 +16,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
@@ -26,12 +25,11 @@ import org.openflexo.toolbox.IProgress;
  * 
  * @param <RD>
  *            the type of the resource data reference by this resource
- * @author Guillaume
+ * @author Guillaume, Sylvain
  * 
  */
-@ModelEntity
+@ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoResourceImpl.class)
-@XMLElement
 public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner, Resource {
 
 	public static final String NAME = "name";
@@ -343,7 +341,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * Called to notify that a resource has been added to contents
 	 * 
 	 * @param resource
-	 *            : resource beeing added
+	 *            : resource being added
 	 */
 	public void notifyContentsAdded(FlexoResource<?> resource);
 

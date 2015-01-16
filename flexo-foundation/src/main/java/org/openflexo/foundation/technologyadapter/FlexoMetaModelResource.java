@@ -2,7 +2,6 @@ package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
 
 /**
  * A {@link FlexoMetaModelResource} is a {@link FlexoResource} specific to a technology and storing a metamodel
@@ -17,8 +16,7 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <TA>
  *            type of {@link TechnologyAdapter} handling this conforming pattern
  */
-@ModelEntity
-@XMLElement
+@ModelEntity(isAbstract = true)
 public interface FlexoMetaModelResource<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
 		extends TechnologyAdapterResource<MM, TA> {
 

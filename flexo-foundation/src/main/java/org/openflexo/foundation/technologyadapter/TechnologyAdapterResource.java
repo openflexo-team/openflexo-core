@@ -5,7 +5,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
 
 /**
  * A {@link TechnologyAdapterResource} is a {@link FlexoResource} specific to a technology
@@ -14,8 +13,7 @@ import org.openflexo.model.annotations.XMLElement;
  * 
  * @param <RD>
  */
-@ModelEntity
-@XMLElement
+@ModelEntity(isAbstract = true)
 public interface TechnologyAdapterResource<RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> extends
 		FlexoResource<RD> {
 	public static final String TECHNOLOGY_ADAPTER = "technologyAdapter";

@@ -1347,4 +1347,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	public String getDirectoryPath(){
 		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
+	
+	@Override
+	public ViewPoint getVirtualModel() {
+		return getViewPoint();
+	}
 }

@@ -8,11 +8,9 @@ import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
 
-@ModelEntity
+@ModelEntity(isAbstract = true)
 @ImplementationClass(ViewPointResourceImpl.class)
-@XMLElement
 public interface AbstractVirtualModelResource<VM extends AbstractVirtualModel<VM>> extends PamelaResource<VM, FMLModelFactory>,
 		DirectoryContainerResource<VM>, TechnologyAdapterResource<VM, FMLTechnologyAdapter> {
 

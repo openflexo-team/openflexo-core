@@ -282,4 +282,13 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 
+	@Override
+	public View getModelData() {
+		return getView();
+	}
+
+	@Override
+	public View getModel() {
+		return getView();
+	}
 }

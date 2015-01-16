@@ -6,7 +6,6 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 
@@ -17,9 +16,8 @@ import org.openflexo.toolbox.FlexoVersion;
  * 
  * @param <RD>
  */
-@ModelEntity
-@XMLElement
-public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResource<RD>{
+@ModelEntity(isAbstract = true)
+public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResource<RD> {
 
 	public static final String MODEL_VERSION = "modelVersion";
 	public static final String FACTORY = "factory";

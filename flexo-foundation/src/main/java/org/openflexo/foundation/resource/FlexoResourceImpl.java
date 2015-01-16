@@ -1,9 +1,12 @@
 package org.openflexo.foundation.resource;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
@@ -12,6 +15,8 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.IProgress;
 
 /**
@@ -328,4 +333,62 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		logger.warning("TODO: implement this");
 	}
 
+	// TODO: check this
+	@Override
+	public void setContainer(Resource resource) {
+		if (resource instanceof FlexoResource) {
+			setContainer((FlexoResource<?>) resource);
+		}
+	}
+
+	// TODO: check this
+	@Override
+	public List<? extends Resource> getContents(Pattern pattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public ResourceLocatorDelegate getLocator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public InputStream openInputStream() {
+		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
+			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getInputStream();
+		}
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public OutputStream openOutputStream() {
+		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
+			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getOutputStream();
+		}
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public final String getRelativePath() {
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public String makePathRelativeToString(String pathRelative) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// TODO: check this
+	@Override
+	public boolean isContainer() {
+		return true;
+	}
 }

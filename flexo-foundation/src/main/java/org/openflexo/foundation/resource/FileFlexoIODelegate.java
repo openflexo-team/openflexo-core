@@ -3,8 +3,10 @@ package org.openflexo.foundation.resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -151,14 +153,40 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			}
 
 		}
-		
+
 		@Override
-		public String getParentPath(){
-			if(getFile().isDirectory()){
+		public OutputStream getOutputStream() {
+			try {
+				return new FileOutputStream(getFile());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		@Override
+		public String getParentPath() {
+			if (getFile().isDirectory()) {
 				return getFile().getAbsolutePath();
-			}else{
+			} else {
 				return getFile().getParent();
 			}
+		}
+
+		@Override
+		public void setOutputStream(OutputStream outsputStream) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void setInputStream(InputStream inputStream) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			// TODO Auto-generated method stub
+			return false;
 		}
 
 	}

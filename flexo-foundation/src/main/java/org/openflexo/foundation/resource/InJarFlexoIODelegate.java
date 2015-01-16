@@ -1,6 +1,7 @@
 package org.openflexo.foundation.resource;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -39,6 +40,22 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		}
 
 		@Override
+		public void setInputStream(InputStream inputStream) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public OutputStream getOutputStream() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setOutputStream(OutputStream outsputStream) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
 		public synchronized boolean hasWritePermission() {
 			return false;
 		}
@@ -46,6 +63,23 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		@Override
 		public boolean exists() {
 			return true;
+		}
+
+		@Override
+		public boolean delete() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			return true;
+		}
+
+		@Override
+		public String getParentPath() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 

@@ -44,7 +44,8 @@ import com.google.common.base.Throwables;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResourceImpl<RD> implements PamelaResource<RD, F>{
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends
+		FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -90,8 +91,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		F factory = getFactory();
 		if (factory != null) {
 			factory.startDeserializing();
-		}
-		else {
+		} else {
 			logger.warning("Trying to deserialize with a NULL factory!!!");
 			System.err.println(Throwables.getStackTraceAsString(new Throwable()));
 		}
@@ -109,8 +109,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		getFactory().stopDeserializing();
 		if (getLoadedResourceData() != null) {
 			getLoadedResourceData().clearIsModified();
-		}
-		else {
+		} else {
 			logger.warning("Could not access loaded resource data");
 		}
 	}
@@ -174,8 +173,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 		try {
 
-			//FileInputStream fis = new FileInputStream(getFile());
-			
+			// FileInputStream fis = new FileInputStream(getFile());
+
 			// Retrieve the data from an input stream given by the FlexoIOStream delegate of the resource
 			resourceData = (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
 
@@ -212,19 +211,20 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 
 	}
 
-	//This should be removed from Pamela Resource class
-	private File getFile(){
+	// This should be removed from Pamela Resource class
+	private File getFile() {
 		return (File) getFlexoIODelegate().getSerializationArtefact();
 	}
-	
+
 	/**
 	 * Return a FlexoIOStreamDelegate associated to this flexo resource
+	 * 
 	 * @return
 	 */
-	public FlexoIOStreamDelegate<?> getFlexoIOStreamDelegate(){
+	public FlexoIOStreamDelegate<?> getFlexoIOStreamDelegate() {
 		return (FlexoIOStreamDelegate<?>) getFlexoIODelegate();
 	}
-	
+
 	/**
 	 * Save current resource data to current XML resource file.<br>
 	 * Forces XML version to be the latest one.
@@ -337,7 +337,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			// ((FlexoXMLSerializable) resourceData).finalizeSerialization();
 			// throw new SaveXMLResourceException(this, e, version);
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate(), e);
+			throw new SaveResourceException(getFlexoIODelegate(), e);
 		}
 	}
 
@@ -417,7 +417,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 					if (logger.isLoggable(Level.WARNING)) {
 						logger.warning("Found file " + file.getAbsolutePath() + ". Using it and repairing project as well!");
 					}
-					((FileFlexoIODelegate)getFlexoIODelegate()).setSerializationArtefact(file);
+					((FileFlexoIODelegate) getFlexoIODelegate()).setSerializationArtefact(file);
 					break;
 				}
 			}
@@ -446,6 +446,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			FileUtils.copyFileToFile(getFile(), localCopy);
 
 		}
+	}
+
+	@Override
+	public FlexoVersion latestVersion() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private boolean lastUniqueIDHasBeenSet = false;
@@ -488,15 +494,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	/**
-	 * Read an XML input stream from File and return the parsed Document 
+	 * Read an XML input stream from File and return the parsed Document
 	 */
 	public static Document readXMLFile(File f) throws JDOMException, IOException {
 		FileInputStream fio = new FileInputStream(f);
 		return readXMLInputStream(fio);
 	}
-	
+
 	/**
-	 * Read an XML input stream and return the parsed Document 
+	 * Read an XML input stream and return the parsed Document
 	 */
 	public static Document readXMLInputStream(InputStream inputStream) throws JDOMException, IOException {
 		SAXBuilder parser = new SAXBuilder();
@@ -508,8 +514,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = document.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -518,8 +523,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		Iterator it = from.getDescendants(new ElementFilter(name));
 		if (it.hasNext()) {
 			return (Element) it.next();
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
