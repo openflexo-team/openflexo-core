@@ -43,7 +43,7 @@ public class BasicFMLModelFactoryTest {
 	private static final Logger logger = FlexoLogger.getLogger(BasicFMLModelFactoryTest.class.getPackage().getName());
 
 	@Test
-	public void testInstantiateVirtualModelModelFactory() {
+	public void testInstantiateFMLModelFactory() {
 		try {
 			System.out.println("Instanciating FMLModelFactory");
 			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
