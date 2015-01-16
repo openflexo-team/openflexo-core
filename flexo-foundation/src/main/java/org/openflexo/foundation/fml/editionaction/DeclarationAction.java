@@ -47,7 +47,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	public static final String VARIABLE_NAME_KEY = "variableName";
 
 	@Getter(value = VARIABLE_NAME_KEY)
-	@XMLAttribute
+	@XMLAttribute(xmlTag = "variable")
 	public String getVariableName();
 
 	@Setter(VARIABLE_NAME_KEY)

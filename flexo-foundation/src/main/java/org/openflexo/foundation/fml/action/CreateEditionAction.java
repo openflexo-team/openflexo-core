@@ -162,12 +162,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		EditionAction baseEditionAction = getBaseEditionAction();
 
 		if (baseEditionAction instanceof AssignableAction) {
-			if (getAssignation() != null && getAssignation().isSet()) {
+			if (/*getAssignation() != null && getAssignation().isSet()*/isAssignation()) {
 				AssignationAction<?> newAssignationAction = getFocusedObject().getFMLModelFactory().newAssignationAction();
 				newAssignationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newAssignationAction.setAssignation((DataBinding) getAssignation());
 				newEditionAction = newAssignationAction;
-			} else if (getDeclarationVariableName() != null) {
+			} else if (/*getDeclarationVariableName() != null*/isVariableDeclaration()) {
 				DeclarationAction<?> newDeclarationAction = getFocusedObject().getFMLModelFactory().newDeclarationAction();
 				newDeclarationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newDeclarationAction.setVariableName(getDeclarationVariableName());
@@ -492,6 +492,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public void setAssignation(DataBinding<?> assignation) {
+		setAssignation(true);
 		if (assignation != null) {
 			this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
 					DataBinding.BindingDefinitionType.GET_SET) {
@@ -547,6 +548,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public void setDeclarationVariableName(String declarationVariableName) {
+		setVariableDeclaration(true);
 		if ((declarationVariableName == null && this.declarationVariableName != null)
 				|| (declarationVariableName != null && !declarationVariableName.equals(this.declarationVariableName))) {
 			String oldValue = this.declarationVariableName;
