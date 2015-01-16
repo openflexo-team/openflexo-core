@@ -281,26 +281,35 @@ public abstract class OpenflexoTestCase {
 
 	protected void assertViewPointIsValid(ViewPoint vp) {
 
-		log("Testing ViewPoint" + vp.getURI());
+		if (vp != null){
+			log("Testing ViewPoint" + vp.getURI());
 
-		ValidationReport report;
-		try {
-			report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
+			ValidationReport report;
+			try {
+				report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
 
-			for (ValidationError error : report.getErrors()) {
-				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
-				/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
+				for (ValidationError error : report.getErrors()) {
+					System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
+					/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
 					BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
 					System.out.println("Details: " + rule.retrieveIssueDetails((FMLObject) error.getValidable()));
 				}*/
+				}
+
+				assertEquals(0, report.getErrorsCount());
+
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				fail("Interrupted");
 			}
-
-			assertEquals(0, report.getErrorsCount());
-
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail("Interrupted");
+		}
+		else {
+			System.out.println("INVESTIGATE: the parameter VP is NULL!!");
+		     Thread.dumpStack();
+		     fail("VP null");
+			
 		}
 	}
+
 
 }
