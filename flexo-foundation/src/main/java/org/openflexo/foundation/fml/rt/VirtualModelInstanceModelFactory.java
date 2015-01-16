@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.DeclareActorReference;
+import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.technologyadapter.DeclareActorReference;
-import org.openflexo.foundation.technologyadapter.DeclareActorReferences;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.converter.DataBindingConverter;

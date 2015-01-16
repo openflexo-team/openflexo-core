@@ -988,7 +988,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 		}
 		// Built-in actions
-		convertOldNameToNewNames("DeclarePatternRole", "DeclareFlexoRole", document);
+		convertOldNameToNewNames("DeclareFlexoRole", "DeclareFlexoRole", document);
 		convertOldNameToNewNames("AddEditionPatternInstance", "AddFlexoConceptInstance", document);
 		convertOldNameToNewNames("AddEditionPatternInstanceParameter", "AddFlexoConceptInstanceParameter", document);
 		convertOldNameToNewNames("AddressedSelectEditionPatternInstance", "SelectFlexoConceptInstance", document);

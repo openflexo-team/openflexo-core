@@ -1,4 +1,4 @@
-package org.openflexo.foundation.technologyadapter;
+package org.openflexo.foundation.fml.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -6,12 +6,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(value = ElementType.TYPE)
-public @interface DeclareRepositoryType {
+public @interface DeclareModelSlot {
 
-	public Class<? extends ResourceRepository<?>>[] value();
+	public String FML();
+
+	public Class<? extends ModelSlot<?>> modelSlotClass();
+
 }

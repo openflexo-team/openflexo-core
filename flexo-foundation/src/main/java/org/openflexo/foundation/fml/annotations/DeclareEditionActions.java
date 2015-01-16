@@ -1,4 +1,4 @@
-package org.openflexo.foundation.technologyadapter;
+package org.openflexo.foundation.fml.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

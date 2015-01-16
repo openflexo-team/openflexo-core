@@ -36,6 +36,14 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
+import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
+import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
+import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
+import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviour;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -354,8 +362,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			return availableFlexoRoleTypes;
 
 			/*Class<?> cl = getClass();
-			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
-				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
+			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
+				DeclareFlexoRoles allPatternRoles = cl.getAnnotation(DeclareFlexoRoles.class);
 				for (DeclareFlexoRole patternRoleDeclaration : allPatternRoles.value()) {
 					availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
 				}
@@ -367,11 +375,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		private void appendDeclarePatternRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclarePatternRoles.class)) {
-				DeclarePatternRoles allPatternRoles = cl.getAnnotation(DeclarePatternRoles.class);
-				for (DeclarePatternRole patternRoleDeclaration : allPatternRoles.value()) {
-					if (!availableFlexoRoleTypes.contains(patternRoleDeclaration.flexoRoleClass())) {
-						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) patternRoleDeclaration.flexoRoleClass());
+			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
+				DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
+				for (DeclareFlexoRole flexoRoleDeclaration : allFlexoRoles.value()) {
+					if (!availableFlexoRoleTypes.contains(flexoRoleDeclaration.flexoRoleClass())) {
+						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) flexoRoleDeclaration.flexoRoleClass());
 					}
 				}
 			}
