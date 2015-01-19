@@ -46,7 +46,10 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * Abstract definition of a control graph
+ * Abstract definition of a control graph node in control flow graph paradigm.<br>
+ * 
+ * In a control flow graph each node in the graph represents a basic block, i.e. a straight-line piece of code without any jumps or jump
+ * targets; jump targets start a block, and jumps end a block (from http://en.wikipedia.org/wiki/Control_flow_graph)
  * 
  * @author sylvain
  * 
