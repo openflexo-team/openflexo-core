@@ -34,7 +34,7 @@ import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.DefaultProjectLoadingHandler;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
+import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.xml.XMLSerializationService;
 import org.openflexo.view.controller.InteractiveFlexoEditor;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
