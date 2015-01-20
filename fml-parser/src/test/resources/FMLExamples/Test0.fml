@@ -52,7 +52,7 @@ VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 	@Version("1.2")
 	@Description("This is the second concept")
 	FlexoConcept Concept2 {
-		Role individual as OWL::OWLIndividual(type=Ontology1/Type2);
+		Role individual as OWL::OWLIndividual(type=Ontology1.Type2);
 	}
 
 }
