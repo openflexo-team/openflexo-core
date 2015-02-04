@@ -108,7 +108,7 @@ public class FMLFIBController extends FlexoFIBController {
 	 * Newly created FlexoConcept is added to ViewPoint
 	 * 
 	 * @param newName
-	 * @return
+	 * @return the duplicated FlexoConcept
 	 */
 	public FlexoConcept duplicateFlexoConcept(FlexoConcept flexoConcept, String newName) {
 		DuplicateFlexoConcept duplicateAction = DuplicateFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
@@ -152,7 +152,7 @@ public class FMLFIBController extends FlexoFIBController {
 	 * Newly created FlexoBehaviour is added to parent FlexoConcept
 	 * 
 	 * @param newName
-	 * @return
+	 * @return the duplicated Flexo Behaviour
 	 */
 	public FlexoBehaviour duplicateFlexoBehaviour(FlexoBehaviour flexoBehaviour, String newName) {
 		FlexoBehaviour newFlexoBehaviour = (FlexoBehaviour) flexoBehaviour.cloneObject();
@@ -254,7 +254,8 @@ public class FMLFIBController extends FlexoFIBController {
 			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			createFlexoConcept.doAction();
 			return createFlexoConcept.getNewFlexoConcept();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
 					getEditor());
 			createFlexoConcept.addToParentConcepts(flexoConcept);
@@ -274,7 +275,8 @@ public class FMLFIBController extends FlexoFIBController {
 			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			deleteVirtualModel.doAction();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 			deleteFlexoConcept.doAction();
 		}
@@ -465,10 +467,12 @@ public class FMLFIBController extends FlexoFIBController {
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
-			} else
+			}
+			else
 				// No specific TechnologyAdapter, lookup in generic libraries
 				return getFIBPanelForObject(action);
-		} else {
+		}
+		else {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		}

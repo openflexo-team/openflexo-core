@@ -115,7 +115,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	/**
 	 * Return icon representing underlying technology
 	 * 
-	 * @return
+	 * @return ImageIcon representing underlying technology
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
@@ -125,7 +125,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	/**
 	 * Return icon representing a model of underlying technology
 	 * 
-	 * @return
+	 * @return ImageIcon representing a model of underlying technology
 	 */
 	@Override
 	public ImageIcon getModelIcon() {
@@ -133,9 +133,9 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	}
 
 	/**
-	 * Return icon representing a model of underlying technology
+	 * Return icon representing a meta model of underlying technology
 	 * 
-	 * @return
+	 * @return ImageIcon representing a meta model of underlying technology
 	 */
 	@Override
 	public ImageIcon getMetaModelIcon() {
@@ -143,18 +143,20 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	}
 
 	/**
-	 * Return icon representing supplied ontology object
+	 * Return icon representing supplied technology object
 	 * 
-	 * @param object
-	 * @return
+	 * @param objectClass
+	 * @return ImageIcon representing supplied technology object
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		if (View.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIEW_ICON;
-		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		}
+		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
+		}
+		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(FMLRTIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
@@ -163,8 +165,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	/**
 	 * Return icon representing supplied pattern role
 	 * 
-	 * @param object
-	 * @return
+	 * @param patternRoleClass
+	 * @return ImageIcon representing supplied pattern role
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {
@@ -178,9 +180,11 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
@@ -190,15 +194,20 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
-		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
-		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
-		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
-		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
-		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
@@ -209,7 +218,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 
 		if (object instanceof View) {
 			return true;
-		} else if (object instanceof VirtualModelInstance) {
+		}
+		else if (object instanceof VirtualModelInstance) {
 			return true;
 		} /*else if (object instanceof FlexoConceptInstance) {
 			// NO module view yet
@@ -236,7 +246,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 * rendering
 	 * 
 	 * @param object
-	 * @return
+	 * @return newly created ModuleView for supplied technology object
 	 */
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
@@ -245,10 +255,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		if (object instanceof View) {
 			View view = (View) object;
 			return new ViewModuleView(view, controller, perspective);
-		} else if (object instanceof VirtualModelInstance) {
+		}
+		else if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance vmi = (VirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
-		} else if (object instanceof FlexoConceptInstance) {
+		}
+		else if (object instanceof FlexoConceptInstance) {
 			// NO module view yet
 		}
 

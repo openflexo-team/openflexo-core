@@ -129,7 +129,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	/**
 	 * Return icon representing underlying technology
 	 * 
-	 * @return
+	 * @return Icon representing underlying technology
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
@@ -147,9 +147,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	/**
-	 * Return icon representing a model of underlying technology
+	 * Return icon representing a meta model of underlying technology
 	 * 
-	 * @return
+	 * @return icon representing a meta model of underlying technology
 	 */
 	@Override
 	public ImageIcon getMetaModelIcon() {
@@ -157,24 +157,29 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	/**
-	 * Return icon representing supplied ontology object
+	 * Return icon representing supplied technology object
 	 * 
-	 * @param object
-	 * @return
+	 * @param objectClass
+	 * @return icon representing supplied technology object
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		if (ViewPoint.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.VIEWPOINT_ICON;
-		} else if (View.class.isAssignableFrom(objectClass)) {
+		}
+		else if (View.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIEW_ICON;
-		} else if (VirtualModel.class.isAssignableFrom(objectClass)) {
+		}
+		else if (VirtualModel.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
-		} else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
+		}
+		else if (FlexoConcept.class.isAssignableFrom(objectClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
-		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		}
+		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
+		}
+		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(IconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
@@ -183,8 +188,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	/**
 	 * Return icon representing supplied pattern role
 	 * 
-	 * @param object
-	 * @return
+	 * @param patternRoleClass
+	 * @return icon representing supplied pattern role
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {
@@ -199,9 +204,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
@@ -211,15 +218,20 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
-		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
-		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
-		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
-		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
-		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		}
+		else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
@@ -260,7 +272,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 * rendering
 	 * 
 	 * @param object
-	 * @return
+	 * @return newly created ModuleView for supplied technology object
 	 */
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
@@ -276,7 +288,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				// } else {
 				return new VirtualModelView(ep, controller, perspective);
 				// }
-			} else {
+			}
+			else {
 				// if (ep.getVirtualModel() instanceof DiagramSpecification) {
 				// return new DiagramFlexoConceptView(ep, (VPMController) controller);
 				// } else {
