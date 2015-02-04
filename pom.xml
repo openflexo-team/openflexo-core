@@ -16,6 +16,7 @@
 		<pamela.version>1.2-SNAPSHOT</pamela.version>
 		<diana.version>1.2-SNAPSHOT</diana.version>
 		<openflexoutils.version>1.2-SNAPSHOT</openflexoutils.version>
+		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
