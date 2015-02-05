@@ -47,8 +47,8 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoBehaviour;

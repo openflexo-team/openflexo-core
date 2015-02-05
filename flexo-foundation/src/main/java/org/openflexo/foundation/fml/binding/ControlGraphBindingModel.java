@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 
-import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 
 /**

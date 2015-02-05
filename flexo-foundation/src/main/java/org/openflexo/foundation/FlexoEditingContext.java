@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.CopyAction.CopyActionType;
 import org.openflexo.foundation.action.CutAction.CutActionType;

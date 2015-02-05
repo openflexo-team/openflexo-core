@@ -15,33 +15,33 @@ WARNING   Invoke creation of new progress window while an other one is displayed
 INFO      Selection LEADER is now (2) org.openflexo.fib.view.widget.FIBBrowserWidget@487ed6f6                 [org.openflexo.fib.controller.FIBController.objectAddedToSelection]
 INFO      Selection LEADER is now (2) org.openflexo.fib.view.widget.FIBBrowserWidget@7f52d5a8                 [org.openflexo.fib.controller.FIBController.objectAddedToSelection]
 INFO      Initialized view for inspector for interface org.openflexo.foundation.FlexoObject                   [org.openflexo.inspector.FIBInspectorPanel.buildViewFor]
-WARNING   Invalid binding iterator.mappedClass reason: Invalid binding value: iterator.mappedClass reason: cannot find property mappedClass for element iterator/XSURIProcessor and type XSURIProcessor owner=org.openflexo.fib.model.FIBCustomColumn$FIBCustomColumnImpl_$$_javassist_57@26d5a1f5 factory=org.openflexo.antar.binding.JavaBindingFactory@137befbe BindingModel=BindingModel: [iterator/XSURIProcessor]Combined with:
-BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding iterator.baseAttributeForURI reason: Invalid binding value: iterator.baseAttributeForURI reason: cannot find property baseAttributeForURI for element iterator/XSURIProcessor and type XSURIProcessor owner=org.openflexo.fib.model.FIBCustomColumn$FIBCustomColumnImpl_$$_javassist_57@27bc0b1e factory=org.openflexo.antar.binding.JavaBindingFactory@137befbe BindingModel=BindingModel: [iterator/XSURIProcessor]Combined with:
-BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding data.createURIProcessor reason: Invalid binding value: data.createURIProcessor reason: cannot find property createURIProcessor for element data/XSDModelSlot and type XSDModelSlot owner=org.openflexo.fib.model.FIBTableAction$FIBAddAction$FIBAddActionImpl_$$_javassist_47@28b93ffb factory=org.openflexo.antar.binding.JavaBindingFactory@137befbe BindingModel=BindingModel: [selected/XSURIProcessor]Combined with:
-BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding data.modelSlot.metaModelResource.metaModelData reason: Invalid binding value: data.modelSlot.metaModelResource.metaModelData reason: cannot find property metaModelResource for element JavaProperty interface org.openflexo.technologyadapter.owl.viewpoint.DataPropertyStatementRole#modelSlot and type ModelSlot<?> owner=FIBCustom$FIBCustomImpl_$$_javassist_39 (unnamed) factory=org.openflexo.antar.binding.JavaBindingFactory@137befbe BindingModel=BindingModel: [data/DataPropertyStatementRole, Inspector/FIBView<? extends FIBComponent,? extends JComponent,DataPropertyStatementRole>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding data.modelSlot.metaModelResource.metaModelData reason: Invalid binding value: data.modelSlot.metaModelResource.metaModelData reason: cannot find property metaModelResource for element JavaProperty interface org.openflexo.technologyadapter.owl.viewpoint.ObjectPropertyStatementRole#modelSlot and type ModelSlot<?> owner=FIBCustom$FIBCustomImpl_$$_javassist_39 (unnamed) factory=org.openflexo.antar.binding.JavaBindingFactory@137befbe BindingModel=BindingModel: [data/ObjectPropertyStatementRole, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ObjectPropertyStatementRole>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
+WARNING   Invalid binding iterator.mappedClass reason: Invalid binding value: iterator.mappedClass reason: cannot find property mappedClass for element iterator/XSURIProcessor and type XSURIProcessor owner=org.openflexo.fib.model.FIBCustomColumn$FIBCustomColumnImpl_$$_javassist_57@26d5a1f5 factory=org.openflexo.connie.JavaBindingFactory@137befbe BindingModel=BindingModel: [iterator/XSURIProcessor]Combined with:
+BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding iterator.baseAttributeForURI reason: Invalid binding value: iterator.baseAttributeForURI reason: cannot find property baseAttributeForURI for element iterator/XSURIProcessor and type XSURIProcessor owner=org.openflexo.fib.model.FIBCustomColumn$FIBCustomColumnImpl_$$_javassist_57@27bc0b1e factory=org.openflexo.connie.JavaBindingFactory@137befbe BindingModel=BindingModel: [iterator/XSURIProcessor]Combined with:
+BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding data.createURIProcessor reason: Invalid binding value: data.createURIProcessor reason: cannot find property createURIProcessor for element data/XSDModelSlot and type XSDModelSlot owner=org.openflexo.fib.model.FIBTableAction$FIBAddAction$FIBAddActionImpl_$$_javassist_47@28b93ffb factory=org.openflexo.connie.JavaBindingFactory@137befbe BindingModel=BindingModel: [selected/XSURIProcessor]Combined with:
+BindingModel: [data/XSDModelSlot, Inspector/FIBView<? extends FIBComponent,? extends JComponent,XSDModelSlot>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding data.modelSlot.metaModelResource.metaModelData reason: Invalid binding value: data.modelSlot.metaModelResource.metaModelData reason: cannot find property metaModelResource for element JavaProperty interface org.openflexo.technologyadapter.owl.viewpoint.DataPropertyStatementRole#modelSlot and type ModelSlot<?> owner=FIBCustom$FIBCustomImpl_$$_javassist_39 (unnamed) factory=org.openflexo.connie.JavaBindingFactory@137befbe BindingModel=BindingModel: [data/DataPropertyStatementRole, Inspector/FIBView<? extends FIBComponent,? extends JComponent,DataPropertyStatementRole>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding data.modelSlot.metaModelResource.metaModelData reason: Invalid binding value: data.modelSlot.metaModelResource.metaModelData reason: cannot find property metaModelResource for element JavaProperty interface org.openflexo.technologyadapter.owl.viewpoint.ObjectPropertyStatementRole#modelSlot and type ModelSlot<?> owner=FIBCustom$FIBCustomImpl_$$_javassist_39 (unnamed) factory=org.openflexo.connie.JavaBindingFactory@137befbe BindingModel=BindingModel: [data/ObjectPropertyStatementRole, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ObjectPropertyStatementRole>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
 WARNING   Could not locate resource Inspectors/CSV                                                            [org.openflexo.toolbox.ResourceLocator.locateFile]
 WARNING   Could not locate resource Inspectors/CSV                                                            [org.openflexo.toolbox.ResourceLocator.locateFile]
-WARNING   Invalid binding data.rowIndex reason: Invalid binding data.rowIndex because types are not matching searched class java.lang.String having int BindingModel=BindingModel: [data/ExcelCell, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ExcelCell>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate ((!(data.noStroke)) & data.useTransparency) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate ((!(data.noStroke)) & data.useTransparency) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate ((data.styleType.name != "NONE") & data.backgroundStyle.useTransparency) with context org.openflexo.fib.controller.FIBController@4f9f7044 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
-WARNING   Could not evaluate ((data.styleType != "NONE") & data.backgroundStyle.useTransparency) with context org.openflexo.fib.controller.FIBController@4f9f7044 because NullReferenceException has raised[org.openflexo.antar.binding.BindingValueChangeListener.<init>]
+WARNING   Invalid binding data.rowIndex reason: Invalid binding data.rowIndex because types are not matching searched class java.lang.String having int BindingModel=BindingModel: [data/ExcelCell, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ExcelCell>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate (!(data.noStroke)) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate ((!(data.noStroke)) & data.useTransparency) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate ((!(data.noStroke)) & data.useTransparency) with context org.openflexo.fib.controller.FIBController@4e6e4e67 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate ((data.styleType.name != "NONE") & data.backgroundStyle.useTransparency) with context org.openflexo.fib.controller.FIBController@4f9f7044 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
+WARNING   Could not evaluate ((data.styleType != "NONE") & data.backgroundStyle.useTransparency) with context org.openflexo.fib.controller.FIBController@4f9f7044 because NullReferenceException has raised[org.openflexo.connie.binding.BindingValueChangeListener.<init>]
 INFO      Checking dictionary for language English file=/u02/SourceCode/gina/flexolocalization/target/classes/Localized/English.dict[org.openflexo.localization.LocalizedDelegateImpl.loadLocalizedDictionaries]
 INFO      Checking dictionary for language French file=/u02/SourceCode/gina/flexolocalization/target/classes/Localized/French.dict[org.openflexo.localization.LocalizedDelegateImpl.loadLocalizedDictionaries]
 INFO      Checking dictionary for language Dutch file=/u02/SourceCode/gina/flexolocalization/target/classes/Localized/Dutch.dict[org.openflexo.localization.LocalizedDelegateImpl.loadLocalizedDictionaries]
@@ -94,10 +94,10 @@ INFO      Controller org.openflexo.fge.swing.JDianaInteractiveViewer@4b1fed52 Re
 INFO      add view org.openflexo.fge.swing.view.JShapeView[,10,10,21x21,invalid,alignmentX=0.0,alignmentY=0.0,border=,flags=16777216,maximumSize=,minimumSize=,preferredSize=,optimizedDrawingPossible=true] under org.openflexo.fge.swing.view.JDrawingView[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=,flags=16777544,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=250,height=80],optimizedDrawingPossible=true][org.openflexo.fge.swing.view.JDianaLayeredView.addView]
 INFO      add view org.openflexo.fge.swing.view.JShapeView[,220,50,21x21,invalid,alignmentX=0.0,alignmentY=0.0,border=,flags=16777216,maximumSize=,minimumSize=,preferredSize=,optimizedDrawingPossible=true] under org.openflexo.fge.swing.view.JDrawingView[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=,flags=16777544,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=250,height=80],optimizedDrawingPossible=false][org.openflexo.fge.swing.view.JDianaLayeredView.addView]
 INFO      add view org.openflexo.fge.swing.view.JConnectorView[,10,10,231x61,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@325f39cb,flags=16777217,maximumSize=,minimumSize=,preferredSize=] under org.openflexo.fge.swing.view.JDrawingView[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=,flags=16777544,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=250,height=80],optimizedDrawingPossible=false][org.openflexo.fge.swing.view.JDianaLayeredView.addView]
-WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
-WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
+WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
+WARNING   Invalid binding GRTab.data reason: Invalid binding value: GRTab.data reason: cannot find binding variable GRTab BindingModel=BindingModel: [data/InspectedLocationSizeProperties, LocationSizePanel/FIBView<? extends FIBComponent,? extends JComponent,InspectedLocationSizeProperties>, LocationSizeTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, TextTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, HorizontalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,HorizontalTextAlignment,HorizontalTextAlignment>, VerticalAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,VerticalTextAlignment,VerticalTextAlignment>, ParagraphAlignment/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,ParagraphAlignment,ParagraphAlignment>, ConstraintsTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, LocationConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,LocationConstraints,LocationConstraints>, DimensionConstraints/FIBMultipleValueWidget<? extends FIBMultipleValues,? extends JComponent,DimensionConstraints,DimensionConstraints>, controller/FIBController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
 org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a class not found: org.openflexo.technologyadapter.diagram.fmlDiagramPaletteElement$ConnectorOverridingGraphicalRepresentation
 	at org.openflexo.model.StringConverterLibrary$ClassConverter.convertFromString(StringConverterLibrary.java:466)
 	at org.openflexo.model.StringConverterLibrary$ClassConverter.convertFromString(StringConverterLibrary.java:1)
@@ -120,12 +120,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -217,12 +217,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -310,12 +310,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -403,12 +403,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -496,12 +496,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -589,12 +589,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -682,12 +682,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -775,12 +775,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -868,12 +868,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -961,12 +961,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1054,12 +1054,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1147,12 +1147,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1240,12 +1240,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1333,12 +1333,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1426,12 +1426,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1519,12 +1519,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1612,12 +1612,12 @@ org.openflexo.model.exceptions.InvalidDataException: Supplied value represents a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.widget.FIBButtonWidget.buttonClicked(FIBButtonWidget.java:91)
 	at org.openflexo.fib.view.widget.FIBButtonWidget$1.actionPerformed(FIBButtonWidget.java:50)
 	at javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:2018)
@@ -1705,7 +1705,7 @@ INFO      Adding entry 'location_size_inspector' in English dictionary, file /u0
 INFO      Adding entry 'location_size_inspector' in French dictionary, file /u02/SourceCode/gina/flexolocalization/target/classes/Localized/French.dict[org.openflexo.localization.LocalizedDelegateImpl.addEntryInDictionary]
 INFO      Adding entry 'location_size_inspector' in Dutch dictionary, file /u02/SourceCode/gina/flexolocalization/target/classes/Localized/Dutch.dict[org.openflexo.localization.LocalizedDelegateImpl.addEntryInDictionary]
 INFO      Recompute actions list for class org.openflexo.foundation.resource.RepositoryFolder                 [org.openflexo.foundation.FlexoObject$FlexoObjectImpl.addActionForClass]
-WARNING   Invalid binding data.rowIndex reason: Invalid binding data.rowIndex because types are not matching searched class java.lang.String having int BindingModel=BindingModel: [data/ExcelCell, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ExcelCell>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.antar.binding.JavaBindingFactory@137befbe[org.openflexo.antar.binding.DataBinding.parseExpression]
+WARNING   Invalid binding data.rowIndex reason: Invalid binding data.rowIndex because types are not matching searched class java.lang.String having int BindingModel=BindingModel: [data/ExcelCell, Inspector/FIBView<? extends FIBComponent,? extends JComponent,ExcelCell>, Tab/FIBView<? extends FIBComponent,? extends JComponent,Object>, BasicTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, AdvancedTab/FIBView<? extends FIBComponent,? extends JComponent,Object>, controller/FIBInspectorController] BindingFactory=org.openflexo.connie.JavaBindingFactory@137befbe[org.openflexo.connie.DataBinding.parseExpression]
 WARNING   I think the SerializationHandler is no more necessary                                               [org.openflexo.foundation.resource.PamelaResourceImpl.saveResourceData]
 INFO      Saving resource FlexoPreferencesResource$FlexoPreferencesResourceImpl_$$_javassist_0.http://www.openflexo.org/OpenflexoPreferences.null.null : /home/xtof/.openflexo/Flexo.prefs version=null[org.openflexo.foundation.resource.PamelaResourceImpl._saveResourceData]
 INFO      Succeeding to save Resource FlexoPreferencesResource$FlexoPreferencesResourceImpl_$$_javassist_0.http://www.openflexo.org/OpenflexoPreferences.null.null : Flexo.prefs version=null with date Tue Mar 11 08:49:37 CET 2014[org.openflexo.foundation.resource.PamelaResourceImpl.saveResourceData]
@@ -1782,12 +1782,12 @@ java.lang.InstantiationException: ModelEntity[DiagramModelSlot] is declared as a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.FIBWidgetView.applyDoubleClickAction(FIBWidgetView.java:740)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.fireDoubleClick(FIBController.java:433)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.mouseClicked(FIBController.java:442)
@@ -1857,12 +1857,12 @@ java.lang.InstantiationException: ModelEntity[DiagramModelSlot] is declared as a
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.FIBWidgetView.applyDoubleClickAction(FIBWidgetView.java:740)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.fireDoubleClick(FIBController.java:433)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.mouseClicked(FIBController.java:442)
@@ -1915,12 +1915,12 @@ java.lang.reflect.InvocationTargetException
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.FIBWidgetView.applyDoubleClickAction(FIBWidgetView.java:740)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.fireDoubleClick(FIBController.java:433)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.mouseClicked(FIBController.java:442)
@@ -2007,12 +2007,12 @@ org.openflexo.model.exceptions.ModelExecutionException: ModelExecutionException 
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.FIBWidgetView.applyDoubleClickAction(FIBWidgetView.java:740)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.fireDoubleClick(FIBController.java:433)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.mouseClicked(FIBController.java:442)
@@ -2049,18 +2049,18 @@ org.openflexo.model.exceptions.ModelExecutionException: ModelExecutionException 
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:146)
 	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:138)
 	at java.awt.EventDispatchThread.run(EventDispatchThread.java:91)
-WARNING   InvocationTargetException ModelExecutionException : ModelExecutionException raised because of exception ModelExecutionException message: ModelExecutionException raised because of exception InstantiationException message: ModelEntity[DiagramModelSlot] is declared as an abstract entity, cannot instantiate it while evaluating method public void org.openflexo.view.controller.FlexoFIBController.doubleClick(java.lang.Object) with args: arg 0 = ViewPointResourceImpl_$$_javassist_22.http://www.thalesgroup.com/openflexo/emf/CityMapping.0.1.null [org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue]
+WARNING   InvocationTargetException ModelExecutionException : ModelExecutionException raised because of exception ModelExecutionException message: ModelExecutionException raised because of exception InstantiationException message: ModelEntity[DiagramModelSlot] is declared as an abstract entity, cannot instantiate it while evaluating method public void org.openflexo.view.controller.FlexoFIBController.doubleClick(java.lang.Object) with args: arg 0 = ViewPointResourceImpl_$$_javassist_22.http://www.thalesgroup.com/openflexo/emf/CityMapping.0.1.null [org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue]
 java.lang.reflect.InvocationTargetException
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.lang.reflect.Method.invoke(Method.java:606)
-	at org.openflexo.antar.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
-	at org.openflexo.antar.expr.BindingValue.getBindingValue(BindingValue.java:750)
-	at org.openflexo.antar.binding.DataBinding$3.performTransformation(DataBinding.java:605)
-	at org.openflexo.antar.expr.BindingValue.transform(BindingValue.java:437)
-	at org.openflexo.antar.binding.DataBinding.getBindingValue(DataBinding.java:599)
-	at org.openflexo.antar.binding.DataBinding.execute(DataBinding.java:688)
+	at org.openflexo.connie.binding.JavaMethodPathElement.getBindingValue(JavaMethodPathElement.java:118)
+	at org.openflexo.connie.expr.BindingValue.getBindingValue(BindingValue.java:750)
+	at org.openflexo.connie.binding.DataBinding$3.performTransformation(DataBinding.java:605)
+	at org.openflexo.connie.expr.BindingValue.transform(BindingValue.java:437)
+	at org.openflexo.connie.DataBinding.getBindingValue(DataBinding.java:599)
+	at org.openflexo.connie.DataBinding.execute(DataBinding.java:688)
 	at org.openflexo.fib.view.FIBWidgetView.applyDoubleClickAction(FIBWidgetView.java:740)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.fireDoubleClick(FIBController.java:433)
 	at org.openflexo.fib.controller.FIBController$FIBMouseAdapter.mouseClicked(FIBController.java:442)

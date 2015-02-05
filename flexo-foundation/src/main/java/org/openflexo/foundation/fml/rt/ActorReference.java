@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.antar.binding.CustomType;
+import org.openflexo.connie.type.CustomType;
 
 /**
  * Represent the type of a View of a given ViewPoint

@@ -43,9 +43,9 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.Function;
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.binding.Function;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;

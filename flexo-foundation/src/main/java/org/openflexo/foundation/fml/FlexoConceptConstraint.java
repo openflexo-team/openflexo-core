@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml;
 
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.antar.binding.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;

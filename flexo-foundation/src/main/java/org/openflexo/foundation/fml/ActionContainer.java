@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml;
 import java.util.List;
 import java.util.Vector;
 
-import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;

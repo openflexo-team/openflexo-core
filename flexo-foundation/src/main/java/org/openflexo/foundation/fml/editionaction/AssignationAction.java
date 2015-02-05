@@ -41,8 +41,8 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.antar.expr.BindingValue;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;

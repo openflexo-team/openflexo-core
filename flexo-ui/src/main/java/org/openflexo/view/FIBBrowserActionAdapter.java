@@ -38,7 +38,7 @@
 
 package org.openflexo.view;
 
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.model.FIBBrowserAction;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;

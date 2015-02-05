@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import org.openflexo.antar.binding.BindingVariable;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.DataModification;

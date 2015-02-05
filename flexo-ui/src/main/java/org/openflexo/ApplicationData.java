@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.antar.annotations.NotificationUnsafe;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.Module;
 

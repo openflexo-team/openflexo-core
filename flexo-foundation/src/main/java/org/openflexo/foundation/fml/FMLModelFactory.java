@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.FGEUtils;
 import org.openflexo.foundation.FlexoObject;

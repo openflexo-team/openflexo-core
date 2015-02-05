@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.antar.binding.BindingVariable;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.ConceptActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;

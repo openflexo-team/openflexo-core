@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.validation;
 
-import org.openflexo.antar.binding.BindingEvaluator;
+import org.openflexo.connie.BindingEvaluator;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;

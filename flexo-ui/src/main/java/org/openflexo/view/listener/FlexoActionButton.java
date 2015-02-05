@@ -47,7 +47,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;

@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.antar.binding.CustomType;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**

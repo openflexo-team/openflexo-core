@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingFactory;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
@@ -602,12 +602,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	@Override
-	public void notifiedBindingChanged(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
+	public void notifiedBindingChanged(org.openflexo.connie.DataBinding<?> dataBinding) {
 		getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 	}
 
 	@Override
-	public void notifiedBindingDecoded(org.openflexo.antar.binding.DataBinding<?> dataBinding) {
+	public void notifiedBindingDecoded(org.openflexo.connie.DataBinding<?> dataBinding) {
 		// TODO
 	}
 

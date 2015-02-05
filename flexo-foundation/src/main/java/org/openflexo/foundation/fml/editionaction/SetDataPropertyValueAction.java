@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 
 /**

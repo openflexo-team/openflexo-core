@@ -44,12 +44,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingFactory;
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.ontology.FlexoOntologyObjectImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;

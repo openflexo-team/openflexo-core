@@ -51,7 +51,7 @@ import org.openflexo.action.ImportProjectInitializer;
 import org.openflexo.action.PasteActionInitializer;
 import org.openflexo.action.RemoveImportedProjectInitializer;
 import org.openflexo.action.SelectAllActionInitializer;
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;

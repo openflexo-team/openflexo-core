@@ -41,8 +41,8 @@ package org.openflexo.foundation.fml.inspector;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.Bindable;
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;

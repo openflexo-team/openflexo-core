@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.antar.binding.CustomType;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**

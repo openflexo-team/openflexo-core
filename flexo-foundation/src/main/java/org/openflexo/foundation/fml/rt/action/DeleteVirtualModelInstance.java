@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.rt.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.TypeUtils;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;

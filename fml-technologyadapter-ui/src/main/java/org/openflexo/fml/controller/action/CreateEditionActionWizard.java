@@ -45,8 +45,8 @@ import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.components.wizard.WizardStep;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;

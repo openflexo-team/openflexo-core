@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
-import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.Import;

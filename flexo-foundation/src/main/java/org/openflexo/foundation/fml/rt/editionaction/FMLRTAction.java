@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ViewObject;

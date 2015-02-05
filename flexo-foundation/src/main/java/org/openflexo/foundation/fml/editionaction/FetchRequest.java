@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.antar.binding.ParameterizedTypeImpl;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;

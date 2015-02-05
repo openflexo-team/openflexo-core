@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 
-import org.openflexo.antar.binding.CustomType;
+import org.openflexo.connie.type.CustomType;
 
 /**
  * Represent the type of the list of all parameters of an FlexoBehaviour (run-time). Internal representation is given by an

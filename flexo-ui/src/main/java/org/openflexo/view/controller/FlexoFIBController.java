@@ -51,8 +51,8 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.Flexo;
-import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.components.ProgressWindow;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBModelFactory;

@@ -40,8 +40,8 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 
-import org.openflexo.antar.binding.BindingEvaluationContext;
-import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 

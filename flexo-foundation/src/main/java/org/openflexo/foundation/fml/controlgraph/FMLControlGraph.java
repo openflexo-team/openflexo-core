@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.controlgraph;
 
 import java.util.List;
 
-import org.openflexo.antar.binding.BindingModel;
-import org.openflexo.antar.binding.BindingVariable;
-import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;

@@ -47,9 +47,9 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
-import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.components.widget.FIBIndividualSelector;
 import org.openflexo.components.widget.FIBPropertySelector;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.BorderLayoutConstraints;

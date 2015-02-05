@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.antar.binding.BindingModel;
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
