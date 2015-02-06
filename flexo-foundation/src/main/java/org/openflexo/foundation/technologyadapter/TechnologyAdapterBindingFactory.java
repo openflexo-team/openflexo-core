@@ -42,9 +42,9 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingFactory;
-import org.openflexo.connie.JavaBindingFactory;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.TechnologySpecificCustomType;
 
