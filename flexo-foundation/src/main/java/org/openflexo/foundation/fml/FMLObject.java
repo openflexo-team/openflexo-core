@@ -247,7 +247,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			if (getResourceData() instanceof VirtualModel) {
 				return ((VirtualModel) getResourceData()).getViewPoint();
 			}
-			logger.warning("Found FMLObject " + getClass() + " with resource data =" + getResourceData());
+			// Do not warn as it might be called during deserialization
+			// logger.warning("Found FMLObject " + getClass() + " with resource data =" + getResourceData());
 			return null;
 		}
 
