@@ -89,7 +89,9 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	@PropertyIdentifier(type = ModelSlot.class)
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 	@PropertyIdentifier(type = RoleCloningStrategy.class)
-	public static final String CLONING_STRATEGY_KEY = "cloningStratgey";
+	public static final String CLONING_STRATEGY_KEY = "cloningStrategy";
+	@PropertyIdentifier(type = RoleCardinality.class)
+	public static final String CARDINALITY_KEY = "cardinality";
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_ROLES_KEY)
@@ -115,6 +117,23 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	public Type getType();
 
 	public String getPreciseType();
+
+	/**
+	 * Return cardinality of this role
+	 * 
+	 * @return
+	 */
+	@Getter(CARDINALITY_KEY)
+	@XMLAttribute
+	public RoleCardinality getCardinality();
+
+	/**
+	 * Sets cardinality of this role
+	 * 
+	 * @return
+	 */
+	@Setter(CARDINALITY_KEY)
+	public void setCardinality(RoleCardinality cardinality);
 
 	/**
 	 * Return cloning strategy to be applied for this role
@@ -201,14 +220,24 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		}
 
 		@Override
+		public RoleCardinality getCardinality() {
+			RoleCardinality returned = (RoleCardinality) performSuperGetter(CARDINALITY_KEY);
+			if (returned == null) {
+				return RoleCardinality.ZeroOne;
+			}
+			return returned;
+		}
+
+		@Override
 		public String toString() {
 			return getClass().getSimpleName()
 					+ ":"
 					+ getRoleName()
 					+ "[container="
-					+ (getFlexoConcept() != null ? getFlexoConcept().getName() + "/"
-							+ (getFlexoConcept().getOwningVirtualModel() != null ? getFlexoConcept().getOwningVirtualModel().getName() : "null")
-							: "null") + "][" + Integer.toHexString(hashCode()) + "]";
+					+ (getFlexoConcept() != null ? getFlexoConcept().getName()
+							+ "/"
+							+ (getFlexoConcept().getOwningVirtualModel() != null ? getFlexoConcept().getOwningVirtualModel().getName()
+									: "null") : "null") + "][" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		@Override
