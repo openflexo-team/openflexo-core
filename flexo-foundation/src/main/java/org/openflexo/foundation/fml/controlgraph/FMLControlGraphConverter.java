@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
  * Convert FML behaviour model from 1.7.0 to 1.7.1
  * 
  * @author sylvain
- *
+ * 
  */
 @Deprecated
 public class FMLControlGraphConverter {
@@ -103,6 +103,7 @@ public class FMLControlGraphConverter {
 			owner.setControlGraph(anAction, ownerContext);
 		} else {
 			// Otherwise, sequentially append action
+			controlGraph.initializeDeserialization(owner.getFMLModelFactory());
 			controlGraph.sequentiallyAppend(anAction);
 		}
 
