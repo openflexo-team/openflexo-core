@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.DataBinding;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -54,7 +53,7 @@ public interface IntegerParameter extends FlexoBehaviourParameter {
 
 		public IntegerParameterImpl() {
 			super();
-			setDefaultValue(new DataBinding<String>("0"));
+			// setDefaultValue(new DataBinding<String>("0"));
 		}
 
 		@Override
