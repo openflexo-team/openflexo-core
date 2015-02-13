@@ -246,7 +246,7 @@
 			constraints="border(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=west;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 			readOnly="false" />
 		<TextField id="108" passwd="false" manageDynamicModel="false"
-			useScrollBar="false" data="data.modelSlot.technologyAdapter.name"
+			useScrollBar="false" data="data.modelSlot.modelSlotTechnologyAdapter.name"
 			columns="7" name="VirtualModelTitleTextField" controllerClassName="org.openflexo.fib.controller.FIBController"
 			text="TextField" index="3" localize="true"
 			constraints="border(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
@@ -349,7 +349,7 @@
 				<Assignment id="127" mandatory="true"
 					variable="component.selectableCondition" />
 				<Assignment id="128" mandatory="true"
-					value="data.modelSlot.technologyAdapter" variable="component.technologyAdapter" />
+					value="data.configuration.modelSlot.modelSlotTechnologyAdapter" variable="component.technologyAdapter" />
 				<Assignment id="129" mandatory="true"
 					value="data.configuration.resourceCenter" variable="component.resourceCenter" />
 			</Custom>
