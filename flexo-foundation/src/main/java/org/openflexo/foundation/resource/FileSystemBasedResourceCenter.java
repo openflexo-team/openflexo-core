@@ -300,6 +300,12 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	protected void fileDeleted(File file) {
 		if (!isIgnorable(file)) {
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			if (technologyAdapterService != null) {
+				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
+					logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
+					adapter.contentsDeleted(this, file);
+				}
+			}
 		}
 	}
 
