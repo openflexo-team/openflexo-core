@@ -63,6 +63,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -265,6 +266,12 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 				protected void fileDeleted(File file) {
 					FileSystemBasedResourceCenter.this.fileDeleted(file);
 				}
+
+				@Override
+				protected void fileRenamed(File oldFile, File renamedFile) {
+					// TODO Auto-generated method stub
+
+				}
 			};
 
 			ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
@@ -306,6 +313,19 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 					adapter.contentsDeleted(this, file);
 				}
 			}
+		}
+	}
+
+	protected void fileRenamed(File oldFile, File renamedFile) {
+		if (!isIgnorable(renamedFile)) {
+			System.out.println("File RENAMED from  " + oldFile.getName() + " to " + renamedFile.getName() + " in "
+					+ renamedFile.getParentFile().getAbsolutePath());
+			/*if (technologyAdapterService != null) {
+				for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
+					logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
+					adapter.contentsDeleted(this, file);
+				}
+			}*/
 		}
 	}
 
