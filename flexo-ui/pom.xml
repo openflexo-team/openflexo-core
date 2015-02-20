@@ -37,6 +37,10 @@
         </dependency>
         <dependency>
             <groupId>org.openflexo</groupId>
+            <artifactId>connie-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
             <artifactId>flexo-foundation</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -105,11 +109,10 @@
         </dependency>
 
         <!-- Third Party -->
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${google.guice.version}</version>
-            <scope>test</scope>
-        </dependency>
+	<dependency>
+		<groupId>com.google.inject</groupId>
+		<artifactId>guice</artifactId>
+	</dependency>
+
     </dependencies>
 </project>

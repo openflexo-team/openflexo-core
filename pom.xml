@@ -82,6 +82,11 @@
 				<version>${connie.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>connie-core</artifactId>
+				<version>${connie.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>sablecc</groupId>
@@ -220,6 +225,12 @@
 			 	<artifactId>flexohelp</artifactId>
 			 	<version>${openflexoutils.version}</version>
 			 </dependency>
+		<!--third party -->
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>${google.guice.version}</version>
+			</dependency>
 		</dependencies>
   	</dependencyManagement>
 	<build>
