@@ -132,7 +132,7 @@ public interface FIBInspector extends FIBPanel {
 		// Vincent: old content
 		/*
 		@Override
-		public FIBInspector getSuperInspector() {
+		public JFIBInspector getSuperInspector() {
 			return superInspector;
 		}
 
@@ -142,7 +142,7 @@ public interface FIBInspector extends FIBPanel {
 				return;
 			}
 			if (getDataType() instanceof Class) {
-				FIBInspector superInspector = inspectorController.inspectorForClass(((Class) getDataType()).getSuperclass());
+				JFIBInspector superInspector = inspectorController.inspectorForClass(((Class) getDataType()).getSuperclass());
 				if (superInspector != null) {
 					superInspector.appendSuperInspectors(inspectorController);
 					this.superInspector = superInspector;
@@ -151,9 +151,9 @@ public interface FIBInspector extends FIBPanel {
 			}
 		}
 
-		protected void appendSuperInspector(FIBInspector superInspector) {
+		protected void appendSuperInspector(JFIBInspector superInspector) {
 			if (!superInspectorWereAppened) {
-				append((FIBInspector) superInspector.cloneObject());
+				append((JFIBInspector) superInspector.cloneObject());
 				superInspectorWereAppened = true;
 				// logger.info("< Appened " + superInspector + " to " + this);
 			}

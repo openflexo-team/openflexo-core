@@ -87,7 +87,7 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(inspectorPanel, BorderLayout.CENTER);
 		setResizable(true);
-		new WindowBoundsSaver(this, "FIBInspector", new Rectangle(800, 400, 400, 400), inspectorController.getFlexoController());
+		new WindowBoundsSaver(this, "JFIBInspector", new Rectangle(800, 400, 400, 400), inspectorController.getFlexoController());
 	}
 
 	public void delete() {
@@ -107,7 +107,7 @@ public class FIBInspectorDialog extends JDialog implements Observer {
 						.getInspector().getInspectorTitle();
 				setTitle(newTitle);
 			} else {
-				FIBInspector newInspector = inspectorController.inspectorForObject(object);
+				JFIBInspector newInspector = inspectorController.inspectorForObject(object);
 				setTitle(newInspector.getParameter("title"));
 			}
 		}

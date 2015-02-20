@@ -116,7 +116,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		}
 
 		/*for (Class<?> c : inspectorController.getInspectors().keySet()) {
-			FIBInspector inspector = inspectorController.getInspectors().get(c);
+			JFIBInspector inspector = inspectorController.getInspectors().get(c);
 			FIBView<?, ?, ?> inspectorView = FIBController.makeView(inspector, FlexoLocalization.getMainLocalizer());
 			FlexoLocalization.addToLocalizationListeners(inspectorView);
 			inspectorViews.put(inspector, inspectorView);
@@ -163,8 +163,8 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 	 * @param object
 	 * @return
 	 */
-	/*private boolean inspectObject(Object object, FIBInspector inspector, boolean updateEPTabs) {
-		FIBInspector newInspector = 
+	/*private boolean inspectObject(Object object, JFIBInspector inspector, boolean updateEPTabs) {
+		JFIBInspector newInspector = 
 		
 		if (object == currentInspectedObject) {
 			return false;
@@ -172,7 +172,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 		currentInspectedObject = object;
 
-		FIBInspector newInspector = inspectorController.inspectorForObject(object);
+		JFIBInspector newInspector = inspectorController.inspectorForObject(object);
 
 		if (newInspector == null) {
 			logger.warning("No inspector for " + object);
@@ -190,7 +190,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		return true;
 	}*/
 
-	/*private void updateFlexoConceptReferences(FIBInspector inspector, FlexoObject object) {
+	/*private void updateFlexoConceptReferences(JFIBInspector inspector, FlexoObject object) {
 		if (inspector.updateFlexoConceptReferences(object)) {
 			FIBView<?, ?, ?> view = viewForInspector(inspector);
 			FIBController controller = view.getController();
@@ -278,7 +278,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 	@Override
 	public void update(Observable o, Object notification) {
-		// logger.info("FIBInspectorController received: "+selection);
+		// logger.info("JFIBInspectorController received: "+selection);
 		if (notification instanceof NewInspectorsLoaded) {
 			resetViews();
 		}

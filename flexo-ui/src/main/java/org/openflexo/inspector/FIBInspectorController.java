@@ -62,7 +62,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
- * Represents the controller of a FIBInspector (FIBComponent) in the context of Swing graphical inspection
+ * Represents the controller of a JFIBInspector (FIBComponent) in the context of Swing graphical inspection
  * 
  * @author sylvain
  * 
