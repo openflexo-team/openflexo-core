@@ -173,6 +173,10 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 			return super.delete();
 		}
 
+		@Override
+		public AbstractVirtualModel<?> getOwner() {
+			return getViewPoint();
+		}
 	}
 
 }
