@@ -42,7 +42,7 @@ package org.openflexo.foundation.ontology;
 
 import java.util.List;
 
-import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**

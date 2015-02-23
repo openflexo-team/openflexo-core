@@ -45,9 +45,9 @@ import java.util.prefs.Preferences;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.fib.FIBLibrary;
+import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.PreferencesContainer;
