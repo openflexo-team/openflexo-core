@@ -107,13 +107,21 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 	@Test
 	@TestOrder(2)
 	public void testCreateVirtualModel() throws SaveResourceException {
-		VirtualModel newVirtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, newViewPoint);
+		AbstractVirtualModel<?> newVirtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, newViewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getFlexoIODelegate().exists());
 
 		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
 		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());
-		assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
+
+		if (newVirtualModel instanceof ViewPoint) {
+			assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		}
+		else {
+			assertNotNull(newVirtualModel.getOwningVirtualModel());
+		}
+
 		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
 		assertEquals(newVirtualModel, newVirtualModel.getResourceData());
 
@@ -157,12 +165,19 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
 
-		VirtualModel reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
+		AbstractVirtualModel<?> reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
 		assertNotNull(reloadedVirtualModel);
 
 		assertEquals(reloadedViewPoint, reloadedVirtualModel.getViewPoint());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getVirtualModel());
-		assertEquals(null, reloadedVirtualModel.getOwningVirtualModel());
+
+		if (reloadedVirtualModel instanceof ViewPoint) {
+			assertEquals(null, reloadedVirtualModel.getOwningVirtualModel());
+		}
+		else {
+			assertNotNull(reloadedVirtualModel.getOwningVirtualModel());
+		}
+
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getFlexoConcept());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getResourceData());
 
