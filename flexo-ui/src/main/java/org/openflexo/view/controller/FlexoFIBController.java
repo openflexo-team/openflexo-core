@@ -40,9 +40,7 @@
 package org.openflexo.view.controller;
 
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -52,8 +50,6 @@ import javax.swing.SwingUtilities;
 
 import org.openflexo.Flexo;
 import org.openflexo.components.ProgressWindow;
-import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBModelFactory;
@@ -77,8 +73,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.view.FIBBrowserActionAdapter;
@@ -294,50 +288,6 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			removeProject.setProjectToRemoveURI(ref.getURI());
 			removeProject.doAction();
 		}
-	}
-
-	public Resource getFIBPanelForObject(Object anObject) {
-		if (anObject != null) {
-			return getFIBPanelForClass(anObject.getClass());
-		}
-		return null;
-	}
-
-	private final Map<Class<?>, Resource> fibPanelsForClasses = new HashMap<Class<?>, Resource>() {
-		@Override
-		public Resource get(Object key) {
-			if (containsKey(key)) {
-				return super.get(key);
-			}
-			if (key instanceof Class) {
-				Class<?> aClass = (Class<?>) key;
-				// System.out.println("Searching FIBPanel for " + aClass);
-				if (aClass.getAnnotation(FIBPanel.class) != null) {
-					// System.out.println("Found annotation " + aClass.getAnnotation(FIBPanel.class));
-					String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
-					Resource fibPanelResource = ResourceLocator.locateResource(fibPanelName);
-					// System.out.println("fibPanelFile=" + fibPanel);
-					if (fibPanelResource != null) {
-						// logger.info("Found " + fibPanel);
-						put(aClass, fibPanelResource);
-						return fibPanelResource;
-					}
-				}
-				put(aClass, null);
-				return null;
-			}
-			return null;
-		}
-	};
-
-	/*public static void main(String[] args) {
-		FlexoFIBController newController = new FlexoFIBController(null);
-		System.out.println("Result: " + newController.getFIBPanelForClass(DeclareFlexoRole.class));
-	}*/
-
-	public Resource getFIBPanelForClass(Class<?> aClass) {
-
-		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}
 
 	@Override
