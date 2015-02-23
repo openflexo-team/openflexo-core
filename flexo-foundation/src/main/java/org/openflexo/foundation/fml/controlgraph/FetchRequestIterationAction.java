@@ -44,10 +44,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.annotations.FIBPanel;
 import org.openflexo.foundation.fml.binding.FetchRequestIterationActionBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
