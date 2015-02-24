@@ -164,6 +164,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public SynchronizationScheme createSynchronizationScheme(VirtualModel virtualModel) {
 		SynchronizationScheme newEditionScheme = virtualModel.getFMLModelFactory().newSynchronizationScheme();
 		newEditionScheme.setName("synchronization");
+		newEditionScheme.setControlGraph(virtualModel.getFMLModelFactory().newEmptyControlGraph());
 		virtualModel.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
@@ -171,6 +172,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public CreationScheme createCreationScheme(FlexoConcept flexoConcept) {
 		CreationScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCreationScheme();
 		newEditionScheme.setName("creation");
+		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
@@ -178,6 +180,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public DeletionScheme createDeletionScheme(FlexoConcept flexoConcept) {
 		DeletionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newDeletionScheme();
 		newEditionScheme.setName("deletion");
+		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
@@ -185,6 +188,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public ActionScheme createActionScheme(FlexoConcept flexoConcept) {
 		ActionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newActionScheme();
 		newEditionScheme.setName("action");
+		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}
@@ -198,6 +202,7 @@ public class FMLFIBController extends FlexoFIBController {
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
 		CloningScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCloningScheme();
 		newEditionScheme.setName("clone");
+		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
 	}

@@ -69,6 +69,7 @@ public interface FlexoConceptObject extends FMLObject {
 	 * 
 	 * @return
 	 */
+	// TODO harmonize with Get Owner from FlexoConcept
 	public AbstractVirtualModel<?> getOwningVirtualModel();
 
 	/**

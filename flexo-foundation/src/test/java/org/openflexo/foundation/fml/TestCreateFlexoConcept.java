@@ -77,7 +77,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 	static ViewPoint newViewPoint;
-	static VirtualModel newVirtualModel;
+	static AbstractVirtualModel<?> newVirtualModel;
 
 	static FlexoConcept flexoConceptA;
 	static FlexoConcept flexoConceptB;
@@ -118,7 +118,15 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		assertEquals(newViewPoint, newVirtualModel.getViewPoint());
 		assertEquals(newVirtualModel, newVirtualModel.getVirtualModel());
-		assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
+
+		if (newVirtualModel instanceof ViewPoint) {
+			assertEquals(null, newVirtualModel.getOwningVirtualModel());
+		}
+		else {
+			assertNotNull(newVirtualModel.getOwningVirtualModel());
+		}
+
 		assertEquals(newVirtualModel, newVirtualModel.getFlexoConcept());
 	}
 
