@@ -40,11 +40,13 @@
 package org.openflexo.foundation.resource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * Represents a folder, as an organization item inside a {@link ResourceRepository}
@@ -62,6 +64,11 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	private final ArrayList<RepositoryFolder<R>> children;
 	private final ArrayList<R> resources;
 
+	public static final String NAME_KEY = "name";
+	public static final String PARENT_KEY = "parent";
+	public static final String CHILDREN_KEY = "children";
+	public static final String RESOURCES_KEY = "resources";
+
 	public RepositoryFolder(String name, RepositoryFolder<R> parentFolder, ResourceRepository<R> resourceRepository) {
 		this.resourceRepository = resourceRepository;
 		this.name = name;
@@ -78,7 +85,22 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		File oldFile = getFile();
+		String oldName = this.name;
+		if (oldName != null && !oldName.equals(name)) {
+			this.name = name;
+			if (getFile() != null) {
+				// This is a File, i try to rename it
+				// TODO: test this (quick and dirty done for Wei)
+				try {
+					FileUtils.rename(oldFile, getFile());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
+		}
+
 	}
 
 	public List<RepositoryFolder<R>> getChildren() {
@@ -90,6 +112,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		aFolder.parent = this;
 		setChanged();
 		notifyObservers(new RepositoryFolderAdded(this, aFolder));
+		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, null, aFolder);
 	}
 
 	public void removeFromChildren(RepositoryFolder<R> aFolder) {
@@ -97,6 +120,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		aFolder.parent = null;
 		setChanged();
 		notifyObservers(new RepositoryFolderRemoved(this, aFolder));
+		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, aFolder, null);
 	}
 
 	public RepositoryFolder<R> getParentFolder() {
@@ -134,6 +158,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		resources.add(resource);
 		setChanged();
 		notifyObservers(new ResourceRegistered(resource, this));
+		getPropertyChangeSupport().firePropertyChange(RESOURCES_KEY, null, resource);
 	}
 
 	public void removeFromResources(R resource) {
@@ -141,6 +166,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		setChanged();
 		notifyObservers(new ResourceUnregistered(resource, this));
 		deleteObservers();
+		getPropertyChangeSupport().firePropertyChange(RESOURCES_KEY, resource, null);
 	}
 
 	public ResourceRepository<?> getResourceRepository() {
