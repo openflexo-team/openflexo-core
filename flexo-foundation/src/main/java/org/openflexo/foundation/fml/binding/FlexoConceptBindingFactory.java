@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.binding;
 
 import java.lang.reflect.Type;
@@ -275,7 +274,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		}
 		// Hook to specialize type returned by FlexoBehaviourAction.getEditionScheme()
 		// This method is used while executing DiagramElement inspectors
-		if (propertyName.equals("editionScheme") && (parent.getType() instanceof FlexoBehaviourActionType)) {
+		// TODO: (sylvain) still required ???
+		if (returned != null && propertyName.equals("editionScheme") && (parent.getType() instanceof FlexoBehaviourActionType)) {
 			returned.setType(FlexoBehaviourType.getFlexoBehaviourType(((FlexoBehaviourActionType) parent.getType()).getFlexoBehaviour()));
 		}
 		return returned;
