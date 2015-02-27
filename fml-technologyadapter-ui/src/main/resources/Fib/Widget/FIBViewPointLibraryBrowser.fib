@@ -33,15 +33,6 @@
 			<Children data="viewPointFolder.resources" visible="" cast=""
 				name="resource" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
-			<Children data="viewPointFolder.children" visible="" cast=""
-				name="subFolders" />
-			<Children data="viewPointFolder.resources" visible="" cast=""
-				name="viewPoints" />
-		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
 			label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
 			tooltip="" enabled="viewPoint.isLoaded" visible="" isEditable="false"
@@ -50,17 +41,6 @@
 			<Children data="viewPoint.contents" visible="viewPoint.isLoaded"
 				cast="" name="subResources" />
 		</BrowserElement>
-		<!-- <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.diagram.rm.ExampleDiagramResource" 
-			label="exampleDiagram.name" icon="controller.iconForObject(exampleDiagram)" 
-			tooltip="" enabled="exampleDiagram.isLoaded" visible="" isEditable="false" 
-			editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="exampleDiagram"> 
-			<Children data="exampleDiagram.loadedExampleDiagram.childs" visible="exampleDiagram.isLoaded" 
-			cast="" name="childs" /> </BrowserElement> <BrowserElement dataClassName="org.openflexo.foundation.fml.rt.diagram.rm.DiagramPaletteResource" 
-			label="diagramPalette.name" icon="controller.iconForObject(diagramPalette)" 
-			tooltip="" enabled="diagramPalette.isLoaded" visible="" isEditable="false" 
-			editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="diagramPalette"> 
-			<Children data="diagramPalette.loadedDiagramPalette.elements" visible="diagramPalette.isLoaded" 
-			name="childs" /> </BrowserElement> -->
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false"
@@ -73,14 +53,6 @@
 			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
 				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
 		</BrowserElement>
-		<!-- <BrowserElement dataClassName="org.openflexo.foundation.rm.DiagramSpecificationResource" 
-			label="diagramSpecification.name" icon="controller.iconForObject(diagramSpecification)" 
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" 
-			defaultVisible="true" dynamicFont="" name="diagramSpecification"> <Children 
-			data="diagramSpecification.contents" visible="diagramSpecification.isLoaded" 
-			cast="" name="subresources" /> <Children data="diagramSpecification.loadedDiagramSpecification.allRootFlexoConcepts" 
-			visible="diagramSpecification.isLoaded" cast="" name="rootFlexoConcepts" 
-			/> </BrowserElement> -->
 		<BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 			label="(((modelSlot.name + &quot; - [&quot;) + modelSlot.technologyAdapter.name) + &quot;]&quot;)"
 			icon="controller.iconForObject(modelSlot)" tooltip="" enabled=""

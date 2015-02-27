@@ -40,10 +40,10 @@ package org.openflexo.fml.rt.controller.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.view.FIBBrowserView;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -53,13 +53,13 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBViewLibraryBrowser extends FIBBrowserView<ViewLibrary> {
+public class FIBViewLibraryBrowser extends FIBTechnologyBrowser<FMLRTTechnologyAdapter> {
 	static final Logger logger = Logger.getLogger(FIBViewLibraryBrowser.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBViewLibraryBrowser.fib");
 
-	public FIBViewLibraryBrowser(ViewLibrary viewLibrary, FlexoController controller) {
-		super(viewLibrary, controller, FIB_FILE);
+	public FIBViewLibraryBrowser(FMLRTTechnologyAdapter technologyAdapter, FlexoController controller) {
+		super(technologyAdapter, controller, FIB_FILE);
 	}
 
 	// Please uncomment this for a live test

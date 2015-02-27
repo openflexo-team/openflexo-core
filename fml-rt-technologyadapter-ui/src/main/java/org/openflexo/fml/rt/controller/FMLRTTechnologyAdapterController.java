@@ -40,6 +40,7 @@ package org.openflexo.fml.rt.controller;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
@@ -50,6 +51,7 @@ import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.view.ViewModuleView;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
+import org.openflexo.fml.rt.controller.widget.FIBViewLibraryBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -152,11 +154,9 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		if (View.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIEW_ICON;
-		}
-		else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
-		}
-		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
+		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(FMLRTIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
@@ -180,11 +180,9 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		}
-		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
@@ -194,20 +192,15 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
-		}
-		else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
-		}
-		else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
-		}
-		else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
-		}
-		else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
-		}
-		else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
@@ -218,8 +211,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 
 		if (object instanceof View) {
 			return true;
-		}
-		else if (object instanceof VirtualModelInstance) {
+		} else if (object instanceof VirtualModelInstance) {
 			return true;
 		} /*else if (object instanceof FlexoConceptInstance) {
 			// NO module view yet
@@ -255,16 +247,19 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		if (object instanceof View) {
 			View view = (View) object;
 			return new ViewModuleView(view, controller, perspective);
-		}
-		else if (object instanceof VirtualModelInstance) {
+		} else if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance vmi = (VirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
-		}
-		else if (object instanceof FlexoConceptInstance) {
+		} else if (object instanceof FlexoConceptInstance) {
 			// NO module view yet
 		}
 
 		return new EmptyPanel<TechnologyObject<FMLRTTechnologyAdapter>>(controller, perspective, object);
+	}
+
+	@Override
+	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser(FlexoController controller) {
+		return new FIBViewLibraryBrowser(getTechnologyAdapter(), controller);
 	}
 
 }

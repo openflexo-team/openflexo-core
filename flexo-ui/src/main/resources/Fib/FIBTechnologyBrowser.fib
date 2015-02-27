@@ -37,7 +37,9 @@
 			label="resource.name" icon="controller.iconForObject(resource)"
 			tooltip="" enabled="resource.isLoaded" visible="!(resource.isDeleted)"
 			isEditable="false" editableLabel="" filtered="false" defaultVisible="true"
-			dynamicFont="" name="resource" />
+			dynamicFont="" name="resource">
+			<Children data="resource.contents" visible="resource.isLoaded" cast="" name="subResources" />
+		</BrowserElement>
 	</Browser>
 	<LocalizedDictionary />
 </Panel>
