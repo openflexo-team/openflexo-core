@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 
 /**
  * Convert FML behaviour model from 1.7.0 to 1.7.1
@@ -92,8 +93,28 @@ public class FMLControlGraphConverter {
 
 		if (anAction instanceof EditionAction && anAction.getConditional() != null && anAction.getConditional().isSet()) {
 			ConditionalAction action = owner.getFMLModelFactory().newConditionalAction();
+			action.initializeDeserialization(owner.getFMLModelFactory());
 			action.setCondition(anAction.getConditional());
 			action.setThenControlGraph(anAction);
+			anAction = action;
+		}
+
+		// Convert any reference to deprecated FetchRequestIterationAction to IterationAction
+		if (anAction instanceof FetchRequestIterationAction) {
+			FetchRequestIterationAction fetchRequestIteration = (FetchRequestIterationAction) anAction;
+			FetchRequest<?, ?> fetchRequest = fetchRequestIteration.getFetchRequest();
+			IterationAction action = owner.getFMLModelFactory().newIterationAction();
+			action.initializeDeserialization(owner.getFMLModelFactory());
+			action.setIteratorName(fetchRequestIteration.getIteratorName());
+			action.setIterationAction(fetchRequest);
+
+			System.out.println("By the way, the control graph is " + fetchRequestIteration.getControlGraph());
+			if (fetchRequestIteration.getControlGraph() != null) {
+				System.out.println("FML=" + fetchRequestIteration.getControlGraph().getFMLRepresentation());
+				System.exit(-1);
+				action.setControlGraph(fetchRequestIteration.getControlGraph());
+			}
+
 			anAction = action;
 		}
 

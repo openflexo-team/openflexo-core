@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.model.annotations.Implementation;
@@ -93,12 +95,19 @@ public abstract interface FMLControlGraphOwner extends FlexoConceptObject {
 
 	@Implementation
 	public abstract class FMLControlGraphOwnerImpl implements FMLControlGraphOwner {
+
+		static final Logger logger = Logger.getLogger(FMLControlGraphOwnerImpl.class.getPackage().getName());
+
 		@Override
 		public void controlGraphChanged(FMLControlGraph controlGraph) {
 			if (this instanceof FMLControlGraph) {
 				FMLControlGraph cg = (FMLControlGraph) this;
 				cg.getPropertyChangeSupport().firePropertyChange("flattenedSequence", null, cg.getFlattenedSequence());
-				cg.getOwner().controlGraphChanged(cg.getOwner().getControlGraph(cg.getOwnerContext()));
+				if (cg.getOwner() != null) {
+					cg.getOwner().controlGraphChanged(cg.getOwner().getControlGraph(cg.getOwnerContext()));
+				} else {
+					logger.warning("null owner for control graph context=" + cg.getOwnerContext());
+				}
 			}
 		}
 
