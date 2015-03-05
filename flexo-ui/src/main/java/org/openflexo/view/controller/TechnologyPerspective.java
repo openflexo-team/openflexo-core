@@ -61,6 +61,11 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	static final Logger logger = Logger.getLogger(TechnologyPerspective.class.getPackage().getName());
 
 	private final TA technologyAdapter;
+
+	public TA getTechnologyAdapter() {
+		return technologyAdapter;
+	}
+
 	private final FIBTechnologyBrowser<TA> technologyBrowser;
 
 	/**
