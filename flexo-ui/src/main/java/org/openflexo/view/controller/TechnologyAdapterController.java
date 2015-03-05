@@ -204,21 +204,29 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
-		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
-		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DELETE_ICON;
-		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
-		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.EXPRESSION_ACTION_ICON;
 		}
 		return null;
@@ -492,6 +500,10 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<FlexoController, TechnologyPerspective<TA>>();
+
+	public Map<FlexoController, TechnologyPerspective<TA>> getTechnologyPerspectives() {
+		return technologyPerspectives;
+	}
 
 	public TechnologyPerspective<TA> getTechnologyPerspective(FlexoController controller) {
 		TechnologyPerspective<TA> returned = technologyPerspectives.get(controller);
