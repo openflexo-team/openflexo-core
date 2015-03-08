@@ -84,7 +84,10 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 
 	@Override
 	public Type getType() {
-		return getAction().getItemType();
+		if (getAction() != null) {
+			return getAction().getItemType();
+		}
+		return null;
 	}
 
 	public IterationAction getAction() {
@@ -95,8 +98,7 @@ public class IterationActionBindingVariable extends BindingVariable implements P
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getAction()) {
 			if (evt.getPropertyName().equals(IterationAction.ITERATOR_NAME_KEY)) {
-				System.out.println("Hop, l'iterator change de " + evt.getOldValue() + " a " + getVariableName());
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
+					// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
 			if (lastKnownType != getType()) {

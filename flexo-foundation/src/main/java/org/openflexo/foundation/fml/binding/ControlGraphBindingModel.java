@@ -42,6 +42,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 
 /**
  * This is the root class for a {@link BindingModel} used in the context of a {@link FMLControlGraph}<br>
@@ -85,12 +86,22 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// System.out.println("Received " + evt + " pour " + controlGraph + " bm=" + this);
+		// System.out.println("Received " + evt.getPropertyName() + " evt=" + evt + " pour " + controlGraph + " bm=" + this);
 		super.propertyChange(evt);
 		if (evt.getSource() == controlGraph) {
-			if (evt.getPropertyName().equals(FMLControlGraph.OWNER_KEY) || evt.getPropertyName().equals(FMLControlGraph.OWNER_CONTEXT_KEY)) {
-				// The control graph changes it's owner or context
+			if (evt.getPropertyName().equals(FMLControlGraph.OWNER_CONTEXT_KEY)) {
+				// The control graph changes it's context
 				setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
+			} else if (evt.getPropertyName().equals(FMLControlGraph.OWNER_KEY)) {
+				// The control graph changes it's owner
+				setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
+				FMLControlGraphOwner oldOwner = (FMLControlGraphOwner) evt.getOldValue();
+				if (oldOwner != null && oldOwner.getPropertyChangeSupport() != null) {
+					oldOwner.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
+				if (controlGraph != null && controlGraph.getOwner() != null && controlGraph.getOwner().getPropertyChangeSupport() != null) {
+					controlGraph.getOwner().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 		} else if (evt.getSource() == controlGraph.getOwner()) {
 			setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);

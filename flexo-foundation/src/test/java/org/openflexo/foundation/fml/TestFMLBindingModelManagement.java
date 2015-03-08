@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
@@ -1198,6 +1197,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(((ExpressionAction) assignation1.getAssignableAction()).getExpression().isValid());
 		assertTrue(assignation2.getAssignation().isValid());
+
 		assertTrue(((ExpressionAction) assignation2.getAssignableAction()).getExpression().isValid());
 
 		assertEquals(12, fetchRequestIteration.getBindingModel().getBindingVariablesCount());

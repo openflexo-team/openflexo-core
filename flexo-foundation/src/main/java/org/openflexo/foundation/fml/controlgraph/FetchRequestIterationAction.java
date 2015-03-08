@@ -215,12 +215,54 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			}
 		}*/
 
+		@Deprecated
 		@Override
-		public void addToActions(EditionAction action) {
-			if (getFetchRequest() != action) {
-				performSuperAdder(ACTIONS_KEY, action);
-			}
+		public void addToActions(EditionAction anAction) {
+			FMLControlGraphConverter.addToActions(this, CONTROL_GRAPH_KEY, anAction);
+		}
 
+		@Deprecated
+		@Override
+		public void removeFromActions(EditionAction anAction) {
+			FMLControlGraphConverter.removeFromActions(this, CONTROL_GRAPH_KEY, anAction);
+		}
+
+		@Override
+		public void reduce() {
+			if (getControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getControlGraph()).reduce();
+			}
+			/*if (getIterationAction() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getIterationAction()).reduce();
+			}*/
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getControlGraph();
+			} /*else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getIterationAction();
+				}*/
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
+			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setControlGraph(controlGraph);
+			} /*else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setIterationAction((AssignableAction<List<?>>) controlGraph);
+				}*/
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph aControlGraph) {
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(CONTROL_GRAPH_KEY);
+			}
+			performSuperSetter(CONTROL_GRAPH_KEY, aControlGraph);
 		}
 
 		@Override
@@ -236,31 +278,25 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			return new FetchRequestIterationActionBindingModel(this);
 		}
 
-		/*@Override
-		protected FetchRequestIterationActionBindingModel makeBindingModel() {
-			return new FetchRequestIterationActionBindingModel(this);
-		}*/
-
-		@Override
-		public FMLControlGraph getControlGraph(String ownerContext) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
-			// TODO Auto-generated method stub
-		}
-
 		@Override
 		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
-			// TODO Auto-generated method stub
+			if (controlGraph == getControlGraph()) {
+				return getInferedBindingModel();
+				// return getControlGraph().getBindingModel();
+			}
+			logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
 		}
 
 		@Override
-		public void reduce() {
-			// TODO Auto-generated method stub
+		public void setOwner(FMLControlGraphOwner owner) {
+			performSuperSetter(OWNER_KEY, owner);
+			if (getControlGraph() != null) {
+				getControlGraph().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph()));
+			}
+			/*if (getIterationAction() != null) {
+				getIterationAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getIterationAction()));
+			}*/
 		}
 
 	}

@@ -137,7 +137,8 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("for (" + getIteratorName() + " : " + getIterationAction().getFMLRepresentation(), context);
+			out.append("for (" + getIteratorName() + " : "
+					+ (getIterationAction() != null ? getIterationAction().getFMLRepresentation() : "null"), context);
 			out.append(") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append(getControlGraph().getFMLRepresentation(context), context, 1);
@@ -341,6 +342,17 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 				getPropertyChangeSupport().firePropertyChange(ITERATION_KEY, null, getIteration());
 			}
 			super.notifiedBindingChanged(dataBinding);
+		}
+
+		@Override
+		public void setOwner(FMLControlGraphOwner owner) {
+			performSuperSetter(OWNER_KEY, owner);
+			if (getControlGraph() != null) {
+				getControlGraph().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph()));
+			}
+			if (getIterationAction() != null) {
+				getIterationAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getIterationAction()));
+			}
 		}
 
 	}

@@ -140,6 +140,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 */
 	public BindingModel getInferedBindingModel();
 
+	public void resetInferedBindingModel();
+
 	public FMLControlGraphOwner getRootOwner();
 
 	/**
@@ -178,6 +180,11 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		@Override
 		public ControlGraphBindingModel<?> getInferedBindingModel() {
 			return getBindingModel();
+		}
+
+		@Override
+		public void resetInferedBindingModel() {
+
 		}
 
 		@Override

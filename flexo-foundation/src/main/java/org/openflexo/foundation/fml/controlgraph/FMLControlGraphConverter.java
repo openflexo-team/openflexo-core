@@ -102,17 +102,44 @@ public class FMLControlGraphConverter {
 		// Convert any reference to deprecated FetchRequestIterationAction to IterationAction
 		if (anAction instanceof FetchRequestIterationAction) {
 			FetchRequestIterationAction fetchRequestIteration = (FetchRequestIterationAction) anAction;
+			System.out.println("By the way, the control graph is " + fetchRequestIteration.getControlGraph());
 			FetchRequest<?, ?> fetchRequest = fetchRequestIteration.getFetchRequest();
 			IterationAction action = owner.getFMLModelFactory().newIterationAction();
 			action.initializeDeserialization(owner.getFMLModelFactory());
 			action.setIteratorName(fetchRequestIteration.getIteratorName());
 			action.setIterationAction(fetchRequest);
 
-			System.out.println("By the way, the control graph is " + fetchRequestIteration.getControlGraph());
 			if (fetchRequestIteration.getControlGraph() != null) {
+				System.out.println("iterator=" + fetchRequestIteration.getIteratorName());
 				System.out.println("FML=" + fetchRequestIteration.getControlGraph().getFMLRepresentation());
-				System.exit(-1);
-				action.setControlGraph(fetchRequestIteration.getControlGraph());
+
+				System.out.println(">>>>>>>>>>>>>>>>>>>>>> Debut du setControlGraph ");
+				System.out.println("BM=" + fetchRequestIteration.getControlGraph().getBindingModel());
+				System.out.println("Base BM=" + fetchRequestIteration.getControlGraph().getBindingModel().getBaseBindingModel());
+				System.out.println("Owner was = " + fetchRequestIteration.getControlGraph().getOwner());
+
+				FMLControlGraph contained = fetchRequestIteration.getControlGraph();
+				fetchRequestIteration.setControlGraph(null);
+				action.setControlGraph(contained);
+				// action.resetInferedBindingModel();
+
+				/*action.getBindingModel().getPropertyChangeSupport()
+						.firePropertyChange(BindingModel.BASE_BINDING_MODEL_PROPERTY, null, action.getBindingModel().getBaseBindingModel());
+
+				System.out.println("contained is " + contained);
+				if (contained instanceof Sequence) {
+					contained.resetInferedBindingModel();
+				}*/
+
+				System.out.println("BM=" + action.getControlGraph().getBindingModel());
+				System.out.println("Base BM=" + action.getControlGraph().getBindingModel().getBaseBindingModel());
+				System.out.println("Owner is now = " + action.getControlGraph().getOwner());
+
+				System.out.println("city2=" + action.getInferedBindingModel().bindingVariableNamed("city2"));
+				System.out.println("city2=" + action.getControlGraph().getBindingModel().bindingVariableNamed("city2"));
+
+				System.out.println("<<<<<<<<<<<<<<<<<<<<<< Fin du setControlGraph ");
+
 			}
 
 			anAction = action;
