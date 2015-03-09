@@ -89,7 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ExpressionAction.class),
 		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
 		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
-		@Import(FetchRequestIterationAction.class) })
+		@Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
@@ -97,7 +97,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
-	@Getter(value = ACTION_CONTAINER_KEY, inverse = ActionContainer.ACTIONS_KEY)
+	@Getter(value = ACTION_CONTAINER_KEY /*, inverse = ActionContainer.ACTIONS_KEY*/)
 	@CloningStrategy(StrategyType.IGNORE)
 	public ActionContainer getActionContainer();
 

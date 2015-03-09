@@ -1119,6 +1119,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(actionScheme.getParameters().contains(param2));
 
 		assertEquals(12, actionScheme.getBindingModel().getBindingVariablesCount());
+
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
@@ -1313,8 +1314,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		FetchRequestCondition condition2 = selectFlexoConceptInstance.createCondition();
 		condition2.setCondition(new DataBinding<Boolean>("selected.aStringInA = parameters.aString"));
 
-		CreateEditionAction createMatchFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration,
-				null, editor);
+		CreateEditionAction createMatchFlexoConceptInstanceAction = CreateEditionAction.actionType.makeNewAction(
+				fetchRequestIteration.getControlGraph(), null, editor);
 		// createMatchFlexoConceptInstanceAction.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createMatchFlexoConceptInstanceAction.setEditionActionClass(MatchFlexoConceptInstance.class);
 		createMatchFlexoConceptInstanceAction.doAction();
@@ -1370,8 +1371,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(action2.getAssignation().isValid());
 		assertTrue(((ExpressionAction) action2.getAssignableAction()).getExpression().isValid());
 
-		assertNotNull(creationScheme);
-		System.out.println("FML=" + creationScheme.getFMLRepresentation());
+		assertNotNull(actionScheme);
+		System.out.println("FML=" + actionScheme.getFMLRepresentation());
 
 		matchFlexoConceptInstance.setCreationScheme(creationScheme);
 
@@ -1389,6 +1390,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(criteria4);
 
 		criteria1.setValue(new DataBinding<Object>("item.aStringInA"));
+
+		System.out.println("FML=" + actionScheme.getFMLRepresentation());
+
 		assertTrue(criteria1.getValue().isValid());
 
 		MatchingCriteria criteria1bis = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("aStringInA"));

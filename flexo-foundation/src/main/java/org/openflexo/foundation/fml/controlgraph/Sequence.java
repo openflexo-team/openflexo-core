@@ -45,6 +45,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -177,7 +178,15 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			if (controlGraph == getControlGraph1()) {
 				return getBindingModel();
 			} else if (controlGraph == getControlGraph2()) {
-				return getControlGraph1().getInferedBindingModel();
+				// If control graph 1 declares a new variable, this variable should be added
+				// to context of control graph 2 binding model
+				if (getControlGraph1() instanceof AssignableAction) {
+					return getControlGraph1().getInferedBindingModel();
+				} else {
+					return getBindingModel();
+				}
+
+				// return getControlGraph1().getInferedBindingModel();
 			}
 			return null;
 		}
@@ -224,18 +233,18 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			performSuperSetter(OWNER_KEY, owner);
 			if (getControlGraph1() != null) {
 
-				System.out.println("WAS: " + getControlGraph1().getInferedBindingModel());
-				resetInferedBindingModel();
-				getControlGraph1().resetInferedBindingModel();
-				System.out.println("NOW: " + getControlGraph1().getInferedBindingModel());
+				// System.out.println("WAS: " + getControlGraph1().getInferedBindingModel());
+				// resetInferedBindingModel();
+				// getControlGraph1().resetInferedBindingModel();
+				// System.out.println("NOW: " + getControlGraph1().getInferedBindingModel());
 				getControlGraph1().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph1()));
 				// getControlGraph1().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 			}
 			if (getControlGraph2() != null) {
-				// getControlGraph2().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph2()));
-				getControlGraph2().getBindingModel().setBaseBindingModel(getInferedBindingModel());
+				getControlGraph2().getBindingModel().setBaseBindingModel(getBaseBindingModel(getControlGraph2()));
+				// getControlGraph2().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 
-				if (getBaseBindingModel(getControlGraph2()) != getInferedBindingModel()) {
+				/*if (getBaseBindingModel(getControlGraph2()) != getInferedBindingModel()) {
 					System.out.println("Ya un pb la !!!!");
 
 					if (getBaseBindingModel(getControlGraph2()) == getControlGraph1().getInferedBindingModel()) {
@@ -244,7 +253,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					}
 
 					// System.exit(-1);
-				}
+				}*/
 			}
 		}
 	}

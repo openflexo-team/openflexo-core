@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLTechnologyContextManager;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -106,8 +105,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public FMLTechnologyContextManager getTechnologyContextManager() {
-		return (FMLTechnologyContextManager) super.getTechnologyContextManager();
+	public FMLRTTechnologyContextManager getTechnologyContextManager() {
+		return (FMLRTTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
 	public FlexoServiceManager getServiceManager() {

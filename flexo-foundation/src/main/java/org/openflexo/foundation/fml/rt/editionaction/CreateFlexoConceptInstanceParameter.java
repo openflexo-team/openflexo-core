@@ -129,8 +129,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (param != null) {
-				return param.getFlexoConcept();
+			if (getParam() != null) {
+				return getParam().getFlexoConcept();
 			}
 			return null;
 		}
@@ -204,6 +204,17 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			}
 			return bindingModel;
 		}
+
+		/*@Override
+		public ViewPoint getViewPoint() {
+			System.out.println("Hop, c'est quoi le ViewPoint de " + this);
+			System.out.println("C'est " + super.getViewPoint());
+			System.out.println("ResourceData=" + getResourceData());
+			System.out.println("FlexoConcept=" + getFlexoConcept());
+			System.out.println("param=" + getParam());
+			System.out.println("value=" + getValue());
+			return super.getViewPoint();
+		}*/
 
 		@Override
 		public FlexoBehaviourParameter getParam() {

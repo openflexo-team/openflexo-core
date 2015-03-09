@@ -141,8 +141,10 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 					+ (getIterationAction() != null ? getIterationAction().getFMLRepresentation() : "null"), context);
 			out.append(") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getControlGraph() != null) {
+				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+			}
 			out.append("}", context);
 			return out.toString();
 		}

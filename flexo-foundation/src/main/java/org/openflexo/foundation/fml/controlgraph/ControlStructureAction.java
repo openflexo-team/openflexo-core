@@ -77,12 +77,6 @@ public abstract interface ControlStructureAction extends EditionAction, FMLContr
 		protected abstract ControlGraphBindingModel<?> makeInferedBindingModel();
 
 		@Override
-		public void resetInferedBindingModel() {
-			inferedBindingModel = null;
-			super.resetInferedBindingModel();
-		}
-
-		@Override
 		public void variableAdded(AssignableAction action) {
 			// rebuildInferedBindingModel();
 		}

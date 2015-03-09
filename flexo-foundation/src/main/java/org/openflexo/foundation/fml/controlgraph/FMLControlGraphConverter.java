@@ -38,16 +38,22 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.ExecutionAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 
 /**
- * Convert FML behaviour model from 1.7.0 to 1.7.1
+ * Convert FML behaviour model from 1.7.0 to 1.7.1<br>
+ * 
+ * Note: will be removed from 1.7.2 version
  * 
  * @author sylvain
  * 
@@ -81,6 +87,18 @@ public class FMLControlGraphConverter {
 				anAction = action;
 			}
 		}
+
+		if (anAction instanceof AssignationAction && StringUtils.isNotEmpty(((AssignationAction) anAction).getDeprecatedVariableName())
+				&& ((AssignationAction) anAction).getDeprecatedValue() != null
+				&& ((AssignationAction) anAction).getDeprecatedValue().isSet()) {
+			AssignationAction assignationAction = (AssignationAction) anAction;
+			DeclarationAction action = owner.getFMLModelFactory().newDeclarationAction(assignationAction.getDeprecatedVariableName(),
+					assignationAction.getDeprecatedValue());
+			action.initializeDeserialization(owner.getFMLModelFactory());
+			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
+			anAction = action;
+		}
+
 		if (anAction instanceof AssignationAction && ((AssignationAction) anAction).getDeprecatedAssignation() != null
 				&& ((AssignationAction) anAction).getDeprecatedAssignation().isSet()) {
 			AssignableAction assignationAction = (AssignableAction) anAction;
@@ -89,6 +107,27 @@ public class FMLControlGraphConverter {
 			action.getAssignableAction().initializeDeserialization(owner.getFMLModelFactory());
 			action.setAssignation(assignationAction.getDeprecatedAssignation());
 			anAction = action;
+		}
+
+		if (anAction instanceof IterationAction && ((IterationAction) anAction).getIteration() != null
+				&& ((IterationAction) anAction).getIteration().isSet()) {
+
+			IterationAction iterationAction = (IterationAction) anAction;
+			ExpressionAction<? extends List<?>> iterationAsExpression = owner.getFMLModelFactory().newExpressionAction(
+					iterationAction.getIteration());
+			iterationAsExpression.initializeDeserialization(owner.getFMLModelFactory());
+			iterationAction.setIterationAction(iterationAsExpression);
+			iterationAction.setIteration(null);
+		}
+
+		if (anAction instanceof ExecutionAction && ((ExecutionAction) anAction).getExecution() != null
+				&& ((ExecutionAction) anAction).getExecution().isSet()) {
+
+			ExecutionAction executionAction = (ExecutionAction) anAction;
+			ExpressionAction<? extends List<?>> executionAsExpression = owner.getFMLModelFactory().newExpressionAction(
+					executionAction.getExecution());
+			executionAsExpression.initializeDeserialization(owner.getFMLModelFactory());
+			anAction = executionAsExpression;
 		}
 
 		if (anAction instanceof EditionAction && anAction.getConditional() != null && anAction.getConditional().isSet()) {
@@ -101,8 +140,8 @@ public class FMLControlGraphConverter {
 
 		// Convert any reference to deprecated FetchRequestIterationAction to IterationAction
 		if (anAction instanceof FetchRequestIterationAction) {
+
 			FetchRequestIterationAction fetchRequestIteration = (FetchRequestIterationAction) anAction;
-			System.out.println("By the way, the control graph is " + fetchRequestIteration.getControlGraph());
 			FetchRequest<?, ?> fetchRequest = fetchRequestIteration.getFetchRequest();
 			IterationAction action = owner.getFMLModelFactory().newIterationAction();
 			action.initializeDeserialization(owner.getFMLModelFactory());
@@ -110,39 +149,14 @@ public class FMLControlGraphConverter {
 			action.setIterationAction(fetchRequest);
 
 			if (fetchRequestIteration.getControlGraph() != null) {
-				System.out.println("iterator=" + fetchRequestIteration.getIteratorName());
-				System.out.println("FML=" + fetchRequestIteration.getControlGraph().getFMLRepresentation());
-
-				System.out.println(">>>>>>>>>>>>>>>>>>>>>> Debut du setControlGraph ");
-				System.out.println("BM=" + fetchRequestIteration.getControlGraph().getBindingModel());
-				System.out.println("Base BM=" + fetchRequestIteration.getControlGraph().getBindingModel().getBaseBindingModel());
-				System.out.println("Owner was = " + fetchRequestIteration.getControlGraph().getOwner());
 
 				FMLControlGraph contained = fetchRequestIteration.getControlGraph();
 				fetchRequestIteration.setControlGraph(null);
 				action.setControlGraph(contained);
-				// action.resetInferedBindingModel();
-
-				/*action.getBindingModel().getPropertyChangeSupport()
-						.firePropertyChange(BindingModel.BASE_BINDING_MODEL_PROPERTY, null, action.getBindingModel().getBaseBindingModel());
-
-				System.out.println("contained is " + contained);
-				if (contained instanceof Sequence) {
-					contained.resetInferedBindingModel();
-				}*/
-
-				System.out.println("BM=" + action.getControlGraph().getBindingModel());
-				System.out.println("Base BM=" + action.getControlGraph().getBindingModel().getBaseBindingModel());
-				System.out.println("Owner is now = " + action.getControlGraph().getOwner());
-
-				System.out.println("city2=" + action.getInferedBindingModel().bindingVariableNamed("city2"));
-				System.out.println("city2=" + action.getControlGraph().getBindingModel().bindingVariableNamed("city2"));
-
-				System.out.println("<<<<<<<<<<<<<<<<<<<<<< Fin du setControlGraph ");
-
 			}
 
 			anAction = action;
+
 		}
 
 		FMLControlGraph controlGraph = owner.getControlGraph(ownerContext);

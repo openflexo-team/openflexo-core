@@ -169,8 +169,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance> implements
 			MatchFlexoConceptInstance, PropertyChangeListener {
 
-		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
-
 		private FlexoConcept flexoConceptType;
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
@@ -594,81 +592,83 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		public Type getAssignableType() {
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
+	}
 
-		public static class MatchFlexoConceptInstanceMustAddressACreationScheme extends
-				ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
-			public MatchFlexoConceptInstanceMustAddressACreationScheme() {
-				super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
-			}
-
-			@Override
-			public ValidationIssue<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
-					MatchFlexoConceptInstance action) {
-				if (action.getCreationScheme() == null) {
-					if (action.getFlexoConceptType() == null) {
-						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
-								action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
-					} else {
-						return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
-								action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
-					}
-				}
-				return null;
-			}
+	public static class MatchFlexoConceptInstanceMustAddressACreationScheme extends
+			ValidationRule<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> {
+		public MatchFlexoConceptInstanceMustAddressACreationScheme() {
+			super(MatchFlexoConceptInstance.class, "match_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
-		public static class MatchFlexoConceptInstanceParametersMustBeValid extends
-				ValidationRule<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
-			public MatchFlexoConceptInstanceParametersMustBeValid() {
-				super(MatchFlexoConceptInstance.class, "match_flexo_concept_parameters_must_be_valid");
+		@Override
+		public ValidationIssue<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance> applyValidation(
+				MatchFlexoConceptInstance action) {
+			if (action.getCreationScheme() == null) {
+				if (action.getFlexoConceptType() == null) {
+					return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
+							action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
+				} else {
+					return new ValidationError<MatchFlexoConceptInstanceMustAddressACreationScheme, MatchFlexoConceptInstance>(this,
+							action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
+				}
 			}
+			return null;
+		}
+	}
 
-			@Override
-			public ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> applyValidation(
-					MatchFlexoConceptInstance action) {
-				if (action.getCreationScheme() != null) {
-					Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>> issues = new Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>>();
-					for (CreateFlexoConceptInstanceParameter p : action.getParameters()) {
-						if (p.getParam().getIsRequired()) {
-							if (p.getValue() == null || !p.getValue().isSet()) {
-								if (p.getParam() instanceof URIParameter && ((URIParameter) p.getParam()).getBaseURI().isSet()
-										&& ((URIParameter) p.getParam()).getBaseURI().isValid()) {
-									// Special case, we will find a way to manage this
-								} else {
-									issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: "
-											+ p.getParam().getName()));
-								}
-							} else if (!p.getValue().isValid()) {
-								logger.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
-										+ p.getAction().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
-								issues.add(new ValidationError(this, action, "parameter_s_value_is_not_valid: " + p.getParam().getName()));
+	public static class MatchFlexoConceptInstanceParametersMustBeValid extends
+			ValidationRule<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> {
+
+		static final Logger logger = Logger.getLogger(MatchFlexoConceptInstance.class.getPackage().getName());
+
+		public MatchFlexoConceptInstanceParametersMustBeValid() {
+			super(MatchFlexoConceptInstance.class, "match_flexo_concept_parameters_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance> applyValidation(
+				MatchFlexoConceptInstance action) {
+			if (action.getCreationScheme() != null) {
+				Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>> issues = new Vector<ValidationIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>>();
+				for (CreateFlexoConceptInstanceParameter p : action.getParameters()) {
+					if (p.getParam().getIsRequired()) {
+						if (p.getValue() == null || !p.getValue().isSet()) {
+							if (p.getParam() instanceof URIParameter && ((URIParameter) p.getParam()).getBaseURI().isSet()
+									&& ((URIParameter) p.getParam()).getBaseURI().isValid()) {
+								// Special case, we will find a way to manage this
+							} else {
+								issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + p.getParam().getName()));
 							}
+						} else if (!p.getValue().isValid()) {
+							logger.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
+									+ p.getAction().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
+							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_valid: " + p.getParam().getName()));
 						}
 					}
-					if (issues.size() == 0) {
-						return null;
-					} else if (issues.size() == 1) {
-						return issues.firstElement();
-					} else {
-						return new CompoundIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action, issues);
-					}
 				}
-				return null;
+				if (issues.size() == 0) {
+					return null;
+				} else if (issues.size() == 1) {
+					return issues.firstElement();
+				} else {
+					return new CompoundIssue<MatchFlexoConceptInstanceParametersMustBeValid, MatchFlexoConceptInstance>(action, issues);
+				}
 			}
+			return null;
+		}
+	}
+
+	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
+			BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
+		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
+			super("'virtual_model_instance'_binding_is_not_valid", MatchFlexoConceptInstance.class);
 		}
 
-		public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-				BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
-			public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
-				super("'virtual_model_instance'_binding_is_not_valid", MatchFlexoConceptInstance.class);
-			}
-
-			@Override
-			public DataBinding<VirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
-				return object.getVirtualModelInstance();
-			}
-
+		@Override
+		public DataBinding<VirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
+			return object.getVirtualModelInstance();
 		}
 
 	}
+
 }
