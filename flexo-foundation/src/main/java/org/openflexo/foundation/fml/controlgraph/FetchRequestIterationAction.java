@@ -124,11 +124,10 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			out.append(getFetchRequest() != null ? getFetchRequest().getFMLRepresentation() : "Null fetch request", context);
 			out.append(")) {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			for (EditionAction action : getActions()) {
-				out.append(action.getFMLRepresentation(context), context, 1);
+			if (getControlGraph() != null) {
+				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
 				out.append(StringUtils.LINE_SEPARATOR, context);
 			}
-
 			out.append("}", context);
 			return out.toString();
 		}
