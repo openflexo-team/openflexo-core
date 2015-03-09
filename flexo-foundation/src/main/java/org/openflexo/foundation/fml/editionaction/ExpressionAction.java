@@ -116,7 +116,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "");
+			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "") + ";";
 		}
 
 		@Override

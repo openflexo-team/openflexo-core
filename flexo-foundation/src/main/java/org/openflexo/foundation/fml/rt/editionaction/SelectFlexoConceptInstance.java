@@ -146,15 +146,9 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			/*if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = (", context);
-			}*/
-			out.append(getClass().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
-					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
+			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
+					+ " as " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			/*if (getAssignation().isSet()) {
-				out.append(")", context);
-			}*/
 			return out.toString();
 		}
 
