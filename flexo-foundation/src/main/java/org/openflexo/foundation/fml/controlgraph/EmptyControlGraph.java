@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -92,6 +93,11 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
 			// Nothing to do
 			return null;
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return "";
 		}
 	}
 }
