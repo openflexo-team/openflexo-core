@@ -64,7 +64,8 @@
     <IconColumn id="60" data="controller.iconForObject(iterator)" displayTitle="false" title="icon" name="icon" columnWidth="25" resizable="false" />
     <TextFieldColumn id="61" data="iterator.roleName" displayTitle="true" title="flexo_role" columnWidth="70" resizable="true" />
     <LabelColumn id="62" data="iterator.modelSlot.name" displayTitle="true" title="model_slot" name="label" columnWidth="50" resizable="true" />
-    <LabelColumn id="63" data="iterator.preciseType" displayTitle="true" title="type" name="label" columnWidth="70" resizable="true" />
+    <LabelColumn id="63" data="iterator.typeDescription" displayTitle="true" title="type" name="label" columnWidth="70" resizable="true" />
+    <DropDownColumn data="iterator.cardinality" format="object.stringRepresentation" displayTitle="true" title="cardinality" name="cardinalityDropdown" columnWidth="50" resizable="true" />
     <RemoveAction id="64" name="delete" method="controller.deleteFlexoRole(data,selected)" />
     <AddAction id="65" name="createFlexoRole" method="controller.createFlexoRole(data)" />
   </Table>

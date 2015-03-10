@@ -11,6 +11,7 @@
       <TextFieldColumn data="iterator.name" title="model_slot" columnWidth="80" resizable="true" displayTitle="true" />
       <LabelColumn data="iterator.modelSlotName" title="type" columnWidth="100" resizable="true" displayTitle="true" name="label" />
       <LabelColumn data="iterator.technologyAdapter.name" title="technology" columnWidth="200" resizable="true" displayTitle="true" name="label" />
+      <DropDownColumn data="iterator.cardinality" format="object.stringRepresentation" displayTitle="true" title="cardinality" name="cardinalityDropdown" columnWidth="50" resizable="true" />
       <LabelColumn data="iterator.modelSlotDescription" title="description" columnWidth="500" resizable="true" displayTitle="true" name="label" />
       <RemoveAction method="controller.deleteModelSlot(data,selected)" name="delete" />
       <AddAction method="controller.createModelSlot(data)" name="createModelSlot" />

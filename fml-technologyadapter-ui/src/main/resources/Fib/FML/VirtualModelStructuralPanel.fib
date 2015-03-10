@@ -26,7 +26,8 @@
       <IconColumn data="controller.iconForObject(iterator)" format="" title="icon" columnWidth="25" resizable="false" displayTitle="false" color="" bgColor="" tooltip="" valueChangedAction="" name="icon" />
       <TextFieldColumn isEditable="" data="iterator.roleName" format="" title="flexo_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" />
       <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
-      <LabelColumn data="iterator.preciseType" format="" title="type" columnWidth="200" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
+      <DropDownColumn data="iterator.cardinality" format="object.stringRepresentation" displayTitle="true" title="cardinality" name="cardinalityDropdown" columnWidth="50" resizable="true" />
+      <LabelColumn data="iterator.typeDescription" format="" title="type" columnWidth="200" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
       <RemoveAction method="controller.deleteFlexoRole(data,selected)" isAvailable="" name="delete" />
       <AddAction method="controller.createFlexoRole(data)" isAvailable="" name="createFlexoRole" />
     </Table>
