@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.RoleCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -110,6 +111,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
 	private PrimitiveType primitiveType = PrimitiveType.String;
+	private RoleCardinality roleCardinality = RoleCardinality.ZeroOne;
 
 	private FlexoRole<?> newFlexoRole;
 
@@ -135,6 +137,18 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 		getPropertyChangeSupport().firePropertyChange("roleName", null, roleName);
+	}
+
+	public RoleCardinality getRoleCardinality() {
+		return roleCardinality;
+	}
+
+	public void setRoleCardinality(RoleCardinality roleCardinality) {
+		if (roleCardinality != getRoleCardinality()) {
+			RoleCardinality oldRoleCardinality = getRoleCardinality();
+			this.roleCardinality = roleCardinality;
+			getPropertyChangeSupport().firePropertyChange("roleCardinality", oldRoleCardinality, roleCardinality);
+		}
 	}
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
@@ -186,6 +200,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				}
 
 				newFlexoRole.setRoleName(getRoleName());
+				newFlexoRole.setCardinality(getRoleCardinality());
 				newFlexoRole.setDescription(description);
 				getFlexoConcept().addToFlexoRoles(newFlexoRole);
 			}

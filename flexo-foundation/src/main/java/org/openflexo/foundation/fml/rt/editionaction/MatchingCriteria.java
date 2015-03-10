@@ -134,7 +134,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getFlexoRole() != null ? getFlexoRole().getType() : Object.class,
+				value = new DataBinding<Object>(this, getFlexoRole() != null ? getFlexoRole().getResultingType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
 			}
@@ -146,7 +146,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 			if (value != null) {
 				value.setOwner(this);
 				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
-				value.setDeclaredType(getFlexoRole() != null ? getFlexoRole().getType() : Object.class);
+				value.setDeclaredType(getFlexoRole() != null ? getFlexoRole().getResultingType() : Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;

@@ -53,10 +53,10 @@ public class FlexoRoleBindingVariable extends BindingVariable implements Propert
 	private Type lastKnownType = null;
 
 	public FlexoRoleBindingVariable(FlexoRole<?> flexoRole) {
-		super(flexoRole.getName(), flexoRole.getType(), true);
+		super(flexoRole.getName(), flexoRole.getResultingType(), true);
 		this.flexoRole = flexoRole;
 		if (flexoRole != null) {
-			lastKnownType = flexoRole.getType();
+			lastKnownType = flexoRole.getResultingType();
 		}
 		if (flexoRole != null && flexoRole.getPropertyChangeSupport() != null) {
 			flexoRole.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -78,7 +78,7 @@ public class FlexoRoleBindingVariable extends BindingVariable implements Propert
 
 	@Override
 	public Type getType() {
-		return getFlexoRole().getType();
+		return getFlexoRole().getResultingType();
 	}
 
 	public FlexoRole getFlexoRole() {
@@ -87,14 +87,17 @@ public class FlexoRoleBindingVariable extends BindingVariable implements Propert
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+
 		if (evt.getSource() == getFlexoRole()) {
 			if (evt.getPropertyName().equals(FlexoRole.NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 			}
-			if (evt.getPropertyName().equals(TYPE_PROPERTY)) {
-				Type newType = (Type) evt.getNewValue();
+			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoRole.RESULTING_TYPE_PROPERTY)) {
+				Type newType = getFlexoRole().getResultingType();
+				System.out.println("ici, newType=" + newType);
 				if (lastKnownType == null || !lastKnownType.equals(newType)) {
+					System.out.println("on notifie " + TYPE_PROPERTY + " de " + lastKnownType + " a " + newType);
 					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
 					lastKnownType = newType;
 				}

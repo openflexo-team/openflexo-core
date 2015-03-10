@@ -53,10 +53,10 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 
 	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotPathElement.class.getPackage().getName());
 
-	private MS modelSlot;
+	private final MS modelSlot;
 
 	public VirtualModelModelSlotPathElement(BindingPathElement parent, MS modelSlot) {
-		super(parent, modelSlot.getName(), modelSlot.getType());
+		super(parent, modelSlot.getName(), modelSlot.getResultingType());
 		this.modelSlot = modelSlot;
 	}
 

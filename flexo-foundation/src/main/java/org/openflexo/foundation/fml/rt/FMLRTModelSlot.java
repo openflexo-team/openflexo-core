@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
 import java.lang.reflect.Type;
@@ -203,6 +202,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		@Override
 		public void setAddressedVirtualModel(VirtualModel aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
+			notifyResultingTypeChanged();
 		}
 
 		/**

@@ -38,9 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -80,6 +83,8 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(OntologicObjectRole.class) })
 public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
+	public static final String RESULTING_TYPE_PROPERTY = "resultingType";
+
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
@@ -114,7 +119,22 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(ModelSlot<?> modelSlot);
 
+	/**
+	 * Return the type of any instance of modelling element handled by this role.<br>
+	 * Note that if the cardinality of this role is multiple, this method will return the type of each modelling element.<br>
+	 * Getting type of the list of all modelling elements for a multiple cardinality role is obtained by {@link #getResultingType()} method.
+	 * 
+	 * @return
+	 */
 	public Type getType();
+
+	/**
+	 * Return the resulting type of this {@link FlexoRole} access. This type is the same as the one obtained by {@link #getType()} method if
+	 * the cardinality of this role is single, or a {@link List} of {@link #getType()} method if the cardinality of this role is multiple.
+	 * 
+	 * @return
+	 */
+	public Type getResultingType();
 
 	public String getTypeDescription();
 
@@ -179,9 +199,9 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		// private FlexoConcept _pattern;
-
 		private ModelSlot<?> modelSlot;
+
+		private Type resultingType;
 
 		public FlexoRoleImpl() {
 			super();
@@ -229,6 +249,19 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		}
 
 		@Override
+		public void setCardinality(RoleCardinality cardinality) {
+			if (cardinality != getCardinality()) {
+				performSuperSetter(CARDINALITY_KEY, cardinality);
+				notifyResultingTypeChanged();
+			}
+		}
+
+		protected void notifyResultingTypeChanged() {
+			resultingType = null;
+			getPropertyChangeSupport().firePropertyChange(RESULTING_TYPE_PROPERTY, null, getResultingType());
+		}
+
+		@Override
 		public String toString() {
 			return getClass().getSimpleName()
 					+ ":"
@@ -240,8 +273,51 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 									: "null") : "null") + "][" + Integer.toHexString(hashCode()) + "]";
 		}
 
+		/**
+		 * Return the type of any instance of modelling element handled by this role.<br>
+		 * Note that if the cardinality of this role is multiple, this method will return the type of each modelling element.<br>
+		 * Getting type of the list of all modelling elements for a multiple cardinality role is obtained by {@link #getResultingType()}
+		 * method.
+		 * 
+		 * @return
+		 */
 		@Override
 		public abstract Type getType();
+
+		/**
+		 * Return the resulting type of this {@link FlexoRole} access. This type is the same as the one obtained by {@link #getType()}
+		 * method if the cardinality of this role is single, or a {@link List} of {@link #getType()} method if the cardinality of this role
+		 * is multiple.
+		 * 
+		 * @return
+		 */
+		@Override
+		public final Type getResultingType() {
+			if (resultingType != null) {
+				// Check type
+				if (getCardinality().isMultipleCardinality()) {
+					if (resultingType instanceof ParameterizedType
+							&& ((ParameterizedType) resultingType).getActualTypeArguments().length == 1
+							&& ((ParameterizedType) resultingType).getActualTypeArguments()[0].equals(getType())) {
+						// OK type is valid
+						return resultingType;
+					}
+				} else {
+					if (resultingType.equals(getType())) {
+						return resultingType;
+					}
+				}
+			}
+
+			// Otherwise, compute the resulting type again
+			if (getCardinality().isMultipleCardinality()) {
+				resultingType = new ParameterizedTypeImpl(List.class, getType());
+			} else {
+				resultingType = getType();
+			}
+
+			return resultingType;
+		}
 
 		@Override
 		public abstract String getTypeDescription();

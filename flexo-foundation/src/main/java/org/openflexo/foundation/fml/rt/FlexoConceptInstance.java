@@ -295,7 +295,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			for (FlexoRole<?> patternRole : getFlexoConcept().getFlexoRoles()) {
 				// FlexoProjectObject object = actors.get(patternRole);
 				Object actor = getFlexoActor(patternRole);
-				sb.append("Role: " + patternRole.getName() + " " + patternRole.getType() + " : [" + actor + "]\n");
+				sb.append("Role: " + patternRole.getName() + " " + patternRole.getResultingType() + " : [" + actor + "]\n");
 			}
 			return sb.toString();
 		}

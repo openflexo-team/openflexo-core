@@ -102,7 +102,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
 		if (object instanceof FlexoRole) {
-			return new FlexoConceptPatternRolePathElement<FlexoRole<?>>(parent, (FlexoRole<?>) object);
+			return new FlexoConceptFlexoRolePathElement<FlexoRole<?>>(parent, (FlexoRole<?>) object);
 		}
 		if (object instanceof ModelSlot) {
 			return new VirtualModelModelSlotPathElement<ModelSlot>(parent, (ModelSlot) object);

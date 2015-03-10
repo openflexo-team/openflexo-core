@@ -166,6 +166,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					setCreationScheme(null);
 				}
+				notifyResultingTypeChanged();
 				/*if (getFlexoConcept() != null) {
 					for (FlexoBehaviour s : getFlexoConcept().getFlexoBehaviours()) {
 						s.updateBindingModels();
