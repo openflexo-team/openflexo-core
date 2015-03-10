@@ -167,7 +167,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		public abstract Object retrieveObjectWithURI(FreeModelSlotInstance<RD, ? extends FreeModelSlot<RD>> msInstance, String objectURI);
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			// TODO Auto-generated method stub
 			return null;
 		}

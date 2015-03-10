@@ -152,7 +152,7 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (getParentProperty() != null) {
 				return getParentProperty().getName();
 			}

@@ -81,7 +81,7 @@ public abstract interface ObjectPropertyRole<P extends IFlexoOntologyObjectPrope
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (getParentProperty() != null) {
 				return getParentProperty().getName();
 			}

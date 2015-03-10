@@ -87,7 +87,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as Individual conformTo " + getPreciseType() + " from " + getModelSlot().getName()
+			out.append("FlexoRole " + getName() + " as Individual conformTo " + getTypeDescription() + " from " + getModelSlot().getName()
 					+ " ;", context);
 			return out.toString();
 		}
@@ -126,7 +126,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (getOntologicType() != null) {
 				return getOntologicType().getName();
 			}

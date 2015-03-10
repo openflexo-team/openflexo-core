@@ -85,7 +85,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as Class conformTo " + getPreciseType() + " from " + "\""
+			out.append("FlexoRole " + getName() + " as Class conformTo " + getTypeDescription() + " from " + "\""
 					+ getModelSlot().getMetaModelURI() + "\"" + " ;", context);
 			return out.toString();
 		}
@@ -99,7 +99,7 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (getOntologicType() != null) {
 				return getOntologicType().getName();
 			}

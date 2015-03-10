@@ -170,7 +170,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return "Virtual Model";
 		};
 

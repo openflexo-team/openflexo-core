@@ -116,7 +116,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 
 	public Type getType();
 
-	public String getPreciseType();
+	public String getTypeDescription();
 
 	/**
 	 * Return cardinality of this role
@@ -244,7 +244,7 @@ public abstract interface FlexoRole<T> extends FlexoConceptObject {
 		public abstract Type getType();
 
 		@Override
-		public abstract String getPreciseType();
+		public abstract String getTypeDescription();
 
 		@Override
 		public void finalizeDeserialization() {

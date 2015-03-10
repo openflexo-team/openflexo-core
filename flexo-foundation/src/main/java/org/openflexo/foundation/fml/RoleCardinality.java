@@ -57,11 +57,21 @@ public enum RoleCardinality {
 		public boolean isMultipleCardinality() {
 			return false;
 		}
+
+		@Override
+		public String stringRepresentation() {
+			return "0-1";
+		}
 	},
 	One {
 		@Override
 		public boolean isMultipleCardinality() {
 			return false;
+		}
+
+		@Override
+		public String stringRepresentation() {
+			return "1";
 		}
 	},
 	ZeroMany {
@@ -69,12 +79,24 @@ public enum RoleCardinality {
 		public boolean isMultipleCardinality() {
 			return true;
 		}
+
+		@Override
+		public String stringRepresentation() {
+			return "0..*";
+		}
 	},
 	OneMany {
 		@Override
 		public boolean isMultipleCardinality() {
 			return true;
 		}
+
+		@Override
+		public String stringRepresentation() {
+			return "1..*";
+		}
 	};
 	public abstract boolean isMultipleCardinality();
+
+	public abstract String stringRepresentation();
 }

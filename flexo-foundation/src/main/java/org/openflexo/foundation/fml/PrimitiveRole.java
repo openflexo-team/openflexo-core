@@ -90,7 +90,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as " + getPreciseType() + ";", context);
+			out.append("FlexoRole " + getName() + " as " + getTypeDescription() + ";", context);
 			return out.toString();
 		}
 
@@ -109,7 +109,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (primitiveType == null) {
 				return null;
 			}

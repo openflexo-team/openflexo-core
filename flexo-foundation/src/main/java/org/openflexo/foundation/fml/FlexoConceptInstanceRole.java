@@ -118,7 +118,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getPreciseType() + ";", context);
+			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getTypeDescription() + ";", context);
 			return out.toString();
 		}
 
@@ -131,7 +131,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			if (getFlexoConceptType() != null) {
 				return getFlexoConceptType().getName();
 			}
