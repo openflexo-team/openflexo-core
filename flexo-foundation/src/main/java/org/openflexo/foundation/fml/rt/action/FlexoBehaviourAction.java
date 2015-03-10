@@ -296,8 +296,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @param newFlexoConceptInstance
 	 */
 	public void newFlexoConceptInstance(FlexoConceptInstance newFlexoConceptInstance) {
-		System.out.println("NEW EPI : " + newFlexoConceptInstance);
-
+		// System.out.println("NEW EPI : " + newFlexoConceptInstance);
 	}
 
 	/**
@@ -307,7 +306,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @param matchingFlexoConceptInstance
 	 */
 	public FlexoConceptInstance matchFlexoConceptInstance(FlexoConcept flexoConceptType, Hashtable<FlexoRole, Object> criterias) {
-		System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
+		// System.out.println("MATCH epi on " + getVirtualModelInstance() + " for " + flexoConceptType + " with " + criterias);
 		for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances(flexoConceptType)) {
 			boolean allCriteriasMatching = true;
 			for (FlexoRole pr : criterias.keySet()) {

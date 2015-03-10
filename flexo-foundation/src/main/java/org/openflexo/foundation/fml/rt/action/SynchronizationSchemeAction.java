@@ -100,6 +100,9 @@ public class SynchronizationSchemeAction extends
 		}
 
 		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
+
+			// System.out.println("Executing code: ");
+			// System.out.println(getSynchronizationScheme().getFMLRepresentation());
 			applyEditionActions();
 		}
 	}
@@ -131,13 +134,13 @@ public class SynchronizationSchemeAction extends
 	private List<FlexoConceptInstance> episToBeRemoved;
 
 	public void beginSynchronization() {
-		System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
+		// System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
 		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
 		episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
 	}
 
 	public void endSynchronization() {
-		System.out.println("END synchronization on " + getVirtualModelInstance());
+		// System.out.println("END synchronization on " + getVirtualModelInstance());
 		for (FlexoConceptInstance epi : episToBeRemoved) {
 			epi.delete();
 			getVirtualModelInstance().removeFromFlexoConceptInstances(epi);

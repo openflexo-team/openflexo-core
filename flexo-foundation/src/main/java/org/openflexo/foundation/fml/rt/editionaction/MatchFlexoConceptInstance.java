@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -560,21 +561,41 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					criterias.put(mc.getFlexoRole(), value);
 				}
 			}
+
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine(">>>>>>>> Matching FCI with following criterias");
+				logger.fine("Type=" + getFlexoConceptType());
+				for (MatchingCriteria mc : getMatchingCriterias()) {
+					logger.fine("Criteria: " + mc.getFlexoRole().getRoleName() + "=" + mc.getValue() + " valid=" + mc.getValue().isValid());
+				}
+			}
+
 			FlexoConceptInstance matchingFlexoConceptInstance = action.matchFlexoConceptInstance(getFlexoConceptType(), criterias);
 
 			if (matchingFlexoConceptInstance != null) {
 				// A matching FlexoConceptInstance was found
+
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Found " + matchingFlexoConceptInstance);
+				}
 				action.foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
 			} else {
 
+				// We have to create a new FlexoConceptInstance
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Creating new FCI for " + getCreationScheme().getFlexoConcept() + " using " + getCreationScheme().getName());
+				}
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
 				creationSchemeAction.setVirtualModelInstance(vmInstance);
 				creationSchemeAction.setCreationScheme(getCreationScheme());
+				// System.out.println("Creation scheme: " + getCreationScheme());
+				// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
 				for (CreateFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
 					Object value = p.evaluateParameterValue(action);
 					if (value != null) {
-						creationSchemeAction.setParameterValue(p.getParam(), p.evaluateParameterValue(action));
+						// System.out.println("Param " + p.getParam() + " = " + value);
+						creationSchemeAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
 					}
 				}
 				creationSchemeAction.doAction();
