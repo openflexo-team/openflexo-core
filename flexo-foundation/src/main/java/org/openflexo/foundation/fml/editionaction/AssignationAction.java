@@ -45,16 +45,10 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
-import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.action.NavigationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -162,7 +156,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			}
 
 			// TODO: check if following statements are necessary (i think it should not)
-			if (getFlexoRole() != null && value instanceof FlexoObject) {
+			/*if (getFlexoRole() != null && value instanceof FlexoObject) {
 				if (action instanceof ActionSchemeAction) {
 					((ActionSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
 							(FlexoRole) getFlexoRole());
@@ -183,7 +177,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 					((SynchronizationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
 							(FlexoRole) getFlexoRole());
 				}
-			}
+			*/
 
 			return value;
 		}
