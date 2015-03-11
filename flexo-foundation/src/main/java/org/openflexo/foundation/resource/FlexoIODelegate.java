@@ -96,6 +96,8 @@ public interface FlexoIODelegate<I> {
 	 */
 	public boolean exists();
 
+	public String stringRepresentation();
+
 	/**
 	 * Return true if the serialization artefact can be overrided
 	 * 

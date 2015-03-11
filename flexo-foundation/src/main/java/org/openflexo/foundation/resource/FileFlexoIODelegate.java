@@ -177,6 +177,11 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		@Override
+		public String stringRepresentation() {
+			return getFile().getAbsolutePath();
+		}
+
+		@Override
 		public String toString() {
 			return getFile().getAbsolutePath();
 		}

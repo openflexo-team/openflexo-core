@@ -73,6 +73,11 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 		}
 
 		@Override
+		public String stringRepresentation() {
+			return getInJarResource().toString();
+		}
+
+		@Override
 		public InputStream getInputStream() {
 			return getInJarResource().openInputStream();
 		}
