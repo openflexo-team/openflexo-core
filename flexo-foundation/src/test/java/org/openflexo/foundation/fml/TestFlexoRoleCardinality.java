@@ -40,34 +40,35 @@ package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.connie.Bindable;
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
+import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -75,17 +76,17 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to test {@link BindingModel} management along FML model<br>
- * 
- * In this test we try to move a complete control graph from an iteration to another iteration, and we check that binding model management
- * is consistent
+ * This unit test is intented to test {@link FlexoRole} cardinality
  * 
  * @author sylvain
  * 
@@ -100,10 +101,16 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	static FlexoConcept flexoConcept1;
 	static FlexoConcept flexoConcept2;
 
+	public static PrimitiveRole<String> aStringInA;
+	public static PrimitiveRole<Boolean> someBooleanInA;
+	public static PrimitiveRole<Integer> someIntegerInA;
+	public static FlexoConceptInstanceRole someFlexoConcept2;
+
 	static FlexoProject project;
 	static View newView;
 	static VirtualModelInstance vmi;
 	static FlexoConceptInstance fci;
+	public static FlexoConceptInstance[] fci2;
 
 	/**
 	 * Init
@@ -248,18 +255,55 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR3.getNewFlexoRole()));
 		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR4.getNewFlexoRole()));
 
-		PrimitiveRole<String> aStringInA = (PrimitiveRole<String>) flexoConcept1.getFlexoRole("aStringInA");
+		aStringInA = (PrimitiveRole<String>) flexoConcept1.getFlexoRole("aStringInA");
 		assertNotNull(aStringInA);
 		assertEquals(String.class, aStringInA.getType());
 		assertEquals(String.class, aStringInA.getResultingType());
-		PrimitiveRole<Boolean> aBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getFlexoRole("someBooleanInA");
-		assertNotNull(aBooleanInA);
-		assertEquals(Boolean.class, aBooleanInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), aBooleanInA.getResultingType());
-		PrimitiveRole<Integer> anIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getFlexoRole("someIntegerInA");
-		assertNotNull(anIntegerInA);
-		assertEquals(Integer.class, anIntegerInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), anIntegerInA.getResultingType());
+		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getFlexoRole("someBooleanInA");
+		assertNotNull(someBooleanInA);
+		assertEquals(Boolean.class, someBooleanInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
+		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getFlexoRole("someIntegerInA");
+		assertNotNull(someIntegerInA);
+		assertEquals(Integer.class, someIntegerInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
+		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getFlexoRole("someFlexoConcept2");
+		assertNotNull(someFlexoConcept2);
+
+		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2), someFlexoConcept2.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2)),
+				someFlexoConcept2.getResultingType());
+
+		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept1, null, editor);
+		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
+		createCreationScheme.setFlexoBehaviourName("creationScheme");
+		createCreationScheme.doAction();
+		CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
+
+		CreateEditionAction createEditionAction1 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
+				editor);
+		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
+		createEditionAction1.setEditionActionClass(ExpressionAction.class);
+		createEditionAction1.setAssignation(new DataBinding<Object>("aStringInA"));
+		createEditionAction1.doAction();
+		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
+		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("'foo'"));
+		action1.setName("action1");
+
+		assertTrue(action1.getAssignation().isValid());
+		assertTrue(((ExpressionAction) action1.getAssignableAction()).getExpression().isValid());
+
+		assertTrue(flexoConcept1.getFlexoBehaviours().contains(creationScheme));
+		assertTrue(flexoConcept1.getCreationSchemes().contains(creationScheme));
+
+		// We create now an empty creation scheme for FlexoConcept 2
+		CreateFlexoBehaviour createCreationScheme2 = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept2, null, editor);
+		createCreationScheme2.setFlexoBehaviourClass(CreationScheme.class);
+		createCreationScheme2.setFlexoBehaviourName("creationScheme");
+		createCreationScheme2.doAction();
+		CreationScheme creationScheme2 = (CreationScheme) createCreationScheme2.getNewFlexoBehaviour();
+		assertTrue(flexoConcept2.getFlexoBehaviours().contains(creationScheme2));
+		assertTrue(flexoConcept2.getCreationSchemes().contains(creationScheme2));
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
 
@@ -324,102 +368,18 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertEquals(virtualModel, vmi.getFlexoConcept());
 		assertEquals(virtualModel, vmi.getVirtualModel());
 
-		/*
-		CreateBasicVirtualModelInstance createVMI2 = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
-		createVMI2.setNewVirtualModelInstanceName("MyVirtualModelInstance2");
-		createVMI2.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 2");
-		createVMI2.setVirtualModel(virtualModel2);
-		createVMI2.doAction();
-		assertTrue(createVMI2.hasActionExecutionSucceeded());
-		vmi2 = createVMI2.getNewVirtualModelInstance();
-		assertNotNull(vmi2);
-		assertNotNull(vmi2.getResource());
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
-		assertEquals(virtualModel2, vmi2.getFlexoConcept());
-		assertEquals(virtualModel2, vmi2.getVirtualModel());
-
-		CreateBasicVirtualModelInstance createVMI3 = CreateBasicVirtualModelInstance.actionType.makeNewAction(newView, null, editor);
-		createVMI3.setNewVirtualModelInstanceName("MyVirtualModelInstance3");
-		createVMI3.setNewVirtualModelInstanceTitle("Test creation of a new VirtualModelInstance 3");
-		createVMI3.setVirtualModel(virtualModel3);
-
-		FMLRTModelSlot ms1 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm1");
-		FMLRTModelSlotInstanceConfiguration ms1Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
-				.getModelSlotInstanceConfiguration(ms1);
-		ms1Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-		ms1Configuration.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) vmi1.getResource());
-		assertTrue(ms1Configuration.isValidConfiguration());
-
-		FMLRTModelSlot ms2 = (FMLRTModelSlot) virtualModel3.getModelSlot("vm2");
-		FMLRTModelSlotInstanceConfiguration ms2Configuration = (FMLRTModelSlotInstanceConfiguration) createVMI3
-				.getModelSlotInstanceConfiguration(ms2);
-		ms2Configuration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-		ms2Configuration.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) vmi2.getResource());
-		assertTrue(ms2Configuration.isValidConfiguration());
-
-		createVMI3.doAction();
-		assertTrue(createVMI3.hasActionExecutionSucceeded());
-		vmi3 = createVMI3.getNewVirtualModelInstance();
-		assertNotNull(vmi3);
-		assertNotNull(vmi3.getResource());
-		// assertTrue(((ViewResource) newView.getResource()).getDirectory().exists());
-		// assertTrue(((ViewResource) newView.getResource()).getFile().exists());
-		assertTrue(((ViewResource) newView.getResource()).getDirectory() != null);
-		assertTrue(((ViewResource) newView.getResource()).getFlexoIODelegate().exists());
-		assertEquals(virtualModel3, vmi3.getFlexoConcept());
-		assertEquals(virtualModel3, vmi3.getVirtualModel());
-
-		assertNotNull(virtualModel3.getBindingModel());
-		assertEquals(7, virtualModel3.getBindingModel().getBindingVariablesCount());
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY, virtualModel3, vmi3, viewPoint);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY, virtualModel3, vmi3, virtualModel3);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
-		assertEquals(ViewType.getViewType(viewPoint),
-				virtualModel3.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		checkBindingVariableAccess(ViewPointBindingModel.VIEW_PROPERTY, virtualModel3, vmi3, newView);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel3), virtualModel3.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
-		checkBindingVariableAccess(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY, virtualModel3, vmi3, vmi3);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed("vm1"));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1), virtualModel3.getBindingModel()
-				.bindingVariableNamed("vm1").getType());
-		checkBindingVariableAccess("vm1", virtualModel3, vmi3, vmi1);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed("vm2"));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2), virtualModel3.getBindingModel()
-				.bindingVariableNamed("vm2").getType());
-		checkBindingVariableAccess("vm2", virtualModel3, vmi3, vmi2);
-
-		assertNotNull(virtualModel3.getBindingModel().bindingVariableNamed("aStringInVM3"));
-		assertEquals(String.class, virtualModel3.getBindingModel().bindingVariableNamed("aStringInVM3").getType());
-		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, null);
-
-		vmi3.setFlexoActor("toto", (FlexoRole) vmi3.getVirtualModel().getFlexoRole("aStringInVM3"));
-		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, "toto");
-		*/
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(21)
-	public void testInstanciateFlexoConceptInstance() {
+	public void testInstanciateFlexoConceptInstances() {
 
-		log("testInstanciateFlexoConceptInstance()");
+		log("testInstanciateFlexoConceptInstances()");
 
-		CreationScheme creationScheme = flexoConceptA.getFlexoBehaviours(CreationScheme.class).get(0);
+		CreationScheme creationScheme = flexoConcept1.getFlexoBehaviours(CreationScheme.class).get(0);
 		assertNotNull(creationScheme);
 
-		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi1, null, editor);
+		CreationSchemeAction creationSchemeCreationAction = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
 		creationSchemeCreationAction.setCreationScheme(creationScheme);
 		assertNotNull(creationSchemeCreationAction);
 		creationSchemeCreationAction.doAction();
@@ -427,184 +387,227 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 		fci = creationSchemeCreationAction.getFlexoConceptInstance();
 		assertNotNull(fci);
-		assertEquals(flexoConceptA, fci.getFlexoConcept());
-		assertEquals("foo", fci.getFlexoActor("aStringInA"));
-		assertEquals(true, fci.getFlexoActor("aBooleanInA"));
-		assertEquals((long) 8, fci.getFlexoActor("anIntegerInA"));
 
-		fci.setFlexoActor(false, (FlexoRole<Boolean>) flexoConceptA.getFlexoRole("anOtherBooleanInA"));
+		assertEquals(flexoConcept1, fci.getFlexoConcept());
 
-		assertEquals(10, flexoConceptA.getBindingModel().getBindingVariablesCount());
+		CreationScheme creationScheme2 = flexoConcept2.getFlexoBehaviours(CreationScheme.class).get(0);
+		assertNotNull(creationScheme2);
 
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY, flexoConceptA, fci, viewPoint);
+		fci2 = new FlexoConceptInstance[3];
+		for (int i = 0; i < 3; i++) {
+			CreationSchemeAction creationSchemeCreation2Action = CreationSchemeAction.actionType.makeNewAction(vmi, null, editor);
+			creationSchemeCreation2Action.setCreationScheme(creationScheme2);
+			assertNotNull(creationSchemeCreation2Action);
+			creationSchemeCreation2Action.doAction();
+			assertTrue(creationSchemeCreation2Action.hasActionExecutionSucceeded());
+			fci2[i] = creationSchemeCreation2Action.getFlexoConceptInstance();
+			assertNotNull(fci2[i]);
+			assertEquals(flexoConcept2, fci2[i].getFlexoConcept());
+		}
+	}
 
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY, flexoConceptA, fci, virtualModel1);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
-		assertEquals(ViewType.getViewType(viewPoint),
-				flexoConceptA.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		checkBindingVariableAccess(ViewPointBindingModel.VIEW_PROPERTY, flexoConceptA, fci, newView);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY, flexoConceptA, fci, flexoConceptA);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getFlexoConceptInstanceType(virtualModel1), flexoConceptA.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
-		checkBindingVariableAccess(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY, flexoConceptA, fci, vmi1);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY));
-		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), flexoConceptA.getBindingModel()
-				.bindingVariableNamed(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY).getType());
-		checkBindingVariableAccess(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY, flexoConceptA, fci, fci);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA"));
-		assertEquals(String.class, flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA").getType());
-		checkBindingVariableAccess("aStringInA", flexoConceptA, fci, "foo");
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		checkBindingVariableAccess("aBooleanInA", flexoConceptA, fci, true);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		checkBindingVariableAccess("anIntegerInA", flexoConceptA, fci, 8);
-
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
-		checkBindingVariableAccess("anOtherBooleanInA", flexoConceptA, fci, false);
-
-		checkBinding("flexoConceptInstance", flexoConceptA, fci, fci);
-		checkBinding("virtualModelInstance", flexoConceptA, fci, vmi1);
-
-		checkBinding("virtualModelInstance", virtualModel3, vmi3, vmi3);
-		checkBinding("virtualModelInstance.vm1", virtualModel3, vmi3, vmi1);
-		checkBinding("virtualModelInstance.vm2", virtualModel3, vmi3, vmi2);
-		checkBinding("virtualModelInstance.vm1.flexoConceptInstances.size", virtualModel3, vmi3, (long) 1);
-		checkBinding("virtualModelInstance.vm1.flexoConceptInstances.get(0)", virtualModel3, vmi3, fci);
-
-		assertTrue(fci.hasValidRenderer());
-		assertEquals("FlexoConceptA:foo", fci.getStringRepresentation());
-
-	}*/
-
-	/*@Test
+	@Test
 	@TestOrder(22)
-	public void testFlexoBehaviourAtRunTime() {
+	public void testSingleCardinality() {
 
-		log("testFlexoBehaviourAtRunTime()");
-
-		fci.setFlexoActor("newValue", (FlexoRole<String>) flexoConceptA.getFlexoRole("aStringInA"));
-		assertEquals("newValue", fci.getFlexoActor("aStringInA"));
-
-		ActionScheme actionScheme = flexoConceptA.getFlexoBehaviours(ActionScheme.class).get(0);
-		assertNotNull(actionScheme);
-
-		System.out.println("Applying " + actionScheme.getFMLModelFactory().stringRepresentation(actionScheme));
-
-		System.out.println("Soit en FML:\n" + actionScheme.getFMLRepresentation());
-
-		ActionSchemeActionType actionType = new ActionSchemeActionType(actionScheme, fci);
-
-		ActionSchemeAction actionSchemeCreationAction = actionType.makeNewAction(fci, null, editor);
-		assertNotNull(actionSchemeCreationAction);
-		FlexoBehaviourParameter p = actionScheme.getParameter("aFlag");
-		actionSchemeCreationAction.setParameterValue(p, false);
-		actionSchemeCreationAction.doAction();
-		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
+		log("testSingleCardinality()");
 
 		assertEquals("foo", fci.getFlexoActor("aStringInA"));
-		assertEquals((long) 12, fci.getFlexoActor("anIntegerInA"));
+		assertEquals("foo", fci.getFlexoActor(aStringInA));
 
-		assertEquals(12, actionScheme.getBindingModel().getBindingVariablesCount());
+		fci.setFlexoActor("anOtherValue", aStringInA);
+		assertEquals("anOtherValue", fci.getFlexoActor(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY, actionScheme, actionSchemeCreationAction, viewPoint);
+		fci.setFlexoActor("value1", aStringInA);
+		assertEquals("value1", fci.getFlexoActor(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY, actionScheme, actionSchemeCreationAction,
-				virtualModel1);
+		aStringInA.setCardinality(RoleCardinality.ZeroMany);
+		fci.addToFlexoActors("value2", aStringInA);
+		assertSameList(fci.getFlexoActorList(aStringInA), "value1", "value2");
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY));
-		assertEquals(ViewType.getViewType(viewPoint),
-				actionScheme.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
-		checkBindingVariableAccess(ViewPointBindingModel.VIEW_PROPERTY, actionScheme, actionSchemeCreationAction, newView);
+		fci.addToFlexoActors("value3", aStringInA);
+		assertSameList(fci.getFlexoActorList(aStringInA), "value1", "value2", "value3");
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY));
-		checkBindingVariableAccess(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY, actionScheme, actionSchemeCreationAction,
-				flexoConceptA);
+		// System.out.println("actors= " + fci.getFlexoActorList(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getFlexoConceptInstanceType(virtualModel1), actionScheme.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
-		checkBindingVariableAccess(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY, actionScheme, actionSchemeCreationAction, vmi1);
+		fci.setFlexoActor("value4", aStringInA);
+		assertSameList(fci.getFlexoActorList(aStringInA), "value4");
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY));
-		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA), actionScheme.getBindingModel()
-				.bindingVariableNamed(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY).getType());
-		checkBindingVariableAccess(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY, actionScheme, actionSchemeCreationAction, fci);
+		aStringInA.setCardinality(RoleCardinality.ZeroOne);
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
-		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
-		checkBindingVariableAccess("aStringInA", actionScheme, actionSchemeCreationAction, "foo");
+		assertEquals("value4", fci.getFlexoActor(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
-		checkBindingVariableAccess("aBooleanInA", actionScheme, actionSchemeCreationAction, true);
+		fci.nullifyFlexoActor(aStringInA);
+		assertTrue(fci.getFlexoActorList(aStringInA).isEmpty());
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		checkBindingVariableAccess("anIntegerInA", actionScheme, actionSchemeCreationAction, 12);
+		assertEquals(null, fci.getFlexoActor(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
-		checkBindingVariableAccess("anOtherBooleanInA", actionScheme, actionSchemeCreationAction, true);
+		fci.setFlexoActor("foo", aStringInA);
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
-		checkBindingVariableAccess(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY, actionScheme, actionSchemeCreationAction,
-				actionSchemeCreationAction.getParametersValues());
+		assertEquals("foo", fci.getFlexoActor(aStringInA));
 
-		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY));
-		checkBindingVariableAccess(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY, actionScheme, actionSchemeCreationAction,
-				actionScheme.getParameters());
-	}*/
+	}
 
-	private void checkBindingVariableAccess(String variableName, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
-		BindingVariable bv = owner.getBindingModel().bindingVariableNamed(variableName);
-		assertNotNull(bv);
-		DataBinding<Object> db = new DataBinding<Object>(bv.getVariableName(), owner, bv.getType(), BindingDefinitionType.GET);
-		assertTrue(db.isValid());
+	@Test
+	@TestOrder(23)
+	public void testMultipleCardinality() {
+
+		log("testMultipleCardinality()");
+
+		fci.addToFlexoActors(1, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.addToFlexoActors(2, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1, 2);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.addToFlexoActors(3, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1, 2, 3);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.removeFromFlexoActors(2, someIntegerInA);
+
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1, 3);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.removeFromFlexoActors(1, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 3);
+		assertEquals(3, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.removeFromFlexoActors(3, someIntegerInA);
+		assertTrue(fci.getFlexoActorList(someIntegerInA).isEmpty());
+		assertEquals(null, fci.getFlexoActor(someIntegerInA));
+
+		fci.addToFlexoActors(1, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.addToFlexoActors(2, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1, 2);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+		fci.addToFlexoActors(3, someIntegerInA);
+		assertSameList(fci.getFlexoActorList(someIntegerInA), 1, 2, 3);
+		assertEquals(1, (int) fci.getFlexoActor(someIntegerInA));
+
+	}
+
+	@Test
+	@TestOrder(24)
+	public void testMultipleCardinality2() {
+
+		log("testMultipleCardinality2()");
+
+		fci.addToFlexoActors(fci2[0], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.addToFlexoActors(fci2[1], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0], fci2[1]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.addToFlexoActors(fci2[2], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0], fci2[1], fci2[2]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.removeFromFlexoActors(fci2[1], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0], fci2[2]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.removeFromFlexoActors(fci2[0], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[2]);
+		assertEquals(fci2[2], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.removeFromFlexoActors(fci2[2], someFlexoConcept2);
+		assertTrue(fci.getFlexoActorList(someFlexoConcept2).isEmpty());
+		assertEquals(null, fci.getFlexoActor(someFlexoConcept2));
+
+		fci.addToFlexoActors(fci2[0], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.addToFlexoActors(fci2[1], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0], fci2[1]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+		fci.addToFlexoActors(fci2[2], someFlexoConcept2);
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), fci2[0], fci2[1], fci2[2]);
+		assertEquals(fci2[0], fci.getFlexoActor(someFlexoConcept2));
+
+	}
+
+	@Test
+	@TestOrder(30)
+	public void saveVirtualModelInstance() {
+
+		log("saveVirtualModelInstance()");
+
+		System.out.println("Saving " + vmi.getResource().getFlexoIODelegate().stringRepresentation());
+
+		System.out.println(((PamelaResource<?, ?>) vmi.getResource()).getFactory().stringRepresentation(vmi));
+
 		try {
-			assertEquals(expectedValue, db.getBindingValue(beContext));
-		} catch (TypeMismatchException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (NullReferenceException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (InvocationTargetException e) {
+			vmi.getResource().save(null);
+		} catch (SaveResourceException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
 
-	private void checkBinding(String binding, Bindable owner, BindingEvaluationContext beContext, Object expectedValue) {
-		DataBinding<Object> db = new DataBinding<Object>(binding, owner, Object.class, BindingDefinitionType.GET);
-		assertTrue(db.isValid());
-		try {
-			assertEquals(expectedValue, db.getBindingValue(beContext));
-		} catch (TypeMismatchException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (NullReferenceException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
+	/**
+	 * Reload the project
+	 * 
+	 * @throws FlexoException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FileNotFoundException
+	 */
+	@Test
+	@TestOrder(31)
+	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+
+		log("testReloadProject()");
+
+		FlexoProject oldProject = project;
+		// instanciateTestServiceManager();
+		editor = reloadProject(project.getDirectory());
+		project = editor.getProject();
+		assertNotSame(oldProject, project);
+		assertNotNull(editor);
+		assertNotNull(project);
+		ViewResource newViewResource = project.getViewLibrary().getView(newView.getURI());
+		assertNotNull(newViewResource);
+		assertNull(newViewResource.getLoadedResourceData());
+		newViewResource.loadResourceData(null);
+		assertNotNull(newViewResource.getLoadedResourceData());
+		newView = newViewResource.getLoadedResourceData();
+
+		System.out.println("All resources=" + project.getAllResources());
+		assertNotNull(project.getResource(newView.getURI()));
+
+		VirtualModelInstance reloadedVMI = newView.getVirtualModelInstance("MyVirtualModelInstance");
+		assertNotNull(reloadedVMI);
+
+		System.out.println(((PamelaResource<?, ?>) reloadedVMI.getResource()).getFactory().stringRepresentation(reloadedVMI));
+
+		FlexoConceptInstance reloadedFCI = reloadedVMI.getFlexoConceptInstances(flexoConcept1).get(0);
+		assertNotNull(reloadedFCI);
+		assertEquals("foo", reloadedFCI.getFlexoActor(aStringInA));
+
+		assertSameList(reloadedFCI.getFlexoActorList(someIntegerInA), 1, 2, 3);
+		assertEquals(1, (int) reloadedFCI.getFlexoActor(someIntegerInA));
+
+		FlexoConceptInstance[] reloadedFci2 = new FlexoConceptInstance[5];
+		for (int i = 0; i < 3; i++) {
+			reloadedFci2[i] = reloadedFCI.getFlexoActorList(someFlexoConcept2).get(i);
+			assertNotNull(reloadedFci2[i]);
+			assertEquals(flexoConcept2, reloadedFci2[i].getFlexoConcept());
 		}
+
+		assertSameList(fci.getFlexoActorList(someFlexoConcept2), reloadedFci2[0], reloadedFci2[1], reloadedFci2[2]);
+		assertEquals(reloadedFci2[0], fci.getFlexoActor(someFlexoConcept2));
+
 	}
 
 }

@@ -119,6 +119,9 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 
 		@Override
 		public Class<? extends T> getActorClass() {
+
+			System.out.println("role=" + getFlexoRole());
+
 			switch (getFlexoRole().getPrimitiveType()) {
 			case String:
 			case LocalizedString:

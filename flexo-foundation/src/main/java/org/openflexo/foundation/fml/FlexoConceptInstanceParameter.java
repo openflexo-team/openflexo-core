@@ -43,7 +43,6 @@ import java.util.List;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -86,9 +85,9 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		@Override
 		public Type getType() {
 			if (getFlexoConceptType() != null) {
-				return getViewPoint().getInstanceType(getFlexoConceptType());
+				return getFlexoConceptType().getInstanceType();
 			}
-			return FlexoConceptInstance.class;
+			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
 
 		@Override

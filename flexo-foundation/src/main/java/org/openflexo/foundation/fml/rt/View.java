@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -201,8 +202,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 			newView.setTitle(viewTitle);
 
-			System.out.println("Et hop on sauve " + newViewResource.getFlexoIODelegate().toString());
-			System.out.println("uri=" + newViewResource.getURI());
+			FlexoIODelegate<?> delegate = newViewResource.getFlexoIODelegate();
+			System.out.println("Saving " + delegate.stringRepresentation());
 
 			// Save it
 			newViewResource.save(null);

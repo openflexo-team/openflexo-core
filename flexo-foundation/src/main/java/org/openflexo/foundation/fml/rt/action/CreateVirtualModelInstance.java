@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt.action;
 
 import java.security.InvalidParameterException;
@@ -127,10 +126,11 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in view " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
-		System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getURI());
+		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI()
+				+ " delegate=" + newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
-			System.out.println("*** ModelSlot: " + ms);
+			// System.out.println("*** ModelSlot: " + ms);
 			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 			if (configuration.isValidConfiguration()) {
 				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getFocusedObject());

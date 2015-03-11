@@ -44,10 +44,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.jdom2.Attribute;
@@ -158,13 +156,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	public void setLocalizedDictionary(ViewPointLocalizedDictionary localizedDictionary);
 
 	/**
-	 * Retrieves the right type given the {@link FlexoConcept}<br>
-	 * If flexoConcept is an instance of {@link VirtualModel}, return a {@link VirtualModelInstanceType} otherwise, return a
-	 * {@link FlexoConceptInstanceType}
-	 */
-	public FlexoConceptInstanceType getInstanceType(FlexoConcept flexoConcept);
-
-	/**
 	 * Retrieves the type of a View conform to this ViewPoint
 	 */
 	public ViewType getViewType();
@@ -220,11 +211,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private ViewPointBindingModel bindingModel;
 		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
-		// Maps to reference all the FlexoConceptInstanceType, DiagramType, VirtualModelType used in this context
-
-		private final Map<FlexoConcept, FlexoConceptInstanceType> flexoConceptTypesMap = new HashMap<FlexoConcept, FlexoConceptInstanceType>();
-		private final Map<FlexoConcept, VirtualModelInstanceType> virtualModelTypesMap = new HashMap<FlexoConcept, VirtualModelInstanceType>();
-
 		private ViewType viewType = null;
 
 		// TODO: move this code to the ViewPointResource
@@ -262,17 +248,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		// Used during deserialization, do not use it
-		/*public ViewPointImpl(ViewPointBuilder builder) {
-			super(builder);
-			if (builder != null) {
-				builder.setViewPoint(this);
-				resource = builder.resource;
-			}
-			// modelSlots = new ArrayList<ModelSlot>();
-			virtualModels = new ArrayList<VirtualModel>();
-		}*/
-
-		// Used during deserialization, do not use it
 		public ViewPointImpl() {
 			super();
 			virtualModels = new ArrayList<VirtualModel>();
@@ -282,17 +257,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			logger.info("Registering viewpoint " + baseName + " URI=" + getViewPointURI());
 
 			setName(baseName);
-			// _library = library;
-
-			/*for (VirtualModel vm : getVirtualModels()) {
-				for (FlexoConcept ep : vm.getFlexoConcepts()) {
-					for (FlexoRole<?> pr : ep.getPatternRoles()) {
-						if (pr instanceof ShapePatternRole) {
-							((ShapePatternRole) pr).tryToFindAGR();
-						}
-					}
-				}
-			}*/
 		}
 
 		@Override
@@ -344,11 +308,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			}
 			return null;
 		}
-
-		/*@Override
-		public ViewPointImpl getViewPoint() {
-			return this;
-		}*/
 
 		private boolean isLoading = false;
 
@@ -406,15 +365,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		/**
-		 * Return all {@link DiagramSpecification} defined in this {@link ViewPoint}
-		 * 
-		 * @return
-		 */
-		/*public List<DiagramSpecification> getDiagramSpecifications() {
-			return getVirtualModels(DiagramSpecification.class, true);
-		}*/
-
-		/**
 		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
 		 * 
 		 * @return
@@ -433,22 +383,16 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		@Override
 		public void addToVirtualModels(VirtualModel virtualModel) {
-			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(this);
 			virtualModels.add(virtualModel);
 			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, null, virtualModel);
-			// setChanged();
-			// notifyObservers(new VirtualModelCreated(virtualModel));
 		}
 
 		@Override
 		public void removeFromVirtualModels(VirtualModel virtualModel) {
-			// loadVirtualModelsWhenUnloaded();
 			virtualModel.setViewPoint(null);
 			virtualModels.remove(virtualModel);
 			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, virtualModel, null);
-			// setChanged();
-			// notifyObservers(new VirtualModelDeleted(virtualModel));
 		}
 
 		/**
@@ -605,32 +549,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			deleteObservers();
 
 			return true;
-		}
-
-		/**
-		 * Retrieves the right type given the FlexoConcept
-		 */
-		@Override
-		public FlexoConceptInstanceType getInstanceType(FlexoConcept anFlexoConcept) {
-			FlexoConceptInstanceType instanceType = null;
-
-			if (anFlexoConcept != null) {
-				if (anFlexoConcept instanceof VirtualModel) {
-					instanceType = virtualModelTypesMap.get(anFlexoConcept);
-					if (instanceType == null) {
-						instanceType = new VirtualModelInstanceType((VirtualModel) anFlexoConcept);
-						virtualModelTypesMap.put(anFlexoConcept, (VirtualModelInstanceType) instanceType);
-					}
-				} else {
-					instanceType = flexoConceptTypesMap.get(anFlexoConcept);
-					if (instanceType == null) {
-						instanceType = new FlexoConceptInstanceType(anFlexoConcept);
-						flexoConceptTypesMap.put(anFlexoConcept, instanceType);
-					}
-				}
-			}
-
-			return instanceType;
 		}
 
 		/**

@@ -299,7 +299,7 @@ public abstract class OpenflexoTestCase {
 
 	protected void assertViewPointIsValid(ViewPoint vp) {
 
-		if (vp != null){
+		if (vp != null) {
 			log("Testing ViewPoint" + vp.getURI());
 
 			ValidationReport report;
@@ -311,7 +311,7 @@ public abstract class OpenflexoTestCase {
 					/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
 					BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
 					System.out.println("Details: " + rule.retrieveIssueDetails((FMLObject) error.getValidable()));
-				}*/
+					}*/
 				}
 
 				assertEquals(0, report.getErrorsCount());
@@ -320,14 +320,12 @@ public abstract class OpenflexoTestCase {
 				e.printStackTrace();
 				fail("Interrupted");
 			}
-		}
-		else {
+		} else {
 			System.out.println("INVESTIGATE: the parameter VP is NULL!!");
-		     Thread.dumpStack();
-		     fail("VP null");
-			
+			Thread.dumpStack();
+			fail("VP null");
+
 		}
 	}
-
 
 }
