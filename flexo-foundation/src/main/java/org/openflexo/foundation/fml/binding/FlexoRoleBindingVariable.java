@@ -95,9 +95,7 @@ public class FlexoRoleBindingVariable extends BindingVariable implements Propert
 			}
 			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoRole.RESULTING_TYPE_PROPERTY)) {
 				Type newType = getFlexoRole().getResultingType();
-				System.out.println("ici, newType=" + newType);
 				if (lastKnownType == null || !lastKnownType.equals(newType)) {
-					System.out.println("on notifie " + TYPE_PROPERTY + " de " + lastKnownType + " a " + newType);
 					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
 					lastKnownType = newType;
 				}

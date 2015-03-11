@@ -101,12 +101,9 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public void setPrimitiveType(PrimitiveType primitiveType) {
-			System.out.println("Hop je modifie le type de " + getPrimitiveType() + " a " + primitiveType);
 			if (requireChange(getPrimitiveType(), primitiveType)) {
-				System.out.println("zob");
 				PrimitiveType oldValue = this.primitiveType;
 				this.primitiveType = primitiveType;
-				System.out.println("on notifie");
 				notifyChange(PRIMITIVE_TYPE_KEY, oldValue, primitiveType);
 				notifyResultingTypeChanged();
 			}
