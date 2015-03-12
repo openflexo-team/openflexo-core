@@ -40,14 +40,13 @@ package org.openflexo.fml.controller;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fge.FGELayoutManager;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.utils.FIBInspector;
-import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -495,12 +494,8 @@ public class FMLFIBController extends FlexoFIBController {
 		return fibFile;*/
 	}
 
-	public InspectorGroup getLayoutManagerInspectorGroup() {
-		return layoutManagerInspectorGroup;
-	}
-
-	public FIBInspector getLayoutInspector(FGELayoutManager<?, ?> object) {
-		return getLayoutManagerInspectorGroup().inspectorForObject(object);
+	public FIBInspector inspectorForObject(FMLObject object) {
+		return getFlexoController().getModuleInspectorController().inspectorForObject(object);
 	}
 
 }

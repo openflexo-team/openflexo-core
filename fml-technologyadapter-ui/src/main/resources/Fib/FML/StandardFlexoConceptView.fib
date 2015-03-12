@@ -38,8 +38,8 @@
 			</RowSplit>
 
 			<FIBReferencedComponent
-				dynamicComponentFile="controller.getFIBPanelForObject(FlexoConceptBrowser.selected)"
-				localize="true" manageDynamicModel="true" name="FlexoBehaviourWidget"
+				dynamicComponent="controller.inspectorForObject(FlexoConceptBrowser.selected)"
+				localize="true" manageDynamicModel="true" name="InspectedWidget"
 				index="15" data="FlexoConceptBrowser.selected"
 				constraints="split(index=0;location=north;splitIdentifier=right)"
 				opaque="false">
@@ -76,11 +76,58 @@
 					defaultVisible="true" dynamicFont="" name="flexoRole" />
 				<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 					label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
-					tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
-					defaultVisible="true" dynamicFont="" name="flexoBehaviour">
-					<Children data="flexoBehaviour.parameters" visible="(flexoBehaviour.parameters.size &gt; 0)"
-						cast="" name="parameters" />
-					<Children data="flexoBehaviour.actions" cast="" name="actions" />
+					isEditable="false" filtered="false" defaultVisible="true" name="flexoBehaviour">
+					<Children data="flexoBehaviour.controlGraph.flattenedSequence"
+						name="children" />
+					<BrowserAddAction
+						method="controller.createEditionAction(selected.controlGraph)"
+						name="add_action" />
+				</BrowserElement>
+				<BrowserElement
+					dataClassName="org.openflexo.foundation.fml.controlgraph.IterationAction"
+					label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
+					isEditable="false" filtered="false" defaultVisible="true"
+					name="interationAction">
+					<Children data="interationAction.controlGraph.flattenedSequence"
+						name="children" />
+					<BrowserRemoveAction
+						method="selected.actionContainer.removeFromActions(selected)"
+						name="delete_action" />
+					<BrowserAddAction method="controller.createEditionAction(selected)"
+						name="add_action" />
+					<BrowserAddAction
+						method="controller.createEditionActionInIteration(selected)" name="add_action_inside_iteration" />
+				</BrowserElement>
+				<BrowserElement
+					dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
+					label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
+					isEditable="false" filtered="false" defaultVisible="true"
+					name="interationAction">
+					<Children data="interationAction.thenControlGraph.flattenedSequence"
+						name="thenChildren" />
+					<Children data="interationAction.elseControlGraph.flattenedSequence"
+						name="elseChildren" />
+					<BrowserRemoveAction
+						method="selected.actionContainer.removeFromActions(selected)"
+						name="delete_action" />
+					<BrowserAddAction method="controller.createEditionAction(selected)"
+						name="add_action" />
+					<BrowserAddAction
+						method="controller.createEditionActionInThenControlGraph(selected)"
+						name="add_action_in_then_control_graph" />
+					<BrowserAddAction
+						method="controller.createEditionActionInElseControlGraph(selected)"
+						name="add_action_in_else_control_graph" />
+				</BrowserElement>
+				<BrowserElement
+					dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
+					label="editionAction.stringRepresentation" icon="controller.iconForObject(editionAction)"
+					isEditable="false" filtered="false" defaultVisible="true" name="editionAction">
+					<BrowserAddAction method="controller.createEditionAction(selected)"
+						name="add_action" />
+					<BrowserRemoveAction
+						method="selected.actionContainer.removeFromActions(selected)"
+						name="delete_action" />
 				</BrowserElement>
 				<BrowserElement
 					dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"

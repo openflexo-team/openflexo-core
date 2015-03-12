@@ -54,6 +54,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.openflexo.fib.controller.FIBController;
+import org.openflexo.fib.utils.FIBInspector;
 import org.openflexo.fib.view.FIBView;
 import org.openflexo.fib.view.container.FIBTabPanelView;
 import org.openflexo.inspector.ModuleInspectorController.EmptySelectionActivated;
