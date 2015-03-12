@@ -85,10 +85,10 @@
 				</BrowserElement>
 				<BrowserElement
 					dataClassName="org.openflexo.foundation.fml.controlgraph.IterationAction"
-					label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
+					label="iterationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
 					isEditable="false" filtered="false" defaultVisible="true"
-					name="interationAction">
-					<Children data="interationAction.controlGraph.flattenedSequence"
+					name="iterationAction">
+					<Children data="iterationAction.controlGraph.flattenedSequence"
 						name="children" />
 					<BrowserRemoveAction
 						method="selected.actionContainer.removeFromActions(selected)"
@@ -100,12 +100,12 @@
 				</BrowserElement>
 				<BrowserElement
 					dataClassName="org.openflexo.foundation.fml.controlgraph.ConditionalAction"
-					label="interationAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
+					label="conditionalAction.stringRepresentation" icon="controller.iconForObject(interationAction)"
 					isEditable="false" filtered="false" defaultVisible="true"
-					name="interationAction">
-					<Children data="interationAction.thenControlGraph.flattenedSequence"
+					name="conditionalAction">
+					<Children data="conditionalAction.thenControlGraph.flattenedSequence"
 						name="thenChildren" />
-					<Children data="interationAction.elseControlGraph.flattenedSequence"
+					<Children data="conditionalAction.elseControlGraph.flattenedSequence"
 						name="elseChildren" />
 					<BrowserRemoveAction
 						method="selected.actionContainer.removeFromActions(selected)"
@@ -146,11 +146,6 @@
 					label="" icon="controller.iconForObject(flexoBehaviourParameter)"
 					tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 					defaultVisible="true" dynamicFont="" name="flexoBehaviourParameter" />
-				<BrowserElement
-					dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
-					label="" icon="controller.iconForObject(editionAction)" tooltip=""
-					enabled="" isEditable="false" editableLabel="" filtered="false"
-					defaultVisible="true" dynamicFont="" name="editionAction" />
 				<BrowserElement
 					dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 					label="" icon="controller.iconForObject(controlStructureAction)"

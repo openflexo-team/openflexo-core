@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel layout="twocols" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
-	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	>
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController">
 	<Browser root="data" iteratorClassName="java.lang.Object"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
 		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"

@@ -131,6 +131,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFlexoConceptInspectorInspector() {
+		validateFIB("Inspectors/FML/FlexoConceptInspector.inspector");
+	}
+
+	@Test
 	public void testFlexoConceptInstanceParameterInspector() {
 		validateFIB("Inspectors/FML/FlexoConceptInstanceParameter.inspector");
 	}
@@ -153,6 +158,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testFloatParameterInspector() {
 		validateFIB("Inspectors/FML/FloatParameter.inspector");
+	}
+
+	@Test
+	public void testFMLObjectInspector() {
+		validateFIB("Inspectors/FML/FMLObject.inspector");
 	}
 
 	@Test
@@ -253,11 +263,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testViewPointLibraryInspector() {
 		validateFIB("Inspectors/FML/ViewPointLibrary.inspector");
-	}
-
-	@Test
-	public void testViewPointObjectInspector() {
-		validateFIB("Inspectors/FML/FMLObject.inspector");
 	}
 
 	@Test
