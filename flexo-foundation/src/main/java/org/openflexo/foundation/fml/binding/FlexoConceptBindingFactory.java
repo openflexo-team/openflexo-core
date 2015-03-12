@@ -263,9 +263,12 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	public SimplePathElement makeSimplePathElement(BindingPathElement parent, String propertyName) {
 		// We want to avoid code duplication, so iterate on all accessible simple path element and choose the right one
 		SimplePathElement returned = null;
-		for (SimplePathElement e : getAccessibleSimplePathElements(parent)) {
-			if (e.getLabel().equals(propertyName)) {
-				returned = e;
+		List<? extends SimplePathElement> accessibleSimplePathElements = getAccessibleSimplePathElements(parent);
+		if (accessibleSimplePathElements != null) {
+			for (SimplePathElement e : accessibleSimplePathElements) {
+				if (e.getLabel().equals(propertyName)) {
+					returned = e;
+				}
 			}
 		}
 		// We cannot find a simple path element at this level, retrieve from java

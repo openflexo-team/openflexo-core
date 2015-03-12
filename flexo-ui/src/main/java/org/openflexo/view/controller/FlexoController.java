@@ -143,6 +143,7 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.InformationSpace;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -1822,9 +1823,15 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyObject(TechnologyObject<TA> object) {
 		// prevent NPE
 		if (object != null) {
-			TechnologyAdapterController<TA> tac = getTechnologyAdapterController(object.getTechnologyAdapter());
+			TechnologyAdapterController<?> tac;
+			if (object instanceof ModelSlot) {
+				tac = getTechnologyAdapterController(((ModelSlot<?>) object).getModelSlotTechnologyAdapter());
+			} else {
+				tac = getTechnologyAdapterController(object.getTechnologyAdapter());
+			}
+
 			if (tac != null) {
-				return tac.getIconForTechnologyObject((Class<TechnologyObject<TA>>) object.getClass());
+				return tac.getIconForTechnologyObject((Class<TechnologyObject<?>>) object.getClass());
 			} else {
 				logger.warning("Could not find TechnologyAdapterController for technology " + object.getTechnologyAdapter());
 			}

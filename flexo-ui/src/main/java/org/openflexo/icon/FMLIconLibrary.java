@@ -199,13 +199,6 @@ public class FMLIconLibrary extends IconLibrary {
 			return null;
 		}
 
-		if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
-					.getModelSlotTechnologyAdapter());
-			if (tac != null) {
-				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
-			}
-		}
 		if (object instanceof ViewPoint) {
 			return VIEWPOINT_ICON;
 		} else if (object instanceof VirtualModel) {
@@ -216,6 +209,12 @@ public class FMLIconLibrary extends IconLibrary {
 				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
+		} else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
+					.getModelSlotTechnologyAdapter());
+			if (tac != null) {
+				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
+			}
 		} else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
 		} else if (object instanceof FlexoConceptConstraint) {

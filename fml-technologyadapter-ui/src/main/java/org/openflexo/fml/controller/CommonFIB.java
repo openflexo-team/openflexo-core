@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,24 +36,27 @@
  * 
  */
 
-package org.openflexo.fml.controller.view;
+package org.openflexo.fml.controller;
 
-import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.model.FlexoPerspective;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
- * This is the module view representing a standard FlexoConcept (an FlexoConcept which is not a VirtualModel, nor part of a
- * DiagramSpecification)<br>
+ * This class stores all common FIB references
  * 
- * @author sguerin
+ * @author sylvain
  * 
  */
-public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
+public class CommonFIB {
 
-	public StandardFlexoConceptView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
-	}
+	// Saving operations
+	public static Resource REVIEW_UNSAVED_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/ReviewUnsavedDialog.fib");
+
+	// General components
+	public static Resource VIEWPOINT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/ViewPointView.fib");
+	public static Resource VIEWPOINT_LOCALIZED_DICTIONARY_VIEW_FIB = ResourceLocator
+			.locateResource("Fib/FML/ViewPointLocalizedDictionaryView.fib");
+	public static Resource STANDARD_FLEXO_CONCEPT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
+	public static Resource VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
 
 }

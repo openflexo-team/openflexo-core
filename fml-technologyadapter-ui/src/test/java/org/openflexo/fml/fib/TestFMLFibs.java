@@ -80,11 +80,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDeclarationActionPanel() {
-		validateFIB("Fib/FML/DeclarationActionPanel.fib");
-	}
-
-	@Test
 	public void testCloningSchemePanel() {
 		validateFIB("Fib/FML/CloningSchemePanel.fib");
 	}
@@ -100,6 +95,11 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDeclarationActionPanel() {
+		validateFIB("Fib/FML/DeclarationActionPanel.fib");
+	}
+
+	@Test
 	public void testDeleteFlexoConceptInstancePanel() {
 		validateFIB("Fib/FML/DeleteFlexoConceptInstancePanel.fib");
 	}
@@ -112,6 +112,11 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testDeletionSchemePanel() {
 		validateFIB("Fib/FML/DeletionSchemePanel.fib");
+	}
+
+	@Test
+	public void testExpressionActionPanel() {
+		validateFIB("Fib/FML/ExpressionActionPanel.fib");
 	}
 
 	@Test
@@ -154,10 +159,10 @@ public class TestFMLFibs extends GenericFIBTestCase {
 		validateFIB("Fib/FML/NavigationSchemePanel.fib");
 	}
 
-	/*@Test
+	@Test
 	public void testRemoveFromListActionPanel() {
 		validateFIB("Fib/FML/RemoveFromListActionPanel.fib");
-	}*/
+	}
 
 	@Test
 	public void testSelectFlexoConceptInstancePanel() {
@@ -177,6 +182,11 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testSynchronizationSchemePanel() {
 		validateFIB("Fib/FML/SynchronizationSchemePanel.fib");
+	}
+
+	@Test
+	public void testViewPointLocalizedDictionaryView() {
+		validateFIB("Fib/FML/ViewPointLocalizedDictionaryView.fib");
 	}
 
 	@Test

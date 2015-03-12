@@ -39,21 +39,48 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
+import org.openflexo.view.FIBModuleView;
+import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a standard FlexoConcept (an FlexoConcept which is not a VirtualModel, nor part of a
- * DiagramSpecification)<br>
+ * This is the {@link ModuleView} representing a {@link ViewPoint}
  * 
  * @author sguerin
  * 
  */
-public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
+public class ViewPointLocalizedDictionaryView extends FIBModuleView<ViewPointLocalizedDictionary> /* implements FIBMouseClickListener*/{
 
-	public StandardFlexoConceptView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
+	private final FlexoPerspective perspective;
+
+	public ViewPointLocalizedDictionaryView(ViewPointLocalizedDictionary viewPointLocalizedDictionary, FlexoController controller,
+			FlexoPerspective perspective) {
+		super(viewPointLocalizedDictionary, controller, CommonFIB.VIEWPOINT_LOCALIZED_DICTIONARY_VIEW_FIB);
+		this.perspective = perspective;
+	}
+
+	@Override
+	public FlexoPerspective getPerspective() {
+		return perspective;
+	}
+
+	/*@Override
+	public void mouseClicked(FIBView<?, ?, ?> view, int clickCount) {
+		if (view instanceof FIBTableWidget && ((FIBTableWidget<?>) view).getSelected() instanceof FlexoObject && clickCount == 2) {
+			FlexoObject o = (FlexoObject) ((FIBTableWidget<?>) view).getSelected();
+			if (o instanceof ViewPoint || o instanceof FlexoConcept ) {
+				getFlexoController().selectAndFocusObject(o);
+			}
+		}
+	}*/
+
+	@Override
+	public void show(final FlexoController controller, FlexoPerspective perspective) {
+
+		controller.getControllerModel().setRightViewVisible(false);
 	}
 
 }

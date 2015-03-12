@@ -16,7 +16,7 @@
 	<DropDown index="4" data="data.modelSlot"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="ModelSlotDD" format="object.name"
-		icon="controller.getTechnologyAdapterController(object.technologyAdapter).technologyIcon"
+		icon="controller.iconForObject(object)"
 		localize="true" list="data.action.availableModelSlots" showIcon="true"
 		iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 		autoSelectFirstRow="false" showReset="true" />

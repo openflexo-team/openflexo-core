@@ -2,7 +2,7 @@
 <Panel layout="twocols" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
 	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	visible="">
+	>
 	<Browser root="data" iteratorClassName="java.lang.Object"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
 		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
@@ -14,36 +14,38 @@
 		enterPressedAction="" valueChangedAction="" valueTransform=""
 		valueValidator="" name="ViewPointLibraryBrowser" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="">
+		>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
 			label="technologyAdapter.name" icon="controller.iconForObject(technologyAdapter)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="data.getAllRepositories()" visible=""
+			<Children data="data.getAllRepositories()" 
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
-			<Children data="viewPointFolder.children" visible="" cast=""
+			<Children data="viewPointFolder.children"  cast=""
 				name="subFolders" />
-			<Children data="viewPointFolder.resources" visible="" cast=""
+			<Children data="viewPointFolder.resources"  cast=""
 				name="resource" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
-			label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
-			tooltip="" enabled="viewPoint.isLoaded" visible="" isEditable="false"
+			label="viewPointResource.name" icon="controller.iconForObject(viewPointResource)"
+			tooltip="" enabled="viewPointResource.isLoaded"  isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
-			name="viewPoint">
-			<Children data="viewPoint.contents" visible="viewPoint.isLoaded"
-				cast="" name="subResources" />
+			name="viewPointResource">
+			<Children data="viewPointResource.contents" visible="viewPointResource.isLoaded"
+				name="subResources" />
+			<Children data="viewPointResource.viewPoint.localizedDictionary" visible="viewPointResource.isLoaded"
+				name="localizedDictionary" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
-			tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false"
+			tooltip="" enabled="virtualModel.isLoaded"  isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
 			<Children data="virtualModel.contents" visible="virtualModel.isLoaded"
@@ -53,86 +55,93 @@
 			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
 				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
+		<BrowserElement
+			dataClassName="org.openflexo.foundation.fml.ViewPointLocalizedDictionary"
+			label="&quot;Locales&quot;" icon="controller.iconForObject(inspector)"
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
+		</BrowserElement>
+		
+		<!--  <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 			label="(((modelSlot.name + &quot; - [&quot;) + modelSlot.technologyAdapter.name) + &quot;]&quot;)"
 			icon="controller.iconForObject(modelSlot)" tooltip="" enabled=""
-			visible="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="modelSlot" />
+			 isEditable="false" editableLabel="" filtered="false"
+			defaultVisible="true" dynamicFont="" name="modelSlot" /> -->
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-			<Children data="flexoConcept.childFlexoConcepts" visible=""
+			<Children data="flexoConcept.childFlexoConcepts" 
 				cast="" name="children" />
-			<Children data="flexoConcept.inspector" visible="" cast=""
+			<Children data="flexoConcept.inspector"  cast=""
 				name="inspector" />
-			<Children data="flexoConcept.structuralFacet" visible=""
+			<Children data="flexoConcept.structuralFacet" 
 				cast="" name="structural" />
-			<Children data="flexoConcept.behaviouralFacet" visible=""
+			<Children data="flexoConcept.behaviouralFacet" 
 				cast="" name="behavioural" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
+		<!--  <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
 			label="flexoRole.name" icon="controller.iconForObject(flexoRole)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoRole" />
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 			label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
 			<Children data="flexoBehaviour.parameters"
 				visible="(flexoBehaviour.parameters.size &gt; 0)" cast="" name="parameters" />
-			<Children data="flexoBehaviour.actions" visible="" cast=""
+			<Children data="flexoBehaviour.actions"  cast=""
 				name="actions" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
 			label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
-			<Children data="inspector.entries" visible="" cast="" name="entries" />
+			<Children data="inspector.entries"  cast="" name="entries" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 			label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter"
 			label="" icon="controller.iconForObject(flexoBehaviourParameter)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="flexoBehaviourParameter" />
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
 			label="" icon="controller.iconForObject(editionAction)" tooltip=""
-			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
+			enabled=""  isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="editionAction" />
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
 			label="" icon="controller.iconForObject(controlStructureAction)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="controlStructureAction">
-			<Children data="controlStructureAction.actions" visible=""
+			<Children data="controlStructureAction.actions" 
 				cast="" name="children" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
 			label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="flexoConceptStructuralFacet">
 			<Children data="flexoConceptStructuralFacet.flexoConcept.flexoRoles"
-				visible="" cast="" name="flexoRoles" />
+				 cast="" name="flexoRoles" />
 		</BrowserElement>
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
 			label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			tooltip="" enabled=""  isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="flexoConceptBehaviouralFacet">
 			<Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
-				visible="" cast="" name="flexoBehaviours" />
-		</BrowserElement>
+				 cast="" name="flexoBehaviours" />
+		</BrowserElement>-->
 	</Browser>
 	<LocalizedDictionary />
 </Panel>

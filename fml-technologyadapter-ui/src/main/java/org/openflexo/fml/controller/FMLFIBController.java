@@ -40,7 +40,10 @@ package org.openflexo.fml.controller;
 
 import java.util.logging.Logger;
 
+import org.openflexo.fge.FGELayoutManager;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -259,8 +262,7 @@ public class FMLFIBController extends FlexoFIBController {
 			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			createFlexoConcept.doAction();
 			return createFlexoConcept.getNewFlexoConcept();
-		}
-		else if (flexoConcept != null) {
+		} else if (flexoConcept != null) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
 					getEditor());
 			createFlexoConcept.addToParentConcepts(flexoConcept);
@@ -280,8 +282,7 @@ public class FMLFIBController extends FlexoFIBController {
 			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			deleteVirtualModel.doAction();
-		}
-		else if (flexoConcept != null) {
+		} else if (flexoConcept != null) {
 			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
 			deleteFlexoConcept.doAction();
 		}
@@ -472,12 +473,10 @@ public class FMLFIBController extends FlexoFIBController {
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
-			}
-			else
+			} else
 				// No specific TechnologyAdapter, lookup in generic libraries
 				return getFIBPanelForObject(action);
-		}
-		else {
+		} else {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		}
@@ -495,4 +494,13 @@ public class FMLFIBController extends FlexoFIBController {
 		System.out.println("J'essaie " + fibFile + " ca marche ? " + fibFile.exists());
 		return fibFile;*/
 	}
+
+	public InspectorGroup getLayoutManagerInspectorGroup() {
+		return layoutManagerInspectorGroup;
+	}
+
+	public FIBInspector getLayoutInspector(FGELayoutManager<?, ?> object) {
+		return getLayoutManagerInspectorGroup().inspectorForObject(object);
+	}
+
 }
