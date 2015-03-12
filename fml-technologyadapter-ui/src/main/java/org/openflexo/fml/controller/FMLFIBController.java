@@ -489,9 +489,6 @@ public class FMLFIBController extends FlexoFIBController {
 		// No specific TechnologyAdapter, lookup in generic libraries
 		return getFIBPanelForObject(flexoBehaviour);
 
-		/*FileResource fibFile = new FileResource("Fib/" + editionScheme.getClass().getSimpleName() + "Panel.fib");
-		System.out.println("J'essaie " + fibFile + " ca marche ? " + fibFile.exists());
-		return fibFile;*/
 	}
 
 	public FIBInspector inspectorForObject(FMLObject object) {
