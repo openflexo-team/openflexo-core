@@ -98,7 +98,9 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 	public static String generateInspectorTestCaseClass(File directory, String relativePath) {
 		StringBuffer sb = new StringBuffer();
 		for (File f : directory.listFiles()) {
-			if (f.getName().endsWith(".inspector")) {
+			if (f.isDirectory()) {
+				generateInspectorTestCaseClass(f, relativePath + f.getName() + File.separator, sb);
+			} else if (f.getName().endsWith(".inspector")) {
 				String fibName = f.getName().substring(0, f.getName().indexOf(".inspector"));
 				sb.append("@Test\n");
 				sb.append("public void test" + fibName + "Inspector() {\n");
@@ -107,6 +109,20 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 			}
 		}
 		return sb.toString();
+	}
+
+	private static void generateInspectorTestCaseClass(File directory, String relativePath, StringBuffer sb) {
+		for (File f : directory.listFiles()) {
+			if (f.isDirectory()) {
+				generateFIBTestCaseClass(f, relativePath + f.getName() + File.separator);
+			} else if (f.getName().endsWith(".inspector")) {
+				String fibName = f.getName().substring(0, f.getName().indexOf(".inspector"));
+				sb.append("@Test\n");
+				sb.append("public void test" + fibName + "Inspector() {\n");
+				sb.append("  validateFIB(\"" + relativePath + f.getName() + "\");\n");
+				sb.append("}\n\n");
+			}
+		}
 	}
 
 }
