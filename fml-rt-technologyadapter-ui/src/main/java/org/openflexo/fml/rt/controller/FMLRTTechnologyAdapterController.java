@@ -41,6 +41,7 @@ package org.openflexo.fml.rt.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
@@ -88,6 +89,31 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
 		return FMLRTTechnologyAdapter.class;
+	}
+
+	/**
+	 * Initialize inspectors for supplied module using supplied {@link FlexoController}
+	 * 
+	 * @param controller
+	 */
+	@Override
+	protected void initializeInspectors(FlexoController controller) {
+
+		fmlRTInspectorGroup = controller.loadInspectorGroup("FML-RT", getFMLTechnologyAdapterInspectorGroup());
+		// actionInitializer.getController().getModuleInspectorController()
+		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Fiacre"));
+	}
+
+	private InspectorGroup fmlRTInspectorGroup;
+
+	/**
+	 * Return inspector group for this technology
+	 * 
+	 * @return
+	 */
+	@Override
+	public InspectorGroup getTechnologyAdapterInspectorGroup() {
+		return fmlRTInspectorGroup;
 	}
 
 	@Override
