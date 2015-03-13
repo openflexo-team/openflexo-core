@@ -41,6 +41,7 @@ package org.openflexo.fml.controller;
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
@@ -94,13 +95,25 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 
 public class FMLTechnologyAdapterController extends TechnologyAdapterController<FMLTechnologyAdapter> {
 
+	private InspectorGroup fmlInspectors;
+
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
 		return FMLTechnologyAdapter.class;
 	}
 
 	@Override
-	public void initializeActions(ControllerActionInitializer actionInitializer) {
+	protected void initializeInspectors(FlexoController controller) {
+		fmlInspectors = controller.loadInspectorGroup("FML", controller.getCoreInspectorGroup());
+	}
+
+	@Override
+	public InspectorGroup getTechnologyAdapterInspectorGroup() {
+		return fmlInspectors;
+	}
+
+	@Override
+	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
 		// ViewPoint perspective
 		new CreateViewPointInitializer(actionInitializer);

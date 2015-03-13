@@ -134,7 +134,26 @@
 					label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)"
 					tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 					defaultVisible="true" dynamicFont="" name="inspector">
-					<Children data="inspector.entries" cast="" name="entries" />
+					<Children data="inspector.entries" name="entries" />
+					<AddAction method="data.createNewTextField" name="add_textfield" />
+					<BrowserAddAction method="data.inspector.createNewTextArea"
+						name="add_textarea" />
+					<BrowserAddAction method="data.inspector.createNewInteger"
+						name="add_integer" />
+					<BrowserAddAction method="data.inspector.createNewCheckbox"
+						name="add_checkbox" />
+					<BrowserAddAction method="data.inspector.createNewIndividual"
+						name="add_individual" />
+					<BrowserAddAction method="data.inspector.createNewClass"
+						name="add_class" />
+					<BrowserAddAction method="data.inspector.createNewObjectProperty"
+						name="add_object_property" />
+					<BrowserAddAction method="data.inspector.createNewDataProperty"
+						name="add_data_property" />
+					<BrowserAddAction method="data.inspector.createNewProperty"
+						name="add_property" />
+					<RemoveAction method="data.inspector.deleteEntry(selected)"
+						name="delete" />
 				</BrowserElement>
 				<BrowserElement
 					dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"

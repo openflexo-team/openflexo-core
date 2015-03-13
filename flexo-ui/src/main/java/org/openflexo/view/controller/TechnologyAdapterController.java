@@ -50,8 +50,10 @@ import javax.swing.ImageIcon;
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptNature;
@@ -85,6 +87,7 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
+import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
@@ -140,8 +143,57 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 */
 	public abstract Class<TA> getTechnologyAdapterClass();
 
-	public abstract void initializeActions(ControllerActionInitializer actionInitializer);
+	/**
+	 * Called when a FlexoModule is to be initialized with this {@link TechnologyAdapterController}<br>
+	 * This means that all features and GUIs available with this technology adapter will be made available to module<br>
+	 * 
+	 * From a technical point of view, we first initialize inspectors and then actions
+	 * 
+	 * @param module
+	 */
+	public final void initializeModule(FlexoModule module) {
+		initializeInspectors(module.getFlexoController());
+		initializeActions(module.getFlexoController().getControllerActionInitializer());
+	}
 
+	/**
+	 * Initialize actions for supplied module using supplied {@link ControllerActionInitializer}
+	 * 
+	 * @param actionInitializer
+	 */
+	protected abstract void initializeActions(ControllerActionInitializer actionInitializer);
+
+	/**
+	 * Initialize inspectors for supplied module using supplied {@link FlexoController}
+	 * 
+	 * @param controller
+	 */
+	protected abstract void initializeInspectors(FlexoController controller);
+
+	/**
+	 * Return inspector group for this technology
+	 * 
+	 * @return
+	 */
+	public abstract InspectorGroup getTechnologyAdapterInspectorGroup();
+
+	/**
+	 * Return inspector group for FML technology
+	 * 
+	 * @return
+	 */
+	public InspectorGroup getFMLTechnologyAdapterInspectorGroup() {
+		for (TechnologyAdapterController<?> tac : getTechnologyAdapterControllerService().getLoadedAdapterControllers()) {
+			if (tac.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+				return tac.getTechnologyAdapterInspectorGroup();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Initialize
+	 */
 	public void initialize() {
 
 	}
@@ -204,29 +256,21 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		}
-		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
-		}
-		else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
-		}
-		else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-		}
-		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DELETE_ICON;
-		}
-		else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
-		}
-		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		}
-		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
+		} else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.EXPRESSION_ACTION_ICON;
 		}
 		return null;

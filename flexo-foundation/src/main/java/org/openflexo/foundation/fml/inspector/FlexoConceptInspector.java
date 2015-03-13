@@ -45,8 +45,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DefaultBindable;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.DefaultBindable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FlexoConceptFormatterBindingModel;
@@ -301,7 +301,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		@Override
 		public ObjectPropertyInspectorEntry createNewObjectProperty() {
 			ObjectPropertyInspectorEntry newEntry = getFMLModelFactory().newObjectPropertyInspectorEntry();
-			newEntry.setName("property");
+			newEntry.setName("objectProperty");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
@@ -310,7 +310,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		@Override
 		public DataPropertyInspectorEntry createNewDataProperty() {
 			DataPropertyInspectorEntry newEntry = getFMLModelFactory().newDataPropertyInspectorEntry();
-			newEntry.setName("property");
+			newEntry.setName("dataProperty");
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;

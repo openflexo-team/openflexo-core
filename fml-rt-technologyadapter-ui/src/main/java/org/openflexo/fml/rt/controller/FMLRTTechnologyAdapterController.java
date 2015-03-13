@@ -91,7 +91,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	}
 
 	@Override
-	public void initializeActions(ControllerActionInitializer actionInitializer) {
+	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
 		// View library perspective
 		new CreateViewInitializer(actionInitializer);

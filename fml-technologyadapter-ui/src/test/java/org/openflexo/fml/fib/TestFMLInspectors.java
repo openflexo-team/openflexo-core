@@ -57,72 +57,127 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 
 	@Test
 	public void testAbstractActionSchemeInspector() {
-		validateFIB("Inspectors/FML/AbstractActionScheme.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/AbstractActionScheme.inspector");
 	}
 
 	@Test
 	public void testAbstractCreationSchemeInspector() {
-		validateFIB("Inspectors/FML/AbstractCreationScheme.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/AbstractCreationScheme.inspector");
 	}
 
 	@Test
 	public void testActionSchemeInspector() {
-		validateFIB("Inspectors/FML/ActionScheme.inspector");
-	}
-
-	@Test
-	public void testCheckboxParameterInspector() {
-		validateFIB("Inspectors/FML/CheckboxParameter.inspector");
-	}
-
-	@Test
-	public void testClassParameterInspector() {
-		validateFIB("Inspectors/FML/ClassParameter.inspector");
-	}
-
-	@Test
-	public void testClassPatternRoleInspector() {
-		validateFIB("Inspectors/FML/ClassPatternRole.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/ActionScheme.inspector");
 	}
 
 	@Test
 	public void testCloningSchemeInspector() {
-		validateFIB("Inspectors/FML/CloningScheme.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/CloningScheme.inspector");
 	}
 
 	@Test
 	public void testCreationSchemeInspector() {
-		validateFIB("Inspectors/FML/CreationScheme.inspector");
-	}
-
-	@Test
-	public void testDataPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/DataPropertyParameter.inspector");
-	}
-
-	@Test
-	public void testDataPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/DataPropertyPatternRole.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/CreationScheme.inspector");
 	}
 
 	@Test
 	public void testDeletionSchemeInspector() {
-		validateFIB("Inspectors/FML/DeletionScheme.inspector");
-	}
-
-	@Test
-	public void testDropDownParameterInspector() {
-		validateFIB("Inspectors/FML/DropDownParameter.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/DeletionScheme.inspector");
 	}
 
 	@Test
 	public void testFlexoBehaviourInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviour.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviour/FlexoBehaviour.inspector");
+	}
+
+	@Test
+	public void testNavigationSchemeInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviour/NavigationScheme.inspector");
+	}
+
+	@Test
+	public void testSynchronizationSchemeInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviour/SynchronizationScheme.inspector");
+	}
+
+	@Test
+	public void testCheckboxParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/CheckboxParameter.inspector");
+	}
+
+	@Test
+	public void testClassParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ClassParameter.inspector");
+	}
+
+	@Test
+	public void testDataPropertyParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/DataPropertyParameter.inspector");
+	}
+
+	@Test
+	public void testDropDownParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/DropDownParameter.inspector");
 	}
 
 	@Test
 	public void testFlexoBehaviourParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoBehaviourParameter.inspector");
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoBehaviourParameter.inspector");
+	}
+
+	@Test
+	public void testFlexoConceptInstanceParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FlexoConceptInstanceParameter.inspector");
+	}
+
+	@Test
+	public void testFloatParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/FloatParameter.inspector");
+	}
+
+	@Test
+	public void testIndividualParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/IndividualParameter.inspector");
+	}
+
+	@Test
+	public void testInnerModelSlotParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/InnerModelSlotParameter.inspector");
+	}
+
+	@Test
+	public void testIntegerParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/IntegerParameter.inspector");
+	}
+
+	@Test
+	public void testListParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ListParameter.inspector");
+	}
+
+	@Test
+	public void testObjectPropertyParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/ObjectPropertyParameter.inspector");
+	}
+
+	@Test
+	public void testPropertyParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/PropertyParameter.inspector");
+	}
+
+	@Test
+	public void testTextAreaParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/TextAreaParameter.inspector");
+	}
+
+	@Test
+	public void testTextFieldParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/TextFieldParameter.inspector");
+	}
+
+	@Test
+	public void testURIParameterInspector() {
+		validateFIB("Inspectors/FML/FlexoBehaviourParameter/URIParameter.inspector");
 	}
 
 	@Test
@@ -131,33 +186,53 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testFlexoConceptInspectorInspector() {
-		validateFIB("Inspectors/FML/FlexoConceptInspector.inspector");
-	}
-
-	@Test
-	public void testFlexoConceptInstanceParameterInspector() {
-		validateFIB("Inspectors/FML/FlexoConceptInstanceParameter.inspector");
-	}
-
-	@Test
-	public void testFlexoConceptInstanceRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoConceptInstanceRole.inspector");
-	}
-
-	@Test
 	public void testFlexoConceptObjectInspector() {
 		validateFIB("Inspectors/FML/FlexoConceptObject.inspector");
 	}
 
 	@Test
-	public void testFlexoRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole.inspector");
+	public void testClassPatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/ClassPatternRole.inspector");
 	}
 
 	@Test
-	public void testFloatParameterInspector() {
-		validateFIB("Inspectors/FML/FloatParameter.inspector");
+	public void testDataPropertyPatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/DataPropertyPatternRole.inspector");
+	}
+
+	@Test
+	public void testFlexoConceptInstanceRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/FlexoConceptInstanceRole.inspector");
+	}
+
+	@Test
+	public void testFlexoRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/FlexoRole.inspector");
+	}
+
+	@Test
+	public void testIndividualRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/IndividualRole.inspector");
+	}
+
+	@Test
+	public void testObjectPropertyPatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/ObjectPropertyPatternRole.inspector");
+	}
+
+	@Test
+	public void testOntologicObjectPatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/OntologicObjectPatternRole.inspector");
+	}
+
+	@Test
+	public void testPrimitivePatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/PrimitivePatternRole.inspector");
+	}
+
+	@Test
+	public void testPropertyPatternRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/PropertyPatternRole.inspector");
 	}
 
 	@Test
@@ -166,93 +241,78 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testIndividualParameterInspector() {
-		validateFIB("Inspectors/FML/IndividualParameter.inspector");
+	public void testCheckboxInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/CheckboxInspectorEntry.inspector");
 	}
 
 	@Test
-	public void testIndividualRoleInspector() {
-		validateFIB("Inspectors/FML/IndividualRole.inspector");
+	public void testClassInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/ClassInspectorEntry.inspector");
 	}
 
 	@Test
-	public void testInnerModelSlotParameterInspector() {
-		validateFIB("Inspectors/FML/InnerModelSlotParameter.inspector");
+	public void testDataPropertyInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/DataPropertyInspectorEntry.inspector");
 	}
 
 	@Test
-	public void testIntegerParameterInspector() {
-		validateFIB("Inspectors/FML/IntegerParameter.inspector");
+	public void testFlexoConceptInspectorInspector() {
+		validateFIB("Inspectors/FML/Inspector/FlexoConceptInspector.inspector");
 	}
 
 	@Test
-	public void testListParameterInspector() {
-		validateFIB("Inspectors/FML/ListParameter.inspector");
+	public void testFloatInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/FloatInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testIndividualInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/IndividualInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/InspectorEntry.inspector");
+	}
+
+	@Test
+	public void testIntegerInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/IntegerInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testObjectPropertyInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/ObjectPropertyInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testPropertyInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/PropertyInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testTextAreaInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/TextAreaInspectorEntry.inspector");
+	}
+
+	@Test
+	public void testTextFieldInspectorEntryInspector() {
+		validateFIB("Inspectors/FML/Inspector/TextFieldInspectorEntry.inspector");
 	}
 
 	@Test
 	public void testModelSlotInspector() {
-		validateFIB("Inspectors/FML/ModelSlot.inspector");
-	}
-
-	@Test
-	public void testNavigationSchemeInspector() {
-		validateFIB("Inspectors/FML/NavigationScheme.inspector");
-	}
-
-	@Test
-	public void testObjectPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/ObjectPropertyParameter.inspector");
-	}
-
-	@Test
-	public void testObjectPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/ObjectPropertyPatternRole.inspector");
-	}
-
-	@Test
-	public void testOntologicObjectPatternRoleInspector() {
-		validateFIB("Inspectors/FML/OntologicObjectPatternRole.inspector");
-	}
-
-	@Test
-	public void testPrimitivePatternRoleInspector() {
-		validateFIB("Inspectors/FML/PrimitivePatternRole.inspector");
-	}
-
-	@Test
-	public void testPropertyParameterInspector() {
-		validateFIB("Inspectors/FML/PropertyParameter.inspector");
-	}
-
-	@Test
-	public void testPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/PropertyPatternRole.inspector");
-	}
-
-	@Test
-	public void testSynchronizationSchemeInspector() {
-		validateFIB("Inspectors/FML/SynchronizationScheme.inspector");
-	}
-
-	@Test
-	public void testTextAreaParameterInspector() {
-		validateFIB("Inspectors/FML/TextAreaParameter.inspector");
-	}
-
-	@Test
-	public void testTextFieldParameterInspector() {
-		validateFIB("Inspectors/FML/TextFieldParameter.inspector");
+		validateFIB("Inspectors/FML/ModelSlot/ModelSlot.inspector");
 	}
 
 	@Test
 	public void testTypeAwareModelSlotInspector() {
-		validateFIB("Inspectors/FML/TypeAwareModelSlot.inspector");
+		validateFIB("Inspectors/FML/ModelSlot/TypeAwareModelSlot.inspector");
 	}
 
 	@Test
-	public void testURIParameterInspector() {
-		validateFIB("Inspectors/FML/URIParameter.inspector");
+	public void testVirtualModelModelSlotInspector() {
+		validateFIB("Inspectors/FML/ModelSlot/VirtualModelModelSlot.inspector");
 	}
 
 	@Test
@@ -273,11 +333,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testVirtualModelInspector() {
 		validateFIB("Inspectors/FML/VirtualModel.inspector");
-	}
-
-	@Test
-	public void testVirtualModelModelSlotInspector() {
-		validateFIB("Inspectors/FML/VirtualModelModelSlot.inspector");
 	}
 
 	@Test

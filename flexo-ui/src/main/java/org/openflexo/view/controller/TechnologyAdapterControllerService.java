@@ -39,6 +39,8 @@
 
 package org.openflexo.view.controller;
 
+import java.util.Collection;
+
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -102,5 +104,7 @@ public interface TechnologyAdapterControllerService extends FlexoService {
 	 */
 	public <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
 			FlexoPerspective perspective);
+
+	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
 
 }

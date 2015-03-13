@@ -104,6 +104,7 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.editor.ComponentValidationWindow;
 import org.openflexo.fib.swing.localization.LocalizedEditor;
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -396,11 +397,21 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
+	private InspectorGroup moduleInspectorGroup;
+
+	public InspectorGroup getModuleInspectorGroup() {
+		return moduleInspectorGroup;
+	}
+
+	public InspectorGroup getCoreInspectorGroup() {
+		return getModuleInspectorController().getCoreInspectorGroup();
+	}
+
 	/**
 	 *
 	 */
 	public void initInspectors() {
-		loadInspectorGroup(getModule().getShortName().toUpperCase());
+		moduleInspectorGroup = loadInspectorGroup(getModule().getShortName().toUpperCase(), getCoreInspectorGroup());
 		getSelectionManager().addObserver(getModuleInspectorController());
 	}
 
@@ -411,10 +422,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return mainInspectorController;
 	}
 
-	protected void loadInspectorGroup(String inspectorGroup) {
+	public InspectorGroup loadInspectorGroup(String inspectorGroup, InspectorGroup... parentInspectorGroups) {
 		// TODO : To be optimized
 		Resource inspectorsDir = ResourceLocator.locateResource("Inspectors/" + inspectorGroup);
-		getModuleInspectorController().loadDirectory(inspectorsDir);
+		return getModuleInspectorController().loadDirectory(inspectorsDir, parentInspectorGroups);
 	}
 
 	public FlexoFrame getFlexoFrame() {

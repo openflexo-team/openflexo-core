@@ -166,6 +166,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 		// loadDirectory(inspectorsDir);
 	}
 
+	public InspectorGroup getCoreInspectorGroup() {
+		return coreInspectorGroup;
+	}
+
 	private InspectorGroup loadInspectorGroup(Resource inspectorGroupFolder, InspectorGroup... parentInspectorGroups) {
 		InspectorGroup returned = new InspectorGroup(inspectorGroupFolder) {
 			@Override
@@ -179,8 +183,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return returned;
 	}
 
-	public InspectorGroup loadDirectory(Resource inspectorsDirectory) {
-		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, coreInspectorGroup);
+	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {
+		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, parentInspectorGroups);
 		inspectorGroups.add(newInspectorGroup);
 		return newInspectorGroup;
 	}
@@ -286,14 +290,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 
-		System.out.println("Je cherche un inspecteur pour " + objectClass);
 		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<Class<?>, FIBInspector>();
 		for (InspectorGroup inspectorGroup : inspectorGroups) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
-			System.out.println("inspector=" + inspector);
 			if (inspector != null) {
 				potentialInspectors.put(inspector.getDataClass(), inspector);
-				System.out.println("Je trouve l'inspecteur pour " + inspector.getDataClass() + " dans " + inspectorGroup);
 			}
 		}
 
@@ -303,7 +304,6 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 
 		Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(potentialInspectors.keySet());
-		System.out.println("OK, la plus specialisee c'est " + mostSpecializedClass);
 
 		return potentialInspectors.get(mostSpecializedClass);
 	}

@@ -140,6 +140,18 @@
 					constraints="flow(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 					name="Integer" localize="true" enable="data.definePopupDefaultSize" />
 			</Panel>
+			<Label manageDynamicModel="false" useScrollBar="false"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				localize="true" align="left" index="10000"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
+				label="description" readOnly="false" />
+			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+				manageDynamicModel="false" useScrollBar="true" columns="8"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				text="TextArea" localize="true" index="10001"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
+				rows="3" readOnly="false" validateOnReturn="true"
+				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
@@ -153,5 +165,5 @@
 		<Localized key="name" lang="French" value="Nom" />
 		<Localized key="name" lang="Dutch" value="Name" />
 	</LocalizedDictionary>
-	<Parameter name="title" value="Edition Pattern" />
+	<Parameter name="title" value="Flexo Behaviour" />
 </Panel>

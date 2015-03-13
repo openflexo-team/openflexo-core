@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -177,11 +178,22 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		if (notification instanceof ModuleLoaded) {
 			// When a module is loaded, register all loaded technology adapter controllers with new new loaded module action initializer
 			// The newly loaded module will be able to provide all tooling provided by the technology adapter
+
+			// We have to start with the FMLTechnologyAdapter, if it exists
 			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
-				Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
-						+ adapterController.getTechnologyAdapter().getName());
-				adapterController.initializeActions(((ModuleLoaded) notification).getLoadedModule().getController()
-						.getControllerActionInitializer());
+				if (adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+					Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+							+ adapterController.getTechnologyAdapter().getName());
+					adapterController.initializeModule(((ModuleLoaded) notification).getLoadedModule());
+				}
+			}
+
+			for (TechnologyAdapterController<?> adapterController : getLoadedAdapterControllers()) {
+				if (!(adapterController.getTechnologyAdapter() instanceof FMLTechnologyAdapter)) {
+					Progress.progress(FlexoLocalization.localizedForKey("initialize_actions_for_technology_adapter") + " "
+							+ adapterController.getTechnologyAdapter().getName());
+					adapterController.initializeModule(((ModuleLoaded) notification).getLoadedModule());
+				}
 			}
 		}
 	}
