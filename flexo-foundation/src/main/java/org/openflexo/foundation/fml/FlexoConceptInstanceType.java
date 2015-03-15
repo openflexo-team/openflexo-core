@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
@@ -81,8 +80,9 @@ public class FlexoConceptInstanceType implements CustomType {
 	@Override
 	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
 		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
+
 		if (aType instanceof FlexoConceptInstanceType) {
-			return flexoConcept.isAssignableFrom(((FlexoConceptInstanceType) aType).getFlexoConcept());
+			return (flexoConcept == null) || (flexoConcept.isAssignableFrom(((FlexoConceptInstanceType) aType).getFlexoConcept()));
 		}
 		return false;
 	}
