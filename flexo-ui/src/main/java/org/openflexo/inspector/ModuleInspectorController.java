@@ -305,7 +305,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 		Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(potentialInspectors.keySet());
 
-		return potentialInspectors.get(mostSpecializedClass);
+		FIBInspector returned = potentialInspectors.get(mostSpecializedClass);
+
+		// System.out.println("Pour la classe " + objectClass + " je retourne:");
+		// System.out.println(getFactory().stringRepresentation(returned));
+
+		return returned;
 	}
 
 	/**

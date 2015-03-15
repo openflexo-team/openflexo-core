@@ -41,6 +41,7 @@ package org.openflexo.fml.controller;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -493,6 +494,14 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public FIBInspector inspectorForObject(FMLObject object) {
 		return getFlexoController().getModuleInspectorController().inspectorForObject(object);
+	}
+
+	public FIBTab basicInspectorTabForObject(FMLObject object) {
+		FIBInspector inspector = inspectorForObject(object);
+		if (inspector != null && inspector.getTabPanel() != null) {
+			return (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+		}
+		return null;
 	}
 
 }

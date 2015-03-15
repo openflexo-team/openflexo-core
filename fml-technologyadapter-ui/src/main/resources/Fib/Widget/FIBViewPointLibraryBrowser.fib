@@ -72,12 +72,6 @@
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
 			<Children data="flexoConcept.childFlexoConcepts" 
 				cast="" name="children" />
-			<Children data="flexoConcept.inspector"  cast=""
-				name="inspector" />
-			<Children data="flexoConcept.structuralFacet" 
-				cast="" name="structural" />
-			<Children data="flexoConcept.behaviouralFacet" 
-				cast="" name="behavioural" />
 		</BrowserElement>
 		<!--  <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
 			label="flexoRole.name" icon="controller.iconForObject(flexoRole)"

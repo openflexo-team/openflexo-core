@@ -56,6 +56,96 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAddClassInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddClass.inspector");
+	}
+
+	@Test
+	public void testAddFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddFlexoConceptInstance.inspector");
+	}
+
+	@Test
+	public void testAddIndividualInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddIndividual.inspector");
+	}
+
+	@Test
+	public void testAddToListActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddToListAction.inspector");
+	}
+
+	@Test
+	public void testAssignationActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AssignationAction.inspector");
+	}
+
+	@Test
+	public void testConditionalActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/ConditionalAction.inspector");
+	}
+
+	@Test
+	public void testDeclarationActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/DeclarationAction.inspector");
+	}
+
+	@Test
+	public void testDeleteFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/DeleteFlexoConceptInstance.inspector");
+	}
+
+	@Test
+	public void testDeleteActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/DeleteAction.inspector");
+	}
+
+	@Test
+	public void testEditionActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/EditionAction.inspector");
+	}
+
+	@Test
+	public void testExpressionActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/ExpressionAction.inspector");
+	}
+
+	@Test
+	public void testFetchRequestInspector() {
+		validateFIB("Inspectors/FML/EditionAction/FetchRequest.inspector");
+	}
+
+	@Test
+	public void testIterationActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/IterationAction.inspector");
+	}
+
+	@Test
+	public void testMatchFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/MatchFlexoConceptInstance.inspector");
+	}
+
+	@Test
+	public void testRemoveFromListActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/RemoveFromListAction.inspector");
+	}
+
+	@Test
+	public void testSelectFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/SelectFlexoConceptInstance.inspector");
+	}
+
+	@Test
+	public void testSelectIndividualInspector() {
+		validateFIB("Inspectors/FML/EditionAction/SelectIndividual.inspector");
+	}
+
+	@Test
+	public void testTechnologySpecificActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/TechnologySpecificAction.inspector");
+	}
+
+	@Test
 	public void testAbstractActionSchemeInspector() {
 		validateFIB("Inspectors/FML/FlexoBehaviour/AbstractActionScheme.inspector");
 	}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.editionaction.RemoveFromListAction"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="list" align="right" index="6" data=""
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				visible="" format="" icon="" tooltip="" localize="true" enable=""
+				clickAction="" doubleClickAction="" rightClickAction=""
+				enterPressedAction="" valueChangedAction="" valueTransform=""
+				valueValidator="" />
+			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				format="" icon="" tooltip="" localize="true" enable=""
+				manageDynamicModel="true" opaque="false" clickAction=""
+				doubleClickAction="" rightClickAction="" enterPressedAction=""
+				valueChangedAction="" valueTransform="" valueValidator="" index="7"
+				data="data.list"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				visible="">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="value" align="right" index="6" data=""
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				visible="" format="" icon="" tooltip="" localize="true" enable=""
+				clickAction="" doubleClickAction="" rightClickAction=""
+				enterPressedAction="" valueChangedAction="" valueTransform=""
+				valueValidator="" />
+			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				format="" icon="" tooltip="" localize="true" enable=""
+				manageDynamicModel="true" opaque="false" clickAction=""
+				doubleClickAction="" rightClickAction="" enterPressedAction=""
+				valueChangedAction="" valueTransform="" valueValidator="" index="7"
+				data="data.value"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				visible="">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="RemoveFromList action" />
+</Panel>

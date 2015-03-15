@@ -72,7 +72,6 @@ import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
-import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.rm.Resource;
@@ -272,15 +271,16 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 		gcDelegate.addTab("ActionScheme", widget.getController());
 	}
 
-	@Test
+	/*@Test
 	@TestOrder(6)
 	public void testInstanciateWidgetForAssignationAction() {
 
-		FIBJPanel<AssignationAction> widget = instanciateFIB(ResourceLocator.locateResource("Fib/FML/AssignationActionPanel.fib"),
+		FIBJPanel<AssignationAction> widget = instanciateFIB(
+				ResourceLocator.locateResource("Inspectors/FML/EditionAction/AssignationAction.inspector"),
 				(AssignationAction) ((Sequence) creationScheme.getControlGraph()).getControlGraph1(), AssignationAction.class);
 
-		gcDelegate.addTab("DeclareFlexoRole", widget.getController());
-	}
+		gcDelegate.addTab("AssignationAction", widget.getController());
+	}*/
 
 	public static void initGUI() {
 		gcDelegate = new GraphicalContextDelegate(TestFlexoBehaviourPanel.class.getSimpleName());

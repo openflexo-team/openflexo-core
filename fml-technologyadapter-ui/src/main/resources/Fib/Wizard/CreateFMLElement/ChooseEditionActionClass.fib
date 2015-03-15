@@ -8,7 +8,8 @@
 	<Panel id="2" darkLevel="0" useScrollBar="true" protectContent="false"
 		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
 		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
-		borderTitle="Panel" trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
+		borderTitle="Panel" trackViewPortHeight="true"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
 		<RadioButtonList id="3" manageDynamicModel="false"
 			columns="1" controllerClassName="org.openflexo.fib.controller.FIBController"
 			index="2" localize="true"
@@ -101,9 +102,10 @@
 				controllerClassName="org.openflexo.fib.controller.FIBController"
 				index="5" localize="true" name="iterationTypeRBL" data="data.action.iterationType"
 				constraints="border(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-				showText="true" iteratorClassName="org.openflexo.foundation.fml.action.CreateEditionAction$IterationType" vGap="-2"
-				showIcon="true" useScrollBar="true" autoSelectFirstRow="true" hGap="0"
-				readOnly="false" />
+				showText="true"
+				iteratorClassName="org.openflexo.foundation.fml.action.CreateEditionAction$IterationType"
+				vGap="-2" showIcon="true" useScrollBar="true" autoSelectFirstRow="true"
+				hGap="0" readOnly="false" />
 			<Label label="iteration" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" visible="iterationTypeRBL.data='Expression'" />
@@ -132,8 +134,8 @@
 				localize="true" columns="6" text="TextField" />
 		</Panel>
 		<Panel id="15" darkLevel="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-			useScrollBar="true" protectContent="false" layout="border" visible="!(data.action.isIterationAction)"
-			controllerClassName="org.openflexo.fib.controller.FIBController"
+			useScrollBar="true" protectContent="false" layout="border"
+			visible="!(data.action.isIterationAction)" controllerClassName="org.openflexo.fib.controller.FIBController"
 			border="rounded3d" trackViewPortWidth="true"
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED">
@@ -142,7 +144,7 @@
 				data="data.action.baseEditionAction" opaque="false" name="EditionActionWidget"
 				controllerClassName="org.openflexo.fib.controller.FIBController"
 				index="15" localize="true"
-				dynamicComponentFile="controller.fibForEditionAction(data.action.baseEditionAction)"
+				dynamicComponent="controller.inspectorForObject(data.action.baseEditionAction)"
 				constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
 				readOnly="false">
 				<ReferenceAssignment id="17" mandatory="true"
@@ -150,15 +152,15 @@
 			</FIBReferencedComponent>
 		</Panel>
 		<Panel darkLevel="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-			useScrollBar="true" protectContent="false" layout="border" visible="data.action.isIterationAction &amp; (data.action.iterationType='FetchRequest')"
+			useScrollBar="true" protectContent="false" layout="border"
+			visible="data.action.isIterationAction &amp; (data.action.iterationType='FetchRequest')"
 			controllerClassName="org.openflexo.fib.controller.FIBController"
 			border="rounded3d" trackViewPortWidth="true"
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED">
-			<FIBReferencedComponent
-				manageDynamicModel="true" useScrollBar="false"
-				data="data.action.fetchRequestAction" opaque="false" name="EditionActionWidget"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
+			<FIBReferencedComponent manageDynamicModel="true"
+				useScrollBar="false" data="data.action.fetchRequestAction" opaque="false"
+				name="EditionActionWidget" controllerClassName="org.openflexo.fib.controller.FIBController"
 				index="15" localize="true"
 				dynamicComponentFile="controller.fibForEditionAction(data.action.fetchRequestAction)"
 				constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
@@ -168,7 +170,8 @@
 			</FIBReferencedComponent>
 		</Panel>
 		<Panel darkLevel="1" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-			useScrollBar="true" protectContent="false" layout="border" visible="data.action.isIterationAction &amp; (!(data.action.iterationType='FetchRequest'))"
+			useScrollBar="true" protectContent="false" layout="border"
+			visible="data.action.isIterationAction &amp; (!(data.action.iterationType='FetchRequest'))"
 			controllerClassName="org.openflexo.fib.controller.FIBController"
 			border="rounded3d" trackViewPortWidth="true"
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"

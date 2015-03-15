@@ -90,6 +90,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 
 	public IFlexoOntologyClass getOntologyClass();
 
+	public void setOntologyClass(IFlexoOntologyClass ontologyClass);
+
 	@Override
 	@Getter(value = MODEL_SLOT_KEY)
 	@XMLAttribute
