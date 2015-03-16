@@ -49,7 +49,7 @@
 					name="duplicate" />
 			</BrowserElement>
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
-				label="flexoRole.name" icon="controller.iconForObject(flexoRole)"
+				label="flexoRole.name+' ('+flexoRole.cardinality.stringRepresentation+')'" icon="controller.iconForObject(flexoRole)"
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="flexoRole" />
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"

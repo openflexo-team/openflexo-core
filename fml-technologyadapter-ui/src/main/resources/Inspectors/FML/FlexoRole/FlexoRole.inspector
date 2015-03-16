@@ -25,10 +25,15 @@
 				list="data.owningVirtualModel.modelSlots" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 				autoSelectFirstRow="false" showReset="true" />
-			<!--<Label label="primary_role" index="4" constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" 
-				name="PrimaryRoleLabel" localize="true" /> <CheckBox selected="false" index="5" 
-				data="data.isPrimaryRole" constraints="twocols(expandHorizontally=false;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" 
-				name="PrimaryRoleCheckbox" localize="true" /> -->
+			<Label label="cardinality" index="4"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<DropDown index="5" data="data.cardinality"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="CardinalityDD" format="object.stringRepresentation"
+				localize="true"
+				iteratorClassName="org.openflexo.foundation.fml.RoleCardinality"
+				autoSelectFirstRow="false" showReset="true" />
 
 			<Label manageDynamicModel="false" useScrollBar="false"
 				controllerClassName="org.openflexo.fib.controller.FIBController"
