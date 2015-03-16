@@ -118,7 +118,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	}
 
 	public List<IFlexoOntologyObject<TA>> getRoots() {
-		if (roots == null) {
+		if (roots == null && !isRecomputingStructure) {
 			recomputeStructure();
 		}
 		return roots;
@@ -152,10 +152,11 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 				computeNonHierarchicalStructure();
 			}
 		}
-		isRecomputingStructure = false;
 		// printHierarchy();
 
 		getPropertyChangeSupport().firePropertyChange("roots", null, roots);
+
+		isRecomputingStructure = false;
 
 		logger.fine("END recomputeStructure for " + getContext());
 	}
