@@ -225,49 +225,49 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		createPR1.setRoleName("aStringInA");
 		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
-		createPR1.setRoleCardinality(RoleCardinality.One);
+		createPR1.setPropertyCardinality(PropertyCardinality.One);
 		createPR1.doAction();
 
 		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR2.setRoleName("someBooleanInA");
 		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
-		createPR2.setRoleCardinality(RoleCardinality.ZeroMany);
+		createPR2.setPropertyCardinality(PropertyCardinality.ZeroMany);
 		createPR2.doAction();
 
 		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR3.setRoleName("someIntegerInA");
 		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
-		createPR3.setRoleCardinality(RoleCardinality.OneMany);
+		createPR3.setPropertyCardinality(PropertyCardinality.OneMany);
 		createPR3.doAction();
 
 		CreateFlexoRole createPR4 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR4.setRoleName("someFlexoConcept2");
 		createPR4.setFlexoRoleClass(FlexoConceptInstanceRole.class);
 		createPR4.setFlexoConceptInstanceType(flexoConcept2);
-		createPR4.setRoleCardinality(RoleCardinality.ZeroMany);
+		createPR4.setPropertyCardinality(PropertyCardinality.ZeroMany);
 		createPR4.doAction();
 
-		assertEquals(4, flexoConcept1.getFlexoRoles().size());
-		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR1.getNewFlexoRole()));
-		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR2.getNewFlexoRole()));
-		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR3.getNewFlexoRole()));
-		assertTrue(flexoConcept1.getFlexoRoles().contains(createPR4.getNewFlexoRole()));
+		assertEquals(4, flexoConcept1.getFlexoProperties().size());
+		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR1.getNewFlexoRole()));
+		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR2.getNewFlexoRole()));
+		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR3.getNewFlexoRole()));
+		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR4.getNewFlexoRole()));
 
-		aStringInA = (PrimitiveRole<String>) flexoConcept1.getFlexoRole("aStringInA");
+		aStringInA = (PrimitiveRole<String>) flexoConcept1.getFlexoProperty("aStringInA");
 		assertNotNull(aStringInA);
 		assertEquals(String.class, aStringInA.getType());
 		assertEquals(String.class, aStringInA.getResultingType());
-		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getFlexoRole("someBooleanInA");
+		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getFlexoProperty("someBooleanInA");
 		assertNotNull(someBooleanInA);
 		assertEquals(Boolean.class, someBooleanInA.getType());
 		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
-		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getFlexoRole("someIntegerInA");
+		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getFlexoProperty("someIntegerInA");
 		assertNotNull(someIntegerInA);
 		assertEquals(Integer.class, someIntegerInA.getType());
 		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
-		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getFlexoRole("someFlexoConcept2");
+		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getFlexoProperty("someFlexoConcept2");
 		assertNotNull(someFlexoConcept2);
 
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2), someFlexoConcept2.getType());
@@ -421,7 +421,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		fci.setFlexoActor("value1", aStringInA);
 		assertEquals("value1", fci.getFlexoActor(aStringInA));
 
-		aStringInA.setCardinality(RoleCardinality.ZeroMany);
+		aStringInA.setCardinality(PropertyCardinality.ZeroMany);
 		fci.addToFlexoActors("value2", aStringInA);
 		assertSameList(fci.getFlexoActorList(aStringInA), "value1", "value2");
 
@@ -433,7 +433,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		fci.setFlexoActor("value4", aStringInA);
 		assertSameList(fci.getFlexoActorList(aStringInA), "value4");
 
-		aStringInA.setCardinality(RoleCardinality.ZeroOne);
+		aStringInA.setCardinality(PropertyCardinality.ZeroOne);
 
 		assertEquals("value4", fci.getFlexoActor(aStringInA));
 

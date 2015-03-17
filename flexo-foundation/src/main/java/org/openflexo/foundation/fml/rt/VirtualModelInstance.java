@@ -51,7 +51,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -675,12 +675,12 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			}*/
 
 		@Override
-		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
-			if (super.getFlexoActor(flexoRole) != null) {
-				return super.getFlexoActor(flexoRole);
+		public <T> T getFlexoActor(FlexoProperty<T> flexoProperty) {
+			if (super.getFlexoActor(flexoProperty) != null) {
+				return super.getFlexoActor(flexoProperty);
 			}
-			if (flexoRole instanceof ModelSlot) {
-				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot<?>) flexoRole);
+			if (flexoProperty instanceof ModelSlot) {
+				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot<?>) flexoProperty);
 				if (modelSlotInstance != null) {
 					return (T) modelSlotInstance.getAccessedResourceData();
 				}
@@ -803,11 +803,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return null;
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
 				if (flexoConceptInstance.getFlexoConcept() != null) {
-					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoRoles()) {
+					for (FlexoProperty<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoProperties()) {
 						if (flexoConceptInstance.getFlexoActor(fr) == object) {
 							ObjectLookupResult answer = new ObjectLookupResult();
 							answer.flexoConceptInstance = flexoConceptInstance;
-							answer.role = fr;
+							answer.property = fr;
 							return answer;
 						}
 					}
@@ -860,7 +860,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
 					}
 				} else {
-					logger.warning("Unexpected role " + variable);
+					logger.warning("Unexpected property " + variable);
 				}
 				return;
 			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
@@ -884,7 +884,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	public class ObjectLookupResult {
 		public FlexoConceptInstance flexoConceptInstance;
-		public FlexoRole role;
+		public FlexoProperty<?> property;
 	}
 
 }

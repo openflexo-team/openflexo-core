@@ -191,7 +191,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
-	 * Return default name for supplied pattern role class
+	 * Return default name for supplied pattern property class
 	 * 
 	 * @param flexoRoleClass
 	 * @return

@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml;
 
 /**
- * Represents the cardinality of a role
+ * Represents the cardinality of a property
  * 
  * <ul>
  * <li><tt>ZeroOne</tt>: means that the value is unique or null</li>
@@ -51,7 +51,7 @@ package org.openflexo.foundation.fml;
  * @author sylvain
  * 
  */
-public enum RoleCardinality {
+public enum PropertyCardinality {
 	ZeroOne {
 		@Override
 		public boolean isMultipleCardinality() {

@@ -75,7 +75,7 @@ import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
+import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -305,10 +305,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
-		assertEquals(3, flexoConceptA.getFlexoRoles().size());
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR1.getNewFlexoRole()));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR2.getNewFlexoRole()));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(createPR3.getNewFlexoRole()));
+		assertEquals(3, flexoConceptA.getFlexoProperties().size());
+		assertTrue(flexoConceptA.getFlexoProperties().contains(createPR1.getNewFlexoRole()));
+		assertTrue(flexoConceptA.getFlexoProperties().contains(createPR2.getNewFlexoRole()));
+		assertTrue(flexoConceptA.getFlexoProperties().contains(createPR3.getNewFlexoRole()));
 
 		System.out.println("FlexoConcept BindingModel = " + flexoConceptA.getBindingModel());
 
@@ -332,10 +332,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.class, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
-		PrimitiveRole aStringInA = (PrimitiveRole) flexoConceptA.getFlexoRole("aStringInA");
+		PrimitiveRole aStringInA = (PrimitiveRole) flexoConceptA.getFlexoProperty("aStringInA");
 		assertNotNull(aStringInA);
 
-		FlexoRoleBindingVariable bv = (FlexoRoleBindingVariable) flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA");
+		FlexoPropertyBindingVariable bv = (FlexoPropertyBindingVariable) flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA");
 		assertNotNull(bv);
 
 		// Attempt to change name
@@ -408,8 +408,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createRoleInFlexoConceptB.setPrimitiveType(PrimitiveType.String);
 		createRoleInFlexoConceptB.doAction();
 
-		assertEquals(1, flexoConceptB.getFlexoRoles().size());
-		assertTrue(flexoConceptB.getFlexoRoles().contains(createRoleInFlexoConceptB.getNewFlexoRole()));
+		assertEquals(1, flexoConceptB.getFlexoProperties().size());
+		assertTrue(flexoConceptB.getFlexoProperties().contains(createRoleInFlexoConceptB.getNewFlexoRole()));
 
 		CreateFlexoRole createRoleInFlexoConceptC = CreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createRoleInFlexoConceptC.setRoleName("aStringInC");
@@ -417,8 +417,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createRoleInFlexoConceptC.setPrimitiveType(PrimitiveType.String);
 		createRoleInFlexoConceptC.doAction();
 
-		assertEquals(1, flexoConceptC.getFlexoRoles().size());
-		assertTrue(flexoConceptC.getFlexoRoles().contains(createRoleInFlexoConceptC.getNewFlexoRole()));
+		assertEquals(1, flexoConceptC.getFlexoProperties().size());
+		assertTrue(flexoConceptC.getFlexoProperties().contains(createRoleInFlexoConceptC.getNewFlexoRole()));
 
 		((VirtualModelResource) virtualModel1.getResource()).save(null);
 
@@ -456,12 +456,13 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aStringInC"));
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aStringInC").getType());
 
-		PrimitiveRole aStringInB = (PrimitiveRole) flexoConceptB.getFlexoRole("aStringInB");
+		PrimitiveRole aStringInB = (PrimitiveRole) flexoConceptB.getFlexoProperty("aStringInB");
 		assertNotNull(aStringInB);
 
 		// We now try to rename the FlexoRole in FlexoConceptB
 
-		FlexoRoleBindingVariable bvForB = (FlexoRoleBindingVariable) flexoConceptB.getBindingModel().bindingVariableNamed("aStringInB");
+		FlexoPropertyBindingVariable bvForB = (FlexoPropertyBindingVariable) flexoConceptB.getBindingModel().bindingVariableNamed(
+				"aStringInB");
 		assertNotNull(bvForB);
 
 		renameWasNotified = false;
@@ -474,7 +475,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 			}
 		});
 
-		FlexoRoleBindingVariable bvForC = (FlexoRoleBindingVariable) flexoConceptC.getBindingModel().bindingVariableNamed("aStringInB");
+		FlexoPropertyBindingVariable bvForC = (FlexoPropertyBindingVariable) flexoConceptC.getBindingModel().bindingVariableNamed(
+				"aStringInB");
 		assertNotNull(bvForC);
 
 		rename2WasNotified = false;
@@ -551,14 +553,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(12, flexoConceptD.getBindingModel().getBindingVariablesCount());
 
-		// add role in FlexoConceptA
+		// add property in FlexoConceptA
 		CreateFlexoRole createOtherBooleanInA = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createOtherBooleanInA.setRoleName("anOtherBooleanInA");
 		createOtherBooleanInA.setFlexoRoleClass(PrimitiveRole.class);
 		createOtherBooleanInA.setPrimitiveType(PrimitiveType.Boolean);
 		createOtherBooleanInA.doAction();
 
-		// Check that this role is visible in FlexoConceptD
+		// Check that this property is visible in FlexoConceptD
 		assertEquals(13, flexoConceptD.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.class, flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
@@ -1382,10 +1384,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// We check here that matching criterias were updated
 		assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
 
-		MatchingCriteria criteria1 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("aStringInA"));
-		MatchingCriteria criteria2 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("aBooleanInA"));
-		MatchingCriteria criteria3 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("anIntegerInA"));
-		MatchingCriteria criteria4 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("anOtherBooleanInA"));
+		MatchingCriteria criteria1 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoProperty("aStringInA"));
+		MatchingCriteria criteria2 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoProperty("aBooleanInA"));
+		MatchingCriteria criteria3 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoProperty("anIntegerInA"));
+		MatchingCriteria criteria4 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoProperty("anOtherBooleanInA"));
 
 		assertNotNull(criteria1);
 		assertNotNull(criteria2);
@@ -1398,10 +1400,10 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertTrue(criteria1.getValue().isValid());
 
-		MatchingCriteria criteria1bis = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoRole("aStringInA"));
+		MatchingCriteria criteria1bis = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getFlexoProperty("aStringInA"));
 		assertSame(criteria1, criteria1bis);
 
-		// We add a role
+		// We add a property
 		// We check here that matching criterias were updated: an other criteria should appear
 
 		CreateFlexoRole createRole = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
@@ -1414,9 +1416,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(5, matchFlexoConceptInstance.getMatchingCriterias().size());
 		assertNotNull(matchFlexoConceptInstance.getMatchingCriteria(newRole));
 
-		// We remove the role
+		// We remove the property
 		// We check here that matching criterias were updated: the criteria should disappear
-		flexoConceptA.removeFromFlexoRoles(newRole);
+		flexoConceptA.removeFromFlexoProperties(newRole);
 
 		assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
 
@@ -1692,7 +1694,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(String.class, virtualModel3.getBindingModel().bindingVariableNamed("aStringInVM3").getType());
 		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, null);
 
-		vmi3.setFlexoActor("toto", (FlexoRole) vmi3.getVirtualModel().getFlexoRole("aStringInVM3"));
+		vmi3.setFlexoActor("toto", (FlexoRole) vmi3.getVirtualModel().getFlexoProperty("aStringInVM3"));
 		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, "toto");
 
 	}
@@ -1719,7 +1721,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(true, fci.getFlexoActor("aBooleanInA"));
 		assertEquals((long) 8, fci.getFlexoActor("anIntegerInA"));
 
-		fci.setFlexoActor(false, (FlexoRole<Boolean>) flexoConceptA.getFlexoRole("anOtherBooleanInA"));
+		fci.setFlexoActor(false, (FlexoRole<Boolean>) flexoConceptA.getFlexoProperty("anOtherBooleanInA"));
 
 		assertEquals(10, flexoConceptA.getBindingModel().getBindingVariablesCount());
 
@@ -1783,7 +1785,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		log("testFlexoBehaviourAtRunTime()");
 
-		fci.setFlexoActor("newValue", (FlexoRole<String>) flexoConceptA.getFlexoRole("aStringInA"));
+		fci.setFlexoActor("newValue", (FlexoRole<String>) flexoConceptA.getFlexoProperty("aStringInA"));
 		assertEquals("newValue", fci.getFlexoActor("aStringInA"));
 
 		ActionScheme actionScheme = flexoConceptA.getFlexoBehaviours(ActionScheme.class).get(0);

@@ -904,9 +904,9 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 				}
 			}
 
-			if (getFlexoRoles().size() > 0) {
+			if (getFlexoProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoRole pr : getFlexoRoles()) {
+				for (FlexoProperty<?> pr : getFlexoProperties()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}

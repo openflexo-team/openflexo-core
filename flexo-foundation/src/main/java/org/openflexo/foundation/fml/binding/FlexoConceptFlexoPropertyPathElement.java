@@ -48,59 +48,59 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
-public class FlexoConceptFlexoRolePathElement<FR extends FlexoRole<?>> extends SimplePathElement implements PropertyChangeListener {
+public class FlexoConceptFlexoPropertyPathElement<FR extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
 
-	private static final Logger logger = Logger.getLogger(FlexoConceptFlexoRolePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoConceptFlexoPropertyPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
-	private final FR flexoRole;
+	private final FR flexoProperty;
 
-	public FlexoConceptFlexoRolePathElement(BindingPathElement parent, FR flexoRole) {
-		super(parent, flexoRole.getRoleName(), flexoRole.getResultingType());
-		this.flexoRole = flexoRole;
-		if (flexoRole != null) {
-			lastKnownType = flexoRole.getResultingType();
+	public FlexoConceptFlexoPropertyPathElement(BindingPathElement parent, FR flexoProperty) {
+		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
+		this.flexoProperty = flexoProperty;
+		if (flexoProperty != null) {
+			lastKnownType = flexoProperty.getResultingType();
 		}
-		if (flexoRole != null && flexoRole.getPropertyChangeSupport() != null) {
-			flexoRole.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
+			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
 	public void delete() {
-		if (flexoRole != null && flexoRole.getPropertyChangeSupport() != null) {
-			flexoRole.getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
+			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.delete();
 	}
 
-	public FR getFlexoRole() {
-		return flexoRole;
+	public FR getFlexoProperty() {
+		return flexoProperty;
 	}
 
 	@Override
 	public String getLabel() {
-		return flexoRole.getRoleName();
+		return getPropertyName();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return flexoRole.getDescription();
+		return flexoProperty.getDescription();
 	}
 
 	@Override
 	public Type getType() {
-		return getFlexoRole().getResultingType();
+		return getFlexoProperty().getResultingType();
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance epi = (FlexoConceptInstance) target;
-			return epi.getFlexoActor((FlexoRole) flexoRole);
+			return epi.getFlexoActor((FlexoProperty) flexoProperty);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
@@ -110,7 +110,7 @@ public class FlexoConceptFlexoRolePathElement<FR extends FlexoRole<?>> extends S
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
 			NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
-			((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) flexoRole);
+			((FlexoConceptInstance) target).setFlexoActor(value, (FlexoProperty) flexoProperty);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
@@ -118,23 +118,23 @@ public class FlexoConceptFlexoRolePathElement<FR extends FlexoRole<?>> extends S
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == getFlexoRole()) {
-			if (evt.getPropertyName().equals(FlexoRole.NAME_KEY)) {
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
+		if (evt.getSource() == getFlexoProperty()) {
+			if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
+				// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
 				getPropertyChangeSupport().firePropertyChange(NAME_PROPERTY, evt.getOldValue(), getLabel());
 			}
-			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoRole.RESULTING_TYPE_PROPERTY)) {
-				Type newType = getFlexoRole().getResultingType();
+			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {
+				Type newType = getFlexoProperty().getResultingType();
 				if (lastKnownType == null || !lastKnownType.equals(newType)) {
 					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
 					lastKnownType = newType;
 				}
 			}
 			if (lastKnownType != getType()) {
-				// We might arrive here only in the case of a FlexoRole does not correctely notify
+				// We might arrive here only in the case of a FlexoProperty does not correctely notify
 				// its type change. We warn it to 'tell' the developper that such notification should be done
-				// in FlexoRole (see IndividualRole for example)
-				logger.warning("Detecting un-notified type changing for FlexoRole " + flexoRole + " from " + lastKnownType + " to "
+				// in FlexoProperty (see IndividualProperty for example)
+				logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to "
 						+ getType() + ". Trying to handle case.");
 				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
 				lastKnownType = getType();

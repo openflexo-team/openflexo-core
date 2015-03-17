@@ -230,7 +230,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	public String getFlexoBehaviourName() {
 		if (StringUtils.isEmpty(flexoBehaviourName) && flexoBehaviourClass != null) {
-			return getFlexoConcept().getAvailableEditionSchemeName(defaultFlexoBehaviourBaseName());
+			return getFlexoConcept().getAvailableFlexoBehaviourName(defaultFlexoBehaviourBaseName());
 		}
 		return flexoBehaviourName;
 	}

@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -140,7 +140,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	@Remover(MATCHING_CRITERIAS_KEY)
 	public void removeFromMatchingCriterias(MatchingCriteria aMatchingCriteria);
 
-	public MatchingCriteria getMatchingCriteria(FlexoRole flexoRole);
+	public MatchingCriteria getMatchingCriteria(FlexoProperty<?> flexoProperty);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateFlexoConceptInstanceParameter.ACTION_KEY)
 	@XMLElement
@@ -202,11 +202,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					sb.append("(");
 				}
 				for (MatchingCriteria mc : matchingCriterias) {
-					FlexoRole<?> role = mc.getFlexoRole();
+					FlexoProperty<?> pr = mc.getFlexoProperty();
 					DataBinding<?> val = mc.getValue();
-					if (role != null && val != null) {
-						sb.append((mc.getFlexoRole().getName() != null ? mc.getFlexoRole().getName() : "null") + "="
-								+ mc.getValue().toString() + ";");
+					if (pr != null && val != null) {
+						sb.append((pr.getName() != null ? pr.getName() : "null") + "=" + mc.getValue().toString() + ";");
 					}
 				}
 				if (matchingCriterias.size() > 1) {
@@ -475,9 +474,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}*/
 
 		@Override
-		public MatchingCriteria getMatchingCriteria(FlexoRole pr) {
+		public MatchingCriteria getMatchingCriteria(FlexoProperty pr) {
 			for (MatchingCriteria mc : getMatchingCriterias()) {
-				if (mc.getFlexoRole() == pr) {
+				if (mc.getFlexoProperty() == pr) {
 					return mc;
 				}
 			}
@@ -504,17 +503,17 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				}
 			} else {
 				List<MatchingCriteria> criteriasToRemove = new ArrayList<MatchingCriteria>(getMatchingCriterias());
-				for (FlexoRole role : getFlexoConceptType().getFlexoRoles()) {
-					MatchingCriteria existingCriteria = getMatchingCriteria(role);
+				for (FlexoProperty<?> property : getFlexoConceptType().getFlexoProperties()) {
+					MatchingCriteria existingCriteria = getMatchingCriteria(property);
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);
 					} else {
-						System.out.println("ADD " + role.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
-						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(role));
+						System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
+						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(property));
 					}
 				}
 				for (MatchingCriteria removeThis : criteriasToRemove) {
-					System.out.println("REMOVE " + removeThis.getFlexoRole().getName() + " value=" + removeThis.getValue()
+					System.out.println("REMOVE " + removeThis.getFlexoProperty().getName() + " value=" + removeThis.getValue()
 							+ " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
 					removeFromMatchingCriterias(removeThis);
 				}
@@ -554,11 +553,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
 			logger.fine("Perform perform MatchFlexoConceptInstance " + action);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
-			Hashtable<FlexoRole, Object> criterias = new Hashtable<FlexoRole, Object>();
+			Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
 			for (MatchingCriteria mc : getMatchingCriterias()) {
 				Object value = mc.evaluateCriteriaValue(action);
 				if (value != null) {
-					criterias.put(mc.getFlexoRole(), value);
+					criterias.put(mc.getFlexoProperty(), value);
 				}
 			}
 
@@ -566,7 +565,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				logger.fine(">>>>>>>> Matching FCI with following criterias");
 				logger.fine("Type=" + getFlexoConceptType());
 				for (MatchingCriteria mc : getMatchingCriterias()) {
-					logger.fine("Criteria: " + mc.getFlexoRole().getRoleName() + "=" + mc.getValue() + " valid=" + mc.getValue().isValid());
+					logger.fine("Criteria: " + mc.getFlexoProperty().getPropertyName() + "=" + mc.getValue() + " valid="
+							+ mc.getValue().isValid());
 				}
 			}
 

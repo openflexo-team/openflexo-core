@@ -406,9 +406,9 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public MatchingCriteria newMatchingCriteria(FlexoRole pr) {
+	public MatchingCriteria newMatchingCriteria(FlexoProperty<?> pr) {
 		MatchingCriteria returned = newInstance(MatchingCriteria.class);
-		returned.setFlexoRole(pr);
+		returned.setFlexoProperty(pr);
 		return returned;
 	}
 

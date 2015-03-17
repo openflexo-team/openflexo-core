@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.ClassRole;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -115,12 +115,12 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		}
 
 		@Override
-		public ClassRole getFlexoRole() {
-			FlexoRole superFlexoRole = super.getFlexoRole();
+		public ClassRole getEventualFlexoProperty() {
+			FlexoProperty<?> superFlexoRole = super.getEventualFlexoProperty();
 			if (superFlexoRole instanceof ClassRole) {
 				return (ClassRole) superFlexoRole;
 			} else if (superFlexoRole != null) {
-				// logger.warning("Unexpected pattern role of type " +
+				// logger.warning("Unexpected pattern property of type " +
 				// superPatternRole.getClass().getSimpleName());
 				return null;
 			}
@@ -132,8 +132,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 			if (StringUtils.isNotEmpty(ontologyClassURI)) {
 				return getOwningVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
-				if (getFlexoRole() instanceof ClassRole) {
-					return getFlexoRole().getOntologicType();
+				if (getEventualFlexoProperty() instanceof ClassRole) {
+					return getEventualFlexoProperty().getOntologicType();
 				}
 			}
 			return null;
@@ -144,11 +144,11 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getFlexoRole() instanceof ClassRole) {
-					if (getFlexoRole().getOntologicType().isSuperConceptOf(ontologyClass)) {
+				if (getEventualFlexoProperty() instanceof ClassRole) {
+					if (getEventualFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
 					} else {
-						getFlexoRole().setOntologicType(ontologyClass);
+						getEventualFlexoProperty().setOntologicType(ontologyClass);
 					}
 				} else {
 					ontologyClassURI = ontologyClass.getURI();
@@ -161,9 +161,9 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getFlexoRole() instanceof ClassRole && getFlexoRole().getOntologicType() == getOntologyClass()) {
+				if (getEventualFlexoProperty() instanceof ClassRole && getEventualFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default
-					// provided by pattern role
+					// provided by pattern property
 					return null;
 				}
 				return getOntologyClass().getURI();

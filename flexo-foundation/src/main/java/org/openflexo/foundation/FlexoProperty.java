@@ -49,7 +49,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
-@XMLElement
+@XMLElement(xmlTag = "CoreProperty")
 public interface FlexoProperty extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoObject.class)

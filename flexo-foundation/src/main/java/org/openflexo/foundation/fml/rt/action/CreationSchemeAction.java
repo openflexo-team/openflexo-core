@@ -52,8 +52,9 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
+import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -224,8 +225,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof FlexoRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
+		if (variable instanceof FlexoPropertyBindingVariable) {
+			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
 			return;
 		}
 		super.setValue(value, variable);

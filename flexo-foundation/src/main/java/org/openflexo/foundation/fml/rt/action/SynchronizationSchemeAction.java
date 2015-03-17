@@ -49,7 +49,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -155,15 +154,6 @@ public class SynchronizationSchemeAction extends
 	@Override
 	public Object getValue(BindingVariable variable) {
 		return super.getValue(variable);
-	}
-
-	@Override
-	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof FlexoRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
-			return;
-		}
-		super.setValue(value, variable);
 	}
 
 }

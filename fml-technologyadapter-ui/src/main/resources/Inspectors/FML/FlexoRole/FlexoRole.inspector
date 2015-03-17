@@ -32,7 +32,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				name="CardinalityDD" format="object.stringRepresentation"
 				localize="true"
-				iteratorClassName="org.openflexo.foundation.fml.RoleCardinality"
+				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
 				autoSelectFirstRow="false" showReset="true" />
 
 			<Label manageDynamicModel="false" useScrollBar="false"

@@ -60,7 +60,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.RoleCardinality;
+import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -111,7 +111,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
 	private PrimitiveType primitiveType = PrimitiveType.String;
-	private RoleCardinality roleCardinality = RoleCardinality.ZeroOne;
+	private PropertyCardinality propertyCardinality = PropertyCardinality.ZeroOne;
 
 	private FlexoRole<?> newFlexoRole;
 
@@ -129,7 +129,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	public String getRoleName() {
 		if (StringUtils.isEmpty(roleName) && modelSlot != null && flexoRoleClass != null) {
-			return getFlexoConcept().getAvailableRoleName(modelSlot.defaultFlexoRoleName(flexoRoleClass));
+			return getFlexoConcept().getAvailablePropertyName(modelSlot.defaultFlexoRoleName(flexoRoleClass));
 		}
 		return roleName;
 	}
@@ -139,15 +139,15 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		getPropertyChangeSupport().firePropertyChange("roleName", null, roleName);
 	}
 
-	public RoleCardinality getRoleCardinality() {
-		return roleCardinality;
+	public PropertyCardinality getPropertyCardinality() {
+		return propertyCardinality;
 	}
 
-	public void setRoleCardinality(RoleCardinality roleCardinality) {
-		if (roleCardinality != getRoleCardinality()) {
-			RoleCardinality oldRoleCardinality = getRoleCardinality();
-			this.roleCardinality = roleCardinality;
-			getPropertyChangeSupport().firePropertyChange("roleCardinality", oldRoleCardinality, roleCardinality);
+	public void setPropertyCardinality(PropertyCardinality propertyCardinality) {
+		if (propertyCardinality != getPropertyCardinality()) {
+			PropertyCardinality oldPropertyCardinality = getPropertyCardinality();
+			this.propertyCardinality = propertyCardinality;
+			getPropertyChangeSupport().firePropertyChange("propertyCardinality", oldPropertyCardinality, propertyCardinality);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
+		logger.info("Add flexo property, flexoRoleClass=" + flexoRoleClass);
 		logger.info("modelSlot = " + modelSlot);
 
 		if (flexoRoleClass != null) {
@@ -200,9 +200,9 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 				}
 
 				newFlexoRole.setRoleName(getRoleName());
-				newFlexoRole.setCardinality(getRoleCardinality());
+				newFlexoRole.setCardinality(getPropertyCardinality());
 				newFlexoRole.setDescription(description);
-				getFlexoConcept().addToFlexoRoles(newFlexoRole);
+				getFlexoConcept().addToFlexoProperties(newFlexoRole);
 			}
 		}
 
@@ -216,7 +216,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getRoleName())) {
 			return false;
-		} else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
+		} else if (getFlexoConcept().getFlexoProperty(getRoleName()) != null) {
 			return false;
 		}
 		return true;

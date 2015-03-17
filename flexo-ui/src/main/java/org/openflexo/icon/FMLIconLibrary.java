@@ -247,7 +247,7 @@ public class FMLIconLibrary extends IconLibrary {
 			} else if (object instanceof IterationAction) {
 				return ITERATION_ACTION_ICON;
 			} else if (object instanceof DeleteAction) {
-				FlexoRole pr = ((DeleteAction) object).getFlexoRole();
+				FlexoRole pr = ((DeleteAction) object).getEventualFlexoProperty();
 				if (pr != null) {
 					ImageIcon baseIcon = iconForObject(pr);
 					return IconFactory.getImageIcon(baseIcon, DELETE);

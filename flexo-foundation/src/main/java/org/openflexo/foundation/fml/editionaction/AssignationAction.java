@@ -47,7 +47,7 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -87,7 +87,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	public void setDeprecatedValue(DataBinding<T> value);
 
 	@Override
-	public FlexoRole<T> getFlexoRole();
+	public FlexoProperty<T> getEventualFlexoProperty();
 
 	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
 
@@ -131,14 +131,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public FlexoRole<T> getFlexoRole() {
+		public FlexoProperty<T> getEventualFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
 			if (assignation != null && assignation.isBindingValue()) {
 				BindingValue bindingValue = (BindingValue) assignation.getExpression();
 				if (bindingValue.getBindingPath().size() == 0) {
-					return (FlexoRole<T>) getFlexoConcept().getFlexoRole(bindingValue.getVariableName());
+					return (FlexoProperty<T>) getFlexoConcept().getFlexoProperty(bindingValue.getVariableName());
 				}
 			}
 			return null;

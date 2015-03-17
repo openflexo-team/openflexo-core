@@ -59,10 +59,12 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -390,8 +392,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getVirtualModelInstance();
 		} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 			return getFlexoConceptInstance();
-		} else if (variable instanceof FlexoRoleBindingVariable) {
-			return getFlexoConceptInstance().getFlexoActor(((FlexoRoleBindingVariable) variable).getFlexoRole());
+		} else if (variable instanceof FlexoPropertyBindingVariable) {
+			return getFlexoConceptInstance().getFlexoActor(((FlexoPropertyBindingVariable) variable).getFlexoRole());
 		}
 
 		if (getEditionScheme().getVirtualModel().handleVariable(variable)) {
@@ -408,6 +410,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	@Override
 	public void setValue(Object value, BindingVariable variable) {
+
+		if (variable instanceof FlexoPropertyBindingVariable) {
+			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
+			return;
+		}
+
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
