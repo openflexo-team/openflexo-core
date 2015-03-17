@@ -451,7 +451,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 	}
 
 	@Test
-	@TestOrder(5)
+	@TestOrder(6)
 	public void testCreateSecondIteration() throws SaveResourceException {
 
 		// We add a second iteration with no control graph
@@ -509,7 +509,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 	}
 
 	@Test
-	@TestOrder(6)
+	@TestOrder(7)
 	public void moveControlGraph() throws SaveResourceException {
 
 		// We move the control graph from one iteration to another one
@@ -587,7 +587,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 	}
 
 	@Test
-	@TestOrder(19)
+	@TestOrder(8)
 	public void testViewPointIsValid() {
 
 		assertViewPointIsValid(viewPoint);
