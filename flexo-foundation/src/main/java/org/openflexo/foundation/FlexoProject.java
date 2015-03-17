@@ -73,6 +73,7 @@ import org.openflexo.foundation.resource.ImportedProjectLoaded;
 import org.openflexo.foundation.resource.ProjectExternalRepository;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
@@ -186,10 +187,15 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 
 		// We add the newly created project as a ResourceCenter
-		serviceManager.resourceCenterAdded(project);
+		// Maybe this will be done now, but it may also be done in a task
+		// In this case, we have to reference the task to wait for its execution
+		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
 
 		// Now, if a nature has been supplied, gives this nature to the project
 		if (nature != null) {
+			if (addResourceCenterTask != null) {
+				serviceManager.getTaskManager().waitTask(addResourceCenterTask);
+			}
 			nature.givesNature(project, editor);
 		}
 

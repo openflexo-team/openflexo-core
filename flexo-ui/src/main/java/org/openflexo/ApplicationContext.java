@@ -237,9 +237,10 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	}
 
 	@Override
-	protected void resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	protected AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
 		AddResourceCenterTask addRCTask = new AddResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(addRCTask);
+		return addRCTask;
 	}
 
 	@Override
