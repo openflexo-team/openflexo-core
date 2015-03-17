@@ -273,6 +273,21 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return returned;
 	}
 
+	/**
+	 * Returns the resource identified in supplied URI, asserting that is resource is of supplied type
+	 * 
+	 * @return
+	 */
+	@Override
+	public <R extends FlexoResource<?>> R getContentWithURI(Class<R> resourceClass, String resourceURI) {
+		for (R r : getContents(resourceClass)) {
+			if (r != null && r.getURI().equals(resourceURI)) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;

@@ -402,7 +402,17 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		 */
 		@Override
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
-			loadVirtualModelsWhenUnloaded();
+
+			for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
+				if (vmRes.getName().equals(virtualModelNameOrURI)) {
+					return vmRes.getVirtualModel();
+				}
+				if (vmRes.getURI().equals(virtualModelNameOrURI)) {
+					return vmRes.getVirtualModel();
+				}
+			}
+
+			/*loadVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getVirtualModels()) {
 				if (vm.getName().equals(virtualModelNameOrURI)) {
 					return vm;
@@ -410,7 +420,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				if (vm.getURI().equals(virtualModelNameOrURI)) {
 					return vm;
 				}
-			}
+			}*/
 			return null;
 		}
 
@@ -422,13 +432,21 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		 */
 		@Override
 		public FlexoConcept getFlexoConcept(String flexoConceptId) {
-			for (VirtualModel vm : getVirtualModels()) {
-				FlexoConcept returned = vm.getFlexoConcept(flexoConceptId);
-				if (returned != null) {
-					return returned;
+
+			if (StringUtils.isEmpty(flexoConceptId)) {
+				return null;
+			}
+
+			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
+
+			if (flexoConceptId.indexOf("#") > -1) {
+				String virtualModelURI = flexoConceptId.substring(flexoConceptId.indexOf("#") + 1);
+				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
+				if (vmRes != null) {
+					return vmRes.getVirtualModel().getFlexoConcept(flexoConceptId);
 				}
 			}
-			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
+
 			return null;
 		}
 

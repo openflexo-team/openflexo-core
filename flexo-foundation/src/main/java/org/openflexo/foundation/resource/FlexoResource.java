@@ -257,6 +257,13 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public <R extends FlexoResource<?>> List<R> getContents(Class<R> resourceClass);
 
 	/**
+	 * Returns the resource identified in supplied URI, asserting that is resource is of supplied type
+	 * 
+	 * @return
+	 */
+	public <R extends FlexoResource<?>> R getContentWithURI(Class<R> resourceClass, String resourceURI);
+
+	/**
 	 * Returns a list of resources required by this resource.
 	 * 
 	 * @return a list of resources required by this resource.
