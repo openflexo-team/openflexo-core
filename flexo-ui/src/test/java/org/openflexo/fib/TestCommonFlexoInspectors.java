@@ -49,19 +49,15 @@ public class TestCommonFlexoInspectors extends GenericFIBInspectorTestCase {
 	 * Use this method to print all
 	 * Then copy-paste 
 	 */
-	
+
 	public static void main(String[] args) {
-		System.out.println(generateInspectorTestCaseClass(((FileResourceImpl ) ResourceLocator.locateResource("Inspectors/COMMON")).getFile(), "Inspectors/COMMON/"));
+		System.out.println(generateInspectorTestCaseClass(
+				((FileResourceImpl) ResourceLocator.locateResource("Inspectors/COMMON")).getFile(), "Inspectors/COMMON/"));
 	}
 
 	@Test
 	public void testDocForModelObjectInspector() {
 		validateFIB("Inspectors/COMMON/DocForModelObject.inspector");
-	}
-
-	@Test
-	public void testFlexoConceptInstanceInspector() {
-		validateFIB("Inspectors/COMMON/FlexoConceptInstance.inspector");
 	}
 
 	@Test
