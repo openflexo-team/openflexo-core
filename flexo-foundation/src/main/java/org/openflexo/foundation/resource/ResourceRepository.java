@@ -335,8 +335,9 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	}
 
 	/**
-	 * Get the respository folder. The object can be accessed from different ways, for instance it can be a file
-	 * or an InJarResource, so the path must be computed for each kind of access.
+	 * Get the respository folder. The object can be accessed from different ways, for instance it can be a file or an InJarResource, so the
+	 * path must be computed for each kind of access.
+	 * 
 	 * @param element
 	 * @param createWhenNonExistent
 	 * @return
@@ -344,22 +345,23 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	public RepositoryFolder<R> getRepositoryFolder(Object element, boolean createWhenNonExistent) throws IOException {
 		List<String> pathTo = null;
-		if(element instanceof File){
-			pathTo = getPathTo((File)element);
-		}else if(element instanceof InJarResourceImpl){
+		if (element instanceof File) {
+			pathTo = getPathTo((File) element);
+		} else if (element instanceof InJarResourceImpl) {
 			pathTo = getPathTo((InJarResourceImpl) element);
 		}
 		return getRepositoryFolder(pathTo, createWhenNonExistent);
 	}
-	
+
 	/**
 	 * Get the set of path in the case of File
+	 * 
 	 * @param aFile
 	 * @return
 	 * @throws IOException
 	 */
-	private List<String> getPathTo(File aFile) throws IOException{
-		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile,true)) {
+	private List<String> getPathTo(File aFile) throws IOException {
+		if (FileUtils.directoryContainsFile(getRootFolder().getFile(), aFile, true)) {
 			List<String> pathTo = new ArrayList<String>();
 			File f = aFile.getParentFile().getCanonicalFile();
 			while (f != null && !f.equals(getRootFolder().getFile().getCanonicalFile())) {
@@ -367,32 +369,34 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 				f = f.getParentFile();
 			}
 			return pathTo;
-		}else{
+		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Get the set of path in the case of InJarResource
+	 * 
 	 * @param resource
 	 * @return
 	 */
-	private List<String> getPathTo(InJarResourceImpl resource){
-		if(!getRootFolder().getChildren().contains(resource)){
+	private List<String> getPathTo(InJarResourceImpl resource) {
+		if (!getRootFolder().getChildren().contains(resource)) {
 			List<String> pathTo = new ArrayList<String>();
-			StringTokenizer string = new StringTokenizer(resource.getURI().toString(), 
+			StringTokenizer string = new StringTokenizer(resource.getURI().toString(),
 					Character.toString(ClasspathResourceLocatorImpl.PATH_SEP.toCharArray()[0]));
-			while(string.hasMoreTokens()){
+			while (string.hasMoreTokens()) {
 				pathTo.add(string.nextToken());
 			}
 			return pathTo;
-		}else{
+		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Get the repository folder from a set of path
+	 * 
 	 * @param pathTo
 	 * @param createWhenNonExistent
 	 * @return
@@ -400,7 +404,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	public RepositoryFolder<R> getRepositoryFolder(List<String> pathTo, boolean createWhenNonExistent) throws IOException {
 		RepositoryFolder<R> returned = getRootFolder();
-		if(pathTo!=null){
+		if (pathTo != null) {
 			for (String pathElement : pathTo) {
 				RepositoryFolder<R> currentFolder = returned.getFolderNamed(pathElement);
 				if (currentFolder == null) {
@@ -411,7 +415,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 						return null;
 					}
 				}
-			returned = currentFolder;
+				returned = currentFolder;
 			}
 		}
 		return returned;
@@ -423,9 +427,9 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public final Class<R> getResourceClass() {
-		return (Class<R>) TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(
-				ResourceRepository.class.getTypeParameters()[0]);
+	public final Class<?> getResourceClass() {
+		return org.openflexo.connie.type.TypeUtils.getBaseClass(TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(
+				ResourceRepository.class.getTypeParameters()[0]));
 	}
 
 	/**

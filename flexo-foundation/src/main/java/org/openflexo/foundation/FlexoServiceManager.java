@@ -52,6 +52,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosed;
 import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -125,8 +126,9 @@ public abstract class FlexoServiceManager {
 		}
 	}
 
-	protected void resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	protected FlexoTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().addToResourceCenters(resourceCenter);
+		return null;
 	}
 
 	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
