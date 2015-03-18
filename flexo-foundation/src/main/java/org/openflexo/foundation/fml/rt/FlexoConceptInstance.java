@@ -788,7 +788,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				if (editionAction instanceof DeleteAction) {
 					DeleteAction deleteAction = (DeleteAction) editionAction;
 
-					returned.add((FlexoObject) getFlexoActor(deleteAction.getEventualFlexoProperty()));
+					returned.add((FlexoObject) getFlexoActor(deleteAction.getAssignedFlexoProperty()));
 				}
 			}
 			return returned;

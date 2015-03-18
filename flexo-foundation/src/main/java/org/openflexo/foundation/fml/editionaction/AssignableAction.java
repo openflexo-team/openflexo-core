@@ -108,7 +108,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
 	 * {@link AssignationAction}
 	 */
-	public FlexoProperty<T> getEventualFlexoProperty();
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
 	/**
 	 * Return type resulting of execution of this action
@@ -140,10 +140,10 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		 * {@link AssignationAction}
 		 */
 		@Override
-		public FlexoProperty<T> getEventualFlexoProperty() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			// We might find the FlexoRole is this action is the assignableAction of an AssignationAction
 			if (getOwner() instanceof AssignationAction) {
-				return ((AssignationAction) getOwner()).getEventualFlexoProperty();
+				return ((AssignationAction) getOwner()).getAssignedFlexoProperty();
 			}
 			return null;
 		}

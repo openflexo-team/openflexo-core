@@ -87,7 +87,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	public void setDeprecatedValue(DataBinding<T> value);
 
 	@Override
-	public FlexoProperty<T> getEventualFlexoProperty();
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
 	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
 
@@ -131,7 +131,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public FlexoProperty<T> getEventualFlexoProperty() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}

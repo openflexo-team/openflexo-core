@@ -204,8 +204,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		public abstract Class<T> getOntologyIndividualClass();
 
 		@Override
-		public IndividualRole<T> getEventualFlexoProperty() {
-			return (IndividualRole<T>) super.getEventualFlexoProperty();
+		public IndividualRole<T> getAssignedFlexoProperty() {
+			return (IndividualRole<T>) super.getAssignedFlexoProperty();
 		}
 
 		public IFlexoOntologyClass<?> getType() {
@@ -222,9 +222,9 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			if (StringUtils.isNotEmpty(ontologyClassURI) && getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
-				if (getEventualFlexoProperty() != null) {
+				if (getAssignedFlexoProperty() != null) {
 					// System.out.println("Je reponds avec le pattern property " + getPatternRole());
-					IFlexoOntologyClass<?> t = getEventualFlexoProperty().getOntologicType();
+					IFlexoOntologyClass<?> t = getAssignedFlexoProperty().getOntologicType();
 					setOntologyClass(t);
 					return t;
 				}
@@ -236,14 +236,14 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getEventualFlexoProperty() instanceof IndividualRole) {
-					if (getEventualFlexoProperty().getOntologicType() != null) {
-						if (getEventualFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
+				if (getAssignedFlexoProperty() instanceof IndividualRole) {
+					if (getAssignedFlexoProperty().getOntologicType() != null) {
+						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						} else {
-							getEventualFlexoProperty().setOntologicType(ontologyClass);
+							getAssignedFlexoProperty().setOntologicType(ontologyClass);
 						}
 					} else {
-						getEventualFlexoProperty().setOntologicType(ontologyClass);
+						getAssignedFlexoProperty().setOntologicType(ontologyClass);
 					}
 				}
 				ontologyClassURI = ontologyClass.getURI();
@@ -256,7 +256,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getEventualFlexoProperty() instanceof IndividualRole && getEventualFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() instanceof IndividualRole && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default provided by pattern property
 					return null;
 				}

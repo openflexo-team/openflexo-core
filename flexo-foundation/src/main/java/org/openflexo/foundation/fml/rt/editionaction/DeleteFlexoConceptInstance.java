@@ -158,9 +158,9 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 
 		// I don't understand ? why this code is required by the compiler ?
 		@Override
-		public FlexoProperty getEventualFlexoProperty() {
+		public FlexoProperty getAssignedFlexoProperty() {
 			// TODO Auto-generated method stub
-			return super.getEventualFlexoProperty();
+			return super.getAssignedFlexoProperty();
 		}
 
 		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {

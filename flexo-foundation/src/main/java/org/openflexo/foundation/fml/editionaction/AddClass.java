@@ -115,8 +115,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		}
 
 		@Override
-		public ClassRole getEventualFlexoProperty() {
-			FlexoProperty<?> superFlexoRole = super.getEventualFlexoProperty();
+		public ClassRole getAssignedFlexoProperty() {
+			FlexoProperty<?> superFlexoRole = super.getAssignedFlexoProperty();
 			if (superFlexoRole instanceof ClassRole) {
 				return (ClassRole) superFlexoRole;
 			} else if (superFlexoRole != null) {
@@ -132,8 +132,8 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 			if (StringUtils.isNotEmpty(ontologyClassURI)) {
 				return getOwningVirtualModel().getOntologyClass(ontologyClassURI);
 			} else {
-				if (getEventualFlexoProperty() instanceof ClassRole) {
-					return getEventualFlexoProperty().getOntologicType();
+				if (getAssignedFlexoProperty() instanceof ClassRole) {
+					return getAssignedFlexoProperty().getOntologicType();
 				}
 			}
 			return null;
@@ -144,11 +144,11 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getEventualFlexoProperty() instanceof ClassRole) {
-					if (getEventualFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
+				if (getAssignedFlexoProperty() instanceof ClassRole) {
+					if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
 						ontologyClassURI = ontologyClass.getURI();
 					} else {
-						getEventualFlexoProperty().setOntologicType(ontologyClass);
+						getAssignedFlexoProperty().setOntologicType(ontologyClass);
 					}
 				} else {
 					ontologyClassURI = ontologyClass.getURI();
@@ -161,7 +161,7 @@ public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extend
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getEventualFlexoProperty() instanceof ClassRole && getEventualFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() instanceof ClassRole && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default
 					// provided by pattern property
 					return null;

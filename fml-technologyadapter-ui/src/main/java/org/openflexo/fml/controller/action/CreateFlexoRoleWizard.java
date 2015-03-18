@@ -45,20 +45,20 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -138,7 +138,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 			if (StringUtils.isEmpty(getRoleName())) {
 				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoConcept().getFlexoRole(getRoleName()) != null) {
+			} else if (getFlexoConcept().getFlexoProperty(getRoleName()) != null) {
 				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
 				return false;
 			} else if (getFlexoRoleClass() == null) {

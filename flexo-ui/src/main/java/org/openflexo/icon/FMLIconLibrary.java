@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.OntologicObjectRole;
@@ -247,7 +248,7 @@ public class FMLIconLibrary extends IconLibrary {
 			} else if (object instanceof IterationAction) {
 				return ITERATION_ACTION_ICON;
 			} else if (object instanceof DeleteAction) {
-				FlexoRole pr = ((DeleteAction) object).getEventualFlexoProperty();
+				FlexoProperty<?> pr = ((DeleteAction) object).getAssignedFlexoProperty();
 				if (pr != null) {
 					ImageIcon baseIcon = iconForObject(pr);
 					return IconFactory.getImageIcon(baseIcon, DELETE);
@@ -307,6 +308,8 @@ public class FMLIconLibrary extends IconLibrary {
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
 				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
 			}
+		} else if (object instanceof FlexoProperty) {
+			return FLEXO_ROLE_ICON;
 		} else if (object instanceof ViewPointLocalizedDictionary) {
 			return LOCALIZATION_ICON;
 		} else if (object instanceof InspectorEntry) {

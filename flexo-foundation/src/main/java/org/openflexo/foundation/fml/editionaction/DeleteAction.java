@@ -76,7 +76,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<T> object);
 
-	public FlexoProperty<?> getEventualFlexoProperty();
+	public FlexoProperty<?> getAssignedFlexoProperty();
 
 	public static abstract class DeleteActionImpl<T extends FlexoObject> extends EditionActionImpl implements DeleteAction<T> {
 
@@ -130,7 +130,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		}
 
 		@Override
-		public FlexoProperty<?> getEventualFlexoProperty() {
+		public FlexoProperty<?> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}

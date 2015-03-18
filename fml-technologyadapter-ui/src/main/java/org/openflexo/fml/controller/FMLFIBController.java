@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -124,19 +125,16 @@ public class FMLFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public FlexoRole createFlexoRole(FlexoConcept flexoConcept) {
-		System.out.println("On tente de creer un FlexoRole dans " + Integer.toHexString(hashCode()));
-		System.out.println("getFlexoController()=" + getFlexoController());
-		System.out.println("getEditor()=" + getEditor());
+	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
 		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
 	}
 
-	public FlexoRole<?> deleteFlexoRole(FlexoConcept flexoConcept, FlexoRole<?> aPatternRole) {
-		flexoConcept.removeFromFlexoRoles(aPatternRole);
-		aPatternRole.delete();
-		return aPatternRole;
+	public FlexoProperty<?> deleteFlexoProperty(FlexoConcept flexoConcept, FlexoProperty<?> aProperty) {
+		flexoConcept.removeFromFlexoProperties(aProperty);
+		aProperty.delete();
+		return aProperty;
 	}
 
 	public void createConstraint(FlexoConcept flexoConcept) {
