@@ -49,8 +49,8 @@ import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -187,8 +187,8 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	public Object getValue(BindingVariable variable) {
 		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
 		if (fci != null && variable != null) {
-			if (variable instanceof FlexoPropertyBindingVariable) {
-				FlexoProperty<?> role = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
+			if (variable instanceof FlexoRoleBindingVariable) {
+				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return fci.getFlexoActor(role);
 				} else {

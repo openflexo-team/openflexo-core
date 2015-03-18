@@ -52,6 +52,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -119,7 +120,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
-		updateRoleVariables();
+		updatePropertyVariables();
 		updateParentFlexoConceptListeners();
 	}
 
@@ -157,23 +158,23 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
 			} else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Roles were modified in related flexoConcept
-				updateRoleVariables();
+				updatePropertyVariables();
 			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
-				updateRoleVariables();
+				updatePropertyVariables();
 			}
 		} else if (knownParentConcepts.contains(evt.getSource())) {
 			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Roles were modified in any of parent FlexoConcept
-				updateRoleVariables();
+				updatePropertyVariables();
 			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
-				updateRoleVariables();
+				updatePropertyVariables();
 			}
 		}
 	}
 
-	private void updateRoleVariables() {
+	private void updatePropertyVariables() {
 
 		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
 
@@ -181,7 +182,12 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 			if (propertiesToBeDeleted.contains(r)) {
 				propertiesToBeDeleted.remove(r);
 			} else if (propertyVariablesMap.get(r) == null) {
-				FlexoPropertyBindingVariable bv = new FlexoPropertyBindingVariable(r);
+				FlexoPropertyBindingVariable bv;
+				if (r instanceof FlexoRole) {
+					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);
+				} else {
+					bv = new FlexoPropertyBindingVariable(r);
+				}
 				addToBindingVariables(bv);
 				propertyVariablesMap.put(r, bv);
 			}

@@ -63,8 +63,10 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
+import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
@@ -136,22 +138,22 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	/**
-	 * Return actor associated with supplied property (a property for example), asserting cardinality of supplied property is SINGLE.<br>
+	 * Return actor associated with supplied role, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
 	 * @param flexoProperty
 	 *            the property to lookup
 	 */
-	public <T> T getFlexoActor(FlexoProperty<T> flexoProperty);
+	public <T> T getFlexoActor(FlexoRole<T> flexoRole);
 
 	/**
-	 * Return actor associated with supplied property name, asserting cardinality of supplied property is SINGLE.<br>
+	 * Return actor associated with supplied role name, asserting cardinality of supplied property is SINGLE.<br>
 	 * If cardinality of supplied property is MULTIPLE, return first found value
 	 * 
 	 * @param flexoPropertyName
 	 *            the property to lookup
 	 */
-	public <T> T getFlexoActor(String flexoPropertyName);
+	public <T> T getFlexoActor(String flexoRoleName);
 
 	/**
 	 * Return actor list associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
@@ -161,7 +163,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param flexoProperty
 	 *            the property to lookup
 	 */
-	public <T> List<T> getFlexoActorList(FlexoProperty<T> flexoProperty);
+	public <T> List<T> getFlexoActorList(FlexoRole<T> flexoRole);
 
 	/**
 	 * Return actor list associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
@@ -171,7 +173,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param flexoPropertyName
 	 *            the property to lookup
 	 */
-	public <T> List<T> getFlexoActorList(String flexoPropertyName);
+	public <T> List<T> getFlexoActorList(String flexoRoleName);
 
 	/**
 	 * Return actor associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
@@ -183,10 +185,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param flexoProperty
 	 *            the property to be considered
 	 */
-	public <T> void setFlexoActor(T object, FlexoProperty<T> flexoProperty);
+	public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole);
 
 	/**
-	 * Add actor to the list of reference associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
+	 * Add actor to the list of reference associated with supplied role, asserting cardinality of supplied role is MULTIPLE.<br>
 	 * If cardinality of supplied property is SINGLE, replace all existing value with supplied object.
 	 * 
 	 * @param object
@@ -194,10 +196,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param flexoProperty
 	 *            the property to be considered
 	 */
-	public <T> void addToFlexoActors(T object, FlexoProperty<T> flexoProperty);
+	public <T> void addToFlexoActors(T object, FlexoRole<T> flexoRole);
 
 	/**
-	 * Remove actor from the list of reference associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
+	 * Remove actor from the list of reference associated with supplied role, asserting cardinality of supplied role is MULTIPLE.<br>
 	 * If cardinality of supplied property is SINGLE, remove existing matching value
 	 * 
 	 * @param object
@@ -205,14 +207,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @param flexoProperty
 	 *            the property to be considered
 	 */
-	public <T> void removeFromFlexoActors(T object, FlexoProperty<T> flexoProperty);
+	public <T> void removeFromFlexoActors(T object, FlexoRole<T> flexoRole);
 
 	/**
 	 * Clear all actors associated with supplied property
 	 * 
 	 * @param flexoProperty
 	 */
-	public <T> void nullifyFlexoActor(FlexoProperty<T> flexoProperty);
+	public <T> void nullifyFlexoActor(FlexoRole<T> flexoRole);
 
 	public <T> FlexoProperty<T> getPropertyForActor(T actor);
 
@@ -256,13 +258,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> T getFlexoActor(FlexoProperty<T> flexoProperty) {
-			if (flexoProperty == null) {
+		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
+			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
 			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
-			List<ActorReference<T>> actorReferences = (List) actors.get(flexoProperty.getPropertyName());
+			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
 			if (actorReferences != null && actorReferences.size() > 0) {
 				return actorReferences.get(0).getModellingElement();
@@ -282,10 +284,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> T getFlexoActor(String flexoPropertyName) {
-			FlexoProperty<T> role = (FlexoProperty<T>) getFlexoConcept().getFlexoProperty(flexoPropertyName);
+		public <T> T getFlexoActor(String flexoRoleName) {
+			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getFlexoProperty(flexoRoleName);
 			if (role == null) {
-				logger.warning("Cannot lookup property " + flexoPropertyName);
+				logger.warning("Cannot lookup property " + flexoRoleName);
 				return null;
 			}
 			return getFlexoActor(role);
@@ -301,13 +303,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		// TODO: optimize this method while caching those lists
 		@Override
-		public <T> List<T> getFlexoActorList(FlexoProperty<T> flexoProperty) {
-			if (flexoProperty == null) {
+		public <T> List<T> getFlexoActorList(FlexoRole<T> flexoRole) {
+			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
 
-			List<ActorReference<T>> actorReferences = (List) actors.get(flexoProperty.getPropertyName());
+			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
 			List<T> returned = new ArrayList<T>();
 			if (actorReferences != null) {
@@ -327,10 +329,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> List<T> getFlexoActorList(String flexoPropertyName) {
-			FlexoProperty<T> role = (FlexoProperty<T>) getFlexoConcept().getFlexoProperty(flexoPropertyName);
+		public <T> List<T> getFlexoActorList(String flexoRoleName) {
+			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getFlexoProperty(flexoRoleName);
 			if (role == null) {
-				logger.warning("Cannot lookup property " + flexoPropertyName);
+				logger.warning("Cannot lookup role " + flexoRoleName);
 				return null;
 			}
 			return getFlexoActorList(role);
@@ -355,8 +357,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		/**
 		 * Sets actor associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
-		 * If cardinality of supplied property is MULTIPLE, replace all existing value with supplied object. If no value is found, add supplied
-		 * object.
+		 * If cardinality of supplied property is MULTIPLE, replace all existing value with supplied object. If no value is found, add
+		 * supplied object.
 		 * 
 		 * @param object
 		 *            the object to be registered as actor for supplied property
@@ -364,19 +366,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to be considered
 		 */
 		@Override
-		public <T> void setFlexoActor(T object, FlexoProperty<T> flexoProperty) {
+		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>>> setObjectForFlexoProperty flexoProperty: " + flexoProperty + " set " + object + " was "
-						+ getFlexoActor(flexoProperty));
+				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
+						+ getFlexoActor(flexoRole));
 			}
-			T oldObject = getFlexoActor(flexoProperty);
+			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
 
 				boolean done = false;
 
 				if (oldObject != null) {
 
-					List<ActorReference<T>> references = getReferences(flexoProperty.getPropertyName());
+					List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
 
 					if ((references.size() == 1) && (object != null)) {
 						// Replace existing reference with new value
@@ -392,15 +394,15 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 
 				if (object != null && !done) {
-					ActorReference<T> actorReference = flexoProperty.makeActorReference(object, this);
+					ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
 					addToActors(actorReference);
 				}
 
 				setChanged();
-				notifyObservers(new FlexoActorChanged(this, flexoProperty, oldObject, object));
+				notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
 				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternProperty() actors="+actors);
 
-				getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldObject, object);
+				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
 
 			}
 		}
@@ -415,18 +417,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to be considered
 		 */
 		@Override
-		public <T> void addToFlexoActors(T object, FlexoProperty<T> flexoProperty) {
+		public <T> void addToFlexoActors(T object, FlexoRole<T> flexoRole) {
 
 			if (object != null) {
-				ActorReference<T> actorReference = flexoProperty.makeActorReference(object, this);
+				ActorReference<T> actorReference = flexoRole.makeActorReference(object, this);
 				addToActors(actorReference);
-				getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), null, object);
+				getPropertyChangeSupport().firePropertyChange(flexoRole.getPropertyName(), null, object);
 			}
 
 		}
 
 		/**
-		 * Remove actor from the list of reference associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
+		 * Remove actor from the list of reference associated with supplied property, asserting cardinality of supplied property is
+		 * MULTIPLE.<br>
 		 * If cardinality of supplied property is SINGLE, remove existing matching value
 		 * 
 		 * @param object
@@ -435,10 +438,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to be considered
 		 */
 		@Override
-		public <T> void removeFromFlexoActors(T object, FlexoProperty<T> flexoProperty) {
+		public <T> void removeFromFlexoActors(T object, FlexoRole<T> flexoRole) {
 
 			if (object != null) {
-				List<ActorReference<T>> references = getReferences(flexoProperty.getPropertyName());
+				List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
 
 				if (references == null) {
 					// No values are defined, simply return
@@ -460,8 +463,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @param flexoProperty
 		 */
 		@Override
-		public <T> void nullifyFlexoActor(FlexoProperty<T> flexoProperty) {
-			setFlexoActor(null, flexoProperty);
+		public <T> void nullifyFlexoActor(FlexoRole<T> flexoRole) {
+			setFlexoActor(null, flexoRole);
 		}
 
 		@Override
@@ -482,10 +485,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			StringBuffer sb = new StringBuffer();
 			sb.append("FlexoConcept: " + (flexoConcept != null ? flexoConcept.getName() : getFlexoConceptURI() + "[NOT_FOUND]") + "\n");
 			sb.append("Instance: " + getFlexoID() + " hash=" + Integer.toHexString(hashCode()) + "\n");
-			for (FlexoProperty<?> patternProperty : getFlexoConcept().getFlexoProperties()) {
+			for (FlexoRole<?> role : getFlexoConcept().getFlexoProperties(FlexoRole.class)) {
 				// FlexoProjectObject object = actors.get(patternProperty);
-				Object actor = getFlexoActor(patternProperty);
-				sb.append("Property: " + patternProperty.getName() + " " + patternProperty.getResultingType() + " : [" + actor + "]\n");
+				Object actor = getFlexoActor(role);
+				sb.append("Property: " + role.getName() + " " + role.getResultingType() + " : [" + actor + "]\n");
 			}
 			return sb.toString();
 		}
@@ -637,13 +640,15 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
-			}
-			if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty role = getFlexoConcept().getFlexoProperty(variable.getVariableName());
+			} else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return getFlexoActor(role);
 				}
 				logger.warning("Unexpected " + variable);
+				return null;
+			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+				logger.warning("Not implemented: getValue() for " + variable);
 				return null;
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
@@ -660,13 +665,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
-			if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty role = getFlexoConcept().getFlexoProperty(variable.getVariableName());
+			if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					setFlexoActor(value, role);
 				} else {
 					logger.warning("Unexpected property " + variable);
 				}
+				return;
+			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+				FlexoProperty property = getFlexoConcept().getFlexoProperty(variable.getVariableName());
+				logger.warning("Not implemented: setValue() for " + variable);
 				return;
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
@@ -771,7 +780,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		public List<FlexoObject> objectsThatWillBeDeleted() {
 			Vector<FlexoObject> returned = new Vector<FlexoObject>();
-			for (FlexoProperty<?> pr : getFlexoConcept().getFlexoProperties()) {
+			for (FlexoRole<?> pr : getFlexoConcept().getFlexoProperties(FlexoRole.class)) {
 				if (pr.defaultBehaviourIsToBeDeleted() && getFlexoActor(pr) instanceof FlexoObject) {
 					returned.add((FlexoObject) getFlexoActor(pr));
 				}
@@ -787,8 +796,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			for (EditionAction editionAction : deletionScheme.getActions()) {
 				if (editionAction instanceof DeleteAction) {
 					DeleteAction deleteAction = (DeleteAction) editionAction;
-
-					returned.add((FlexoObject) getFlexoActor(deleteAction.getAssignedFlexoProperty()));
+					if (deleteAction.getAssignedFlexoProperty() instanceof FlexoRole) {
+						returned.add((FlexoObject) getFlexoActor((FlexoRole<?>) deleteAction.getAssignedFlexoProperty()));
+					}
 				}
 			}
 			return returned;

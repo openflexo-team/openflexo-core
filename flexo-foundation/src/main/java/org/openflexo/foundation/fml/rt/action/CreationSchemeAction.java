@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -52,10 +51,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -218,18 +214,18 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		return assignedObject;
 	}*/
 
-	@Override
+	/*@Override
 	public Object getValue(BindingVariable variable) {
 		return super.getValue(variable);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void setValue(Object value, BindingVariable variable) {
 		if (variable instanceof FlexoPropertyBindingVariable) {
 			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
 			return;
 		}
 		super.setValue(value, variable);
-	}
+	}*/
 
 }

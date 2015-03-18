@@ -192,7 +192,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 * @return
 	 */
 	@Finder(collection = FLEXO_PROPERTIES_KEY, attribute = FlexoProperty.NAME_KEY)
-	public FlexoRole<?> getFlexoProperty(String flexoRoleName);
+	public FlexoProperty<?> getFlexoProperty(String flexoPropertyName);
 
 	/**
 	 * Build and return the list of {@link FlexoProperty} with supplied type

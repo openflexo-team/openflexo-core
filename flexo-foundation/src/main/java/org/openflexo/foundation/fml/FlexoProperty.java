@@ -44,8 +44,6 @@ import java.util.List;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.rt.ActorReference;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -76,8 +74,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
-@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(OntologicObjectRole.class), @Import(PrimitiveRole.class),
-		@Import(OntologicObjectRole.class) })
+@Imports({ @Import(AbstractProperty.class), @Import(FlexoRole.class), @Import(ExpressionProperty.class), @Import(GetProperty.class),
+		@Import(GetSetProperty.class) })
 public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 	public static final String RESULTING_TYPE_PROPERTY = "resultingType";
@@ -151,13 +149,19 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public abstract boolean defaultBehaviourIsToBeDeleted();
 
 	/**
-	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
+	 * Return the super properties of this property<br>
+	 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
 	 * 
-	 * @param object
-	 * @param epi
 	 * @return
 	 */
-	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
+	public List<? extends FlexoProperty<?>> getSuperProperties();
+
+	/**
+	 * Return flag indicating whether data accessed though this property is read-only
+	 * 
+	 * @return
+	 */
+	public boolean isReadOnly();
 
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 
@@ -268,7 +272,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		}
 
 		@Override
-		public abstract String getTypeDescription();
+		public String getTypeDescription() {
+			return null;
+		}
 
 		@Override
 		public void finalizeDeserialization() {
@@ -284,10 +290,10 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		public abstract boolean defaultBehaviourIsToBeDeleted();
 
 		@Override
-		public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
-
-		// @Override
-		// public abstract String getLanguageRepresentation();
+		public List<? extends FlexoProperty<?>> getSuperProperties() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 	}
 

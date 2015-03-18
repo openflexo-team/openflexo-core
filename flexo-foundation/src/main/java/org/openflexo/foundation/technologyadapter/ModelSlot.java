@@ -37,7 +37,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.technologyadapter;
 
 import java.lang.reflect.Constructor;
@@ -624,6 +623,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public ActorReference<RD> makeActorReference(RD object, FlexoConceptInstance epi) {
 			return null;
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			return false;
 		}
 	}
 

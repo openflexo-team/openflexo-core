@@ -141,7 +141,6 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @param epi
 	 * @return
 	 */
-	@Override
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
 	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
@@ -151,6 +150,11 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 		private ModelSlot<?> modelSlot;
 
 		private Type resultingType;
+
+		@Override
+		public boolean isReadOnly() {
+			return false;
+		}
 
 		@Override
 		public ModelSlot<?> getModelSlot() {

@@ -53,7 +53,7 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 	private Type lastKnownType = null;
 
 	public FlexoPropertyBindingVariable(FlexoProperty<?> flexoProperty) {
-		super(flexoProperty.getName(), flexoProperty.getResultingType(), true);
+		super(flexoProperty.getName(), flexoProperty.getResultingType(), !flexoProperty.isReadOnly());
 		this.flexoProperty = flexoProperty;
 		if (flexoProperty != null) {
 			lastKnownType = flexoProperty.getResultingType();
