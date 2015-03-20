@@ -163,8 +163,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		public FlexoRole<T> getFlexoRole() {
 			if (flexoRole == null && flexoConceptInstance != null && flexoConceptInstance.getFlexoConcept() != null
 					&& StringUtils.isNotEmpty(flexoRoleName)
-					&& flexoConceptInstance.getFlexoConcept().getFlexoProperty(flexoRoleName) instanceof FlexoRole) {
-				flexoRole = (FlexoRole<T>) flexoConceptInstance.getFlexoConcept().getFlexoProperty(flexoRoleName);
+					&& flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoRoleName) instanceof FlexoRole) {
+				flexoRole = (FlexoRole<T>) flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoRoleName);
 			}
 			return flexoRole;
 		}

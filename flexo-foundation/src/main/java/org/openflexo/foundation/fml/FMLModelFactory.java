@@ -100,6 +100,7 @@ import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
+import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
@@ -140,6 +141,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(retrieveTechnologySpecificClasses(taService));
 		setEditingContext(editingContext);
+		addConverter(new TypeConverter());
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
@@ -253,6 +255,14 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public DeletionScheme newDeletionScheme() {
 		return newInstance(DeletionScheme.class);
+	}
+
+	public AbstractProperty<?> newAbstractProperty() {
+		return newInstance(AbstractProperty.class);
+	}
+
+	public ExpressionProperty<?> newExpressionProperty() {
+		return newInstance(ExpressionProperty.class);
 	}
 
 	public Sequence newSequence(FMLControlGraph cg1, FMLControlGraph cg2) {

@@ -804,7 +804,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return null;
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
 				if (flexoConceptInstance.getFlexoConcept() != null) {
-					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getFlexoProperties(FlexoRole.class)) {
+					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
 						if (flexoConceptInstance.getFlexoActor(fr) == object) {
 							ObjectLookupResult answer = new ObjectLookupResult();
 							answer.flexoConceptInstance = flexoConceptInstance;

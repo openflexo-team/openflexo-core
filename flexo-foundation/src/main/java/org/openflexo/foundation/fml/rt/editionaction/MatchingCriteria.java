@@ -196,7 +196,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		@Override
 		public FlexoProperty<?> getFlexoProperty() {
 			if (flexoProperty == null && propertyName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
-				flexoProperty = getAction().getFlexoConceptType().getFlexoProperty(propertyName);
+				flexoProperty = getAction().getFlexoConceptType().getAccessibleProperty(propertyName);
 			}
 			return flexoProperty;
 		}

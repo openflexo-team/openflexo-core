@@ -285,7 +285,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public <T> T getFlexoActor(String flexoRoleName) {
-			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getFlexoProperty(flexoRoleName);
+			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getAccessibleProperty(flexoRoleName);
 			if (role == null) {
 				logger.warning("Cannot lookup property " + flexoRoleName);
 				return null;
@@ -330,7 +330,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public <T> List<T> getFlexoActorList(String flexoRoleName) {
-			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getFlexoProperty(flexoRoleName);
+			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getAccessibleProperty(flexoRoleName);
 			if (role == null) {
 				logger.warning("Cannot lookup role " + flexoRoleName);
 				return null;
@@ -469,7 +469,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> FlexoProperty<T> getPropertyForActor(T actor) {
-			for (FlexoProperty<?> role : getFlexoConcept().getFlexoProperties()) {
+			for (FlexoProperty<?> role : getFlexoConcept().getAccessibleProperties()) {
 				List<ActorReference<?>> references = (List) getReferences(role.getPropertyName());
 				for (ActorReference<?> actorReference : references) {
 					if (areSameValue(actorReference.getModellingElement(), actor)) {
@@ -485,7 +485,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			StringBuffer sb = new StringBuffer();
 			sb.append("FlexoConcept: " + (flexoConcept != null ? flexoConcept.getName() : getFlexoConceptURI() + "[NOT_FOUND]") + "\n");
 			sb.append("Instance: " + getFlexoID() + " hash=" + Integer.toHexString(hashCode()) + "\n");
-			for (FlexoRole<?> role : getFlexoConcept().getFlexoProperties(FlexoRole.class)) {
+			for (FlexoRole<?> role : getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
 				// FlexoProjectObject object = actors.get(patternProperty);
 				Object actor = getFlexoActor(role);
 				sb.append("Property: " + role.getName() + " " + role.getResultingType() + " : [" + actor + "]\n");
@@ -674,7 +674,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 				return;
 			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty property = getFlexoConcept().getFlexoProperty(variable.getVariableName());
+				FlexoProperty property = getFlexoConcept().getAccessibleProperty(variable.getVariableName());
 				logger.warning("Not implemented: setValue() for " + variable);
 				return;
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
@@ -780,7 +780,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		public List<FlexoObject> objectsThatWillBeDeleted() {
 			Vector<FlexoObject> returned = new Vector<FlexoObject>();
-			for (FlexoRole<?> pr : getFlexoConcept().getFlexoProperties(FlexoRole.class)) {
+			for (FlexoRole<?> pr : getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
 				if (pr.defaultBehaviourIsToBeDeleted() && getFlexoActor(pr) instanceof FlexoObject) {
 					returned.add((FlexoObject) getFlexoActor(pr));
 				}

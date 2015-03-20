@@ -89,9 +89,9 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 		super(virtualModel.getViewPoint() != null && virtualModel != virtualModel.getViewPoint() ? virtualModel.getViewPoint()
 				.getBindingModel() : null, virtualModel);
 		this.virtualModel = virtualModel;
-		if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
+		/*if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
 			virtualModel.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
+		}*/
 		modelSlotVariablesMap = new HashMap<ModelSlot<?>, ModelSlotBindingVariable>();
 		updateModelSlotVariables();
 	}
@@ -172,11 +172,11 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel implement
 	/**
 	 * Delete this {@link BindingModel}
 	 */
-	@Override
+	/*@Override
 	public void delete() {
 		super.delete();
 		if (virtualModel != null && virtualModel.getPropertyChangeSupport() != null) {
 			virtualModel.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-	}
+	}*/
 }

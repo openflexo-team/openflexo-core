@@ -138,7 +138,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFMLElementWizard<Create
 			if (StringUtils.isEmpty(getRoleName())) {
 				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoConcept().getFlexoProperty(getRoleName()) != null) {
+			} else if (getFlexoConcept().getAccessibleProperty(getRoleName()) != null) {
 				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
 				return false;
 			} else if (getFlexoRoleClass() == null) {

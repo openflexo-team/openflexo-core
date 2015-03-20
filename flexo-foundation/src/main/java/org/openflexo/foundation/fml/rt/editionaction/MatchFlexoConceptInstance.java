@@ -503,7 +503,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				}
 			} else {
 				List<MatchingCriteria> criteriasToRemove = new ArrayList<MatchingCriteria>(getMatchingCriterias());
-				for (FlexoProperty<?> property : getFlexoConceptType().getFlexoProperties()) {
+				for (FlexoProperty<?> property : getFlexoConceptType().getAccessibleProperties()) {
 					MatchingCriteria existingCriteria = getMatchingCriteria(property);
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);

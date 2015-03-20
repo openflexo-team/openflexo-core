@@ -38,12 +38,16 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -144,19 +148,77 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public List<? extends FlexoProperty<?>> getSuperProperties();
 
 	/**
+	 * Return the full hiearchy of properties of this property<br>
+	 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
+	 * 
+	 * @return
+	 */
+	public List<? extends FlexoProperty<?>> getAllSuperProperties();
+
+	/**
 	 * Return flag indicating whether data accessed though this property is read-only
 	 * 
 	 * @return
 	 */
 	public boolean isReadOnly();
 
+	/**
+	 * Return flag indicating whether this property is abstract
+	 * 
+	 * @return
+	 */
+	public boolean isAbstract();
+
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
+		private PropertyChangeSupport pcSupport;
+
 		private ModelSlot<?> modelSlot;
 
 		private Type resultingType;
+
+		/*		@Override
+				public PropertyChangeSupport getPropertyChangeSupport() {
+					if (pcSupport == null) {
+						pcSupport = new PropertyChangeSupport(this) {
+							@Override
+							public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
+
+								if (listener instanceof FlexoPropertyBindingVariable) {
+									System.out.println("prout");
+
+									PropertyChangeListener[] l = getPropertyChangeListeners();
+									for (int i = 0; i < l.length; i++) {
+										if (l[i] instanceof FlexoPropertyBindingVariable
+												&& ((FlexoPropertyBindingVariable) l[i]).getFlexoProperty() == ((FlexoPropertyBindingVariable) listener)
+														.getFlexoProperty()) {
+											System.out.println("Merde 2 fois le meme objet pour " + listener);
+											System.exit(-1);
+										}
+									}
+
+								}
+
+								super.addPropertyChangeListener(listener);
+							}
+
+							@Override
+							public synchronized void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+								PropertyChangeListener[] l = getPropertyChangeListeners(propertyName);
+								for (int i = 0; i < l.length; i++) {
+									if (l[i] == listener) {
+										System.out.println("Merde 2 fois le meme objet2");
+										System.exit(-1);
+									}
+								}
+								super.addPropertyChangeListener(propertyName, listener);
+							}
+						};
+					}
+					return pcSupport;
+				}*/
 
 		@Override
 		public String getPropertyName() {
@@ -248,7 +310,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public String getTypeDescription() {
-			return null;
+			return TypeUtils.fullQualifiedRepresentation(getType());
 		}
 
 		@Override
@@ -258,16 +320,69 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public final BindingModel getBindingModel() {
-			return getFlexoConcept().getBindingModel();
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getBindingModel();
+			}
+			return null;
 		}
 
 		@Override
 		public abstract boolean defaultBehaviourIsToBeDeleted();
 
+		/**
+		 * Return direct super properties of this property
+		 */
+		// TODO: perfs issues, implement cache
 		@Override
-		public List<? extends FlexoProperty<?>> getSuperProperties() {
-			// TODO Auto-generated method stub
-			return null;
+		public List<FlexoProperty<?>> getSuperProperties() {
+			if (getFlexoConcept() == null) {
+				return Collections.emptyList();
+			}
+			if (getFlexoConcept().getParentFlexoConcepts() == null || getFlexoConcept().getParentFlexoConcepts().size() == 0) {
+				return Collections.emptyList();
+			}
+			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			for (FlexoConcept parentConcept : getFlexoConcept().getParentFlexoConcepts()) {
+				FlexoProperty<?> p = parentConcept.getAccessibleProperty(getPropertyName());
+				if (p != null) {
+					if (!returned.contains(p)) {
+						returned.add(p);
+					}
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Return the full hiearchy of properties of this property<br>
+		 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoProperty<?>> getAllSuperProperties() {
+			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			appendAllSuperProperties(returned);
+			return returned;
+		}
+
+		public void appendAllSuperProperties(List<FlexoProperty<?>> list) {
+			for (FlexoProperty<?> p : getSuperProperties()) {
+				list.add(p);
+				((FlexoPropertyImpl<?>) p).appendAllSuperProperties(list);
+			}
+		}
+
+		public boolean isSuperPropertyOf(FlexoProperty<?> property) {
+			if (property == this) {
+				return true;
+			}
+			for (FlexoProperty<?> superProperty : property.getSuperProperties()) {
+				if (isSuperPropertyOf(superProperty)) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 	}
@@ -282,6 +397,25 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty> applyValidation(FlexoProperty flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getPropertyName())) {
 				return new ValidationError<FlexoPropertyMustHaveAName, FlexoProperty>(this, flexoRole, "flexo_property_has_no_name");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class OverridenPropertiesMustBeTypeCompatible extends
+			ValidationRule<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> {
+		public OverridenPropertiesMustBeTypeCompatible() {
+			super(FlexoProperty.class, "overriden_properties_must_define_compatible_types");
+		}
+
+		@Override
+		public ValidationIssue<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> applyValidation(FlexoProperty<?> property) {
+			for (FlexoProperty<?> superProperty : property.getSuperProperties()) {
+				if (!TypeUtils.isTypeAssignableFrom(superProperty.getResultingType(), property.getResultingType())) {
+					return new ValidationError<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>>(this, property,
+							"overriding_property_($object.propertyName)_does_not_define_compatible_type");
+				}
 			}
 			return null;
 		}

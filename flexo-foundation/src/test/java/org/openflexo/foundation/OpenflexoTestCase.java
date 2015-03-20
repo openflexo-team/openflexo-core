@@ -57,6 +57,7 @@ import junit.framework.AssertionFailedError;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -269,7 +270,7 @@ public abstract class OpenflexoTestCase {
 	 * @param objects
 	 * @throws AssertionFailedError
 	 */
-	public <T> void assertSameList(Collection<T> aList, T... objects) throws AssertionFailedError {
+	public static <T> void assertSameList(Collection<? extends T> aList, T... objects) throws AssertionFailedError {
 		Set<T> set1 = new HashSet<T>(aList);
 		Set<T> set2 = new HashSet<T>();
 		for (T o : objects) {
@@ -298,33 +299,32 @@ public abstract class OpenflexoTestCase {
 	}
 
 	protected void assertViewPointIsValid(ViewPoint vp) {
+		assertObjectIsValid(vp);
+	}
 
-		if (vp != null) {
-			log("Testing ViewPoint" + vp.getURI());
+	protected void assertObjectIsValid(FMLObject object) {
+		assertEquals(0, validate(object).getErrorsCount());
+	}
 
-			ValidationReport report;
-			try {
-				report = vp.getViewPointLibrary().getViewPointValidationModel().validate(vp);
+	protected ValidationReport validate(FMLObject object) {
 
-				for (ValidationError error : report.getErrors()) {
-					System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
-					/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
+		try {
+			ValidationReport report = object.getViewPointLibrary().getViewPointValidationModel().validate(object);
+
+			for (ValidationError error : report.getErrors()) {
+				System.out.println("Found error: " + error + " details=" + error.getDetailedInformations());
+				/*if (error.getValidationRule() instanceof BindingIsRequiredAndMustBeValid) {
 					BindingIsRequiredAndMustBeValid rule = (BindingIsRequiredAndMustBeValid) error.getValidationRule();
 					System.out.println("Details: " + rule.retrieveIssueDetails((FMLObject) error.getValidable()));
 					}*/
-				}
-
-				assertEquals(0, report.getErrorsCount());
-
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				fail("Interrupted");
 			}
-		} else {
-			System.out.println("INVESTIGATE: the parameter VP is NULL!!");
-			Thread.dumpStack();
-			fail("VP null");
 
+			return report;
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail("Interrupted");
+			return null;
 		}
 	}
 

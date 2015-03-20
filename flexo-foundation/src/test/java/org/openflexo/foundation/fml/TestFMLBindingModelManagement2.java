@@ -291,7 +291,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.class, flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
-		PrimitiveRole aStringInA = (PrimitiveRole) flexoConcept.getFlexoProperty("aStringInA");
+		PrimitiveRole aStringInA = (PrimitiveRole) flexoConcept.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
 
 		FlexoPropertyBindingVariable bv = (FlexoPropertyBindingVariable) flexoConcept.getBindingModel().bindingVariableNamed("aStringInA");

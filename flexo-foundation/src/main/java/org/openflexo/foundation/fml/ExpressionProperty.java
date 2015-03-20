@@ -51,7 +51,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 /**
  * A {@link ExpressionProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using an expression<br>
- * Access to data is read-only or read-write depending on getExpression settable property
+ * Access to data is read-only or read-write depending on expression settable property
  * 
  * 
  * 
@@ -64,24 +64,34 @@ import org.openflexo.model.annotations.XMLElement;
 public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String GET_EXPRESSION_KEY = "getExpression";
+	public static final String EXPRESSION_KEY = "expression";
 
-	@Getter(value = GET_EXPRESSION_KEY)
+	@Getter(value = EXPRESSION_KEY)
 	@XMLAttribute
-	public DataBinding<? super T> getGetExpression();
+	public DataBinding<? super T> getExpression();
 
-	@Setter(GET_EXPRESSION_KEY)
-	public void setGetExpression(DataBinding<? super T> assignation);
+	@Setter(EXPRESSION_KEY)
+	public void setExpression(DataBinding<? super T> expression);
 
 	public static abstract class ExpressionPropertyImpl<T> extends FlexoPropertyImpl<T> implements ExpressionProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		private DataBinding<? super T> getExpression;
+		private DataBinding<? super T> expression;
+
+		/**
+		 * Return flag indicating whether this property is abstract
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isAbstract() {
+			return false;
+		}
 
 		@Override
 		public boolean isReadOnly() {
-			return !getGetExpression().isSettable();
+			return !getExpression().isSettable();
 		}
 
 		@Override
@@ -90,32 +100,55 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public DataBinding<? super T> getGetExpression() {
-			if (getExpression == null) {
-				getExpression = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
-				getExpression.setBindingName("getExpression");
-				getExpression.setMandatory(true);
+		public DataBinding<? super T> getExpression() {
+			if (expression == null) {
+				expression = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				expression.setBindingName("expression");
+				expression.setMandatory(true);
 
 			}
-			return getExpression;
+			return expression;
 		}
 
 		@Override
-		public void setGetExpression(DataBinding<? super T> getExpression) {
-			if (getExpression != null) {
-				this.getExpression = new DataBinding<Object>(getExpression.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET);
-				getExpression.setBindingName("getExpression");
-				getExpression.setMandatory(true);
+		public void setExpression(DataBinding<? super T> expression) {
+			if (expression != null) {
+				this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
+				expression.setBindingName("expression");
+				expression.setMandatory(true);
 			}
-			notifiedBindingChanged(getExpression);
+			notifiedBindingChanged(expression);
 		}
+
+		private boolean isAnalysingType = false;
 
 		@Override
 		public Type getType() {
-			if (getGetExpression() != null) {
-				return getGetExpression().getAnalyzedType();
+
+			if (isAnalysingType) {
+				return Object.class;
+			} else {
+				isAnalysingType = true;
+
+				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
+				System.out.println("BM=" + getBindingModel());
+				System.out.println("valid=" + getExpression().isValid());
+				System.out.println("return: " + getExpression().getAnalyzedType())*/
+
+				// getBindingModel();
+
+				if (getExpression() != null && getExpression().isValid()) {
+					Type returned = getExpression().getAnalyzedType();
+					// System.out.println("je retourne " + returned);
+					// System.out.println("valid=" + getExpression().isValid());
+
+					isAnalysingType = false;
+					return returned;
+				}
+
+				isAnalysingType = false;
 			}
+
 			return Object.class;
 		}
 	}

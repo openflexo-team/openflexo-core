@@ -195,7 +195,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 							returned.add(getSimplePathElement(ms, parent));
 						}
 					}
-					for (FlexoProperty<?> pr : concept.getFlexoProperties()) {
+					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
 					// TODO: performance issue

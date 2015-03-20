@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -65,7 +66,10 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 
 	@Override
 	public void delete() {
+		// Thread.dumpStack();
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
+			PropertyChangeSupport pcSupport = flexoProperty.getPropertyChangeSupport();
+			// System.out.println("Je lui dit d'arreter d'observer " + flexoProperty);
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.delete();
@@ -96,7 +100,15 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {
 				Type newType = getFlexoProperty().getResultingType();
 				if (lastKnownType == null || !lastKnownType.equals(newType)) {
-					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
+					/*System.out.println("pcSupport=" + getPropertyChangeSupport());
+					if (getPropertyChangeSupport() == null) {
+						System.out.println("trop con lui");
+						System.out.println("ca vient de " + evt.getSource());
+						Thread.dumpStack();
+					}*/
+					if (getPropertyChangeSupport() != null) {
+						getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, newType);
+					}
 					lastKnownType = newType;
 				}
 			}

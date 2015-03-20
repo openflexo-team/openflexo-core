@@ -138,7 +138,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			if (assignation != null && assignation.isBindingValue()) {
 				BindingValue bindingValue = (BindingValue) assignation.getExpression();
 				if (bindingValue.getBindingPath().size() == 0) {
-					return (FlexoProperty<T>) getFlexoConcept().getFlexoProperty(bindingValue.getVariableName());
+					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingValue.getVariableName());
 				}
 			}
 			return null;

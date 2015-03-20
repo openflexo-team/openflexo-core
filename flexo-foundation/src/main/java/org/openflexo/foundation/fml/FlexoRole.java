@@ -169,7 +169,15 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 
 		private ModelSlot<?> modelSlot;
 
-		private Type resultingType;
+		/**
+		 * Return flag indicating whether this property is abstract
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isAbstract() {
+			return false;
+		}
 
 		@Override
 		public boolean isReadOnly() {

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -88,6 +89,23 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
 			return false;
+		}
+
+		/**
+		 * Return flag indicating whether this property is abstract
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isAbstract() {
+			return true;
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + ";", context);
+			return out.toString();
 		}
 
 	}

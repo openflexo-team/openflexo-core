@@ -178,7 +178,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
 
-		for (FlexoProperty<?> r : flexoConcept.getAllProperties()) {
+		for (FlexoProperty<?> r : flexoConcept.getAccessibleProperties()) {
 			if (propertiesToBeDeleted.contains(r)) {
 				propertiesToBeDeleted.remove(r);
 			} else if (propertyVariablesMap.get(r) == null) {

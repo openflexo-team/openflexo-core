@@ -255,19 +255,19 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR3.getNewFlexoRole()));
 		assertTrue(flexoConcept1.getFlexoProperties().contains(createPR4.getNewFlexoRole()));
 
-		aStringInA = (PrimitiveRole<String>) flexoConcept1.getFlexoProperty("aStringInA");
+		aStringInA = (PrimitiveRole<String>) flexoConcept1.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
 		assertEquals(String.class, aStringInA.getType());
 		assertEquals(String.class, aStringInA.getResultingType());
-		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getFlexoProperty("someBooleanInA");
+		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getAccessibleProperty("someBooleanInA");
 		assertNotNull(someBooleanInA);
 		assertEquals(Boolean.class, someBooleanInA.getType());
 		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
-		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getFlexoProperty("someIntegerInA");
+		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getAccessibleProperty("someIntegerInA");
 		assertNotNull(someIntegerInA);
 		assertEquals(Integer.class, someIntegerInA.getType());
 		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
-		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getFlexoProperty("someFlexoConcept2");
+		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getAccessibleProperty("someFlexoConcept2");
 		assertNotNull(someFlexoConcept2);
 
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept2), someFlexoConcept2.getType());

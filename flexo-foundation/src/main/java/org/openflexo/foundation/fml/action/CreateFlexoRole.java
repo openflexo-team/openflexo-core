@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
@@ -68,9 +67,23 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptObject, FMLObject> {
+/**
+ * Action allowing to create a {@link FlexoRole}<br>
+ * 
+ * To be valid, such action:
+ * <ul>
+ * <li>must be configured with a {@link FlexoConceptObject} as focused object</li>
+ * <li>must declare a valid property name</li>
+ * <li>must declare a valid cardinality</li>
+ * <li>must declare a valid {@link FlexoRole} class</li>
+ * <li>may declare a valid {@link ModelSlot} (depending on {@link FlexoRole} class)</li>
+ * <li>may declare a valid {@link PrimitiveType} (if {@link FlexoRole} class is {@link PrimitiveRole})</li>
+ * <li>may declare a valid {@link FlexoConcept} (if {@link FlexoRole} class is {@link FlexoConceptInstanceRole})</li>
+ * <li>may declare a valid description</li>
+ * </ul>
+ */
+public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoRole.class.getPackage().getName());
 
@@ -104,8 +117,6 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		FlexoObjectImpl.addActionForClass(CreateFlexoRole.actionType, FlexoConceptStructuralFacet.class);
 	}
 
-	private String roleName;
-	private String description;
 	private ModelSlot<?> modelSlot;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
@@ -120,23 +131,26 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		setModelSlot(retrieveDefaultModelSlot());
 	}
 
-	public FlexoConcept getFlexoConcept() {
-		if (getFocusedObject() != null) {
-			return getFocusedObject().getFlexoConcept();
-		}
-		return null;
-	}
-
 	public String getRoleName() {
-		if (StringUtils.isEmpty(roleName) && modelSlot != null && flexoRoleClass != null) {
-			return getFlexoConcept().getAvailablePropertyName(modelSlot.defaultFlexoRoleName(flexoRoleClass));
-		}
-		return roleName;
+		return getPropertyName();
 	}
 
 	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-		getPropertyChangeSupport().firePropertyChange("roleName", null, roleName);
+		setPropertyName(roleName);
+	}
+
+	@Override
+	public void setPropertyName(String propertyName) {
+		super.setPropertyName(propertyName);
+		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+	}
+
+	@Override
+	protected String getDefaultPropertyName() {
+		if (modelSlot != null && flexoRoleClass != null) {
+			return modelSlot.defaultFlexoRoleName(flexoRoleClass);
+		}
+		return "role";
 	}
 
 	public PropertyCardinality getPropertyCardinality() {
@@ -174,8 +188,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add flexo property, flexoRoleClass=" + flexoRoleClass);
-		logger.info("modelSlot = " + modelSlot);
+		// logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
+		// logger.info("modelSlot = " + modelSlot);
 
 		if (flexoRoleClass != null) {
 			if (modelSlot != null) {
@@ -201,11 +215,20 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setCardinality(getPropertyCardinality());
-				newFlexoRole.setDescription(description);
-				getFlexoConcept().addToFlexoProperties(newFlexoRole);
+
+				super.doAction(context);
 			}
 		}
 
+		else {
+			throw new InvalidParameterException("No FlexoRole class defined");
+		}
+
+	}
+
+	@Override
+	public FlexoRole<?> getNewFlexoProperty() {
+		return getNewFlexoRole();
 	}
 
 	public FlexoRole<?> getNewFlexoRole() {
@@ -214,9 +237,10 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	@Override
 	public boolean isValid() {
-		if (StringUtils.isEmpty(getRoleName())) {
+		if (!super.isValid()) {
 			return false;
-		} else if (getFlexoConcept().getFlexoProperty(getRoleName()) != null) {
+		}
+		if (flexoRoleClass == null) {
 			return false;
 		}
 		return true;
@@ -287,15 +311,6 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		return null;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-		getPropertyChangeSupport().firePropertyChange("description", null, description);
-	}
-
 	public ModelSlot<?> getModelSlot() {
 		return modelSlot;
 	}
@@ -312,6 +327,7 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 		this.modelSlot = modelSlot;
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
 		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+		getPropertyChangeSupport().firePropertyChange("propertyName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 		getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
@@ -332,6 +348,8 @@ public class CreateFlexoRole extends FlexoAction<CreateFlexoRole, FlexoConceptOb
 
 	public void setFlexoRoleClass(Class<? extends FlexoRole> flexoRoleClass) {
 		this.flexoRoleClass = flexoRoleClass;
+		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+		getPropertyChangeSupport().firePropertyChange("propertyName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
 		getPropertyChangeSupport().firePropertyChange("isIndividual", !isIndividual(), isIndividual());
 		getPropertyChangeSupport().firePropertyChange("isFlexoConceptInstance", !isFlexoConceptInstance(), isFlexoConceptInstance());

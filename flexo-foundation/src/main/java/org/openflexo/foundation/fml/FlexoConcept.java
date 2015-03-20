@@ -111,6 +111,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -165,6 +167,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@Remover(FLEXO_PROPERTIES_KEY)
 	public void removeFromFlexoProperties(FlexoProperty<?> aProperty);
 
+	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAbstract();
+
+	@Setter(IS_ABSTRACT_KEY)
+	public void setAbstract(boolean isAbstract);
+
 	/**
 	 * Return declared properties for this {@link FlexoConcept}<br>
 	 * Declared properties are those returned by getFlexoProperties() method
@@ -183,24 +192,42 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 * 
 	 * @return
 	 */
-	public List<FlexoProperty<?>> getAllProperties();
+	public List<FlexoProperty<?>> getAccessibleProperties();
 
 	/**
-	 * Return {@link FlexoRole} identified by supplied name
+	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
+	 * Note that returned property is not necessary one of declared property, but might be inherited.
 	 * 
-	 * @param flexoRoleName
+	 * @param propertyName
 	 * @return
+	 * @see #getAccessibleProperties()
 	 */
-	@Finder(collection = FLEXO_PROPERTIES_KEY, attribute = FlexoProperty.NAME_KEY)
-	public FlexoProperty<?> getFlexoProperty(String flexoPropertyName);
+	public FlexoProperty<?> getAccessibleProperty(String propertyName);
 
 	/**
-	 * Build and return the list of {@link FlexoProperty} with supplied type
+	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all declared properties<br>
+	 * 
+	 * @param propertyName
+	 * @return
+	 * @see #getDeclaredProperties()
+	 */
+	public FlexoProperty<?> getDeclaredProperty(String propertyName);
+
+	/**
+	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public <R> List<R> getFlexoProperties(Class<R> type);
+	public <R> List<R> getDeclaredProperties(Class<R> type);
+
+	/**
+	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public <R> List<R> getAccessibleProperties(Class<R> type);
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
@@ -430,6 +457,16 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 		}
 
+		@Override
+		public boolean isAbstract() {
+			for (FlexoProperty<?> p : getAccessibleProperties()) {
+				if (p.isAbstract()) {
+					return true;
+				}
+			}
+			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+		}
+
 		/**
 		 * Return declared properties for this {@link FlexoConcept}<br>
 		 * Declared properties are those returned by getFlexoProperties() method
@@ -451,24 +488,40 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 * @return
 		 */
 		@Override
-		public List<FlexoProperty<?>> getAllProperties() {
+		public List<FlexoProperty<?>> getAccessibleProperties() {
 			if (getParentFlexoConcepts().size() == 0) {
 				return getDeclaredProperties();
 			}
 
 			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> inheritedProperties = new ArrayList<FlexoProperty<?>>();
 			returned.addAll(getDeclaredProperties());
-			for (FlexoConcept concept : getParentFlexoConcepts()) {
-				returned.addAll(concept.getAllProperties());
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overriden
+						// We check that we don't have this property yet
+						if (!inheritedProperties.contains(p)) {
+							inheritedProperties.add(p);
+						}
+					}
+				}
+			}
+			// Now, we have to suppress all extra references
+			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<FlexoProperty<?>>();
+			for (FlexoProperty<?> p : inheritedProperties) {
+				for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
+					if (inheritedProperties.contains(superP)) {
+						unnecessaryProperty.add(superP);
+					}
+				}
 			}
 
-			return returned;
-		}
+			for (FlexoProperty<?> removeThis : unnecessaryProperty) {
+				inheritedProperties.remove(removeThis);
+			}
 
-		@Override
-		public List<FlexoProperty<?>> getFlexoProperties() {
-			List<FlexoProperty<?>> returned = (List<FlexoProperty<?>>) performSuperGetter(FLEXO_PROPERTIES_KEY);
-			System.out.println("Les proprietes c'est ca: " + returned);
+			returned.addAll(inheritedProperties);
 			return returned;
 		}
 
@@ -483,28 +536,18 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public void addToFlexoProperties(FlexoProperty<?> aProperty) {
 			availablePropertiesNames = null;
 			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
-
-			System.out.println("J'ai bien ajoute le truc");
-			System.out.println("les properties: " + getFlexoProperties());
-
-			/*if (_bindingModel != null) {
-				updateBindingModel();
-			}*/
 		}
 
 		@Override
 		public void removeFromFlexoProperties(FlexoProperty<?> aProperty) {
 			availablePropertiesNames = null;
 			performSuperRemover(FLEXO_PROPERTIES_KEY, aProperty);
-			/*if (_bindingModel != null) {
-				updateBindingModel();
-			}*/
 		}
 
 		@Override
-		public <R> List<R> getFlexoProperties(Class<R> type) {
+		public <R> List<R> getDeclaredProperties(Class<R> type) {
 			List<R> returned = new ArrayList<R>();
-			for (FlexoProperty<?> r : getFlexoProperties()) {
+			for (FlexoProperty<?> r : getDeclaredProperties()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
 					returned.add((R) r);
 				}
@@ -513,13 +556,59 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public <R> List<R> getAccessibleProperties(Class<R> type) {
+			List<R> returned = new ArrayList<R>();
+			for (FlexoProperty<?> r : getAccessibleProperties()) {
+				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
+					returned.add((R) r);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
+		 * Note that returned property is not necessary one of declared property, but might be inherited.
+		 * 
+		 * @param flexoPropertyName
+		 * @return
+		 * @see #getAccessibleProperties()
+		 */
+		@Override
+		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
+			for (FlexoProperty<?> p : getAccessibleProperties()) {
+				if (p.getName().equals(propertyName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all declared properties<br>
+		 * 
+		 * @param propertyName
+		 * @return
+		 * @see #getDeclaredProperties()
+		 */
+		@Override
+		public FlexoProperty<?> getDeclaredProperty(String propertyName) {
+			for (FlexoProperty<?> p : getDeclaredProperties()) {
+				if (p.getName().equals(propertyName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
+		@Override
 		public List<IndividualRole> getIndividualRoles() {
-			return getFlexoProperties(IndividualRole.class);
+			return getDeclaredProperties(IndividualRole.class);
 		}
 
 		@Override
 		public List<ClassRole> getClassRoles() {
-			return getFlexoProperties(ClassRole.class);
+			return getDeclaredProperties(ClassRole.class);
 		}
 
 		/*
@@ -546,10 +635,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		private Vector<String> availablePropertiesNames = null;
 
-		public Vector<String> getAvailablePatternRoleNames() {
+		public Vector<String> getAvailablePropertyNames() {
 			if (availablePropertiesNames == null) {
 				availablePropertiesNames = new Vector<String>();
-				for (FlexoProperty<?> r : getFlexoProperties()) {
+				for (FlexoProperty<?> r : getAccessibleProperties()) {
 					availablePropertiesNames.add(r.getName());
 				}
 			}
@@ -560,7 +649,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public String getAvailablePropertyName(String baseName) {
 			String testName = baseName;
 			int index = 2;
-			while (getFlexoProperty(testName) != null) {
+			while (getAccessibleProperty(testName) != null) {
 				testName = baseName + index;
 				index++;
 			}
@@ -716,7 +805,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("deletion");
 			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<FlexoProperty<?>>();
-			for (FlexoProperty<?> pr : getFlexoProperties()) {
+			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				if (pr.defaultBehaviourIsToBeDeleted()) {
 					propertiesToDelete.add(pr);
 				}
@@ -773,7 +862,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeDeserialization();
 			}
-			for (FlexoProperty<?> pr : getFlexoProperties()) {
+			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				pr.finalizeDeserialization();
 			}
 		}
@@ -893,9 +982,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			if (getFlexoProperties().size() > 0) {
+			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoProperty<?> pr : getFlexoProperties()) {
+				for (FlexoProperty<?> pr : getDeclaredProperties()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
@@ -924,7 +1013,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!(flexoConcept instanceof AbstractVirtualModel) && flexoConcept.getFlexoProperties().size() == 0) {
+			if (!(flexoConcept instanceof AbstractVirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
 				return new ValidationWarning<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept>(this, flexoConcept,
 						"non_abstract_flexo_concept_role_does_not_define_any_property");
 			}

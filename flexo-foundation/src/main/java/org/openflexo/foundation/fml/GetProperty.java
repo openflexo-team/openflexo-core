@@ -92,6 +92,16 @@ public abstract interface GetProperty<T> extends FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
+		/**
+		 * Return flag indicating whether this property is abstract
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isAbstract() {
+			return false;
+		}
+
 		@Override
 		public boolean isReadOnly() {
 			return true;

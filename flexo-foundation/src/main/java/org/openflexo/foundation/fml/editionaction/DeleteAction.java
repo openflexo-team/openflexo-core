@@ -134,7 +134,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getFlexoConcept().getFlexoProperty(getObject().toString());
+			return getFlexoConcept().getAccessibleProperty(getObject().toString());
 		}
 
 		@Override
