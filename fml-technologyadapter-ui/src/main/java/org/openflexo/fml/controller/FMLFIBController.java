@@ -126,6 +126,9 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
+
+		System.out.println("Hop, on cree un role pour le concept " + flexoConcept);
+
 		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();

@@ -85,6 +85,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	public static final String MODEL_SLOT_KEY = "modelSlot";
 	@PropertyIdentifier(type = RoleCloningStrategy.class)
 	public static final String CLONING_STRATEGY_KEY = "cloningStrategy";
+	@PropertyIdentifier(type = PropertyCardinality.class)
+	public static final String CARDINALITY_KEY = "cardinality";
 
 	@Getter(value = ROLE_NAME_KEY)
 	public String getRoleName();
@@ -98,6 +100,24 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@Setter(MODEL_SLOT_KEY)
 	public void setModelSlot(ModelSlot<?> modelSlot);
+
+	/**
+	 * Return cardinality of this property
+	 * 
+	 * @return
+	 */
+	@Override
+	@Getter(CARDINALITY_KEY)
+	@XMLAttribute
+	public PropertyCardinality getCardinality();
+
+	/**
+	 * Sets cardinality of this property
+	 * 
+	 * @return
+	 */
+	@Setter(CARDINALITY_KEY)
+	public void setCardinality(PropertyCardinality cardinality);
 
 	/**
 	 * Return the type of any instance of modelling element handled by this property.<br>
@@ -201,6 +221,23 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 				return defaultCloningStrategy();
 			} else {
 				return returned;
+			}
+		}
+
+		@Override
+		public PropertyCardinality getCardinality() {
+			PropertyCardinality returned = (PropertyCardinality) performSuperGetter(CARDINALITY_KEY);
+			if (returned == null) {
+				return PropertyCardinality.ZeroOne;
+			}
+			return returned;
+		}
+
+		@Override
+		public void setCardinality(PropertyCardinality cardinality) {
+			if (cardinality != getCardinality()) {
+				performSuperSetter(CARDINALITY_KEY, cardinality);
+				notifyResultingTypeChanged();
 			}
 		}
 

@@ -48,10 +48,10 @@
 					method="controller.duplicateFlexoConcept(selected,(selected.name + &quot;Copy&quot;))"
 					name="duplicate" />
 			</BrowserElement>
-			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
-				label="flexoRole.name+' ('+flexoRole.cardinality.stringRepresentation+')'" icon="controller.iconForObject(flexoRole)"
-				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
-				defaultVisible="true" dynamicFont="" name="flexoRole" />
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoProperty"
+				label="flexoProperty.name+' ('+flexoProperty.cardinality.stringRepresentation+')'" icon="controller.iconForObject(flexoProperty)"
+				isEditable="false" filtered="false"
+				defaultVisible="true" name="flexoProperty" />
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 				label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
 				isEditable="false" filtered="false" defaultVisible="true" name="flexoBehaviour">
@@ -153,7 +153,9 @@
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
 				<Children data="flexoConceptStructuralFacet.flexoConcept.flexoProperties"
-					cast="" name="flexoRoles" />
+					name="flexoProperties" />
+				<BrowserAddAction name="new_role"
+					method="controller.createFlexoRole(data)" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"

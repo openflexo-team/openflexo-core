@@ -466,6 +466,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public List<FlexoProperty<?>> getFlexoProperties() {
+			List<FlexoProperty<?>> returned = (List<FlexoProperty<?>>) performSuperGetter(FLEXO_PROPERTIES_KEY);
+			System.out.println("Les proprietes c'est ca: " + returned);
+			return returned;
+		}
+
+		@Override
 		public void setFlexoProperties(List<FlexoProperty<?>> someProperties) {
 			// patternRoles = somePatternRole;
 			performSuperSetter(FLEXO_PROPERTIES_KEY, someProperties);
@@ -476,6 +483,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public void addToFlexoProperties(FlexoProperty<?> aProperty) {
 			availablePropertiesNames = null;
 			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
+
+			System.out.println("J'ai bien ajoute le truc");
+			System.out.println("les properties: " + getFlexoProperties());
+
 			/*if (_bindingModel != null) {
 				updateBindingModel();
 			}*/

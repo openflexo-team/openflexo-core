@@ -55,7 +55,6 @@ import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -86,8 +85,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public static final String PROPERTY_NAME_KEY = "propertyName";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
-	@PropertyIdentifier(type = PropertyCardinality.class)
-	public static final String CARDINALITY_KEY = "cardinality";
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY /*, inverse = FlexoConcept.FLEXO_PROPERTIES_KEY*/)
@@ -102,6 +99,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 	@Setter(PROPERTY_NAME_KEY)
 	public void setPropertyName(String propertyName);
+
+	/**
+	 * Return cardinality of this property
+	 * 
+	 * @return
+	 */
+	public PropertyCardinality getCardinality();
 
 	/**
 	 * Return the type of any instance of data handled by this property.<br>
@@ -123,23 +127,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public Type getResultingType();
 
 	public String getTypeDescription();
-
-	/**
-	 * Return cardinality of this property
-	 * 
-	 * @return
-	 */
-	@Getter(CARDINALITY_KEY)
-	@XMLAttribute
-	public PropertyCardinality getCardinality();
-
-	/**
-	 * Sets cardinality of this property
-	 * 
-	 * @return
-	 */
-	@Setter(CARDINALITY_KEY)
-	public void setCardinality(PropertyCardinality cardinality);
 
 	/**
 	 * Encodes the default deletion strategy
@@ -193,19 +180,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public PropertyCardinality getCardinality() {
-			PropertyCardinality returned = (PropertyCardinality) performSuperGetter(CARDINALITY_KEY);
-			if (returned == null) {
-				return PropertyCardinality.ZeroOne;
-			}
-			return returned;
-		}
-
-		@Override
-		public void setCardinality(PropertyCardinality cardinality) {
-			if (cardinality != getCardinality()) {
-				performSuperSetter(CARDINALITY_KEY, cardinality);
-				notifyResultingTypeChanged();
-			}
+			return PropertyCardinality.ZeroOne;
 		}
 
 		protected void notifyResultingTypeChanged() {

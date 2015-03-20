@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.FlexoProperty"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label data="data.implementedInterface.simpleName" index="0"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				name="NameLabel" localize="true" />
+			<TextField index="1" data="data.name"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
+				name="Name" localize="true" columns="10" />
+			<Label manageDynamicModel="false" useScrollBar="false"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				localize="true" align="left" index="10000"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
+				label="description" readOnly="false" />
+			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+				manageDynamicModel="false" useScrollBar="true" columns="8"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				text="TextArea" localize="true" index="10001"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
+				rows="3" readOnly="false" validateOnReturn="true"
+				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="Flexo property" />
+</Panel>
