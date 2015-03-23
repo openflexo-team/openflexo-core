@@ -265,6 +265,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(ExpressionProperty.class);
 	}
 
+	public GetSetProperty<?> newGetSetProperty() {
+		return newInstance(GetSetProperty.class);
+	}
+
 	public Sequence newSequence(FMLControlGraph cg1, FMLControlGraph cg2) {
 		Sequence returned = newInstance(Sequence.class);
 		returned.setControlGraph1(cg1);

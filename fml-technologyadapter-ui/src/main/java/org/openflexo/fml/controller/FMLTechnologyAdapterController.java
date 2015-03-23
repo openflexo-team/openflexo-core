@@ -121,7 +121,12 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateModelSlotInitializer(actionInitializer);
 		new CreateVirtualModelInitializer(actionInitializer);
 		new DeleteVirtualModelInitializer(actionInitializer);
+
 		new CreateFlexoRoleInitializer(actionInitializer);
+		new CreateExpressionPropertyInitializer(actionInitializer);
+		new CreateGetSetPropertyInitializer(actionInitializer);
+		new CreateAbstractPropertyInitializer(actionInitializer);
+
 		new CreateEditionActionInitializer(actionInitializer);
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);

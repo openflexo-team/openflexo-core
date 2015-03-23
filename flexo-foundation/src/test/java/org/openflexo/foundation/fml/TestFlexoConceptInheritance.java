@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -107,6 +108,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	public static PrimitiveRole<String> property1InD;
 	public static ExpressionProperty<Integer> property3InD;
+	public static PrimitiveRole<String> property5InD;
 	public static PrimitiveRole<String> property9InD;
 
 	static FlexoProject project;
@@ -498,6 +500,15 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty3InD.hasActionExecutionSucceeded());
 		assertNotNull(property3InD = (ExpressionProperty<Integer>) createProperty3InD.getNewFlexoProperty());
 
+		CreateFlexoRole createProperty5InD = CreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		createProperty5InD.setRoleName("property5");
+		createProperty5InD.setFlexoRoleClass(PrimitiveRole.class);
+		createProperty5InD.setPrimitiveType(PrimitiveType.String);
+		createProperty5InD.setPropertyCardinality(PropertyCardinality.One);
+		createProperty5InD.doAction();
+		assertTrue(createProperty5InD.hasActionExecutionSucceeded());
+		assertNotNull(property5InD = (PrimitiveRole<String>) createProperty5InD.getNewFlexoRole());
+
 		CreateFlexoRole createProperty9InD = CreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty9InD.setRoleName("property9");
 		createProperty9InD.setFlexoRoleClass(PrimitiveRole.class);
@@ -507,13 +518,14 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty9InD.hasActionExecutionSucceeded());
 		assertNotNull(property9InD = (PrimitiveRole<String>) createProperty9InD.getNewFlexoRole());
 
-		assertEquals(3, flexoConceptD.getFlexoProperties().size());
-		assertEquals(3, flexoConceptD.getDeclaredProperties().size());
+		assertEquals(4, flexoConceptD.getFlexoProperties().size());
+		assertEquals(4, flexoConceptD.getDeclaredProperties().size());
 
 		assertEquals(9, flexoConceptD.getAccessibleProperties().size());
 
 		assertTrue(flexoConceptD.getDeclaredProperties().contains(createProperty1InD.getNewFlexoProperty()));
 		assertTrue(flexoConceptD.getDeclaredProperties().contains(createProperty3InD.getNewFlexoProperty()));
+		assertTrue(flexoConceptD.getDeclaredProperties().contains(createProperty5InD.getNewFlexoProperty()));
 		assertTrue(flexoConceptD.getDeclaredProperties().contains(createProperty9InD.getNewFlexoProperty()));
 
 		assertSame(property1InD, flexoConceptD.getAccessibleProperty("property1"));
@@ -532,8 +544,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertSame(property4InC, flexoConceptD.getAccessibleProperty("property4"));
 		assertSameList(property4InC.getSuperProperties(), property4InA);
 
-		assertSame(property5InA, flexoConceptD.getAccessibleProperty("property5"));
-		assertEquals(0, property5InA.getSuperProperties().size());
+		assertSame(property5InD, flexoConceptD.getAccessibleProperty("property5"));
+		assertSameList(property5InD.getSuperProperties(), property5InA);
 
 		assertSame(property6InA, flexoConceptD.getAccessibleProperty("property6"));
 		assertEquals(0, property6InA.getSuperProperties().size());
@@ -550,11 +562,13 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(0, property9InD.getSuperProperties().size());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptC.isAbstract());
+		assertFalse(flexoConceptD.isAbstract());
 
-		// We try to force to make it non abstract, and check that it is still abstract
-		flexoConceptC.setAbstract(false);
-		assertTrue(flexoConceptC.isAbstract());
+		// We try to force to make it abstract
+		flexoConceptD.setAbstract(true);
+		assertTrue(flexoConceptD.isAbstract());
+
+		flexoConceptD.setAbstract(false);
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
 
