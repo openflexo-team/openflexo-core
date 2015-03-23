@@ -123,27 +123,9 @@ public interface IFlexoOntologyConcept<TA extends TechnologyAdapter> extends IFl
 	public boolean equalsToConcept(IFlexoOntologyConcept<TA> concept);
 
 	/**
-	 * Return all properties accessible in the scope of this ontology object, where declared range is this object
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public List<? extends IFlexoOntologyStructuralProperty<TA>> getPropertiesTakingMySelfAsRange();
-
-	/**
 	 * Return all properties accessible in the scope of this ontology object, where declared domain is this object
 	 * 
 	 * @return
 	 */
-	@Deprecated
-	public List<? extends IFlexoOntologyFeature<TA>> getPropertiesTakingMySelfAsDomain();
-
-	// NB: implemented in FlexoModelObject
-	// @Deprecated
-	// public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance, FlexoRole<?> patternRole);
-
-	// NB: implemented in FlexoModelObject
-	// @Deprecated
-	// public void unregisterFlexoConceptReference(FlexoConceptInstance flexoConceptInstance, FlexoRole<?> patternRole);
 
 }
