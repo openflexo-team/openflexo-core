@@ -43,10 +43,12 @@ import java.util.logging.Logger;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -54,12 +56,16 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.DeleteFlexoConcept;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
@@ -125,13 +131,29 @@ public class FMLFIBController extends FlexoFIBController {
 		return null;
 	}
 
+	public AbstractProperty<?> createAbstractProperty(FlexoConcept flexoConcept) {
+		CreateAbstractProperty createAbstractProperty = CreateAbstractProperty.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createAbstractProperty.doAction();
+		return createAbstractProperty.getNewFlexoProperty();
+	}
+
 	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
-
-		System.out.println("Hop, on cree un role pour le concept " + flexoConcept);
-
 		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
+	}
+
+	public ExpressionProperty<?> createExpressionProperty(FlexoConcept flexoConcept) {
+		CreateExpressionProperty createExpressionProperty = CreateExpressionProperty.actionType.makeNewAction(flexoConcept, null,
+				getEditor());
+		createExpressionProperty.doAction();
+		return createExpressionProperty.getNewFlexoProperty();
+	}
+
+	public GetSetProperty<?> createGetSetProperty(FlexoConcept flexoConcept) {
+		CreateGetSetProperty createGetSetProperty = CreateGetSetProperty.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createGetSetProperty.doAction();
+		return createGetSetProperty.getNewFlexoProperty();
 	}
 
 	public FlexoProperty<?> deleteFlexoProperty(FlexoConcept flexoConcept, FlexoProperty<?> aProperty) {

@@ -154,8 +154,10 @@
 				defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
 				<Children data="flexoConceptStructuralFacet.flexoConcept.flexoProperties"
 					name="flexoProperties" />
-				<BrowserAddAction name="new_role"
-					method="controller.createFlexoRole(data)" />
+				<BrowserAddAction name="new_flexo_role" method="controller.createFlexoRole(data)" />
+				<BrowserAddAction name="new_abstract_property" method="controller.createAbstractProperty(data)" />
+				<BrowserAddAction name="new_expression_property" method="controller.createExpressionProperty(data)" />
+				<BrowserAddAction name="new_get_set_property" method="controller.createGetSetProperty(data)" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
