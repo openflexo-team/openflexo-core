@@ -187,15 +187,18 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	}
 
 	public void setContext(IFlexoOntology<TA> context) {
-		if (this.context != null) {
-			this.context.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		this.context = context;
-		if (context != null) {
-			context.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-		if (autoUpdate) {
-			recomputeStructure();
+		boolean changed = this.context != context;
+		if (changed){
+			if (this.context != null ) {
+				this.context.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			this.context = context;
+			if (context != null) {
+				context.getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
+			if (autoUpdate ) {
+				recomputeStructure();
+			}
 		}
 	}
 
