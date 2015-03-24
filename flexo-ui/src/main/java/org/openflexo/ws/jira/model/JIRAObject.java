@@ -54,7 +54,7 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 	 */
 	private static final long serialVersionUID = -3961683012433439153L;
 
-	private transient J originalObject;
+	protected transient J originalObject;
 
 	/** The REST reference to this object */
 	private String self;
