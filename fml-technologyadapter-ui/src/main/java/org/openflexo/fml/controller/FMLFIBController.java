@@ -278,6 +278,28 @@ public class FMLFIBController extends FlexoFIBController {
 		return createEditionAction.getNewEditionAction();
 	}
 
+	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
+		if (property.getGetControlGraph() == null) {
+			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+			property.setGetControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
+				getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
+	public EditionAction createEditionActionInSetControlGraph(GetSetProperty<?> property) {
+		if (property.getSetControlGraph() == null) {
+			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+			property.setSetControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
+				getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,

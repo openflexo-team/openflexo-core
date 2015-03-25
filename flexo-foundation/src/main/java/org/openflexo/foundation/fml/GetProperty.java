@@ -40,7 +40,9 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -63,7 +65,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(GetProperty.GetPropertyImpl.class)
 @XMLElement
-public abstract interface GetProperty<T> extends FlexoProperty<T> {
+public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGraphOwner {
 
 	// @PropertyIdentifier(type = Type.class)
 	// public static final String TYPE_KEY = "type";
@@ -118,6 +120,42 @@ public abstract interface GetProperty<T> extends FlexoProperty<T> {
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
 			return false;
+		}
+
+		@Override
+		public void setGetControlGraph(FMLControlGraph aControlGraph) {
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(GET_CONTROL_GRAPH_KEY);
+			}
+			performSuperSetter(GET_CONTROL_GRAPH_KEY, aControlGraph);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			if (GET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getGetControlGraph();
+			}
+			return null;
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
+			if (GET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setGetControlGraph(controlGraph);
+			}
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			return getBindingModel();
+		}
+
+		@Override
+		public void reduce() {
+			if (getGetControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getGetControlGraph()).reduce();
+			}
 		}
 
 	}

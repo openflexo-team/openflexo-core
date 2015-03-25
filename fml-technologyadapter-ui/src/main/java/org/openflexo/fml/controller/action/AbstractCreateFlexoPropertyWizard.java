@@ -78,7 +78,7 @@ public abstract class AbstractCreateFlexoPropertyWizard<A extends AbstractCreate
 
 	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
 	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_property_must_have_an_non_empty_and_unique_name");
-	private static final String RECOMMANDED_DESCRIPTION = FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_flexo_role");
+	private static final String RECOMMANDED_DESCRIPTION = FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_flexo_property");
 	private static final String DISCOURAGED_NAME = FlexoLocalization
 			.localizedForKey("name_is_discouraged_by_convention_property_name_usually_start_with_a_lowercase_letter");
 

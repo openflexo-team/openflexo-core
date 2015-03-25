@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,18 +36,28 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.annotations;
 
-import org.openflexo.connie.type.CustomType;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Represents a {@link CustomType} in a given technology, returned by {@link #getSpecificTechnologyAdapter()} method
+ * Annotation used to provide to a {@link TechnologyAdapter} the list of all {@link TechnologySpecificType} to consider
  * 
  * @author sylvain
  * 
  */
-public interface TechnologySpecificCustomType<TA extends TechnologyAdapter> extends CustomType {
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target(value = ElementType.TYPE)
+public @interface DeclareTechnologySpecificTypes {
 
-	public TA getSpecificTechnologyAdapter();
+	public Class<? extends TechnologySpecificType<?>>[] value();
+
 }

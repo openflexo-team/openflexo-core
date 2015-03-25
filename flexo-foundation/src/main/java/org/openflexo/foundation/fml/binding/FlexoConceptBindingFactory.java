@@ -64,7 +64,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.ViewObject;
@@ -124,8 +124,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (parent != null) {
 			Type pType = parent.getType();
 
-			if (pType instanceof TechnologySpecificCustomType) {
-				TechnologySpecificCustomType parentType = (TechnologySpecificCustomType) pType;
+			if (pType instanceof TechnologySpecificType) {
+				TechnologySpecificType parentType = (TechnologySpecificType) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
 				TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
 				if (ta != null && bf != null && bf.handleType(parentType)) {

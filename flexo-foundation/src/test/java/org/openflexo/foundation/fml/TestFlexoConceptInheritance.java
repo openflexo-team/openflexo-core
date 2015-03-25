@@ -44,6 +44,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
@@ -67,11 +70,13 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * This unit test is intented to test {@link FlexoConcept} inheritance features, as well as "isAbstract" management and
@@ -82,6 +87,10 @@ import org.openflexo.test.TestOrder;
  */
 @RunWith(OrderedRunner.class)
 public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCase {
+
+	public static final String VIEWPOINT_NAME = "TestViewPoint";
+	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
+	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
 	static FlexoEditor editor;
 	static ViewPoint viewPoint;
@@ -136,7 +145,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	@Test
 	@TestOrder(2)
 	public void testCreateViewPoint() {
-		viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
+		viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
 				serviceManager.getViewPointLibrary());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
@@ -158,7 +167,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	@TestOrder(3)
 	public void testCreateVirtualModel() throws SaveResourceException {
 
-		virtualModel = VirtualModelImpl.newVirtualModel("VirtualModel", viewPoint);
+		virtualModel = VirtualModelImpl.newVirtualModel(VIRTUAL_MODEL_NAME, viewPoint);
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getFlexoIODelegate().exists());
 
@@ -594,4 +603,96 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertObjectIsValid(virtualModel);
 
 	}
+
+	/**
+	 * Reload the ViewPoint<br>
+	 * We first re-init a full ServiceManager, and copy the just created ViewPoint<br>
+	 * The goal is to let the FileSystem monitoring system detects the new directory and instantiate ViewPoint
+	 */
+	@Test
+	@TestOrder(20)
+	public void testReloadViewPoint() {
+
+		log("testReloadViewPoint()");
+
+		ViewPointResource viewPointResource = (ViewPointResource) viewPoint.getResource();
+
+		instanciateTestServiceManager();
+
+		File directory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
+		File newDirectory = new File(((FileSystemBasedResourceCenter) resourceCenter).getDirectory(), directory.getName());
+		newDirectory.mkdirs();
+
+		try {
+			FileUtils.copyContentDirToDir(directory, newDirectory);
+			// We wait here for the thread monitoring ResourceCenters to detect new files
+			Thread.sleep(3000);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ViewPointResource retrievedVPResource = serviceManager.getViewPointLibrary().getViewPointResource(VIEWPOINT_URI);
+		assertNotNull(retrievedVPResource);
+
+		ViewPoint reloadedViewPoint = retrievedVPResource.getViewPoint();
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getViewPoint());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getVirtualModel());
+		assertEquals(null, reloadedViewPoint.getOwningVirtualModel());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
+
+		AbstractVirtualModel<?> reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
+		assertNotNull(reloadedVirtualModel);
+
+		assertNotNull(flexoConceptA = reloadedVirtualModel.getFlexoConcept("FlexoConceptA"));
+
+		assertEquals(6, flexoConceptA.getFlexoProperties().size());
+		assertEquals(6, flexoConceptA.getDeclaredProperties().size());
+		assertEquals(6, flexoConceptA.getAccessibleProperties().size());
+
+		assertNotNull(property1InA = (AbstractProperty<String>) flexoConceptA.getAccessibleProperty("property1"));
+		assertEquals(String.class, property1InA.getType());
+		assertEquals(String.class, property1InA.getResultingType());
+
+		assertNotNull(property2InA = (AbstractProperty<Boolean>) flexoConceptA.getAccessibleProperty("property2"));
+		assertEquals(Boolean.class, property2InA.getType());
+		assertEquals(Boolean.class, property2InA.getResultingType());
+
+		assertNotNull(property3InA = (AbstractProperty<Number>) flexoConceptA.getAccessibleProperty("property3"));
+		assertEquals(Number.class, property3InA.getType());
+		assertEquals(Number.class, property3InA.getResultingType());
+
+		assertNotNull(property4InA = (AbstractProperty<FlexoConceptInstanceType>) flexoConceptA.getAccessibleProperty("property4"));
+		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getType());
+		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getResultingType());
+
+		assertNotNull(property5InA = (AbstractProperty<String>) flexoConceptA.getAccessibleProperty("property5"));
+		assertEquals(String.class, property5InA.getType());
+		assertEquals(String.class, property5InA.getResultingType());
+
+		assertNotNull(property6InA = (PrimitiveRole<String>) flexoConceptA.getAccessibleProperty("property6"));
+		assertEquals(String.class, property6InA.getType());
+		assertEquals(String.class, property6InA.getResultingType());
+
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property1InA));
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property2InA));
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property3InA));
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property4InA));
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property5InA));
+		assertTrue(flexoConceptA.getDeclaredProperties().contains(property6InA));
+		assertEquals(flexoConceptA.getDeclaredProperties(), flexoConceptA.getAccessibleProperties());
+
+		// Because concept define some abstract properties, it is abstract
+		assertTrue(flexoConceptA.isAbstract());
+
+		// We try to force to make it non abstract, and check that it is still abstract
+		flexoConceptA.setAbstract(false);
+		assertTrue(flexoConceptA.isAbstract());
+
+	}
+
 }

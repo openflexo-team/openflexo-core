@@ -170,6 +170,7 @@ public abstract class OpenflexoTestCase {
 					} else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
+						System.out.println("Copied from " + tstRC);
 						FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 					}
 

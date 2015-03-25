@@ -51,6 +51,8 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.ActionContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.GetProperty;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -280,6 +282,12 @@ public abstract interface EditionAction extends FMLControlGraph {
 			}
 			if (context.equals(ConditionalAction.ELSE_CONTROL_GRAPH_KEY)) {
 				return "else";
+			}
+			if (context.equals(GetProperty.GET_CONTROL_GRAPH_KEY)) {
+				return "get";
+			}
+			if (context.equals(GetSetProperty.SET_CONTROL_GRAPH_KEY)) {
+				return "set";
 			}
 			return null;
 		}

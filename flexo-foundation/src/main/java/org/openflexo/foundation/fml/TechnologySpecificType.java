@@ -38,82 +38,17 @@
 
 package org.openflexo.foundation.fml;
 
-import java.lang.reflect.Type;
-
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Represent the type of a FlexoBehaviour
+ * Represents a {@link CustomType} in a given technology, returned by {@link #getSpecificTechnologyAdapter()} method
  * 
  * @author sylvain
  * 
  */
-public class FlexoBehaviourType implements CustomType {
+public interface TechnologySpecificType<TA extends TechnologyAdapter> extends CustomType {
 
-	public static FlexoBehaviourType getFlexoBehaviourType(FlexoBehaviour aFlexoBehaviour) {
-		if (aFlexoBehaviour == null) {
-			return null;
-		}
-		return aFlexoBehaviour.getFlexoBehaviourType();
-	}
-
-	private final FlexoBehaviour flexoBehaviour;
-
-	public FlexoBehaviourType(FlexoBehaviour aFlexoBehaviour) {
-		this.flexoBehaviour = aFlexoBehaviour;
-	}
-
-	public FlexoBehaviour getFlexoBehaviour() {
-		return flexoBehaviour;
-	}
-
-	public static String getName() {
-		return FlexoBehaviourType.class.getSimpleName();
-	}
-
-	@Override
-	public Class getBaseClass() {
-		return FlexoBehaviour.class;
-	}
-
-	@Override
-	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
-		if (aType instanceof FlexoBehaviourType) {
-			return getFlexoBehaviour() == (((FlexoBehaviourType) aType).getFlexoBehaviour());
-		}
-		return false;
-	}
-
-	@Override
-	public String simpleRepresentation() {
-		return "FlexoBehaviourType" + ":" + getFlexoBehaviour();
-	}
-
-	@Override
-	public String fullQualifiedRepresentation() {
-		return "FlexoBehaviourType" + ":" + getFlexoBehaviour();
-	}
-
-	@Override
-	public String toString() {
-		return simpleRepresentation();
-	}
-
-	@Override
-	public String getSerializationRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isResolved() {
-		return true;
-	}
-
-	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
-	}
+	public TA getSpecificTechnologyAdapter();
 
 }

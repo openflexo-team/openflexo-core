@@ -94,7 +94,7 @@ public class CreateGetSetPropertyInitializer extends ActionInitializer<CreateGet
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.FLEXO_ROLE_ICON;
+		return FMLIconLibrary.GET_SET_PROPERTY_ICON;
 	}
 
 }

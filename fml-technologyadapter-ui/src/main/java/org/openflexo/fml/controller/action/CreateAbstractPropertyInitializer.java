@@ -94,7 +94,7 @@ public class CreateAbstractPropertyInitializer extends ActionInitializer<CreateA
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.FLEXO_ROLE_ICON;
+		return FMLIconLibrary.ABSTRACT_PROPERTY_ICON;
 	}
 
 }

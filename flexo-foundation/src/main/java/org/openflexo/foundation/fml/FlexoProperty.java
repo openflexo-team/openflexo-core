@@ -366,7 +366,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			return returned;
 		}
 
-		public void appendAllSuperProperties(List<FlexoProperty<?>> list) {
+		private void appendAllSuperProperties(List<FlexoProperty<?>> list) {
 			for (FlexoProperty<?> p : getSuperProperties()) {
 				list.add(p);
 				((FlexoPropertyImpl<?>) p).appendAllSuperProperties(list);

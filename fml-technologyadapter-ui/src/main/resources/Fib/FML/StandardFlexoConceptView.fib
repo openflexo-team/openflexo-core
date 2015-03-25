@@ -48,10 +48,32 @@
 					method="controller.duplicateFlexoConcept(selected,(selected.name + &quot;Copy&quot;))"
 					name="duplicate" />
 			</BrowserElement>
-			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoProperty"
-				label="flexoProperty.name+' ('+flexoProperty.cardinality.stringRepresentation+')'" icon="controller.iconForObject(flexoProperty)"
-				isEditable="false" filtered="false"
-				defaultVisible="true" name="flexoProperty" />
+
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoRole"
+				label="flexoRole.name+' ('+flexoRole.cardinality.stringRepresentation+')'"
+				icon="controller.iconForObject(flexoRole)" isEditable="false"
+				filtered="false" defaultVisible="true" name="flexoRole" />
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.AbstractProperty"
+				label="flexoProperty.name" icon="controller.iconForObject(flexoProperty)"
+				isEditable="false" filtered="false" defaultVisible="true" name="flexoProperty" />
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.ExpressionProperty"
+				label="flexoProperty.name" icon="controller.iconForObject(flexoProperty)"
+				isEditable="false" filtered="false" defaultVisible="true" name="flexoProperty" />
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.GetSetProperty"
+				label="flexoProperty.name" icon="controller.iconForObject(flexoProperty)"
+				isEditable="false" filtered="false" defaultVisible="true" name="flexoProperty">
+				<Children data="flexoProperty.getControlGraph.flattenedSequence"
+					name="getChildren" />
+				<Children data="flexoProperty.setControlGraph.flattenedSequence"
+					name="setChildren" />
+				<BrowserAddAction
+					method="controller.createEditionActionInGetControlGraph(selected)"
+					name="add_action_in_GET_control_graph" />
+				<BrowserAddAction
+					method="controller.createEditionActionInSetControlGraph(selected)"
+					name="add_action_in_SET_control_graph" />
+			</BrowserElement>
+			
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 				label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
 				isEditable="false" filtered="false" defaultVisible="true" name="flexoBehaviour">
@@ -154,10 +176,14 @@
 				defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
 				<Children data="flexoConceptStructuralFacet.flexoConcept.flexoProperties"
 					name="flexoProperties" />
-				<BrowserAddAction name="new_flexo_role" method="controller.createFlexoRole(data)" />
-				<BrowserAddAction name="new_abstract_property" method="controller.createAbstractProperty(data)" />
-				<BrowserAddAction name="new_expression_property" method="controller.createExpressionProperty(data)" />
-				<BrowserAddAction name="new_get_set_property" method="controller.createGetSetProperty(data)" />
+				<BrowserAddAction name="new_flexo_role"
+					method="controller.createFlexoRole(data)" />
+				<BrowserAddAction name="new_abstract_property"
+					method="controller.createAbstractProperty(data)" />
+				<BrowserAddAction name="new_expression_property"
+					method="controller.createExpressionProperty(data)" />
+				<BrowserAddAction name="new_get_set_property"
+					method="controller.createGetSetProperty(data)" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"

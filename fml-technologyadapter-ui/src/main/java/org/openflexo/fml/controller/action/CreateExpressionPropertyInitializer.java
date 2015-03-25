@@ -93,7 +93,7 @@ public class CreateExpressionPropertyInitializer extends ActionInitializer<Creat
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.FLEXO_ROLE_ICON;
+		return FMLIconLibrary.EXPRESSION_PROPERTY_ICON;
 	}
 
 }

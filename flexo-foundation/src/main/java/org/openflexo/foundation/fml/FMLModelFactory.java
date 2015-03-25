@@ -124,6 +124,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	private IgnoreLoadingEdits ignoreHandler = null;
 	private FlexoUndoManager undoManager = null;
 
+	private TypeConverter typeConverter;
+
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 	/*public FMLModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
@@ -141,7 +143,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(retrieveTechnologySpecificClasses(taService));
 		setEditingContext(editingContext);
-		addConverter(new TypeConverter());
+		addConverter(typeConverter = new TypeConverter());
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
@@ -153,6 +155,25 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initVirtualModelFactory(this);
 		}
+
+		// Init technology specific type registering
+		// TODO: do it only for required technology adapters
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			ta.initTechnologySpecificTypes(typeConverter);
+		}
+
+		/*Set<Class<? extends TechnologySpecificType<?>>> allTypesToConsider = new HashSet<Class<? extends TechnologySpecificType<?>>>();
+		allTypesToConsider.add(FlexoConceptInstanceType.class);
+		allTypesToConsider.add(VirtualModelInstanceType.class);
+		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			for (Class<? extends TechnologySpecificType<?>> typeClass : ta.getAvailableTechnologySpecificTypes()) {
+				allTypesToConsider.add(typeClass);
+			}
+		}
+		System.out.println("les types pour " + abstractVirtualModelResource);
+		for (Class<? extends TechnologySpecificType<?>> typeClass : allTypesToConsider) {
+			typeConverter.registerTypeClass(typeClass);
+		}*/
 	}
 
 	@Override
@@ -265,8 +286,17 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(ExpressionProperty.class);
 	}
 
+	public GetProperty<?> newGetProperty() {
+		GetProperty<?> returned = newInstance(GetProperty.class);
+		returned.setGetControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
 	public GetSetProperty<?> newGetSetProperty() {
-		return newInstance(GetSetProperty.class);
+		GetSetProperty<?> returned = newInstance(GetSetProperty.class);
+		returned.setGetControlGraph(newEmptyControlGraph());
+		returned.setSetControlGraph(newEmptyControlGraph());
+		return returned;
 	}
 
 	public Sequence newSequence(FMLControlGraph cg1, FMLControlGraph cg2) {
@@ -534,6 +564,9 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	@Override
 	public synchronized void startDeserializing() {
+
+		typeConverter.startDeserializing();
+
 		EditingContext editingContext = getResource().getServiceManager().getEditingContext();
 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
@@ -546,6 +579,9 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	@Override
 	public synchronized void stopDeserializing() {
+
+		typeConverter.stopDeserializing();
+
 		if (ignoreHandler != null) {
 			undoManager.removeFromIgnoreHandlers(ignoreHandler);
 			// System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " + resource.getURI());

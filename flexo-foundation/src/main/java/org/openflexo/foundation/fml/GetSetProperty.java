@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -83,6 +84,40 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 		@Override
 		public boolean isReadOnly() {
 			return getSetControlGraph() == null;
+		}
+
+		@Override
+		public void setSetControlGraph(FMLControlGraph aControlGraph) {
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(SET_CONTROL_GRAPH_KEY);
+			}
+			performSuperSetter(SET_CONTROL_GRAPH_KEY, aControlGraph);
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			if (SET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				return getSetControlGraph();
+			}
+			return super.getControlGraph(ownerContext);
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
+			if (SET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+				setSetControlGraph(controlGraph);
+			} else {
+				super.setControlGraph(controlGraph, ownerContext);
+			}
+		}
+
+		@Override
+		public void reduce() {
+			super.reduce();
+			if (getSetControlGraph() instanceof FMLControlGraphOwner) {
+				((FMLControlGraphOwner) getSetControlGraph()).reduce();
+			}
 		}
 
 	}

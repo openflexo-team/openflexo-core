@@ -44,10 +44,12 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -56,6 +58,7 @@ import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.OntologicObjectRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
@@ -192,8 +195,17 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIconResource TEXT_FIELD_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/TextFieldIcon.png"));
 
+	// Markers
+	public static final IconMarker ABSTRACT_MARKER = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/MODEL/VPM/Markers/Abstract.png")), 0, 0);
+	public static final IconMarker PROPERTY_MARKER = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/MODEL/VPM/Markers/Property.png")), 8, 8);
 	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
+
+	public static final ImageIcon ABSTRACT_PROPERTY_ICON = IconFactory.getImageIcon(FLEXO_ROLE_ICON, ABSTRACT_MARKER);
+	public static final ImageIcon EXPRESSION_PROPERTY_ICON = IconFactory.getImageIcon(EXPRESSION_ACTION_ICON, PROPERTY_MARKER);
+	public static final ImageIcon GET_SET_PROPERTY_ICON = IconFactory.getImageIcon(FLEXO_BEHAVIOUR_ICON, PROPERTY_MARKER);
 
 	public static ImageIcon iconForObject(FMLObject object) {
 		if (object == null) {
@@ -308,7 +320,13 @@ public class FMLIconLibrary extends IconLibrary {
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
 				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
 			}
-		} else if (object instanceof FlexoProperty) {
+		} else if (object instanceof AbstractProperty) {
+			return ABSTRACT_PROPERTY_ICON;
+		} else if (object instanceof ExpressionProperty) {
+			return EXPRESSION_PROPERTY_ICON;
+		} else if (object instanceof GetSetProperty) {
+			return GET_SET_PROPERTY_ICON;
+		} else if (object instanceof FlexoRole) {
 			return FLEXO_ROLE_ICON;
 		} else if (object instanceof ViewPointLocalizedDictionary) {
 			return LOCALIZATION_ICON;
