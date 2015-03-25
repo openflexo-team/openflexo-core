@@ -840,7 +840,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		return returned;
 	}
 
-	private IFlexoOntologyClass<TA> getPreferredStorageLocation(IFlexoOntologyIndividual<TA> i) {
+	protected IFlexoOntologyClass<TA> getPreferredStorageLocation(IFlexoOntologyIndividual<TA> i) {
 
 		// Return the first class which is not the Thing concept
 		for (IFlexoOntologyClass<TA> c : i.getTypes()) {
