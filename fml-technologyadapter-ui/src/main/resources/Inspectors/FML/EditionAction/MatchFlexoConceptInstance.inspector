@@ -53,7 +53,7 @@
 					format="" title="icon" columnWidth="25" resizable="false"
 					displayTitle="false" color="" bgColor="" tooltip=""
 					valueChangedAction="" name="icon" />
-				<LabelColumn data="iterator.flexoRole.name" format=""
+				<LabelColumn data="iterator.flexoProperty.name" format=""
 					title="parameter" columnWidth="80" resizable="true" displayTitle="true"
 					color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
 				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"

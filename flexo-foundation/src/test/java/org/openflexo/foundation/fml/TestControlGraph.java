@@ -165,10 +165,10 @@ public class TestControlGraph extends OpenflexoTestCase {
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
-		assertEquals(3, flexoConcept.getFlexoRoles().size());
-		assertTrue(flexoConcept.getFlexoRoles().contains(createPR1.getNewFlexoRole()));
-		assertTrue(flexoConcept.getFlexoRoles().contains(createPR2.getNewFlexoRole()));
-		assertTrue(flexoConcept.getFlexoRoles().contains(createPR3.getNewFlexoRole()));
+		assertEquals(3, flexoConcept.getFlexoProperties().size());
+		assertTrue(flexoConcept.getFlexoProperties().contains(createPR1.getNewFlexoRole()));
+		assertTrue(flexoConcept.getFlexoProperties().contains(createPR2.getNewFlexoRole()));
+		assertTrue(flexoConcept.getFlexoProperties().contains(createPR3.getNewFlexoRole()));
 
 	}
 

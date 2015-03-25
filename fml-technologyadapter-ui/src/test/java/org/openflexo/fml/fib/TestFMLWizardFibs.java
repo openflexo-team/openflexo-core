@@ -86,6 +86,16 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeAbstractProperty() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeAbstractProperty.fib");
+	}
+
+	@Test
+	public void testDescribeExpressionProperty() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeExpressionProperty.fib");
+	}
+
+	@Test
 	public void testDescribeFlexoBehaviour() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoBehaviour.fib");
 	}
@@ -98,6 +108,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeFlexoRole() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib");
+	}
+
+	@Test
+	public void testDescribeGetSetProperty() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeGetSetProperty.fib");
 	}
 
 	@Test

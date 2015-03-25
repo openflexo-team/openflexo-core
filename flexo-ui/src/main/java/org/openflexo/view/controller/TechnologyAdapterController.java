@@ -239,7 +239,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass);
 
 	/**
-	 * Return icon representing supplied pattern role
+	 * Return icon representing supplied pattern property
 	 * 
 	 * @param object
 	 * @return

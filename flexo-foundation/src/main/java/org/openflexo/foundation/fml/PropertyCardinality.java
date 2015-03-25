@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,16 +38,65 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.connie.type.CustomType;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-
 /**
- * Represents a {@link CustomType} in a given technology, returned by {@link #getSpecificTechnologyAdapter()} method
+ * Represents the cardinality of a property
+ * 
+ * <ul>
+ * <li><tt>ZeroOne</tt>: means that the value is unique or null</li>
+ * <li><tt>One</tt>: means that the value is unique and non-null</li>
+ * <li><tt>ZeroMany</tt>: means that the value is represented by a list which is eventually empty</li>
+ * <li><tt>OneMany</tt>: means that the value is represented by a non-empty list</li>
+ * </ul>
  * 
  * @author sylvain
  * 
  */
-public interface TechnologySpecificCustomType<TA extends TechnologyAdapter> extends CustomType {
+public enum PropertyCardinality {
+	ZeroOne {
+		@Override
+		public boolean isMultipleCardinality() {
+			return false;
+		}
 
-	public TA getSpecificTechnologyAdapter();
+		@Override
+		public String stringRepresentation() {
+			return "0-1";
+		}
+	},
+	One {
+		@Override
+		public boolean isMultipleCardinality() {
+			return false;
+		}
+
+		@Override
+		public String stringRepresentation() {
+			return "1";
+		}
+	},
+	ZeroMany {
+		@Override
+		public boolean isMultipleCardinality() {
+			return true;
+		}
+
+		@Override
+		public String stringRepresentation() {
+			return "0..*";
+		}
+	},
+	OneMany {
+		@Override
+		public boolean isMultipleCardinality() {
+			return true;
+		}
+
+		@Override
+		public String stringRepresentation() {
+			return "1..*";
+		}
+	};
+	public abstract boolean isMultipleCardinality();
+
+	public abstract String stringRepresentation();
 }

@@ -915,7 +915,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		// Edition Patterns
 		// Edition patterns name
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
-		// Parent pattern role is no more an attribute but an element
+		// Parent pattern property is no more an attribute but an element
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
 		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
 

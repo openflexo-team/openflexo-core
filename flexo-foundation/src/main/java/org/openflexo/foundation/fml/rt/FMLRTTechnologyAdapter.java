@@ -44,8 +44,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
@@ -55,6 +59,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
+import org.openflexo.model.converter.TypeConverter;
 
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
@@ -65,6 +70,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
  * 
  */
 @DeclareModelSlots({ FMLRTModelSlot.class })
+@DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
@@ -238,6 +244,21 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 						+ ((File) contents).getParentFile().getAbsolutePath());
 			}
 		}
+	}
+
+	private FlexoConceptInstanceTypeFactory fciFactory;
+
+	@Override
+	public void initTechnologySpecificTypes(TypeConverter converter) {
+		converter.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
+
+	}
+
+	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+		if (fciFactory == null) {
+			fciFactory = new FlexoConceptInstanceTypeFactory(this);
+		}
+		return fciFactory;
 	}
 
 }

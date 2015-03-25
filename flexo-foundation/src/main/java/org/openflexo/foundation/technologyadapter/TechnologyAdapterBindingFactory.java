@@ -46,7 +46,7 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 
 /**
  * This class represent the {@link BindingFactory} dedicated to handle technology-specific binding elements<br>
@@ -90,6 +90,6 @@ public abstract class TechnologyAdapterBindingFactory extends JavaBindingFactory
 	 * @param technologySpecificType
 	 * @return
 	 */
-	public abstract boolean handleType(TechnologySpecificCustomType<?> technologySpecificType);
+	public abstract boolean handleType(TechnologySpecificType<?> technologySpecificType);
 
 }

@@ -189,10 +189,10 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	}
 
 	/**
-	 * Return icon representing supplied pattern role
+	 * Return icon representing supplied pattern property
 	 * 
 	 * @param patternRoleClass
-	 * @return ImageIcon representing supplied pattern role
+	 * @return ImageIcon representing supplied pattern property
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {

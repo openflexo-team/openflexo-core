@@ -39,24 +39,24 @@
 package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 
 public class FlexoActorChanged extends DataModification {
 
-	private FlexoConceptInstance flexoConceptInstance;
-	private FlexoRole<?> flexoRole;
+	private final FlexoConceptInstance flexoConceptInstance;
+	private final FlexoProperty<?> property;
 
-	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, FlexoRole<T> patternRole, T oldActor, T newActor) {
+	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, FlexoProperty<T> property, T oldActor, T newActor) {
 		super(oldActor, newActor);
 		this.flexoConceptInstance = flexoConceptInstance;
-		this.flexoRole = patternRole;
+		this.property = property;
 	}
 
 	public FlexoConceptInstance getFlexoConceptInstance() {
 		return flexoConceptInstance;
 	}
 
-	public FlexoRole<?> getFlexoRole() {
-		return flexoRole;
+	public FlexoProperty<?> getFlexoProperty() {
+		return property;
 	}
 }

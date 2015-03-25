@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.Hashtable;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
 
 /**
  * Represent the type of the list of all parameters of an FlexoBehaviour (run-time). Internal representation is given by an
@@ -59,7 +60,7 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 		return aFlexoBehaviour.getFlexoBehaviourParametersValuesType();
 	}
 
-	private FlexoBehaviour flexoBehaviour;
+	private final FlexoBehaviour flexoBehaviour;
 
 	public FlexoBehaviourParametersValuesType(FlexoBehaviour aFlexoBehaviour) {
 		this.flexoBehaviour = aFlexoBehaviour;
@@ -97,4 +98,20 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 	public String toString() {
 		return simpleRepresentation();
 	}
+
+	@Override
+	public String getSerializationRepresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+	}
+
 }

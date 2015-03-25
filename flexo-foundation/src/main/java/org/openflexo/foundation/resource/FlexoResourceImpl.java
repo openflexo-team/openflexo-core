@@ -112,8 +112,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
-			logger.warning("trying to load a resource data from itself, please investigate");
-			return null;
+			// logger.warning("trying to load a resource data from itself, please investigate");
+			return resourceData;
 		}
 		if (resourceData == null && isLoadable()) {
 			// The resourceData is null, we try to load it

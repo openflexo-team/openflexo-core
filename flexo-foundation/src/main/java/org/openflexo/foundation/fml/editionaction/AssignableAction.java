@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -105,9 +105,10 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
 
 	/**
-	 * Return role to which this action is bound with an assignation, if this action is the right-hand side of an {@link AssignationAction}
+	 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
+	 * {@link AssignationAction}
 	 */
-	public FlexoRole<T> getFlexoRole();
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
 	/**
 	 * Return type resulting of execution of this action
@@ -135,14 +136,14 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
 
 		/**
-		 * Return role to which this action is bound with an assignation, if this action is the right-hand side of an
+		 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
 		 * {@link AssignationAction}
 		 */
 		@Override
-		public FlexoRole<T> getFlexoRole() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			// We might find the FlexoRole is this action is the assignableAction of an AssignationAction
 			if (getOwner() instanceof AssignationAction) {
-				return ((AssignationAction) getOwner()).getFlexoRole();
+				return ((AssignationAction) getOwner()).getAssignedFlexoProperty();
 			}
 			return null;
 		}

@@ -36,10 +36,11 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
+
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
 /**
  * Represent the type of a DiagramInstance of a given Diagram
@@ -51,30 +52,19 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
 	public VirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		super(aVirtualModel);
-		this.flexoConcept = aVirtualModel;
 	}
 
-	public VirtualModel getVirtualModel() {
-		return (VirtualModel) flexoConcept;
-	}
-
-	@Override
-	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-		if (aType instanceof VirtualModelInstanceType) {
-			// TODO: Permissive for now!
-			return true;
-		}
-		return false;
+	protected VirtualModelInstanceType(String virtualModelURI) {
+		super(virtualModelURI);
 	}
 
 	@Override
-	public String simpleRepresentation() {
-		return "VirtualModel" + ":" + flexoConcept;
+	public Class<?> getBaseClass() {
+		return VirtualModelInstance.class;
 	}
 
-	@Override
-	public String fullQualifiedRepresentation() {
-		return "VirtualModel" + ":" + flexoConcept;
+	public AbstractVirtualModel<?> getVirtualModel() {
+		return (AbstractVirtualModel<?>) getFlexoConcept();
 	}
 
 	public static Type getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {

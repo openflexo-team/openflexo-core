@@ -74,7 +74,7 @@ public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends Simp
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof VirtualModelInstance) {
 			VirtualModelInstance mvi = (VirtualModelInstance) target;
-			return mvi.getModelSlotInstance(modelSlot).getResourceData();
+			return mvi.getModelSlotInstance(modelSlot).getAccessedResourceData();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

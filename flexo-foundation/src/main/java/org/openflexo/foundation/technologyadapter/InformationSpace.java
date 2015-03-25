@@ -133,7 +133,8 @@ public class InformationSpace extends FlexoServiceImpl {
 	 *            the URI of the resource
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
+	public @Nullable
+	FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
 		if (getServiceManager() != null) {
 			for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
 				FlexoResource<?> res = rc.retrieveResource(uri, null);
@@ -155,8 +156,8 @@ public class InformationSpace extends FlexoServiceImpl {
 	 *            appropriate type verifications.
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable <T extends ResourceData<T>> FlexoResource<T> getResource(@Nonnull String uri, FlexoVersion version,
-			@Nonnull Class<T> type) {
+	public @Nullable
+	<T extends ResourceData<T>> FlexoResource<T> getResource(@Nonnull String uri, FlexoVersion version, @Nonnull Class<T> type) {
 		// TODO: a better type checking would be better
 		return (FlexoResource<T>) getResource(uri, version);
 	}
@@ -230,5 +231,16 @@ public class InformationSpace extends FlexoServiceImpl {
 		}
 		return null;
 	}
+
+	/**
+	 * Lookup and return object with supplied URI
+	 * 
+	 * @param objectURI
+	 * @return found {@link FlexoObject}
+	 */
+	/*public FlexoObject retrieveObjectWithURI(String objectURI) {
+		// TODO: to be implemented
+		return null;
+	}*/
 
 }

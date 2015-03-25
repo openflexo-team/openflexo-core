@@ -51,6 +51,7 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
@@ -145,7 +146,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public abstract static class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FlexoConceptInstance> implements
+	public static abstract class DeleteFlexoConceptInstanceImpl extends DeleteActionImpl<FlexoConceptInstance> implements
 			DeleteFlexoConceptInstance {
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
@@ -154,6 +155,13 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
 		private boolean isUpdating = false;
+
+		// I don't understand ? why this code is required by the compiler ?
+		@Override
+		public FlexoProperty getAssignedFlexoProperty() {
+			// TODO Auto-generated method stub
+			return super.getAssignedFlexoProperty();
+		}
 
 		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
