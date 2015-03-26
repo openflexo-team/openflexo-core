@@ -743,7 +743,12 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		}
 
 		for (IFlexoOntologyIndividual<TA> i : unstoredIndividuals) {
-			addChildren(getContext().getRootConcept(), i);
+			if (getShowClasses()){
+				addChildren(getContext().getRootConcept(), i);
+			}
+			else {
+				roots.add(i);
+			}
 		}
 
 		if (getDisplayPropertiesInClasses()) {
