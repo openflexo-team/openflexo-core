@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="border" darkLevel="0"
+	dataClassName="org.openflexo.components.widget.TypeSelector"
+	controllerClassName="org.openflexo.components.widget.TypeSelector$TypeSelectorDetailsPanel$CustomFIBController"
+	width="400" height="400">
+	<Panel id="2" darkLevel="0" useScrollBar="true" protectContent="false"
+		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
+		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
+		borderTitle="Panel" trackViewPortHeight="true"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
+		<RadioButtonList id="3" manageDynamicModel="false"
+			columns="1" index="2" localize="true"
+			constraints="border(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=north;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+			format="object.toString" showText="true" iteratorClassName="java.lang.Object"
+			vGap="-2" showIcon="true" useScrollBar="true" data="data.choice"
+			autoSelectFirstRow="false" hGap="0" list="data.choices" readOnly="false" />
+	</Panel>
+	<Panel darkLevel="0" useScrollBar="false" protectContent="false"
+		layout="twocols" borderRight="2" border="empty" trackViewPortWidth="true"
+		constraints="border(location=center)" borderBottom="2" borderTop="2"
+		trackViewPortHeight="true" visible="data.choice.toString='Primitive'">
+		<TextField passwd="false" manageDynamicModel="false"
+			useScrollBar="false" columns="7"
+			controllerClassName="org.openflexo.fib.controller.FIBController"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+			readOnly="true" validateOnReturn="false" />
+	</Panel>
+	<Panel darkLevel="0" useScrollBar="false" protectContent="false"
+		layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
+		constraints="border(location=center)" borderBottom="2" borderTop="2"
+		trackViewPortHeight="true" visible="data.choice.toString='Java type'">
+		<Custom componentClassName="org.openflexo.fib.swing.utils.ClassEditor"
+			localize="true" manageDynamicModel="true" data="data.loadedClassesInfo"
+			constraints="border(location=center)" />
+	</Panel>
+
+
+
+
+	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
+		borderTitle="Panel" darkLevel="0" index="3" constraints="border(location=south)">
+		<Button action="controller.apply()" buttonType="Trigger" label="apply"
+			index="0" constraints="flow(index=0)" localize="true"
+			enable="(data.choice != null)">
+			<LocalizedDictionary />
+		</Button>
+		<Button action="controller.cancel()" buttonType="Trigger"
+			label="cancel" index="1" constraints="flow(index=1)" localize="true">
+			<LocalizedDictionary />
+		</Button>
+		<Button action="controller.reset()" buttonType="Trigger" label="reset"
+			index="2" constraints="flow(index=2)" localize="true">
+			<LocalizedDictionary />
+		</Button>
+	</Panel>
+	<LocalizedDictionary />
+</Panel>
