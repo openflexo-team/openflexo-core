@@ -67,6 +67,7 @@ import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.fib.view.FIBView;
+import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -86,12 +87,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/TypeSelector.fib");
 
-	public static final Object PRIMITIVES = new Object() {
-		@Override
-		public String toString() {
-			return "Primitive";
-		}
-	};
 	public static final Object JAVA_TYPE = new Object() {
 		@Override
 		public String toString() {
@@ -126,11 +121,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		setFocusable(true);
 		pcSupport = new PropertyChangeSupport(this);
 		choices = new ArrayList<Object>();
-		choices.add(PRIMITIVES);
+		for (PrimitiveType primitiveType : PrimitiveType.values()) {
+			choices.add(primitiveType);
+		}
 		choices.add(JAVA_TYPE);
 		choices.add(JAVA_ARRAY);
 		choices.add(JAVA_WILDCARD);
-		choice = PRIMITIVES;
+		fireEditedObjectChanged();
 	}
 
 	public List<Object> getChoices() {
@@ -156,20 +153,58 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			System.out.println("on change le choix pour " + choice);
 			Object old = this.choice;
 			this.choice = choice;
+
+			if (choice instanceof PrimitiveType) {
+				setEditedObject(((PrimitiveType) choice).getType());
+			}
 			getPropertyChangeSupport().firePropertyChange("choice", old, choice);
-			if (choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD) {
+			if (isJavaType()) {
 				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 			}
 		}
 	}
 
+	public boolean isJavaType() {
+		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD);
+	}
+
+	public boolean isPrimitiveType() {
+		return getPrimitiveType() != null;
+	}
+
+	public PrimitiveType getPrimitiveType() {
+		for (PrimitiveType primitiveType : PrimitiveType.values()) {
+			if (primitiveType.getType().equals(getEditedObject())) {
+				return primitiveType;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public void setEditedObject(Type object) {
 		super.setEditedObject(object);
-		if (choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD) {
-			getLoadedClassesInfo().setSelectedClassInfo(getLoadedClassesInfo().getClass(getBaseClass()));
-			System.out.println("On a selectionne: " + getLoadedClassesInfo().getSelectedClassInfo());
-			getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
+	}
+
+	@Override
+	public void fireEditedObjectChanged() {
+		super.fireEditedObjectChanged();
+
+		System.out.println("Hop, on fait setEditedObject with " + getEditedObject());
+
+		// First try to find the type of object
+		PrimitiveType primitiveType = getPrimitiveType();
+		if (primitiveType != null) {
+			setChoice(primitiveType);
+		} else {
+			if (getEditedObject() instanceof Class) {
+				setChoice(JAVA_TYPE);
+			}
+			if (choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD) {
+				getLoadedClassesInfo().setSelectedClassInfo(getLoadedClassesInfo().getClass(getBaseClass()));
+				System.out.println("On a selectionne: " + getLoadedClassesInfo().getSelectedClassInfo());
+				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
+			}
 		}
 	}
 
@@ -187,14 +222,12 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
-					if (choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD) {
-						if (evt.getPropertyName().equals("selectedClassInfo")) {
-							if (choice == JAVA_TYPE) {
-								ClassInfo classInfo = (ClassInfo) evt.getNewValue();
-								System.out.println("Hop, on y est classInfo=" + classInfo);
-								if (classInfo != null) {
-									setEditedObject(classInfo.getClazz());
-								}
+					if (evt.getPropertyName().equals("selectedClassInfo")) {
+						if (isJavaType()) {
+							ClassInfo classInfo = (ClassInfo) evt.getNewValue();
+							System.out.println("Hop, on y est classInfo=" + classInfo);
+							if (classInfo != null) {
+								setEditedObject(classInfo.getClazz());
 							}
 						}
 					}
