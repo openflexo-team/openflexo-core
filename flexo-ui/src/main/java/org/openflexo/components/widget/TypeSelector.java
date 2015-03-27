@@ -578,7 +578,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	/**
-	 * This main allows to launch an application testing the BindingSelector
+	 * This main allows to launch an application testing the TypeSelector
 	 * 
 	 * @param args
 	 * @throws SecurityException
