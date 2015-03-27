@@ -47,8 +47,9 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 
 public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoConcept, FMLObject> {
@@ -68,7 +69,7 @@ public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoCon
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
-			return object != null && object instanceof FlexoConcept && !(object instanceof VirtualModel);
+			return object != null && object instanceof FlexoConcept && !(object instanceof VirtualModel) && !(object instanceof ViewPoint);
 		}
 
 		@Override
