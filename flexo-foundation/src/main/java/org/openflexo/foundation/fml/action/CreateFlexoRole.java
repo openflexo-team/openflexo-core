@@ -174,7 +174,8 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		}
 		if (getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
-		} else {
+		}
+		else {
 			FlexoConcept fc = (FlexoConcept) this.getFocusedObject();
 			if (fc != null) {
 				AbstractVirtualModel<?> vm = fc.getOwningVirtualModel();
@@ -195,7 +196,8 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 			if (modelSlot != null) {
 				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(modelSlot);
-			} else {
+			}
+			else {
 				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
@@ -272,7 +274,8 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 			if (((FMLRTModelSlot) modelSlot).getVirtualModelResource() != null) {
 				return ((FMLRTModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
-		} else if (modelSlot == null) {
+		}
+		else if (modelSlot == null) {
 			return getFlexoConcept().getVirtualModel();
 		}
 		return null;
@@ -282,18 +285,28 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+		}
+		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
 			return getFocusedObject().getOwningVirtualModel().getModelSlots();
 		}
 		return null;
 	}
 
 	private ModelSlot<?> retrieveDefaultModelSlot() {
-		if (getFocusedObject() instanceof VirtualModel && ((VirtualModel) getFocusedObject()).getModelSlots().size() > 0) {
-			return ((VirtualModel) getFocusedObject()).getModelSlots().get(0);
-		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
-				&& getFocusedObject().getOwningVirtualModel().getModelSlots().size() > 0) {
-			return getFocusedObject().getOwningVirtualModel().getModelSlots().get(0);
+		FlexoConcept flexoConcept = null;
+		// The action is visible for FlexoConcept and StructuralFacet.
+		if (getFocusedObject() instanceof FlexoConceptStructuralFacet) {
+			flexoConcept = ((FlexoConceptStructuralFacet) getFocusedObject()).getFlexoConcept();
+		}
+		else {
+			flexoConcept = (FlexoConcept) getFocusedObject();
+		}
+		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots().size() > 0) {
+			return ((VirtualModel) flexoConcept).getModelSlots().get(0);
+		}
+		else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
+				&& flexoConcept.getOwningVirtualModel().getModelSlots().size() > 0) {
+			return flexoConcept.getOwningVirtualModel().getModelSlots().get(0);
 		}
 		return null;
 	}
@@ -318,7 +331,8 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
 		if (modelSlot != null) {
 			return modelSlot.getModelSlotTechnologyAdapter();
-		} else {
+		}
+		else {
 			return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
 		}
 	}
@@ -333,7 +347,8 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			} else {
+			}
+			else {
 				setFlexoRoleClass(null);
 			}
 		}
