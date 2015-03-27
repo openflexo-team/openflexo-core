@@ -182,7 +182,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		} else {
+		}
+		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -326,7 +327,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		} else {
+		}
+		else {
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
 				FlexoResource<?> container = getContainer();
@@ -338,13 +340,14 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 				r.delete();
 			}
 
+			if (isLoaded()) {
+				unloadResourceData();
+			}
+
 			// Handle Flexo IO delegate deletion
 			getFlexoIODelegate().delete();
 
 			performSuperDelete(context);
-			if (isLoaded()) {
-				unloadResourceData();
-			}
 
 			return true;
 		}
