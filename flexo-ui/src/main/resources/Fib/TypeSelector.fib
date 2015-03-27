@@ -39,7 +39,7 @@
 				visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
 				createNewRowOnClick="false" boundToSelectionManager="false"
 				showFooter="false" selectionMode="MultipleIntervalSelection"
-				selected="data.selectedClassInfo" textSelectionColor="255,255,255"
+				textSelectionColor="255,255,255"
 				textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
@@ -49,9 +49,14 @@
 				<IconColumn data="iterator.icon" title="" columnWidth="20"
 					resizable="false" displayTitle="true" name="icon" />
 				<LabelColumn data="iterator.typeVariable.name" title="type_variable"
-					columnWidth="100" resizable="true" displayTitle="true" name="label" />
-				<LabelColumn data="iterator.type.toString" title="value"
-					columnWidth="200" resizable="true" displayTitle="true" name="label" />
+					columnWidth="50" resizable="true" displayTitle="true" />
+				<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
+					customRendering="false" disableTerminateEditOnFocusLost="false"
+					data="iterator.type" title="value" columnWidth="300" resizable="true"
+					displayTitle="true" name="value">
+					<!--  <ColumnAssignment variable="component.bindable"
+						value="iterator" />-->
+				</CustomColumn>
 				<LocalizedDictionary />
 			</Table>
 
