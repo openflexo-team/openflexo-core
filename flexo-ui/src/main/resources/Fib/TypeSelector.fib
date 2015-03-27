@@ -24,11 +24,37 @@
 		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
 			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true"
-			visible="data.isJavaType">
+			borderBottom="2" borderTop="2" trackViewPortHeight="true" visible="data.isJavaType">
 			<Custom componentClassName="org.openflexo.fib.swing.utils.ClassEditor"
 				localize="true" manageDynamicModel="true" data="data.loadedClassesInfo"
 				constraints="border(location=center)" />
+		</Panel>
+		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
+			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+			borderBottom="2" borderTop="2" trackViewPortHeight="true"
+			visible="data.hasGenericParameters">
+			<Table
+				iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericParameter"
+				visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
+				createNewRowOnClick="false" boundToSelectionManager="false"
+				showFooter="false" selectionMode="MultipleIntervalSelection"
+				selected="data.selectedClassInfo" textSelectionColor="255,255,255"
+				textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
+				backgroundSecondarySelectionColor="173,215,255"
+				backgroundNonSelectionColor="255,255,255" localize="true"
+				manageDynamicModel="true" name="GenericParametersTable" index="1"
+				data="data.genericParameters"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
+				<IconColumn data="iterator.icon" title="" columnWidth="20"
+					resizable="false" displayTitle="true" name="icon" />
+				<LabelColumn data="iterator.typeVariable.name" title="type_variable"
+					columnWidth="100" resizable="true" displayTitle="true" name="label" />
+				<LabelColumn data="iterator.type.toString" title="value"
+					columnWidth="200" resizable="true" displayTitle="true" name="label" />
+				<LocalizedDictionary />
+			</Table>
+
 		</Panel>
 	</Panel>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"

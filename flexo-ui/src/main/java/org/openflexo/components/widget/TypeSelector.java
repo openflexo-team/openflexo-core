@@ -47,9 +47,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +60,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.openflexo.connie.type.GenericArrayTypeImpl;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
@@ -74,6 +79,7 @@ import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.TextFieldCustomPopup;
 import org.openflexo.swing.VerticalLayout;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Widget allowing to edit a binding
@@ -91,6 +97,18 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		@Override
 		public String toString() {
 			return "Java type";
+		}
+	};
+	public static final Object JAVA_LIST = new Object() {
+		@Override
+		public String toString() {
+			return "Java list of";
+		}
+	};
+	public static final Object JAVA_MAP = new Object() {
+		@Override
+		public String toString() {
+			return "Java map of";
 		}
 	};
 	public static final Object JAVA_ARRAY = new Object() {
@@ -115,6 +133,48 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	private final PropertyChangeSupport pcSupport;
 
+	private final List<GenericParameter> genericParameters;
+
+	public static class GenericParameter extends PropertyChangedSupportDefaultImplementation {
+		private TypeVariable<?> typeVariable;
+		private Type type;
+
+		public GenericParameter(TypeVariable<?> typeVariable, Type type) {
+			super();
+			this.typeVariable = typeVariable;
+			this.type = type;
+		}
+
+		public TypeVariable<?> getTypeVariable() {
+			return typeVariable;
+		}
+
+		public void setTypeVariable(TypeVariable<?> typeVariable) {
+			if (typeVariable != this.typeVariable) {
+				TypeVariable oldValue = this.typeVariable;
+				this.typeVariable = typeVariable;
+				getPropertyChangeSupport().firePropertyChange("typeVariable", oldValue, typeVariable);
+			}
+		}
+
+		public Type getType() {
+			return type;
+		}
+
+		public void setType(Type type) {
+			if ((type == null && this.type != null) || (type != null && !type.equals(this.type))) {
+				Type oldValue = this.type;
+				this.type = type;
+				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return typeVariable.getName() + "=" + TypeUtils.fullQualifiedRepresentation(type);
+		}
+	}
+
 	public TypeSelector(Type editedObject) {
 		super(editedObject);
 		setRevertValue(editedObject);
@@ -125,8 +185,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			choices.add(primitiveType);
 		}
 		choices.add(JAVA_TYPE);
+		choices.add(JAVA_LIST);
+		choices.add(JAVA_MAP);
 		choices.add(JAVA_ARRAY);
 		choices.add(JAVA_WILDCARD);
+
+		genericParameters = new ArrayList<GenericParameter>();
+
 		fireEditedObjectChanged();
 	}
 
@@ -150,12 +215,16 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public void setChoice(Object choice) {
 		if (this.choice != choice) {
+			Class oldBaseClass = getBaseClass();
 			System.out.println("on change le choix pour " + choice);
 			Object old = this.choice;
 			this.choice = choice;
 
 			if (choice instanceof PrimitiveType) {
 				setEditedObject(((PrimitiveType) choice).getType());
+			} else {
+				// Will cause the edited object to be recomputed from new configuration values
+				setBaseClass(oldBaseClass);
 			}
 			getPropertyChangeSupport().firePropertyChange("choice", old, choice);
 			if (isJavaType()) {
@@ -165,11 +234,15 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	public boolean isJavaType() {
-		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD);
+		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_LIST || choice == JAVA_MAP || choice == JAVA_ARRAY || choice == JAVA_WILDCARD);
 	}
 
 	public boolean isPrimitiveType() {
 		return getPrimitiveType() != null;
+	}
+
+	public boolean hasGenericParameters() {
+		return genericParameters.size() > 0;
 	}
 
 	public PrimitiveType getPrimitiveType() {
@@ -200,7 +273,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			if (getEditedObject() instanceof Class) {
 				setChoice(JAVA_TYPE);
 			}
-			if (choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD) {
+			if (isJavaType() /*choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD*/) {
+
+				updateGenericParameters(getBaseClass());
+
 				getLoadedClassesInfo().setSelectedClassInfo(getLoadedClassesInfo().getClass(getBaseClass()));
 				System.out.println("On a selectionne: " + getLoadedClassesInfo().getSelectedClassInfo());
 				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
@@ -208,8 +284,69 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		}
 	}
 
+	public List<GenericParameter> getGenericParameters() {
+		return genericParameters;
+	}
+
+	private void updateGenericParameters(Class<?> baseClass) {
+		if (baseClass.getTypeParameters().length == 0) {
+			genericParameters.clear();
+		} else {
+			List<GenericParameter> genericParametersToRemove = new ArrayList<GenericParameter>(genericParameters);
+			for (TypeVariable<?> tv : baseClass.getTypeParameters()) {
+				GenericParameter foundGenericParameter = null;
+				for (GenericParameter gp : genericParameters) {
+					if (gp.getTypeVariable() == tv) {
+						foundGenericParameter = gp;
+						genericParametersToRemove.remove(foundGenericParameter);
+						break;
+					}
+				}
+				if (foundGenericParameter == null) {
+					genericParameters.add(new GenericParameter(tv, Object.class));
+				}
+			}
+			for (GenericParameter gpToRemove : genericParametersToRemove) {
+				genericParameters.remove(gpToRemove);
+			}
+		}
+
+		System.out.println("Les gp sont maintenant: " + genericParameters);
+
+		getPropertyChangeSupport().firePropertyChange("genericParameters", null, genericParameters);
+		getPropertyChangeSupport().firePropertyChange("hasGenericParameters", false, true);
+	}
+
 	public Class<?> getBaseClass() {
+		if (choice == JAVA_LIST) {
+			if (getEditedObject() instanceof ParameterizedType
+					&& ((ParameterizedType) getEditedObject()).getActualTypeArguments().length > 0) {
+				return TypeUtils.getBaseClass(((ParameterizedType) getEditedObject()).getActualTypeArguments()[0]);
+			}
+			return Object.class;
+		}
+		if (choice == JAVA_MAP) {
+			if (getEditedObject() instanceof ParameterizedType
+					&& ((ParameterizedType) getEditedObject()).getActualTypeArguments().length > 1) {
+				return TypeUtils.getBaseClass(((ParameterizedType) getEditedObject()).getActualTypeArguments()[1]);
+			}
+			return Object.class;
+		}
 		return TypeUtils.getBaseClass(getEditedObject());
+	}
+
+	public void setBaseClass(Class<?> baseClass) {
+		if (choice == JAVA_LIST) {
+			setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
+		} else if (choice == JAVA_MAP) {
+			setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { Object.class, baseClass }));
+		} else if (choice == JAVA_ARRAY) {
+			setEditedObject(new GenericArrayTypeImpl(baseClass));
+		} else if (choice == JAVA_WILDCARD) {
+
+		} else if (choice == JAVA_TYPE) {
+			setEditedObject(baseClass);
+		}
 	}
 
 	private boolean isListeningLoadedClassesInfo = false;
@@ -227,11 +364,12 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 							ClassInfo classInfo = (ClassInfo) evt.getNewValue();
 							System.out.println("Hop, on y est classInfo=" + classInfo);
 							if (classInfo != null) {
-								setEditedObject(classInfo.getClazz());
+								setBaseClass(classInfo.getClazz());
 							}
 						}
 					}
 				}
+
 			});
 			isListeningLoadedClassesInfo = true;
 		}
