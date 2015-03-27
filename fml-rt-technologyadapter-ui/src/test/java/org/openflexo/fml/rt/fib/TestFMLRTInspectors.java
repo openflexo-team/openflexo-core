@@ -56,6 +56,11 @@ public class TestFMLRTInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML-RT/FlexoConceptInstance.inspector");
+	}
+
+	@Test
 	public void testViewInspector() {
 		validateFIB("Inspectors/FML-RT/View.inspector");
 	}

@@ -14,7 +14,7 @@
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		localize="true">
 	</Label>
-	<Custom componentClassName="org.openflexo.fib.swing.utils.ClassSelector"
+	<Custom componentClassName="org.openflexo.components.widget.TypeSelector"
 		localize="true" manageDynamicModel="true" data="data.propertyType"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" />
 	<Label label="description" align="right" index="10"

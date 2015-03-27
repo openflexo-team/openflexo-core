@@ -229,6 +229,20 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 */
 	public <R> List<R> getAccessibleProperties(Class<R> type);
 
+	/**
+	 * Build and return the list of all accessible roles from this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole> getAccessibleRoles();
+
+	/**
+	 * Build and return the list of all declared roles from this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole> getDeclaredRoles();
+
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
 	@CloningStrategy(StrategyType.CLONE)
@@ -564,6 +578,26 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return returned;
+		}
+
+		/**
+		 * Build and return the list of all accessible roles from this {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole> getAccessibleRoles() {
+			return getAccessibleProperties(FlexoRole.class);
+		}
+
+		/**
+		 * Build and return the list of all declared roles from this {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole> getDeclaredRoles() {
+			return getDeclaredProperties(FlexoRole.class);
 		}
 
 		/**

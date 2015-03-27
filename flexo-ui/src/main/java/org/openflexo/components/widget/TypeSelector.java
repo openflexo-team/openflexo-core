@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -73,6 +74,7 @@ import org.openflexo.fib.swing.utils.LoadedClassesInfo;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -145,6 +147,11 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			this.type = type;
 		}
 
+		public GenericParameter(TypeVariable<?> typeVariable) {
+			super();
+			this.typeVariable = typeVariable;
+		}
+
 		public TypeVariable<?> getTypeVariable() {
 			return typeVariable;
 		}
@@ -158,6 +165,9 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		}
 
 		public Type getType() {
+			if (type == null) {
+				return getUpperBound();
+			}
 			return type;
 		}
 
@@ -172,6 +182,21 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		@Override
 		public String toString() {
 			return typeVariable.getName() + "=" + TypeUtils.fullQualifiedRepresentation(type);
+		}
+
+		public ImageIcon getIcon() {
+			return isValid() ? IconLibrary.VALID_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
+		}
+
+		public boolean isValid() {
+			return (TypeUtils.isTypeAssignableFrom(getUpperBound(), getType()));
+		}
+
+		public Type getUpperBound() {
+			if (getTypeVariable() != null && getTypeVariable().getBounds().length > 0) {
+				return getTypeVariable().getBounds()[0];
+			}
+			return Object.class;
 		}
 	}
 
@@ -273,15 +298,16 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			if (getEditedObject() instanceof Class) {
 				setChoice(JAVA_TYPE);
 			}
-			if (isJavaType() /*choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD*/) {
-
-				updateGenericParameters(getBaseClass());
-
-				getLoadedClassesInfo().setSelectedClassInfo(getLoadedClassesInfo().getClass(getBaseClass()));
-				System.out.println("On a selectionne: " + getLoadedClassesInfo().getSelectedClassInfo());
-				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
-			}
 		}
+		if (isJavaType() /*choice == JAVA_TYPE || choice == JAVA_ARRAY || choice == JAVA_WILDCARD*/) {
+
+			updateGenericParameters(getBaseClass());
+
+			getLoadedClassesInfo().setSelectedClassInfo(LoadedClassesInfo.getClass(getBaseClass()));
+			System.out.println("On a selectionne: " + getLoadedClassesInfo().getSelectedClassInfo());
+			getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
+		}
+
 	}
 
 	public List<GenericParameter> getGenericParameters() {
@@ -303,7 +329,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 					}
 				}
 				if (foundGenericParameter == null) {
-					genericParameters.add(new GenericParameter(tv, Object.class));
+					genericParameters.add(new GenericParameter(tv));
 				}
 			}
 			for (GenericParameter gpToRemove : genericParametersToRemove) {
@@ -344,19 +370,20 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			setEditedObject(new GenericArrayTypeImpl(baseClass));
 		} else if (choice == JAVA_WILDCARD) {
 
-		} else if (choice == JAVA_TYPE) {
+		} else /*if (choice == JAVA_TYPE)*/{
 			setEditedObject(baseClass);
 		}
 	}
 
-	private boolean isListeningLoadedClassesInfo = false;
+	// private boolean isListeningLoadedClassesInfo = false;
+
+	private LoadedClassesInfo loadedClassesInfo = null;
 
 	public LoadedClassesInfo getLoadedClassesInfo() {
 
-		LoadedClassesInfo returned = LoadedClassesInfo.instance(getBaseClass());
-		if (!isListeningLoadedClassesInfo) {
-			returned.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
-
+		if (loadedClassesInfo == null) {
+			loadedClassesInfo = new LoadedClassesInfo(getBaseClass());
+			loadedClassesInfo.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					if (evt.getPropertyName().equals("selectedClassInfo")) {
@@ -371,9 +398,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 				}
 
 			});
-			isListeningLoadedClassesInfo = true;
 		}
-		return returned;
+		return loadedClassesInfo;
 	}
 
 	@Override
@@ -552,7 +578,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	/**
-	 * This main allows to launch an application testing the BindingSelector
+	 * This main allows to launch an application testing the TypeSelector
 	 * 
 	 * @param args
 	 * @throws SecurityException
