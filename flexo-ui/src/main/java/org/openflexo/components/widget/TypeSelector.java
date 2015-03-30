@@ -136,6 +136,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	private final PropertyChangeSupport pcSupport;
 
 	private final List<GenericParameter> genericParameters;
+	private final List<GenericBound> upperBounds;
+	private final List<GenericBound> lowerBounds;
 
 	private Type keyType = Object.class;
 
@@ -214,6 +216,56 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		}
 	}
 
+	public class GenericBound extends PropertyChangedSupportDefaultImplementation {
+		private Type type;
+
+		public GenericBound(Type type) {
+			super();
+			this.type = type;
+		}
+
+		public GenericBound() {
+			this(null);
+		}
+
+		public Type getType() {
+			return type;
+		}
+
+		public void setType(Type type) {
+
+			if ((type == null && this.type != null) || (type != null && !type.equals(this.type))) {
+				Type oldValue = this.type;
+				this.type = type;
+
+				Type[] params = new Type[genericParameters.size()];
+				for (int i = 0; i < genericParameters.size(); i++) {
+					params[i] = genericParameters.get(i).getType();
+				}
+				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));
+
+				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return TypeUtils.fullQualifiedRepresentation(type);
+		}
+
+		public ImageIcon getIcon() {
+			return isValid() ? IconLibrary.VALID_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
+		}
+
+		public boolean isValid() {
+			return true;
+		}
+
+		public String getTypeStringRepresentation() {
+			return TypeUtils.simpleRepresentation(getType());
+		}
+	}
+
 	public TypeSelector(Type editedObject) {
 		super(editedObject);
 		setRevertValue(editedObject);
@@ -230,6 +282,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		choices.add(JAVA_WILDCARD);
 
 		genericParameters = new ArrayList<GenericParameter>();
+		upperBounds = new ArrayList<GenericBound>();
+		lowerBounds = new ArrayList<GenericBound>();
 
 		fireEditedObjectChanged();
 	}
@@ -268,6 +322,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			getPropertyChangeSupport().firePropertyChange("isJavaType", !isJavaType(), isJavaType());
 			getPropertyChangeSupport().firePropertyChange("isPrimitiveType", !isPrimitiveType(), isPrimitiveType());
 			getPropertyChangeSupport().firePropertyChange("isJavaMap", !isJavaMap(), isJavaMap());
+			getPropertyChangeSupport().firePropertyChange("hasBaseJavaClass", !hasBaseJavaClass(), hasBaseJavaClass());
+			getPropertyChangeSupport().firePropertyChange("isJavaWildcard", !isJavaWildcard(), isJavaWildcard());
 			if (isJavaType()) {
 				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 			}
@@ -284,6 +340,14 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public boolean isJavaMap() {
 		return (choice == JAVA_MAP);
+	}
+
+	public boolean isJavaWildcard() {
+		return (choice == JAVA_WILDCARD);
+	}
+
+	public boolean hasBaseJavaClass() {
+		return isJavaType() && (choice != JAVA_WILDCARD);
 	}
 
 	public boolean hasGenericParameters() {
@@ -342,6 +406,14 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		return genericParameters;
 	}
 
+	public List<GenericBound> getUpperBounds() {
+		return upperBounds;
+	}
+
+	public List<GenericBound> getLowerBounds() {
+		return lowerBounds;
+	}
+
 	private void updateGenericParameters(Class<?> baseClass) {
 		if (baseClass.getTypeParameters().length == 0) {
 			genericParameters.clear();
@@ -387,18 +459,30 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		return TypeUtils.getBaseClass(getEditedObject());
 	}
 
+	private ParameterizedType makeParameterizedType(Class<?> baseClass) {
+		Type[] params = new Type[genericParameters.size()];
+		for (int i = 0; i < genericParameters.size(); i++) {
+			params[i] = genericParameters.get(i).getType();
+		}
+		return new ParameterizedTypeImpl(baseClass, params);
+	}
+
 	public void setBaseClass(Class<?> baseClass) {
 		if (choice == JAVA_LIST) {
-			setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
+			if (hasGenericParameters()) {
+				setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
+			} else {
+				setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
+			}
 		} else if (choice == JAVA_MAP) {
-			setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { Object.class, baseClass }));
+			if (hasGenericParameters()) {
+				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), makeParameterizedType(baseClass) }));
+			} else {
+				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), baseClass }));
+			}
 		} else if (choice == JAVA_ARRAY) {
 			if (hasGenericParameters()) {
-				Type[] params = new Type[genericParameters.size()];
-				for (int i = 0; i < genericParameters.size(); i++) {
-					params[i] = genericParameters.get(i).getType();
-				}
-				setEditedObject(new GenericArrayTypeImpl(new ParameterizedTypeImpl(baseClass, params)));
+				setEditedObject(new GenericArrayTypeImpl(makeParameterizedType(baseClass)));
 			} else {
 				setEditedObject(new GenericArrayTypeImpl(baseClass));
 			}
@@ -406,11 +490,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 		} else /*if (choice == JAVA_TYPE)*/{
 			if (hasGenericParameters()) {
-				Type[] params = new Type[genericParameters.size()];
-				for (int i = 0; i < genericParameters.size(); i++) {
-					params[i] = genericParameters.get(i).getType();
-				}
-				setEditedObject(new ParameterizedTypeImpl(baseClass, params));
+				setEditedObject(makeParameterizedType(baseClass));
 			} else {
 				setEditedObject(baseClass);
 			}
