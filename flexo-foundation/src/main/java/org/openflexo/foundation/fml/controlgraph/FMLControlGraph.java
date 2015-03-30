@@ -180,7 +180,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			return getBindingModel();
 		}
 
-
 		@Override
 		public FlexoConcept getFlexoConcept() {
 			if (getOwner() != null) {
@@ -228,19 +227,24 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		@Override
 		public boolean delete(Object... context) {
 
+			// This part is valid only if we are not deleting the owner also.
+
 			// We first store actual owning context
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
 
-			// Following statement is really important, we need first to "disconnect" actual control graph
-			// owner.setControlGraph(null, ownerContext);
+			// This part is valid only if we are not deleting the owner also.
+			if (owner != null) {
+				// Following statement is really important, we need first to "disconnect" actual control graph
+				// owner.setControlGraph(null, ownerContext);
 
-			// Now we instanciate new EmptyControlGraph, and perform the replacement
-			FMLModelFactory factory = getFMLModelFactory();
-			replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
+				// Now we instanciate new EmptyControlGraph, and perform the replacement
+				FMLModelFactory factory = getFMLModelFactory();
+				replaceWith(factory.newEmptyControlGraph(), owner, ownerContext);
 
-			// We reduce owner
-			owner.reduce();
+				// We reduce owner
+				owner.reduce();
+			}
 
 			// Now this control graph should be dereferenced
 			// We finally call super delete, and this control graph will be really deleted

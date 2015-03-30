@@ -36,67 +36,28 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Represents the cardinality of a role
- * 
- * <ul>
- * <li><tt>ZeroOne</tt>: means that the value is unique or null</li>
- * <li><tt>One</tt>: means that the value is unique and non-null</li>
- * <li><tt>ZeroMany</tt>: means that the value is represented by a list which is eventually empty</li>
- * <li><tt>OneMany</tt>: means that the value is represented by a non-empty list</li>
- * </ul>
+ * Annotation used to provide to a {@link TechnologyAdapter} the list of all {@link TechnologySpecificType} to consider
  * 
  * @author sylvain
  * 
  */
-public enum RoleCardinality {
-	ZeroOne {
-		@Override
-		public boolean isMultipleCardinality() {
-			return false;
-		}
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target(value = ElementType.TYPE)
+public @interface DeclareTechnologySpecificTypes {
 
-		@Override
-		public String stringRepresentation() {
-			return "0-1";
-		}
-	},
-	One {
-		@Override
-		public boolean isMultipleCardinality() {
-			return false;
-		}
+	public Class<? extends TechnologySpecificType<?>>[] value();
 
-		@Override
-		public String stringRepresentation() {
-			return "1";
-		}
-	},
-	ZeroMany {
-		@Override
-		public boolean isMultipleCardinality() {
-			return true;
-		}
-
-		@Override
-		public String stringRepresentation() {
-			return "0..*";
-		}
-	},
-	OneMany {
-		@Override
-		public boolean isMultipleCardinality() {
-			return true;
-		}
-
-		@Override
-		public String stringRepresentation() {
-			return "1..*";
-		}
-	};
-	public abstract boolean isMultipleCardinality();
-
-	public abstract String stringRepresentation();
 }

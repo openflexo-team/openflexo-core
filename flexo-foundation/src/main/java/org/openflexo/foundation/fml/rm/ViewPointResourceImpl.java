@@ -593,7 +593,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	@Override
 	public boolean delete(Object... context) {
-		if (super.delete(context)) {
+		if (super.delete(context) && getServiceManager()!=null) {
 			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			return true;
 		}
@@ -915,7 +915,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		// Edition Patterns
 		// Edition patterns name
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
-		// Parent pattern role is no more an attribute but an element
+		// Parent pattern property is no more an attribute but an element
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
 		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
 

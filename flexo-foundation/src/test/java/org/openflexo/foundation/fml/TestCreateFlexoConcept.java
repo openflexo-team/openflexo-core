@@ -122,8 +122,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		if (newVirtualModel instanceof ViewPoint) {
 			assertEquals(null, newVirtualModel.getOwningVirtualModel());
-		}
-		else {
+		} else {
 			assertNotNull(newVirtualModel.getOwningVirtualModel());
 		}
 
@@ -314,10 +313,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		PrimitiveRole<Integer> role3 = (PrimitiveRole<Integer>) createPR3.getNewFlexoRole();
 		assertNotNull(role3);
 
-		assertEquals(3, flexoConceptA.getFlexoRoles().size());
-		assertTrue(flexoConceptA.getFlexoRoles().contains(role1));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(role2));
-		assertTrue(flexoConceptA.getFlexoRoles().contains(role3));
+		assertEquals(3, flexoConceptA.getFlexoProperties().size());
+		assertTrue(flexoConceptA.getFlexoProperties().contains(role1));
+		assertTrue(flexoConceptA.getFlexoProperties().contains(role2));
+		assertTrue(flexoConceptA.getFlexoProperties().contains(role3));
 
 		assertEquals(newViewPoint, role1.getViewPoint());
 		assertEquals(newVirtualModel, role1.getOwningVirtualModel());

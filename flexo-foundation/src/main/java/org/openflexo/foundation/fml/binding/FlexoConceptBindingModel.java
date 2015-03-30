@@ -51,6 +51,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -75,7 +76,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 
 	private BindingVariable reflexiveAccessBindingVariable;
 	// private BindingVariable virtualModelInstanceBindingVariable;
-	private final Map<FlexoRole<?>, FlexoRoleBindingVariable> roleVariablesMap;
+	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<FlexoConcept>();
 
 	private BindingVariable flexoConceptInstanceBindingVariable;
@@ -118,8 +119,8 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		roleVariablesMap = new HashMap<FlexoRole<?>, FlexoRoleBindingVariable>();
-		updateRoleVariables();
+		propertyVariablesMap = new HashMap<FlexoProperty<?>, FlexoPropertyBindingVariable>();
+		updatePropertyVariables();
 		updateParentFlexoConceptListeners();
 	}
 
@@ -155,42 +156,47 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 				flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
 				// .getFlexoConceptInstanceType(flexoConcept.getVirtualModel()) : VirtualModelInstance.class);
-			} else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_ROLES_KEY)) {
+			} else if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Roles were modified in related flexoConcept
-				updateRoleVariables();
+				updatePropertyVariables();
 			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
-				updateRoleVariables();
+				updatePropertyVariables();
 			}
 		} else if (knownParentConcepts.contains(evt.getSource())) {
-			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_ROLES_KEY)) {
+			if (evt.getPropertyName().equals(FlexoConcept.FLEXO_PROPERTIES_KEY)) {
 				// Roles were modified in any of parent FlexoConcept
-				updateRoleVariables();
+				updatePropertyVariables();
 			} else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
-				updateRoleVariables();
+				updatePropertyVariables();
 			}
 		}
 	}
 
-	private void updateRoleVariables() {
+	private void updatePropertyVariables() {
 
-		List<FlexoRole<?>> rolesToBeDeleted = new ArrayList<FlexoRole<?>>(roleVariablesMap.keySet());
+		List<FlexoProperty<?>> propertiesToBeDeleted = new ArrayList<FlexoProperty<?>>(propertyVariablesMap.keySet());
 
-		for (FlexoRole<?> r : flexoConcept.getAllRoles()) {
-			if (rolesToBeDeleted.contains(r)) {
-				rolesToBeDeleted.remove(r);
-			} else if (roleVariablesMap.get(r) == null) {
-				FlexoRoleBindingVariable bv = new FlexoRoleBindingVariable(r);
+		for (FlexoProperty<?> r : flexoConcept.getAccessibleProperties()) {
+			if (propertiesToBeDeleted.contains(r)) {
+				propertiesToBeDeleted.remove(r);
+			} else if (propertyVariablesMap.get(r) == null) {
+				FlexoPropertyBindingVariable bv;
+				if (r instanceof FlexoRole) {
+					bv = new FlexoRoleBindingVariable((FlexoRole<?>) r);
+				} else {
+					bv = new FlexoPropertyBindingVariable(r);
+				}
 				addToBindingVariables(bv);
-				roleVariablesMap.put(r, bv);
+				propertyVariablesMap.put(r, bv);
 			}
 		}
 
-		for (FlexoRole<?> r : rolesToBeDeleted) {
-			FlexoRoleBindingVariable bvToRemove = roleVariablesMap.get(r);
+		for (FlexoProperty<?> r : propertiesToBeDeleted) {
+			FlexoPropertyBindingVariable bvToRemove = propertyVariablesMap.get(r);
 			removeFromBindingVariables(bvToRemove);
-			roleVariablesMap.remove(r);
+			propertyVariablesMap.remove(r);
 			bvToRemove.delete();
 		}
 

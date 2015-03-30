@@ -64,7 +64,43 @@ import org.openflexo.model.annotations.XMLElement;
 public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 	public static enum PrimitiveType {
-		Boolean, String, LocalizedString, Integer, Float
+		Boolean {
+			@Override
+			public Type getType() {
+				return Boolean.class;
+			}
+		},
+		String {
+			@Override
+			public Type getType() {
+				return String.class;
+			}
+		},
+		Integer {
+			@Override
+			public Type getType() {
+				return Integer.class;
+			}
+		},
+		Float {
+			@Override
+			public Type getType() {
+				return Float.class;
+			}
+		},
+		Double {
+			@Override
+			public Type getType() {
+				return Double.class;
+			}
+		};
+
+		public abstract Type getType();
+
+		@Override
+		public String toString() {
+			return FlexoLocalization.localizedForKey(name());
+		}
 	}
 
 	@PropertyIdentifier(type = PrimitiveType.class)
@@ -114,20 +150,7 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			if (primitiveType == null) {
 				return null;
 			}
-			switch (primitiveType) {
-			case String:
-				return FlexoLocalization.localizedForKey("string");
-			case LocalizedString:
-				return FlexoLocalization.localizedForKey("localized_string");
-			case Boolean:
-				return FlexoLocalization.localizedForKey("boolean");
-			case Integer:
-				return FlexoLocalization.localizedForKey("integer");
-			case Float:
-				return FlexoLocalization.localizedForKey("float");
-			default:
-				return null;
-			}
+			return FlexoLocalization.localizedForKey(primitiveType.name());
 		}
 
 		@Override
@@ -135,31 +158,9 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			if (primitiveType == null) {
 				return null;
 			}
-			switch (primitiveType) {
-			case String:
-				return String.class;
-			case LocalizedString:
-				return String.class;
-			case Boolean:
-				return Boolean.class;
-			case Integer:
-				return Integer.class;
-			case Float:
-				return Float.class;
-			default:
-				return null;
-			}
-		}
+			return primitiveType.getType();
 
-		/*@Override
-		public boolean getIsPrimaryRole() {
-			return false;
 		}
-
-		@Override
-		public void setIsPrimaryRole(boolean isPrimary) {
-			// Not relevant
-		}*/
 
 		/**
 		 * Encodes the default cloning strategy

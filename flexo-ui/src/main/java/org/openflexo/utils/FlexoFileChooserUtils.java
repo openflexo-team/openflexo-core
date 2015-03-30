@@ -150,9 +150,12 @@ public class FlexoFileChooserUtils {
 
 		@Override
 		public boolean accept(File dir, String name) {
+			// System.out.println("Est ce que c'est bon ? " + dir + " name=" + name);
 			if (new File(dir, name).isDirectory() && name.toLowerCase().endsWith(".prj")) {
+				// System.out.println("oui");
 				return true;
 			}
+			// System.out.println("non");
 			return false;
 		}
 	}
@@ -174,6 +177,7 @@ public class FlexoFileChooserUtils {
 		 */
 		@Override
 		public Boolean isTraversable(File f) {
+			System.out.println("isTraversable: " + f);
 			if (f == null || !f.isDirectory()) {
 				return Boolean.FALSE;
 			}

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -120,21 +121,11 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 		@Override
 		public Class<? extends T> getActorClass() {
 
-			System.out.println("role=" + getFlexoRole());
-
-			switch (getFlexoRole().getPrimitiveType()) {
-			case String:
-			case LocalizedString:
-				return (Class<? extends T>) String.class;
-			case Boolean:
-				return (Class<? extends T>) Boolean.class;
-			case Float:
-				return (Class<? extends T>) Float.class;
-			case Integer:
-				return (Class<? extends T>) Integer.class;
-			default:
-				return (Class<? extends T>) Object.class;
+			if (getFlexoRole().getPrimitiveType() == null) {
+				return null;
 			}
+
+			return (Class<? extends T>) TypeUtils.getBaseClass(getFlexoRole().getPrimitiveType().getType());
 		}
 
 		@Override

@@ -134,7 +134,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
-			logger.warning("Unexpected pattern role: " + patternRoleClass.getName());
+			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
 			return null;
 		}
 

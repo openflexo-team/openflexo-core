@@ -49,7 +49,7 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -76,7 +76,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<T> object);
 
-	public FlexoRole getFlexoRole();
+	public FlexoProperty<?> getAssignedFlexoProperty();
 
 	public static abstract class DeleteActionImpl<T extends FlexoObject> extends EditionActionImpl implements DeleteAction<T> {
 
@@ -130,11 +130,11 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		}
 
 		@Override
-		public FlexoRole getFlexoRole() {
+		public FlexoProperty<?> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getFlexoConcept().getFlexoRole(getObject().toString());
+			return getFlexoConcept().getAccessibleProperty(getObject().toString());
 		}
 
 		@Override

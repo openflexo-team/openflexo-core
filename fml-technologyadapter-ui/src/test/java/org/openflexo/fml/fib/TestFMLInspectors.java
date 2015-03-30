@@ -56,6 +56,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAbstractPropertyInspector() {
+		validateFIB("Inspectors/FML/AbstractProperty.inspector");
+	}
+
+	@Test
 	public void testAddClassInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddClass.inspector");
 	}
@@ -91,13 +96,13 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testDeleteFlexoConceptInstanceInspector() {
-		validateFIB("Inspectors/FML/EditionAction/DeleteFlexoConceptInstance.inspector");
+	public void testDeleteActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/DeleteAction.inspector");
 	}
 
 	@Test
-	public void testDeleteActionInspector() {
-		validateFIB("Inspectors/FML/EditionAction/DeleteAction.inspector");
+	public void testDeleteFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/DeleteFlexoConceptInstance.inspector");
 	}
 
 	@Test
@@ -143,6 +148,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testTechnologySpecificActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/TechnologySpecificAction.inspector");
+	}
+
+	@Test
+	public void testExpressionPropertyInspector() {
+		validateFIB("Inspectors/FML/ExpressionProperty.inspector");
 	}
 
 	@Test
@@ -281,6 +291,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFlexoPropertyInspector() {
+		validateFIB("Inspectors/FML/FlexoProperty.inspector");
+	}
+
+	@Test
 	public void testClassPatternRoleInspector() {
 		validateFIB("Inspectors/FML/FlexoRole/ClassPatternRole.inspector");
 	}
@@ -328,6 +343,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testFMLObjectInspector() {
 		validateFIB("Inspectors/FML/FMLObject.inspector");
+	}
+
+	@Test
+	public void testGetSetPropertyInspector() {
+		validateFIB("Inspectors/FML/GetSetProperty.inspector");
 	}
 
 	@Test

@@ -317,10 +317,12 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 					if (at.getName().equals("name")) {
 						logger.fine("Returned " + at.getValue());
 						returned.name = at.getValue();
-					} else if (at.getName().equals("version")) {
+					}
+					else if (at.getName().equals("version")) {
 						logger.fine("Returned " + at.getValue());
 						returned.version = at.getValue();
-					} else if (at.getName().equals("modelVersion")) {
+					}
+					else if (at.getName().equals("modelVersion")) {
 						logger.fine("Returned " + at.getValue());
 						returned.modelVersion = at.getValue();
 					}
@@ -393,7 +395,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public boolean delete(Object... context) {
 		if (super.delete(context)) {
-			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
+			if (getServiceManager() != null) {
+				getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
+			}
 			return true;
 		}
 		return false;
@@ -427,7 +431,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
-		} else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+		}
+		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
 			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
 			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
 			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList()

@@ -41,10 +41,58 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
+import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class SubClassOfClass<TA extends TechnologyAdapter> implements TechnologySpecificCustomType<TA> {
+public class SubClassOfClass<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+
+	/**
+	 * Factory for SubClassOfClass instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>> implements ReferenceOwner {
+
+		public SubClassOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public SubClassOfClass<?> makeCustomType(String configuration) {
+
+			FlexoObjectReference<IFlexoOntologyClass<?>> reference = new FlexoObjectReference<IFlexoOntologyClass<?>>(configuration, this);
+
+			IFlexoOntologyClass<?> ontologyClass = reference.getObject();
+
+			if (ontologyClass != null) {
+				return getSubClassOfClass(ontologyClass);
+			}
+			return null;
+		}
+
+		@Override
+		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectDeleted(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		}
+
+	}
 
 	public static <TA extends TechnologyAdapter> SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
@@ -60,7 +108,10 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	}
 
 	public IFlexoOntologyClass<TA> getOntologyClass() {
-		return ontologyClass;
+		if (ontologyClass != null) {
+			return ontologyClass;
+		}
+		return null;
 	}
 
 	@Override
@@ -79,12 +130,17 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 
 	@Override
 	public String simpleRepresentation() {
-		return "Class" + ":" + ontologyClass.getName();
+		return getClass().getSimpleName() + "(" + (ontologyClass != null ? ontologyClass.getName() : "") + ")";
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "Class" + ":" + ontologyClass.getURI();
+		return getClass().getName() + "(" + getSerializationRepresentation() + ")";
+	}
+
+	@Override
+	public String getSerializationRepresentation() {
+		return new FlexoObjectReference<IFlexoOntologyClass<TA>>(ontologyClass).getStringRepresentation();
 	}
 
 	@Override
@@ -93,6 +149,40 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 			return getOntologyClass().getTechnologyAdapter();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return ontologyClass != null;
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ontologyClass == null) ? 0 : ontologyClass.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SubClassOfClass<?> other = (SubClassOfClass<?>) obj;
+		if (ontologyClass == null) {
+			if (other.ontologyClass != null)
+				return false;
+		} else if (!ontologyClass.equals(other.ontologyClass))
+			return false;
+		return true;
 	}
 
 }

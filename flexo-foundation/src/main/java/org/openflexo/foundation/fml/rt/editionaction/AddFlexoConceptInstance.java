@@ -204,8 +204,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 			if (creationScheme == null && _creationSchemeURI != null && getViewPointLibrary() != null) {
 				creationScheme = (CreationScheme) getViewPointLibrary().getFlexoBehaviour(_creationSchemeURI);
 			}
-			if (creationScheme == null && getFlexoRole() instanceof FlexoConceptInstanceRole) {
-				creationScheme = ((FlexoConceptInstanceRole) getFlexoRole()).getCreationScheme();
+			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
+				creationScheme = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
 			}
 			return creationScheme;
 		}

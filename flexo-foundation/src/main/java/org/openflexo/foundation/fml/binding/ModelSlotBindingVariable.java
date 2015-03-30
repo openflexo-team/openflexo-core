@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
-public class ModelSlotBindingVariable extends FlexoRoleBindingVariable {
+public class ModelSlotBindingVariable extends FlexoPropertyBindingVariable {
 	static final Logger logger = Logger.getLogger(ModelSlotBindingVariable.class.getPackage().getName());
 
 	public ModelSlotBindingVariable(ModelSlot<?> modelSlot) {
@@ -55,7 +55,7 @@ public class ModelSlotBindingVariable extends FlexoRoleBindingVariable {
 	}
 
 	public ModelSlot<?> getModelSlot() {
-		return (ModelSlot<?>) getFlexoRole();
+		return (ModelSlot<?>) getFlexoProperty();
 	}
 
 }

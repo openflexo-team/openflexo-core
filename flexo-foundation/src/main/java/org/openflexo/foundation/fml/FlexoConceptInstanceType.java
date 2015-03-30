@@ -41,10 +41,11 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represent the type of a FlexoConceptInstance of a given FlexoConcept
@@ -52,16 +53,49 @@ import org.openflexo.logging.FlexoLogger;
  * @author sylvain
  * 
  */
-public class FlexoConceptInstanceType implements CustomType {
+public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechnologyAdapter> {
 
 	protected FlexoConcept flexoConcept;
+	protected String conceptURI;
 
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
-	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType(null);
+	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
+
+	/**
+	 * Factory for FlexoConceptInstanceType instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static class FlexoConceptInstanceTypeFactory extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType> {
+
+		public FlexoConceptInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public FlexoConceptInstanceType makeCustomType(String configuration) {
+
+			FlexoConcept concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+					.getFlexoConcept(configuration);
+
+			if (concept != null) {
+				return getFlexoConceptInstanceType(concept);
+			} else {
+				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+				// if FlexoConcept might be resolved later
+				return new FlexoConceptInstanceType(configuration);
+			}
+		}
+	}
 
 	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		this.flexoConcept = anFlexoConcept;
+	}
+
+	protected FlexoConceptInstanceType(String flexoConceptURI) {
+		this.conceptURI = flexoConceptURI;
 	}
 
 	public FlexoConcept getFlexoConcept() {
@@ -69,12 +103,16 @@ public class FlexoConceptInstanceType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
-		if (getFlexoConcept() instanceof VirtualModel) {
-			return VirtualModelInstance.class;
-		} else {
-			return FlexoConceptInstance.class;
+	public FMLTechnologyAdapter getSpecificTechnologyAdapter() {
+		if (flexoConcept != null) {
+			return flexoConcept.getTechnologyAdapter();
 		}
+		return null;
+	}
+
+	@Override
+	public Class<?> getBaseClass() {
+		return FlexoConceptInstance.class;
 	}
 
 	@Override
@@ -89,12 +127,12 @@ public class FlexoConceptInstanceType implements CustomType {
 
 	@Override
 	public String simpleRepresentation() {
-		return "FlexoConceptInstanceType" + (flexoConcept != null ? ":" + flexoConcept.toString() : "");
+		return getClass().getSimpleName() + "(" + (flexoConcept != null ? flexoConcept.getName() : "") + ")";
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoConceptInstanceType" + (flexoConcept != null ? ":" + flexoConcept.toString() : "");
+		return getClass().getName() + "(" + getSerializationRepresentation() + ")";
 	}
 
 	@Override
@@ -102,7 +140,59 @@ public class FlexoConceptInstanceType implements CustomType {
 		return simpleRepresentation();
 	}
 
-	public static Type getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
+	@Override
+	public String getSerializationRepresentation() {
+		return (flexoConcept != null ? flexoConcept.getURI() : conceptURI);
+	}
+
+	@Override
+	public boolean isResolved() {
+		return flexoConcept != null || StringUtils.isEmpty(conceptURI);
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
+		if (factory instanceof FlexoConceptInstanceTypeFactory) {
+			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
+					.getServiceManager().getViewPointLibrary().getFlexoConcept(conceptURI);
+			if (concept != null) {
+				flexoConcept = concept;
+			}
+		}
+	}
+
+	/*@Override
+	public void setSerializedConfiguration(String aConfiguration, ModelFactory factory) {
+		System.out.println("Tiens, faudrait que je puisse configurer " + this + " avec " + aConfiguration + " for " + factory);
+	}*/
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((flexoConcept == null) ? 0 : flexoConcept.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FlexoConceptInstanceType other = (FlexoConceptInstanceType) obj;
+		if (flexoConcept == null) {
+			if (other.flexoConcept != null)
+				return false;
+		} else if (!flexoConcept.equals(other.flexoConcept)) {
+			return false;
+		}
+		return true;
+	}
+
+	public static FlexoConceptInstanceType getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		if (anFlexoConcept != null) {
 			return anFlexoConcept.getInstanceType();
 		} else {

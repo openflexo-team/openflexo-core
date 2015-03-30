@@ -42,12 +42,10 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -102,33 +100,28 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 
 	@Override
 	public VirtualModelInstance retrieveVirtualModelInstance() {
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
 		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
 			return (VirtualModelInstance) getFlexoConceptInstance();
 		}
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getVirtualModelInstance();
 		}
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public Object getValue(BindingVariable variable) {
 		return super.getValue(variable);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof FlexoRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
+		// Why not upper ?
+		if (variable instanceof FlexoPropertyBindingVariable) {
+			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
 			return;
 		}
 		super.setValue(value, variable);
-	}
+	}*/
 
 }

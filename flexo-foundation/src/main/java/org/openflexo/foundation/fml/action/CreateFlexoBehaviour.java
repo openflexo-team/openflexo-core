@@ -71,7 +71,6 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
-// TODO: rename as CreateFlexoBehaviour
 public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
@@ -230,7 +229,7 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 	public String getFlexoBehaviourName() {
 		if (StringUtils.isEmpty(flexoBehaviourName) && flexoBehaviourClass != null) {
-			return getFlexoConcept().getAvailableEditionSchemeName(defaultFlexoBehaviourBaseName());
+			return getFlexoConcept().getAvailableFlexoBehaviourName(defaultFlexoBehaviourBaseName());
 		}
 		return flexoBehaviourName;
 	}

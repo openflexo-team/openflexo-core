@@ -188,7 +188,7 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
 		if (fci != null && variable != null) {
 			if (variable instanceof FlexoRoleBindingVariable) {
-				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
+				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return fci.getFlexoActor(role);
 				} else {
@@ -198,15 +198,6 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			return super.getValue(variable);
 		}
 		return null;
-	}
-
-	@Override
-	public void setValue(Object value, BindingVariable variable) {
-		if (variable instanceof FlexoRoleBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, ((FlexoRoleBindingVariable) variable).getFlexoRole());
-			return;
-		}
-		super.setValue(value, variable);
 	}
 
 	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {

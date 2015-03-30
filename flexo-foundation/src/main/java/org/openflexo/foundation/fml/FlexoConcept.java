@@ -39,8 +39,6 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -104,7 +102,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_BEHAVIOURS_KEY = "flexoBehaviours";
 	@PropertyIdentifier(type = List.class)
-	public static final String FLEXO_ROLES_KEY = "flexoRoles";
+	public static final String FLEXO_PROPERTIES_KEY = "flexoProperties";
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
 	@PropertyIdentifier(type = List.class)
@@ -113,6 +111,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public static final String CHILD_FLEXO_CONCEPTS_KEY = "childFlexoConcepts";
 	@PropertyIdentifier(type = List.class)
 	public static final String FLEXO_CONCEPT_CONSTRAINTS_KEY = "flexoConceptConstraints";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -151,56 +151,97 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
 
-	@Getter(value = FLEXO_ROLES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoRole<?>> getFlexoRoles();
+	public List<FlexoProperty<?>> getFlexoProperties();
 
-	@Setter(FLEXO_ROLES_KEY)
-	public void setFlexoRoles(List<FlexoRole<?>> patternRoles);
+	@Setter(FLEXO_PROPERTIES_KEY)
+	public void setFlexoProperties(List<FlexoProperty<?>> properties);
 
-	@Adder(FLEXO_ROLES_KEY)
+	@Adder(FLEXO_PROPERTIES_KEY)
 	@PastingPoint
-	public void addToFlexoRoles(FlexoRole<?> aPatternRole);
+	public void addToFlexoProperties(FlexoProperty<?> aProperty);
 
-	@Remover(FLEXO_ROLES_KEY)
-	public void removeFromFlexoRoles(FlexoRole<?> aPatternRole);
+	@Remover(FLEXO_PROPERTIES_KEY)
+	public void removeFromFlexoProperties(FlexoProperty<?> aProperty);
+
+	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAbstract();
+
+	@Setter(IS_ABSTRACT_KEY)
+	public void setAbstract(boolean isAbstract);
 
 	/**
-	 * Return declared roles for this {@link FlexoConcept}<br>
-	 * Declared roles are those returned by getFlexoRoles() method
+	 * Return declared properties for this {@link FlexoConcept}<br>
+	 * Declared properties are those returned by getFlexoProperties() method
 	 * 
 	 * @return
 	 */
-	public List<FlexoRole<?>> getDeclaredRoles();
+	public List<FlexoProperty<?>> getDeclaredProperties();
 
 	/**
-	 * Build and return all roles for this {@link FlexoConcept}<br>
-	 * This returned {@link List} includes all declared roles for this FlexoConcept, augmented with all roles of parent {@link FlexoConcept}
+	 * Build and return all end-properties for this {@link FlexoConcept}<br>
+	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+	 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
 	 * 
 	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
 	 * 
 	 * @return
 	 */
-	public List<FlexoRole<?>> getAllRoles();
+	public List<FlexoProperty<?>> getAccessibleProperties();
 
 	/**
-	 * Return {@link FlexoRole} identified by supplied name
+	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
+	 * Note that returned property is not necessary one of declared property, but might be inherited.
 	 * 
-	 * @param flexoRoleName
+	 * @param propertyName
 	 * @return
+	 * @see #getAccessibleProperties()
 	 */
-	@Finder(collection = FLEXO_ROLES_KEY, attribute = FlexoRole.NAME_KEY)
-	public FlexoRole<?> getFlexoRole(String flexoRoleName);
+	public FlexoProperty<?> getAccessibleProperty(String propertyName);
 
 	/**
-	 * Build and return the list of {@link FlexoRole} with supplied type
+	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all declared properties<br>
+	 * 
+	 * @param propertyName
+	 * @return
+	 * @see #getDeclaredProperties()
+	 */
+	public FlexoProperty<?> getDeclaredProperty(String propertyName);
+
+	/**
+	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public <R> List<R> getFlexoRoles(Class<R> type);
+	public <R> List<R> getDeclaredProperties(Class<R> type);
+
+	/**
+	 * Build and return the list of all declared {@link FlexoProperty} with supplied type
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public <R> List<R> getAccessibleProperties(Class<R> type);
+
+	/**
+	 * Build and return the list of all accessible roles from this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole> getAccessibleRoles();
+
+	/**
+	 * Build and return the list of all declared roles from this {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoRole> getDeclaredRoles();
 
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
@@ -304,9 +345,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public boolean isSuperConceptOf(FlexoConcept flexoConcept);
 
-	public String getAvailableRoleName(String baseName);
+	public String getAvailablePropertyName(String baseName);
 
-	public String getAvailableEditionSchemeName(String baseName);
+	public String getAvailableFlexoBehaviourName(String baseName);
 
 	public boolean hasNature(FlexoConceptNature nature);
 
@@ -430,15 +471,25 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 		}
 
+		@Override
+		public boolean isAbstract() {
+			for (FlexoProperty<?> p : getAccessibleProperties()) {
+				if (p.isAbstract()) {
+					return true;
+				}
+			}
+			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+		}
+
 		/**
-		 * Return declared roles for this {@link FlexoConcept}<br>
-		 * Declared roles are those returned by getFlexoRoles() method
+		 * Return declared properties for this {@link FlexoConcept}<br>
+		 * Declared properties are those returned by getFlexoProperties() method
 		 * 
 		 * @return
 		 */
 		@Override
-		public List<FlexoRole<?>> getDeclaredRoles() {
-			return getFlexoRoles();
+		public List<FlexoProperty<?>> getDeclaredProperties() {
+			return getFlexoProperties();
 		}
 
 		/**
@@ -451,49 +502,66 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 * @return
 		 */
 		@Override
-		public List<FlexoRole<?>> getAllRoles() {
+		public List<FlexoProperty<?>> getAccessibleProperties() {
 			if (getParentFlexoConcepts().size() == 0) {
-				return getDeclaredRoles();
+				return getDeclaredProperties();
 			}
 
-			List<FlexoRole<?>> returned = new ArrayList<FlexoRole<?>>();
-			returned.addAll(getDeclaredRoles());
-			for (FlexoConcept concept : getParentFlexoConcepts()) {
-				returned.addAll(concept.getAllRoles());
+			List<FlexoProperty<?>> returned = new ArrayList<FlexoProperty<?>>();
+			List<FlexoProperty<?>> inheritedProperties = new ArrayList<FlexoProperty<?>>();
+			returned.addAll(getDeclaredProperties());
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overriden
+						// We check that we don't have this property yet
+						if (!inheritedProperties.contains(p)) {
+							inheritedProperties.add(p);
+						}
+					}
+				}
+			}
+			// Now, we have to suppress all extra references
+			List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<FlexoProperty<?>>();
+			for (FlexoProperty<?> p : inheritedProperties) {
+				for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
+					if (inheritedProperties.contains(superP)) {
+						unnecessaryProperty.add(superP);
+					}
+				}
 			}
 
+			for (FlexoProperty<?> removeThis : unnecessaryProperty) {
+				inheritedProperties.remove(removeThis);
+			}
+
+			returned.addAll(inheritedProperties);
 			return returned;
 		}
 
 		@Override
-		public void setFlexoRoles(List<FlexoRole<?>> somePatternRole) {
+		public void setFlexoProperties(List<FlexoProperty<?>> someProperties) {
 			// patternRoles = somePatternRole;
-			performSuperSetter(FLEXO_ROLES_KEY, somePatternRole);
-			availablePatternRoleNames = null;
+			performSuperSetter(FLEXO_PROPERTIES_KEY, someProperties);
+			availablePropertiesNames = null;
 		}
 
 		@Override
-		public void addToFlexoRoles(FlexoRole<?> aPatternRole) {
-			availablePatternRoleNames = null;
-			performSuperAdder(FLEXO_ROLES_KEY, aPatternRole);
-			/*if (_bindingModel != null) {
-				updateBindingModel();
-			}*/
+		public void addToFlexoProperties(FlexoProperty<?> aProperty) {
+			availablePropertiesNames = null;
+			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
 		}
 
 		@Override
-		public void removeFromFlexoRoles(FlexoRole aFlexoRole) {
-			availablePatternRoleNames = null;
-			performSuperRemover(FLEXO_ROLES_KEY, aFlexoRole);
-			/*if (_bindingModel != null) {
-				updateBindingModel();
-			}*/
+		public void removeFromFlexoProperties(FlexoProperty<?> aProperty) {
+			availablePropertiesNames = null;
+			performSuperRemover(FLEXO_PROPERTIES_KEY, aProperty);
 		}
 
 		@Override
-		public <R> List<R> getFlexoRoles(Class<R> type) {
+		public <R> List<R> getDeclaredProperties(Class<R> type) {
 			List<R> returned = new ArrayList<R>();
-			for (FlexoRole<?> r : getFlexoRoles()) {
+			for (FlexoProperty<?> r : getDeclaredProperties()) {
 				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
 					returned.add((R) r);
 				}
@@ -502,13 +570,79 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
+		public <R> List<R> getAccessibleProperties(Class<R> type) {
+			List<R> returned = new ArrayList<R>();
+			for (FlexoProperty<?> r : getAccessibleProperties()) {
+				if (TypeUtils.isTypeAssignableFrom(type, r.getClass())) {
+					returned.add((R) r);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Build and return the list of all accessible roles from this {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole> getAccessibleRoles() {
+			return getAccessibleProperties(FlexoRole.class);
+		}
+
+		/**
+		 * Build and return the list of all declared roles from this {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoRole> getDeclaredRoles() {
+			return getDeclaredProperties(FlexoRole.class);
+		}
+
+		/**
+		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
+		 * Note that returned property is not necessary one of declared property, but might be inherited.
+		 * 
+		 * @param flexoPropertyName
+		 * @return
+		 * @see #getAccessibleProperties()
+		 */
+		@Override
+		public FlexoProperty<?> getAccessibleProperty(String propertyName) {
+			for (FlexoProperty<?> p : getAccessibleProperties()) {
+				if (p.getName().equals(propertyName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all declared properties<br>
+		 * 
+		 * @param propertyName
+		 * @return
+		 * @see #getDeclaredProperties()
+		 */
+		@Override
+		public FlexoProperty<?> getDeclaredProperty(String propertyName) {
+			for (FlexoProperty<?> p : getDeclaredProperties()) {
+				if (p.getName().equals(propertyName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
+		@Override
 		public List<IndividualRole> getIndividualRoles() {
-			return getFlexoRoles(IndividualRole.class);
+			return getDeclaredProperties(IndividualRole.class);
 		}
 
 		@Override
 		public List<ClassRole> getClassRoles() {
-			return getFlexoRoles(ClassRole.class);
+			return getDeclaredProperties(ClassRole.class);
 		}
 
 		/*
@@ -533,23 +667,23 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		 * (l.size() > 0) { return l.get(0); } return null; }
 		 */
 
-		private Vector<String> availablePatternRoleNames = null;
+		private Vector<String> availablePropertiesNames = null;
 
-		public Vector<String> getAvailablePatternRoleNames() {
-			if (availablePatternRoleNames == null) {
-				availablePatternRoleNames = new Vector<String>();
-				for (FlexoRole r : getFlexoRoles()) {
-					availablePatternRoleNames.add(r.getName());
+		public Vector<String> getAvailablePropertyNames() {
+			if (availablePropertiesNames == null) {
+				availablePropertiesNames = new Vector<String>();
+				for (FlexoProperty<?> r : getAccessibleProperties()) {
+					availablePropertiesNames.add(r.getName());
 				}
 			}
-			return availablePatternRoleNames;
+			return availablePropertiesNames;
 		}
 
 		@Override
-		public String getAvailableRoleName(String baseName) {
+		public String getAvailablePropertyName(String baseName) {
 			String testName = baseName;
 			int index = 2;
-			while (getFlexoRole(testName) != null) {
+			while (getAccessibleProperty(testName) != null) {
 				testName = baseName + index;
 				index++;
 			}
@@ -557,7 +691,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public String getAvailableEditionSchemeName(String baseName) {
+		public String getAvailableFlexoBehaviourName(String baseName) {
 			String testName = baseName;
 			int index = 2;
 			while (getFlexoBehaviour(testName) != null) {
@@ -704,37 +838,15 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public DeletionScheme generateDefaultDeletionScheme() {
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
 			newDeletionScheme.setName("deletion");
-			Vector<FlexoRole> rolesToDelete = new Vector<FlexoRole>();
-			for (FlexoRole pr : getFlexoRoles()) {
+			List<FlexoProperty<?>> propertiesToDelete = new ArrayList<FlexoProperty<?>>();
+			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				if (pr.defaultBehaviourIsToBeDeleted()) {
-					rolesToDelete.add(pr);
+					propertiesToDelete.add(pr);
 				}
 			}
-			Collections.sort(rolesToDelete, new Comparator<FlexoRole>() {
-				@Override
-				public int compare(FlexoRole o1, FlexoRole o2) {
-					/*
-					 * if (o1 instanceof ShapePatternRole && o2 instanceof
-					 * ConnectorPatternRole) { return 1; } else if (o1
-					 * instanceof ConnectorPatternRole && o2 instanceof
-					 * ShapePatternRole) { return -1; }
-					 */
-
-					/*
-					 * if (o1 instanceof ShapePatternRole) { if (o2 instanceof
-					 * ShapePatternRole) { if (((ShapePatternRole)
-					 * o1).isEmbeddedIn((ShapePatternRole) o2)) { return -1; }
-					 * if (((ShapePatternRole)
-					 * o2).isEmbeddedIn((ShapePatternRole) o1)) { return 1; }
-					 * return 0; } }
-					 */
-					return 0;
-				}
-
-			});
-			for (FlexoRole pr : rolesToDelete) {
+			for (FlexoProperty<?> pr : propertiesToDelete) {
 				DeleteAction a = getFMLModelFactory().newDeleteAction();
-				a.setObject(new DataBinding<Object>(pr.getRoleName()));
+				a.setObject(new DataBinding<Object>(pr.getPropertyName()));
 				newDeletionScheme.addToActions(a);
 			}
 			addToFlexoBehaviours(newDeletionScheme);
@@ -784,17 +896,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			for (FlexoBehaviour es : getFlexoBehaviours()) {
 				es.finalizeDeserialization();
 			}
-			for (FlexoRole pr : getFlexoRoles()) {
+			for (FlexoProperty<?> pr : getDeclaredProperties()) {
 				pr.finalizeDeserialization();
 			}
-			// updateBindingModel();
 		}
-
-		/*
-		 * public void finalizeParentFlexoConceptDeserialization() { if
-		 * (StringUtils.isNotEmpty(parentFlexoConceptURI)) {
-		 * setParentFlexoConcept(getParentFlexoConcept()); } }
-		 */
 
 		public void debug() {
 			System.out.println(getStringRepresentation());
@@ -911,9 +1016,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			}
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			if (getFlexoRoles().size() > 0) {
+			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoRole pr : getFlexoRoles()) {
+				for (FlexoProperty<?> pr : getDeclaredProperties()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
@@ -934,16 +1039,17 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	}
 
 	@DefineValidationRule
-	public static class FlexoConceptShouldHaveRoles extends ValidationRule<FlexoConceptShouldHaveRoles, FlexoConcept> {
-		public FlexoConceptShouldHaveRoles() {
-			super(FlexoConcept.class, "flexo_concept_should_have_roles");
+	public static class NonAbstractFlexoConceptShouldHaveProperties extends
+			ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
+		public NonAbstractFlexoConceptShouldHaveProperties() {
+			super(FlexoConcept.class, "non_abstract_flexo_concept_should_have_properties");
 		}
 
 		@Override
-		public ValidationIssue<FlexoConceptShouldHaveRoles, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
-			if (!(flexoConcept instanceof VirtualModel) && flexoConcept.getFlexoRoles().size() == 0) {
-				return new ValidationWarning<FlexoConceptShouldHaveRoles, FlexoConcept>(this, flexoConcept,
-						"flexo_concept_role_has_no_role");
+		public ValidationIssue<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (!(flexoConcept instanceof AbstractVirtualModel) && flexoConcept.getDeclaredProperties().size() == 0) {
+				return new ValidationWarning<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept>(this, flexoConcept,
+						"non_abstract_flexo_concept_role_does_not_define_any_property");
 			}
 			return null;
 		}

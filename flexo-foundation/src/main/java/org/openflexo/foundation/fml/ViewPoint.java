@@ -440,7 +440,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
 			if (flexoConceptId.indexOf("#") > -1) {
-				String virtualModelURI = flexoConceptId.substring(flexoConceptId.indexOf("#") + 1);
+				String virtualModelURI = flexoConceptId.substring(0, flexoConceptId.indexOf("#"));
 				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
 				if (vmRes != null) {
 					return vmRes.getVirtualModel().getFlexoConcept(flexoConceptId);
