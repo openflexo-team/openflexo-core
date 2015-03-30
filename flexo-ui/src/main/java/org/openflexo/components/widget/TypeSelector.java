@@ -365,6 +365,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		}
 	}
 
+	public String getKeyTypeStringRepresentation() {
+		return TypeUtils.simpleRepresentation(getKeyType());
+	}
+
 	public PrimitiveType getPrimitiveType() {
 		for (PrimitiveType primitiveType : PrimitiveType.values()) {
 			if (primitiveType.getType().equals(getEditedObject())) {

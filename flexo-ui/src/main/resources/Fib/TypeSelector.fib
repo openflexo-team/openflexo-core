@@ -67,7 +67,7 @@
 		</Label>
 
 		<Custom componentClassName="org.openflexo.components.widget.TypeSelector"
-			customRendering="false" format="iterator.typeStringRepresentation"
+			customRendering="false" format="data.keyTypeStringRepresentation"
 			constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
 			data="data.keyType" visible="data.isJavaMap">
 			<!-- <CustomAssignment variable="component.bindable" value="iterator" 
@@ -93,14 +93,12 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
 				<IconColumn data="iterator.icon" title="" columnWidth="20"
 					resizable="false" displayTitle="true" name="icon" />
-				<LabelColumn data="iterator.typeVariable.name" title="type_variable"
-					columnWidth="50" resizable="true" displayTitle="true" />
 				<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
 					customRendering="false" format="iterator.typeStringRepresentation"
 					disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
 					columnWidth="300" resizable="true" displayTitle="true" name="value">
 					<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
-						/> -->
+						 /> -->
 				</CustomColumn>
 				<LocalizedDictionary />
 			</Table>
