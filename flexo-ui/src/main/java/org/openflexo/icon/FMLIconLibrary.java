@@ -197,9 +197,9 @@ public class FMLIconLibrary extends IconLibrary {
 
 	// Markers
 	public static final IconMarker ABSTRACT_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/MODEL/VPM/Markers/Abstract.png")), 0, 0);
+			ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 0, 0);
 	public static final IconMarker PROPERTY_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/MODEL/VPM/Markers/Property.png")), 8, 8);
+			ResourceLocator.locateResource("Icons/Model/VPM/Markers/Property.png")), 8, 8);
 	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
 
