@@ -24,7 +24,8 @@
 		<Panel darkLevel="0" useScrollBar="false" protectContent="false"
 			layout="border" borderRight="2" border="empty" trackViewPortWidth="true"
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true" visible="data.hasBaseJavaClass">
+			borderBottom="2" borderTop="2" trackViewPortHeight="true"
+			visible="data.hasBaseJavaClass">
 			<Custom componentClassName="org.openflexo.fib.swing.utils.ClassEditor"
 				localize="true" manageDynamicModel="true" data="data.loadedClassesInfo"
 				constraints="border(location=center)" />
@@ -67,7 +68,7 @@
 		</Label>
 
 		<Custom componentClassName="org.openflexo.components.widget.TypeSelector"
-			customRendering="false" format="iterator.typeStringRepresentation"
+			customRendering="false" format="data.keyTypeStringRepresentation"
 			constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
 			data="data.keyType" visible="data.isJavaMap">
 			<!-- <CustomAssignment variable="component.bindable" value="iterator" 
@@ -76,34 +77,67 @@
 
 		<Label label="extends"
 			constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
-			borderBottom="2" borderTop="2" trackViewPortHeight="true" visible="data.isJavaWildcard">
+			borderBottom="2" borderTop="2" trackViewPortHeight="true"
+			visible="data.isJavaWildcard">
 		</Label>
 
-			<Table
-				iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound"
-				visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="false" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
-				backgroundSecondarySelectionColor="173,215,255"
-				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="UpperBoundsTable" index="1"
-				data="data.upperBounds" visible="data.isJavaWildcard"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
-				<IconColumn data="iterator.icon" title="" columnWidth="20"
-					resizable="false" displayTitle="true" name="icon" />
-				<LabelColumn data="iterator.typeVariable.name" title="type_variable"
-					columnWidth="50" resizable="true" displayTitle="true" />
-				<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
-					customRendering="false" format="iterator.typeStringRepresentation"
-					disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
-					columnWidth="300" resizable="true" displayTitle="true" name="value">
-					<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
-						/> -->
-				</CustomColumn>
-				<LocalizedDictionary />
-			</Table>
+		<Table iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound"
+			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
+			createNewRowOnClick="false" boundToSelectionManager="false"
+			showFooter="true" selectionMode="MultipleIntervalSelection"
+			textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
+			backgroundSelectionColor="26,96,206"
+			backgroundSecondarySelectionColor="173,215,255"
+			backgroundNonSelectionColor="255,255,255" localize="true"
+			manageDynamicModel="true" name="UpperBoundsTable" index="1"
+			data="data.upperBounds" visible="data.isJavaWildcard"
+			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
+			<IconColumn data="iterator.icon" title="" columnWidth="20"
+				resizable="false" displayTitle="true" name="icon" />
+			<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
+				customRendering="false" format="iterator.typeStringRepresentation"
+				disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
+				columnWidth="300" resizable="true" displayTitle="true" name="value">
+				<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
+					/> -->
+			</CustomColumn>
+			<AddAction method="data.createUpperBound" name="add_upper_bound" />
+			<RemoveAction method="data.deleteUpperBound(selected)"
+				name="delete_upper_bound" />
+			<LocalizedDictionary />
+		</Table>
+
+		<Label label="super"
+			constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
+			borderBottom="2" borderTop="2" trackViewPortHeight="true"
+			visible="data.isJavaWildcard">
+		</Label>
+
+		<Table iteratorClassName="org.openflexo.components.widget.TypeSelector$GenericBound"
+			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="false"
+			createNewRowOnClick="false" boundToSelectionManager="false"
+			showFooter="true" selectionMode="MultipleIntervalSelection"
+			textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
+			backgroundSelectionColor="26,96,206"
+			backgroundSecondarySelectionColor="173,215,255"
+			backgroundNonSelectionColor="255,255,255" localize="true"
+			manageDynamicModel="true" name="UpperBoundsTable" index="1"
+			data="data.lowerBounds" visible="data.isJavaWildcard"
+			constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)">
+			<IconColumn data="iterator.icon" title="" columnWidth="20"
+				resizable="false" displayTitle="true" name="icon" />
+			<CustomColumn componentClassName="org.openflexo.components.widget.TypeSelector"
+				customRendering="false" format="iterator.typeStringRepresentation"
+				disableTerminateEditOnFocusLost="false" data="iterator.type" title="value"
+				columnWidth="300" resizable="true" displayTitle="true" name="value">
+				<!-- <ColumnAssignment variable="component.bindable" value="iterator" 
+					/> -->
+			</CustomColumn>
+			<AddAction method="data.createLowerBound" name="add_lower_bound" />
+			<RemoveAction method="data.deleteLowerBound(selected)"
+				name="delete_lower_bound" />
+			<LocalizedDictionary />
+		</Table>
 
 	</Panel>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
