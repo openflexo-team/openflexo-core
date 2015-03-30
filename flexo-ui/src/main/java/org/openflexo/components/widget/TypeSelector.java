@@ -64,6 +64,7 @@ import javax.swing.JPanel;
 import org.openflexo.connie.type.GenericArrayTypeImpl;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
@@ -156,6 +157,11 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			this.typeVariable = typeVariable;
 		}
 
+		public void delete() {
+			this.typeVariable = null;
+			this.type = null;
+		}
+
 		public TypeVariable<?> getTypeVariable() {
 			return typeVariable;
 		}
@@ -181,11 +187,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 				Type oldValue = this.type;
 				this.type = type;
 
-				Type[] params = new Type[genericParameters.size()];
+				setEditedObject(makeParameterizedType(getBaseClass()));
+
+				/*Type[] params = new Type[genericParameters.size()];
 				for (int i = 0; i < genericParameters.size(); i++) {
 					params[i] = genericParameters.get(i).getType();
 				}
-				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));
+				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));*/
 
 				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
 			}
@@ -228,6 +236,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			this(null);
 		}
 
+		public void delete() {
+			this.type = null;
+		}
+
 		public Type getType() {
 			return type;
 		}
@@ -238,11 +250,13 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 				Type oldValue = this.type;
 				this.type = type;
 
-				Type[] params = new Type[genericParameters.size()];
+				/*Type[] params = new Type[genericParameters.size()];
 				for (int i = 0; i < genericParameters.size(); i++) {
 					params[i] = genericParameters.get(i).getType();
 				}
-				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));
+				setEditedObject(new ParameterizedTypeImpl(getBaseClass(), params));*/
+
+				updateWildcardType();
 
 				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
 			}
@@ -362,6 +376,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		if (!this.keyType.equals(keyType)) {
 			this.keyType = keyType;
 			getPropertyChangeSupport().firePropertyChange("keyType", null, keyType);
+			updateEditedType();
 		}
 	}
 
@@ -414,8 +429,38 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		return upperBounds;
 	}
 
+	public GenericBound createUpperBound() {
+		GenericBound returned = new GenericBound(Object.class);
+		upperBounds.add(returned);
+		getPropertyChangeSupport().firePropertyChange("upperBounds", null, returned);
+		updateWildcardType();
+		return returned;
+	}
+
+	public void deleteUpperBound(GenericBound bound) {
+		bound.delete();
+		upperBounds.remove(bound);
+		getPropertyChangeSupport().firePropertyChange("upperBounds", bound, null);
+		updateWildcardType();
+	}
+
 	public List<GenericBound> getLowerBounds() {
 		return lowerBounds;
+	}
+
+	public GenericBound createLowerBound() {
+		GenericBound returned = new GenericBound(Object.class);
+		lowerBounds.add(returned);
+		getPropertyChangeSupport().firePropertyChange("lowerBounds", null, returned);
+		updateWildcardType();
+		return returned;
+	}
+
+	public void deleteLowerBound(GenericBound bound) {
+		bound.delete();
+		lowerBounds.remove(bound);
+		getPropertyChangeSupport().firePropertyChange("lowerBounds", bound, null);
+		updateWildcardType();
 	}
 
 	private void updateGenericParameters(Class<?> baseClass) {
@@ -472,6 +517,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	public void setBaseClass(Class<?> baseClass) {
+
 		if (choice == JAVA_LIST) {
 			if (hasGenericParameters()) {
 				setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
@@ -491,14 +537,28 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 				setEditedObject(new GenericArrayTypeImpl(baseClass));
 			}
 		} else if (choice == JAVA_WILDCARD) {
-
-		} else /*if (choice == JAVA_TYPE)*/{
+			updateWildcardType();
+		} else {
 			if (hasGenericParameters()) {
 				setEditedObject(makeParameterizedType(baseClass));
 			} else {
 				setEditedObject(baseClass);
 			}
 		}
+	}
+
+	private void updateEditedType() {
+		setBaseClass(getBaseClass());
+	}
+
+	private void updateWildcardType() {
+		Type[] upper = new Type[upperBounds.size()];
+		for (int i = 0; i < upperBounds.size(); i++)
+			upper[i] = upperBounds.get(i).getType();
+		Type[] lower = new Type[lowerBounds.size()];
+		for (int i = 0; i < lowerBounds.size(); i++)
+			lower[i] = lowerBounds.get(i).getType();
+		setEditedObject(new WilcardTypeImpl(upper, lower));
 	}
 
 	// private boolean isListeningLoadedClassesInfo = false;
