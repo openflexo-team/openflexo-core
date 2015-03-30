@@ -68,7 +68,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
-	public static final String PATTERN_ROLE_NAME_KEY = "propertyName";
+	public static final String PATTERN_ROLE_NAME_KEY = "patternRoleName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
