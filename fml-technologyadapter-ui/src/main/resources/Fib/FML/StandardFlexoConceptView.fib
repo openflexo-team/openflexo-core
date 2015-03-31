@@ -174,7 +174,7 @@
 				label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)"
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
-				<Children data="flexoConceptStructuralFacet.flexoConcept.flexoProperties"
+				<Children data="flexoConceptStructuralFacet.properties"
 					name="flexoProperties" />
 				<BrowserAddAction name="new_flexo_role"
 					method="controller.createFlexoRole(data)" />
