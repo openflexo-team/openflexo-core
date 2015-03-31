@@ -71,7 +71,7 @@ public class CreateViewPointInitializer extends ActionInitializer<CreateViewPoin
 			public boolean run(EventObject e, CreateViewPoint action) {
 
 				Wizard wizard = new CreateViewPointWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

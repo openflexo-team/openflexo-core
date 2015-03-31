@@ -69,7 +69,7 @@ public class CreateAbstractPropertyInitializer extends ActionInitializer<CreateA
 			@Override
 			public boolean run(EventObject e, CreateAbstractProperty action) {
 				Wizard wizard = new CreateAbstractPropertyWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

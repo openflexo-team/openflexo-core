@@ -52,6 +52,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
+import org.openflexo.view.controller.FlexoController;
 
 /**
  * Component displaying a Wizard<br>
@@ -65,7 +66,7 @@ public class WizardDialog extends FIBDialog<Wizard> {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WizardPanel.fib");
 
-	public WizardDialog(Wizard wizard) {
+	public WizardDialog(Wizard wizard, FlexoController controller) {
 		// We first initialize the FIBComponent in order to have the FlexoController well initialized in the WizardPanelController
 		// Otherwise, first step of wizard will have a controller with a null FlexoController
 		super(getFIBComponent(), wizard, FlexoFrame.getActiveFrame(), true, makeFIBController(getFIBComponent(),
@@ -77,6 +78,7 @@ public class WizardDialog extends FIBDialog<Wizard> {
 		if (preferredSize != null) {
 			setPreferredSize(preferredSize);
 		}
+		getController().setFlexoController(controller);
 	}
 
 	@Override

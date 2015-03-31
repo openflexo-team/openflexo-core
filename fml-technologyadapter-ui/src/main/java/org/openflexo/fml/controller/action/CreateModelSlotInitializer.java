@@ -69,7 +69,7 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 			@Override
 			public boolean run(EventObject e, CreateModelSlot action) {
 				Wizard wizard = new CreateModelSlotWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled
