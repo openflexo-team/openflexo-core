@@ -97,7 +97,7 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 		FlexoObjectImpl.addActionForClass(CreateAbstractProperty.actionType, FlexoConceptStructuralFacet.class);
 	}
 
-	private Type propertyType;
+	private Type propertyType = Object.class;
 
 	private AbstractProperty<?> newAbstractProperty;
 

@@ -143,7 +143,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			TechnologyAdapterService taService) throws ModelDefinitionException {
 		super(retrieveTechnologySpecificClasses(taService));
 		setEditingContext(editingContext);
-		addConverter(typeConverter = new TypeConverter());
+		addConverter(typeConverter = new TypeConverter(taService.getCustomTypeFactories()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
 		addConverter(FGEUtils.POINT_CONVERTER);
@@ -158,9 +158,9 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 		// Init technology specific type registering
 		// TODO: do it only for required technology adapters
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		/*for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			ta.initTechnologySpecificTypes(typeConverter);
-		}
+		}*/
 
 		/*Set<Class<? extends TechnologySpecificType<?>>> allTypesToConsider = new HashSet<Class<? extends TechnologySpecificType<?>>>();
 		allTypesToConsider.add(FlexoConceptInstanceType.class);

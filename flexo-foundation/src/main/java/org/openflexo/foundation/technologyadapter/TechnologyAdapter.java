@@ -60,7 +60,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.rm.ResourceLocator;
 
 /**
@@ -142,6 +141,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * </ul>
 	 */
 	public void initialize() {
+		initTechnologySpecificTypes(getTechnologyAdapterService());
 	}
 
 	/**
@@ -368,6 +368,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @param converter
 	 */
-	public void initTechnologySpecificTypes(TypeConverter converter) {
+	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 	}
 }

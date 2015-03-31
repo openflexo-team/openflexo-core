@@ -81,7 +81,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 			protected synchronized void beforeExecute(Thread t, Runnable r) {
 				if (t instanceof FlexoTaskThread && r instanceof FlexoTask) {
 					((FlexoTask) r).startExecution((FlexoTaskThread) t);
-					System.out.println("Executing " + r + " in thread " + t);
+					logger.fine("Executing " + r + " in thread " + t);
 				}
 			}
 
@@ -91,7 +91,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 					scheduledTasks.remove(task);
 					getPropertyChangeSupport().firePropertyChange(SCHEDULED_TASK_PROPERTY, task, null);
 					((FlexoTask) task).finishedExecution();
-					System.out.println("Finished executing " + task);
+					logger.fine("Finished executing " + task);
 					launchReadyToExecuteTasks();
 				}
 			}
@@ -150,7 +150,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	private synchronized void launchReadyToExecuteTasks(FlexoTask... ignoredTasks) {
-		System.out.println("launchReadyToExecuteTasks()");
+		// System.out.println("launchReadyToExecuteTasks()");
 		for (FlexoTask task : getScheduledTasks()) {
 			if (task.isReadyToExecute()) {
 				boolean ignored = false;
@@ -158,20 +158,20 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 					for (int i = 0; i < ignoredTasks.length; i++) {
 						FlexoTask ignoredTask = ignoredTasks[i];
 						if (task == ignoredTasks[i]) {
-							System.out.println("Ignoring " + task);
+							logger.fine("Ignoring " + task);
 							ignored = true;
 						}
 					}
 				}
 				if (!ignored) {
-					System.out.println("Task " + task + " is ready to execute");
+					logger.fine("Task " + task + " is ready to execute");
 					task.executionScheduled();
 					executor.execute(task);
 				} else {
-					System.out.println("Task " + task + " is to be ignored");
+					logger.fine("Task " + task + " is to be ignored");
 				}
 			} else {
-				System.out.println("Task " + task + " is NOT ready to execute");
+				logger.fine("Task " + task + " is NOT ready to execute");
 			}
 		}
 	}
@@ -209,7 +209,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 				e.printStackTrace();
 			}
 		}
-		// System.out.println("Finished all threads");
+		logger.fine("Finished all threads");
 	}
 
 	@Override

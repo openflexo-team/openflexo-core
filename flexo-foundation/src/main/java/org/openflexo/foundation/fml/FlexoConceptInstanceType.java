@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
@@ -68,6 +69,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * @author sylvain
 	 * 
 	 */
+	@FIBPanel("Fib/CustomType/FlexoConceptInstanceTypeFactory.fib")
 	public static class FlexoConceptInstanceTypeFactory extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType> {
 
 		public FlexoConceptInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
@@ -77,8 +79,14 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		@Override
 		public FlexoConceptInstanceType makeCustomType(String configuration) {
 
-			FlexoConcept concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-					.getFlexoConcept(configuration);
+			FlexoConcept concept = null;
+
+			if (configuration != null) {
+				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
+						.getFlexoConcept(configuration);
+			} else {
+				concept = getFlexoConceptType();
+			}
 
 			if (concept != null) {
 				return getFlexoConceptInstanceType(concept);
@@ -86,6 +94,32 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
 				return new FlexoConceptInstanceType(configuration);
+			}
+		}
+
+		private FlexoConcept flexoConceptType;
+
+		public FlexoConcept getFlexoConceptType() {
+			return flexoConceptType;
+		}
+
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			if (flexoConceptType != this.flexoConceptType) {
+				FlexoConcept oldFlexoConceptType = this.flexoConceptType;
+				this.flexoConceptType = flexoConceptType;
+				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldFlexoConceptType, flexoConceptType);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "Instance of FlexoConcept";
+		}
+
+		@Override
+		public void configureFactory(FlexoConceptInstanceType type) {
+			if (type != null) {
+				setFlexoConceptType(type.getFlexoConcept());
 			}
 		}
 	}
@@ -127,12 +161,12 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String simpleRepresentation() {
-		return getClass().getSimpleName() + "(" + (flexoConcept != null ? flexoConcept.getName() : "") + ")";
+		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "") + ">";
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return getClass().getName() + "(" + getSerializationRepresentation() + ")";
+		return getClass().getName() + "<" + getSerializationRepresentation() + ">";
 	}
 
 	@Override
@@ -200,4 +234,5 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
 	}
+
 }

@@ -59,7 +59,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.model.converter.TypeConverter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
@@ -249,8 +249,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	private FlexoConceptInstanceTypeFactory fciFactory;
 
 	@Override
-	public void initTechnologySpecificTypes(TypeConverter converter) {
-		converter.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
+	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
+		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
 
 	}
 
