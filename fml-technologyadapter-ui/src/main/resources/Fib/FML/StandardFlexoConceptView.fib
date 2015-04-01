@@ -37,8 +37,6 @@
 				label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="flexoConcept">
-				<Children data="flexoConcept.childFlexoConcepts" cast=""
-					name="children" />
 				<Children data="flexoConcept.inspector" cast="" name="inspector" />
 				<Children data="flexoConcept.structuralFacet" cast=""
 					name="structural" />
@@ -73,7 +71,7 @@
 					method="controller.createEditionActionInSetControlGraph(selected)"
 					name="add_action_in_SET_control_graph" />
 			</BrowserElement>
-			
+
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
 				label="flexoBehaviour.name" icon="controller.iconForObject(flexoBehaviour)"
 				isEditable="false" filtered="false" defaultVisible="true" name="flexoBehaviour">

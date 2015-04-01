@@ -177,6 +177,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public void setAbstract(boolean isAbstract);
 
 	/**
+	 * Return boolean indicating if this FlexoConcept MUST be abstract (containing an {@link AbstractProperty})
+	 * 
+	 * @return
+	 */
+	public boolean abstractRequired();
+
+	/**
 	 * Return declared properties for this {@link FlexoConcept}<br>
 	 * Declared properties are those returned by getFlexoProperties() method
 	 * 
@@ -475,12 +482,20 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean isAbstract() {
+			if (abstractRequired()) {
+				return true;
+			}
+			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+		}
+
+		@Override
+		public boolean abstractRequired() {
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.isAbstract()) {
 					return true;
 				}
 			}
-			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+			return false;
 		}
 
 		/**
@@ -566,6 +581,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (getStructuralFacet() instanceof FlexoConceptStructuralFacetImpl) {
 				((FlexoConceptStructuralFacetImpl) getStructuralFacet()).notifiedPropertiesChanged(oldValue, newValue);
 			}
+			getPropertyChangeSupport().firePropertyChange("isAbstract", !isAbstract(), isAbstract());
+			getPropertyChangeSupport().firePropertyChange("abstractRequired", !abstractRequired(), abstractRequired());
 		}
 
 		@Override
