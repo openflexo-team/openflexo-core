@@ -24,8 +24,8 @@
 
 		<Browser root="data" iteratorClassName="java.lang.Object"
 			visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
-			selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
-			rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
+			selectionMode="DiscontiguousTreeSelection" showFooter="true"
+			rootVisible="true" showRootsHandle="true"
 			localize="true" enable="" manageDynamicModel="true"
 			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
 			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
