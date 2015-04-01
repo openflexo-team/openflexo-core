@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.List;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -50,6 +52,8 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 	public FlexoConcept getFlexoConcept();
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
+
+	public List<FlexoBehaviour> getBehaviours();
 
 	public abstract class FlexoConceptBehaviouralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptBehaviouralFacet {
 
@@ -80,5 +84,13 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 			return getFlexoConcept().getURI();
 		}
 
+		@Override
+		public List<FlexoBehaviour> getBehaviours() {
+			return getFlexoConcept().getFlexoBehaviours();
+		}
+
+		protected void notifiedBehavioursChanged(FlexoBehaviour oldValue, FlexoBehaviour newValue) {
+			getPropertyChangeSupport().firePropertyChange("behaviours", oldValue, newValue);
+		}
 	}
 }

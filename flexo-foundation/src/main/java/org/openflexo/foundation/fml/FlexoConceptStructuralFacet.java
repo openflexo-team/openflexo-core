@@ -101,5 +101,9 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 			return properties;
 		}
 
+		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
+			getPropertyChangeSupport().firePropertyChange("properties", oldValue, newValue);
+		}
+
 	}
 }

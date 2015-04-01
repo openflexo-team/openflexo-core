@@ -109,5 +109,5 @@
 		<Localized key="name" lang="French" value="Nom" />
 		<Localized key="name" lang="Dutch" value="Name" />
 	</LocalizedDictionary>
-	<Parameter name="title" value="Edition Pattern" />
+	<Parameter name="title" value="FlexoConcept" />
 </Panel>

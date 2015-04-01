@@ -580,24 +580,17 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			return returned;
 		}
 
-		/*
 		@Override
-		@Deprecated
 		public void addToModelSlots(ModelSlot<?> aModelSlot) {
-			if (aModelSlot != null && aModelSlot.getName() != null && aModelSlot.getName().equals("virtualModelInstance")) {
-				// Temporary hack to ignore reflexive model slot being inherited from 1.7-beta version
-				logger.warning("Reflexive model slot being inherited from 1.7-beta version are ignored now");
-				return;
-			}
 			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
+			notifiedPropertiesChanged(null, aModelSlot);
 		}
-		*/
 
-		/*
-		 * public ModelSlot<?> getModelSlot(String modelSlotName) { for
-		 * (ModelSlot<?> ms : getModelSlots()) { if (ms.getName() != null &&
-		 * ms.getName().equals(modelSlotName)) { return ms; } } return null; }
-		 */
+		@Override
+		public void removeFromModelSlots(ModelSlot<?> aModelSlot) {
+			performSuperRemover(MODEL_SLOTS_KEY, aModelSlot);
+			notifiedPropertiesChanged(aModelSlot, null);
+		}
 
 		public List<ModelSlot<?>> getRequiredModelSlots() {
 			List<ModelSlot<?>> requiredModelSlots = new ArrayList<ModelSlot<?>>();
