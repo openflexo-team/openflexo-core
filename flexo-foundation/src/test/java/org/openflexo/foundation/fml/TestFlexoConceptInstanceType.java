@@ -210,7 +210,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 	 */
 	@Test
 	@TestOrder(5)
-	public void testCreateFlexoConceptB() throws SaveResourceException {
+	public void testCreateFlexoConceptB() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		log("testCreateFlexoConceptB()");
 
@@ -258,7 +258,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 	 */
 	@Test
 	@TestOrder(6)
-	public void testCreateFlexoConceptC() throws SaveResourceException {
+	public void testCreateFlexoConceptC() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		log("testCreateFlexoConceptC()");
 

@@ -170,7 +170,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return coreInspectorGroup;
 	}
 
-	private InspectorGroup loadInspectorGroup(Resource inspectorGroupFolder, InspectorGroup... parentInspectorGroups) {
+	/*private InspectorGroup loadInspectorGroup(Resource inspectorGroupFolder, InspectorGroup... parentInspectorGroups) {
 		InspectorGroup returned = new InspectorGroup(inspectorGroupFolder) {
 			@Override
 			public void progress(Resource f, FIBInspector inspector) {
@@ -181,10 +181,18 @@ public class ModuleInspectorController extends Observable implements Observer {
 			}
 		};
 		return returned;
-	}
+	}*/
 
 	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {
-		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, parentInspectorGroups);
+		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, parentInspectorGroups) {
+			@Override
+			public void progress(Resource f, FIBInspector inspector) {
+				super.progress(f, inspector);
+				appendVisibleFor(inspector);
+				appendEditableCondition(inspector);
+				Progress.progress(FlexoLocalization.localizedForKey("loaded_inspector") + " " + inspector.getDataClass().getSimpleName());
+			}
+		};
 		inspectorGroups.add(newInspectorGroup);
 		return newInspectorGroup;
 	}

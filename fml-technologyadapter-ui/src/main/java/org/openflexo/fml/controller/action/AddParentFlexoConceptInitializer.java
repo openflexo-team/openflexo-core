@@ -41,34 +41,31 @@ package org.openflexo.fml.controller.action;
 import java.util.EventObject;
 import java.util.logging.Logger;
 
-import javax.swing.Icon;
-
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
-import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateVirtualModelInitializer extends ActionInitializer<CreateVirtualModel, ViewPoint, FMLObject> {
+public class AddParentFlexoConceptInitializer extends ActionInitializer<AddParentFlexoConcept, FlexoConcept, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateVirtualModel.actionType, actionInitializer);
+	public AddParentFlexoConceptInitializer(ControllerActionInitializer actionInitializer) {
+		super(AddParentFlexoConcept.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateVirtualModel> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateVirtualModel>() {
+	protected FlexoActionInitializer<AddParentFlexoConcept> getDefaultInitializer() {
+		return new FlexoActionInitializer<AddParentFlexoConcept>() {
 			@Override
-			public boolean run(EventObject e, CreateVirtualModel action) {
-				Wizard wizard = new CreateVirtualModelWizard(action, getController());
+			public boolean run(EventObject e, AddParentFlexoConcept action) {
+				Wizard wizard = new AddParentFlexoConceptWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -76,25 +73,19 @@ public class CreateVirtualModelInitializer extends ActionInitializer<CreateVirtu
 					return false;
 				}
 				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_VIRTUAL_MODEL_DIALOG_FIB);
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateVirtualModel> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateVirtualModel>() {
+	protected FlexoActionFinalizer<AddParentFlexoConcept> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<AddParentFlexoConcept>() {
 			@Override
-			public boolean run(EventObject e, CreateVirtualModel action) {
-				getController().selectAndFocusObject(action.getNewVirtualModel());
+			public boolean run(EventObject e, AddParentFlexoConcept action) {
+				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 				return true;
 			}
 		};
-	}
-
-	@Override
-	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 	}
 
 }

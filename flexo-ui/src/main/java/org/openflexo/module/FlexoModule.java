@@ -162,7 +162,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 
 	void setAsActiveModule() {
 
-		System.out.println("**************** setAsActiveModule()");
+		// System.out.println("**************** setAsActiveModule()");
 
 		isActive = true;
 		int state = getFlexoFrame().getExtendedState();

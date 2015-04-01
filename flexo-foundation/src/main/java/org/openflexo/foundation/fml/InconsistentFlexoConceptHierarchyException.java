@@ -38,59 +38,18 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.List;
+import org.openflexo.foundation.FlexoException;
 
-import org.openflexo.connie.BindingModel;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+/**
+ * Thrown when {@link FlexoConcept} hierarchy is inconsistent (for example when a cycle has been detected)
+ * 
+ * @author sylvain
+ *
+ */
+@SuppressWarnings("serial")
+public class InconsistentFlexoConceptHierarchyException extends FlexoException {
 
-@ModelEntity
-@ImplementationClass(FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl.class)
-public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoFacet<FlexoConcept> {
-
-	@Override
-	public FlexoConcept getFlexoConcept();
-
-	public void setFlexoConcept(FlexoConcept flexoConcept);
-
-	public List<FlexoBehaviour> getBehaviours();
-
-	public abstract class FlexoConceptBehaviouralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptBehaviouralFacet {
-
-		private FlexoConcept flexoConcept;
-
-		@Override
-		public FlexoConcept getFlexoConcept() {
-			return flexoConcept;
-		}
-
-		@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			this.flexoConcept = flexoConcept;
-		}
-
-		@Override
-		public BindingModel getBindingModel() {
-			return getFlexoConcept().getBindingModel();
-		}
-
-		@Override
-		public FlexoConcept getObject() {
-			return getFlexoConcept();
-		}
-
-		@Override
-		public String getURI() {
-			return getFlexoConcept().getURI();
-		}
-
-		@Override
-		public List<FlexoBehaviour> getBehaviours() {
-			return getFlexoConcept().getFlexoBehaviours();
-		}
-
-		protected void notifiedBehavioursChanged(FlexoBehaviour oldValue, FlexoBehaviour newValue) {
-			getPropertyChangeSupport().firePropertyChange("behaviours", oldValue, newValue);
-		}
+	public InconsistentFlexoConceptHierarchyException(String message) {
+		super(message);
 	}
 }

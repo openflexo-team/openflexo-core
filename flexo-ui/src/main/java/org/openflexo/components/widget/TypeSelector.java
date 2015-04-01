@@ -61,6 +61,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.GenericArrayTypeImpl;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
@@ -74,7 +76,9 @@ import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.fib.view.FIBView;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.rm.Resource;
@@ -83,6 +87,7 @@ import org.openflexo.swing.TextFieldCustomPopup;
 import org.openflexo.swing.VerticalLayout;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
+import org.openflexo.view.controller.FlexoFIBController;
 
 /**
  * Widget allowing to edit a binding
@@ -90,11 +95,12 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * @author sguerin
  * 
  */
-public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCustomComponent<Type, TypeSelector>, HasPropertyChangeSupport {
-	@SuppressWarnings("hiding")
+@SuppressWarnings("serial")
+public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCustomComponent<Type, TypeSelector>, HasPropertyChangeSupport,
+		PropertyChangeListener {
 	static final Logger LOGGER = Logger.getLogger(TypeSelector.class.getPackage().getName());
 
-	public static Resource FIB_FILE_NAME = ResourceLocator.getResourceLocator().locateResource("Fib/TypeSelector.fib");
+	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/TypeSelector.fib");
 
 	public static final Object JAVA_TYPE = new Object() {
 		@Override
@@ -142,6 +148,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	private Type keyType = Object.class;
 
+	private FlexoServiceManager serviceManager;
+
 	public class GenericParameter extends PropertyChangedSupportDefaultImplementation {
 		private TypeVariable<?> typeVariable;
 		private Type type;
@@ -168,7 +176,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 		public void setTypeVariable(TypeVariable<?> typeVariable) {
 			if (typeVariable != this.typeVariable) {
-				TypeVariable oldValue = this.typeVariable;
+				TypeVariable<?> oldValue = this.typeVariable;
 				this.typeVariable = typeVariable;
 				getPropertyChangeSupport().firePropertyChange("typeVariable", oldValue, typeVariable);
 			}
@@ -322,22 +330,52 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public void setChoice(Object choice) {
 		if (this.choice != choice) {
-			Class oldBaseClass = getBaseClass();
+			Class<?> oldBaseClass = getBaseClass();
+			TechnologyAdapterTypeFactory<?> oldCustomTypeFactory = getCustomTypeFactory();
+			boolean oldIsJavaType = isJavaType();
+			boolean oldIsPrimitiveType = isPrimitiveType();
+			boolean oldIsJavaList = isJavaList();
+			boolean oldIsJavaMap = isJavaMap();
+			boolean oldHasBaseJavaClass = hasBaseJavaClass();
+			boolean oldIsJavaWildcard = isJavaWildcard();
+			boolean oldIsCustomType = isCustomType();
+
 			Object old = this.choice;
+
+			if (old instanceof TechnologyAdapterTypeFactory) {
+				((TechnologyAdapterTypeFactory<?>) old).getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+
 			this.choice = choice;
 
-			if (choice instanceof PrimitiveType) {
+			if (isCustomType()) {
+				TechnologyAdapterTypeFactory factory = getCustomTypeFactory();
+				factory.getPropertyChangeSupport().addPropertyChangeListener(this);
+				if (getEditedObject() instanceof CustomType) {
+					try {
+						factory.configureFactory((CustomType) getEditedObject());
+					} catch (ClassCastException e) {
+						// That may happen if we have changed from a CustomTypefactory to another CustomTypefactory
+						setEditedObject(factory.makeCustomType(null));
+					}
+				} else {
+					setEditedObject(factory.makeCustomType(null));
+				}
+			} else if (choice instanceof PrimitiveType) {
 				setEditedObject(((PrimitiveType) choice).getType());
 			} else {
 				// Will cause the edited object to be recomputed from new configuration values
 				setBaseClass(oldBaseClass);
 			}
 			getPropertyChangeSupport().firePropertyChange("choice", old, choice);
-			getPropertyChangeSupport().firePropertyChange("isJavaType", !isJavaType(), isJavaType());
-			getPropertyChangeSupport().firePropertyChange("isPrimitiveType", !isPrimitiveType(), isPrimitiveType());
-			getPropertyChangeSupport().firePropertyChange("isJavaMap", !isJavaMap(), isJavaMap());
-			getPropertyChangeSupport().firePropertyChange("hasBaseJavaClass", !hasBaseJavaClass(), hasBaseJavaClass());
-			getPropertyChangeSupport().firePropertyChange("isJavaWildcard", !isJavaWildcard(), isJavaWildcard());
+			getPropertyChangeSupport().firePropertyChange("isJavaType", oldIsJavaType, isJavaType());
+			getPropertyChangeSupport().firePropertyChange("isPrimitiveType", oldIsPrimitiveType, isPrimitiveType());
+			getPropertyChangeSupport().firePropertyChange("isJavaList", oldIsJavaList, isJavaList());
+			getPropertyChangeSupport().firePropertyChange("isJavaMap", oldIsJavaMap, isJavaMap());
+			getPropertyChangeSupport().firePropertyChange("hasBaseJavaClass", oldHasBaseJavaClass, hasBaseJavaClass());
+			getPropertyChangeSupport().firePropertyChange("isJavaWildcard", oldIsJavaWildcard, isJavaWildcard());
+			getPropertyChangeSupport().firePropertyChange("isCustomType", oldIsCustomType, isCustomType());
+			getPropertyChangeSupport().firePropertyChange("customTypeFactory", oldCustomTypeFactory, getCustomTypeFactory());
 			if (isJavaType()) {
 				getPropertyChangeSupport().firePropertyChange("loadedClassesInfo", null, getLoadedClassesInfo());
 			}
@@ -352,12 +390,27 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		return getPrimitiveType() != null;
 	}
 
+	public boolean isJavaList() {
+		return (choice == JAVA_LIST);
+	}
+
 	public boolean isJavaMap() {
 		return (choice == JAVA_MAP);
 	}
 
 	public boolean isJavaWildcard() {
 		return (choice == JAVA_WILDCARD);
+	}
+
+	public boolean isCustomType() {
+		return (choice instanceof TechnologyAdapterTypeFactory);
+	}
+
+	public TechnologyAdapterTypeFactory<?> getCustomTypeFactory() {
+		if (isCustomType()) {
+			return (TechnologyAdapterTypeFactory<?>) choice;
+		}
+		return null;
 	}
 
 	public boolean hasBaseJavaClass() {
@@ -393,6 +446,43 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		return null;
 	}
 
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
+	}
+
+	public void setServiceManager(FlexoServiceManager serviceManager) {
+
+		if (serviceManager != this.serviceManager) {
+			FlexoServiceManager oldValue = this.serviceManager;
+			this.serviceManager = serviceManager;
+			updateCustomTypes();
+			getPropertyChangeSupport().firePropertyChange("serviceManager", oldValue, serviceManager);
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (isCustomType() && evt.getSource() == getCustomTypeFactory()) {
+			// propertyChanged in CustomTypeFactory, regenerate new Type
+			setEditedObject(getCustomTypeFactory().makeCustomType(null));
+		}
+	}
+
+	private void updateCustomTypes() {
+		for (Object o : new ArrayList<Object>(choices)) {
+			if (o instanceof CustomTypeFactory) {
+				choices.remove(o);
+			}
+		}
+
+		for (Class<? extends CustomType> customTypeClass : serviceManager.getTechnologyAdapterService().getCustomTypeFactories().keySet()) {
+			CustomTypeFactory<?> ctfactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories().get(customTypeClass);
+			choices.add(ctfactory);
+		}
+
+		getPropertyChangeSupport().firePropertyChange("choices", null, choices);
+	}
+
 	@Override
 	public void setEditedObject(Type object) {
 		super.setEditedObject(object);
@@ -407,7 +497,14 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		if (primitiveType != null) {
 			setChoice(primitiveType);
 		} else {
-			if (getEditedObject() instanceof Class) {
+			if (getEditedObject() instanceof CustomType && serviceManager != null) {
+				CustomTypeFactory ctFactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories()
+						.get(getEditedObject().getClass());
+				if (ctFactory != null && choices.contains(ctFactory)) {
+					setChoice(ctFactory);
+					ctFactory.configureFactory((CustomType) getEditedObject());
+				}
+			} else if (getEditedObject() instanceof Class) {
 				setChoice(JAVA_TYPE);
 			}
 		}
@@ -464,7 +561,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	private void updateGenericParameters(Class<?> baseClass) {
-		if (baseClass.getTypeParameters().length == 0) {
+		if (baseClass == null || baseClass.getTypeParameters().length == 0) {
 			genericParameters.clear();
 		} else {
 			List<GenericParameter> genericParametersToRemove = new ArrayList<GenericParameter>(genericParameters);
@@ -639,7 +736,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public class TypeSelectorDetailsPanel extends ResizablePanel {
 		private final FIBComponent fibComponent;
-		private FIBView fibView;
+		private FIBView<?, ?, ?> fibView;
 		private CustomFIBController controller;
 
 		protected TypeSelectorDetailsPanel(Type aClass) {
@@ -663,6 +760,10 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			fibView = null;
 		}
 
+		public CustomFIBController getController() {
+			return controller;
+		}
+
 		public void update() {
 			controller.setDataObject(TypeSelector.this);
 		}
@@ -672,7 +773,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 			return new Dimension(fibComponent.getWidth(), fibComponent.getHeight());
 		}
 
-		public class CustomFIBController extends FIBController {
+		public class CustomFIBController extends FlexoFIBController {
 			public CustomFIBController(FIBComponent component) {
 				super(component);
 			}

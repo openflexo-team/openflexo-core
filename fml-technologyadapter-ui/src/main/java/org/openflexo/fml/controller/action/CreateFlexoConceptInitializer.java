@@ -67,7 +67,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConcept action) {
 				Wizard wizard = new CreateFlexoConceptWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

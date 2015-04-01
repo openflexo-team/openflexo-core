@@ -38,9 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.List;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.toolbox.ConcatenedList;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl.class)
@@ -50,6 +53,8 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 	public FlexoConcept getFlexoConcept();
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
+
+	public List<FlexoProperty<?>> getProperties();
 
 	public abstract class FlexoConceptStructuralFacetImpl extends FlexoConceptObjectImpl implements FlexoConceptStructuralFacet {
 
@@ -63,6 +68,7 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
 			this.flexoConcept = flexoConcept;
+			properties = null;
 		}
 
 		@Override
@@ -78,6 +84,25 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 		@Override
 		public String getURI() {
 			return getFlexoConcept().getURI();
+		}
+
+		private List<FlexoProperty<?>> properties = null;
+
+		@Override
+		public List<FlexoProperty<?>> getProperties() {
+			if (properties == null) {
+				if (getFlexoConcept() instanceof AbstractVirtualModel) {
+					properties = new ConcatenedList<FlexoProperty<?>>(((AbstractVirtualModel) getFlexoConcept()).getModelSlots(),
+							getFlexoConcept().getFlexoProperties());
+				} else if (getFlexoConcept() != null) {
+					properties = getFlexoConcept().getFlexoProperties();
+				}
+			}
+			return properties;
+		}
+
+		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
+			getPropertyChangeSupport().firePropertyChange("properties", oldValue, newValue);
 		}
 
 	}

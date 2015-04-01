@@ -56,7 +56,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
 /**
- * Test the structural and behavioural features of FIBOntologyBrowser
+ * Test the structural and behavioural features of {@link FIBDescriptionWidget}
  * 
  * @author sylvain
  * 

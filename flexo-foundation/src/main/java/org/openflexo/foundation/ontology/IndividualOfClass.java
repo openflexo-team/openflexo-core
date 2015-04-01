@@ -77,6 +77,11 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 		}
 
 		@Override
+		public void configureFactory(IndividualOfClass<?> type) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
 		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
 		}
 

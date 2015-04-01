@@ -130,4 +130,9 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeVirtualModel.fib");
 	}
 
+	@Test
+	public void testDescribeNewParentConcepts() {
+		validateFIB("Fib/Wizard/FMLAction/DescribeNewParentConcepts.fib");
+	}
+
 }

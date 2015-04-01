@@ -69,7 +69,7 @@ public class CreateExpressionPropertyInitializer extends ActionInitializer<Creat
 			@Override
 			public boolean run(EventObject e, CreateExpressionProperty action) {
 				Wizard wizard = new CreateExpressionPropertyWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

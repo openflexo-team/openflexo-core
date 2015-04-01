@@ -69,7 +69,7 @@ public class CreateGetSetPropertyInitializer extends ActionInitializer<CreateGet
 			@Override
 			public boolean run(EventObject e, CreateGetSetProperty action) {
 				Wizard wizard = new CreateGetSetPropertyWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

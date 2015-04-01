@@ -59,6 +59,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.action.CopyAction;
 import org.openflexo.foundation.action.CopyAction.CopyActionType;
@@ -137,7 +138,11 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	}
 
 	public void setFlexoController(FlexoController aController) {
-		controller = aController;
+		if (aController != controller) {
+			FlexoController oldValue = controller;
+			controller = aController;
+			getPropertyChangeSupport().firePropertyChange("flexoController", oldValue, aController);
+		}
 	}
 
 	public FlexoEditor getEditor() {
@@ -150,6 +155,13 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public SelectionManager getSelectionManager() {
 		if (getFlexoController() != null) {
 			return getFlexoController().getSelectionManager();
+		}
+		return null;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		if (getFlexoController() != null) {
+			return getFlexoController().getApplicationContext();
 		}
 		return null;
 	}

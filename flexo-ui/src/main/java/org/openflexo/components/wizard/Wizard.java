@@ -64,11 +64,19 @@ public abstract class Wizard implements HasPropertyChangeSupport {
 	private final List<WizardStep> steps;
 	private WizardStep currentStep;
 
-	private final PropertyChangeSupport pcSupport;
+	private PropertyChangeSupport pcSupport;
 
 	public Wizard() {
 		steps = new ArrayList<WizardStep>();
 		pcSupport = new PropertyChangeSupport(this);
+	}
+
+	public void delete() {
+		for (WizardStep s : steps) {
+			s.delete();
+		}
+		steps.clear();
+		pcSupport = null;
 	}
 
 	@Override

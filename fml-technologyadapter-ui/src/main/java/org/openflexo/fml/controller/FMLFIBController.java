@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
@@ -127,8 +128,9 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoConcept addParentFlexoConcept(FlexoConcept flexoConcept) {
-		logger.warning("addParentFlexoConcept not implemented yet");
-		return null;
+		AddParentFlexoConcept addParentFlexoConcept = AddParentFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
+		addParentFlexoConcept.doAction();
+		return flexoConcept;
 	}
 
 	public AbstractProperty<?> createAbstractProperty(FlexoConcept flexoConcept) {

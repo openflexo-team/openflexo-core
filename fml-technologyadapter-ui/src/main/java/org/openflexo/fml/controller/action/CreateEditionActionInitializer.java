@@ -71,7 +71,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 			@Override
 			public boolean run(EventObject e, CreateEditionAction action) {
 				Wizard wizard = new CreateEditionActionWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

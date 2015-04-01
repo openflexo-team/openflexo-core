@@ -118,6 +118,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoFacet;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -125,6 +126,7 @@ import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotE
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -300,14 +302,38 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	protected abstract void initializePerspectives();
 
-	protected void initializeAllAvailableTechnologyPerspectives() {
+	protected void initializeAllAvailableTechnologyPerspectives(boolean includeFML, boolean includeFMLRT) {
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
 			if (tac != null) {
-				tac.installTechnologyPerspective(this);
+				boolean includeTA = true;
+				if (tac.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+					includeTA = includeFML;
+				}
+				if (tac.getTechnologyAdapter() instanceof FMLRTTechnologyAdapter) {
+					includeTA = includeFMLRT;
+				}
+				if (includeTA) {
+					tac.installTechnologyPerspective(this);
+				}
 			}
 		}
+	}
+
+	protected void initializeFMLTechnologyAdapterPerspectives() {
+		FMLTechnologyAdapter fmlTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(fmlTA);
+		tac.installTechnologyPerspective(this);
+	}
+
+	protected void initializeFMLRTTechnologyAdapterPerspectives() {
+		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
+				FMLRTTechnologyAdapter.class);
+		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(fmlRTTA);
+		tac.installTechnologyPerspective(this);
 	}
 
 	public final ControllerModel getControllerModel() {

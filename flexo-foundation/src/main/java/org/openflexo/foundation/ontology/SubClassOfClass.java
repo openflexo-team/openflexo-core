@@ -77,6 +77,11 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 		}
 
 		@Override
+		public void configureFactory(SubClassOfClass<?> type) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
 		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
 		}
 

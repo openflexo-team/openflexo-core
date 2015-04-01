@@ -41,6 +41,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +49,8 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -398,15 +401,28 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return returned;
 	}
 
+	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new HashMap<Class<? extends CustomType>, CustomTypeFactory<?>>();
+
 	/**
-	 * Instanciate a new instance of {@link FMLModelFactory} enriched with all concepts found in all available
-	 * {@link TechnologyAdapter}
+	 * Return all {@link CustomType} factories defined for all known technologies
 	 * 
 	 * @return
 	 */
-	/*@Override
-	public FMLModelFactory getVirtualModelModelFactory() {
-		return null;
-	}*/
+	@Override
+	public Map<Class<? extends CustomType>, CustomTypeFactory<?>> getCustomTypeFactories() {
+		return customTypeFactories;
+	}
+
+	/**
+	 * Register CustomTypeFactory
+	 * 
+	 * @param typeClass
+	 * @param factory
+	 */
+	@Override
+	public <T extends CustomType> void registerTypeClass(Class<T> typeClass, CustomTypeFactory<T> factory) {
+		// System.out.println("registering " + typeClass + " with " + factory);
+		customTypeFactories.put(typeClass, factory);
+	}
 
 }

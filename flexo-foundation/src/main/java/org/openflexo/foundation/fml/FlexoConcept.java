@@ -46,6 +46,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
+import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
@@ -175,6 +177,13 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public void setAbstract(boolean isAbstract);
 
 	/**
+	 * Return boolean indicating if this FlexoConcept MUST be abstract (containing an {@link AbstractProperty})
+	 * 
+	 * @return
+	 */
+	public boolean abstractRequired();
+
+	/**
 	 * Return declared properties for this {@link FlexoConcept}<br>
 	 * Declared properties are those returned by getFlexoProperties() method
 	 * 
@@ -257,10 +266,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
-	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts);
+	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) throws InconsistentFlexoConceptHierarchyException;
 
 	@Adder(PARENT_FLEXO_CONCEPTS_KEY)
-	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept);
+	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException;
 
 	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
@@ -473,12 +482,20 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean isAbstract() {
+			if (abstractRequired()) {
+				return true;
+			}
+			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+		}
+
+		@Override
+		public boolean abstractRequired() {
 			for (FlexoProperty<?> p : getAccessibleProperties()) {
 				if (p.isAbstract()) {
 					return true;
 				}
 			}
-			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
+			return false;
 		}
 
 		/**
@@ -550,12 +567,22 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public void addToFlexoProperties(FlexoProperty<?> aProperty) {
 			availablePropertiesNames = null;
 			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
+			notifiedPropertiesChanged(null, aProperty);
 		}
 
 		@Override
 		public void removeFromFlexoProperties(FlexoProperty<?> aProperty) {
 			availablePropertiesNames = null;
 			performSuperRemover(FLEXO_PROPERTIES_KEY, aProperty);
+			notifiedPropertiesChanged(aProperty, null);
+		}
+
+		protected void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
+			if (getStructuralFacet() instanceof FlexoConceptStructuralFacetImpl) {
+				((FlexoConceptStructuralFacetImpl) getStructuralFacet()).notifiedPropertiesChanged(oldValue, newValue);
+			}
+			getPropertyChangeSupport().firePropertyChange("isAbstract", !isAbstract(), isAbstract());
+			getPropertyChangeSupport().firePropertyChange("abstractRequired", !abstractRequired(), abstractRequired());
 		}
 
 		@Override
@@ -645,28 +672,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			return getDeclaredProperties(ClassRole.class);
 		}
 
-		/*
-		 * public List<GraphicalElementPatternRole>
-		 * getGraphicalElementPatternRoles() { return
-		 * getPatternRoles(GraphicalElementPatternRole.class); }
-		 * 
-		 * public List<ShapePatternRole> getShapePatternRoles() { return
-		 * getPatternRoles(ShapePatternRole.class); }
-		 * 
-		 * public List<ConnectorPatternRole> getConnectorPatternRoles() { return
-		 * getPatternRoles(ConnectorPatternRole.class); }
-		 */
-
-		/*
-		 * public ShapePatternRole getDefaultShapePatternRole() {
-		 * List<ShapePatternRole> l = getShapePatternRoles(); if (l.size() > 0)
-		 * { return l.get(0); } return null; }
-		 * 
-		 * public ConnectorPatternRole getDefaultConnectorPatternRole() {
-		 * List<ConnectorPatternRole> l = getConnectorPatternRoles(); if
-		 * (l.size() > 0) { return l.get(0); } return null; }
-		 */
-
 		private Vector<String> availablePropertiesNames = null;
 
 		public Vector<String> getAvailablePropertyNames() {
@@ -729,6 +734,24 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return returned;
+		}
+
+		@Override
+		public void addToFlexoBehaviours(FlexoBehaviour aFlexoBehaviour) {
+			performSuperAdder(FLEXO_BEHAVIOURS_KEY, aFlexoBehaviour);
+			notifiedBehavioursChanged(null, aFlexoBehaviour);
+		}
+
+		@Override
+		public void removeFromFlexoBehaviours(FlexoBehaviour aFlexoBehaviour) {
+			performSuperRemover(FLEXO_BEHAVIOURS_KEY, aFlexoBehaviour);
+			notifiedBehavioursChanged(aFlexoBehaviour, null);
+		}
+
+		protected void notifiedBehavioursChanged(FlexoBehaviour oldValue, FlexoBehaviour newValue) {
+			if (getBehaviouralFacet() instanceof FlexoConceptBehaviouralFacetImpl) {
+				((FlexoConceptBehaviouralFacetImpl) getBehaviouralFacet()).notifiedBehavioursChanged(oldValue, newValue);
+			}
 		}
 
 		@Override
@@ -930,22 +953,31 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) {
+		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) throws InconsistentFlexoConceptHierarchyException {
 			performSuperSetter(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcepts);
 		}
 
 		@Override
-		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+				if (getOwningVirtualModel() != null) {
+					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+							getOwningVirtualModel().getAllRootFlexoConcepts());
+				}
 			} else {
-				logger.warning("Could not add as parent FlexoConcept: " + parentFlexoConcept);
+				throw new InconsistentFlexoConceptHierarchyException("FlexoConcept " + this + " : Could not add as parent FlexoConcept: "
+						+ parentFlexoConcept);
 			}
 		}
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						getOwningVirtualModel().getAllRootFlexoConcepts());
+			}
 		}
 
 		/**
@@ -990,6 +1022,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean isAssignableFrom(FlexoConcept flexoConcept) {
+			if (flexoConcept == null) {
+				return false;
+			}
 			if (flexoConcept == this) {
 				return true;
 			}

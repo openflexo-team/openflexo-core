@@ -43,6 +43,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -319,10 +320,12 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 	/**
 	 * Test FlexoConceptB creation, define some overriden properties
+	 * 
+	 * @throws InconsistentFlexoConceptHierarchyException
 	 */
 	@Test
 	@TestOrder(5)
-	public void testCreateFlexoConceptB() throws SaveResourceException {
+	public void testCreateFlexoConceptB() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		log("testCreateFlexoConceptB()");
 
@@ -407,7 +410,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	 */
 	@Test
 	@TestOrder(6)
-	public void testCreateFlexoConceptC() throws SaveResourceException {
+	public void testCreateFlexoConceptC() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		log("testCreateFlexoConceptC()");
 
@@ -477,7 +480,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	 */
 	@Test
 	@TestOrder(7)
-	public void testCreateFlexoConceptD() throws SaveResourceException {
+	public void testCreateFlexoConceptD() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		log("testCreateFlexoConceptD()");
 
@@ -602,6 +605,24 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		property3InB.setType(Integer.class);
 		assertObjectIsValid(virtualModel);
 
+	}
+
+	/**
+	 * Test FlexoConcept inheritance inconsistency detection
+	 */
+	@Test
+	@TestOrder(8)
+	public void testHierarchyInconsistent() {
+
+		log("testHierarchyInconsistent()");
+
+		try {
+			flexoConceptA.addToParentFlexoConcepts(flexoConceptD);
+			fail();
+		} catch (InconsistentFlexoConceptHierarchyException e) {
+			// Excepted exception
+			System.out.println("InconsistentFlexoConceptHierarchyException thrown as expected");
+		}
 	}
 
 	/**
