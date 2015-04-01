@@ -257,10 +257,10 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
-	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts);
+	public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) throws InconsistentFlexoConceptHierarchyException;
 
 	@Adder(PARENT_FLEXO_CONCEPTS_KEY)
-	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept);
+	public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException;
 
 	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
@@ -930,22 +930,31 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		@Override
-		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) {
+		public void setParentFlexoConcepts(List<FlexoConcept> parentFlexoConcepts) throws InconsistentFlexoConceptHierarchyException {
 			performSuperSetter(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcepts);
 		}
 
 		@Override
-		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
+		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+				if (getOwningVirtualModel() != null) {
+					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+							getOwningVirtualModel().getAllRootFlexoConcepts());
+				}
 			} else {
-				logger.warning("Could not add as parent FlexoConcept: " + parentFlexoConcept);
+				throw new InconsistentFlexoConceptHierarchyException("FlexoConcept " + this + " : Could not add as parent FlexoConcept: "
+						+ parentFlexoConcept);
 			}
 		}
 
 		@Override
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
+			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						getOwningVirtualModel().getAllRootFlexoConcepts());
+			}
 		}
 
 		/**
@@ -990,6 +999,9 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean isAssignableFrom(FlexoConcept flexoConcept) {
+			if (flexoConcept == null) {
+				return false;
+			}
 			if (flexoConcept == this) {
 				return true;
 			}

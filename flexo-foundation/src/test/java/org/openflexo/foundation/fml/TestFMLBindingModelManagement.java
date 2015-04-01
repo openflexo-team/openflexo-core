@@ -388,7 +388,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(6)
-	public void testFlexoConceptBindingModelManagement() throws SaveResourceException {
+	public void testFlexoConceptBindingModelManagement() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		CreateFlexoConcept addFlexoConceptB = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptB.setNewFlexoConceptName("FlexoConceptB");
@@ -526,7 +526,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(7)
-	public void testFlexoConceptBindingModelManagement2() throws SaveResourceException {
+	public void testFlexoConceptBindingModelManagement2() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
 
 		CreateFlexoConcept addFlexoConceptD = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptD.setNewFlexoConceptName("FlexoConceptD");
@@ -1387,7 +1387,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		MatchingCriteria criteria1 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("aStringInA"));
 		MatchingCriteria criteria2 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("aBooleanInA"));
 		MatchingCriteria criteria3 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("anIntegerInA"));
-		MatchingCriteria criteria4 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("anOtherBooleanInA"));
+		MatchingCriteria criteria4 = matchFlexoConceptInstance
+				.getMatchingCriteria(flexoConceptA.getAccessibleProperty("anOtherBooleanInA"));
 
 		assertNotNull(criteria1);
 		assertNotNull(criteria2);

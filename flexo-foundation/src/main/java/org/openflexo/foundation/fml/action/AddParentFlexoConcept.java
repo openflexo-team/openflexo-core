@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -44,34 +44,61 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
-import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 
 /**
- * Abstract action creating a {@link FlexoConcept} or any of its subclass
+ * This action allows to declare a new parent FlexoConcept for a given FlexoConcept
  * 
  * @author sylvain
- * 
+ *
  */
-public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject> extends
-		FlexoAction<A, T1, T2> implements LongRunningAction {
+@SuppressWarnings("serial")
+public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, FlexoConcept, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AddParentFlexoConcept.class.getPackage().getName());
+
+	public static FlexoActionType<AddParentFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionType<AddParentFlexoConcept, FlexoConcept, FMLObject>(
+			"add_parent_flexo_concept", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+
+		/**
+		 * Factory method
+		 */
+		@Override
+		public AddParentFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+			return new AddParentFlexoConcept(focusedObject, globalSelection, editor);
+		}
+
+		@Override
+		public boolean isVisibleForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
+			return object != null;
+		}
+
+		@Override
+		public boolean isEnabledForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
+			return isVisibleForSelection(object, globalSelection);
+		}
+
+	};
+
+	static {
+		FlexoObjectImpl.addActionForClass(AddParentFlexoConcept.actionType, FlexoConcept.class);
+	}
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	AbstractCreateFlexoConcept(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		parentFlexoConceptEntries = new ArrayList<AbstractCreateFlexoConcept.ParentFlexoConceptEntry>();
+		for (FlexoConcept parentConcept : getFocusedObject().getParentFlexoConcepts()) {
+			addToParentConcepts(parentConcept);
+		}
 	}
-
-	public abstract FlexoConcept getNewFlexoConcept();
 
 	public List<ParentFlexoConceptEntry> getParentFlexoConceptEntries() {
 		return parentFlexoConceptEntries;
@@ -97,40 +124,16 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		return newParentFlexoConceptEntry;
 	}
 
-	protected void performSetParentConcepts() throws InconsistentFlexoConceptHierarchyException {
+	@Override
+	protected void doAction(Object context) throws InconsistentFlexoConceptHierarchyException {
+		logger.info("Add parent concepts");
+
 		for (ParentFlexoConceptEntry entry : getParentFlexoConceptEntries()) {
-			getNewFlexoConcept().addToParentFlexoConcepts(entry.getParentConcept());
-		}
-	}
-
-	public static class ParentFlexoConceptEntry extends PropertyChangedSupportDefaultImplementation {
-
-		private FlexoConcept parentConcept;
-
-		public ParentFlexoConceptEntry() {
-			super();
-		}
-
-		public ParentFlexoConceptEntry(FlexoConcept parentConcept) {
-			super();
-			this.parentConcept = parentConcept;
-		}
-
-		public void delete() {
-			parentConcept = null;
-		}
-
-		public FlexoConcept getParentConcept() {
-			return parentConcept;
-		}
-
-		public void setParentConcept(FlexoConcept parentConcept) {
-			if ((parentConcept == null && this.parentConcept != null)
-					|| (parentConcept != null && !parentConcept.equals(this.parentConcept))) {
-				FlexoConcept oldValue = this.parentConcept;
-				this.parentConcept = parentConcept;
-				getPropertyChangeSupport().firePropertyChange("parentConcept", oldValue, parentConcept);
+			if (!getFocusedObject().getParentFlexoConcepts().contains(entry.getParentConcept())) {
+				getFocusedObject().addToParentFlexoConcepts(entry.getParentConcept());
 			}
 		}
+
 	}
+
 }

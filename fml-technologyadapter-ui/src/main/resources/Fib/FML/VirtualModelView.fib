@@ -204,7 +204,7 @@
 				<Children data="flexoConceptStructuralFacet.properties"
 					name="flexoProperties" />
 				<BrowserAddAction method="controller.createModelSlot(data)"
-					name="createModelSlot" />
+					name="new_model_slot" />
 				<BrowserAddAction name="new_flexo_role"
 					method="controller.createFlexoRole(data)" />
 				<BrowserAddAction name="new_abstract_property"
