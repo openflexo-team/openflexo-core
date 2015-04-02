@@ -50,7 +50,7 @@ import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.DeleteFlexoConcept;
+import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.action.DeleteViewpoint;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -138,7 +138,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@Test
 	@TestOrder(3)
 	public void testDeleteFlexoConcept() {
-		DeleteFlexoConcept action1 = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, editor);
+		DeleteFlexoConceptObjects action1 = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null, editor);
 		assertTrue(action1.isValid());
 		action1.doAction();
 		assertTrue(action1.hasActionExecutionSucceeded());

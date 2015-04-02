@@ -234,7 +234,7 @@ public class FlexoConceptBindingModel extends BindingModel implements PropertyCh
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		for (FlexoConcept p : knownParentConcepts) {
+		for (FlexoConcept p : new ArrayList<FlexoConcept>(knownParentConcepts)) {
 			if (p.getPropertyChangeSupport() != null) {
 				p.getPropertyChangeSupport().removePropertyChangeListener(this);
 				knownParentConcepts.remove(p);

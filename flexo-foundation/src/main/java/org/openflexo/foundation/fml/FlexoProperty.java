@@ -287,6 +287,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				if (getCardinality().isMultipleCardinality()) {
 					if (resultingType instanceof ParameterizedType
 							&& ((ParameterizedType) resultingType).getActualTypeArguments().length == 1
+							&& ((ParameterizedType) resultingType).getActualTypeArguments()[0] != null
 							&& ((ParameterizedType) resultingType).getActualTypeArguments()[0].equals(getType())) {
 						// OK type is valid
 						return resultingType;
@@ -383,6 +384,14 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				}
 			}
 			return false;
+		}
+
+		@Override
+		public boolean delete(Object... context) {
+			if (getFlexoConcept() != null) {
+				getFlexoConcept().removeFromFlexoProperties(this);
+			}
+			return performSuperDelete(context);
 		}
 
 	}

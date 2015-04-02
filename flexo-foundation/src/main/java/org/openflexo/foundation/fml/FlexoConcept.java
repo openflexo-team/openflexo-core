@@ -39,7 +39,9 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -439,13 +441,24 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean delete(Object... context) {
+			Map<FlexoConcept, List<FlexoConcept>> oldParents = new HashMap<FlexoConcept, List<FlexoConcept>>();
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				oldParents.put(parentConcept, new ArrayList<FlexoConcept>(parentConcept.getChildFlexoConcepts()));
+			}
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().removeFromFlexoConcepts(this);
 			}
+
 			performSuperDelete(context);
+
+			for (FlexoConcept parentConcept : oldParents.keySet()) {
+				// Notify child changes
+				parentConcept.getPropertyChangeSupport().firePropertyChange("childFlexoConcepts", oldParents.get(parentConcept),
+						parentConcept.getChildFlexoConcepts());
+			}
 			deleteObservers();
 			return true;
 		}
