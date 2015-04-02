@@ -79,6 +79,11 @@ public class WizardDialog extends FIBDialog<Wizard> {
 			setPreferredSize(preferredSize);
 		}
 		getController().setFlexoController(controller);
+
+		// Attempt to manage focus on buttons
+		/*FIBButtonWidget buttonWidget = (FIBButtonWidget) getController().viewForComponent("CancelButton");
+		buttonWidget.getJComponent().setSelected(true);
+		buttonWidget.getJComponent().requestFocus();*/
 	}
 
 	@Override
