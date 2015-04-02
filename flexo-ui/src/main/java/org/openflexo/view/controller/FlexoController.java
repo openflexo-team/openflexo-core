@@ -1266,6 +1266,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (locations != null) {
 			for (Location location : locations) {
 				viewsForLocation.remove(location);
+				// Do not forget to remove location from ControllerModel !!!
+				getControllerModel().removeFromLocations(location);
 			}
 		}
 		locationsForView.removeAll(aView);
