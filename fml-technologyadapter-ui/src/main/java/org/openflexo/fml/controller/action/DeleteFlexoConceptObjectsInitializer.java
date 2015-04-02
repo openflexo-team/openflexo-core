@@ -39,10 +39,12 @@
 package org.openflexo.fml.controller.action;
 
 import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
+import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.action.FlexoActionInitializer;
@@ -91,4 +93,8 @@ public class DeleteFlexoConceptObjectsInitializer extends
 		return IconLibrary.DELETE_ICON;
 	}
 
+	@Override
+	protected KeyStroke getShortcut() {
+		return KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+	}
 }

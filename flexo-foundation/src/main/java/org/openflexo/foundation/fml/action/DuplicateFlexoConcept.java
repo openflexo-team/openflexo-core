@@ -43,13 +43,14 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 
+// Not used anymore, use Copy/Paste
+@Deprecated
 @SuppressWarnings("serial")
 public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, FlexoConcept, FMLObject> {
 
@@ -79,7 +80,7 @@ public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, Fl
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DuplicateFlexoConcept.actionType, FlexoConcept.class);
+		// FlexoObjectImpl.addActionForClass(DuplicateFlexoConcept.actionType, FlexoConcept.class);
 	}
 
 	DuplicateFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
