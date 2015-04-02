@@ -127,6 +127,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			addVirtualModelFlexoBehaviours((VirtualModel) focusedObject);
 		} else if (focusedObject instanceof FlexoConcept) {
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
+		} else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
+			addFlexoConceptFlexoBehaviours(((FlexoConceptBehaviouralFacet) focusedObject).getFlexoConcept());
 		}
 
 		parameterEntries = new ArrayList<CreateFlexoBehaviour.BehaviourParameterEntry>();
