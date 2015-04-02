@@ -176,17 +176,11 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 	
 	@Override
 	public void initialize(){
-		File userResourceDirectory = new File(FileUtils.getApplicationDataDirectory(), USER_PATH);
-		if(!userResourceDirectory.exists()){
-			userResourceDirectory.mkdir();
-		}
-		localPaths = new ArrayList<String>();
-		localPaths.add(userResourceDirectory.getAbsolutePath());
-		URL[] urls = ClassPathUtils.findJarsFromDirectory(new File(localPaths.get(0)));
+		// retrieve the class loader
 		loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		try {
 			addURL = URLClassLoader.class.getDeclaredMethod("addURL", new Class<?>[]{URL.class});
-		    addURL.setAccessible(true);
+			addURL.setAccessible(true);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,7 +189,17 @@ public class FlexoUpdateService extends FlexoServiceImpl {
 			e.printStackTrace();
 		}
 
+		File userResourceDirectory = new File(FileUtils.getApplicationDataDirectory(), USER_PATH);
+		if(!userResourceDirectory.exists()) {
+			// create all directory levels as required (may be more than one)
+			if (!userResourceDirectory.mkdirs()) {
+				// TODO: report this
+				// could not create the directories, could be a permission problem
+				// exit now because obviously there would be no jar in this non-existent directory
+				return;
+			}
+		}
+		URL[] urls = ClassPathUtils.findJarsFromDirectory(new File(userResourceDirectory.getAbsolutePath()));
 		addJarsToClassLoader(urls);
 	}
 }
-	
