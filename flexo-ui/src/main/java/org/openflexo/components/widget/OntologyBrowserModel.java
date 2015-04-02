@@ -187,15 +187,18 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 	}
 
 	public void setContext(IFlexoOntology<TA> context) {
-		if (this.context != null) {
-			this.context.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		this.context = context;
-		if (context != null) {
-			context.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-		if (autoUpdate) {
-			recomputeStructure();
+		boolean changed = this.context != context;
+		if (changed){
+			if (this.context != null ) {
+				this.context.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			this.context = context;
+			if (context != null) {
+				context.getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
+			if (autoUpdate ) {
+				recomputeStructure();
+			}
 		}
 	}
 
@@ -740,7 +743,12 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		}
 
 		for (IFlexoOntologyIndividual<TA> i : unstoredIndividuals) {
-			addChildren(getContext().getRootConcept(), i);
+			if (getShowClasses()){
+				addChildren(getContext().getRootConcept(), i);
+			}
+			else {
+				roots.add(i);
+			}
 		}
 
 		if (getDisplayPropertiesInClasses()) {
@@ -837,7 +845,7 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPr
 		return returned;
 	}
 
-	private IFlexoOntologyClass<TA> getPreferredStorageLocation(IFlexoOntologyIndividual<TA> i) {
+	protected IFlexoOntologyClass<TA> getPreferredStorageLocation(IFlexoOntologyIndividual<TA> i) {
 
 		// Return the first class which is not the Thing concept
 		for (IFlexoOntologyClass<TA> c : i.getTypes()) {
