@@ -91,7 +91,7 @@ public class DeleteFlexoConcept extends FlexoAction<DeleteFlexoConcept, FlexoCon
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Delete flexo concept");
 
-		getFocusedObject().getOwningVirtualModel().removeFromFlexoConcepts(getFocusedObject());
+		// getFocusedObject().getOwningVirtualModel().removeFromFlexoConcepts(getFocusedObject());
 		getFocusedObject().delete();
 	}
 

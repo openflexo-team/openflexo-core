@@ -439,13 +439,23 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 		@Override
 		public boolean delete(Object... context) {
+			System.out.println("On va supprimer " + this);
+			List<FlexoConcept> oldParents = new ArrayList<FlexoConcept>(getParentFlexoConcepts());
 			if (bindingModel != null) {
 				bindingModel.delete();
 			}
 			if (getOwningVirtualModel() != null) {
 				getOwningVirtualModel().removeFromFlexoConcepts(this);
 			}
+			System.out.println("On y va pour le super delete");
 			performSuperDelete(context);
+			System.out.println("Done pour le super delete");
+			for (FlexoConcept parentConcept : oldParents) {
+				System.out.println("On dit a " + parentConcept + " qu'il change ses enfants a " + parentConcept.getChildFlexoConcepts());
+				parentConcept.getPropertyChangeSupport().firePropertyChange("childFlexoConcepts", /*null,
+																									parentConcept.getChildFlexoConcepts()*/
+				true, false);
+			}
 			deleteObservers();
 			return true;
 		}
