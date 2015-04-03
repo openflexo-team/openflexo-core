@@ -103,6 +103,9 @@ public abstract class OpenflexoTestCase {
 
 	@AfterClass
 	public static void tearDownClass() {
+		if (serviceManager != null){
+			serviceManager.stopAllServices();
+		}
 		if (testResourceCenterDirectory != null) {
 			FileUtils.deleteDir(testResourceCenterDirectory);
 		}
@@ -295,11 +298,9 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
+	
 	@After
 	public void tearDown() throws Exception {
-		if (serviceManager != null){
-			serviceManager.stopAllServices();
-		}
 		KeyValueLibrary.clearCache();
 	}
 

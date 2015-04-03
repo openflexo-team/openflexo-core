@@ -93,6 +93,9 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		if (_project != null) {
 			_project.close();
 		}
+		if (serviceManager != null){
+			serviceManager.stopAllServices();
+		}
 		if (_projectDirectory != null) {
 			FileUtils.deleteDir(_projectDirectory);
 		}
@@ -100,9 +103,6 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		_projectDirectory = null;
 		_project = null;
 
-		if (serviceManager != null){
-			serviceManager.stopAllServices();
-		}
 
 	}
 
