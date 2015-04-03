@@ -280,7 +280,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	public void stopDirectoryWatching() {
-		if (getRootDirectory() != null && getRootDirectory().exists()) {
+		if (getRootDirectory() != null && getRootDirectory().exists() && scheduleWithFixedDelay != null) {
 			scheduleWithFixedDelay.cancel(true);
 		}
 	}
