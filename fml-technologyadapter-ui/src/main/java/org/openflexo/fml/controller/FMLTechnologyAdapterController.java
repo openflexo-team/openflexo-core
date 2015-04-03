@@ -53,11 +53,9 @@ import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateModelSlotInitializer;
 import org.openflexo.fml.controller.action.CreateViewPointInitializer;
 import org.openflexo.fml.controller.action.CreateVirtualModelInitializer;
-import org.openflexo.fml.controller.action.DeleteFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteViewPointInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
-import org.openflexo.fml.controller.action.DuplicateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.ViewPointLocalizedDictionaryView;
@@ -135,8 +133,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateEditionActionInitializer(actionInitializer);
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);
-		new DeleteFlexoConceptInitializer(actionInitializer);
-		new DuplicateFlexoConceptInitializer(actionInitializer);
+		// new DeleteFlexoConceptInitializer(actionInitializer);
+		// new DuplicateFlexoConceptInitializer(actionInitializer);
 		new ShowFMLRepresentationInitializer(actionInitializer);
 		new DeleteFlexoConceptObjectsInitializer(actionInitializer);
 

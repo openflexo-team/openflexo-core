@@ -127,10 +127,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private final HashMap<Class<? extends EditionAction>, EditionAction> editionActionMap;
 
 	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter ta) {
-		availableActions.add(availableActionClass);
-		editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
-		if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
-			availableFetchRequests.add((Class<FetchRequest<?, ?>>) availableActionClass);
+		if (!availableActions.contains(availableActionClass)) {
+			availableActions.add(availableActionClass);
+			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
+			if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
+				availableFetchRequests.add((Class<FetchRequest<?, ?>>) availableActionClass);
+			}
 		}
 	}
 
@@ -159,6 +161,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
 			for (Class<? extends TechnologySpecificAction<?, ?>> eaClass : ms.getAvailableEditionActionTypes()) {
 				addToAvailableActions(eaClass, ms.getModelSlotTechnologyAdapter());
+			}
+			for (Class<? extends FetchRequest<?, ?>> frClass : ms.getAvailableFetchRequestActionTypes()) {
+				addToAvailableActions(frClass, ms.getModelSlotTechnologyAdapter());
 			}
 		}
 
@@ -255,8 +260,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		EditionAction returned = editionActionMap.get(getEditionActionClass());
 		if (returned == null) {
 			returned = makeEditionAction();
-			editionActionMap.put(editionActionClass, returned);
-			returned.getPropertyChangeSupport().addPropertyChangeListener(this);
+			if (returned != null) {
+				editionActionMap.put(editionActionClass, returned);
+				returned.getPropertyChangeSupport().addPropertyChangeListener(this);
+			}
 		}
 		return returned;
 	}
@@ -293,7 +300,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			}
 		}
 
-		return baseEditionAction.getStringRepresentation();
+		if (baseEditionAction != null) {
+			return baseEditionAction.getStringRepresentation();
+		}
+
+		return "null";
 	}
 
 	@Override
@@ -419,6 +430,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		// if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
 			if (ms.getAvailableEditionActionTypes().contains(getEditionActionClass())) {
+				returned.add(ms);
+			}
+			if (ms.getAvailableFetchRequestActionTypes().contains(getEditionActionClass())) {
 				returned.add(ms);
 			}
 		}

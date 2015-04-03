@@ -184,9 +184,8 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 
-		System.out.println("On recoit dans " + this.getClass().getSimpleName() + " " + evt + " " + evt.getPropertyName() + " old="
-				+ evt.getOldValue() + " new=" + evt.getNewValue());
 		if (evt.getSource() == getRepresentedObject() && evt.getPropertyName().equals(getRepresentedObject().getDeletedProperty())) {
+			// This event matches a deletion, delete ModuleView
 			deleteModuleView();
 		}
 		super.propertyChange(evt);
