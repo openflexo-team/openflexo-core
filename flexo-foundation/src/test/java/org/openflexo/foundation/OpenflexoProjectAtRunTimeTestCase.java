@@ -100,7 +100,9 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		_projectDirectory = null;
 		_project = null;
 
-		serviceManager.stopAllServices();
+		if (serviceManager != null){
+			serviceManager.stopAllServices();
+		}
 
 	}
 

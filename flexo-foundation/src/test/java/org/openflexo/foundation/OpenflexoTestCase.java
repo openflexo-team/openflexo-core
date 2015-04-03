@@ -297,7 +297,9 @@ public abstract class OpenflexoTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		serviceManager.stopAllServices();
+		if (serviceManager != null){
+			serviceManager.stopAllServices();
+		}
 		KeyValueLibrary.clearCache();
 	}
 
