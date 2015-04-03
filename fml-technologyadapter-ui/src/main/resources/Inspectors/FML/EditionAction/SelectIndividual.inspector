@@ -16,7 +16,7 @@
 				localize="true" manageDynamicModel="true" index="7" data="data.type"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				opaque="false">
-				<Assignment variable="component.context" value="data.metaModelData" />
+				<Assignment variable="component.context" value="data.metaModelAsOntology" />
 				<Dependancy componentName="AddIndividualAssignationCC" />
 			</Custom>
 		</Tab>

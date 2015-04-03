@@ -151,7 +151,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	private synchronized void launchReadyToExecuteTasks(FlexoTask... ignoredTasks) {
 		// System.out.println("launchReadyToExecuteTasks()");
-		for (FlexoTask task : getScheduledTasks()) {
+		for (FlexoTask task : new ArrayList<FlexoTask>(getScheduledTasks())) {
 			if (task.isReadyToExecute()) {
 				boolean ignored = false;
 				if (ignoredTasks.length > 0) {

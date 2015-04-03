@@ -102,7 +102,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getPropertyName())) {
 			return false;
-		} else if (getFlexoConcept().getAccessibleProperty(getPropertyName()) != null) {
+		} else if (getFlexoConcept().getDeclaredProperty(getPropertyName()) != null) {
 			return false;
 		}
 		return true;
