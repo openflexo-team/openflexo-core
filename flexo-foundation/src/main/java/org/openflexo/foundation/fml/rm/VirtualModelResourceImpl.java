@@ -83,7 +83,7 @@ import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource,
-		AccessibleProxyObject {
+AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
@@ -257,7 +257,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 */
 	@Override
 	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	InconsistentDataException, InvalidModelDefinitionException {
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
@@ -285,8 +285,15 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 	@Override
 	public void stopDeserializing() {
-		for (FlexoConcept fc : getLoadedResourceData().getFlexoConcepts()) {
-			fc.finalizeDeserialization();
+		// NPE Protection and warning
+		VirtualModel data = getLoadedResourceData();
+		if (data == null){
+			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
+		}
+		else {
+			for (FlexoConcept fc : data.getFlexoConcepts()) {
+				fc.finalizeDeserialization();
+			}
 		}
 		super.stopDeserializing();
 	}
