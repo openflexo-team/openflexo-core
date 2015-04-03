@@ -88,7 +88,7 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	/**
 	 * Shutdown the task manager, let all running and scheduled tasks been executed
 	 */
-	public void shutdown();
+	public void stop();
 
 	/**
 	 * Shutdown the task manager, and blocks current thread until all tasks have been executed

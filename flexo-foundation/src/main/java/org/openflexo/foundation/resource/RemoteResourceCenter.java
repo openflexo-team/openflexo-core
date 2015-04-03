@@ -112,5 +112,13 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 		}
 		return entry;
 	}
+	
+	/**
+	 * Stops the Resource Center (When needed)
+	 */
+	@Override
+	public void stop(){
+		logger.warning("STOP method needs to be implemented for RemoteResourceCenters");
+	}
 
 }

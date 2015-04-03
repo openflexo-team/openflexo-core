@@ -324,6 +324,14 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 		return viewPointValidationModel;
 	}
 
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub		
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
+
+		
+	}
+
 	/*public void delete(ViewPoint viewPoint) {
 		logger.info("Remove viewpoint " + viewPoint);
 		unregisterViewPoint(viewPoint.getResource());

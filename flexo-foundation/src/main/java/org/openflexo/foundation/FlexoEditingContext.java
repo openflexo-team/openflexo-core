@@ -318,4 +318,13 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}
 		return null;
 	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub		
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
+		
+	}
+	
+	
 }

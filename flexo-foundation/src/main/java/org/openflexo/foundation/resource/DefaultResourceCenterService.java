@@ -287,4 +287,17 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}*/
 	}
 
+	/**
+	 * Shutdowns all the ResourceCenter
+	 */
+	
+	@Override 
+	public void stop(){
+		List<FlexoResourceCenter> RCs = this.getResourceCenters();
+		
+		for (FlexoResourceCenter r : RCs){
+			r.stop();
+		}
+	}
+	
 }

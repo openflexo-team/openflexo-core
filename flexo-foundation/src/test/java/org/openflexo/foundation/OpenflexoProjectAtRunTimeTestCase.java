@@ -100,6 +100,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		_projectDirectory = null;
 		_project = null;
 
+		serviceManager.stopAllServices();
+
 	}
 
 	protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {

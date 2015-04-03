@@ -63,6 +63,7 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.kvc.KeyValueLibrary;
@@ -296,6 +297,7 @@ public abstract class OpenflexoTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		serviceManager.stopAllServices();
 		KeyValueLibrary.clearCache();
 	}
 

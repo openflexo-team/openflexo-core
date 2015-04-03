@@ -240,4 +240,9 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 
 	public ResourceCenterEntry<?> getResourceCenterEntry();
 
+	/**
+	 * Stops the Resource Center (When needed)
+	 */
+	public void stop();
+
 }

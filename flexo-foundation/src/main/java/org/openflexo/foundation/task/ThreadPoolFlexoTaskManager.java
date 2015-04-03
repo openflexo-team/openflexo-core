@@ -213,9 +213,10 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	@Override
-	public void shutdown() {
+	public void stop() {
 		executor.shutdown();
 	}
+	
 
 	@Override
 	public void shutdownAndExecute(final Runnable r) {
