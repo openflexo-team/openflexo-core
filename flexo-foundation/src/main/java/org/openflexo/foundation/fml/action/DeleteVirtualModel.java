@@ -50,6 +50,7 @@ import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.resource.FlexoResource;
 
 public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject> {
 
@@ -89,11 +90,21 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Delete VirtualModel");
+		FlexoResource<ViewPoint> viewPointResource = null;
+		FlexoResource<VirtualModel> virtualModelResource = getFocusedObject().getResource();
 		if (getFocusedObject().getOwningVirtualModel() instanceof ViewPoint) {
+			viewPointResource = ((ViewPoint) getFocusedObject().getOwningVirtualModel()).getResource();
 			((ViewPoint) (getFocusedObject().getOwningVirtualModel())).removeFromVirtualModels(getFocusedObject());
 		}
-		if (getFocusedObject().getResource() != null) {
-			getFocusedObject().getResource().delete();
+		System.out.println("On supprime le VM");
+		getFocusedObject().delete();
+		if (virtualModelResource != null) {
+			System.out.println("on supprime la resource");
+			virtualModelResource.delete();
+			if (viewPointResource != null) {
+				System.out.println("on notifie");
+				viewPointResource.notifyContentsRemoved(virtualModelResource);
+			}
 		}
 	}
 

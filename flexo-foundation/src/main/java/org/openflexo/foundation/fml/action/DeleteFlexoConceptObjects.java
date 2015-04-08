@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
@@ -73,7 +74,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection) {
-			return true;
+			return isEnabledForSelection(focusedObject, globalSelection);
 		}
 
 		@Override
@@ -144,8 +145,9 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		}
 
 		for (FlexoConceptObject o : allObjects) {
-			boolean isRequired = true;
+			boolean isRequired = false;
 			if (isDeletable(o)) {
+				isRequired = true;
 				for (FlexoConceptObject o2 : allObjects) {
 					if (allDerived.get(o2) != null && allDerived.get(o2).contains(o)) {
 						isRequired = false;
@@ -162,6 +164,10 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 	}
 
 	protected static boolean isDeletable(FlexoConceptObject o) {
+		// VirtualModel and ViewPoint are deleted using specific actions: DeleteViewpoint and DeleteVirtualModel
+		if (o instanceof AbstractVirtualModel) {
+			return false;
+		}
 		return true;
 	}
 }

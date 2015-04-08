@@ -95,7 +95,9 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 		if (evt.getSource() == getFlexoProperty()) {
 			if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
 				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
-				getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
+				if (getPropertyChangeSupport() != null) {
+					getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
+				}
 			}
 			if (evt.getPropertyName().equals(TYPE_PROPERTY) || evt.getPropertyName().equals(FlexoProperty.RESULTING_TYPE_PROPERTY)) {
 				Type newType = getFlexoProperty().getResultingType();
@@ -118,7 +120,9 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 				// in FlexoRole (see IndividualRole for example)
 				logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to "
 						+ getType() + ". Trying to handle case.");
-				getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
+				if (getPropertyChangeSupport() != null) {
+					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
+				}
 				lastKnownType = getType();
 			}
 		}

@@ -528,9 +528,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			}*/
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			for (VirtualModel vm : getVirtualModels()) {
-				out.append(vm.getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context, 1);
+			if (getVirtualModels() != null) {
+				for (VirtualModel vm : getVirtualModels()) {
+					out.append(vm.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context, 1);
+				}
 			}
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
 			return out.toString();

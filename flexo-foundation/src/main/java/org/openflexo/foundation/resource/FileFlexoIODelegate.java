@@ -55,6 +55,8 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
 @ModelEntity
@@ -157,6 +159,17 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					getFlexoResource().getServiceManager().getResourceManager().addToFilesToDelete(getFile());
 					if (logger.isLoggable(Level.INFO)) {
 						logger.info("Will delete file " + getFile().getAbsolutePath() + " upon next save of RM");
+					}
+					if (getFlexoResource() instanceof DirectoryContainerResource) {
+						Resource resource = ((DirectoryContainerResource) getFlexoResource()).getDirectory();
+						if (resource instanceof FileResourceImpl) {
+							getFlexoResource().getServiceManager().getResourceManager()
+									.addToFilesToDelete(((FileResourceImpl) resource).getFile());
+							if (logger.isLoggable(Level.INFO)) {
+								logger.info("Will delete directory " + ((FileResourceImpl) resource).getFile().getAbsolutePath()
+										+ " upon next save of RM");
+							}
+						}
 					}
 				}
 				return true;

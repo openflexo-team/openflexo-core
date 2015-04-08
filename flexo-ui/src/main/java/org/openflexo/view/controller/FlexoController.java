@@ -137,6 +137,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.task.FlexoTask;
@@ -1640,11 +1641,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				LoadResourceAction action = LoadResourceAction.actionType.makeNewAction((FlexoResource<?>) object, null, getEditor());
 				action.doAction();
 			} else {
-				selectAndFocusObjectAsTask((FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData());
+				ResourceData<?> rd = ((FlexoResource<?>) object).getLoadedResourceData();
+				if (rd instanceof FlexoObject) {
+					selectAndFocusObjectAsTask((FlexoObject) rd);
+				}
 			}
 		}
-		logger.info("getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)="
-				+ getCurrentPerspective().hasModuleViewForObject((FlexoObject) object));
 		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
 			// Try to display object in view
 			selectAndFocusObjectAsTask((FlexoObject) object);

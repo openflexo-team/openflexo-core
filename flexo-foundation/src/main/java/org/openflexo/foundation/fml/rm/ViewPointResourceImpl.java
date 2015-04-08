@@ -407,6 +407,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	@Override
 	public boolean isDeprecatedVersion() {
+		if (getModelVersion() == null) {
+			return true;
+		}
 		return getModelVersion().isLesserThan(new FlexoVersion("1.0"));
 	}
 

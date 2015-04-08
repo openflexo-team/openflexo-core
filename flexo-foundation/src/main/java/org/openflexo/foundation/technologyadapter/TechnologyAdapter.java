@@ -49,8 +49,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
@@ -268,7 +268,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 *            the virtual model in which model slot should be created
 	 * @return
 	 */
-	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, VirtualModel containerVirtualModel) {
+	public final <MS extends ModelSlot<?>> MS makeModelSlot(Class<MS> modelSlotClass, AbstractVirtualModel<?> containerVirtualModel) {
 		// NPE Protection
 		if (containerVirtualModel != null) {
 			FMLModelFactory factory = containerVirtualModel.getFMLModelFactory();
