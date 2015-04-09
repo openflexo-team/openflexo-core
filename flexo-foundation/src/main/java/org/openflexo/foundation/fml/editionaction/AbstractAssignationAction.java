@@ -124,4 +124,6 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 	// @DefineValidationRule
 	// TODO: check type compatibility
 
+	// TODO: a rule that check that assignableAction is not null
+
 }

@@ -356,7 +356,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			if (getResource() != null) {
 				return getResource().getFactory();
 			} else {
-				return super.getFMLModelFactory();
+				return getDeserializationFactory();
 			}
 		}
 

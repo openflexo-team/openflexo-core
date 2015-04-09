@@ -43,14 +43,18 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -65,18 +69,22 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
 @XMLElement
-public interface AddToListAction<T> extends AssignableAction<T> {
+public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraphOwner {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String LIST_KEY = "list";
+	@PropertyIdentifier(type = AssignableAction.class)
+	public static final String ASSIGNABLE_ACTION_KEY = "assignableAction";
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
+	@Deprecated
 	public DataBinding<T> getValue();
 
 	@Setter(VALUE_KEY)
+	@Deprecated
 	public void setValue(DataBinding<T> value);
 
 	@Getter(value = LIST_KEY)
@@ -85,6 +93,13 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 
 	@Setter(LIST_KEY)
 	public void setList(DataBinding<? extends List<T>> list);
+
+	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
+	@XMLElement(context = "AssignableAction_")
+	public AssignableAction<T> getAssignableAction();
+
+	@Setter(ASSIGNABLE_ACTION_KEY)
+	public void setAssignableAction(AssignableAction<T> assignableAction);
 
 	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T> implements AddToListAction<T> {
 
@@ -96,8 +111,14 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getList().toString() + " .add( " + getValue().toString() + ");", context);
+			out.append(getList().toString() + ".FML::AddToList(" + getAssignableAction().getStringRepresentation() + ")", context);
 			return out.toString();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return getHeaderContext() + (getList() != null ? getList().toString() : "") + ".FML::AddToList("
+					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "") + ")";
 		}
 
 		public boolean isListRequired() {
@@ -108,27 +129,9 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			return true;
 		}
 
-		public T getDeclaredObject(FlexoBehaviourAction action) {
-			try {
-				return getValue().getBindingValue(action);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		public Type getAssignableType() {
-			return getValueType();
-		}
-
 		public Type getListType() {
 			if (getValue().isSet() && getValue().isValid()) {
-				return new ParameterizedTypeImpl(List.class, getValueType());
+				return new ParameterizedTypeImpl(List.class, getAssignableType());
 			}
 			return new ParameterizedTypeImpl(List.class, Object.class);
 		}
@@ -136,7 +139,6 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 		@Override
 		public DataBinding<? extends List<T>> getList() {
 
-			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list == null) {
 				list = new DataBinding<List<T>>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
 				list.setBindingName("list");
@@ -147,7 +149,6 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 		@Override
 		public void setList(DataBinding<? extends List<T>> list) {
 
-			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list != null) {
 				list.setOwner(this);
 				list.setBindingName("list");
@@ -157,14 +158,8 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			this.list = list;
 		}
 
-		public Type getValueType() {
-			if (getValue().isSet() && getValue().isValid()) {
-				return getValue().getAnalyzedType();
-			}
-			return Object.class;
-		}
-
 		@Override
+		@Deprecated
 		public DataBinding<T> getValue() {
 			if (value == null) {
 				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
@@ -174,6 +169,7 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
+		@Deprecated
 		public void setValue(DataBinding<T> value) {
 			if (value != null) {
 				value.setOwner(this);
@@ -185,11 +181,11 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) {
+		public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
 			logger.info("performing AddToListAction");
 
 			DataBinding<? extends List<T>> list = getList();
-			T objToAdd = getDeclaredObject(action);
+			T objToAdd = getAssignationValue(action);
 
 			try {
 
@@ -218,15 +214,7 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			return objToAdd;
 		}
 
-		/*protected void updateVariableValue() {
-			value = new DataBinding<T>("value", this, getValueType(), BindingDefinitionType.GET_SET);
-		}
-
-		protected void updateVariableList() {
-			list = new DataBinding<List<T>>("list", this, getListType(), BindingDefinitionType.GET_SET);
-		}*/
-
-		@Override
+		/*@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 			if (dataBinding == getValue()) {
 				// updateVariableValue();
@@ -235,11 +223,58 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 				// updateVariableList();
 			}
 			super.notifiedBindingChanged(dataBinding);
+		}*/
+
+		public T getAssignationValue(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+			if (getAssignableAction() != null) {
+				return getAssignableAction().execute(action);
+			}
+			return null;
+		}
+
+		@Override
+		public Type getAssignableType() {
+			if (getAssignableAction() != null) {
+				return getAssignableAction().getAssignableType();
+			}
+			return Object.class;
+		}
+
+		@Override
+		public FMLControlGraph getControlGraph(String ownerContext) {
+			return getAssignableAction();
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
+			if (controlGraph instanceof AssignableAction) {
+				setAssignableAction((AssignableAction<T>) controlGraph);
+			}
+		}
+
+		@Override
+		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
+			return getBindingModel();
+		}
+
+		@Override
+		public void reduce() {
+		}
+
+		@Override
+		public void setOwner(FMLControlGraphOwner owner) {
+			performSuperSetter(OWNER_KEY, owner);
+			if (getAssignableAction() != null) {
+				getAssignableAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getAssignableAction()));
+			}
 		}
 
 	}
 
-	@DefineValidationRule
+	// TODO: a rule that check that assignableAction is not null
+
+	/*@DefineValidationRule
 	public static class ValueBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {
 		public ValueBindingIsRequiredAndMustBeValid() {
 			super("'value'_binding_is_not_valid", AddToListAction.class);
@@ -250,7 +285,7 @@ public interface AddToListAction<T> extends AssignableAction<T> {
 			return object.getValue();
 		}
 
-	}
+	}*/
 
 	@DefineValidationRule
 	public static class ListBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<AddToListAction> {

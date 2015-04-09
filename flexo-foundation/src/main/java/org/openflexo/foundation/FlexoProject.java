@@ -246,7 +246,12 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 
 		// We add the newly created project as a ResourceCenter
-		serviceManager.resourceCenterAdded(project);
+		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
+
+		// If resource center adding is executing in a task, we have to wait the task to be finished
+		if (addResourceCenterTask != null) {
+			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
+		}
 
 		return editor;
 	}

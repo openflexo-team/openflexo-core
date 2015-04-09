@@ -88,6 +88,9 @@ public interface FlexoConceptObject extends FMLObject {
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getFMLModelFactory();
 			}
+			if (getFlexoConcept() instanceof AbstractVirtualModel) {
+				return getFlexoConcept().getFMLModelFactory();
+			}
 			return getDeserializationFactory();
 		}
 

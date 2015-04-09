@@ -69,7 +69,7 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 	private final ChooseEditionActionClass chooseEditionActionClass;
 
-	private static final Dimension DIMENSIONS = new Dimension(700, 500);
+	private static final Dimension DIMENSIONS = new Dimension(700, 600);
 
 	private static final String NO_EDITION_ACTION_TYPE = FlexoLocalization
 			.localizedForKey("please_choose_an_edition_action_or_control_structure");
