@@ -37,7 +37,7 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			borderBottom="2" borderTop="2" trackViewPortHeight="true">
 			<CheckBox id="6" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isVariableDeclaration" enable="(!(data.action.isAssignation)  &amp; !(data.action.isAddToListAction))"
+				data="data.action.isVariableDeclaration" enable="(!(data.action.isAssignation)  &amp; (!(data.action.isAddToListAction)))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -61,7 +61,7 @@
 					readOnly="false" validateOnReturn="false" />
 			</Panel>
 			<CheckBox id="10" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isAssignation" enable="(!(data.action.isVariableDeclaration)  &amp; !(data.action.isAddToListAction))"
+				data="data.action.isAssignation" enable="(!(data.action.isVariableDeclaration)  &amp; (!(data.action.isAddToListAction)))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -89,7 +89,7 @@
 				</Custom>
 			</Panel>
 			<CheckBox id="100" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isAddToListAction" enable="(!(data.action.isVariableDeclaration) &amp; !(data.action.isAssignationAction))"
+				data="data.action.isAddToListAction" enable="(!(data.action.isVariableDeclaration) &amp; (!(data.action.isAssignation)))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
