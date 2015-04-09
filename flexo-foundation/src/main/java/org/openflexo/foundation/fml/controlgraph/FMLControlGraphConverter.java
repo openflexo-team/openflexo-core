@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
@@ -118,6 +119,16 @@ public class FMLControlGraphConverter {
 			iterationAsExpression.initializeDeserialization(owner.getFMLModelFactory());
 			iterationAction.setIterationAction(iterationAsExpression);
 			iterationAction.setIteration(null);
+		}
+
+		if (anAction instanceof AddToListAction && ((AddToListAction<?>) anAction).getValue() != null
+				&& ((AddToListAction<?>) anAction).getValue().isSet()) {
+
+			AddToListAction<?> addToListAction = (AddToListAction<?>) anAction;
+			ExpressionAction<?> valueAsExpression = owner.getFMLModelFactory().newExpressionAction(addToListAction.getValue());
+			valueAsExpression.initializeDeserialization(owner.getFMLModelFactory());
+			addToListAction.setAssignableAction((ExpressionAction) valueAsExpression);
+			addToListAction.setValue(null);
 		}
 
 		if (anAction instanceof ExecutionAction && ((ExecutionAction) anAction).getExecution() != null

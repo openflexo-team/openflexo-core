@@ -25,7 +25,7 @@
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="value" align="right" index="6" data=""
+			<!--  <Label label="value" align="right" index="6" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -40,7 +40,24 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
-			</Custom>
+			</Custom>-->
+			<FIBReferencedComponent
+				dynamicComponent="controller.inspectorForObject(data.assignableAction)"
+				localize="true" manageDynamicModel="true" name="AssignableActionWidget"
+				index="15" data="data.assignableAction"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				opaque="false">
+				<ReferenceAssignment mandatory="true"
+					variable="controller.flexoController" value="controller.flexoController" />
+			</FIBReferencedComponent>
+
+			 <Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>
+			
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>
