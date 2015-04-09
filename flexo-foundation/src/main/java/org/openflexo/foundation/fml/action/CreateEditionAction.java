@@ -156,7 +156,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(ConditionalAction.class, fmlTA);
 		addToAvailableActions(IterationAction.class, fmlTA);
 		addToAvailableActions(ExpressionAction.class, fmlTA);
-		addToAvailableActions(AddToListAction.class, fmlTA);
+		// addToAvailableActions(AddToListAction.class, fmlTA);
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
