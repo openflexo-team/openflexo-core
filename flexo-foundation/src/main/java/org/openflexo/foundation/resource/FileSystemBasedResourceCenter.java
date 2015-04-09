@@ -416,7 +416,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	 * Stops the Resource Center (When needed)
 	 */
 	@Override
-	public void stop(){
+	public void stop() {
 		this.stopDirectoryWatching();
 	}
 
