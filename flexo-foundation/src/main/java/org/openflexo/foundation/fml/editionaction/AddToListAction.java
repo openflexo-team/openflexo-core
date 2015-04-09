@@ -117,7 +117,8 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getList().toString() + ".FML::AddToList(" + getAssignableAction().getStringRepresentation() + ")";
+			return getHeaderContext() + (getList() != null ? getList().toString() : "") + ".FML::AddToList("
+					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "") + ")";
 		}
 
 		public boolean isListRequired() {
