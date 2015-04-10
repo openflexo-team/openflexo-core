@@ -260,7 +260,12 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
+			// NPE Protection when action has been deleted e.g.
+			if (getIterationAction() != null){
+				return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
+			}
+			else 
+				return "NULL ITERATION ACTION";
 		}
 
 		@Override
@@ -361,7 +366,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 	@DefineValidationRule
 	public static class IterationActionMustDefineAValidIteration extends
-			ValidationRule<IterationActionMustDefineAValidIteration, IterationAction> {
+	ValidationRule<IterationActionMustDefineAValidIteration, IterationAction> {
 		public IterationActionMustDefineAValidIteration() {
 			super(IterationAction.class, "iteration_action_must_define_a_valid_iteration");
 		}
