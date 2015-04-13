@@ -319,8 +319,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				if (newValue != null) {
 					newValue.getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
-				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, newValue);
 				fireFlexoConceptChange(oldFlexoConcept, newFlexoConcept);
+				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, newValue);
 				updateParameters();
 			}
 		}
