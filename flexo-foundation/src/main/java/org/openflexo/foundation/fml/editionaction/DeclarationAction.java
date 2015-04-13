@@ -105,24 +105,36 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getFullQualifiedDeclarationTypeAsString() + " " + getVariableName() + " = "
-					+ getAssignableAction().getFMLRepresentation() + ";", context);
+					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
 			return out.toString();
 		}
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = "
-					+ getAssignableAction().getStringRepresentation();
+			if (getAssignableAction() != null) {
+				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = "
+						+ getAssignableAction().getStringRepresentation();
+			} else {
+				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = ???";
+			}
 		}
 
 		@Override
 		public String getDeclarationTypeAsString() {
-			return TypeUtils.simpleRepresentation(getAssignableAction().getAssignableType());
+			if (getAssignableAction() != null) {
+				return TypeUtils.simpleRepresentation(getAssignableAction().getAssignableType());
+			} else {
+				return "null";
+			}
 		}
 
 		@Override
 		public String getFullQualifiedDeclarationTypeAsString() {
-			return TypeUtils.fullQualifiedRepresentation(getAssignableAction().getAssignableType());
+			if (getAssignableAction() != null) {
+				return TypeUtils.fullQualifiedRepresentation(getAssignableAction().getAssignableType());
+			} else {
+				return "null";
+			}
 		}
 
 	}

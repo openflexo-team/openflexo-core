@@ -83,7 +83,7 @@ import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource,
-AccessibleProxyObject {
+		AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
@@ -257,7 +257,7 @@ AccessibleProxyObject {
 	 */
 	@Override
 	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-	InconsistentDataException, InvalidModelDefinitionException {
+			InconsistentDataException, InvalidModelDefinitionException {
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
@@ -287,10 +287,9 @@ AccessibleProxyObject {
 	public void stopDeserializing() {
 		// NPE Protection and warning
 		VirtualModel data = getLoadedResourceData();
-		if (data == null){
+		if (data == null) {
 			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
-		}
-		else {
+		} else {
 			for (FlexoConcept fc : data.getFlexoConcepts()) {
 				fc.finalizeDeserialization();
 			}
@@ -324,12 +323,10 @@ AccessibleProxyObject {
 					if (at.getName().equals("name")) {
 						logger.fine("Returned " + at.getValue());
 						returned.name = at.getValue();
-					}
-					else if (at.getName().equals("version")) {
+					} else if (at.getName().equals("version")) {
 						logger.fine("Returned " + at.getValue());
 						returned.version = at.getValue();
-					}
-					else if (at.getName().equals("modelVersion")) {
+					} else if (at.getName().equals("modelVersion")) {
 						logger.fine("Returned " + at.getValue());
 						returned.modelVersion = at.getValue();
 					}
@@ -438,8 +435,7 @@ AccessibleProxyObject {
 				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
 			return ResourceLocator.locateResource(parentPath);
-		}
-		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+		} else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
 			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
 			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
 			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList()
