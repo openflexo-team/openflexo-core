@@ -114,13 +114,17 @@ public interface ConceptActorReference<T extends IFlexoOntologyObject> extends A
 		public T getModellingElement() {
 			if (concept == null) {
 				ModelSlotInstance msInstance = getModelSlotInstance();
-				if (msInstance.getResourceData() != null) {
-					// object = (T) getProject().getObject(objectURI);
-					/** Model Slot is responsible for URI mapping */
-					concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, conceptURI);
+				if (msInstance == null) {
+					logger.warning("Could not access model slot instance while looking up " + getConceptURI() + " role=" + getFlexoRole());
 				} else {
-					logger.warning("Could not access to model in model slot " + getModelSlotInstance());
-					// logger.warning("Searched " + getModelSlotInstance().getModelURI());
+					if (msInstance.getResourceData() != null) {
+						// object = (T) getProject().getObject(objectURI);
+						/** Model Slot is responsible for URI mapping */
+						concept = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, conceptURI);
+					} else {
+						logger.warning("Could not access to model in model slot " + getModelSlotInstance());
+						// logger.warning("Searched " + getModelSlotInstance().getModelURI());
+					}
 				}
 			}
 			if (concept == null) {
