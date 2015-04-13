@@ -193,7 +193,8 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
+			return getHeaderContext() + getAssignation().toString() + " = " + getAssignableAction() != null ? getAssignableAction()
+					.getStringRepresentation() : "<no_assignable_action>";
 		}
 
 	}
