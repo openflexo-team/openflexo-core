@@ -127,12 +127,15 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType parentType = (TechnologySpecificType) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
-				TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
-				if (ta != null && bf != null && bf.handleType(parentType)) {
-					List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
-					Collections.sort(returned, BindingPathElement.COMPARATOR);
-					return returned;
+				if (ta != null) {
+					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
+					if (bf != null && bf.handleType(parentType)) {
+						List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
+						Collections.sort(returned, BindingPathElement.COMPARATOR);
+						return returned;
+					}
 				}
+
 			}
 
 			if (pType instanceof FlexoBehaviourParametersType) {
