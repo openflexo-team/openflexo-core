@@ -261,8 +261,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				|| (fetchRequestClass != null && !fetchRequestClass.equals(this.fetchRequestClass))) {
 			Class<? extends FetchRequest<?, ?>> oldValue = this.fetchRequestClass;
 			this.fetchRequestClass = fetchRequestClass;
+			updateIteration();
 			getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+			getPropertyChangeSupport().firePropertyChange("fetchRequestAction", oldValue, fetchRequestClass);
 		}
 	}
 
@@ -702,15 +704,15 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		if (iterationAction != null) {
 			switch (getIterationType()) {
-			case Expression:
-				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-				iterationAction.setIterationAction(exp);
-				break;
-			case FetchRequest:
-				FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
-				iterationAction.setIterationAction(fetchRequest);
-			default:
-				break;
+				case Expression:
+					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+					iterationAction.setIterationAction(exp);
+					break;
+				case FetchRequest:
+					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+					iterationAction.setIterationAction(fetchRequest);
+				default:
+					break;
 			}
 		}
 	}
