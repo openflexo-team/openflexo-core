@@ -196,7 +196,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public String getURI() {
-			return getFlexoBehaviour().getURI() + "." + getName();
+			if (getFlexoBehaviour() != null) {
+				return getFlexoBehaviour().getURI() + "." + getName();
+			}
+			return null;
 		}
 
 		@Override
