@@ -44,6 +44,7 @@ import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.factory.AccessibleProxyObject;
 
 /**
  * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
@@ -54,7 +55,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(FlexoIOStreamDelegate.class) })
-public interface FlexoIODelegate<I> {
+public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME = "name";
@@ -115,4 +116,9 @@ public interface FlexoIODelegate<I> {
 	public void notifyHasBeenWrittenOnDisk();
 
 	public String getParentPath();
+
+	/**
+	 * Called when the {@link FlexoResource} this delegate handle I/O has been renamed.
+	 */
+	public void rename() throws CannotRenameException;
 }

@@ -69,6 +69,7 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	@Getter(DIRECTORY)
 	@XmlAttribute
 	public Resource getDirectory();
@@ -77,6 +78,7 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 * Sets the directory (parent file)
 	 */
 	@Setter(DIRECTORY)
+	@Deprecated
 	public void setDirectory(Resource resource);
 
 	/**

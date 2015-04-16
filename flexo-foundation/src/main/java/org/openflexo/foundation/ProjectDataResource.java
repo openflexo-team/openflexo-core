@@ -44,13 +44,13 @@ import java.util.Date;
 
 import org.openflexo.foundation.ProjectData.ProjectDataFactory;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -85,18 +85,18 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 
 		public static ProjectDataResource makeProjectDataResource(FlexoProject project) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-						FileFlexoIODelegate.class,ProjectDataResource.class));
+				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+						ProjectDataResource.class));
 				ProjectDataResourceImpl returned = (ProjectDataResourceImpl) resourceFactory.newInstance(ProjectDataResource.class);
 				File xmlFile = new File(project.getProjectDirectory(), FILE_NAME);
 				returned.setProject(project);
 				ProjectDataFactory projectDataFactory = new ProjectDataFactory(returned, project.getServiceManager().getEditingContext());
 				returned.setFactory(projectDataFactory);
-				returned.setName(project.getProjectName() + "-data");
+				returned.initName(project.getProjectName() + "-data");
 				returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, resourceFactory));
 				Date currentDate = new Date();
-				String projectURI = FlexoProject.BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/" + (currentDate.getMonth() + 1) + "/"
-						+ project.projectName + "_" + System.currentTimeMillis();
+				String projectURI = FlexoProject.BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/"
+						+ (currentDate.getMonth() + 1) + "/" + project.projectName + "_" + System.currentTimeMillis();
 				returned.setURI(projectURI);
 				returned.setServiceManager(project.getServiceManager());
 				if (xmlFile.exists()) {

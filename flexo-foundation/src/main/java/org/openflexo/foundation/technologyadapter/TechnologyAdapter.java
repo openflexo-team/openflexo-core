@@ -53,14 +53,13 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * This class represents a technology adapter<br>
@@ -311,11 +310,17 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// Also register the resource in the ResourceCenter seen as a ResourceRepository
 			try {
 				File candidateFile = null;
-				if (resource instanceof DirectoryContainerResource) {
+				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
+					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
+				} else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
+				}
+
+				/*if (resource instanceof DirectoryContainerResource) {
 					candidateFile = ResourceLocator.retrieveResourceAsFile(((DirectoryContainerResource<?>) resource).getDirectory());
 				} else {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				}
+				}*/
 				((ResourceRepository) resourceCenter).registerResource(resource,
 						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
 			} catch (IOException e) {

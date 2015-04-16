@@ -60,6 +60,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -411,8 +412,12 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			if (requireChange(getName(), name)) {
 				String oldValue = getName();
 				if (getResource() != null) {
-					getResource().setName(name);
-					getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+					try {
+						getResource().setName(name);
+						getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+					} catch (CannotRenameException e) {
+						e.printStackTrace();
+					}
 				} else {
 					super.setName(name);
 				}

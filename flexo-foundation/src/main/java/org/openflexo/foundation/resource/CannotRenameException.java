@@ -1,7 +1,6 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2012-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -37,36 +36,43 @@
  * 
  */
 
-package org.openflexo.foundation.technologyadapter;
+package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
- * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
- * 
  * @author sylvain
  * 
- * @param <R>
- * @param <TA>
  */
-public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
-		extends TechnologyAdapterFileResourceRepository<R, TA, MM> {
+@SuppressWarnings("serial")
+public class CannotRenameException extends FlexoException {
+
+	private final FlexoResource<?> resource;
 
 	/**
-	 * Constructor.
-	 * 
-	 * @param technologyAdapter
-	 * @param resourceCenter
+	 * @param relativePath
 	 */
-	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
-		super(technologyAdapter, resourceCenter);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Metamodels]"));
-		getRootFolder().setDescription(
-				"MetaModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	public CannotRenameException(FlexoResource<?> resource) {
+		this.resource = resource;
 	}
 
+	@Override
+	public String getMessage() {
+		return getLocalizedMessage();
+	}
+
+	public FlexoResource<?> getResource() {
+		return resource;
+	}
+
+	/**
+	 * Overrides getLocalizedMessage
+	 * 
+	 * @see org.openflexo.foundation.FlexoException#getLocalizedMessage()
+	 */
+	@Override
+	public String getLocalizedMessage() {
+		return FlexoLocalization.localizedForKey("cannot_rename_resource") + " " + getResource();
+	}
 }

@@ -108,8 +108,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
-			FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress)
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -168,6 +168,34 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	/**
+	 * Rename resource
+	 * 
+	 * @param aName
+	 */
+	@Override
+	public void setName(String aName) throws CannotRenameException {
+		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
+			performSuperSetter(NAME, aName);
+			if (getFlexoIODelegate() != null) {
+				getFlexoIODelegate().rename();
+			}
+		} else if (!isDeleting()) {
+			throw new CannotRenameException(this);
+		}
+	}
+
+	/**
+	 * Called to init name of the resource<br>
+	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
+	 * 
+	 * @param aName
+	 */
+	@Override
+	public void initName(String aName) {
+		performSuperSetter(NAME, aName);
+	}
+
+	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
 	@Override
@@ -182,8 +210,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		}
-		else {
+		} else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -318,6 +345,13 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return false;
 	}
 
+	private boolean isDeleting = false;
+
+	@Override
+	public boolean isDeleting() {
+		return isDeleting;
+	}
+
 	/**
 	 * Delete this resource<br>
 	 * Contents of this resource are deleted, and resource data is unloaded
@@ -327,8 +361,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		}
-		else {
+		} else {
+			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
 				FlexoResource<?> container = getContainer();
@@ -348,6 +382,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			getFlexoIODelegate().delete();
 
 			performSuperDelete(context);
+
+			isDeleting = false;
 
 			return true;
 		}

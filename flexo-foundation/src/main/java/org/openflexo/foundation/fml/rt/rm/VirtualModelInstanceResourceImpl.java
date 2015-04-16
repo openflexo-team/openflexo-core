@@ -109,7 +109,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setProject(view.getProject());
 			returned.setFactory(new VirtualModelInstanceModelFactory(returned, view.getProject().getServiceManager().getEditingContext(),
 					view.getProject().getServiceManager().getTechnologyAdapterService()));
-			returned.setName(name);
+			returned.initName(name);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
 			returned.setServiceManager(view.getProject().getServiceManager());
@@ -140,7 +140,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setProject(viewResource.getProject());
 			returned.setFactory(new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager()
 					.getEditingContext(), viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
-			returned.setName(baseName);
+			returned.initName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
 			VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(xmlFile, "VirtualModelInstance");
 			if (vmiInfo == null) {

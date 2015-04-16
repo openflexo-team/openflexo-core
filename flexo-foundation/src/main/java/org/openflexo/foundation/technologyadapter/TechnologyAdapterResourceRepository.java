@@ -74,7 +74,8 @@ public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAd
 		super(resourceCenter);
 		this.technologyAdapter = technologyAdapter;
 		this.resourceCenter = resourceCenter;
-		getRootFolder().setName(resourceCenter.getName());
+		// getRootFolder().setName(resourceCenter.getName());
+		getRootFolder().setFullQualifiedPath(resourceCenter.getName());
 		getRootFolder().setDescription(
 				"Resource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}
