@@ -25,12 +25,12 @@
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)"
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
-			<Children data="viewPointFolder.children" visible="" cast=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
+			<Children data="folder.children" visible="" cast=""
 				name="subFolders" />
-			<Children data="viewPointFolder.resources" visible="" cast=""
+			<Children data="folder.resources" visible="" cast=""
 				name="resource" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource"

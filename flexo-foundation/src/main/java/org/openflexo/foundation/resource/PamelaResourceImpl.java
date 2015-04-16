@@ -377,8 +377,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 
 		try {
-			System.out.println("saveResourceData in " + getImplementedInterface());
-			System.out.println("file=" + getFile());
 			File dir = getFile().getParentFile();
 			if (!dir.exists()) {
 				willWrite(dir);
@@ -388,7 +386,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			// Make local copy
 			makeLocalCopy();
 			// Using temporary file
-			System.out.println("dir=" + dir.getAbsolutePath());
 			temporaryFile = File.createTempFile("temp", ".xml", dir);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
