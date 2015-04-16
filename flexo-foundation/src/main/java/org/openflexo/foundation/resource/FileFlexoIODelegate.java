@@ -78,12 +78,14 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	@Setter(FILE)
 	public void setFile(File file);
 
-	public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
+	// public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
 
 	public boolean delete(boolean deleteFile);
 
+	public String getFileName();
+
 	@Implementation
-	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File>implements FileFlexoIODelegate {
+	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
 
@@ -104,8 +106,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
 		}
 
-		@Override
-		public boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
+		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
 			File newFile = new File(getFile().getParentFile(), name);
 			if (getFile().exists()) {
 				FileUtils.rename(getFile(), newFile);
@@ -241,8 +242,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public void rename() throws CannotRenameException {
 			try {
-				System.out.println("OK faut renommer le fichier en " + getFlexoResource().getName());
-				renameFileTo(getFlexoResource().getName());
+				renameFileTo(getFileName());
 			} catch (InvalidFileNameException e) {
 				throw new CannotRenameException(getFlexoResource());
 			} catch (IOException e) {
@@ -250,6 +250,10 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			}
 		}
 
+		@Override
+		public String getFileName() {
+			return getFlexoResource().getName();
+		}
 	}
 
 }

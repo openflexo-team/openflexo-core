@@ -105,12 +105,6 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 	@Setter(DIRECTORY_EXTENSION)
 	public void setDirectoryExtension(String extension);
 
-	@Override
-	public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
-
-	@Override
-	public boolean delete(boolean deleteFile);
-
 	@Implementation
 	public abstract class DirectoryBasedFlexoIODelegateImpl extends FileFlexoIODelegateImpl implements DirectoryBasedFlexoIODelegate {
 
@@ -140,32 +134,52 @@ public interface DirectoryBasedFlexoIODelegate extends FileFlexoIODelegate {
 			if ((directory == null && this.directory != null) || (directory != null && !directory.equals(this.directory))) {
 				File oldValue = this.directory;
 				this.directory = directory;
-				if (!this.directory.exists()) {
+				/*if (!this.directory.exists()) {
 					this.directory.mkdirs();
-				}
+				}*/
 				getPropertyChangeSupport().firePropertyChange("directory", oldValue, directory);
 			}
 		}
 
 		@Override
-		public boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
-			File renamedFile = new File(getDirectory(), getFlexoResource().getName() + getFileExtension());
+		public void rename() throws CannotRenameException {
+			System.out.println("OK, c'est parti pour un renommage dans DirectoryBasedFlexoIODelegate");
+
+			File renamedFile = new File(getDirectory(), getFileName());
 			if (getFile().exists()) {
-				FileUtils.rename(getFile(), renamedFile);
+				try {
+					FileUtils.rename(getFile(), renamedFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new CannotRenameException(getFlexoResource());
+				}
 				if (getFile().exists()) {
 					getFile().delete();
 				}
 			}
-			File renamedDirectory = new File(getDirectory().getParentFile(), getFlexoResource().getName() + getDirectoryExtension());
+			File renamedDirectory = new File(getDirectory().getParentFile(), getDirectoryName());
 			if (getDirectory().exists()) {
-				FileUtils.rename(getDirectory(), renamedDirectory);
+				try {
+					FileUtils.rename(getDirectory(), renamedDirectory);
+				} catch (IOException e) {
+					e.printStackTrace();
+					throw new CannotRenameException(getFlexoResource());
+				}
 			}
 
 			setDirectory(renamedDirectory);
-			setFile(new File(renamedDirectory, getFlexoResource().getName() + getFileExtension()));
+			setFile(new File(renamedDirectory, getFileName()));
 			resetDiskLastModifiedDate();
 
-			return true;
+		}
+
+		@Override
+		public String getFileName() {
+			return getFlexoResource().getName() + getFileExtension();
+		}
+
+		public String getDirectoryName() {
+			return getFlexoResource().getName() + getDirectoryExtension();
 		}
 
 		/**

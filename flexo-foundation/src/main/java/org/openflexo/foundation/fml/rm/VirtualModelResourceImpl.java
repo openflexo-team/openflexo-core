@@ -74,27 +74,27 @@ import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
-public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResourceImpl<VirtualModel>
-		implements VirtualModelResource, AccessibleProxyObject {
+public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResourceImpl<VirtualModel> implements VirtualModelResource,
+		AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
 	public static VirtualModelResource makeVirtualModelResource(String name, File containerDir, ViewPointResource viewPointResource,
 			FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			returned.initName(name);
 
 			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, "",
 					CORE_FILE_SUFFIX, returned, factory));
 
-			DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
+			/*DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
 			System.out.println("Nouveau VM");
 			System.out.println("containerDir=" + containerDir);
 			System.out.println("dir=" + delegate.getDirectory());
-			System.out.println("file=" + delegate.getFile());
+			System.out.println("file=" + delegate.getFile());*/
 
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
 			returned.setURI(viewPointResource.getURI() + "/" + name);
@@ -116,8 +116,8 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory/*, File virtualModelXMLFile*/,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			String baseName = virtualModelDirectory.getName();
 			File xmlFile = new File(virtualModelDirectory, baseName + CORE_FILE_SUFFIX);
@@ -133,9 +133,9 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 				return null;
 			}
 
-			returned.initName(vpi.name);
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl
-					.makeDirectoryBasedFlexoIODelegate(virtualModelDirectory.getParentFile(), "", CORE_FILE_SUFFIX, returned, factory));
+			returned.initName(baseName);
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
+					virtualModelDirectory.getParentFile(), "", CORE_FILE_SUFFIX, returned, factory));
 
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
@@ -167,8 +167,8 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class, VirtualModelResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class,
+					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 
 			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));

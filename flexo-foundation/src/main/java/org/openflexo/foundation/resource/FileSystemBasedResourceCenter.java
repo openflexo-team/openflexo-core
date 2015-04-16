@@ -330,15 +330,39 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	private final List<File> willBeWrittenFiles = new ArrayList<File>();
+	private final List<File> willBeRenamedFiles = new ArrayList<File>();
+	private final List<File> willBeRenamedAsFiles = new ArrayList<File>();
+	private final List<File> willBeDeletedFiles = new ArrayList<File>();
 
 	public void willWrite(File file) {
 		willBeWrittenFiles.add(file);
+	}
+
+	public void willRename(File fromFile, File toFile) {
+		willBeRenamedFiles.add(fromFile);
+		willBeRenamedAsFiles.add(toFile);
+	}
+
+	public void willDelete(File file) {
+		willBeDeletedFiles.add(file);
 	}
 
 	@Override
 	public boolean isIgnorable(File file) {
 		if (willBeWrittenFiles.contains(file)) {
 			willBeWrittenFiles.remove(file);
+			return true;
+		}
+		if (willBeRenamedFiles.contains(file)) {
+			willBeRenamedFiles.remove(file);
+			return true;
+		}
+		if (willBeRenamedAsFiles.contains(file)) {
+			willBeRenamedAsFiles.remove(file);
+			return true;
+		}
+		if (willBeDeletedFiles.contains(file)) {
+			willBeDeletedFiles.remove(file);
 			return true;
 		}
 		return false;
