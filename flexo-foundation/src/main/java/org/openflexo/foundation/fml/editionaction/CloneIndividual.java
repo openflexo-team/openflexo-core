@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -52,7 +51,6 @@ import org.openflexo.model.annotations.ModelEntity;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/FML/CloneIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(CloneIndividual.CloneIndividualImpl.class)
 public abstract interface CloneIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
