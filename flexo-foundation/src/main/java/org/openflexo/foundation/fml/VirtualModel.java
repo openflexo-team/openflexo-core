@@ -85,7 +85,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 	@Setter(VIEW_POINT_KEY)
 	public void setViewPoint(ViewPoint aViewPoint);
 
-	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel> implements VirtualModel {
+	public static abstract class VirtualModelImpl extends AbstractVirtualModelImpl<VirtualModel>implements VirtualModel {
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
@@ -105,15 +105,16 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		public static VirtualModel newVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
 
 			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource"));
-			File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
-					.getDirectory()), baseName);
-			if (!virtualModelDirectory.exists()) {
-				virtualModelDirectory.mkdirs();
-			}
-			File diagramSpecificationXMLFile = new File(virtualModelDirectory, baseName + ".xml");
+			File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory());
+			// File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
+			// .getDirectory()), baseName);
+			// if (!virtualModelDirectory.exists()) {
+			// virtualModelDirectory.mkdirs();
+			// }
+			// File diagramSpecificationXMLFile = new File(virtualModelDirectory, baseName + ".xml");
 			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
-			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(virtualModelDirectory,
-					diagramSpecificationXMLFile, (ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
+			VirtualModelResource vmRes = VirtualModelResourceImpl.makeVirtualModelResource(baseName, viewPointDirectory,
+					(ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
 			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource_data"));
 			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
 			virtualModel.setViewPoint(viewPoint);

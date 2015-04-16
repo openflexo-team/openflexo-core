@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,24 +36,43 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rm;
+package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
-import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.localization.FlexoLocalization;
 
-@ModelEntity(isAbstract = true)
-@ImplementationClass(ViewPointResourceImpl.class)
-public interface AbstractVirtualModelResource<VM extends AbstractVirtualModel<VM>> extends PamelaResource<VM, FMLModelFactory>,
-		DirectoryContainerResource<VM>, TechnologyAdapterResource<VM, FMLTechnologyAdapter> {
+/**
+ * @author sylvain
+ * 
+ */
+@SuppressWarnings("serial")
+public class CannotRenameException extends FlexoException {
 
-	public static final String CORE_FILE_SUFFIX = ".xml";
+	private final FlexoResource<?> resource;
 
-	public VM getVirtualModel();
+	/**
+	 * @param relativePath
+	 */
+	public CannotRenameException(FlexoResource<?> resource) {
+		this.resource = resource;
+	}
 
+	@Override
+	public String getMessage() {
+		return getLocalizedMessage();
+	}
+
+	public FlexoResource<?> getResource() {
+		return resource;
+	}
+
+	/**
+	 * Overrides getLocalizedMessage
+	 * 
+	 * @see org.openflexo.foundation.FlexoException#getLocalizedMessage()
+	 */
+	@Override
+	public String getLocalizedMessage() {
+		return FlexoLocalization.localizedForKey("cannot_rename_resource") + " " + getResource();
+	}
 }

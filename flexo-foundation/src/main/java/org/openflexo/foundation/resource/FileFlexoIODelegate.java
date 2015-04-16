@@ -55,10 +55,16 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
+/**
+ * Represents an I/O delegate based on a File<br>
+ * To be used when associated {@link FlexoResource} is serialized into a simple {@link File}
+ * 
+ * 
+ * @author vincent,sylvain
+ *
+ */
 @ModelEntity
 @XMLElement
 public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
@@ -77,7 +83,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	public boolean delete(boolean deleteFile);
 
 	@Implementation
-	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
+	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File>implements FileFlexoIODelegate {
 
 		private final Logger logger = Logger.getLogger(FileFlexoIODelegateImpl.class.getPackage().getName());
 
@@ -106,6 +112,7 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 				if (getFile().exists()) {
 					getFile().delete();
 				}
+				setFile(newFile);
 				resetDiskLastModifiedDate();
 			}
 			return true;
@@ -154,27 +161,13 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public boolean delete(boolean deleteFile) {
 			if (hasWritePermission()) {
-				// if (getFlexoResource().delete()) {
 				if (getFile() != null && getFile().exists() && deleteFile) {
 					getFlexoResource().getServiceManager().getResourceManager().addToFilesToDelete(getFile());
 					if (logger.isLoggable(Level.INFO)) {
 						logger.info("Will delete file " + getFile().getAbsolutePath() + " upon next save of RM");
 					}
-					if (getFlexoResource() instanceof DirectoryContainerResource) {
-						Resource resource = ((DirectoryContainerResource) getFlexoResource()).getDirectory();
-						if (resource instanceof FileResourceImpl) {
-							getFlexoResource().getServiceManager().getResourceManager()
-									.addToFilesToDelete(((FileResourceImpl) resource).getFile());
-							if (logger.isLoggable(Level.INFO)) {
-								logger.info("Will delete directory " + ((FileResourceImpl) resource).getFile().getAbsolutePath()
-										+ " upon next save of RM");
-							}
-						}
-					}
 				}
 				return true;
-				// }
-				// return false;
 			} else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
@@ -243,6 +236,18 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		public boolean isReadOnly() {
 			// TODO Auto-generated method stub
 			return false;
+		}
+
+		@Override
+		public void rename() throws CannotRenameException {
+			try {
+				System.out.println("OK faut renommer le fichier en " + getFlexoResource().getName());
+				renameFileTo(getFlexoResource().getName());
+			} catch (InvalidFileNameException e) {
+				throw new CannotRenameException(getFlexoResource());
+			} catch (IOException e) {
+				throw new CannotRenameException(getFlexoResource());
+			}
 		}
 
 	}

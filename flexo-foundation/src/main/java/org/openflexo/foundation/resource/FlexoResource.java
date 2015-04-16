@@ -93,12 +93,20 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public String getName();
 
 	/**
-	 * Sets the name of this resource
+	 * Rename resource
 	 * 
 	 * @param aName
 	 */
 	@Setter(NAME)
-	public void setName(String aName);
+	public void setName(String aName) throws CannotRenameException;
+
+	/**
+	 * Called to init name of the resource<br>
+	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
+	 * 
+	 * @param aName
+	 */
+	public void initName(String aName);
 
 	/**
 	 * Returns the unique resource identifier of this resource. A URI is unique in the whole universe and clearly and uniquely identifies
@@ -416,5 +424,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Override
 	public boolean isDeleted();
 
+	/**
+	 * Return a flag indicating if this resource is about to be deleted
+	 * 
+	 * @return
+	 */
+	public boolean isDeleting();
 	// public Date getLastUpdate();
 }

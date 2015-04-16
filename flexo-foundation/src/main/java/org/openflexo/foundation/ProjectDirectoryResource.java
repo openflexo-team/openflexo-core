@@ -74,17 +74,16 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject> implements
-			ProjectDirectoryResource {
+	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject> implements ProjectDirectoryResource {
 
 		public static ProjectDirectoryResource makeProjectDirectoryResource(FlexoProject project) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-						FileFlexoIODelegate.class,ProjectDirectoryResource.class));
+				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+						ProjectDirectoryResource.class));
 				ProjectDirectoryResource returned = resourceFactory.newInstance(ProjectDirectoryResource.class);
 				returned.setProject(project);
-				returned.setName(project.getProjectName());
-				FileFlexoIODelegate fileIODelegate = resourceFactory.newInstance(FileFlexoIODelegate.class) ;
+				returned.initName(project.getProjectName());
+				FileFlexoIODelegate fileIODelegate = resourceFactory.newInstance(FileFlexoIODelegate.class);
 				returned.setFlexoIODelegate(fileIODelegate);
 				fileIODelegate.setFile(project.getProjectDirectory());
 				returned.setURI(project.getURI());
@@ -126,19 +125,19 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 		public Class<FlexoProject> getResourceDataClass() {
 			return FlexoProject.class;
 		}
-		
+
 		@Override
-		public FlexoProject loadResourceData(IProgress progress)
-				throws ResourceLoadingCancelledException,
-				FileNotFoundException, FlexoException {
+		public FlexoProject loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException,
+				FlexoException {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		private File getFile(){
+
+		private File getFile() {
 			return getFileFlexoIODelegate().getFile();
 		}
-		private FileFlexoIODelegate getFileFlexoIODelegate(){
+
+		private FileFlexoIODelegate getFileFlexoIODelegate() {
 			return (FileFlexoIODelegate) getFlexoIODelegate();
 		}
 	}

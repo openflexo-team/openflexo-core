@@ -82,8 +82,8 @@ import com.google.common.base.Throwables;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends
-		FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+		extends FlexoResourceImpl<RD>implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -202,7 +202,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		/*EditingContext editingContext = getServiceManager().getEditingContext();
 		IgnoreLoadingEdits ignoreHandler = null;
 		FlexoUndoManager undoManager = null;
-
+		
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
 			undoManager = (FlexoUndoManager) editingContext.getUndoManager();
 			undoManager.addToIgnoreHandlers(ignoreHandler = new IgnoreLoadingEdits(this));
@@ -288,7 +288,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 								// ((FlexoModelObject) object).initializeSerialization();
 								}
 								}
-
+								
 								@Override
 								public void objectHasBeenSerialized(XMLSerializable object) {
 								if (object instanceof TestModelObject) {
@@ -335,6 +335,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 
 		try {
+			System.out.println("saveResourceData in " + getImplementedInterface());
+			System.out.println("file=" + getFile());
 			File dir = getFile().getParentFile();
 			if (!dir.exists()) {
 				getServiceManager().notify(null, new WillWriteFileOnDiskNotification(dir));
@@ -344,6 +346,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			// Make local copy
 			makeLocalCopy();
 			// Using temporary file
+			System.out.println("dir=" + dir.getAbsolutePath());
 			temporaryFile = File.createTempFile("temp", ".xml", dir);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
@@ -426,7 +429,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	}
 
 	/*private StringEncoder STRING_ENCODER = null;
-
+	
 	@Override
 	public StringEncoder getStringEncoder() {
 		if (STRING_ENCODER == null) {

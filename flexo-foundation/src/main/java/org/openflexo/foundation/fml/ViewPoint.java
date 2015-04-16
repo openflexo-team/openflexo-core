@@ -199,7 +199,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -215,8 +215,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
-			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
-			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
+			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir,
 					library.getServiceManager());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);

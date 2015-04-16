@@ -51,12 +51,12 @@ import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -94,18 +94,18 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 
 		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-						FileFlexoIODelegate.class,FlexoPreferencesResource.class));
+				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+						FlexoPreferencesResource.class));
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
 						.newInstance(FlexoPreferencesResource.class);
 
 				File preferencesFile = new File(FileUtils.getApplicationDataDirectory(), FLEXO_PREFS_FILE_NAME);
-				returned.setName("OpenflexoPreferences");
+				returned.initName("OpenflexoPreferences");
 				returned.setURI("http://www.openflexo.org/OpenflexoPreferences");
-				
+
 				returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(preferencesFile, resourceFactory));
-				//returned.setFile(preferencesFile);
-				
+				// returned.setFile(preferencesFile);
+
 				returned.setFactory(makePreferencesFactory(returned, applicationContext));
 				returned.setServiceManager(applicationContext);
 
@@ -151,7 +151,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 
 		@Override
 		public FlexoPreferences getFlexoPreferences() {
-			return (FlexoPreferences) getLoadedResourceData();
+			return getLoadedResourceData();
 		}
 
 		@Override

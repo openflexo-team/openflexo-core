@@ -139,8 +139,7 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 						// Here we have written on disk, and somehow the disk last modified date is still bigger than the acceptable delay
 						// This can happen sometimes if it takes too long to write on disk
 						if (logger.isLoggable(Level.INFO)) {
-							logger.info("Resource "
-									+ this
+							logger.info("Resource " + this
 									+ " : declared lastWrittenOnDisk date is anterior to current effective last modified date: which means that file on disk in newer than expected"
 									+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate) + "]"
 									+ " > lastWrittenOnDisk["
@@ -156,8 +155,7 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 				} else if (_lastWrittenOnDisk.getTime() - _diskLastModifiedDate.getTime() > ACCEPTABLE_FS_DELAY) {
 					if (exists()) { // Warn it only if file exists:
 						// otherwise it's normal
-						logger.warning("Resource "
-								+ this
+						logger.warning("Resource " + this
 								+ " : declared lastWrittenOnDisk date is posterior to current effective last modified date (with a delay, due to FS date implementation): which means that something strange happened"
 								+ "_diskLastModifiedDate[" + simpleDateFormat.format(_diskLastModifiedDate) + "]" + " < lastWrittenOnDisk["
 								+ simpleDateFormat.format(_lastWrittenOnDisk) + "]");
@@ -209,6 +207,12 @@ public interface FlexoIOStreamDelegate<I> extends FlexoIODelegate<I> {
 		@Override
 		public void setSerializationArtefact(I artefact) {
 			setInputStream((InputStream) artefact);
+		}
+
+		@Override
+		public String getDeletedProperty() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }
