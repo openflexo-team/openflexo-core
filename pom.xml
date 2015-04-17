@@ -5,7 +5,7 @@
 		<artifactId>openflexo-component</artifactId>
         <version>0.3-RC3</version>
 	</parent>
-	<version>1.7.1-RC3</version>
+	<version>1.7.1-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
@@ -22,7 +22,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	  <tag>Openflexo-Core-1.7.1-RC3</tag>
+	  <tag>1.7.1</tag>
   </scm>
 	<modules>
 		<module>flexo-foundation</module>
