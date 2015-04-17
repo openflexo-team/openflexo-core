@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-RC3</version>
+        <version>1.7.1-RC4</version>
 	</parent>
 	<artifactId>flexodocresourcecenter</artifactId>
 	<name>Help :: FlexoDocResourceCenter</name>
@@ -16,5 +16,9 @@
 			</plugin>
 		</plugins>
 	</build>
+
+  <scm>
+    <tag>Openflexo-Core-1.7.1-RC4</tag>
+  </scm>
 </project>
 
