@@ -4,9 +4,10 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-RC4</version>
+        <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexodocresourcemanager</artifactId>
+  <version>1.7.1-RC3</version>
 	<name>Help :: FlexoDocResourceManager</name>
 	<build>
 		<plugins>
@@ -26,9 +27,5 @@
 			<artifactId>javahelp</artifactId>
 		</dependency>
 	</dependencies>
-
-  <scm>
-    <tag>Openflexo-Core-1.7.1-RC4</tag>
-  </scm>
 </project>
 

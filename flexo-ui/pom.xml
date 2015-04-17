@@ -4,9 +4,10 @@
     <parent>
         <groupId>org.openflexo</groupId>
         <artifactId>openflexo-core</artifactId>
-        <version>1.7.1-RC4</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <artifactId>flexo-ui</artifactId>
+  <version>1.7.1-RC3</version>
     <name>Openflexo-core : UI layer</name>
     <build>
         <plugins>
@@ -115,8 +116,4 @@
 	</dependency>
 
     </dependencies>
-
-  <scm>
-    <tag>Openflexo-Core-1.7.1-RC4</tag>
-  </scm>
 </project>
