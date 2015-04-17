@@ -3,27 +3,27 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-component</artifactId>
-        <version>0.3-RC3</version>
+        <version>0.3-RC4</version>
 	</parent>
-	<version>1.7.1-RC3</version>
+	<version>1.7.1-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.2-RC3</gina.version>
-		<connie.version>1.2-RC3</connie.version>
-		<pamela.version>1.2-RC3</pamela.version>
-		<diana.version>1.2-RC3</diana.version>
-		<openflexoutils.version>1.2-RC3</openflexoutils.version>
+		<gina.version>1.2-RC4</gina.version>
+		<connie.version>1.2-RC4</connie.version>
+		<pamela.version>1.2-RC4</pamela.version>
+		<diana.version>1.2-RC4</diana.version>
+		<openflexoutils.version>1.2-RC4</openflexoutils.version>
 		<google.guice.version>3.0</google.guice.version>
 		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	  <tag>Openflexo-Core-1.7.1-RC3</tag>
-  </scm>
+	    <tag>1.7.1</tag>
+    </scm>
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
