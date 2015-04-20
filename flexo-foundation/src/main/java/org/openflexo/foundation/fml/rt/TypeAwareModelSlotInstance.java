@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
@@ -113,7 +112,8 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		 */
 		@Override
 		public M getAccessedResourceData() {
-			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
+			if (getModelSlot() != null && getVirtualModelInstance() != null && getVirtualModelInstance().getInformationSpace() != null
+					&& accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
 				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getVirtualModelInstance()
 						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {

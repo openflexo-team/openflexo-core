@@ -82,8 +82,8 @@ import com.google.common.base.Throwables;
  * @author Sylvain
  * 
  */
-public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
-		extends FlexoResourceImpl<RD>implements PamelaResource<RD, F> {
+public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends
+		FlexoResourceImpl<RD> implements PamelaResource<RD, F> {
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceImpl.class.getPackage().getName());
 
@@ -326,6 +326,48 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 	}
 
+	public static class WillRenameFileOnDiskNotification implements ServiceNotification {
+		private final File fromFile;
+		private final File toFile;
+
+		public WillRenameFileOnDiskNotification(File fromFile, File toFile) {
+			this.fromFile = fromFile;
+			this.toFile = toFile;
+		}
+
+		public File getFromFile() {
+			return fromFile;
+		}
+
+		public File getToFile() {
+			return toFile;
+		}
+	}
+
+	public static class WillDeleteFileOnDiskNotification implements ServiceNotification {
+		private final File file;
+
+		public WillDeleteFileOnDiskNotification(File file) {
+			this.file = file;
+		}
+
+		public File getFile() {
+			return file;
+		}
+	}
+
+	public void willWrite(File file) {
+		getServiceManager().notify(null, new WillWriteFileOnDiskNotification(file));
+	}
+
+	public void willRename(File fromFile, File toFile) {
+		getServiceManager().notify(null, new WillRenameFileOnDiskNotification(fromFile, toFile));
+	}
+
+	public void willDelete(File file) {
+		getServiceManager().notify(null, new WillDeleteFileOnDiskNotification(file));
+	}
+
 	private void _saveResourceData(/*SerializationHandler handler,*/boolean clearIsModified) throws SaveResourceException {
 		File temporaryFile = null;
 		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
@@ -335,18 +377,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		}
 
 		try {
-			System.out.println("saveResourceData in " + getImplementedInterface());
-			System.out.println("file=" + getFile());
 			File dir = getFile().getParentFile();
 			if (!dir.exists()) {
-				getServiceManager().notify(null, new WillWriteFileOnDiskNotification(dir));
+				willWrite(dir);
 				dir.mkdirs();
 			}
-			getServiceManager().notify(null, new WillWriteFileOnDiskNotification(getFile()));
+			willWrite(getFile());
 			// Make local copy
 			makeLocalCopy();
 			// Using temporary file
-			System.out.println("dir=" + dir.getAbsolutePath());
 			temporaryFile = File.createTempFile("temp", ".xml", dir);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());

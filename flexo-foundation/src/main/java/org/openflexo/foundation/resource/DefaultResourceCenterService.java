@@ -45,6 +45,8 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
+import org.openflexo.foundation.resource.PamelaResourceImpl.WillDeleteFileOnDiskNotification;
+import org.openflexo.foundation.resource.PamelaResourceImpl.WillRenameFileOnDiskNotification;
 import org.openflexo.foundation.resource.PamelaResourceImpl.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -154,9 +156,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
 			}
 		}
-		 getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
+		getPropertyChangeSupport().firePropertyChange(RESOURCE_CENTERS, null, resourceCenter);
 	}
-	
+
 	@Override
 	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter) {
 		performSuperRemover(RESOURCE_CENTERS, resourceCenter);
@@ -270,6 +272,21 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}
 			}
 		}
+		if (notification instanceof WillRenameFileOnDiskNotification) {
+			for (FlexoResourceCenter rc : getResourceCenters()) {
+				if (rc instanceof FileSystemBasedResourceCenter) {
+					((FileSystemBasedResourceCenter) rc).willRename(((WillRenameFileOnDiskNotification) notification).getFromFile(),
+							((WillRenameFileOnDiskNotification) notification).getToFile());
+				}
+			}
+		}
+		if (notification instanceof WillDeleteFileOnDiskNotification) {
+			for (FlexoResourceCenter rc : getResourceCenters()) {
+				if (rc instanceof FileSystemBasedResourceCenter) {
+					((FileSystemBasedResourceCenter) rc).willDelete(((WillDeleteFileOnDiskNotification) notification).getFile());
+				}
+			}
+		}
 		if (caller instanceof TechnologyAdapterService) {
 			if (notification instanceof ServiceRegistered) {
 				for (FlexoResourceCenter rc : getResourceCenters()) {
@@ -290,14 +307,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	/**
 	 * Shutdowns all the ResourceCenter
 	 */
-	
-	@Override 
-	public void stop(){
+
+	@Override
+	public void stop() {
 		List<FlexoResourceCenter> RCs = this.getResourceCenters();
-		
-		for (FlexoResourceCenter r : RCs){
+
+		for (FlexoResourceCenter r : RCs) {
 			r.stop();
 		}
 	}
-	
+
 }

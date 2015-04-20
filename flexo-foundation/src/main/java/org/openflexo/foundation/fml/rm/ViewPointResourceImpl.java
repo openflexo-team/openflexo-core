@@ -150,12 +150,10 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			}
 
 			returned.setURI(vpi.uri);
-			returned.initName(vpi.name);
+			returned.initName(baseName);
 
 			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
 					viewPointDirectory.getParentFile(), VIEWPOINT_SUFFIX, CORE_FILE_SUFFIX, returned, factory));
-
-			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
@@ -257,6 +255,10 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	private void exploreVirtualModels(Resource parent) {
 		XMLRootElementInfo result = null;
 
+		if (parent == null) {
+			return;
+		}
+		
 		for (Resource child : parent.getContents()) {
 			if (child.isContainer()) {
 				exploreVirtualModels(child);
