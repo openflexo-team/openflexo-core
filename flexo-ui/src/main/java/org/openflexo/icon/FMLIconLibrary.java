@@ -268,7 +268,7 @@ public class FMLIconLibrary extends IconLibrary {
 				return DELETE_ICON;
 			} else if ((object instanceof TechnologySpecificAction) && (((TechnologySpecificAction<?, ?>) object).getModelSlot() != null)) {
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificAction<?, ?>) object)
-						.getModelSlot().getModelSlotTechnologyAdapter());
+						.getModelSlotTechnologyAdapter());
 				if (tac != null) {
 					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?>>) object.getClass());
 					if (returned != null) {
