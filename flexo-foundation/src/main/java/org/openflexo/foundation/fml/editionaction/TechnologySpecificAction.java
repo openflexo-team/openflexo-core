@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -84,6 +86,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
 
+	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots();
+
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
 	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
@@ -104,6 +108,11 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public MS getModelSlot() {
+			if (modelSlot == null) {
+				if (getAvailableModelSlots() != null && getAvailableModelSlots().size() > 0) {
+					modelSlot = (MS) getAvailableModelSlots().get(0);
+				}
+			}
 			return modelSlot;
 		}
 
@@ -118,10 +127,19 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
-			if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
-				return getFlexoConcept().getOwningVirtualModel().getModelSlots(msType);
-			} else if (getFlexoConcept() instanceof VirtualModel) {
+			if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
+			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+				return getFlexoConcept().getOwningVirtualModel().getModelSlots(msType);
+			}
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots() {
+			if (getAllAvailableModelSlots() != null) {
+				return (List<MS2>) findAvailableModelSlots();
 			}
 			return null;
 		}
@@ -145,6 +163,32 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			}
 		}
 
+		@SuppressWarnings("unchecked")
+		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
+			if (getFlexoConcept() != null && getFlexoConcept() instanceof VirtualModel) {
+				return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
+			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
+			}
+			return null;
+		}
+
+		private List<ModelSlot<?>> findAvailableModelSlots() {
+			List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
+			for (ModelSlot<?> ms : getAllAvailableModelSlots()) {
+				for (Class<?> editionActionType : ms.getAvailableEditionActionTypes()) {
+					if (TypeUtils.isAssignableTo(this, editionActionType)) {
+						returned.add(ms);
+					}
+				}
+				for (Class<?> editionActionType : ms.getAvailableFetchRequestActionTypes()) {
+					if (TypeUtils.isAssignableTo(this, editionActionType)) {
+						returned.add(ms);
+					}
+				}
+			}
+			return returned;
+		}
 	}
 
 	@DefineValidationRule
