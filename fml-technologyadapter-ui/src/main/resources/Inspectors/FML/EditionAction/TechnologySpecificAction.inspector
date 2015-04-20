@@ -9,12 +9,22 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="model_slot" align="right" index="4"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			<Label label="model_slot" align="right"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<TextField index="5" data="data.modelSlot.name"
+			<DropDown data="data.modelSlot"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				readOnly="true" localize="true" columns="7" text="TextField" />
+				name="ModelSlotDD" format="object.name"
+				icon="controller.iconForObject(object)"
+				localize="true" list="data.getAvailableModelSlots()" showIcon="true"
+				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
+				visible="data.getAvailableModelSlots().size>1"
+				autoSelectFirstRow="true" showReset="false" />
+			<TextField data="data.modelSlot.name"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				readOnly="true" localize="true" columns="7" text="TextField" 
+				visible="data.getAvailableModelSlots().size=1" />
+				
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>
