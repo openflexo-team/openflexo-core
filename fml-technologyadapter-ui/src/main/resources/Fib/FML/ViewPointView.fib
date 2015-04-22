@@ -81,7 +81,7 @@
 				<Children data="viewPoint.structuralFacet" name="structural" visible="viewPoint.resource.isLoaded"/>
 				<Children data="viewPoint.behaviouralFacet" name="behavioural" visible="viewPoint.resource.isLoaded"/>
 				<Children data="viewPoint.localizedDictionary" name="localizedDictionary" />
-				<BrowserAddAction method="controller.createVirtualModel(selected)"
+				<BrowserAddAction method="controller.createVirtualModel(selected.resource)"
 					name="create_virtual_model" />
 			</BrowserElement>
 

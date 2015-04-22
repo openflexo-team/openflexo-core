@@ -38,11 +38,13 @@
 
 package org.openflexo.fml.controller;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
@@ -85,8 +87,9 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
@@ -124,21 +127,25 @@ public class FMLFIBController extends FlexoFIBController {
 		return createViewPoint.getNewViewPoint();
 	}
 
-	public void deleteViewPoint(ViewPointResource viewPointResource) {
-		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getViewPoint(), null, getEditor());
+	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
+				getEditor());
 		deleteViewPoint.doAction();
 	}
 
-	public VirtualModel createVirtualModel(ViewPointResource viewPointResource) {
-		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getViewPoint(), null,
+	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
 		createVirtualModel.doAction();
 		return createVirtualModel.getNewVirtualModel();
 	}
 
-	public void deleteVirtualModel(VirtualModelResource virtualModelResource) {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getVirtualModel(), null,
-				getEditor());
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
+				null, getEditor());
 		deleteVirtualModel.doAction();
 	}
 
