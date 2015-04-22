@@ -7,7 +7,7 @@
         <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-parser</artifactId>
-  <version>1.7.1-RC3</version>
+  <version>1.7.1-SNAPSHOT</version>
 	<name>Openflexo-core : FML parser</name>
 	<build>
 		<plugins>

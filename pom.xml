@@ -39,41 +39,41 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.1-RC3</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 			<dependency>
