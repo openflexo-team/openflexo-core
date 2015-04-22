@@ -75,8 +75,8 @@ import org.openflexo.toolbox.StringUtils;
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
-public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
-		AddConcept<MS, T> {
+public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>>
+		extends AddConcept<MS, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String INDIVIDUAL_NAME_KEY = "individualName";
@@ -154,8 +154,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
-	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>> extends
-			AddConceptImpl<MS, T> implements AddIndividual<MS, T> {
+	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual<?>>
+			extends AddConceptImpl<MS, T>implements AddIndividual<MS, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
@@ -193,8 +193,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 			if (getObjectAssertions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				for (ObjectPropertyAssertion a : getObjectAssertions()) {
-					sb.append("  " + a.getOntologyProperty().getName() + " = " + a.getObject().toString() + ";"
-							+ StringUtils.LINE_SEPARATOR);
+					sb.append(
+							"  " + a.getOntologyProperty().getName() + " = " + a.getObject().toString() + ";" + StringUtils.LINE_SEPARATOR);
 				}
 				return sb.toString();
 			}
@@ -256,7 +256,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getAssignedFlexoProperty() instanceof IndividualRole && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() instanceof IndividualRole
+						&& getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default provided by pattern property
 					return null;
 				}
@@ -329,8 +330,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<?, ?>, T e
 	}
 
 	@DefineValidationRule
-	public static class AddIndividualActionMustDefineAnOntologyClass extends
-			ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
+	public static class AddIndividualActionMustDefineAnOntologyClass
+			extends ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
 		public AddIndividualActionMustDefineAnOntologyClass() {
 			super(AddIndividual.class, "add_individual_action_must_define_an_ontology_class");
 		}
