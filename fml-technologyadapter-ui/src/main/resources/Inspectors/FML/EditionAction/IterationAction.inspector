@@ -27,7 +27,7 @@
 				useScrollBar="false" data="data.iterationAction" opaque="false"
 				name="FetchRequestWidget" controllerClassName="org.openflexo.fib.controller.FIBController"
 				index="10" localize="true"
-				dynamicComponentFile="controller.fibForEditionAction(data.iterationAction)"
+				dynamicComponent="controller.inspectorForObject(data.iterationAction)"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=center)"
 				readOnly="false">
 				<ReferenceAssignment mandatory="true"

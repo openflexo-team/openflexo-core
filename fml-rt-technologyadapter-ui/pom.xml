@@ -4,9 +4,10 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-RC3</version>
+        <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-rt-technologyadapter-ui</artifactId>
+  <version>1.7.1-RC3</version>
 	<name>FML@runtime technology adapter : UI layer</name>
 	<build>
 		<plugins>
