@@ -48,9 +48,10 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -62,28 +63,28 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, FMLObject> {
+public class CreateModelSlot extends FlexoAction<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateModelSlot.class.getPackage().getName());
 
-	public static FlexoActionType<CreateModelSlot, VirtualModel, FMLObject> actionType = new FlexoActionType<CreateModelSlot, VirtualModel, FMLObject>(
+	public static FlexoActionType<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateModelSlot, AbstractVirtualModel<?>, FMLObject>(
 			"create_model_slot", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateModelSlot makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateModelSlot makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateModelSlot(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
@@ -91,7 +92,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 
 	static {
 		// FlexoModelObject.addActionForClass(CreateModelSlot.actionType, ViewPoint.class);
-		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateModelSlot.actionType, AbstractVirtualModel.class);
 	}
 
 	private String modelSlotName;
@@ -105,7 +106,7 @@ public class CreateModelSlot extends FlexoAction<CreateModelSlot, VirtualModel, 
 
 	private ModelSlot newModelSlot;
 
-	CreateModelSlot(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	CreateModelSlot(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

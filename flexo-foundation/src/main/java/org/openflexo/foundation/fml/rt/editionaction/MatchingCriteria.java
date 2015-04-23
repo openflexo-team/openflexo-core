@@ -47,7 +47,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -80,6 +80,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 
 	@Getter(value = PATTERN_ROLE_NAME_KEY)
 	@XMLAttribute
+	// TODO: name kept for compatibility, implements oldXMLTag / newXMLTag
 	public String _getPatternRoleName();
 
 	@Setter(PATTERN_ROLE_NAME_KEY)
@@ -92,9 +93,9 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 	@Setter(VALUE_KEY)
 	public void setValue(DataBinding<?> value);
 
-	public FlexoRole<?> getFlexoRole();
+	public FlexoProperty<?> getFlexoProperty();
 
-	public void setFlexoRole(FlexoRole<?> patternRole);
+	public void setFlexoProperty(FlexoProperty<?> property);
 
 	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
 
@@ -107,8 +108,8 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 
 		// private MatchFlexoConceptInstance action;
 
-		private FlexoRole flexoRole;
-		private String patternRoleName;
+		private FlexoProperty<?> flexoProperty;
+		private String propertyName;
 		private DataBinding<?> value;
 
 		private MatchingCriteriaBindingModel bindingModel;
@@ -118,10 +119,10 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 			super();
 		}
 
-		public MatchingCriteriaImpl(FlexoRole flexoRole) {
+		/*public MatchingCriteriaImpl(FlexoProperty<?> flexoProperty) {
 			super();
-			this.flexoRole = flexoRole;
-		}
+			this.flexoProperty = flexoProperty;
+		}*/
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
@@ -134,9 +135,9 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getFlexoRole() != null ? getFlexoRole().getResultingType() : Object.class,
+				value = new DataBinding<Object>(this, getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
-				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
+				value.setBindingName(getFlexoProperty() != null ? getFlexoProperty().getName() : "param");
 			}
 			return value;
 		}
@@ -145,8 +146,8 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		public void setValue(DataBinding<?> value) {
 			if (value != null) {
 				value.setOwner(this);
-				value.setBindingName(getFlexoRole() != null ? getFlexoRole().getName() : "param");
-				value.setDeclaredType(getFlexoRole() != null ? getFlexoRole().getResultingType() : Object.class);
+				value.setBindingName(getFlexoProperty() != null ? getFlexoProperty().getName() : "param");
+				value.setDeclaredType(getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class);
 				value.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.value = value;
@@ -193,29 +194,29 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public FlexoRole getFlexoRole() {
-			if (flexoRole == null && patternRoleName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
-				flexoRole = getAction().getFlexoConceptType().getFlexoRole(patternRoleName);
+		public FlexoProperty<?> getFlexoProperty() {
+			if (flexoProperty == null && propertyName != null && getAction() != null && getAction().getFlexoConceptType() != null) {
+				flexoProperty = getAction().getFlexoConceptType().getAccessibleProperty(propertyName);
 			}
-			return flexoRole;
+			return flexoProperty;
 		}
 
 		@Override
-		public void setFlexoRole(FlexoRole flexoRole) {
-			this.flexoRole = flexoRole;
+		public void setFlexoProperty(FlexoProperty<?> flexoProperty) {
+			this.flexoProperty = flexoProperty;
 		}
 
 		@Override
 		public String _getPatternRoleName() {
-			if (flexoRole != null) {
-				return flexoRole.getName();
+			if (flexoProperty != null) {
+				return flexoProperty.getName();
 			}
-			return patternRoleName;
+			return propertyName;
 		}
 
 		@Override
 		public void _setPatternRoleName(String patternRoleName) {
-			this.patternRoleName = patternRoleName;
+			this.propertyName = patternRoleName;
 		}
 
 		@Override

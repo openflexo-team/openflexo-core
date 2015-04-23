@@ -283,7 +283,7 @@ public class TestViewPointValidationModel extends OpenflexoTestCase {
 		}
 		assertTrue(ruleSet.containsRuleClass(FlexoConcept.FlexoConceptShouldHaveDeletionScheme.class));
 		assertTrue(ruleSet.containsRuleClass(FlexoConcept.FlexoConceptShouldHaveFlexoBehaviours.class));
-		assertTrue(ruleSet.containsRuleClass(FlexoConcept.FlexoConceptShouldHaveRoles.class));
+		assertTrue(ruleSet.containsRuleClass(FlexoConcept.NonAbstractFlexoConceptShouldHaveProperties.class));
 	}
 
 	@Test

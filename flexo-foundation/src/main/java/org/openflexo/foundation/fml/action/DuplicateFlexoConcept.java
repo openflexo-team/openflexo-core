@@ -43,13 +43,14 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
 
+// Not used anymore, use Copy/Paste
+@Deprecated
 @SuppressWarnings("serial")
 public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, FlexoConcept, FMLObject> {
 
@@ -62,14 +63,13 @@ public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, Fl
 		 * Factory method
 		 */
 		@Override
-		public DuplicateFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<FMLObject> globalSelection,
-				FlexoEditor editor) {
+		public DuplicateFlexoConcept makeNewAction(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new DuplicateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
 		public boolean isVisibleForSelection(FlexoConcept object, Vector<FMLObject> globalSelection) {
-			return object != null && object.getClass().equals(FlexoConcept.class);
+			return object != null;
 		}
 
 		@Override
@@ -80,7 +80,7 @@ public class DuplicateFlexoConcept extends FlexoAction<DuplicateFlexoConcept, Fl
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DuplicateFlexoConcept.actionType, FlexoConcept.class);
+		// FlexoObjectImpl.addActionForClass(DuplicateFlexoConcept.actionType, FlexoConcept.class);
 	}
 
 	DuplicateFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {

@@ -38,29 +38,46 @@
 
 package org.openflexo.fml.controller;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.DeleteRepositoryFolder;
+import org.openflexo.foundation.fml.AbstractProperty;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
+import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.foundation.fml.action.DeleteFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateViewPoint;
+import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
+import org.openflexo.foundation.fml.action.DeleteViewpoint;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -69,6 +86,10 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
@@ -95,7 +116,40 @@ public class FMLFIBController extends FlexoFIBController {
 		super(component, controller);
 	}
 
-	public ModelSlot createModelSlot(VirtualModel virtualModel) {
+	public void deleteFolder(RepositoryFolder<?> folder) {
+		DeleteRepositoryFolder deleteRepositoryFolder = DeleteRepositoryFolder.actionType.makeNewAction(folder, null, getEditor());
+		deleteRepositoryFolder.doAction();
+	}
+
+	public ViewPoint createViewPoint(RepositoryFolder<ViewPointResource> folder) {
+		CreateViewPoint createViewPoint = CreateViewPoint.actionType.makeNewAction(folder, null, getEditor());
+		createViewPoint.doAction();
+		return createViewPoint.getNewViewPoint();
+	}
+
+	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
+				getEditor());
+		deleteViewPoint.doAction();
+	}
+
+	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
+				getEditor());
+		createVirtualModel.doAction();
+		return createVirtualModel.getNewVirtualModel();
+	}
+
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
+				null, getEditor());
+		deleteVirtualModel.doAction();
+	}
+
+	public ModelSlot<?> createModelSlot(AbstractVirtualModel<?> virtualModel) {
 		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(virtualModel, null, getEditor());
 		createModelSlot.doAction();
 		return createModelSlot.getNewModelSlot();
@@ -120,23 +174,40 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoConcept addParentFlexoConcept(FlexoConcept flexoConcept) {
-		logger.warning("addParentFlexoConcept not implemented yet");
-		return null;
+		AddParentFlexoConcept addParentFlexoConcept = AddParentFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
+		addParentFlexoConcept.doAction();
+		return flexoConcept;
 	}
 
-	public FlexoRole createFlexoRole(FlexoConcept flexoConcept) {
-		System.out.println("On tente de creer un FlexoRole dans " + Integer.toHexString(hashCode()));
-		System.out.println("getFlexoController()=" + getFlexoController());
-		System.out.println("getEditor()=" + getEditor());
+	public AbstractProperty<?> createAbstractProperty(FlexoConcept flexoConcept) {
+		CreateAbstractProperty createAbstractProperty = CreateAbstractProperty.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createAbstractProperty.doAction();
+		return createAbstractProperty.getNewFlexoProperty();
+	}
+
+	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
 		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
 	}
 
-	public FlexoRole<?> deleteFlexoRole(FlexoConcept flexoConcept, FlexoRole<?> aPatternRole) {
-		flexoConcept.removeFromFlexoRoles(aPatternRole);
-		aPatternRole.delete();
-		return aPatternRole;
+	public ExpressionProperty<?> createExpressionProperty(FlexoConcept flexoConcept) {
+		CreateExpressionProperty createExpressionProperty = CreateExpressionProperty.actionType.makeNewAction(flexoConcept, null,
+				getEditor());
+		createExpressionProperty.doAction();
+		return createExpressionProperty.getNewFlexoProperty();
+	}
+
+	public GetSetProperty<?> createGetSetProperty(FlexoConcept flexoConcept) {
+		CreateGetSetProperty createGetSetProperty = CreateGetSetProperty.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createGetSetProperty.doAction();
+		return createGetSetProperty.getNewFlexoProperty();
+	}
+
+	public FlexoProperty<?> deleteFlexoProperty(FlexoConcept flexoConcept, FlexoProperty<?> aProperty) {
+		flexoConcept.removeFromFlexoProperties(aProperty);
+		aProperty.delete();
+		return aProperty;
 	}
 
 	public void createConstraint(FlexoConcept flexoConcept) {
@@ -255,6 +326,28 @@ public class FMLFIBController extends FlexoFIBController {
 		return createEditionAction.getNewEditionAction();
 	}
 
+	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
+		if (property.getGetControlGraph() == null) {
+			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+			property.setGetControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
+				getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
+	public EditionAction createEditionActionInSetControlGraph(GetSetProperty<?> property) {
+		if (property.getSetControlGraph() == null) {
+			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+			property.setSetControlGraph(cg);
+		}
+		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
+				getEditor());
+		createEditionAction.doAction();
+		return createEditionAction.getNewEditionAction();
+	}
+
 	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
 		if (flexoConcept instanceof VirtualModel) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
@@ -283,10 +376,20 @@ public class FMLFIBController extends FlexoFIBController {
 					getEditor());
 			deleteVirtualModel.doAction();
 		} else if (flexoConcept != null) {
-			DeleteFlexoConcept deleteFlexoConcept = DeleteFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
+			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
+					getEditor());
 			deleteFlexoConcept.doAction();
 		}
 		return flexoConcept;
+	}
+
+	public FlexoConceptObject deleteFlexoConceptObject(FlexoConceptObject flexoConceptObject) {
+		if (flexoConceptObject != null) {
+			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConceptObject, null,
+					getEditor());
+			deleteFlexoConcept.doAction();
+		}
+		return flexoConceptObject;
 	}
 
 	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {

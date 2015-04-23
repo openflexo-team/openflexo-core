@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -47,8 +48,10 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.resource.FlexoResource;
 
 public class DeleteViewpoint extends FlexoAction<DeleteViewpoint, ViewPoint, FMLObject> {
 
@@ -88,8 +91,14 @@ public class DeleteViewpoint extends FlexoAction<DeleteViewpoint, ViewPoint, FML
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Delete viewpoint");
-		if (getFocusedObject().getResource() != null) {
-			getFocusedObject().getResource().delete();
+		FlexoResource<ViewPoint> viewPointResource = getFocusedObject().getResource();
+		for (VirtualModel vm : new ArrayList<VirtualModel>(getFocusedObject().getVirtualModels())) {
+			DeleteVirtualModel deleteVM = DeleteVirtualModel.actionType.makeNewEmbeddedAction(vm, null, this);
+			deleteVM.doAction();
+		}
+		getFocusedObject().delete();
+		if (viewPointResource != null) {
+			viewPointResource.delete();
 		}
 	}
 

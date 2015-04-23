@@ -352,4 +352,12 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		}
 		return entry;
 	}
+	
+	/**
+	 * Stops the Resource Center (When needed)
+	 */
+	@Override
+	public void stop(){
+		// Nothing to do for now
+	}
 }

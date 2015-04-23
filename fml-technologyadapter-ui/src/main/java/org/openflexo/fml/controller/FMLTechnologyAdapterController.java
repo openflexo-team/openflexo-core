@@ -42,17 +42,20 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.fib.utils.InspectorGroup;
+import org.openflexo.fml.controller.action.AddParentFlexoConceptInitializer;
+import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
+import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoRoleInitializer;
+import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateModelSlotInitializer;
 import org.openflexo.fml.controller.action.CreateViewPointInitializer;
 import org.openflexo.fml.controller.action.CreateVirtualModelInitializer;
-import org.openflexo.fml.controller.action.DeleteFlexoConceptInitializer;
+import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteViewPointInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
-import org.openflexo.fml.controller.action.DuplicateFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.ViewPointLocalizedDictionaryView;
@@ -121,13 +124,21 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateModelSlotInitializer(actionInitializer);
 		new CreateVirtualModelInitializer(actionInitializer);
 		new DeleteVirtualModelInitializer(actionInitializer);
+
 		new CreateFlexoRoleInitializer(actionInitializer);
+		new CreateExpressionPropertyInitializer(actionInitializer);
+		new CreateGetSetPropertyInitializer(actionInitializer);
+		new CreateAbstractPropertyInitializer(actionInitializer);
+
 		new CreateEditionActionInitializer(actionInitializer);
 		new CreateFlexoBehaviourInitializer(actionInitializer);
 		new CreateFlexoConceptInitializer(actionInitializer);
-		new DeleteFlexoConceptInitializer(actionInitializer);
-		new DuplicateFlexoConceptInitializer(actionInitializer);
+		// new DeleteFlexoConceptInitializer(actionInitializer);
+		// new DuplicateFlexoConceptInitializer(actionInitializer);
 		new ShowFMLRepresentationInitializer(actionInitializer);
+		new DeleteFlexoConceptObjectsInitializer(actionInitializer);
+
+		new AddParentFlexoConceptInitializer(actionInitializer);
 
 		// Add paste handlers
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
@@ -195,10 +206,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	/**
-	 * Return icon representing supplied pattern role
+	 * Return icon representing supplied pattern property
 	 * 
 	 * @param patternRoleClass
-	 * @return icon representing supplied pattern role
+	 * @return icon representing supplied pattern property
 	 */
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {

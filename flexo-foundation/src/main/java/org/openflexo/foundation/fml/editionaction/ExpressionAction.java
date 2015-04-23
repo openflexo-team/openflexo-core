@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -61,7 +60,6 @@ import org.openflexo.model.annotations.XMLElement;
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/FML/ExpressionActionPanel.fib")
 @ModelEntity
 @ImplementationClass(ExpressionAction.ExpressionActionImpl.class)
 @XMLElement
@@ -116,7 +114,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "") + ";";
+			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "");
 		}
 
 		@Override

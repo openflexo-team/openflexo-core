@@ -56,7 +56,8 @@ public interface ViewPointResource extends AbstractVirtualModelResource<ViewPoin
 	public static final String VIEWPOINT_SUFFIX = ".viewpoint";
 
 	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
-	public static final String DIRECTORY = "directory";
+
+	// public static final String DIRECTORY = "directory";
 
 	public ViewPoint getViewPoint();
 

@@ -79,7 +79,7 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 			try {
 				return super.getPatternRole();
 			} catch (ClassCastException e) {
-				logger.warning("Unexpected pattern role type");
+				logger.warning("Unexpected pattern property type");
 				setPatternRole(null);
 				return null;
 			}

@@ -107,8 +107,14 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object instanceof TechnologyObject) {
 			TechnologyAdapter ta = ((TechnologyObject) object).getTechnologyAdapter();
+			if (ta == null) {
+				return null;
+			}
 			TechnologyAdapterController<?> tac = controller.getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
+			if (tac == null) {
+				return null;
+			}
 			return tac.getWindowTitleforObject((TechnologyObject) object, controller);
 		}
 		if (object instanceof IFlexoOntologyObject) {

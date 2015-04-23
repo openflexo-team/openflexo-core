@@ -57,6 +57,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * The {@link ViewPointLibrary} manages all references to all {@link ViewPoint} known in a JVM instance.<br>
@@ -170,10 +171,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 */
 	public ViewPointResource registerViewPoint(ViewPointResource vpRes) {
 		String uri = vpRes.getURI();
-		map.put(uri, vpRes);
-		setChanged();
-		notifyObservers(new ViewPointRegistered(vpRes));
-		return vpRes;
+		if (StringUtils.isNotEmpty(uri)) {
+			map.put(uri, vpRes);
+			setChanged();
+			notifyObservers(new ViewPointRegistered(vpRes));
+			return vpRes;
+		}
+		return null;
 	}
 
 	/**
@@ -322,6 +326,13 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			}
 		}
 		return viewPointValidationModel;
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
+
 	}
 
 	/*public void delete(ViewPoint viewPoint) {

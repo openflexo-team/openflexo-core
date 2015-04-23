@@ -74,4 +74,11 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 		return null;
 	}
 
+	/**
+	 * Called to stop the service
+	 */
+	public void stop(){
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
+	}
+
 }

@@ -318,6 +318,17 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return v;
 	}
 
+	public static <T extends FlexoObject> List<T> getGlobalSelection(T focusedObject, List<T> globalSelection) {
+		Vector<T> v = globalSelection != null ? new Vector<T>(globalSelection.size() + 1) : new Vector<T>(1);
+		if (globalSelection != null) {
+			v.addAll(globalSelection);
+		}
+		if (focusedObject != null && !v.contains(focusedObject)) {
+			v.add(focusedObject);
+		}
+		return v;
+	}
+
 	public static boolean isHomogeneousFlexoConceptInstanceSelection(FlexoObject focusedObject, Vector<FlexoObject> selection) {
 		if (focusedObject instanceof FlexoConceptInstance) {
 			// Flag indicating if the whole selection is composed of FlexoConceptInstance OF SAME TYPE (ie same FlexoConcept)

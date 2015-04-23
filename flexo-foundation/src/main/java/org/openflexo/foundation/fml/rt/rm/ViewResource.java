@@ -72,6 +72,7 @@ public interface ViewResource extends PamelaResource<View, ViewModelFactory>, Fl
 		TechnologyAdapterResource<View, FMLRTTechnologyAdapter>,
 		FlexoModelResource<View, ViewPoint, FMLRTTechnologyAdapter, FMLTechnologyAdapter> {
 
+	public static final String CORE_FILE_SUFFIX = ".xml";
 	public static final String VIEW_SUFFIX = ".view";
 
 	public static final String VIEW_LIBRARY = "viewLibrary";

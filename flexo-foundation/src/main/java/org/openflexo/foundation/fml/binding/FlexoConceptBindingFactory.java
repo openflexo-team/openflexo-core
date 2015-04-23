@@ -63,8 +63,8 @@ import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
 import org.openflexo.foundation.fml.FlexoBehaviourType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
+import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.ViewObject;
@@ -101,11 +101,11 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 	}
 
 	protected SimplePathElement makeSimplePathElement(Object object, BindingPathElement parent) {
-		if (object instanceof FlexoRole) {
-			return new FlexoConceptFlexoRolePathElement<FlexoRole<?>>(parent, (FlexoRole<?>) object);
-		}
 		if (object instanceof ModelSlot) {
-			return new VirtualModelModelSlotPathElement<ModelSlot>(parent, (ModelSlot) object);
+			return new VirtualModelModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
+		}
+		if (object instanceof FlexoProperty) {
+			return new FlexoConceptFlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
@@ -124,15 +124,18 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (parent != null) {
 			Type pType = parent.getType();
 
-			if (pType instanceof TechnologySpecificCustomType) {
-				TechnologySpecificCustomType parentType = (TechnologySpecificCustomType) pType;
+			if (pType instanceof TechnologySpecificType) {
+				TechnologySpecificType parentType = (TechnologySpecificType) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
-				TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
-				if (ta != null && bf != null && bf.handleType(parentType)) {
-					List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
-					Collections.sort(returned, BindingPathElement.COMPARATOR);
-					return returned;
+				if (ta != null) {
+					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
+					if (bf != null && bf.handleType(parentType)) {
+						List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
+						Collections.sort(returned, BindingPathElement.COMPARATOR);
+						return returned;
+					}
 				}
+
 			}
 
 			if (pType instanceof FlexoBehaviourParametersType) {
@@ -195,7 +198,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 							returned.add(getSimplePathElement(ms, parent));
 						}
 					}
-					for (FlexoRole<?> pr : concept.getFlexoRoles()) {
+					for (FlexoProperty<?> pr : concept.getAccessibleProperties()) {
 						returned.add(getSimplePathElement(pr, parent));
 					}
 					// TODO: performance issue
@@ -209,7 +212,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
-				for (FlexoRole<?> pr : flexoBehaviour.getFlexoConcept().getFlexoRoles()) {
+				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getFlexoProperties()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}
 				return returned;
@@ -218,7 +221,7 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				returned.add(new FlexoBehaviourParametersDefinitionsPathElement(parent, flexoBehaviour));
-				for (FlexoRole<?> pr : flexoBehaviour.getFlexoConcept().getFlexoRoles()) {
+				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getFlexoProperties()) {
 					returned.add(getSimplePathElement(pr, parent));
 				}
 				return returned;
@@ -266,7 +269,11 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		List<? extends SimplePathElement> accessibleSimplePathElements = getAccessibleSimplePathElements(parent);
 		if (accessibleSimplePathElements != null) {
 			for (SimplePathElement e : accessibleSimplePathElements) {
-				if (e.getLabel().equals(propertyName)) {
+				if (e.getLabel() == null) {
+					System.out.println("Prout alors avec " + e.getClass());
+					Thread.dumpStack();
+				}
+				if (e.getLabel() != null && e.getLabel().equals(propertyName)) {
 					returned = e;
 				}
 			}

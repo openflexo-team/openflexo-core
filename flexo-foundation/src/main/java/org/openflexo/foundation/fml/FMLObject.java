@@ -204,7 +204,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 
 		@Override
 		public FMLTechnologyAdapter getTechnologyAdapter() {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+			}
+			return null;
 		}
 
 		@Override

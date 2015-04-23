@@ -70,6 +70,11 @@ public interface FlexoService {
 	public void initialize();
 
 	/**
+	 * Called to stop the service
+	 */
+	public void stop();
+
+	/**
 	 * Receives a new {@link ServiceNotification} broadcasted from the {@link FlexoServiceManager}
 	 * 
 	 * @param caller

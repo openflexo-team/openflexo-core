@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -58,7 +59,7 @@ public class FlexoBehaviourActionType implements CustomType {
 		return aFlexoBehaviour.getFlexoBehaviourActionType();
 	}
 
-	private FlexoBehaviour flexoBehaviour;
+	private final FlexoBehaviour flexoBehaviour;
 
 	public FlexoBehaviourActionType(FlexoBehaviour aFlexoBehaviour) {
 		this.flexoBehaviour = aFlexoBehaviour;
@@ -95,5 +96,20 @@ public class FlexoBehaviourActionType implements CustomType {
 	@Override
 	public String toString() {
 		return simpleRepresentation();
+	}
+
+	@Override
+	public String getSerializationRepresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
 	}
 }

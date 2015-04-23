@@ -108,12 +108,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
-			FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress)
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
-			logger.warning("trying to load a resource data from itself, please investigate");
-			return null;
+			// logger.warning("trying to load a resource data from itself, please investigate");
+			return resourceData;
 		}
 		if (resourceData == null && isLoadable()) {
 			// The resourceData is null, we try to load it
@@ -165,6 +165,34 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void setResourceData(RD resourceData) {
 		this.resourceData = resourceData;
 		notifyResourceLoaded();
+	}
+
+	/**
+	 * Rename resource
+	 * 
+	 * @param aName
+	 */
+	@Override
+	public void setName(String aName) throws CannotRenameException {
+		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
+			performSuperSetter(NAME, aName);
+			if (getFlexoIODelegate() != null) {
+				getFlexoIODelegate().rename();
+			}
+		} else if (!isDeleting()) {
+			throw new CannotRenameException(this);
+		}
+	}
+
+	/**
+	 * Called to init name of the resource<br>
+	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
+	 * 
+	 * @param aName
+	 */
+	@Override
+	public void initName(String aName) {
+		performSuperSetter(NAME, aName);
 	}
 
 	/**
@@ -317,6 +345,13 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return false;
 	}
 
+	private boolean isDeleting = false;
+
+	@Override
+	public boolean isDeleting() {
+		return isDeleting;
+	}
+
 	/**
 	 * Delete this resource<br>
 	 * Contents of this resource are deleted, and resource data is unloaded
@@ -327,6 +362,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
 		} else {
+			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
 				FlexoResource<?> container = getContainer();
@@ -338,13 +374,16 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 				r.delete();
 			}
 
+			if (isLoaded()) {
+				unloadResourceData();
+			}
+
 			// Handle Flexo IO delegate deletion
 			getFlexoIODelegate().delete();
 
 			performSuperDelete(context);
-			if (isLoaded()) {
-				unloadResourceData();
-			}
+
+			isDeleting = false;
 
 			return true;
 		}

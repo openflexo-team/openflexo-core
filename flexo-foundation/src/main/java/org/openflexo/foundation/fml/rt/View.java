@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
@@ -76,12 +77,13 @@ import org.openflexo.toolbox.FlexoVersion;
  * A {@link View} is the run-time concept (instance) of a {@link ViewPoint}.<br>
  * <p/>
  * A {@link View} is instantiated inside a {@link FlexoProject}.
- *
+ * 
  * @author sylvain
  */
 @ModelEntity
 @ImplementationClass(View.ViewImpl.class)
 @XMLElement
+// TODO: View should inherit from VirtualModelInstance
 public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
 		TechnologyObject<FMLRTTechnologyAdapter>, BindingEvaluationContext {
 
@@ -142,7 +144,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 	/**
 	 * Return all {@link VirtualModelInstance} defined in this {@link View}
-	 *
+	 * 
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = VirtualModelInstance.VIEW_KEY, ignoreType = true)
@@ -150,7 +152,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 
 	/**
 	 * Allow to retrieve VMIs given a virtual model.
-	 *
+	 * 
 	 * @param virtualModel
 	 *            key to find correct VMI
 	 * @return the list
@@ -309,7 +311,11 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		@Override
 		public void setName(String name) {
 			if (getResource() != null) {
-				getResource().setName(name);
+				try {
+					getResource().setName(name);
+				} catch (CannotRenameException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -404,7 +410,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		/**
 		 * This is the binding point between a {@link ModelSlot} and its concretization in a {@link View} through notion of
 		 * {@link ModelSlotInstance}
-		 *
+		 * 
 		 * @param modelSlot
 		 * @return
 		 */

@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
@@ -67,7 +67,6 @@ import org.openflexo.toolbox.StringUtils;
  * @param <MM>
  * @param <T>
  */
-@FIBPanel("Fib/FML/SelectIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(SelectIndividual.SelectIndividualImpl.class)
 public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
@@ -88,6 +87,8 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 	public void setType(IFlexoOntologyClass ontologyClass);
 
 	public FlexoMetaModel getMetaModelData();
+
+	public IFlexoOntology<?> getMetaModelAsOntology();
 
 	public static abstract class SelectIndividualImpl<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyIndividual> extends
 			FetchRequestImpl<MS, T> implements SelectIndividual<MS, T> {
@@ -147,6 +148,14 @@ public abstract interface SelectIndividual<MS extends TypeAwareModelSlot<?, ?>, 
 			if (getModelSlot() != null && getModelSlot().getMetaModelResource() != null
 					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
 				return getModelSlot().getMetaModelResource().getMetaModelData();
+			}
+			return null;
+		}
+
+		@Override
+		public IFlexoOntology<?> getMetaModelAsOntology() {
+			if (getMetaModelData() instanceof IFlexoOntology) {
+				return (IFlexoOntology<?>) getMetaModelData();
 			}
 			return null;
 		}

@@ -78,7 +78,7 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 					return true;
 				} else {
 					Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
-					WizardDialog dialog = new WizardDialog(wizard);
+					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();
 					if (dialog.getStatus() != Status.VALIDATED) {
 						// Operation cancelled

@@ -118,6 +118,7 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoFacet;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -125,6 +126,7 @@ import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotE
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
@@ -135,6 +137,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.task.FlexoTask;
@@ -300,14 +303,38 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	protected abstract void initializePerspectives();
 
-	protected void initializeAllAvailableTechnologyPerspectives() {
+	protected void initializeAllAvailableTechnologyPerspectives(boolean includeFML, boolean includeFMLRT) {
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
 			if (tac != null) {
-				tac.installTechnologyPerspective(this);
+				boolean includeTA = true;
+				if (tac.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+					includeTA = includeFML;
+				}
+				if (tac.getTechnologyAdapter() instanceof FMLRTTechnologyAdapter) {
+					includeTA = includeFMLRT;
+				}
+				if (includeTA) {
+					tac.installTechnologyPerspective(this);
+				}
 			}
 		}
+	}
+
+	protected void initializeFMLTechnologyAdapterPerspectives() {
+		FMLTechnologyAdapter fmlTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(fmlTA);
+		tac.installTechnologyPerspective(this);
+	}
+
+	protected void initializeFMLRTTechnologyAdapterPerspectives() {
+		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
+				FMLRTTechnologyAdapter.class);
+		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(fmlRTTA);
+		tac.installTechnologyPerspective(this);
 	}
 
 	public final ControllerModel getControllerModel() {
@@ -1240,6 +1267,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (locations != null) {
 			for (Location location : locations) {
 				viewsForLocation.remove(location);
+				// Do not forget to remove location from ControllerModel !!!
+				getControllerModel().removeFromLocations(location);
 			}
 		}
 		locationsForView.removeAll(aView);
@@ -1612,11 +1641,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				LoadResourceAction action = LoadResourceAction.actionType.makeNewAction((FlexoResource<?>) object, null, getEditor());
 				action.doAction();
 			} else {
-				selectAndFocusObjectAsTask((FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData());
+				ResourceData<?> rd = ((FlexoResource<?>) object).getLoadedResourceData();
+				if (rd instanceof FlexoObject) {
+					selectAndFocusObjectAsTask((FlexoObject) rd);
+				}
 			}
 		}
-		logger.info("getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)="
-				+ getCurrentPerspective().hasModuleViewForObject((FlexoObject) object));
 		if (object instanceof FlexoObject && getCurrentPerspective().hasModuleViewForObject((FlexoObject) object)) {
 			// Try to display object in view
 			selectAndFocusObjectAsTask((FlexoObject) object);

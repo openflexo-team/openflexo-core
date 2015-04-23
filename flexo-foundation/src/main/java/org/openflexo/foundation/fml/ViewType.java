@@ -36,58 +36,35 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.fml.rt.View;
 
 /**
- * Represent the type of a View of a given ViewPoint
+ * Represent the type of a View conform to a given ViewPoint
  * 
  * @author sylvain
  * 
  */
-public class ViewType implements CustomType {
-
-	protected ViewPoint viewPoint;
+public class ViewType extends VirtualModelInstanceType {
 
 	public ViewType(ViewPoint aViewPoint) {
-		this.viewPoint = aViewPoint;
+		super(aViewPoint);
+	}
+
+	protected ViewType(String viewpointURI) {
+		super(viewpointURI);
 	}
 
 	public ViewPoint getViewPoint() {
-		return viewPoint;
+		return (ViewPoint) getVirtualModel();
 	}
 
 	@Override
-	public Class getBaseClass() {
-		return ViewPoint.class;
-	}
-
-	@Override
-	public boolean isTypeAssignableFrom(Type aType, boolean permissive) {
-		// System.out.println("isTypeAssignableFrom " + aType + " (i am a " + this + ")");
-		if (aType instanceof ViewType) {
-			return viewPoint == ((ViewType) aType).getViewPoint();
-		}
-		return false;
-	}
-
-	@Override
-	public String simpleRepresentation() {
-		return "ViewType" + ":" + viewPoint.getName();
-	}
-
-	@Override
-	public String fullQualifiedRepresentation() {
-		return "ViewType" + ":" + viewPoint.getURI();
-	}
-
-	@Override
-	public String toString() {
-		return simpleRepresentation();
+	public Class<?> getBaseClass() {
+		return View.class;
 	}
 
 	public static Type getViewType(ViewPoint viewPoint) {

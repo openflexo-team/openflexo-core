@@ -43,11 +43,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -58,7 +57,6 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/AssignationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
 @XMLElement
@@ -87,7 +85,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	public void setDeprecatedValue(DataBinding<T> value);
 
 	@Override
-	public FlexoRole<T> getFlexoRole();
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
 	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
 
@@ -131,14 +129,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public FlexoRole<T> getFlexoRole() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
 			if (assignation != null && assignation.isBindingValue()) {
 				BindingValue bindingValue = (BindingValue) assignation.getExpression();
 				if (bindingValue.getBindingPath().size() == 0) {
-					return (FlexoRole<T>) getFlexoConcept().getFlexoRole(bindingValue.getVariableName());
+					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingValue.getVariableName());
 				}
 			}
 			return null;
@@ -193,7 +191,8 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
+			return getHeaderContext() + getAssignation().toString() + " = "
+					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "<no_assignable_action>");
 		}
 
 	}

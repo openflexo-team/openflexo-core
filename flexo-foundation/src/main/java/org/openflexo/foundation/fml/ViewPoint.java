@@ -199,7 +199,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -215,8 +215,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
-			File viewpointDir = new File(containerDir, baseName + ViewPointResource.VIEWPOINT_SUFFIX);
-			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, viewpointDir,
+			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir,
 					library.getServiceManager());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
@@ -440,7 +439,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
 			if (flexoConceptId.indexOf("#") > -1) {
-				String virtualModelURI = flexoConceptId.substring(flexoConceptId.indexOf("#") + 1);
+				String virtualModelURI = flexoConceptId.substring(0, flexoConceptId.indexOf("#"));
 				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
 				if (vmRes != null) {
 					return vmRes.getVirtualModel().getFlexoConcept(flexoConceptId);
@@ -528,9 +527,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			}*/
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			for (VirtualModel vm : getVirtualModels()) {
-				out.append(vm.getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context, 1);
+			if (getVirtualModels() != null) {
+				for (VirtualModel vm : getVirtualModels()) {
+					out.append(vm.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context, 1);
+				}
 			}
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
 			return out.toString();

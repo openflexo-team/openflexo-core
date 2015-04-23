@@ -15,7 +15,15 @@
 			<TextField index="1" data="data.name"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				name="Name" localize="true" columns="10" />
-			<Label label="parent_concepts" index="2" data=""
+
+			<CheckBox selected="true" index="2" data="data.isAbstract"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
+				localize="true" enable="!data.abstractRequired" />
+			<Label label="abstract_concept" index="3"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
+				localize="true" />
+
+			<Label label="parent_concepts" index="4" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -28,7 +36,7 @@
 				icon="" tooltip="" localize="true" enable="" manageDynamicModel="true"
 				opaque="false" clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" name="ParentFlexoConceptTable" index="3"
+				valueValidator="" name="ParentFlexoConceptTable" index="5"
 				data="data.parentFlexoConcepts"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
@@ -44,7 +52,7 @@
 				<AddAction method="controller.addParentFlexoConcept(data)"
 					name="addParentFlexoConcept" />
 			</Table>
-			<Label label="constraints" index="4"
+			<Label label="constraints" index="6"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)"
 				localize="true" />
 			<Table iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
@@ -55,7 +63,7 @@
 				backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConstraintsTable" index="5"
+				manageDynamicModel="true" name="ConstraintsTable" index="7"
 				data="data.flexoConceptConstraints"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;location=right)">
 				<IconColumn data="controller.iconForObject(iterator)"
@@ -81,7 +89,7 @@
 			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				manageDynamicModel="false" useScrollBar="true" columns="8"
 				controllerClassName="org.openflexo.fib.controller.FIBController"
-				text="TextArea" localize="true" index="10001"
+				data="data.description" localize="true" index="10001"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 				rows="3" readOnly="false" validateOnReturn="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
@@ -108,6 +116,9 @@
 		<Localized key="name" lang="English" value="Name" />
 		<Localized key="name" lang="French" value="Nom" />
 		<Localized key="name" lang="Dutch" value="Name" />
+		<Localized key="abstract_concept" lang="English" value="abstract_concept" />
+		<Localized key="abstract_concept" lang="French" value="concept_abstrait" />
+		<Localized key="abstract_concept" lang="Dutch" value="abstract_concept" />
 	</LocalizedDictionary>
-	<Parameter name="title" value="Edition Pattern" />
+	<Parameter name="title" value="FlexoConcept" />
 </Panel>

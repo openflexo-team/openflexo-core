@@ -60,6 +60,7 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -356,7 +357,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			if (getResource() != null) {
 				return getResource().getFactory();
 			} else {
-				return super.getFMLModelFactory();
+				return getDeserializationFactory();
 			}
 		}
 
@@ -411,8 +412,12 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			if (requireChange(getName(), name)) {
 				String oldValue = getName();
 				if (getResource() != null) {
-					getResource().setName(name);
-					getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+					try {
+						getResource().setName(name);
+						getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+					} catch (CannotRenameException e) {
+						e.printStackTrace();
+					}
 				} else {
 					super.setName(name);
 				}
@@ -580,24 +585,17 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			return returned;
 		}
 
-		/*
 		@Override
-		@Deprecated
 		public void addToModelSlots(ModelSlot<?> aModelSlot) {
-			if (aModelSlot != null && aModelSlot.getName() != null && aModelSlot.getName().equals("virtualModelInstance")) {
-				// Temporary hack to ignore reflexive model slot being inherited from 1.7-beta version
-				logger.warning("Reflexive model slot being inherited from 1.7-beta version are ignored now");
-				return;
-			}
 			performSuperAdder(MODEL_SLOTS_KEY, aModelSlot);
+			notifiedPropertiesChanged(null, aModelSlot);
 		}
-		*/
 
-		/*
-		 * public ModelSlot<?> getModelSlot(String modelSlotName) { for
-		 * (ModelSlot<?> ms : getModelSlots()) { if (ms.getName() != null &&
-		 * ms.getName().equals(modelSlotName)) { return ms; } } return null; }
-		 */
+		@Override
+		public void removeFromModelSlots(ModelSlot<?> aModelSlot) {
+			performSuperRemover(MODEL_SLOTS_KEY, aModelSlot);
+			notifiedPropertiesChanged(aModelSlot, null);
+		}
 
 		public List<ModelSlot<?>> getRequiredModelSlots() {
 			List<ModelSlot<?>> requiredModelSlots = new ArrayList<ModelSlot<?>>();
@@ -904,9 +902,9 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 				}
 			}
 
-			if (getFlexoRoles().size() > 0) {
+			if (getDeclaredProperties().size() > 0) {
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoRole pr : getFlexoRoles()) {
+				for (FlexoProperty<?> pr : getDeclaredProperties()) {
 					out.append(pr.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}

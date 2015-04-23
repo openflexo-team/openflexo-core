@@ -51,51 +51,53 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.BasicResourceImpl;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
-public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource,
+public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResourceImpl<VirtualModel> implements VirtualModelResource,
 		AccessibleProxyObject {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
-	public static VirtualModelResource makeVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
-			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
+	public static VirtualModelResource makeVirtualModelResource(String name, File containerDir, ViewPointResource viewPointResource,
+			FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
 					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			returned.setName(virtualModelDirectory.getName());
-			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
-			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
+			returned.initName(name);
+
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, "",
+					CORE_FILE_SUFFIX, returned, factory));
+
+			/*DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
+			System.out.println("Nouveau VM");
+			System.out.println("containerDir=" + containerDir);
+			System.out.println("dir=" + delegate.getDirectory());
+			System.out.println("file=" + delegate.getFile());*/
+
+			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
+			returned.setURI(viewPointResource.getURI() + "/" + name);
 			returned.setServiceManager(serviceManager);
 			viewPointResource.addToContents(returned);
 			viewPointResource.notifyContentsAdded(returned);
@@ -111,14 +113,14 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return null;
 	}
 
-	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory, File virtualModelXMLFile,
+	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory/*, File virtualModelXMLFile*/,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
 					VirtualModelResource.class));
 			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
 			String baseName = virtualModelDirectory.getName();
-			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
+			File xmlFile = new File(virtualModelDirectory, baseName + CORE_FILE_SUFFIX);
 			VirtualModelInfo vpi = null;
 			try {
 				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
@@ -131,8 +133,11 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				return null;
 			}
 
-			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			returned.setName(vpi.name);
+			returned.initName(baseName);
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
+					virtualModelDirectory.getParentFile(), "", CORE_FILE_SUFFIX, returned, factory));
+
+			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
@@ -175,7 +180,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			// returned.setFile(xmlFile);
 			// returned.setDirectory(parent);
-			returned.setName(vpi.name);
+			returned.initName(vpi.name);
 			returned.setURI(viewPointResource.getURI() + "/" + FilenameUtils.getBaseName(inJarResource.getRelativePath()));
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
@@ -197,32 +202,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 			return returned;
 		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public FMLTechnologyAdapter getTechnologyAdapter() {
-		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		}
-		return null;
-	}
-
-	/**
-	 * Return virtual model stored by this resource<br>
-	 * Load the resource data when unloaded
-	 */
-	@Override
-	public VirtualModel getVirtualModel() {
-		try {
-			return getResourceData(null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (ResourceLoadingCancelledException e) {
-			e.printStackTrace();
-		} catch (FlexoException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -283,14 +262,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
 	}
 
-	@Override
-	public void stopDeserializing() {
-		for (FlexoConcept fc : getLoadedResourceData().getFlexoConcepts()) {
-			fc.finalizeDeserialization();
-		}
-		super.stopDeserializing();
-	}
-
 	private static class VirtualModelInfo {
 		public String version;
 		public String name;
@@ -348,12 +319,12 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		Document document;
 		try {
 			logger.fine("Try to find infos for " + virtualModelDirectory);
-
+	
 			String baseName = virtualModelDirectory.getName();
 			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-
+	
 			if (xmlFile.exists()) {
-
+	
 				document = readXMLFile(xmlFile);
 				Element root = getElement(document, "VirtualModel");
 				if (root != null) {
@@ -391,53 +362,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	}*/
 
 	@Override
-	public boolean delete(Object... context) {
-		if (super.delete(context)) {
-			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public ViewPointResource getContainer() {
 		return (ViewPointResource) performSuperGetter(CONTAINER);
-	}
-
-	/*@Override
-	public Resource getDirectory() {
-		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			String parentPath = ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
-			if(ResourceLocator.locateResource(parentPath)==null){
-				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
-			}
-			return ResourceLocator.locateResource(parentPath);
-		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
-			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
-			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(resource.getContainer().getRelativePath());
-			return parent;
-		}
-		return null;
-	}*/
-	@Override
-	public Resource getDirectory() {
-		if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			String parentPath = getDirectoryPath();
-			if (ResourceLocator.locateResource(parentPath) == null) {
-				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
-			}
-			return ResourceLocator.locateResource(parentPath);
-		} else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
-			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
-			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
-			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList()
-					.get(parentPath);
-			return parent;
-		}
-		return null;
-	}
-
-	public String getDirectoryPath() {
-		return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
 	}
 }

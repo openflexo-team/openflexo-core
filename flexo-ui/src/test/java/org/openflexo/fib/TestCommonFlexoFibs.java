@@ -220,6 +220,11 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testTypeSelector() {
+		validateFIB("Fib/TypeSelector.fib");
+	}
+
+	@Test
 	public void testUndoManager() {
 		validateFIB("Fib/UndoManager.fib");
 	}

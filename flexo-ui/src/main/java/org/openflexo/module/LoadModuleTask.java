@@ -64,7 +64,7 @@ public class LoadModuleTask extends FlexoApplicationTask {
 	@Override
 	public void performTask() {
 		try {
-			Progress.setExpectedProgressSteps(125);
+			Progress.setExpectedProgressSteps(150);
 			this.moduleLoader.performSwitchToModule(module);
 		} catch (ModuleLoadingException e) {
 			// TODO Auto-generated catch block

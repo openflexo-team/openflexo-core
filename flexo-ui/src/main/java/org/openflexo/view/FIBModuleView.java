@@ -84,22 +84,6 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 		controller.willLoad(fibResource);
 	}
 
-	// TODO : delete after debug
-	/*
-		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath) {
-			this(representedObject, controller, fibResourcePath, false, controller.willLoad(fibResourcePath));
-		}
-		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-			this(representedObject, controller, fibResourcePath, false, progress);
-		}
-
-		public FIBModuleView(O representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-				FlexoProgress progress) {
-			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
-		}
-		
-	*/
-
 	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
 		super(representedObject, controller, fibComponent, addScrollBar);
 		Progress.progress("instantiating_fib_component");
@@ -199,7 +183,9 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+
 		if (evt.getSource() == getRepresentedObject() && evt.getPropertyName().equals(getRepresentedObject().getDeletedProperty())) {
+			// This event matches a deletion, delete ModuleView
 			deleteModuleView();
 		}
 		super.propertyChange(evt);

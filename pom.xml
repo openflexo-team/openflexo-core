@@ -22,8 +22,8 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	  <tag>1.7.1</tag>
-  </scm>
+	    <tag>1.7.1</tag>
+    </scm>
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
@@ -39,41 +39,41 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>${project.version}</version>
+				<version>1.7.1-SNAPSHOT</version>
 				<classifier>tests</classifier>
 			</dependency>
 			<dependency>

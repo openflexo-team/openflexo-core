@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rm;
 
 import java.io.File;
@@ -71,25 +70,21 @@ import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.ViewPointModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
+import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.BasicResourceImpl;
-import org.openflexo.rm.ClasspathResourceLocatorImpl;
-import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -100,28 +95,24 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
-public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint, FMLModelFactory> implements ViewPointResource {
+public abstract class ViewPointResourceImpl extends AbstractVirtualModelResourceImpl<ViewPoint>implements ViewPointResource {
 
 	static final Logger logger = Logger.getLogger(FlexoXMLFileResourceImpl.class.getPackage().getName());
 
 	private static XMLRootElementReader reader = new XMLRootElementReader();
 
-	public static ViewPointResource makeViewPointResource(String name, String uri, File viewPointDirectory,
-			FlexoServiceManager serviceManager) {
+	public static ViewPointResource makeViewPointResource(String name, String uri, File containerDir, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,ViewPointResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewPointResource.class));
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
-			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - VIEWPOINT_SUFFIX.length());
-			File xmlFile = new File(viewPointDirectory, baseName + ".xml");
-			returned.setName(name);
+			returned.initName(name);
 			returned.setURI(uri);
 			returned.setVersion(new FlexoVersion("0.1"));
 			returned.setModelVersion(new FlexoVersion("1.0"));
-			
-			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			
-			//returned.setFile(xmlFile);
-			//returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
+
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, VIEWPOINT_SUFFIX,
+					CORE_FILE_SUFFIX, returned, factory));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
@@ -130,7 +121,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 
 			returned.setServiceManager(serviceManager);
-			returned.setFactory(new FMLModelFactory(returned,serviceManager));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -141,11 +132,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	public static ViewPointResource retrieveViewPointResource(File viewPointDirectory, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,ViewPointResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewPointResource.class));
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
 			String baseName = viewPointDirectory.getName().substring(0, viewPointDirectory.getName().length() - VIEWPOINT_SUFFIX.length());
-			File xmlFile = new File(viewPointDirectory, baseName + ".xml");
-			ViewPointInfo vpi=null;
+			File xmlFile = new File(viewPointDirectory, baseName + CORE_FILE_SUFFIX);
+			ViewPointInfo vpi = null;
 			try {
 				vpi = findViewPointInfo(new FileInputStream(xmlFile));
 			} catch (FileNotFoundException e) {
@@ -157,13 +149,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				return null;
 			}
 
-			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			
-			//FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(viewPointDirectory.getPath());
-			
-			//returned.setDirectory(ResourceLocator.locateResource(viewPointDirectory.getPath()));
 			returned.setURI(vpi.uri);
-			returned.setName(vpi.name);
+			returned.initName(baseName);
+
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
+					viewPointDirectory.getParentFile(), VIEWPOINT_SUFFIX, CORE_FILE_SUFFIX, returned, factory));
+
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
 			}
@@ -188,7 +179,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
-			returned.setFactory(new FMLModelFactory(returned,serviceManager));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
@@ -209,16 +200,18 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		return null;
 	}
-	
+
 	public static ViewPointResource retrieveViewPointResource(InJarResourceImpl inJarResource, FlexoServiceManager serviceManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class,ViewPointResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class, ViewPointResource.class));
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
-			
+
 			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
-			
-			//String parentPath = FilenameUtils.getFullPath(inJarResource.getRelativePath());
-			//BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(inJarResource.getLocator())).getJarResourcesList().get(parentPath);
+
+			// String parentPath = FilenameUtils.getFullPath(inJarResource.getRelativePath());
+			// BasicResourceImpl parent = (BasicResourceImpl)
+			// ((ClasspathResourceLocatorImpl)(inJarResource.getLocator())).getJarResourcesList().get(parentPath);
 
 			ViewPointInfo vpi = findViewPointInfo(returned.getFlexoIOStreamDelegate().getInputStream());
 			if (vpi == null) {
@@ -226,9 +219,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				return null;
 			}
 
-			//returned.setDirectory(parent);
+			// returned.setDirectory(parent);
 			returned.setURI(vpi.uri);
-			returned.setName(vpi.name);
+			returned.initName(vpi.name);
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
 			}
@@ -239,7 +232,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
-			returned.setFactory(new FMLModelFactory(returned,serviceManager));
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
@@ -259,55 +252,58 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		return null;
 	}
 
-	
 	private void exploreVirtualModels(Resource parent) {
 		XMLRootElementInfo result = null;
 
+		if (parent == null) {
+			return;
+		}
+		
 		for (Resource child : parent.getContents()) {
-			if(child.isContainer()){
+			if (child.isContainer()) {
 				exploreVirtualModels(child);
-			}else{
+			} else {
 				try {
-					if (child.getURI().endsWith(".xml")){
+					if (child.getURI().endsWith(".xml")) {
 						result = reader.readRootElement(child);
 						// Serialization artefact is File
 						if (result.getName().equals("VirtualModel") && getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(new File(FilenameUtils.getFullPath(child.getRelativePath())),
-									ResourceLocator.retrieveResourceAsFile(child), this, getServiceManager());
+							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(
+									new File(FilenameUtils.getFullPath(child.getRelativePath())),
+									/*ResourceLocator.retrieveResourceAsFile(child),*/ this, getServiceManager());
 							addToContents(virtualModelResource);
-						} 
+						}
 						// Serialization artefact is InJarResource
-						else if(result.getName().equals("VirtualModel") && getFlexoIODelegate() instanceof InJarFlexoIODelegate){
-							VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource((InJarResourceImpl)child,parent, this, getServiceManager());
+						else if (result.getName().equals("VirtualModel") && getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+							VirtualModelResource virtualModelResource = VirtualModelResourceImpl
+									.retrieveVirtualModelResource((InJarResourceImpl) child, parent, this, getServiceManager());
 							addToContents(virtualModelResource);
 						}
 					}
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-			
-		
+
 		}
 		/*if (getDirectory().exists() && getDirectory().isDirectory()) {
 			for (File f : getDirectory().listFiles()) {
 				if (f.isDirectory()) {
 					File virtualModelFile = new File(f, f.getName() + ".xml");
 					if (virtualModelFile.exists()) {
-
+		
 						// This directory should be append to resources to be looked-up, because of images.
 						FileSystemResourceLocatorImpl fsrl = (FileSystemResourceLocatorImpl) ResourceLocator
 								.getInstanceForLocatorClass(FileSystemResourceLocatorImpl.class);
 						if (fsrl != null && f.getPath() != null) {
 							fsrl.appendToDirectories(f.getPath());
 						}
-
+		
 						try {
-
+		
 							result = reader.readRootElement(virtualModelFile);
-
+		
 							if (result.getName().equals("VirtualModel")) {
 								VirtualModelResource virtualModelResource = VirtualModelResourceImpl.retrieveVirtualModelResource(f,
 										virtualModelFile, this, getServiceManager());
@@ -320,14 +316,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 		}*/
-	}
-	
-	@Override
-	public FMLTechnologyAdapter getTechnologyAdapter() {
-		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		}
-		return null;
 	}
 
 	@Override
@@ -357,13 +345,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	 */
 	@Override
 	public ViewPoint loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-	InconsistentDataException, InvalidModelDefinitionException {
+			InconsistentDataException, InvalidModelDefinitionException {
 
 		ViewPointImpl returned = (ViewPointImpl) super.loadResourceData(progress);
-		
+
 		// Vincent : the name should already exsit no?
-		//String baseName = getDirectory().getRelativePath().substring(0, getDirectory().getRelativePath().length() - 10);
-		//returned.init(baseName,/* getDirectory(), getFile(),*/getViewPointLibrary());
+		// String baseName = getDirectory().getRelativePath().substring(0, getDirectory().getRelativePath().length() - 10);
+		// returned.init(baseName,/* getDirectory(), getFile(),*/getViewPointLibrary());
 
 		/*for (VirtualModel vm : returned.getVirtualModels()) {
 			for (FlexoConcept ep : vm.getFlexoConcepts()) {
@@ -375,18 +363,6 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		returned.clearIsModified();
 
 		return returned;
-	}
-
-	@Override
-	public void stopDeserializing() {
-		/*for (VirtualModel vm : getLoadedResourceData().getVirtualModels()) {
-			for (FlexoConcept ep : vm.getFlexoConcepts()) {
-				ep.finalizeFlexoConceptDeserialization();
-			}
-			vm.clearIsModified();
-		}*/
-
-		super.stopDeserializing();
 	}
 
 	@Override
@@ -407,10 +383,13 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	@Override
 	public boolean isDeprecatedVersion() {
+		if (getModelVersion() == null) {
+			return true;
+		}
 		return getModelVersion().isLesserThan(new FlexoVersion("1.0"));
 	}
 
-	//TODO REimplement it using Input Stream only
+	// TODO REimplement it using Input Stream only
 	/*public static boolean isAn16Viewpoint(ViewPointResource viewpointResource) {
 		try {
 			for (File f : viewpointResource.getDirectory().listFiles()) {
@@ -449,20 +428,35 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	private static boolean contains16Elements(Document document) {
 		if (document
-				.getDescendants(
-						new ElementFilter("EditionPattern").or(new ElementFilter("ContainedEditionPatternInstancePatternRole").or(new ElementFilter(
-								"ContainedEMFObjectIndividualPatternRole").or(new ElementFilter("ContainedShapePatternRole").or(new ElementFilter(
-										"ContainedConnectorPatternRole").or(new ElementFilter("ContainedOWLIndividualPatternRole").or(new ElementFilter(
-												"ContainedExcelRowPatternRole").or(new ElementFilter("ContainedExcelCellPatternRole").or(new ElementFilter(
-														"ContainedExcelSheetPatternRole").or(new ElementFilter("EditionPatternInstanceParameter")
-														.or(new ElementFilter("MatchEditionPatternInstance").or(new ElementFilter(
-																"CreateEditionPatternInstanceParameter").or(new ElementFilter("Palette").or(new ElementFilter(
-																		"PaletteElement").or(new ElementFilter("Shema").or(new ElementFilter("ContainedShape")
-																		.or(new ElementFilter("ContainedConnector").or(new ElementFilter("FromShape").or(new ElementFilter(
-																				"ToShape").or(new ElementFilter("Border").or(new ElementFilter("AddEditionPatternInstance")
-																				.or(new ElementFilter("AddEditionPatternInstanceParameter").or(new ElementFilter(
-																						"AddressedSelectEditionPatternInstance").or(new ElementFilter(
-																								"AddressedSelectFlexoConceptInstance"))))))))))))))))))))))))).hasNext()) {
+				.getDescendants(new ElementFilter("EditionPattern").or(new ElementFilter("ContainedEditionPatternInstancePatternRole").or(
+						new ElementFilter("ContainedEMFObjectIndividualPatternRole").or(new ElementFilter("ContainedShapePatternRole").or(
+								new ElementFilter("ContainedConnectorPatternRole").or(new ElementFilter("ContainedOWLIndividualPatternRole")
+										.or(new ElementFilter("ContainedExcelRowPatternRole").or(new ElementFilter(
+												"ContainedExcelCellPatternRole").or(new ElementFilter("ContainedExcelSheetPatternRole")
+														.or(new ElementFilter("EditionPatternInstanceParameter")
+																.or(new ElementFilter("MatchEditionPatternInstance")
+																		.or(new ElementFilter("CreateEditionPatternInstanceParameter")
+																				.or(new ElementFilter("Palette")
+																						.or(new ElementFilter("PaletteElement")
+																								.or(new ElementFilter("Shema").or(
+																										new ElementFilter("ContainedShape")
+																												.or(new ElementFilter(
+																														"ContainedConnector")
+																																.or(new ElementFilter(
+																																		"FromShape")
+																																				.or(new ElementFilter(
+																																						"ToShape")
+																																								.or(new ElementFilter(
+																																										"Border")
+																																												.or(new ElementFilter(
+																																														"AddEditionPatternInstance")
+																																																.or(new ElementFilter(
+																																																		"AddEditionPatternInstanceParameter")
+																																																				.or(new ElementFilter(
+																																																						"AddressedSelectEditionPatternInstance")
+																																																								.or(new ElementFilter(
+																																																										"AddressedSelectFlexoConceptInstance")))))))))))))))))))))))))
+				.hasNext()) {
 			return true;
 		}
 		return false;
@@ -478,41 +472,41 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	private static ViewPointInfo findViewPointInfo(InputStream inputStream) {
 		Document document;
 		try {
-				document = readXMLInputStream(inputStream);
-				Element root = getElement(document, "ViewPoint");
-				if (root != null) {
-					ViewPointInfo returned = new ViewPointInfo();
-					Iterator<Attribute> it = root.getAttributes().iterator();
-					while (it.hasNext()) {
-						Attribute at = it.next();
-						if (at.getName().equals("uri")) {
-							logger.fine("Returned " + at.getValue());
-							returned.uri = at.getValue();
-						} else if (at.getName().equals("name")) {
-							logger.fine("Returned " + at.getValue());
-							returned.name = at.getValue();
-						} else if (at.getName().equals("version")) {
-							logger.fine("Returned " + at.getValue());
-							returned.version = at.getValue();
-						} else if (at.getName().equals("modelVersion")) {
-							logger.fine("Returned " + at.getValue());
-							returned.modelVersion = at.getValue();
+			document = readXMLInputStream(inputStream);
+			Element root = getElement(document, "ViewPoint");
+			if (root != null) {
+				ViewPointInfo returned = new ViewPointInfo();
+				Iterator<Attribute> it = root.getAttributes().iterator();
+				while (it.hasNext()) {
+					Attribute at = it.next();
+					if (at.getName().equals("uri")) {
+						logger.fine("Returned " + at.getValue());
+						returned.uri = at.getValue();
+					} else if (at.getName().equals("name")) {
+						logger.fine("Returned " + at.getValue());
+						returned.name = at.getValue();
+					} else if (at.getName().equals("version")) {
+						logger.fine("Returned " + at.getValue());
+						returned.version = at.getValue();
+					} else if (at.getName().equals("modelVersion")) {
+						logger.fine("Returned " + at.getValue());
+						returned.modelVersion = at.getValue();
+					}
+				}
+				if (StringUtils.isEmpty(returned.name)) {
+					if (StringUtils.isNotEmpty(returned.uri)) {
+						if (returned.uri.indexOf("/") > -1) {
+							returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
+						} else if (returned.uri.indexOf("\\") > -1) {
+							returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
+						} else {
+							returned.name = returned.uri;
 						}
 					}
-					if (StringUtils.isEmpty(returned.name)) {
-						if (StringUtils.isNotEmpty(returned.uri)) {
-							if (returned.uri.indexOf("/") > -1) {
-								returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
-							} else if (returned.uri.indexOf("\\") > -1) {
-								returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
-							} else {
-								returned.name = returned.uri;
-							}
-						}
-					}
-					return returned;
+				}
+				return returned;
 
-			} 
+			}
 		} catch (JDOMException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -526,7 +520,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	public static void convertViewPoint(ViewPointResource viewPointResource) {
 
 		File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(viewPointResource.getDirectory());
-		File xmlFile = (File) viewPointResource.getFlexoIODelegate().getSerializationArtefact();//getFile();
+		File xmlFile = (File) viewPointResource.getFlexoIODelegate().getSerializationArtefact();// getFile();
 
 		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
 
@@ -543,8 +537,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				if (!f.equals(xmlFile) && !f.equals(diagramSpecificationDir) && !f.getName().endsWith("~")) {
 					if (f.getName().endsWith(".shema")) {
 						try {
-							File renamedExampleDiagramFile = new File(f.getParentFile(), f.getName().substring(0, f.getName().length() - 6)
-									+ ".diagram");
+							File renamedExampleDiagramFile = new File(f.getParentFile(),
+									f.getName().substring(0, f.getName().length() - 6) + ".diagram");
 							FileUtils.rename(f, renamedExampleDiagramFile);
 							f = renamedExampleDiagramFile;
 						} catch (IOException e) {
@@ -592,17 +586,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	@Override
-	public boolean delete(Object... context) {
-		if (super.delete(context)) {
-			getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public ViewPointLibrary getViewPointLibrary() {
-		ViewPointLibrary returned = (ViewPointLibrary)performSuperGetter(VIEW_POINT_LIBRARY);
+		ViewPointLibrary returned = (ViewPointLibrary) performSuperGetter(VIEW_POINT_LIBRARY);
 		if (returned == null && getServiceManager() != null) {
 			return getServiceManager().getViewPointLibrary();
 		}
@@ -611,24 +596,24 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 	/* TODO reimplements using input streams
 	public static void convertViewPoint16ToViewpoint17(ViewPointResource viewPointResource) {
-
+	
 		File viewPointDirectory = viewPointResource.getDirectory();
-
+	
 		List<File> paletteFiles = new ArrayList<File>();
 		List<File> exampleDiagramFiles = new ArrayList<File>();
 		List<File> virtualModels = new ArrayList<File>();
-
+	
 		logger.info("Converting " + viewPointDirectory.getAbsolutePath());
-
+	
 		try {
 			for (File f : viewPointResource.getDirectory().listFiles()) {
 				if (f.isDirectory()) {
-
+	
 					// Initialize files list
 					paletteFiles.clear();
 					exampleDiagramFiles.clear();
 					virtualModels.clear();
-
+	
 					// Find palette files if any
 					for (File palette : f.listFiles()) {
 						if (palette.getName().endsWith(".palette")) {
@@ -660,7 +645,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 	}*/
 
 	private static void convertVirtualModels16ToVirtualModels17(ViewPointResource viewPointResource, File virtualModelFile,
@@ -673,7 +658,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 					XMLUtils.saveXMLFile(d, virtualModelFile);
 				}
 				if (d.getRootElement().getName().equals("DiagramSpecification")) {
-					convertDiagramSpecification16ToVirtualModel17(virtualModelFile, d, paletteFiles, exampleDiagramFiles, viewPointResource);
+					convertDiagramSpecification16ToVirtualModel17(virtualModelFile, d, paletteFiles, exampleDiagramFiles,
+							viewPointResource);
 
 				}
 			}
@@ -704,8 +690,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			List<Element> dropSchemes = IteratorUtils.toList(dropSchemeElements);
 
 			// Retrieve Diagram Model slots references
-			Iterator<? extends Content> thisModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot")
-			.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
+			Iterator<? extends Content> thisModelSlotsIterator = diagram
+					.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
 			List<Element> thisModelSlots = IteratorUtils.toList(thisModelSlotsIterator);
 
 			// Retrieve the DiagramModelSlot (this), and transform it to a virtual model slot with a virtual model uri
@@ -745,8 +731,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				}
 			}
 			// Update ids for all model slots
-			Iterator<? extends Content> diagramModelSlotsIterator = diagram.getDescendants(new ElementFilter("DiagramModelSlot")
-			.or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
+			Iterator<? extends Content> diagramModelSlotsIterator = diagram
+					.getDescendants(new ElementFilter("DiagramModelSlot").or(new ElementFilter(ADDRESSED_DIAGRAM_MODEL_SLOT)));
 			List<Element> thisDiagramModelSlots = IteratorUtils.toList(diagramModelSlotsIterator);
 			for (Element diagramMs : thisDiagramModelSlots) {
 				if (diagramMs.getAttribute("id") != null && typedDiagramModelSlot != null) {
@@ -915,7 +901,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		// Edition Patterns
 		// Edition patterns name
 		convertOldNameToNewNames("EditionPattern", "FlexoConcept", document);
-		// Parent pattern role is no more an attribute but an element
+		// Parent pattern property is no more an attribute but an element
 		IteratorIterable<? extends Content> fcElementsIterator = document.getDescendants(new ElementFilter("FlexoConcept"));
 		List<Element> fcElements = IteratorUtils.toList(fcElementsIterator);
 
@@ -1018,9 +1004,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		for (Content content : document.getDescendants()) {
 			if (content instanceof Element) {
 				Element element = (Element) content;
-				if ((element.getParentElement() != null)
-						&& (element.getParentElement().getName().equals("DiagramSpecification") || element.getParentElement().getName()
-								.equals("VirtualModel"))) {
+				if ((element.getParentElement() != null) && (element.getParentElement().getName().equals("DiagramSpecification")
+						|| element.getParentElement().getName().equals("VirtualModel"))) {
 					if (element.getName().equals("EMFModelSlot")) {
 						element.setName("ModelSlot_EMFModelSlot");
 					} else if (element.getName().equals("XMLModelSlot")) {
@@ -1066,8 +1051,8 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 
 		// Palettes/ExampleDiagrams
 		// Retrieve Connector GRs
-		IteratorIterable<? extends Content> connectorGRElementsIterator = document.getDescendants(new ElementFilter(
-				"ConnectorGraphicalRepresentation"));
+		IteratorIterable<? extends Content> connectorGRElementsIterator = document
+				.getDescendants(new ElementFilter("ConnectorGraphicalRepresentation"));
 		List<Element> connectorGRElements = IteratorUtils.toList(connectorGRElementsIterator);
 		for (Element connectorGRElement : connectorGRElements) {
 			Element grSpec = null;
@@ -1180,7 +1165,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 	}
 
 	private static Element createPaletteElementBinding(Element paletteElement, String paletteUri, List<Element> dropSchemeElements) {
-		Attribute ep = null, ds = null , id=null;
+		Attribute ep = null, ds = null, id = null;
 		if (paletteElement.getAttribute("flexoConcept") != null) {
 			ep = paletteElement.getAttribute("flexoConcept");
 		}
@@ -1192,11 +1177,12 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		if (ep != null && ds != null) {
 			Element paletteElementBinding = new Element("FMLDiagramPaletteElementBinding");
-			Attribute paletteElementId = new Attribute("paletteElementID", paletteUri + "#" + ep.getValue()+id.getValue());
+			Attribute paletteElementId = new Attribute("paletteElementID", paletteUri + "#" + ep.getValue() + id.getValue());
 			paletteElementBinding.getAttributes().add(paletteElementId);
 			// Find cooresponding dropscheme
 			for (Element dropScheme : dropSchemeElements) {
-				if (dropScheme.getAttributeValue("name").equals(ds.getValue()) && dropScheme.getParentElement().getAttributeValue("name").equals(ep.getValue())) {
+				if (dropScheme.getAttributeValue("name").equals(ds.getValue())
+						&& dropScheme.getParentElement().getAttributeValue("name").equals(ep.getValue())) {
 					Element dropSchemeRef = new Element("DropScheme");
 					dropSchemeRef.setAttribute("idref", dropScheme.getAttributeValue("id"));
 					paletteElementBinding.addContent(dropSchemeRef);
@@ -1204,7 +1190,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 			}
 
 			// Update Palette Element, change its name, and remove dropscheme flexo concept informations
-			paletteElement.setAttribute("name", ep.getValue()+id.getValue());
+			paletteElement.setAttribute("name", ep.getValue() + id.getValue());
 			paletteElement.removeAttribute(ep);
 			paletteElement.removeAttribute(ds);
 
@@ -1308,7 +1294,7 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 						element.getAttribute(oldPropertyName).setName(newPropertyName);
 					}
 				}
-			} 
+			}
 		}
 	}
 
@@ -1318,8 +1304,9 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 				Element element = (Element) content;
 				if (element.getName().equals("AddressedVirtualModelModelSlot") || element.getName().equals("FMLRTModelSlot")) {
 					if (element.getAttribute("name") != null
-							&& (element.getAttributeValue("name").equals("this") || element.getAttributeValue("name").equals(
-									"virtualModelInstance")) && element.getAttribute("virtualModelURI") != null) {
+							&& (element.getAttributeValue("name").equals("this")
+									|| element.getAttributeValue("name").equals("virtualModelInstance"))
+							&& element.getAttribute("virtualModelURI") != null) {
 						return element.getAttributeValue("virtualModelURI");
 					}
 				}
@@ -1345,30 +1332,5 @@ public abstract class ViewPointResourceImpl extends PamelaResourceImpl<ViewPoint
 		}
 		return null;
 	}
-	
-	@Override
-	public Resource getDirectory() {
-		if(getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			String parentPath = getDirectoryPath();
-			if(ResourceLocator.locateResource(parentPath)==null){
-				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
-			}
-			return ResourceLocator.locateResource(parentPath);
-		}else if(getFlexoIODelegate() instanceof InJarFlexoIODelegate){
-			InJarResourceImpl resource = ((InJarFlexoIODelegate)getFlexoIODelegate()).getInJarResource() ;
-			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
-			BasicResourceImpl parent = (BasicResourceImpl) ((ClasspathResourceLocatorImpl)(resource.getLocator())).getJarResourcesList().get(parentPath);
-			return parent;
-		}
-		return null;
-	}
-	
-	public String getDirectoryPath(){
-		return ((FileFlexoIODelegate)getFlexoIODelegate()).getFile().getParentFile().getAbsolutePath();
-	}
-	
-	@Override
-	public ViewPoint getVirtualModel() {
-		return getViewPoint();
-	}
+
 }

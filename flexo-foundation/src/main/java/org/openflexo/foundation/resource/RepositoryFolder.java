@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents a folder, as an organization item inside a {@link ResourceRepository}
@@ -60,11 +61,14 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 
 	private final ResourceRepository<R> resourceRepository;
 	private String name;
+	private String fullQualifiedPath;
+	private String repositoryContext = null;
 	private RepositoryFolder<R> parent;
 	private final ArrayList<RepositoryFolder<R>> children;
 	private final ArrayList<R> resources;
 
 	public static final String NAME_KEY = "name";
+	public static final String FULL_QUALIFIED_PATH_KEY = "fullQualifiedPath";
 	public static final String PARENT_KEY = "parent";
 	public static final String CHILDREN_KEY = "children";
 	public static final String RESOURCES_KEY = "resources";
@@ -81,6 +85,9 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	public String getName() {
+		if (getFile() != null) {
+			return getFile().getName();
+		}
 		return name;
 	}
 
@@ -101,6 +108,26 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 		}
 
+	}
+
+	public String getFullQualifiedPath() {
+		if (getFile() != null) {
+			return getFile().getAbsolutePath();
+		}
+		return fullQualifiedPath;
+	}
+
+	public void setFullQualifiedPath(String fullQualifiedPath) {
+		String old = this.fullQualifiedPath;
+		this.fullQualifiedPath = fullQualifiedPath;
+		getPropertyChangeSupport().firePropertyChange(FULL_QUALIFIED_PATH_KEY, old, fullQualifiedPath);
+		if (name == null) {
+			if (fullQualifiedPath.lastIndexOf(File.separator) > -1) {
+				name = fullQualifiedPath.substring(fullQualifiedPath.lastIndexOf(File.separator));
+			} else {
+				name = fullQualifiedPath;
+			}
+		}
 	}
 
 	public List<RepositoryFolder<R>> getChildren() {
@@ -181,7 +208,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 			}
 			return null;
 		} else {
-			return new File(getParentFolder().getFile(), getName());
+			return new File(getParentFolder().getFile(), name);
 		}
 	}
 
@@ -229,5 +256,17 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 			return getParentFolder().getChildren().indexOf(this);
 		}
 		return -1;
+	}
+
+	public String getRepositoryContext() {
+		return repositoryContext;
+	}
+
+	public void setRepositoryContext(String repositoryContext) {
+		this.repositoryContext = repositoryContext;
+	}
+
+	public String getDisplayableName() {
+		return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "") + getName();
 	}
 }

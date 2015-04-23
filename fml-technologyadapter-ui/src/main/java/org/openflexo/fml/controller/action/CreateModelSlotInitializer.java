@@ -48,14 +48,14 @@ import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, VirtualModel, FMLObject> {
+public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -69,7 +69,7 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 			@Override
 			public boolean run(EventObject e, CreateModelSlot action) {
 				Wizard wizard = new CreateModelSlotWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard);
+				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
 					// Operation cancelled

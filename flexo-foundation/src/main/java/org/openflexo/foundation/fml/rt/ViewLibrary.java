@@ -72,6 +72,7 @@ public class ViewLibrary extends ViewRepository {
 				getExpectedViewLibraryDirectory(project));
 		this.project = project;
 		getRootFolder().setName(project.getName());
+		getRootFolder().setFullQualifiedPath(project.getProjectDirectory().getAbsolutePath());
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
 	}

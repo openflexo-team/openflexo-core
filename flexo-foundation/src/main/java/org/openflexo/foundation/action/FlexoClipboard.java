@@ -65,7 +65,7 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  * From a technical point of view, a {@link FlexoClipboard} is an aggregation of {@link Clipboard} instances, associated to a
  * {@link PamelaResource}.<br>
- * A particular {@link Clipboard} plays leader role, and should be the only one driving the whole clipboard operation
+ * A particular {@link Clipboard} plays leader property, and should be the only one driving the whole clipboard operation
  * 
  * @author sylvain
  * 

@@ -40,7 +40,10 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.util.List;
+import java.util.Map;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -148,11 +151,18 @@ public interface TechnologyAdapterService extends FlexoService {
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass);
 
 	/**
-	 * Instanciate a new instance of {@link FMLModelFactory} enriched with all concepts found in all available
-	 * {@link TechnologyAdapter}
+	 * Return all {@link CustomType} factories defined for all known technologies
 	 * 
 	 * @return
 	 */
-	// public FMLModelFactory getVirtualModelModelFactory();
+	public Map<Class<? extends CustomType>, CustomTypeFactory<?>> getCustomTypeFactories();
+
+	/**
+	 * Register CustomTypeFactory
+	 * 
+	 * @param typeClass
+	 * @param factory
+	 */
+	public <T extends CustomType> void registerTypeClass(Class<T> typeClass, CustomTypeFactory<T> factory);
 
 }

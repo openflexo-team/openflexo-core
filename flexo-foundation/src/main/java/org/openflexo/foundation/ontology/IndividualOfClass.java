@@ -41,10 +41,63 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
+import org.openflexo.connie.type.CustomTypeFactory;
+import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
+import org.openflexo.foundation.fml.TechnologySpecificType;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class IndividualOfClass<TA extends TechnologyAdapter> implements TechnologySpecificCustomType<TA> {
+public class IndividualOfClass<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+
+	/**
+	 * Factory for IndividualOfClass instances
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>> implements ReferenceOwner {
+
+		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+			super(technologyAdapter);
+		}
+
+		@Override
+		public IndividualOfClass<?> makeCustomType(String configuration) {
+
+			FlexoObjectReference<IFlexoOntologyClass<?>> reference = new FlexoObjectReference<IFlexoOntologyClass<?>>(configuration, this);
+
+			IFlexoOntologyClass<?> ontologyClass = reference.getObject();
+
+			if (ontologyClass != null) {
+				return getIndividualOfClass(ontologyClass);
+			}
+			return null;
+		}
+
+		@Override
+		public void configureFactory(IndividualOfClass<?> type) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectCantBeFound(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectDeleted(FlexoObjectReference<?> reference) {
+		}
+
+		@Override
+		public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
+		}
+
+	}
 
 	public static <TA extends TechnologyAdapter> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
@@ -60,7 +113,10 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	}
 
 	public IFlexoOntologyClass<TA> getOntologyClass() {
-		return ontologyClass;
+		if (ontologyClass != null) {
+			return ontologyClass;
+		}
+		return null;
 	}
 
 	@Override
@@ -79,17 +135,17 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 
 	@Override
 	public String simpleRepresentation() {
-		return "Individual" + ":" + ontologyClass.getName();
+		return getClass().getSimpleName() + "(" + (ontologyClass != null ? ontologyClass.getName() : "") + ")";
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "Individual" + ":" + ontologyClass.getURI();
+		return getClass().getName() + "(" + getSerializationRepresentation() + ")";
 	}
 
 	@Override
-	public String toString() {
-		return simpleRepresentation();
+	public String getSerializationRepresentation() {
+		return new FlexoObjectReference<IFlexoOntologyClass<TA>>(ontologyClass).getStringRepresentation();
 	}
 
 	@Override
@@ -98,6 +154,15 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 			return getOntologyClass().getTechnologyAdapter();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return ontologyClass != null;
+	}
+
+	@Override
+	public void resolve(CustomTypeFactory<?> factory) {
 	}
 
 	@Override
@@ -116,7 +181,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IndividualOfClass other = (IndividualOfClass) obj;
+		IndividualOfClass<?> other = (IndividualOfClass<?>) obj;
 		if (ontologyClass == null) {
 			if (other.ontologyClass != null)
 				return false;

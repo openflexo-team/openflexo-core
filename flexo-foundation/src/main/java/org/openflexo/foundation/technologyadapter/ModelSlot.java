@@ -37,7 +37,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.technologyadapter;
 
 import java.lang.reflect.Constructor;
@@ -191,7 +190,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
-	 * Return default name for supplied pattern role class
+	 * Return default name for supplied pattern property class
 	 * 
 	 * @param flexoRoleClass
 	 * @return
@@ -624,6 +623,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public ActorReference<RD> makeActorReference(RD object, FlexoConceptInstance epi) {
 			return null;
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			return false;
 		}
 	}
 

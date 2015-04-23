@@ -72,10 +72,15 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 	private String issueMessage;
 	private IssueMessageType issueMessageType = null;
 
-	private final PropertyChangeSupport pcSupport;
+	private PropertyChangeSupport pcSupport;
 
 	protected WizardStep() {
 		pcSupport = new PropertyChangeSupport(this);
+	}
+
+	public void delete() {
+		wizard = null;
+		pcSupport = null;
 	}
 
 	@Override

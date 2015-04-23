@@ -147,6 +147,12 @@ public abstract class FlexoServiceManager {
 	public List<FlexoService> getRegisteredServices() {
 		return registeredServices;
 	}
+	
+	public void stopAllServices(){
+		for (FlexoService r: registeredServices){
+			r.stop();
+		}
+	}
 
 	public FlexoEditingContext getEditingContext() {
 		return getService(FlexoEditingContext.class);
