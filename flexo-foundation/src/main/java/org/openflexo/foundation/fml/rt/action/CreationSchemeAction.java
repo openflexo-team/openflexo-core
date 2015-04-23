@@ -156,7 +156,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 				}
 			}
 			if (parameter instanceof ListParameter) {
-				List list = (List) ((ListParameter) parameter).getList(this);
+				List<Object> list = (List<Object>) ((ListParameter) parameter).getList(this);
 				parameterListValues.put((ListParameter) parameter, list);
 			}
 		}

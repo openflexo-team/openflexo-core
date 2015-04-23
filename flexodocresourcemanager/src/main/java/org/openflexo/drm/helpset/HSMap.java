@@ -335,8 +335,8 @@ public class HSMap extends KVCFlexoObject {
 			returned.append("<p>");
 			returned.append("<b>" + FlexoLocalization.localizedForKeyAndLanguage("embedding_child_items", lang) + "</b> ");
 			boolean isFirst = true;
-			for (Enumeration en = embeddedChilds.elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			for (Enumeration<DocItem> en = embeddedChilds.elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isPublished()) {
 					returned.append((isFirst ? "" : ", ") + next.getHTMLLinkFrom(docItem, _language));
 					isFirst = false;
