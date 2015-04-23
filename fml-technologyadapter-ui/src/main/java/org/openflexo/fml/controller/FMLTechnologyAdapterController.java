@@ -343,7 +343,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	@Override
-	protected FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser(FlexoController controller) {
+	protected FIBTechnologyBrowser<FMLTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBViewPointLibraryBrowser(getTechnologyAdapter(), controller);
 	}
 }

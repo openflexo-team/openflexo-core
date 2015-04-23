@@ -39,6 +39,7 @@
 
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -154,6 +155,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public final void initializeModule(FlexoModule module) {
 		initializeInspectors(module.getFlexoController());
 		initializeActions(module.getFlexoController().getControllerActionInitializer());
+
+		// Here we iterate on all technology browsers that have been built for this TechnologyAdapter
+		// We just have initialized some new actions, that have to be reflected in already existing browsers
+		for (FIBTechnologyBrowser<TA> b : technologyBrowsers) {
+			b.initializeFIBComponent();
+		}
 	}
 
 	/**
@@ -563,12 +570,29 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	/**
+	 * Internally stores all technology browsers that have been built by this {@link TechnologyAdapterController}
+	 */
+	private final List<FIBTechnologyBrowser<TA>> technologyBrowsers = new ArrayList<FIBTechnologyBrowser<TA>>();
+
+	/**
+	 * Make technology browser
+	 * 
+	 * @param controller
+	 * @return
+	 */
+	public final FIBTechnologyBrowser<TA> makeTechnologyBrowser(FlexoController controller) {
+		FIBTechnologyBrowser<TA> returned = buildTechnologyBrowser(controller);
+		technologyBrowsers.add(returned);
+		return returned;
+	}
+
+	/**
 	 * Override when required
 	 * 
 	 * @param controller
 	 * @return
 	 */
-	protected FIBTechnologyBrowser<TA> makeTechnologyBrowser(FlexoController controller) {
+	protected FIBTechnologyBrowser<TA> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBTechnologyBrowser<TA>(getTechnologyAdapter(), controller);
 	}
 
