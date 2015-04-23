@@ -312,6 +312,10 @@ public abstract class FlexoActionType<A extends FlexoAction<A, T1, T2>, T1 exten
 		return null;
 	}
 
+	public String getActionName() {
+		return _actionName;
+	}
+
 	public ActionGroup getActionGroup() {
 		return _actionGroup;
 	}
