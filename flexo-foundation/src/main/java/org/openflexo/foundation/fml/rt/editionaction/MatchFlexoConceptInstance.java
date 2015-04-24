@@ -508,7 +508,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);
 					} else {
-						System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
+						// System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
 						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(property));
 					}
 				}
