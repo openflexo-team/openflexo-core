@@ -7,7 +7,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPointLibrary" label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)" isEditable="false" filtered="false" defaultVisible="true" name="viewPointLibrary">
       <Children data="viewPointLibrary.resourceCenterService.resourceCenters" cast="child.viewPointRepository.rootFolder" name="resourceCenters" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)" isEditable="false" filtered="false" defaultVisible="true" name="viewPointFolder">
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)" isEditable="false" filtered="false" defaultVisible="true" name="viewPointFolder">
       <Children data="viewPointFolder.children" name="subFolders" />
       <Children data="viewPointFolder.resources" name="viewPoints" />
     </BrowserElement>
