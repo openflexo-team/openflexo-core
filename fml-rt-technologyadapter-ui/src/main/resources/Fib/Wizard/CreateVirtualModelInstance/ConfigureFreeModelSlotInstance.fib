@@ -4,7 +4,7 @@
 	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
 	border="empty" trackViewPortWidth="true" font="Lucida Grande,0,11"
 	width="800"
-	dataClassName="org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceWizard$ConfigureFreeModelSlot"
+	dataClassName="org.openflexo.view.controller.action.AbstractCreateVirtualModelInstanceWizard$ConfigureFreeModelSlot"
 	titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
 	<LocalizedDictionary id="1">
 		<Localized id="2" value="Configure model slot" lang="English"
