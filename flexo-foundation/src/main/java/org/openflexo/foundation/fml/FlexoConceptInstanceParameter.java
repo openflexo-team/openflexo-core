@@ -60,8 +60,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
-	@PropertyIdentifier(type = String.class)
-	public static final String FLEXO_VMI_KEY = "virtualModelInstance";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -72,14 +72,14 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public FlexoConcept getFlexoConceptType();
 
-	public void setFlexoConceptType(FlexoConcept flexoConceptType);
-
-	@Getter(value = FLEXO_VMI_KEY)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
 	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
 
-	@Setter(FLEXO_VMI_KEY)
+	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> binding);
+
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public VirtualModel getModelSlotVirtualModel();
 
@@ -147,7 +147,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 			if (virtualModelInstance == null) {
 				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName(FLEXO_VMI_KEY);
+				virtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
 				virtualModelInstance.setMandatory(true);
 			}
 			return virtualModelInstance;
@@ -157,7 +157,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
 				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName(FLEXO_VMI_KEY);
+				aVirtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
 				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 				aVirtualModelInstance.setMandatory(true);
