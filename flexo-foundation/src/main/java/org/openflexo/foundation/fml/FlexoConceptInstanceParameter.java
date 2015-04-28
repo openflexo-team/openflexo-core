@@ -74,7 +74,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	@Getter(FLEXO_VMI_KEY)
+	@Getter(value = FLEXO_VMI_KEY)
+	@XMLAttribute
 	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
 
 	@Setter(FLEXO_VMI_KEY)
