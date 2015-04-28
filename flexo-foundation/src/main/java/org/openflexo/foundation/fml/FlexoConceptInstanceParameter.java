@@ -60,6 +60,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
+
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
@@ -122,7 +123,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && flexoConceptTypeURI != null) {
+			if (flexoConceptType == null && flexoConceptTypeURI != null && getViewPoint() != null) {
 				flexoConceptType = getViewPoint().getFlexoConcept(flexoConceptTypeURI);
 			}
 			return flexoConceptType;
