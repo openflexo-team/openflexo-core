@@ -41,8 +41,10 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -58,6 +60,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String FLEXO_VMI_KEY = "virtualModelInstance";
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -70,6 +74,12 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
+	@Getter(FLEXO_VMI_KEY)
+	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
+
+	@Setter(FLEXO_VMI_KEY)
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> binding);
+
 	public VirtualModel getModelSlotVirtualModel();
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot> implements
@@ -80,6 +90,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 		public FlexoConceptInstanceParameterImpl() {
 			super();
+
 		}
 
 		@Override
@@ -128,6 +139,31 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 			}
 		}
 
+		private DataBinding<VirtualModelInstance> virtualModelInstance;
+
+		@Override
+		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
+			if (virtualModelInstance == null) {
+				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
+						DataBinding.BindingDefinitionType.GET);
+				virtualModelInstance.setBindingName(FLEXO_VMI_KEY);
+				virtualModelInstance.setMandatory(true);
+			}
+			return virtualModelInstance;
+		}
+
+		@Override
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
+			if (aVirtualModelInstance != null) {
+				aVirtualModelInstance.setOwner(this);
+				aVirtualModelInstance.setBindingName(FLEXO_VMI_KEY);
+				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				aVirtualModelInstance.setMandatory(true);
+			}
+			this.virtualModelInstance = aVirtualModelInstance;
+		}
+
 		@Override
 		public void setModelSlot(FMLRTModelSlot modelSlot) {
 			super.setModelSlot(modelSlot);
@@ -161,6 +197,5 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		public List<FMLRTModelSlot> getAccessibleModelSlots() {
 			return getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class);
 		}
-
 	}
 }

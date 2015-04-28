@@ -103,6 +103,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.toolbox.StringUtils;
 
 public class ParametersRetriever<ES extends FlexoBehaviour> {
@@ -154,10 +156,12 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setName(parameter.getName() + "TextField");
 			return registerWidget(tf, parameter, panel, index);
-		} else if (parameter instanceof URIParameter) {
+		}
+		else if (parameter instanceof URIParameter) {
 			FIBPanel uriPanel = makeURIPanel((URIParameter) parameter);
 			return registerWidget(uriPanel, parameter, panel, index);
-		} else if (parameter instanceof TextAreaParameter) {
+		}
+		else if (parameter instanceof TextAreaParameter) {
 			FIBTextArea ta = fibModelFactory.newFIBTextArea();
 			ta.setName(parameter.getName() + "TextArea");
 			ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
@@ -165,16 +169,19 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 			return registerWidget(ta, parameter, panel, index, true, true);
-		} else if (parameter instanceof CheckboxParameter) {
+		}
+		else if (parameter instanceof CheckboxParameter) {
 			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 			cb.setName(parameter.getName() + "CheckBox");
 			return registerWidget(cb, parameter, panel, index);
-		} else if (parameter instanceof IntegerParameter) {
+		}
+		else if (parameter instanceof IntegerParameter) {
 			FIBNumber number = fibModelFactory.newFIBNumber();
 			number.setName(parameter.getName() + "Number");
 			number.setNumberType(NumberType.IntegerType);
 			return registerWidget(number, parameter, panel, index);
-		} else if (parameter instanceof ListParameter) {
+		}
+		else if (parameter instanceof ListParameter) {
 			ListParameter listParameter = (ListParameter) parameter;
 			FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
 			cbList.setName(parameter.getName() + "CheckboxList");
@@ -187,13 +194,15 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				cbList.setShowIcon(true);
 				cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
 				cbList.setVGap(-2);
-			} else if (listParameter.getListType() == ListType.DataProperty) {
+			}
+			else if (listParameter.getListType() == ListType.DataProperty) {
 				cbList.setIteratorClass(IFlexoOntologyDataProperty.class);
 				cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
 				cbList.setShowIcon(true);
 				cbList.setIcon(new DataBinding<Icon>("controller.iconForObject(object)"));
 				cbList.setVGap(-2);
-			} else if (listParameter.getListType() == ListType.Property) {
+			}
+			else if (listParameter.getListType() == ListType.Property) {
 				cbList.setIteratorClass(IFlexoOntologyStructuralProperty.class);
 				cbList.setFormat(new DataBinding<String>("object.name + \" (\"+object.domain.name+\")\""));
 				cbList.setShowIcon(true);
@@ -205,7 +214,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 			return registerWidget(cbList, parameter, panel, index, true, true);
-		} else if (parameter instanceof FlexoConceptInstanceParameter) {
+		}
+		else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
 			Class fciSelectorClass;
@@ -221,17 +231,20 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
 					new DataBinding<Object>("data.view"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.flexoConcept"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
+					"component.virtualModelInstance"), new DataBinding<Object>("data.virtualModelInstance"), true));
+			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
+					"component.flexoConcept"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
 					+ ".flexoConceptType"), true));
 			// extra informations.
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.virtualModel"), new DataBinding<Object>("data.editionScheme.parametersDefinitions." + parameter.getName()
+					"component.virtualModel"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
 					+ ".modelSlotVirtualModel"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.viewpointLibrary"), new DataBinding<Object>("data.serviceManager.viewpointLibrary"), true));
+					"component.viewPointLibrary"), new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
-		} else if (parameter instanceof IndividualParameter) {
+		}
+		else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();
 			individualSelector.setComponentClass(FIBIndividualSelector.class);
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
@@ -256,10 +269,12 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 					individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding(
 							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
 							.getModel().getURI() + '"'), true));
-				} else {
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
@@ -270,7 +285,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 						"component.renderer"), new DataBinding<Object>('"' + ((IndividualParameter) parameter).getRenderer() + '"'), true));
 			}
 			return registerWidget(individualSelector, parameter, panel, index);
-		} else if (parameter instanceof ClassParameter) {
+		}
+		else if (parameter instanceof ClassParameter) {
 			ClassParameter classParameter = (ClassParameter) parameter;
 			FIBCustom classSelector = fibModelFactory.newFIBCustom();
 			classSelector.setComponentClass(org.openflexo.components.widget.FIBClassSelector.class);
@@ -294,17 +310,20 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 					classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding(
 							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
 							.getModel().getURI() + '"'), true));
-				} else {
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
 			IFlexoOntologyClass conceptClass = null;
 			if (classParameter.getIsDynamicConceptValue()) {
 				conceptClass = classParameter.evaluateConceptValue(action);
-			} else {
+			}
+			else {
 				conceptClass = classParameter.getConcept();
 			}
 			if (conceptClass != null) {
@@ -312,7 +331,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 						"component.rootClassURI"), new DataBinding<Object>('"' + conceptClass.getURI() + '"'), true));
 			}
 			return registerWidget(classSelector, parameter, panel, index);
-		} else if (parameter instanceof PropertyParameter) {
+		}
+		else if (parameter instanceof PropertyParameter) {
 			PropertyParameter propertyParameter = (PropertyParameter) parameter;
 			FIBCustom propertySelector = fibModelFactory.newFIBCustom();
 			propertySelector.setComponentClass(FIBPropertySelector.class);
@@ -336,10 +356,12 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding(
 							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
 							.getModel().getURI() + '"'), true));
-				} else {
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 
@@ -347,7 +369,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			IFlexoOntologyClass domainClass = null;
 			if (propertyParameter.getIsDynamicDomainValue()) {
 				domainClass = propertyParameter.evaluateDomainValue(action);
-			} else {
+			}
+			else {
 				domainClass = propertyParameter.getDomain();
 			}
 			// System.out.println("domain class = " + domainClass + " uri=" + domainClass.getURI());
@@ -360,7 +383,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				IFlexoOntologyClass rangeClass = null;
 				if (propertyParameter.getIsDynamicDomainValue()) {
 					rangeClass = ((ObjectPropertyParameter) propertyParameter).evaluateRangeValue(action);
-				} else {
+				}
+				else {
 					rangeClass = ((ObjectPropertyParameter) propertyParameter).getRange();
 				}
 				// System.out.println("range class = " + rangeClass + " uri=" + rangeClass.getURI());
@@ -373,7 +397,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			if (propertyParameter instanceof ObjectPropertyParameter) {
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
 						"component.selectDataProperties"), DataBinding.makeFalseBinding(), true));
-			} else if (propertyParameter instanceof DataPropertyParameter) {
+			}
+			else if (propertyParameter instanceof DataPropertyParameter) {
 				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
 						"component.selectObjectProperties"), DataBinding.makeFalseBinding(), true));
 			}
@@ -451,7 +476,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			} else {
+			}
+			else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -503,23 +529,17 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 			returned.addToSubComponents(buttonsPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), index++);
 		}
-		/*	try {
-				logger.info("Getting this "
-						+ XMLCoder.encodeObjectWithMapping(returned, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
-			} catch (InvalidObjectSpecificationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (AccessorInvocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DuplicateSerializationIdentifierException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-
+		ValidationReport validationReport;
+		try {
+			validationReport = returned.validate();
+			for (ValidationError error : validationReport.getErrors()) {
+				logger.warning("Parameters retriever FIBComponent validation error: Object: " + error.getValidable() + " message: "
+						+ validationReport.getValidationModel().localizedIssueMessage(error) + " detais="
+						+ validationReport.getValidationModel().localizedIssueDetailedInformations(error));
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return returned;
 	}
 
@@ -534,7 +554,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		Font f = uriLabel.retrieveValidFont();
 		if (f != null) {
 			uriLabel.setFont(f.deriveFont(10f));
-		} else {
+		}
+		else {
 			uriLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 		}
 		uriLabel.setData(new DataBinding<Object>("data.retrieveFullURI" + "(data.parametersDefinitions" + "." + parameter.getName() + ")"));
