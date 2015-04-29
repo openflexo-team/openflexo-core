@@ -365,7 +365,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
-			tac.installFMLNatureSpecificPerspectives(this);
+			if (tac != null) {
+				tac.installFMLNatureSpecificPerspectives(this);
+			} else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
 		}
 	}
 
@@ -374,7 +378,11 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
-			tac.installFMLRTNatureSpecificPerspectives(this);
+			if (tac != null) {
+				tac.installFMLRTNatureSpecificPerspectives(this);
+			} else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
 		}
 	}
 
