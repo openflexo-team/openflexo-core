@@ -50,18 +50,6 @@ import javax.swing.JComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptNature;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointNature;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelNature;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewNature;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -161,71 +149,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 			// No default view for a FlexoProject !
 			return new EmptyPanel<FlexoObject>(controller, this, object);
 		}
-		if (object instanceof View) {
-			View view = (View) object;
-			List<ViewNature> availableNatures = getSpecificNaturesForView(view);
-			if (availableNatures.size() > 0) {
-				ViewNature nature = availableNatures.get(0);
-				return getModuleViewForView(view, nature);
-			}
-			// TODO: check that FMLTechnologyAdapterController now handle this
-			// return new ViewModuleView(view, controller, this);
-		}
-		if (object instanceof VirtualModelInstance) {
-			VirtualModelInstance vmi = (VirtualModelInstance) object;
-
-			System.out.println("Je cherche a representer un VirtualModelInstance");
-			System.out.println("Ma perpective: " + this);
-
-			List<VirtualModelInstanceNature> availableNatures = getSpecificNaturesForVirtualModelInstance(vmi);
-			if (availableNatures.size() > 0) {
-				VirtualModelInstanceNature nature = availableNatures.get(0);
-				return getModuleViewForVirtualModelInstance(vmi, nature);
-			}
-			// TODO: check that FMLTechnologyAdapterController now handle this
-			// return new VirtualModelInstanceView(vmi, controller, this);
-		}
-		if (object instanceof FlexoConceptInstance) {
-			FlexoConceptInstance vmi = (FlexoConceptInstance) object;
-			List<FlexoConceptInstanceNature> availableNatures = getSpecificNaturesForFlexoConceptInstance(vmi);
-			if (availableNatures.size() > 0) {
-				FlexoConceptInstanceNature nature = availableNatures.get(0);
-				return getModuleViewForFlexoConceptInstance(vmi, nature);
-			}
-			// No default view for a FlexoConceptInstance !
-			// return new EmptyPanel<FlexoObject>(controller, this, object);
-			// TODO: check that FMLTechnologyAdapterController now handle this
-		}
-		if (object instanceof ViewPoint) {
-			ViewPoint viewPoint = (ViewPoint) object;
-			List<ViewPointNature> availableNatures = getSpecificNaturesForViewPoint(viewPoint);
-			if (availableNatures.size() > 0) {
-				ViewPointNature nature = availableNatures.get(0);
-				return getModuleViewPointForViewPoint(viewPoint, nature);
-			}
-			// return new ViewPointView(viewPoint, controller, this);
-			// TODO: check that FMLTechnologyAdapterController now handle this
-		}
-		if (object instanceof VirtualModel) {
-			VirtualModel virtualModel = (VirtualModel) object;
-			List<VirtualModelNature> availableNatures = getSpecificNaturesForVirtualModel(virtualModel);
-			if (availableNatures.size() > 0) {
-				VirtualModelNature nature = availableNatures.get(0);
-				return getModuleViewForVirtualModel(virtualModel, nature);
-			}
-			// return new VirtualModelView(virtualModel, controller, this);
-			// TODO: check that FMLTechnologyAdapterController now handle this
-		}
-		if (object instanceof FlexoConcept) {
-			FlexoConcept concept = (FlexoConcept) object;
-			List<FlexoConceptNature> availableNatures = getSpecificNaturesForFlexoConcept(concept);
-			if (availableNatures.size() > 0) {
-				FlexoConceptNature nature = availableNatures.get(0);
-				return getModuleViewForFlexoConcept(concept, nature);
-			}
-			// return new StandardFlexoConceptView(concept, controller, this);
-			// TODO: check that FMLTechnologyAdapterController now handle this
-		}
 		if (object instanceof TechnologyObject) {
 			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
@@ -247,24 +170,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FlexoProject) {
 			return getSpecificNaturesForProject((FlexoProject) object).size() > 0;
-		}
-		if (object instanceof View) {
-			return true;
-		}
-		if (object instanceof VirtualModelInstance) {
-			return true;
-		}
-		if (object instanceof FlexoConceptInstance) {
-			return getSpecificNaturesForFlexoConceptInstance((FlexoConceptInstance) object).size() > 0;
-		}
-		if (object instanceof ViewPoint) {
-			return true;
-		}
-		if (object instanceof VirtualModel) {
-			return true;
-		}
-		if (object instanceof FlexoConcept) {
-			return true;
 		}
 		if (object instanceof TechnologyObject) {
 			return hasModuleViewForTechnologyObject((TechnologyObject<?>) object);
@@ -334,9 +239,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		this.footer = footer;
 		getPropertyChangeSupport().firePropertyChange(FOOTER, old, footer);
 	}
-
-	/*public void notifyModuleViewDisplayed(ModuleView<?> moduleView) {
-	}*/
 
 	public JComponent getTopLeftView() {
 		return topLeftView;
@@ -453,164 +355,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
 			ModuleView<FlexoProject> returned = tac.createFlexoProjectModuleViewForSpecificNature(project, nature, controller, this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for View
-
-	public List<ViewNature> getSpecificNaturesForView(View view) {
-		List<ViewNature> returned = new ArrayList<ViewNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificViewNatures(view));
-		}
-		return returned;
-	}
-
-	public ModuleView<View> getModuleViewForView(View view, ViewNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<View> returned = tac.createViewModuleViewForSpecificNature(view, nature, controller, this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for VirtualModelInstance
-
-	public List<VirtualModelInstanceNature> getSpecificNaturesForVirtualModelInstance(VirtualModelInstance vmi) {
-		List<VirtualModelInstanceNature> returned = new ArrayList<VirtualModelInstanceNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificVirtualModelInstanceNatures(vmi));
-		}
-		return returned;
-	}
-
-	public ModuleView<VirtualModelInstance> getModuleViewForVirtualModelInstance(VirtualModelInstance vmi, VirtualModelInstanceNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<VirtualModelInstance> returned = tac.createVirtualModelInstanceModuleViewForSpecificNature(vmi, nature, controller,
-					this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for FlexoConceptInstance
-
-	public List<FlexoConceptInstanceNature> getSpecificNaturesForFlexoConceptInstance(FlexoConceptInstance vmi) {
-		List<FlexoConceptInstanceNature> returned = new ArrayList<FlexoConceptInstanceNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificFlexoConceptInstanceNatures(vmi));
-		}
-		return returned;
-	}
-
-	public ModuleView<FlexoConceptInstance> getModuleViewForFlexoConceptInstance(FlexoConceptInstance vmi, FlexoConceptInstanceNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<FlexoConceptInstance> returned = tac.createFlexoConceptInstanceModuleViewForSpecificNature(vmi, nature, controller,
-					this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for ViewPoint
-
-	public List<ViewPointNature> getSpecificNaturesForViewPoint(ViewPoint view) {
-		List<ViewPointNature> returned = new ArrayList<ViewPointNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificViewPointNatures(view));
-		}
-		return returned;
-	}
-
-	public ModuleView<ViewPoint> getModuleViewPointForViewPoint(ViewPoint view, ViewPointNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<ViewPoint> returned = tac.createViewPointModuleViewPointForSpecificNature(view, nature, controller, this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for VirtualModel
-
-	public List<VirtualModelNature> getSpecificNaturesForVirtualModel(VirtualModel vmi) {
-		List<VirtualModelNature> returned = new ArrayList<VirtualModelNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificVirtualModelNatures(vmi));
-		}
-		return returned;
-	}
-
-	public ModuleView<VirtualModel> getModuleViewForVirtualModel(VirtualModel vmi, VirtualModelNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<VirtualModel> returned = tac.createVirtualModelModuleViewForSpecificNature(vmi, nature, controller, this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
-	// Handle natures for FlexoConcept
-
-	public List<FlexoConceptNature> getSpecificNaturesForFlexoConcept(FlexoConcept vmi) {
-		List<FlexoConceptNature> returned = new ArrayList<FlexoConceptNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificFlexoConceptNatures(vmi));
-		}
-		return returned;
-	}
-
-	public ModuleView<FlexoConcept> getModuleViewForFlexoConcept(FlexoConcept vmi, FlexoConceptNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<FlexoConcept> returned = tac.createFlexoConceptModuleViewForSpecificNature(vmi, nature, controller, this);
 			if (returned != null) {
 				return returned;
 			}

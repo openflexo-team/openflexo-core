@@ -137,7 +137,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.FLEXO_BEHAVIOUR_MEDIUM_ICON;
+		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON;
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
-		return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
+		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 	}
 
 	/**

@@ -56,13 +56,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptNature;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointNature;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelNature;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
@@ -70,16 +64,9 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstanceNature;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewNature;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -295,16 +282,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	/**
-	 * Return icon representing supplied nature
-	 * 
-	 * @param object
-	 * @return
-	 */
-	public ImageIcon getIconForNature(FlexoNature<?> nature) {
-		return null;
-	}
-
 	public abstract String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller);
 
 	/**
@@ -324,50 +301,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 */
 	public abstract ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
 			FlexoPerspective perspective);
-
-	/**
-	 * Called when a {@link ModuleView} is about to be displayed
-	 * 
-	 * @param moduleView
-	 * @param controller
-	 * @param perspective
-	 */
-	/*public void notifyModuleViewDisplayed(ModuleView<?> moduleView, FlexoController controller, FlexoPerspective perspective) {
-		System.out.println(">>>>>>> Will display module view for " + moduleView.getRepresentedObject());
-	}*/
-
-	/*public File getFIBPanelForObject(Object anObject) {
-	>>>>>>> branch '1.7' of ssh://git@github.com/openflexo-team/openflexo-core.git
-		if (anObject != null) {
-			return getFIBPanelForClass(anObject.getClass());
-		}
-		return null;
-	}
-
-	public String getFIBPanelForClass(Class<?> aClass) {
-		if (aClass == null) {
-			return null;
-		}
-		String returned = fibPanelsForClasses.get(aClass);
-		if (returned == null) {
-			if (aClass.getAnnotation(FIBPanel.class) != null) {
-				String fibPanelName = aClass.getAnnotation(FIBPanel.class).value();
-				URL fibPanelURL = ResourceLocator.locateResource(fibPanelName);
-				if (fibPanelURL != null) {
-					logger.info("Found " + fibPanelURL.toString());
-					fibPanelsForClasses.put(aClass, fibPanelName);
-					return fibPanelName;
-				} else {
-					logger.warning("Not found " + fibPanelName);
-					return null;
-				}
-			}
-			if (aClass.getSuperclass() != null) {
-				return getFIBPanelForClass(aClass.getSuperclass());
-			}
-		}
-		return returned;
-	}*/
 
 	public Resource getFIBPanelForObject(Object anObject) {
 		if (anObject != null) {
@@ -407,27 +340,6 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return TypeUtils.objectForClass(aClass, fibPanelsForClasses);
 	}
 
-	/*private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
-
-	public List<Class<? extends VirtualModelInstanceNature>> getAvailableVirtualModelInstanceNatures() {
-		if (availableVirtualModelInstanceNatures == null) {
-			availableVirtualModelInstanceNatures = computeAvailableVirtualModelInstanceNatures();
-		}
-		return availableVirtualModelInstanceNatures;
-	}
-
-	private List<Class<? extends VirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
-		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends VirtualModelInstanceNature>>();
-		Class<?> cl = getClass();
-		if (cl.isAnnotationPresent(DeclareVirtualModelInstanceNatures.class)) {
-			DeclareVirtualModelInstanceNatures allNatureDeclarations = cl.getAnnotation(DeclareVirtualModelInstanceNatures.class);
-			for (DeclareVirtualModelInstanceNature natureDeclaration : allNatureDeclarations.value()) {
-				availableVirtualModelInstanceNatures.add(natureDeclaration.nature());
-			}
-		}
-		return availableVirtualModelInstanceNatures;
-	}*/
-
 	// ***************************************************************
 	// Management of FlexoProject natures
 	// ***************************************************************
@@ -447,127 +359,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
-	// ***************************************************************
-	// Management of View natures
-	// ***************************************************************
-
-	public final boolean hasSpecificViewNatures(View view) {
-		return getSpecificViewNatures(view).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends ViewNature> getSpecificViewNatures(View view) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<View> createViewModuleViewForSpecificNature(View view, ViewNature nature, FlexoController controller,
-			FlexoPerspective perspective) {
-		return null;
-	}
-
-	// ***************************************************************
-	// Management of VirtualModelInstance natures
-	// ***************************************************************
-
-	public final boolean hasSpecificVirtualModelInstanceNatures(VirtualModelInstance vmi) {
-		return getSpecificVirtualModelInstanceNatures(vmi).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends VirtualModelInstanceNature> getSpecificVirtualModelInstanceNatures(VirtualModelInstance vmInstance) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public List<? extends VirtualModelInstanceNature> getSpecificVirtualModelInstanceNatures() {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<VirtualModelInstance> createVirtualModelInstanceModuleViewForSpecificNature(VirtualModelInstance vmInstance,
-			VirtualModelInstanceNature nature, FlexoController controller, FlexoPerspective perspective) {
-		return null;
-	}
-
-	// ***************************************************************
-	// Management of FlexoConceptInstance natures
-	// ***************************************************************
-
-	public final boolean hasSpecificFlexoConceptInstanceNatures(FlexoConceptInstance conceptInstance) {
-		return getSpecificFlexoConceptInstanceNatures(conceptInstance).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends FlexoConceptInstanceNature> getSpecificFlexoConceptInstanceNatures(FlexoConceptInstance conceptInstance) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<FlexoConceptInstance> createFlexoConceptInstanceModuleViewForSpecificNature(FlexoConceptInstance conceptInstance,
-			FlexoConceptInstanceNature nature, FlexoController controller, FlexoPerspective perspective) {
-		return null;
-	}
-
-	// ***************************************************************
-	// Management of ViewPoint natures
-	// ***************************************************************
-
-	public final boolean hasSpecificViewPointNatures(ViewPoint viewPoint) {
-		return getSpecificViewPointNatures(viewPoint).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends ViewPointNature> getSpecificViewPointNatures(ViewPoint viewPoint) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<ViewPoint> createViewPointModuleViewPointForSpecificNature(ViewPoint viewPoint, ViewPointNature nature,
-			FlexoController controller, FlexoPerspective perspective) {
-		return null;
-	}
-
-	// ***************************************************************
-	// Management of VirtualModel natures
-	// ***************************************************************
-
-	public final boolean hasSpecificVirtualModelNatures(VirtualModel vmi) {
-		return getSpecificVirtualModelNatures(vmi).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends VirtualModelNature> getSpecificVirtualModelNatures(VirtualModel virtualModel) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<VirtualModel> createVirtualModelModuleViewForSpecificNature(VirtualModel virtualModel, VirtualModelNature nature,
-			FlexoController controller, FlexoPerspective perspective) {
-		return null;
-	}
-
-	// ***************************************************************
-	// Management of FlexoConcept natures
-	// ***************************************************************
-
-	public final boolean hasSpecificFlexoConceptNatures(FlexoConcept concept) {
-		return getSpecificFlexoConceptNatures(concept).size() > 0;
-	}
-
-	// Override when required
-	public List<? extends FlexoConceptNature> getSpecificFlexoConceptNatures(FlexoConcept concept) {
-		return Collections.emptyList();
-	}
-
-	// Override when required
-	public ModuleView<FlexoConcept> createFlexoConceptModuleViewForSpecificNature(FlexoConcept concept, FlexoConceptNature nature,
-			FlexoController controller, FlexoPerspective perspective) {
-		return null;
-	}
-
 	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<FlexoController, TechnologyPerspective<TA>>();
-	private final Map<FlexoController, Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>> virtualModelInstanceNaturePerspectives = new HashMap<FlexoController, Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>>();
 
 	public Map<FlexoController, TechnologyPerspective<TA>> getTechnologyPerspectives() {
 		return technologyPerspectives;
@@ -586,24 +378,22 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		controller.addToPerspectives(getTechnologyPerspective(controller));
 	}
 
-	public VirtualModelInstanceNaturePerspective getVirtualModelInstanceNaturePerspective(FlexoController controller,
-			VirtualModelInstanceNature nature) {
-		Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective> map = virtualModelInstanceNaturePerspectives.get(controller);
-		if (map == null) {
-			map = new HashMap<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>();
-			virtualModelInstanceNaturePerspectives.put(controller, map);
-		}
-		VirtualModelInstanceNaturePerspective returned = map.get(nature);
-		if (returned == null) {
-			returned = new VirtualModelInstanceNaturePerspective(nature, controller.getFMLRTTechnologyAdapter(), controller);
-			map.put(nature, returned);
-		}
-		return returned;
+	/**
+	 * Install specific perspectives for FML@Runtime model<br>
+	 * Override this method when required
+	 * 
+	 * @param controller
+	 */
+	public void installFMLNatureSpecificPerspectives(FlexoController controller) {
 	}
 
-	public void installTechnologyPerspectiveForVirtualModelInstanceNature(FlexoController controller, VirtualModelInstanceNature nature) {
-		System.out.println("Tiens, faudrait installer la perspective pour la nature " + nature);
-		controller.addToPerspectives(getVirtualModelInstanceNaturePerspective(controller, nature));
+	/**
+	 * Install specific perspectives for FML@Runtime model<br>
+	 * Override this method when required
+	 * 
+	 * @param controller
+	 */
+	public void installFMLRTNatureSpecificPerspectives(FlexoController controller) {
 	}
 
 	/**

@@ -129,10 +129,8 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.ViewObject;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -152,6 +150,7 @@ import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
@@ -197,10 +196,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
 
-// import javax.ws.rs.WebApplicationException;
-
 /**
- * Abstract controller defined for an application module
+ * General controller managing an application module (see {@link FlexoModule}).<br>
+ * 
  * 
  * @author benoit, sylvain
  */
@@ -221,7 +219,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private LocalizedEditor mainLocalizedEditor;
 	private ValidationWindow validationWindow;
 
-	protected FlexoModule module;
+	protected FlexoModule<?> module;
 	protected FlexoMenuBar menuBar;
 	protected MouseSelectionManager selectionManager;
 	private final ControllerActionInitializer controllerActionInitializer;
@@ -256,8 +254,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		menuBar = createAndRegisterNewMenuBar();
 		selectionManager = createSelectionManager();
 		flexoFrame.setJMenuBar(menuBar);
-		flexoFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
+		flexoFrame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				"escape");
 		flexoFrame.getRootPane().getActionMap().put("escape", new AbstractAction() {
 
 			@Override
@@ -357,13 +355,18 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @return
 	 */
 	public TechnologyAdapterController<FMLRTTechnologyAdapter> getFMLRTTechnologyAdapterController() {
-		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
-				FMLRTTechnologyAdapter.class);
+		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService()
+				.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 		return getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(fmlRTTA);
 	}
 
 	protected void initializeFMLTechnologyAdapterPerspectives() {
 		getFMLTechnologyAdapterController().installTechnologyPerspective(this);
+		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			tac.installFMLNatureSpecificPerspectives(this);
+		}
 	}
 
 	protected void initializeFMLRTTechnologyAdapterPerspectives() {
@@ -371,9 +374,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(ta);
-			for (VirtualModelInstanceNature nature : tac.getSpecificVirtualModelInstanceNatures()) {
-				tac.installTechnologyPerspectiveForVirtualModelInstanceNature(this, nature);
-			}
+			tac.installFMLRTNatureSpecificPerspectives(this);
 		}
 	}
 
@@ -600,8 +601,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	public static boolean confirmWithWarning(String msg) throws HeadlessException {
 		return showOptionDialog(FlexoFrame.getActiveFrame(), msg, FlexoLocalization.localizedForKey("information"),
-				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[] { FlexoLocalization.localizedForKey("yes"),
-						FlexoLocalization.localizedForKey("no") }, FlexoLocalization.localizedForKey("no")) == JOptionPane.YES_OPTION;
+				JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				new Object[] { FlexoLocalization.localizedForKey("yes"), FlexoLocalization.localizedForKey("no") },
+				FlexoLocalization.localizedForKey("no")) == JOptionPane.YES_OPTION;
 	}
 
 	public static boolean confirm(String msg) throws HeadlessException {
@@ -661,7 +663,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/*public PreferencesWindow getPreferencesWindow(boolean create) {
 		return PreferencesController.instance().getPreferencesWindow(create);
 	}
-
+	
 	public void showPreferences() {
 		PreferencesController.instance().showPreferences();
 	}*/
@@ -679,9 +681,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 						FlexoObject focusedObject = getSelectionManager().getFocusedObject();
 						Vector<FlexoObject> globalSelection = getSelectionManager().getSelection();
 						FlexoActionType actionType = entry.getKey();
-						if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType())
-								&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection,
-										actionType.getGlobalSelectionType()))) {
+						if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType()) && (globalSelection == null
+								|| TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
 							getEditor().performActionType(actionType, focusedObject, globalSelection, e);
 						}
 					}
@@ -918,12 +919,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		Dimension maxDim;
 		if (window != null && window.isVisible()) {
-			maxDim = new Dimension(Math.min(dialog.getWidth(), window.getGraphicsConfiguration().getDevice().getDefaultConfiguration()
-					.getBounds().width), Math.min(dialog.getHeight(), window.getGraphicsConfiguration().getDevice()
-					.getDefaultConfiguration().getBounds().height));
+			maxDim = new Dimension(
+					Math.min(dialog.getWidth(), window.getGraphicsConfiguration().getDevice().getDefaultConfiguration().getBounds().width),
+					Math.min(dialog.getHeight(),
+							window.getGraphicsConfiguration().getDevice().getDefaultConfiguration().getBounds().height));
 		} else {
-			maxDim = new Dimension(Math.min(dialog.getWidth(), Toolkit.getDefaultToolkit().getScreenSize().width), Math.min(
-					dialog.getHeight(), Toolkit.getDefaultToolkit().getScreenSize().height));
+			maxDim = new Dimension(Math.min(dialog.getWidth(), Toolkit.getDefaultToolkit().getScreenSize().width),
+					Math.min(dialog.getHeight(), Toolkit.getDefaultToolkit().getScreenSize().height));
 		}
 		dialog.setSize(maxDim);
 		dialog.setLocationRelativeTo(window);
@@ -1020,7 +1022,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return showConfirmDialog(message, title, optionType, messageType, null);
 	}
 
-	private static int showConfirmDialog(Object message, String title, int optionType, int messageType, Icon icon) throws HeadlessException {
+	private static int showConfirmDialog(Object message, String title, int optionType, int messageType, Icon icon)
+			throws HeadlessException {
 		return showOptionDialog(FlexoFrame.getActiveFrame(), message, title, optionType, messageType, icon, null, null);
 	}
 
@@ -1131,14 +1134,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 						FlexoObject representedObject = moduleView.getRepresentedObject();
 						if (representedObject == null) {
 							if (logger.isLoggable(Level.WARNING)) {
-								logger.warning("Module view: " + moduleView.getClass().getName()
-										+ " does not return its represented object");
+								logger.warning(
+										"Module view: " + moduleView.getClass().getName() + " does not return its represented object");
 							}
 							representedObject = location.getObject();
 						}
 						manager.new PropertyChangeListenerRegistration(representedObject.getDeletedProperty(), this, representedObject);
-						if (representedObject instanceof FlexoProjectObject
-								&& ((FlexoProjectObject) representedObject).getProject() != null
+						if (representedObject instanceof FlexoProjectObject && ((FlexoProjectObject) representedObject).getProject() != null
 								&& !manager.hasListener(ProjectClosedNotification.CLOSE, this,
 										((FlexoProjectObject) representedObject).getProject())) {
 							manager.new PropertyChangeListenerRegistration(ProjectClosedNotification.CLOSE, this,
@@ -1374,8 +1376,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public String getWindowTitle() {
-		String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null ? " - " + getProject().getProjectName()
-				+ " - " + getProjectDirectory().getAbsolutePath() : "";
+		String projectTitle = /*getModule().getModule().requireProject() &&*/getProject() != null
+				? " - " + getProject().getProjectName() + " - " + getProjectDirectory().getAbsolutePath() : "";
 		if (getCurrentModuleView() != null) {
 			return getModule().getName() + " : " + getWindowTitleforObject(getCurrentDisplayedObjectAsModuleView()) + projectTitle;
 		} else {
@@ -1392,76 +1394,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			logger.info("Escape was pressed but the current controller does not do anything about it");
 		}
 	}
-
-	// TODO: reimplement this !
-	/*public class FlexoControllerInspectorDelegate implements InspectorDelegate {
-
-		private KeyValueCoding target;
-
-		private String key;
-
-		private String localizedPropertyName;
-
-		@Override
-		public boolean setObjectValue(Object value) {
-
-			if (target != null) {
-				if (target instanceof FlexoObject) {
-					SetPropertyAction action = SetPropertyAction.actionType.makeNewAction((FlexoObject) target, new Vector<FlexoObject>(),
-							getEditor());
-					action.setKey(key);
-					action.setValue(value);
-					action.setLocalizedPropertyName(localizedPropertyName);
-					action.doAction();
-					return action.hasActionExecutionSucceeded() && action.getThrownException() == null;
-				} else if (target != null) {
-					target.setObjectForKey(value, key);
-				} else {
-					if (logger.isLoggable(Level.SEVERE)) {
-						logger.severe("Target object is not a FlexoObject, I cannot set the value for that object");
-					}
-				}
-			} else if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Target object is null for key " + key + ". We should definitely investigate this.");
-			}
-			return false;
-		}
-
-		@Override
-		public boolean handlesObjectOfClass(Class<?> c) {
-			return KeyValueCoding.class.isAssignableFrom(c);
-		}
-
-		@Override
-		public void setKey(String path) {
-			this.key = path;
-		}
-
-		@Override
-		public void setTarget(KeyValueCoding object) {
-			this.target = object;
-		}
-
-		@Override
-		public boolean performAction(ActionEvent e, String actionName, Object object) {
-			if (object instanceof FlexoObject) {
-				FlexoObject m = (FlexoObject) object;
-				for (FlexoActionType<?, ?, ?> actionType : m.getActionList()) {
-					if (actionType.getUnlocalizedName().equals(actionName)) {
-						return getEditor().performActionType((FlexoActionType<?, FlexoObject, FlexoObject>) actionType, m,
-								(Vector<FlexoObject>) null, e).hasActionExecutionSucceeded();
-					}
-				}
-			}
-			return false;
-		}
-
-		@Override
-		public void setLocalizedPropertyName(String name) {
-			localizedPropertyName = name;
-		}
-
-	}*/
 
 	public boolean isDisposed() {
 		return disposed;
@@ -1567,7 +1499,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					+ FlexoLocalization.localizedForKey("the_url_seems_incorrect")
 					+ (location != null ? "\n" + FlexoLocalization.localizedForKey("try_with_this_one") + " " + location : ""));
 			return false;
-		}/*
+		} /*
 			if (e instanceof WebApplicationException) {
 			WebApplicationException wae = (WebApplicationException) e;
 			Object entity = wae.getResponse().getEntity();
@@ -1615,11 +1547,10 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 						.notify("Check your connection url in FlexoPreferences > Advanced.\n It seems wrong.\nsee logs for details.");
 				return false;
 			} else {
-				return FlexoController
-						.confirm(FlexoLocalization.localizedForKey("webservice_remote_error")
-								+ " \n"
-								+ (e.getMessage() == null || "java.lang.NullPointerException".equals(e.getMessage()) ? "Check your connection parameters.\nThe service may be temporary unavailable."
-										: e.getMessage()) + "\n" + FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
+				return FlexoController.confirm(FlexoLocalization.localizedForKey("webservice_remote_error") + " \n"
+						+ (e.getMessage() == null || "java.lang.NullPointerException".equals(e.getMessage())
+								? "Check your connection parameters.\nThe service may be temporary unavailable." : e.getMessage())
+						+ "\n" + FlexoLocalization.localizedForKey("would_you_like_to_try_again?"));
 			}
 		}
 		/*FlexoController.notify(FlexoLocalization.localizedForKey("webservice_connection_failed"));
@@ -1660,8 +1591,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		// logger.info("Object was right-clicked: " + object + "event=" + e);
 		if (object instanceof FlexoObject) {
 			FlexoObject relevantObject = getRelevantObject((FlexoObject) object);
-			getSelectionManager().getContextualMenuManager()
-					.showPopupMenuForObject(relevantObject, (Component) e.getSource(), e.getPoint());
+			getSelectionManager().getContextualMenuManager().showPopupMenuForObject(relevantObject, (Component) e.getSource(),
+					e.getPoint());
 		}
 		if (getCurrentPerspective() != null) {
 			if (object instanceof FlexoObject) {
@@ -1709,8 +1640,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/*
 	 * File moved to Resource
 	public FlexoProgress willLoad(File fibFile) {
-
-
+	
+	
 		if (!FIBLibrary.instance().componentIsLoaded(fibFile)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1738,7 +1669,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	/*
 	public FlexoProgress willLoad(String fibResourcePath) {
-
+	
 		if (!FIBLibrary.instance().componentIsLoaded(fibResourcePath)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1799,7 +1730,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * Select the supplied object. Also try to select (create if not exists) a main view representing supplied object, if this view exists.<br>
+	 * Select the supplied object. Also try to select (create if not exists) a main view representing supplied object, if this view exists.
+	 * <br>
 	 * Try all to really display supplied object, even if required view is not the current displayed view
 	 * 
 	 * @param object
@@ -1883,22 +1815,35 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
+	/**
+	 * Return the technology-specific controller for supplied technology adapter class
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(Class<TA> technologyAdapterClass) {
+		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
+		TA ta = taService.getTechnologyAdapter(technologyAdapterClass);
+		TechnologyAdapterControllerService tacService = getApplicationContext().getTechnologyAdapterControllerService();
+		return tacService.getTechnologyAdapterController(ta);
+	}
+
+	/**
+	 * Return the technology-specific controller for supplied technology adapter class
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> TA getTechnologyAdapter(Class<TA> technologyAdapterClass) {
+		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
+		return taService.getTechnologyAdapter(technologyAdapterClass);
+	}
+
 	// ================================================
 	// ============ Icons management ==============
 	// ================================================
 
 	public ImageIcon iconForObject(Object object) {
-		if (object instanceof FlexoNature) {
-			for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
-				ImageIcon returned = tac.getIconForNature((FlexoNature<?>) object);
-				if (returned != null) {
-					return returned;
-				}
-			}
-			logger.warning("Cannot find icon for nature " + object);
-			return null;
-		}
 		ImageIcon iconForObject = statelessIconForObject(object);
 		if (iconForObject != null) {
 			if (/*getModule().getModule().requireProject() &&*/object instanceof FlexoProjectObject && getProject() != null
@@ -2041,8 +1986,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				return tac.getModelIcon();
 			}
 		} else if (object instanceof FlexoModelResource<?, ?, ?, ?>) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoModelResource<?, ?, ?, ?>) object)
-					.getTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+					((FlexoModelResource<?, ?, ?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getModelIcon();
 			}
@@ -2052,8 +1997,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				return tac.getMetaModelIcon();
 			}
 		} else if (object instanceof FlexoMetaModelResource<?, ?, ?>) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoMetaModelResource<?, ?, ?>) object)
-					.getTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+					((FlexoMetaModelResource<?, ?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getMetaModelIcon();
 			}
