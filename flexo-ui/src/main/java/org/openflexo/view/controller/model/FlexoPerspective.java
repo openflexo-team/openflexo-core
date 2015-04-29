@@ -173,6 +173,10 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		}
 		if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance vmi = (VirtualModelInstance) object;
+
+			System.out.println("Je cherche a representer un VirtualModelInstance");
+			System.out.println("Ma perpective: " + this);
+
 			List<VirtualModelInstanceNature> availableNatures = getSpecificNaturesForVirtualModelInstance(vmi);
 			if (availableNatures.size() > 0) {
 				VirtualModelInstanceNature nature = availableNatures.get(0);

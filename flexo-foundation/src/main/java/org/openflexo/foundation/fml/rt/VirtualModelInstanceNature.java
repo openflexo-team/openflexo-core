@@ -47,8 +47,6 @@ import org.openflexo.foundation.nature.FlexoNature;
  * 
  * @author sylvain
  * 
- * @param <E>
- *            type of introspected concept
  */
 public interface VirtualModelInstanceNature extends FlexoNature<VirtualModelInstance> {
 

@@ -79,6 +79,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -294,6 +295,16 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return null;
 	}
 
+	/**
+	 * Return icon representing supplied nature
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public ImageIcon getIconForNature(FlexoNature<?> nature) {
+		return null;
+	}
+
 	public abstract String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller);
 
 	/**
@@ -469,6 +480,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	// Override when required
+	public List<? extends VirtualModelInstanceNature> getSpecificVirtualModelInstanceNatures() {
+		return Collections.emptyList();
+	}
+
+	// Override when required
 	public ModuleView<VirtualModelInstance> createVirtualModelInstanceModuleViewForSpecificNature(VirtualModelInstance vmInstance,
 			VirtualModelInstanceNature nature, FlexoController controller, FlexoPerspective perspective) {
 		return null;
@@ -551,6 +567,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	private final Map<FlexoController, TechnologyPerspective<TA>> technologyPerspectives = new HashMap<FlexoController, TechnologyPerspective<TA>>();
+	private final Map<FlexoController, Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>> virtualModelInstanceNaturePerspectives = new HashMap<FlexoController, Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>>();
 
 	public Map<FlexoController, TechnologyPerspective<TA>> getTechnologyPerspectives() {
 		return technologyPerspectives;
@@ -567,6 +584,26 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	public void installTechnologyPerspective(FlexoController controller) {
 		controller.addToPerspectives(getTechnologyPerspective(controller));
+	}
+
+	public VirtualModelInstanceNaturePerspective getVirtualModelInstanceNaturePerspective(FlexoController controller,
+			VirtualModelInstanceNature nature) {
+		Map<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective> map = virtualModelInstanceNaturePerspectives.get(controller);
+		if (map == null) {
+			map = new HashMap<VirtualModelInstanceNature, VirtualModelInstanceNaturePerspective>();
+			virtualModelInstanceNaturePerspectives.put(controller, map);
+		}
+		VirtualModelInstanceNaturePerspective returned = map.get(nature);
+		if (returned == null) {
+			returned = new VirtualModelInstanceNaturePerspective(nature, controller.getFMLRTTechnologyAdapter(), controller);
+			map.put(nature, returned);
+		}
+		return returned;
+	}
+
+	public void installTechnologyPerspectiveForVirtualModelInstanceNature(FlexoController controller, VirtualModelInstanceNature nature) {
+		System.out.println("Tiens, faudrait installer la perspective pour la nature " + nature);
+		controller.addToPerspectives(getVirtualModelInstanceNaturePerspective(controller, nature));
 	}
 
 	/**

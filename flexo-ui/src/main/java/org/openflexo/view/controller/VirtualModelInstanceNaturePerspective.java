@@ -44,10 +44,10 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
  * A perspective representing all the resources interpretable by a {@link TechnologyAdapter}
@@ -56,29 +56,20 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * 
  * @param <TA>
  */
-public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPerspective {
+public class VirtualModelInstanceNaturePerspective extends TechnologyPerspective<FMLRTTechnologyAdapter> {
 
-	static final Logger logger = Logger.getLogger(TechnologyPerspective.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(VirtualModelInstanceNaturePerspective.class.getPackage().getName());
 
-	private final TA technologyAdapter;
-
-	public TA getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	private final FIBTechnologyBrowser<TA> technologyBrowser;
+	private final VirtualModelInstanceNature nature;
 
 	/**
 	 * @param controller
 	 * @param name
 	 */
-	public TechnologyPerspective(TA technologyAdapter, FlexoController controller) {
-		super(technologyAdapter.getName(), controller);
-		this.technologyAdapter = technologyAdapter;
-
-		technologyBrowser = makeTechnologyBrowser();
-		setTopLeftView(technologyBrowser);
-
+	public VirtualModelInstanceNaturePerspective(VirtualModelInstanceNature nature, FMLRTTechnologyAdapter technologyAdapter,
+			FlexoController controller) {
+		super(technologyAdapter, controller);
+		this.nature = nature;
 	}
 
 	/**
@@ -87,10 +78,9 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 * 
 	 * @return
 	 */
-	protected FIBTechnologyBrowser<TA> makeTechnologyBrowser() {
-		TechnologyAdapterController<TA> tac = getController().getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(technologyAdapter);
-		return tac.makeTechnologyBrowser(getController());
+	@Override
+	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser() {
+		return super.makeTechnologyBrowser();
 	}
 
 	/**
@@ -100,40 +90,14 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 */
 	@Override
 	public ImageIcon getActiveIcon() {
-		return getController().iconForObject(technologyAdapter);
-	}
-
-	@Override
-	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
-		if (object instanceof TechnologyObject) {
-			TechnologyAdapter ta = ((TechnologyObject) object).getTechnologyAdapter();
-			if (ta == null) {
-				return null;
-			}
-			TechnologyAdapterController<?> tac = controller.getApplicationContext().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(ta);
-			if (tac == null) {
-				return null;
-			}
-			return tac.getWindowTitleforObject((TechnologyObject) object, controller);
-		}
-		if (object instanceof IFlexoOntologyObject) {
-			return ((IFlexoOntologyObject) object).getName();
-		}
-		if (object != null) {
-			return object.toString();
-		}
-		logger.warning("Unexpected null object here");
-		return null;
+		return getController().iconForObject(nature);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof TechnologyObject) {
-			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
-			TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(technologyAdapter);
-			return tac.hasModuleViewForObject((TechnologyObject<TA>) object, getController());
+		if (object instanceof VirtualModelInstance && nature.hasNature((VirtualModelInstance) object)) {
+			return true;
 		}
 		return false;
 	}

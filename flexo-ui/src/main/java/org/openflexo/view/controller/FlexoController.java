@@ -129,8 +129,10 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.ViewObject;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoProjectReference;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -305,8 +307,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	protected void initializeAllAvailableTechnologyPerspectives(boolean includeFML, boolean includeFMLRT) {
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(ta);
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
 			if (tac != null) {
 				boolean includeTA = true;
 				if (tac.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
@@ -322,19 +323,58 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	protected void initializeFMLTechnologyAdapterPerspectives() {
+	/**
+	 * Return {@link FMLTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
+		return getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+	}
+
+	/**
+	 * Return {@link FMLRTTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public FMLRTTechnologyAdapter getFMLRTTechnologyAdapter() {
+		return getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+	}
+
+	/**
+	 * Return {@link TechnologyAdapterController} specific to {@link FMLTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public TechnologyAdapterController<FMLTechnologyAdapter> getFMLTechnologyAdapterController() {
 		FMLTechnologyAdapter fmlTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(fmlTA);
-		tac.installTechnologyPerspective(this);
+		return getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(fmlTA);
+	}
+
+	/**
+	 * Return {@link TechnologyAdapterController} specific to {@link FMLRTTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public TechnologyAdapterController<FMLRTTechnologyAdapter> getFMLRTTechnologyAdapterController() {
+		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
+				FMLRTTechnologyAdapter.class);
+		return getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(fmlRTTA);
+	}
+
+	protected void initializeFMLTechnologyAdapterPerspectives() {
+		getFMLTechnologyAdapterController().installTechnologyPerspective(this);
 	}
 
 	protected void initializeFMLRTTechnologyAdapterPerspectives() {
-		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
-				FMLRTTechnologyAdapter.class);
-		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(fmlRTTA);
-		tac.installTechnologyPerspective(this);
+		getFMLRTTechnologyAdapterController().installTechnologyPerspective(this);
+		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			for (VirtualModelInstanceNature nature : tac.getSpecificVirtualModelInstanceNatures()) {
+				tac.installTechnologyPerspectiveForVirtualModelInstanceNature(this, nature);
+			}
+		}
 	}
 
 	public final ControllerModel getControllerModel() {
@@ -1848,6 +1888,17 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	// ================================================
 
 	public ImageIcon iconForObject(Object object) {
+		if (object instanceof FlexoNature) {
+			for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+				ImageIcon returned = tac.getIconForNature((FlexoNature<?>) object);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			logger.warning("Cannot find icon for nature " + object);
+			return null;
+		}
 		ImageIcon iconForObject = statelessIconForObject(object);
 		if (iconForObject != null) {
 			if (/*getModule().getModule().requireProject() &&*/object instanceof FlexoProjectObject && getProject() != null
