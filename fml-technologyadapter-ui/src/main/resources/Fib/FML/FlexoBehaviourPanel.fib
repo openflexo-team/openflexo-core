@@ -106,7 +106,7 @@
 							name="interationAction">
 							<Children data="interationAction.controlGraph.flattenedSequence" name="children" />
 							<BrowserRemoveAction
-								method="selected.actionContainer.removeFromActions(selected)"
+								method="controller.deleteFlexoConceptObject(selected)"
 								name="delete_action" />
 							<BrowserAddAction method="controller.createEditionAction(selected)"
 								name="add_action" />
@@ -121,7 +121,7 @@
 							<Children data="interationAction.thenControlGraph.flattenedSequence" name="thenChildren" />
 							<Children data="interationAction.elseControlGraph.flattenedSequence" name="elseChildren" />
 							<BrowserRemoveAction
-								method="selected.actionContainer.removeFromActions(selected)"
+								method="controller.deleteFlexoConceptObject(selected)"
 								name="delete_action" />
 							<BrowserAddAction method="controller.createEditionAction(selected)"
 								name="add_action" />
@@ -138,7 +138,7 @@
 							<BrowserAddAction method="controller.createEditionAction(selected)"
 								name="add_action" />
 							<BrowserRemoveAction
-								method="selected.actionContainer.removeFromActions(selected)"
+								method="controller.deleteFlexoConceptObject(selected)"
 								name="delete_action" />
 						</BrowserElement>
 					</Browser>

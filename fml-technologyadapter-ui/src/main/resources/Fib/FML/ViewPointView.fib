@@ -205,7 +205,7 @@
 				<Children data="iterationAction.controlGraph.flattenedSequence"
 					name="children" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
@@ -221,7 +221,7 @@
 				<Children data="conditionalAction.elseControlGraph.flattenedSequence"
 					name="elseChildren" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
@@ -238,7 +238,7 @@
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
