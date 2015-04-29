@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
@@ -145,6 +146,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				ModelSlot<?> oldValue = getModelSlot();
 				getAction().setModelSlot(modelSlot);
 				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
+				getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 				checkValidity();
@@ -163,6 +165,10 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 				checkValidity();
 			}
+		}
+
+		public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
+			return getAction().getAdressedFlexoMetaModel();
 		}
 
 		public IFlexoOntologyClass getIndividualType() {
