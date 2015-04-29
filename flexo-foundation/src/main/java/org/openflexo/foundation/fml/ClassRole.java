@@ -120,7 +120,11 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 
 		@Override
 		public IFlexoOntologyClass getOntologicType() {
-			return getOwningVirtualModel().getOntologyClass(_getConceptURI());
+			if (getOwningVirtualModel() != null) {
+				return getOwningVirtualModel().getOntologyClass(_getConceptURI());
+			} else {
+				return null;
+			}
 		}
 
 		@Override
