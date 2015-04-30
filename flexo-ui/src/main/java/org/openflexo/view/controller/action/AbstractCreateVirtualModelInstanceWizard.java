@@ -105,7 +105,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib")
 	public class ChooseVirtualModel extends WizardStep {
@@ -191,6 +191,9 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 
 		@Override
 		public boolean isTransitionalStep() {
+			if (getVirtualModel() != null && getVirtualModel().getModelSlots().size() == 0) {
+				return false;
+			}
 			return true;
 		}
 
@@ -227,7 +230,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This abstract generic step is used to configure a model slot
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
 			WizardStep implements PropertyChangeListener {
@@ -279,7 +282,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This step is used to configure a type-aware model slot
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureTypeAwareModelSlotInstance.fib")
 	public class ConfigureTypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
@@ -305,7 +308,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This step is used to configure a type-aware model slot
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib")
 	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends
@@ -331,7 +334,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This step is used to configure a type-aware model slot
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
 	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLRTModelSlot, VirtualModelInstance> {
@@ -356,7 +359,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends CreateV
 	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib")
 	public class ChooseAndConfigureCreationScheme extends WizardStep {
