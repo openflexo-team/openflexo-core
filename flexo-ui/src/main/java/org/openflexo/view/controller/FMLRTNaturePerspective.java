@@ -102,13 +102,14 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 
 	/**
 	 * Internally called to make technology browser<br>
-	 * This job is delegated to the {@link TechnologyAdapterController}
+	 * Instead of creating a browser for each perspective, we try to share the same instance
 	 * 
 	 * @return
 	 */
 	@Override
-	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser() {
-		return super.makeTechnologyBrowser();
+	protected final FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser() {
+		FIBTechnologyBrowser<FMLRTTechnologyAdapter> returned = getController().getSharedFMLRTBrowser();
+		return returned;
 	}
 
 	public ViewNature getViewNature() {

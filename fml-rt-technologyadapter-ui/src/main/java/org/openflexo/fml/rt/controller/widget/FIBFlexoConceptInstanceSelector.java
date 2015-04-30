@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,8 +53,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select an FlexoConceptInstance.<br>
