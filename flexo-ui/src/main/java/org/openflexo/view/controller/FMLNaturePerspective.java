@@ -72,8 +72,8 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 	private final FlexoConceptNature flexoConceptNature;
 
 	public FMLNaturePerspective(ViewPointNature viewpointNature, VirtualModelNature virtualModelNature,
-			FlexoConceptNature flexoConceptNature, FMLTechnologyAdapter fmlRTtechnologyAdapter, TechnologyAdapter handlingTechnologyAdapter,
-			FlexoController controller) {
+			FlexoConceptNature flexoConceptNature, FMLTechnologyAdapter fmlRTtechnologyAdapter,
+			TechnologyAdapter handlingTechnologyAdapter, FlexoController controller) {
 		super(fmlRTtechnologyAdapter, controller);
 		this.handlingTechnologyAdapter = handlingTechnologyAdapter;
 		this.viewpointNature = viewpointNature;
@@ -102,13 +102,14 @@ public abstract class FMLNaturePerspective extends TechnologyPerspective<FMLTech
 
 	/**
 	 * Internally called to make technology browser<br>
-	 * This job is delegated to the {@link TechnologyAdapterController}
+	 * Instead of creating a browser for each perspective, we try to share the same instance
 	 * 
 	 * @return
 	 */
 	@Override
-	protected FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser() {
-		return super.makeTechnologyBrowser();
+	protected final FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser() {
+		FIBTechnologyBrowser<FMLTechnologyAdapter> returned = getController().getSharedFMLBrowser();
+		return returned;
 	}
 
 	public ViewPointNature getViewpointNature() {
