@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -63,7 +62,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "aVirtualModelInstance";
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -78,7 +77,12 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public VirtualModel getModelSlotVirtualModel();
 
-	public VirtualModelInstance getVirtualModelInstance(BindingEvaluationContext ctx);
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLAttribute
+	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
+
+	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> vminstance);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot> implements
 			FlexoConceptInstanceParameter {
@@ -135,6 +139,31 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 				}*/
 				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
 			}
+		}
+
+		private DataBinding<VirtualModelInstance> virtualModelInstance;
+
+		@Override
+		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
+			if (virtualModelInstance == null) {
+				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
+						DataBinding.BindingDefinitionType.GET);
+				virtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
+				virtualModelInstance.setMandatory(true);
+			}
+			return virtualModelInstance;
+		}
+
+		@Override
+		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
+			if (aVirtualModelInstance != null) {
+				aVirtualModelInstance.setOwner(this);
+				aVirtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
+				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				aVirtualModelInstance.setMandatory(true);
+			}
+			this.virtualModelInstance = aVirtualModelInstance;
 		}
 
 		@Override
