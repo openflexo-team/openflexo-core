@@ -44,6 +44,7 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -135,6 +136,18 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 			setPropertyName(roleName);
 			getPropertyChangeSupport().firePropertyChange("roleName", null, roleName);
 			checkValidity();
+		}
+
+		public PropertyCardinality getCardinality() {
+			return getAction().getCardinality();
+		}
+
+		public void setCardinality(PropertyCardinality roleCardinality) {
+			if (roleCardinality != getCardinality()) {
+				PropertyCardinality oldValue = getCardinality();
+				getAction().setCardinality(roleCardinality);
+				getPropertyChangeSupport().firePropertyChange("cardinality", oldValue, roleCardinality);
+			}
 		}
 
 		public ModelSlot<?> getModelSlot() {

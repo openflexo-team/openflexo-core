@@ -277,7 +277,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		createProperty4InC.setRoleName("property4");
 		createProperty4InC.setFlexoRoleClass(FlexoConceptInstanceRole.class);
 		createProperty4InC.setFlexoConceptInstanceType(flexoConceptB);
-		createProperty4InC.setPropertyCardinality(PropertyCardinality.ZeroOne);
+		createProperty4InC.setCardinality(PropertyCardinality.ZeroOne);
 		createProperty4InC.doAction();
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
 		assertNotNull(property4InC = (FlexoConceptInstanceRole) createProperty4InC.getNewFlexoRole());
