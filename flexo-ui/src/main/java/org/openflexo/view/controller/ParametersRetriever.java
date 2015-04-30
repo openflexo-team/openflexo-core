@@ -218,6 +218,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
+			System.out.println(parameter.getBindingModel().toString());
 			Class fciSelectorClass;
 			try {
 				fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
@@ -229,9 +230,13 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.project"),
 					new DataBinding<Object>("data.editor.project"), true));
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
-					new DataBinding<Object>("data.view"), true));
+					new DataBinding<Object>("data.virtualModelInstance.view"), true));
+			System.out.println(epiSelector.getBindingModel().toString());
+			/*
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.virtualModelInstance"), new DataBinding<Object>("data.virtualModelInstance"), true));
+					"component.virtualModelInstance"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
+					+ ".getVirtualModelInstance(data)"), true));
+					*/
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
 					"component.flexoConcept"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
 					+ ".flexoConceptType"), true));

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
@@ -73,16 +74,11 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public FlexoConcept getFlexoConceptType();
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLAttribute
-	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
-
-	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> binding);
-
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public VirtualModel getModelSlotVirtualModel();
+
+	public VirtualModelInstance getVirtualModelInstance(BindingEvaluationContext ctx);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot> implements
 			FlexoConceptInstanceParameter {
@@ -141,29 +137,12 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 			}
 		}
 
-		private DataBinding<VirtualModelInstance> virtualModelInstance;
-
 		@Override
-		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
-				virtualModelInstance.setMandatory(true);
+		public VirtualModel getModelSlotVirtualModel() {
+			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
+				return getModelSlot().getVirtualModelResource().getVirtualModel();
 			}
-			return virtualModelInstance;
-		}
-
-		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName(VIRTUAL_MODEL_INSTANCE_KEY);
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				aVirtualModelInstance.setMandatory(true);
-			}
-			this.virtualModelInstance = aVirtualModelInstance;
+			return null;
 		}
 
 		@Override
@@ -171,14 +150,6 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 			super.setModelSlot(modelSlot);
 			setChanged();
 			notifyObservers(new DataModification("modelSlotVirtualModel", null, modelSlot));
-		}
-
-		@Override
-		public VirtualModel getModelSlotVirtualModel() {
-			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
-				return getModelSlot().getVirtualModelResource().getVirtualModel();
-			}
-			return null;
 		}
 
 		@Override
