@@ -49,6 +49,7 @@ import org.openflexo.fml.rt.controller.action.DeleteViewInitializer;
 import org.openflexo.fml.rt.controller.action.DeleteVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.MoveViewInitializer;
 import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
+import org.openflexo.fml.rt.controller.action.OpenVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.view.ViewModuleView;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
@@ -131,13 +132,15 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		new SynchronizationSchemeActionInitializer(actionInitializer);
 		new NavigationSchemeActionInitializer(actionInitializer);
 
+		new OpenVirtualModelInstanceInitializer(actionInitializer);
+
 		// Add paste handlers
 		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelInstancePasteHandler());
 	}
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.FLEXO_BEHAVIOUR_MEDIUM_ICON;
+		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON;
 	}
 
 	/**
@@ -147,7 +150,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 */
 	@Override
 	public ImageIcon getTechnologyIcon() {
-		return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
+		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 	}
 
 	/**

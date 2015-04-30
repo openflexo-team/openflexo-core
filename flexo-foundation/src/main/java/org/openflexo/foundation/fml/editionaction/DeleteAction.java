@@ -123,11 +123,6 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		}
 
 		@Override
-		public String getStringRepresentation() {
-			return "Delete " + getObject();
-		}
-
-		@Override
 		public FlexoProperty<?> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;

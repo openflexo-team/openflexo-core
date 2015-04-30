@@ -42,7 +42,7 @@
 		localize="true" manageDynamicModel="true" index="10" data="data.individualType"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		visible="data.action.isIndividual" opaque="false">
-		<Assignment variable="component.context" value="data.action.adressedFlexoMetaModel" />
+		<Assignment variable="component.context" value="data.adressedFlexoMetaModel" />
 	</Custom>
 	<Label label="flexo_concept" index="11"
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"

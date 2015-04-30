@@ -98,6 +98,7 @@ import org.openflexo.GeneralPreferences;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
+import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.FIBLibrary;
@@ -150,6 +151,7 @@ import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
@@ -195,10 +197,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Multimap;
 
-// import javax.ws.rs.WebApplicationException;
-
 /**
- * Abstract controller defined for an application module
+ * General controller managing an application module (see {@link FlexoModule}).<br>
+ * 
  * 
  * @author benoit, sylvain
  */
@@ -219,7 +220,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private LocalizedEditor mainLocalizedEditor;
 	private ValidationWindow validationWindow;
 
-	protected FlexoModule module;
+	protected FlexoModule<?> module;
 	protected FlexoMenuBar menuBar;
 	protected MouseSelectionManager selectionManager;
 	private final ControllerActionInitializer controllerActionInitializer;
@@ -230,6 +231,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	private final List<FlexoMenuBar> registeredMenuBar = new ArrayList<FlexoMenuBar>();
 	private ModuleInspectorController mainInspectorController;
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
+
+	private FIBTechnologyBrowser<FMLRTTechnologyAdapter> sharedFMLRTBrowser;
+	private FIBTechnologyBrowser<FMLTechnologyAdapter> sharedFMLBrowser;
 
 	/**
 	 * Constructor
@@ -305,8 +309,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	protected void initializeAllAvailableTechnologyPerspectives(boolean includeFML, boolean includeFMLRT) {
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-					.getTechnologyAdapterController(ta);
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
 			if (tac != null) {
 				boolean includeTA = true;
 				if (tac.getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
@@ -322,19 +325,128 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	protected void initializeFMLTechnologyAdapterPerspectives() {
-		FMLTechnologyAdapter fmlTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(fmlTA);
-		tac.installTechnologyPerspective(this);
+	/**
+	 * Return {@link FMLTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
+		return getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 	}
 
-	protected void initializeFMLRTTechnologyAdapterPerspectives() {
+	/**
+	 * Return {@link FMLRTTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public FMLRTTechnologyAdapter getFMLRTTechnologyAdapter() {
+		return getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+	}
+
+	/**
+	 * Return {@link TechnologyAdapterController} specific to {@link FMLTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public TechnologyAdapterController<FMLTechnologyAdapter> getFMLTechnologyAdapterController() {
+		FMLTechnologyAdapter fmlTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		return getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(fmlTA);
+	}
+
+	/**
+	 * Return {@link TechnologyAdapterController} specific to {@link FMLRTTechnologyAdapter}
+	 * 
+	 * @return
+	 */
+	public TechnologyAdapterController<FMLRTTechnologyAdapter> getFMLRTTechnologyAdapterController() {
 		FMLRTTechnologyAdapter fmlRTTA = getApplicationContext().getTechnologyAdapterService().getTechnologyAdapter(
 				FMLRTTechnologyAdapter.class);
-		TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
-				.getTechnologyAdapterController(fmlRTTA);
-		tac.installTechnologyPerspective(this);
+		return getApplicationContext().getTechnologyAdapterControllerService().getTechnologyAdapterController(fmlRTTA);
+	}
+
+	/**
+	 * Install all perspectives related to {@link FMLTechnologyAdapter}<br>
+	 * We install generic perspective, and we iterate on each technology adapter to install technology-specific natures<br>
+	 * Note that all those perspective must share the same browser (see {@link #getSharedFMLBrowser()}).<br>
+	 * 
+	 */
+	protected void initializeFMLTechnologyAdapterPerspectives() {
+		// We first install generic perspective
+		TechnologyPerspective<FMLTechnologyAdapter> genericPerspective = getFMLTechnologyAdapterController().getTechnologyPerspectives()
+				.get(this);
+		if (genericPerspective == null) {
+			// We do not use generic code to retrieve the browser, because we want to use the same
+			// browser for all perspectives, so we have to override the creation of this browser
+			genericPerspective = new TechnologyPerspective<FMLTechnologyAdapter>(getFMLTechnologyAdapter(), this) {
+				@Override
+				protected FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser() {
+					return getSharedFMLBrowser();
+				}
+			};
+		}
+		addToPerspectives(genericPerspective);
+
+		// getFMLTechnologyAdapterController().installTechnologyPerspective(this);
+
+		// Then we iterate on all technology adapters
+		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (tac != null) {
+				tac.installFMLNatureSpecificPerspectives(this);
+			} else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
+		}
+	}
+
+	/**
+	 * Install all perspectives related to {@link FMLRTTechnologyAdapter}<br>
+	 * We install generic perspective, and we iterate on each technology adapter to install technology-specific natures<br>
+	 * Note that all those perspective must share the same browser (see {@link #getSharedFMLRTBrowser()}).<br>
+	 * 
+	 */
+	protected void initializeFMLRTTechnologyAdapterPerspectives() {
+
+		// We first install generic perspective
+		TechnologyPerspective<FMLRTTechnologyAdapter> genericPerspective = getFMLRTTechnologyAdapterController()
+				.getTechnologyPerspectives().get(this);
+		if (genericPerspective == null) {
+			// We do not use generic code to retrieve the browser, because we want to use the same
+			// browser for all perspectives, so we have to override the creation of this browser
+			genericPerspective = new TechnologyPerspective<FMLRTTechnologyAdapter>(getFMLRTTechnologyAdapter(), this) {
+				@Override
+				protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> makeTechnologyBrowser() {
+					return getSharedFMLRTBrowser();
+				}
+			};
+		}
+		addToPerspectives(genericPerspective);
+
+		// Then we iterate on all technology adapters
+		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(ta);
+			if (tac != null) {
+				tac.installFMLRTNatureSpecificPerspectives(this);
+			} else {
+				logger.warning("Could not load TechnologyAdapterController for " + ta);
+			}
+		}
+	}
+
+	public FIBTechnologyBrowser<FMLRTTechnologyAdapter> getSharedFMLRTBrowser() {
+		if (sharedFMLRTBrowser == null) {
+			sharedFMLRTBrowser = getFMLRTTechnologyAdapterController().makeTechnologyBrowser(this);
+		}
+		return sharedFMLRTBrowser;
+	}
+
+	public FIBTechnologyBrowser<FMLTechnologyAdapter> getSharedFMLBrowser() {
+		if (sharedFMLBrowser == null) {
+			sharedFMLBrowser = getFMLTechnologyAdapterController().makeTechnologyBrowser(this);
+		}
+		return sharedFMLBrowser;
 	}
 
 	public final ControllerModel getControllerModel() {
@@ -621,7 +733,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/*public PreferencesWindow getPreferencesWindow(boolean create) {
 		return PreferencesController.instance().getPreferencesWindow(create);
 	}
-
+	
 	public void showPreferences() {
 		PreferencesController.instance().showPreferences();
 	}*/
@@ -1353,76 +1465,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 	}
 
-	// TODO: reimplement this !
-	/*public class FlexoControllerInspectorDelegate implements InspectorDelegate {
-
-		private KeyValueCoding target;
-
-		private String key;
-
-		private String localizedPropertyName;
-
-		@Override
-		public boolean setObjectValue(Object value) {
-
-			if (target != null) {
-				if (target instanceof FlexoObject) {
-					SetPropertyAction action = SetPropertyAction.actionType.makeNewAction((FlexoObject) target, new Vector<FlexoObject>(),
-							getEditor());
-					action.setKey(key);
-					action.setValue(value);
-					action.setLocalizedPropertyName(localizedPropertyName);
-					action.doAction();
-					return action.hasActionExecutionSucceeded() && action.getThrownException() == null;
-				} else if (target != null) {
-					target.setObjectForKey(value, key);
-				} else {
-					if (logger.isLoggable(Level.SEVERE)) {
-						logger.severe("Target object is not a FlexoObject, I cannot set the value for that object");
-					}
-				}
-			} else if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Target object is null for key " + key + ". We should definitely investigate this.");
-			}
-			return false;
-		}
-
-		@Override
-		public boolean handlesObjectOfClass(Class<?> c) {
-			return KeyValueCoding.class.isAssignableFrom(c);
-		}
-
-		@Override
-		public void setKey(String path) {
-			this.key = path;
-		}
-
-		@Override
-		public void setTarget(KeyValueCoding object) {
-			this.target = object;
-		}
-
-		@Override
-		public boolean performAction(ActionEvent e, String actionName, Object object) {
-			if (object instanceof FlexoObject) {
-				FlexoObject m = (FlexoObject) object;
-				for (FlexoActionType<?, ?, ?> actionType : m.getActionList()) {
-					if (actionType.getUnlocalizedName().equals(actionName)) {
-						return getEditor().performActionType((FlexoActionType<?, FlexoObject, FlexoObject>) actionType, m,
-								(Vector<FlexoObject>) null, e).hasActionExecutionSucceeded();
-					}
-				}
-			}
-			return false;
-		}
-
-		@Override
-		public void setLocalizedPropertyName(String name) {
-			localizedPropertyName = name;
-		}
-
-	}*/
-
 	public boolean isDisposed() {
 		return disposed;
 	}
@@ -1527,7 +1569,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					+ FlexoLocalization.localizedForKey("the_url_seems_incorrect")
 					+ (location != null ? "\n" + FlexoLocalization.localizedForKey("try_with_this_one") + " " + location : ""));
 			return false;
-		}/*
+		} /*
 			if (e instanceof WebApplicationException) {
 			WebApplicationException wae = (WebApplicationException) e;
 			Object entity = wae.getResponse().getEntity();
@@ -1669,8 +1711,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	/*
 	 * File moved to Resource
 	public FlexoProgress willLoad(File fibFile) {
-
-
+	
+	
 		if (!FIBLibrary.instance().componentIsLoaded(fibFile)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1698,7 +1740,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	/*
 	public FlexoProgress willLoad(String fibResourcePath) {
-
+	
 		if (!FIBLibrary.instance().componentIsLoaded(fibResourcePath)) {
 			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
 			progress.setProgress("loading_component");
@@ -1759,7 +1801,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * Select the supplied object. Also try to select (create if not exists) a main view representing supplied object, if this view exists.<br>
+	 * Select the supplied object. Also try to select (create if not exists) a main view representing supplied object, if this view exists. <br>
 	 * Try all to really display supplied object, even if required view is not the current displayed view
 	 * 
 	 * @param object
@@ -1841,6 +1883,30 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Return the technology-specific controller for supplied technology adapter class
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(Class<TA> technologyAdapterClass) {
+		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
+		TA ta = taService.getTechnologyAdapter(technologyAdapterClass);
+		TechnologyAdapterControllerService tacService = getApplicationContext().getTechnologyAdapterControllerService();
+		return tacService.getTechnologyAdapterController(ta);
+	}
+
+	/**
+	 * Return the technology-specific controller for supplied technology adapter class
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	public <TA extends TechnologyAdapter> TA getTechnologyAdapter(Class<TA> technologyAdapterClass) {
+		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
+		return taService.getTechnologyAdapter(technologyAdapterClass);
 	}
 
 	// ================================================

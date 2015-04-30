@@ -233,6 +233,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();
 
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
 			// This part is valid only if we are not deleting the owner also.
 			if (owner != null) {
 				// Following statement is really important, we need first to "disconnect" actual control graph
@@ -248,7 +250,15 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 
 			// Now this control graph should be dereferenced
 			// We finally call super delete, and this control graph will be really deleted
-			return performSuperDelete(context);
+			boolean returned = performSuperDelete(context);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return returned;
 		}
 
 		@Override

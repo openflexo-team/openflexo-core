@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -46,36 +46,37 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
- * A path element which represents a {@link FlexoConceptInstance} accessible at run-time<br>
- * The {@link FlexoConceptInstance} is typed as {@link FlexoConceptInstanceType}
+ * A path element which represents a {@link VirtualModelInstance} accessible at run-time<br>
+ * The {@link VirtualModelInstance} is typed as {@link VirtualModelInstanceType}
  * 
  * @author sylvain
- * 
+ *
  */
-public class FlexoConceptInstancePathElement extends SimplePathElement {
+public class VirtualModelInstancePathElement extends SimplePathElement {
 
-	private static final Logger logger = Logger.getLogger(FlexoConceptInstancePathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelInstancePathElement.class.getPackage().getName());
 
-	private final FlexoConcept flexoConcept;
+	private final AbstractVirtualModel<?> virtualModel;
 
-	public FlexoConceptInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
-		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
-		this.flexoConcept = flexoConcept;
+	public VirtualModelInstancePathElement(BindingPathElement parent, String pathElementName, AbstractVirtualModel<?> virtualModel) {
+		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(virtualModel));
+		this.virtualModel = virtualModel;
 	}
 
-	public FlexoConcept getFlexoConcept() {
-		return flexoConcept;
+	public AbstractVirtualModel<?> getVirtualModel() {
+		return virtualModel;
 	}
 
 	@Override
 	public Type getType() {
-		return FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept);
+		return FlexoConceptInstanceType.getFlexoConceptInstanceType(virtualModel);
 	}
 
 	@Override
@@ -85,13 +86,13 @@ public class FlexoConceptInstancePathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return flexoConcept.getDescription();
+		return virtualModel.getDescription();
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoBehaviourAction) {
-			return ((FlexoBehaviourAction) target).getFlexoConceptInstance();
+			return ((FlexoBehaviourAction) target).getVirtualModelInstance();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
