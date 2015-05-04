@@ -211,28 +211,28 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		createPR1.setRoleName("aStringInA");
 		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
-		createPR1.setPropertyCardinality(PropertyCardinality.One);
+		createPR1.setCardinality(PropertyCardinality.One);
 		createPR1.doAction();
 
 		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR2.setRoleName("someBooleanInA");
 		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
-		createPR2.setPropertyCardinality(PropertyCardinality.ZeroMany);
+		createPR2.setCardinality(PropertyCardinality.ZeroMany);
 		createPR2.doAction();
 
 		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR3.setRoleName("someIntegerInA");
 		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
-		createPR3.setPropertyCardinality(PropertyCardinality.OneMany);
+		createPR3.setCardinality(PropertyCardinality.OneMany);
 		createPR3.doAction();
 
 		CreateFlexoRole createPR4 = CreateFlexoRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR4.setRoleName("someFlexoConcept2");
 		createPR4.setFlexoRoleClass(FlexoConceptInstanceRole.class);
 		createPR4.setFlexoConceptInstanceType(flexoConcept2);
-		createPR4.setPropertyCardinality(PropertyCardinality.ZeroMany);
+		createPR4.setCardinality(PropertyCardinality.ZeroMany);
 		createPR4.doAction();
 
 		assertEquals(4, flexoConcept1.getFlexoProperties().size());

@@ -660,6 +660,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	@Override
 	public void notifiedBindingChanged(org.openflexo.connie.DataBinding<?> dataBinding) {
+		if (dataBinding == getIterationExpression()) {
+			updateIteration();
+		}
 		getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 	}
 
@@ -704,19 +707,23 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		if (iterationAction != null) {
 			switch (getIterationType()) {
-				case Expression:
-					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-					iterationAction.setIterationAction(exp);
-					break;
-				case FetchRequest:
-					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
-					iterationAction.setIterationAction(fetchRequest);
-					List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
-					if (availableMS.size() > 0) {
-						((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
-					}
-				default:
-					break;
+			case Expression:
+				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+
+				System.out.println("Hop, je fais une iteration avec " + getIterationExpression());
+				iterationAction.setIterationAction(exp);
+				System.out.println("Hop j'obtiens " + iterationAction.getFMLRepresentation());
+				break;
+			case FetchRequest:
+				FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+				iterationAction.setIterationAction(fetchRequest);
+				List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
+				if (availableMS.size() > 0) {
+					((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}

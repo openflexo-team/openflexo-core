@@ -122,7 +122,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
 	private PrimitiveType primitiveType = PrimitiveType.String;
-	private PropertyCardinality propertyCardinality = PropertyCardinality.ZeroOne;
+	private PropertyCardinality cardinality = PropertyCardinality.ZeroOne;
 
 	private FlexoRole<?> newFlexoRole;
 
@@ -153,15 +153,15 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		return "role";
 	}
 
-	public PropertyCardinality getPropertyCardinality() {
-		return propertyCardinality;
+	public PropertyCardinality getCardinality() {
+		return cardinality;
 	}
 
-	public void setPropertyCardinality(PropertyCardinality propertyCardinality) {
-		if (propertyCardinality != getPropertyCardinality()) {
-			PropertyCardinality oldPropertyCardinality = getPropertyCardinality();
-			this.propertyCardinality = propertyCardinality;
-			getPropertyChangeSupport().firePropertyChange("propertyCardinality", oldPropertyCardinality, propertyCardinality);
+	public void setCardinality(PropertyCardinality propertyCardinality) {
+		if (propertyCardinality != getCardinality()) {
+			PropertyCardinality oldPropertyCardinality = getCardinality();
+			this.cardinality = propertyCardinality;
+			getPropertyChangeSupport().firePropertyChange("cardinality", oldPropertyCardinality, propertyCardinality);
 		}
 	}
 
@@ -215,7 +215,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 				}
 
 				newFlexoRole.setRoleName(getRoleName());
-				newFlexoRole.setCardinality(getPropertyCardinality());
+				newFlexoRole.setCardinality(getCardinality());
 
 				super.doAction(context);
 			}
