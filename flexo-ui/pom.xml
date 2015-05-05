@@ -4,10 +4,10 @@
     <parent>
         <groupId>org.openflexo</groupId>
         <artifactId>openflexo-core</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.7.1-RC5</version>
     </parent>
     <artifactId>flexo-ui</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
+  <version>1.7.1-RC5</version>
     <name>Openflexo-core : UI layer</name>
     <build>
         <plugins>
