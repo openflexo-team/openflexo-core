@@ -21,7 +21,10 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * Generic abstract concept representing a paragraph of a text-based document (eg .docx, .odt, etc...)
@@ -36,6 +39,11 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentElement<D, TA> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String IDENTIFIER_KEY = "identifier";
+	@PropertyIdentifier(type = FlexoStyle.class)
+	public static final String STYLE_KEY = "style";
+
 	/**
 	 * Return identifier of the {@link FlexoParagraph} in the {@link FlexoDocument}<br>
 	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
@@ -43,10 +51,20 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 * 
 	 * @return
 	 */
+	@Getter(IDENTIFIER_KEY)
 	public String getIdentifier();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
+	@Setter(IDENTIFIER_KEY)
+	public void setIdentifier(String identifier);
+
+	@Getter(value = STYLE_KEY)
+	public FlexoStyle<D, TA> getStyle();
+
+	@Setter(STYLE_KEY)
+	public void setStyle(FlexoStyle<D, TA> style);
+
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
 	}
 
 }

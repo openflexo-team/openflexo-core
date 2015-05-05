@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.resource.ResourceData;
@@ -28,6 +29,7 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
+import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -50,7 +52,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoDocObject<D, TA>, ResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
@@ -80,6 +83,14 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public void removeFromElements(FlexoDocumentElement<D, TA> anElement);
 
 	/**
+	 * Return a new list of elements of supplied type
+	 * 
+	 * @param elementType
+	 * @return
+	 */
+	public <E> List<E> getElements(Class<E> elementType);
+
+	/**
 	 * Return the list of style used in this document
 	 * 
 	 * @return
@@ -100,8 +111,25 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Remover(STYLES_KEY)
 	public void removeFromStyles(FlexoStyle<D, TA> aStyle);
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
+	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.NAME_KEY)
+	public FlexoStyle<D, TA> getStyleByName(String styleName);
+
+	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.STYLE_ID_KEY)
+	public FlexoStyle<D, TA> getStyleByIdentifier(String styleId);
+
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
+
+		@Override
+		public <E> List<E> getElements(Class<E> elementType) {
+			List<E> returned = new ArrayList<E>();
+			for (FlexoDocumentElement<D, TA> e : getElements()) {
+				if (elementType.isAssignableFrom(e.getImplementedInterface())) {
+					returned.add((E) e);
+				}
+			}
+			return returned;
+		}
 	}
 
 }

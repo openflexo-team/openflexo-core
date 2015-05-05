@@ -21,7 +21,10 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * Generic abstract concept representing a style of a text-based document (eg .docx, .odt, etc...)
@@ -36,17 +39,35 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = String.class)
+	public static final String STYLE_ID_KEY = "styleId";
+
 	/**
 	 * Return name of the {@link FlexoStyle} in the {@link FlexoDocument}<br>
-	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
-	 * Please note that two different documents may have both a paragraph with same identifier
 	 * 
 	 * @return
 	 */
+	@Getter(value = NAME_KEY)
 	public String getName();
 
-	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoStyle<D, TA> {
+	@Setter(NAME_KEY)
+	public void setName(String name);
+
+	/**
+	 * Return identifier of the {@link FlexoStyle} in the {@link FlexoDocument}<br>
+	 * 
+	 * @return
+	 */
+	@Getter(value = STYLE_ID_KEY)
+	public String getStyleId();
+
+	@Setter(STYLE_ID_KEY)
+	public void setStyleId(String styleId);
+
+	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoStyle<D, TA> {
 	}
 
 }
