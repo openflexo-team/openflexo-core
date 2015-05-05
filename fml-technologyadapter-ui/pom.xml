@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-RC5</version>
+        <version>1.7.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-technologyadapter-ui</artifactId>
-  <version>1.7.1-RC5</version>
+  <version>1.7.1-SNAPSHOT</version>
 	<name>FML technology adapter : UI layer</name>
 	<build>
 		<plugins>
