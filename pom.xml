@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-component</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3-RC5</version>
 	</parent>
 	<version>1.7.1-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
@@ -11,11 +11,11 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.2-SNAPSHOT</gina.version>
-		<connie.version>1.2-SNAPSHOT</connie.version>
-		<pamela.version>1.2-SNAPSHOT</pamela.version>
-		<diana.version>1.2-SNAPSHOT</diana.version>
-		<openflexoutils.version>1.2-SNAPSHOT</openflexoutils.version>
+		<gina.version>1.2-RC5</gina.version>
+		<connie.version>1.2-RC5</connie.version>
+		<pamela.version>1.2-RC5</pamela.version>
+		<diana.version>1.2-RC5</diana.version>
+		<openflexoutils.version>1.2-RC5</openflexoutils.version>
 		<google.guice.version>3.0</google.guice.version>
 		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	</properties>
@@ -39,41 +39,41 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.1-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 			<dependency>
@@ -107,7 +107,7 @@
 		    <dependency>
 			   <groupId>org.openflexo</groupId>
 			   <artifactId>flexographicsutils</artifactId>
-			   <version>1.7-SNAPSHOT</version>
+				<version>${gina.version}</version>
 		    </dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
