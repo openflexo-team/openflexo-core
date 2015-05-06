@@ -39,8 +39,8 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocObject.FlexoDocObjectImpl.class)
-public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends TechnologyObject<TA>,
-		InnerResourceData<D> {
+public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends TechnologyObject<TA>, InnerResourceData<D> {
 
 	public D getFlexoDocument();
 
@@ -55,6 +55,15 @@ public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends Techn
 		public D getResourceData() {
 			return getFlexoDocument();
 		}
+
+		@Override
+		public TA getTechnologyAdapter() {
+			if (getFlexoDocument() != null) {
+				return getFlexoDocument().getTechnologyAdapter();
+			}
+			return null;
+		}
+
 	}
 
 }

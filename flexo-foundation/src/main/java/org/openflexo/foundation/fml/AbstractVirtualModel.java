@@ -111,8 +111,8 @@ import org.openflexo.toolbox.ToolBox;
 @ImplementationClass(AbstractVirtualModel.AbstractVirtualModelImpl.class)
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class), @Import(AddFlexoConceptInstanceParameter.class) })
-public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>,
-		ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
+public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
+		extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>, ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
 
 	// public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
 
@@ -320,8 +320,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 	@Override
 	public VirtualModelBindingModel getBindingModel();
 
-	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl implements
-			AbstractVirtualModel<VM> {
+	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl
+			implements AbstractVirtualModel<VM> {
 
 		private static final Logger logger = Logger.getLogger(AbstractVirtualModel.class.getPackage().getName());
 
@@ -947,8 +947,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 	}
 
 	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
-			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(AbstractVirtualModel.class, "virtual_model_should_not_have_reflexive_model_slot_no_more");
@@ -967,8 +967,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> exten
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot extends
-				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
+		protected static class RemoveReflexiveVirtualModelModelSlot
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
 
 			private final AbstractVirtualModel vm;
 

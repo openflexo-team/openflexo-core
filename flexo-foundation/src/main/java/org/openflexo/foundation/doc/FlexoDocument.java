@@ -23,8 +23,11 @@ package org.openflexo.foundation.doc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -38,6 +41,7 @@ import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
@@ -60,6 +64,18 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	@PropertyIdentifier(type = FlexoStyle.class, cardinality = Cardinality.LIST)
 	public static final String STYLES_KEY = "styles";
+
+	@PropertyIdentifier(type = String.class)
+	public static final String NAME_KEY = "name";
+
+	@Getter(value = NAME_KEY)
+	@XMLAttribute
+	public String getName();
+
+	@Setter(NAME_KEY)
+	public void setName(String name);
+
+	public String getURI();
 
 	/**
 	 * Return the list of root elements of this document (elements like paragraphs or tables, sequentially composing the document)
@@ -130,6 +146,56 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 			}
 			return returned;
 		}
+
+		@Override
+		public TA getTechnologyAdapter() {
+			if (getResource() != null) {
+				return ((TechnologyAdapterResource<D, TA>) getResource()).getTechnologyAdapter();
+			}
+			return null;
+		}
+
+		/**
+		 * Return the URI of the {@link AbstractVirtualModel}<br>
+		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name >#<flexo_concept_name>.<edition_scheme_name> <br>
+		 * eg<br>
+		 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept. MyEditionScheme
+		 * 
+		 * @return String representing unique URI of this object
+		 */
+		@Override
+		public String getURI() {
+			if (getResource() != null) {
+				return getResource().getURI();
+			}
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			if (getResource() != null) {
+				return getResource().getName();
+			}
+			return (String) performSuperGetter(NAME_KEY);
+		}
+
+		@Override
+		public void setName(String name) {
+			if (requireChange(getName(), name)) {
+				String oldValue = getName();
+				if (getResource() != null) {
+					try {
+						getResource().setName(name);
+						getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
+					} catch (CannotRenameException e) {
+						e.printStackTrace();
+					}
+				} else {
+					performSuperSetter(NAME_KEY, name);
+				}
+			}
+		}
+
 	}
 
 }
