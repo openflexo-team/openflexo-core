@@ -92,8 +92,6 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib")
 	public class DescribeFlexoRole extends DescribeProperty {
 
-		private boolean useModelSlot = true;
-
 		@Override
 		public String getTitle() {
 			return FlexoLocalization.localizedForKey("describe_flexo_role");
@@ -224,17 +222,17 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 		}
 
 		public boolean isUseModelSlot() {
-			return useModelSlot;
+			return getAction().isUseModelSlot();
 		}
 
 		public void setUseModelSlot(boolean useModelSlot) {
 			if (isUseModelSlot() != useModelSlot) {
 				boolean oldValue = isUseModelSlot();
-				this.useModelSlot = useModelSlot;
-				if (!useModelSlot) {
-					setModelSlot(null);
-				}
+				getAction().setUseModelSlot(useModelSlot);
 				getPropertyChangeSupport().firePropertyChange("useModelSlot", oldValue, useModelSlot);
+				getPropertyChangeSupport().firePropertyChange("modelSlot", null, getModelSlot());
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
+				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 			}
 		}
 

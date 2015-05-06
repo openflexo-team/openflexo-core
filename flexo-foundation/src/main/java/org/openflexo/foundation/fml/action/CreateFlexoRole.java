@@ -118,6 +118,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	private ModelSlot<?> modelSlot;
+	private boolean useModelSlot = true;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
@@ -172,7 +173,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 			vmAvailableFlexoRoleTypes.add((Class<? extends FlexoRole<?>>) PrimitiveRole.class);
 
 		}
-		if (getModelSlot() != null) {
+		if (useModelSlot && getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
 		} else {
 			FlexoConcept fc = (getFocusedObject() instanceof FlexoConcept ? (FlexoConcept) this.getFocusedObject() : this
@@ -389,6 +390,19 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	public void setPrimitiveType(PrimitiveType primitiveType) {
 		this.primitiveType = primitiveType;
 		getPropertyChangeSupport().firePropertyChange("primitiveType", null, primitiveType);
+	}
+
+	public boolean isUseModelSlot() {
+		return useModelSlot;
+	}
+
+	public void setUseModelSlot(boolean useModelSlot) {
+		this.useModelSlot = useModelSlot;
+		if (!useModelSlot) {
+			setModelSlot(null);
+		}
+		getPropertyChangeSupport().firePropertyChange("useModelSlot", null, useModelSlot);
+		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
 	}
 
 }
