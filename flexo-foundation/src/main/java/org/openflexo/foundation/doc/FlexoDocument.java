@@ -45,7 +45,10 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Generic abstract concept representing a text-based document (eg .docx, .odt, etc...)
+ * Generic abstract concept representing a text-based document (eg .docx, .odt, etc...)<br>
+ * 
+ * Such a document is not structured, as it contains only a list of {@link FlexoDocumentElement}, but a structuration can be dynamically
+ * infered from the styles. See {@link #getStructuringStyles()}
  * 
  * @author sylvain
  *
@@ -56,14 +59,16 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>, ResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
 
 	@PropertyIdentifier(type = FlexoStyle.class, cardinality = Cardinality.LIST)
 	public static final String STYLES_KEY = "styles";
+
+	@PropertyIdentifier(type = FlexoStyle.class, cardinality = Cardinality.LIST)
+	public static final String STRUCTURING_STYLES_KEY = "structuringStyles";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -107,6 +112,14 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public <E> List<E> getElements(Class<E> elementType);
 
 	/**
+	 * Return the list of root elements of this document, which are infered to be root while interpreting the document as a structured
+	 * document (see {@link #getStructuringStyles()})
+	 * 
+	 * @return
+	 */
+	public List<FlexoDocumentElement<D, TA>> getRootElements();
+
+	/**
 	 * Return the list of style used in this document
 	 * 
 	 * @return
@@ -127,14 +140,31 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Remover(STYLES_KEY)
 	public void removeFromStyles(FlexoStyle<D, TA> aStyle);
 
+	/**
+	 * Return an ordered list of styles to be used to present a structured document<br>
+	 * 
+	 * @return
+	 */
+	@Getter(value = STRUCTURING_STYLES_KEY, cardinality = Cardinality.LIST)
+	public List<FlexoStyle<D, TA>> getStructuringStyles();
+
+	@Setter(STRUCTURING_STYLES_KEY)
+	public void setStructuringStyles(List<FlexoStyle<D, TA>> someStyles);
+
+	@Adder(STRUCTURING_STYLES_KEY)
+	public void addToStructuringStyles(FlexoStyle<D, TA> aStyle);
+
+	@Remover(STRUCTURING_STYLES_KEY)
+	public void removeFromStructuringStyles(FlexoStyle<D, TA> aStyle);
+
 	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.NAME_KEY)
 	public FlexoStyle<D, TA> getStyleByName(String styleName);
 
 	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.STYLE_ID_KEY)
 	public FlexoStyle<D, TA> getStyleByIdentifier(String styleId);
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {
@@ -196,6 +226,47 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 			}
 		}
 
+		private List<FlexoDocumentElement<D, TA>> rootElements = null;
+
+		/**
+		 * Return the list of root elements of this document, which are infered to be root while interpreting the document as a structured
+		 * document (see {@link #getStructuringStyles()})
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoDocumentElement<D, TA>> getRootElements() {
+			if (rootElements == null) {
+				rootElements = computeRootElements();
+				System.out.println("For document " + this);
+				System.out.println("root elements are: " + rootElements);
+			}
+			return rootElements;
+		}
+
+		private List<FlexoDocumentElement<D, TA>> computeRootElements() {
+			List<FlexoDocumentElement<D, TA>> returned = new ArrayList<FlexoDocumentElement<D, TA>>();
+			Integer l = null;
+			for (FlexoDocumentElement<D, TA> e : getElements()) {
+				if (l == null) {
+					returned.add(e);
+					if (e instanceof FlexoParagraph) {
+						if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
+							l = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
+						}
+					}
+				} else {
+					if (e instanceof FlexoParagraph) {
+						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
+							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(l)) {
+								returned.add(e);
+							}
+						}
+					}
+				}
+			}
+			return returned;
+		}
 	}
 
 }

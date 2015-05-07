@@ -20,6 +20,9 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -39,8 +42,39 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(FlexoDocumentElement.FlexoDocumentElementImpl.class)
 public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
+	/**
+	 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the
+	 * document as a structured document (see {@link FlexoDocument#getStructuringStyles()})
+	 * 
+	 * @return
+	 */
+	public List<FlexoDocumentElement<D, TA>> getChildrenElements();
+
 	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
+
+		private List<FlexoDocumentElement<D, TA>> childrenElements = null;
+
+		/**
+		 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the
+		 * document as a structured document (see {@link FlexoDocument#getStructuringStyles()})
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoDocumentElement<D, TA>> getChildrenElements() {
+			if (childrenElements == null) {
+				childrenElements = computeChildrenElements();
+			}
+			return childrenElements;
+		}
+
+		protected List<FlexoDocumentElement<D, TA>> computeChildrenElements() {
+			if (getFlexoDocument() == null) {
+				return null;
+			}
+			return Collections.emptyList();
+		}
 	}
 
 }

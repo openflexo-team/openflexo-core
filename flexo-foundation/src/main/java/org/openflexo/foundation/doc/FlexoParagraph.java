@@ -20,6 +20,10 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
@@ -63,8 +67,84 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Setter(STYLE_KEY)
 	public void setStyle(FlexoStyle<D, TA> style);
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
+	public String getRawText();
+
+	/**
+	 * Return the list of sub-paragraph using interpretation of
+	 * 
+	 * @return
+	 */
+	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
+
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
+
+		@Override
+		public String toString() {
+			return "Paragraph(" + getIdentifier() + ") " + getRawText() + " "
+					+ (getStyle() != null ? "[" + getStyle().getName() + "]" : "");
+		}
+
+		@Override
+		protected List<FlexoDocumentElement<D, TA>> computeChildrenElements() {
+			if (getFlexoDocument() == null) {
+				return null;
+			}
+			if (getStyle() == null || !getStyle().isLevelled()) {
+				return Collections.emptyList();
+			}
+
+			Integer parentLevel = getStyle().getLevel();
+			Integer childLevel = null;
+			int start = getFlexoDocument().getElements().indexOf(this) + 1;
+
+			int i = start;
+
+			List<FlexoDocumentElement<D, TA>> returned = new ArrayList<FlexoDocumentElement<D, TA>>();
+
+			while (i < getFlexoDocument().getElements().size()) {
+				FlexoDocumentElement<D, TA> e = getFlexoDocument().getElements().get(i);
+
+				if (e instanceof FlexoParagraph) {
+					if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
+						if (((FlexoParagraph<D, TA>) e).getStyle().getLevel() <= parentLevel) {
+							return returned;
+						}
+					}
+				}
+
+				if (childLevel == null) {
+					returned.add(e);
+					if (e instanceof FlexoParagraph) {
+						if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
+							childLevel = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
+						}
+					}
+				} else {
+					if (e instanceof FlexoParagraph) {
+						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
+							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
+								returned.add(e);
+							}
+						}
+					}
+				}
+
+				/*if (childLevel == null) 
+				if (e instanceof FlexoParagraph) {
+					if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
+						if (((FlexoParagraph<D, TA>) e).getStyle().getLevel() <= l) {
+							return returned;
+						}
+					}
+				}
+				returned.add(e);*/
+				i++;
+			}
+
+			return returned;
+
+		}
 	}
 
 }
