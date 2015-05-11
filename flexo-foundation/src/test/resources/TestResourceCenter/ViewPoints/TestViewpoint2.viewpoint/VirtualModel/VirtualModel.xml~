@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" useSpecificDescriptions="false" userID="FLX" isAbstract="false" flexoID="1" name="VirtualModel">
+  <FlexoConcept id="1" useSpecificDescriptions="false" userID="FLX" isAbstract="false" flexoID="8" name="Concept1">
+    <Inspector id="2" flexoID="7" useSpecificDescriptions="false" userID="FLX" inspectorTitle="Concept1" />
+    <FlexoConceptInstanceRole id="3" flexoID="53" useSpecificDescriptions="false" userID="FLX" name="concept2" flexoConceptTypeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept2" cloningStrategy="Reference" cardinality="ZeroMany" />
+    <FlexoConceptInstanceRole id="4" flexoID="19" useSpecificDescriptions="false" userID="FLX" name="concept3" flexoConceptTypeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept3" cloningStrategy="Reference" cardinality="ZeroOne" />
+    <CreationScheme id="5" userID="FLX" useSpecificDescriptions="false" width="800" label="create" definePopupDefaultSize="false" height="600" flexoID="20" skipConfirmationPanel="false" name="create">
+      <BehaviourControlGraph_EmptyControlGraph id="6" flexoID="21" userID="FLX" useSpecificDescriptions="false" />
+    </CreationScheme>
+    <ActionScheme id="7" userID="FLX" useSpecificDescriptions="false" width="800" label="addConcept2" definePopupDefaultSize="false" height="600" flexoID="26" skipConfirmationPanel="false" name="addConcept2">
+      <BehaviourControlGraph_AddToListAction id="8" useSpecificDescriptions="false" userID="FLX" list="concept2" flexoID="35">
+        <AssignableAction_ExpressionAction id="9" expression="parameters.concept2" flexoID="34" userID="FLX" useSpecificDescriptions="false" />
+      </BehaviourControlGraph_AddToListAction>
+      <FlexoConceptInstanceParameter id="10" userID="FLX" useSpecificDescriptions="false" label="concept2" flexoID="27" isRequired="false" name="concept2" flexoConceptTypeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept2" aVirtualModelInstance="virtualModelInstance" />
+    </ActionScheme>
+    <ActionScheme id="11" userID="FLX" useSpecificDescriptions="false" width="800" label="setConcept3" definePopupDefaultSize="false" height="600" flexoID="37" skipConfirmationPanel="false" name="setConcept3">
+      <BehaviourControlGraph_AssignationAction id="12" userID="FLX" useSpecificDescriptions="false" flexoID="42" assign="concept3">
+        <AssignableAction_ExpressionAction id="13" expression="parameters.concept3" flexoID="41" userID="FLX" useSpecificDescriptions="false" />
+      </BehaviourControlGraph_AssignationAction>
+      <FlexoConceptInstanceParameter id="14" userID="FLX" useSpecificDescriptions="false" label="concept3" flexoID="38" isRequired="false" name="concept3" flexoConceptTypeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept3" aVirtualModelInstance="virtualModelInstance" />
+    </ActionScheme>
+    <ActionScheme id="15" userID="FLX" useSpecificDescriptions="false" width="800" label="removeConcept2" definePopupDefaultSize="false" height="600" flexoID="69" skipConfirmationPanel="false" name="removeConcept2">
+      <BehaviourControlGraph_RemoveFromListAction id="16" useSpecificDescriptions="false" userID="FLX" list="" flexoID="75" description="" value="parameters.concept2" />
+      <FlexoConceptInstanceParameter id="17" userID="FLX" useSpecificDescriptions="false" label="concept2" flexoID="70" isRequired="false" name="concept2" flexoConceptTypeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept2" aVirtualModelInstance="virtualModelInstance" />
+    </ActionScheme>
+  </FlexoConcept>
+  <FlexoConcept id="18" useSpecificDescriptions="false" userID="FLX" isAbstract="false" flexoID="12" name="Concept2">
+    <Inspector id="19" flexoID="11" useSpecificDescriptions="false" userID="FLX" inspectorTitle="Concept2" />
+    <PrimitiveRole id="20" flexoID="45" primitiveType="String" useSpecificDescriptions="false" userID="FLX" name="name" cloningStrategy="Clone" cardinality="ZeroOne" />
+    <CreationScheme id="21" userID="FLX" useSpecificDescriptions="false" width="800" label="create" definePopupDefaultSize="false" height="600" flexoID="43" skipConfirmationPanel="false" name="create">
+      <BehaviourControlGraph_AssignationAction id="22" userID="FLX" useSpecificDescriptions="false" flexoID="49" assign="name">
+        <AssignableAction_ExpressionAction id="23" expression="parameters.name" flexoID="48" userID="FLX" useSpecificDescriptions="false" />
+      </BehaviourControlGraph_AssignationAction>
+      <TextFieldParameter id="24" flexoID="44" isRequired="false" name="name" useSpecificDescriptions="false" userID="FLX" label="name" />
+    </CreationScheme>
+    <DeletionScheme id="25" userID="FLX" useSpecificDescriptions="false" width="800" label="delete" definePopupDefaultSize="false" height="600" flexoID="52" skipConfirmationPanel="false" name="delete">
+      <BehaviourControlGraph_EmptyControlGraph id="26" flexoID="54" userID="FLX" useSpecificDescriptions="false" />
+    </DeletionScheme>
+  </FlexoConcept>
+  <FlexoConcept id="27" useSpecificDescriptions="false" userID="FLX" isAbstract="false" flexoID="16" name="Concept3">
+    <Inspector id="28" flexoID="15" useSpecificDescriptions="false" userID="FLX" inspectorTitle="Concept3" />
+    <PrimitiveRole id="29" flexoID="57" primitiveType="Integer" useSpecificDescriptions="false" userID="FLX" name="id" cloningStrategy="Clone" cardinality="One" />
+    <CreationScheme id="30" userID="FLX" useSpecificDescriptions="false" width="800" label="create" definePopupDefaultSize="false" height="600" flexoID="50" skipConfirmationPanel="false" name="create">
+      <BehaviourControlGraph_AssignationAction id="31" userID="FLX" useSpecificDescriptions="false" flexoID="61" assign="id">
+        <AssignableAction_ExpressionAction id="32" expression="parameters.id" flexoID="60" userID="FLX" useSpecificDescriptions="false" />
+      </BehaviourControlGraph_AssignationAction>
+      <IntegerParameter id="33" flexoID="58" isRequired="false" name="id" useSpecificDescriptions="false" userID="FLX" label="id" />
+    </CreationScheme>
+  </FlexoConcept>
+  <Inspector id="34" flexoID="6" useSpecificDescriptions="false" userID="FLX" inspectorTitle="vm1" />
+  <ActionScheme id="35" userID="FLX" useSpecificDescriptions="false" width="800" label="addConcept1" definePopupDefaultSize="false" height="600" flexoID="18" skipConfirmationPanel="false" name="addConcept1">
+    <BehaviourControlGraph_AddFlexoConceptInstance id="36" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="25" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept1.create" />
+  </ActionScheme>
+  <ActionScheme id="37" userID="FLX" useSpecificDescriptions="false" width="800" label="addConcept2" definePopupDefaultSize="false" height="600" flexoID="26" skipConfirmationPanel="false" name="addConcept2">
+    <BehaviourControlGraph_Sequence id="38" flexoID="37" userID="FLX" useSpecificDescriptions="false">
+      <ControlGraph1_AddFlexoConceptInstance id="39" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="32" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept2.create" ownerContext="controlGraph1">
+        <AddFlexoConceptInstanceParameter id="40" flexoID="55" userID="FLX" useSpecificDescriptions="false" value="&quot;number1&quot;" paramName="name" />
+      </ControlGraph1_AddFlexoConceptInstance>
+      <ControlGraph2_AddFlexoConceptInstance id="41" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="36" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept2.create" ownerContext="controlGraph2">
+        <AddFlexoConceptInstanceParameter id="42" flexoID="56" userID="FLX" useSpecificDescriptions="false" value="&quot;number2&quot;" paramName="name" />
+      </ControlGraph2_AddFlexoConceptInstance>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+  <ActionScheme id="43" userID="FLX" useSpecificDescriptions="false" width="800" label="addConcept3" definePopupDefaultSize="false" height="600" flexoID="38" skipConfirmationPanel="false" name="addConcept3">
+    <BehaviourControlGraph_MatchFlexoConceptInstance id="44" userID="FLX" useSpecificDescriptions="false" virtualModelInstance="virtualModelInstance" flexoID="44" creationSchemeURI="http://openflexo.org/test/TestViewPoint2/VirtualModel#Concept3.create" description="">
+      <MatchingCriteria id="45" flexoID="45" useSpecificDescriptions="false" userID="FLX" value="parameters.id" patternRoleName="id" />
+      <CreateFlexoConceptInstanceParameter id="46" flexoID="62" userID="FLX" useSpecificDescriptions="false" value="parameters.id" paramName="id" />
+    </BehaviourControlGraph_MatchFlexoConceptInstance>
+    <IntegerParameter id="47" flexoID="39" isRequired="false" name="id" useSpecificDescriptions="false" userID="FLX" label="id" />
+  </ActionScheme>
+</VirtualModel>
