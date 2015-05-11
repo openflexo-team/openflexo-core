@@ -226,7 +226,20 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract ImageIcon getMetaModelIcon();
 
 	/**
-	 * Return icon representing supplied ontology object
+	 * Return icon representing supplied {@link TechnologyObject}
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public ImageIcon getIconForTechnologyObject(TechnologyObject<?> object) {
+		if (object != null) {
+			return getIconForTechnologyObject((Class) object.getClass());
+		}
+		return null;
+	}
+
+	/**
+	 * Return icon representing supplied {@link TechnologyObject} class
 	 * 
 	 * @param object
 	 * @return
