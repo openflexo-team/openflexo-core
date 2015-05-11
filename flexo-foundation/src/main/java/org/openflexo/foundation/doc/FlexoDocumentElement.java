@@ -24,12 +24,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
  * Generic abstract concept representing an object beeing part of a text-based document at root level<br>
- * A {@link FlexoDocument} is composed of a sequence of {@link FlexoDocumentElement}
+ * A {@link FlexoDocument} is composed of a sequence of {@link FlexoDocumentElement}<br>
+ * 
+ * A FlexoDocumentElement has a unique identifier
  * 
  * @author sylvain
  *
@@ -41,6 +46,22 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocumentElement.FlexoDocumentElementImpl.class)
 public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+
+	@PropertyIdentifier(type = String.class)
+	public static final String IDENTIFIER_KEY = "identifier";
+
+	/**
+	 * Return identifier of the {@link FlexoParagraph} in the {@link FlexoDocument}<br>
+	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
+	 * Please note that two different documents may have both a paragraph with same identifier
+	 * 
+	 * @return
+	 */
+	@Getter(IDENTIFIER_KEY)
+	public String getIdentifier();
+
+	@Setter(IDENTIFIER_KEY)
+	public void setIdentifier(String identifier);
 
 	/**
 	 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the

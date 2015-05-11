@@ -43,23 +43,8 @@ import org.openflexo.model.annotations.Setter;
 @ModelEntity(isAbstract = true)
 public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentElement<D, TA> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String IDENTIFIER_KEY = "identifier";
 	@PropertyIdentifier(type = FlexoStyle.class)
 	public static final String STYLE_KEY = "style";
-
-	/**
-	 * Return identifier of the {@link FlexoParagraph} in the {@link FlexoDocument}<br>
-	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
-	 * Please note that two different documents may have both a paragraph with same identifier
-	 * 
-	 * @return
-	 */
-	@Getter(IDENTIFIER_KEY)
-	public String getIdentifier();
-
-	@Setter(IDENTIFIER_KEY)
-	public void setIdentifier(String identifier);
 
 	@Getter(value = STYLE_KEY)
 	public FlexoStyle<D, TA> getStyle();
