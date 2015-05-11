@@ -101,7 +101,9 @@ public class FlexoConceptFlexoPropertyPathElement<FR extends FlexoProperty<?>> e
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance epi = (FlexoConceptInstance) target;
-			if (flexoProperty instanceof FlexoRole) {
+			if (flexoProperty.getCardinality().isMultipleCardinality()) {
+				return epi.getFlexoActorList((FlexoRole<?>) flexoProperty);
+			} else if (flexoProperty instanceof FlexoRole) {
 				return epi.getFlexoActor((FlexoRole<?>) flexoProperty);
 			} else {
 				logger.warning("Not implemented: getBindingValue() for " + flexoProperty);

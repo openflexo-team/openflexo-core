@@ -234,12 +234,15 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		// (when FlexoConcept is not yet known)
 		private final HashMap<String, List<ActorReference<?>>> actors;
 
+		private final HashMap<String, List<?>> modelingElements;
+
 		/**
 		 * Default constructor
 		 */
 		public FlexoConceptInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
 			super();
 			actors = new HashMap<String, List<ActorReference<?>>>();
+			modelingElements = new HashMap<String, List<?>>();
 		}
 
 		@Override
@@ -308,16 +311,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
+			List<T> modelingElements = getReferencedModelingElements(flexoRole.getRoleName());
+			// List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
-			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+			// List<T> returned = new ArrayList<T>();
 
-			List<T> returned = new ArrayList<T>();
-			if (actorReferences != null) {
-				for (ActorReference<T> ref : actorReferences) {
-					returned.add(ref.getModellingElement());
+			/*if (modelingElements != null) {
+				for (T ref : modelingElements) {
+					modelingElements.add(ref.getModellingElement());
 				}
-			}
-			return returned;
+			}*/
+			return modelingElements;
 		}
 
 		/**
@@ -541,6 +545,15 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return references;
 		}
 
+		private <T> List<T> getReferencedModelingElements(final String roleName) {
+			List<T> references = (List) modelingElements.get(roleName);
+			if (references == null) {
+				references = new ModelingElementList<T>(roleName);
+				modelingElements.put(roleName, references);
+			}
+			return references;
+		}
+
 		@Override
 		public void addToActors(ActorReference<?> actorReference) {
 
@@ -642,6 +655,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return this;
 			} else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
+				if (role != null && role.getCardinality().isMultipleCardinality()) {
+					return getFlexoActorList(role);
+				}
 				if (role != null) {
 					return getFlexoActor(role);
 				}
@@ -907,6 +923,22 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String toString() {
 			return getImplementedInterface().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null")
 					+ "[ID=" + getFlexoID() + "]" + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
+		}
+
+		class ModelingElementList<T> extends ArrayList {
+
+			private final String roleName;
+
+			public ModelingElementList(String roleName) {
+				this.roleName = roleName;
+			}
+
+			@Override
+			public boolean add(Object e) {
+				FlexoConceptInstanceImpl.this.addToFlexoActors((T) e, (FlexoRole) (getFlexoConcept().getAccessibleProperty(roleName)));
+				return super.add(e);
+			}
+
 		}
 
 	}
