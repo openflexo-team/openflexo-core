@@ -118,7 +118,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	private ModelSlot<?> modelSlot;
-	private boolean useModelSlot = true;
+	private boolean useModelSlot;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
@@ -270,7 +270,9 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	public AbstractVirtualModel<?> getModelSlotVirtualModel() {
-		if (modelSlot instanceof FMLRTModelSlot) {
+		if (modelSlot == null || !useModelSlot) {
+			return getFlexoConcept().getVirtualModel();
+		} else if (modelSlot instanceof FMLRTModelSlot) {
 			if (((FMLRTModelSlot) modelSlot).getVirtualModelResource() != null) {
 				return ((FMLRTModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
