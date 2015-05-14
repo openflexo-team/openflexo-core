@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -29,8 +30,18 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(FlexoDocumentFragmentRole.FlexoDocumentFragmentRoleImpl.class)
 public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>> extends FlexoRole<T> {
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<T extends FlexoDocumentFragment<?, ?>> extends FlexoRoleImpl<T> implements
-			FlexoDocumentFragmentRole<T> {
+	public FlexoDocument<?, ?> getDocument();
+
+	public static abstract class FlexoDocumentFragmentRoleImpl<T extends FlexoDocumentFragment<?, ?>> extends FlexoRoleImpl<T>
+			implements FlexoDocumentFragmentRole<T> {
+
+		@Override
+		public FlexoDocument<?, ?> getDocument() {
+			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
+				return ((FlexoDocumentModelSlot) getModelSlot()).getTemplateResource().getDocument();
+			}
+			return null;
+		}
 
 	}
 }

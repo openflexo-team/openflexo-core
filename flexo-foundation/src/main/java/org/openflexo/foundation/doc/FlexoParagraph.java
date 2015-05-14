@@ -54,6 +54,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 
 	public String getRawText();
 
+	public String getRawTextPreview();
+
 	/**
 	 * Return the list of sub-paragraph using interpretation of
 	 * 
@@ -61,8 +63,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
 
 		@Override
 		public String toString() {
@@ -129,6 +131,17 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 
 			return returned;
 
+		}
+
+		@Override
+		public String getRawTextPreview() {
+			// TODO: perf issue
+			String rawText = getRawText();
+			if (rawText.length() > 35) {
+				return rawText.substring(0, 35) + "...";
+			} else {
+				return rawText;
+			}
 		}
 	}
 

@@ -23,8 +23,10 @@ package org.openflexo.foundation.doc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -164,6 +166,18 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.STYLE_ID_KEY)
 	public FlexoStyle<D, TA> getStyleByIdentifier(String styleId);
 
+	/**
+	 * Return fragment identified by start and end elements (inclusive)
+	 * 
+	 * @param startElement
+	 * @param endElement
+	 * @return
+	 */
+	public FlexoDocumentFragment<D, TA> getFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+			throws FragmentConsistencyException;
+
+	public DocumentFactory<D, TA> getFactory();
+
 	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
 
@@ -266,6 +280,25 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 			}
 			return returned;
 		}
+
+		@Override
+		public DocumentFactory<D, TA> getFactory() {
+
+			if (getResource() != null) {
+				return (DocumentFactory<D, TA>) ((PamelaResource<?, ?>) getResource()).getFactory();
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoDocumentFragment<D, TA> getFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+				throws FragmentConsistencyException {
+			if (getFactory() != null) {
+				return getFactory().getFragment(startElement, endElement);
+			}
+			return null;
+		}
+
 	}
 
 }

@@ -20,6 +20,9 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.List;
+
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -69,8 +72,48 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	@Setter(END_ELEMENT_KEY)
 	public void setEndElement(FlexoDocumentElement<D, TA> endElement);
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
+	public void checkConsistency() throws FragmentConsistencyException;
+
+	public class FragmentConsistencyException extends FlexoException {
+		public FragmentConsistencyException() {
+		}
+	}
+
+	/**
+	 * Return all elements this fragment is composed of
+	 * 
+	 * @return
+	 */
+	public List<FlexoDocumentElement<D, TA>> getElements();
+
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
+
+		@Override
+		public List<FlexoDocumentElement<D, TA>> getElements() {
+			int startIndex = getFlexoDocument().getElements().indexOf(getStartElement());
+			int endIndex = getFlexoDocument().getElements().indexOf(getEndElement());
+			return getFlexoDocument().getElements().subList(startIndex, endIndex + 1);
+		}
+
+		@Override
+		public void checkConsistency() throws FragmentConsistencyException {
+			if (getFlexoDocument() == null) {
+				throw new FragmentConsistencyException();
+			}
+			int startIndex = getFlexoDocument().getElements().indexOf(getStartElement());
+			if (startIndex == -1) {
+				throw new FragmentConsistencyException();
+			}
+			int endIndex = getFlexoDocument().getElements().indexOf(getEndElement());
+			if (endIndex == -1) {
+				throw new FragmentConsistencyException();
+			}
+			if (endIndex < startIndex) {
+				throw new FragmentConsistencyException();
+			}
+			// Otherwise, that's ok
+		}
 
 	}
 
