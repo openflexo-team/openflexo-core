@@ -62,8 +62,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
-		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory implements
+		PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
 
@@ -124,6 +124,12 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 */
 	public FlexoDocumentFragment<D, TA> makeFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
 			throws FragmentConsistencyException {
+		if (startElement == null) {
+			throw new FragmentConsistencyException();
+		}
+		if (endElement == null) {
+			throw new FragmentConsistencyException();
+		}
 		FlexoDocumentFragment<D, TA> returned = makeFragment(startElement.getFlexoDocument());
 		returned.setStartElement(startElement);
 		returned.setEndElement(endElement);

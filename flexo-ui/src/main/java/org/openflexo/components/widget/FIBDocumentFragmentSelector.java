@@ -40,6 +40,8 @@
 package org.openflexo.components.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -104,6 +106,12 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 	}
 
 	private void updateWith(List<FlexoDocumentElement<D, TA>> elements) {
+
+		if (document == null) {
+			logger.warning("No document defined in FIBDocumentFragmentSelector");
+			return;
+		}
+
 		F newFragment = null;
 		if (elements.size() == 0) {
 			newFragment = null;
@@ -115,12 +123,14 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 				e.printStackTrace();
 			}
 		} else {
+
 			FlexoDocumentElement<D, TA> startElement = elements.get(0);
 			FlexoDocumentElement<D, TA> endElement = elements.get(elements.size() - 1);
 			try {
 				newFragment = (F) document.getFragment(startElement, endElement);
 			} catch (FragmentConsistencyException e) {
-				e.printStackTrace();
+				System.out.println("This fragment is not valid: start=" + startElement + " end=" + endElement);
+				newFragment = null;
 			}
 
 		}
@@ -154,18 +164,29 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 			addSelectionListener(new FIBSelectionListener() {
 				@Override
 				public void selectionChanged(List<Object> selection) {
-					System.out.println("Selection change: " + selection);
 					List<FlexoDocumentElement<?, ?>> elements = new ArrayList<>();
+					FlexoDocument<?, ?> doc = null;
 					for (Object o : selection) {
-						if (o instanceof FlexoDocumentElement) {
-							elements.add((FlexoDocumentElement<?, ?>) o);
+						if (o instanceof FlexoDocumentElement && ((FlexoDocumentElement) o).getFlexoDocument() != null) {
+							if (doc == null) {
+								doc = ((FlexoDocumentElement) o).getFlexoDocument();
+							}
+							if (doc == ((FlexoDocumentElement) o).getFlexoDocument()) {
+								elements.add((FlexoDocumentElement<?, ?>) o);
+							}
 						}
 					}
+					final FlexoDocument<?, ?> docReference = doc;
+					Collections.sort(elements, new Comparator<FlexoDocumentElement>() {
+						@Override
+						public int compare(FlexoDocumentElement o1, FlexoDocumentElement o2) {
+							return docReference.getElements().indexOf(o1) - docReference.getElements().indexOf(o2);
+						}
+					});
 					selector.updateWith(elements);
 				}
 			});
 		}
-
 	}
 
 	public class FragmentSelectorDetailsPanel extends SelectorDetailsPanel {
@@ -200,23 +221,47 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 
 		@Override
 		protected void selectValue(F value) {
-			FIBBrowserWidget browserWidget = getFIBBrowserWidget();
+			/*FIBBrowserWidget browserWidget = getFIBBrowserWidget();
 			if (browserWidget != null) {
 				// Force reselect value because tree may have been recomputed
 				browserWidget.setSelected(value);
-			}
-		}
+			}*/
 
-		@Override
-		public void update() {
-			super.update();
-			System.out.println("tiens, ca serait bien de representer le fragment " + getSelectedValue());
-			selectFragmentInDocumentEditor(getSelectedValue());
+			setSelectedValue(value);
+
+			FIBBrowserWidget browserWidget = getFIBBrowserWidget();
+			if (browserWidget != null) {
+				if (value == null) {
+					browserWidget.clearSelection();
+				} else {
+					getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, value.getElements());
+				}
+			}
+
+			selectFragmentInDocumentEditor(value, getDocEditorWidget());
 		}
 
 	}
 
-	protected void selectFragmentInDocumentEditor(F fragment) {
+	public List<FlexoDocumentElement<D, TA>> getSelectedDocumentElements() {
+		if (getSelectedValue() != null) {
+			return getSelectedValue().getElements();
+		}
+		return null;
+	}
+
+	public void setSelectedDocumentElements(List<FlexoDocumentElement<D, TA>> selection) {
+		System.out.println("setSelectedDocumentElements with " + selection);
+		// System.out.println("old=" + getSelectedDocumentElements());
+		// List<FlexoDocumentElement<D, TA>> old = getSelectedDocumentElements();
+		// System.out.println("old.equals(selection)=" + old.equals(selection));
+		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
+		/*if (getSelectedObject() != getSelectedValue()) {
+			setSelectedObject(selectedValue);
+		}*/
+	}
+
+	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?> documentEditorWidget) {
 
 	}
 }
