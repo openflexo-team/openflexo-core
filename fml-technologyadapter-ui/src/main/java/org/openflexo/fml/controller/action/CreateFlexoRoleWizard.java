@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
@@ -160,6 +161,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 				checkValidity();
 			}
 		}
@@ -180,6 +182,10 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 
 		public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 			return getAction().getAdressedFlexoMetaModel();
+		}
+
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+			return getAction().getAvailableFlexoRoleTypes();
 		}
 
 		public IFlexoOntologyClass getIndividualType() {
@@ -233,6 +239,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getPropertyChangeSupport().firePropertyChange("modelSlot", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 			}
 		}
 

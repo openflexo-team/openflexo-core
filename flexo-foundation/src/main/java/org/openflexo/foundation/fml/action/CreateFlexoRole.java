@@ -405,6 +405,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		}
 		getPropertyChangeSupport().firePropertyChange("useModelSlot", null, useModelSlot);
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
+		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 	}
 
 }
