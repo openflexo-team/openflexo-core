@@ -2,7 +2,7 @@
  * 
  * Copyright (c) 2015, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,18 +36,18 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.view.controller;
 
-import org.openflexo.foundation.nature.FlexoNature;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * Interface defining the nature of a {@link VirtualModelInstance}<br>
- * 
- * A {@link VirtualModelInstanceNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
- * 
- * @author sylvain
- * 
- */
-public interface VirtualModelInstanceNature extends FlexoNature<VirtualModelInstance> {
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target(value = ElementType.TYPE)
+public @interface DeclareVirtualModelInstanceNatures {
 
+	public DeclareVirtualModelInstanceNature[] value();
 }

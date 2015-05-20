@@ -7,7 +7,6 @@
         <version>1.7.2-SYLVAIN-SNAPSHOT</version>
     </parent>
     <artifactId>flexo-foundation</artifactId>
-  <version>1.7.2-SYLVAIN-SNAPSHOT</version>
     <name>Openflexo-core : foundation layer</name>
     <build>
         <plugins>

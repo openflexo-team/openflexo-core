@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
@@ -91,8 +92,6 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 	 */
 	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib")
 	public class DescribeFlexoRole extends DescribeProperty {
-
-		private boolean useModelSlot = true;
 
 		@Override
 		public String getTitle() {
@@ -162,6 +161,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 				checkValidity();
 			}
 		}
@@ -182,6 +182,10 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 
 		public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 			return getAction().getAdressedFlexoMetaModel();
+		}
+
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+			return getAction().getAvailableFlexoRoleTypes();
 		}
 
 		public IFlexoOntologyClass getIndividualType() {
@@ -224,17 +228,18 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 		}
 
 		public boolean isUseModelSlot() {
-			return useModelSlot;
+			return getAction().isUseModelSlot();
 		}
 
 		public void setUseModelSlot(boolean useModelSlot) {
 			if (isUseModelSlot() != useModelSlot) {
 				boolean oldValue = isUseModelSlot();
-				this.useModelSlot = useModelSlot;
-				if (!useModelSlot) {
-					setModelSlot(null);
-				}
+				getAction().setUseModelSlot(useModelSlot);
 				getPropertyChangeSupport().firePropertyChange("useModelSlot", oldValue, useModelSlot);
+				getPropertyChangeSupport().firePropertyChange("modelSlot", null, getModelSlot());
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
+				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 			}
 		}
 

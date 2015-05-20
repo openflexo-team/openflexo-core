@@ -62,7 +62,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "aVirtualModelInstance";
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -73,16 +73,16 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public FlexoConcept getFlexoConceptType();
 
+	public void setFlexoConceptType(FlexoConcept flexoConceptType);
+
+	public VirtualModel getModelSlotVirtualModel();
+
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
 	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> binding);
-
-	public void setFlexoConceptType(FlexoConcept flexoConceptType);
-
-	public VirtualModel getModelSlotVirtualModel();
+	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> vminstance);
 
 	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot> implements
 			FlexoConceptInstanceParameter {
@@ -167,18 +167,18 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		}
 
 		@Override
-		public void setModelSlot(FMLRTModelSlot modelSlot) {
-			super.setModelSlot(modelSlot);
-			setChanged();
-			notifyObservers(new DataModification("modelSlotVirtualModel", null, modelSlot));
-		}
-
-		@Override
 		public VirtualModel getModelSlotVirtualModel() {
 			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
 				return getModelSlot().getVirtualModelResource().getVirtualModel();
 			}
 			return null;
+		}
+
+		@Override
+		public void setModelSlot(FMLRTModelSlot modelSlot) {
+			super.setModelSlot(modelSlot);
+			setChanged();
+			notifyObservers(new DataModification("modelSlotVirtualModel", null, modelSlot));
 		}
 
 		@Override

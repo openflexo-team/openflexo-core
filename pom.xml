@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-component</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.4-SNAPSHOT</version>
 	</parent>
 	<version>1.7.2-SYLVAIN-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
@@ -22,7 +22,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	    <tag>1.7.1</tag>
+	    <tag>1.7.2</tag>
     </scm>
 	<modules>
 		<module>flexo-foundation</module>
@@ -39,41 +39,41 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-foundation</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 		
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcecenter</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexodocresourcemanager</artifactId>
-				<version>1.7.2-SYLVAIN-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
 			<dependency>
@@ -107,7 +107,7 @@
 		    <dependency>
 			   <groupId>org.openflexo</groupId>
 			   <artifactId>flexographicsutils</artifactId>
-			   <version>1.7-SNAPSHOT</version>
+				<version>${gina.version}</version>
 		    </dependency>
 			<dependency>
 				<groupId>org.openflexo</groupId>

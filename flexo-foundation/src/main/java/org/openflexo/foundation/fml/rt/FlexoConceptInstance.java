@@ -646,10 +646,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					return getFlexoActor(role);
 				}
 				logger.warning("Unexpected " + variable);
-				return null;
+				// return null;
 			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				logger.warning("Not implemented: getValue() for " + variable);
-				return null;
+				// return null;
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
 			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
@@ -869,8 +869,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					} else {
 						if (obj != null) {
 							return obj.toString();
-						} else
-							return EMPTY_STRING;
+						} else return EMPTY_STRING;
 					}
 
 				} catch (TypeMismatchException e) {

@@ -114,7 +114,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
 				return new FlexoBehaviourParameterDefinitionPathElement(parent, (FlexoBehaviourParameter) object);
-			} else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
+			}
+			else if (parent.getType() instanceof FlexoBehaviourParametersValuesType) {
 				return new FlexoBehaviourParameterValuePathElement(parent, (FlexoBehaviourParameter) object);
 			}
 		}
@@ -150,7 +151,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				}
 				Collections.sort(returned, BindingPathElement.COMPARATOR);
 				return returned;
-			} else if (pType instanceof FlexoBehaviourParametersValuesType) {
+			}
+			else if (pType instanceof FlexoBehaviourParametersValuesType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
@@ -211,7 +213,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					}
 				}
 				return returned;
-			} else if (pType instanceof FlexoBehaviourType) {
+			}
+			else if (pType instanceof FlexoBehaviourType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
@@ -220,7 +223,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					returned.add(getSimplePathElement(pr, parent));
 				}
 				return returned;
-			} else if (pType instanceof FlexoBehaviourActionType) {
+			}
+			else if (pType instanceof FlexoBehaviourActionType) {
 				List<SimplePathElement> returned = new ArrayList<SimplePathElement>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
@@ -232,13 +236,14 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
 				returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE, flexoBehaviour.getFlexoConcept()
-						.getOwningVirtualModel().getOwningVirtualModel()));
+						.getOwningVirtualModel()));
 				return returned;
 			}
 
 			// In all other cases, consider it using Java rules
 			return super.getAccessibleSimplePathElements(parent);
-		} else {
+		}
+		else {
 			logger.warning("Trying to find accessible path elements for a NULL parent");
 			return Collections.EMPTY_LIST;
 		}

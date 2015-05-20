@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2013-2015, Openflexo
  * Copyright (c) 2011-2012, AgileBirds
  * 
  * This file is part of Flexo-ui, a component of the software infrastructure 

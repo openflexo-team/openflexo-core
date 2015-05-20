@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -56,7 +56,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * The {@link FlexoConceptInstance} is typed as {@link FlexoConceptInstanceType}
  * 
  * @author sylvain
- *
+ * 
  */
 public class FlexoConceptInstancePathElement extends SimplePathElement {
 
