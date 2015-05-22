@@ -10,7 +10,7 @@
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
-	<properties>
+	<properties> 
 		<gina.version>1.2</gina.version>
 		<connie.version>1.2</connie.version>
 		<pamela.version>1.2</pamela.version>
