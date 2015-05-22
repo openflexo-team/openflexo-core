@@ -4,10 +4,9 @@
     <parent>
         <groupId>org.openflexo</groupId>
         <artifactId>openflexo-core</artifactId>
-        <version>1.7.2-SNAPSHOT</version>
+        <version>1.8.0-SNAPSHOT</version>
     </parent>
     <artifactId>flexo-foundation</artifactId>
-  <version>1.7.2-SNAPSHOT</version>
     <name>Openflexo-core : foundation layer</name>
     <build>
         <plugins>
