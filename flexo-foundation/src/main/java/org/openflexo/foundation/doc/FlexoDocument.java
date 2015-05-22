@@ -67,6 +67,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
 
+	public static final String ROOT_ELEMENTS_KEY = "rootElements";
+
 	@PropertyIdentifier(type = FlexoStyle.class, cardinality = Cardinality.LIST)
 	public static final String STYLES_KEY = "styles";
 
@@ -255,6 +257,18 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 				rootElements = computeRootElements();
 			}
 			return rootElements;
+		}
+
+		protected void invalidateRootElements() {
+			rootElements = null;
+		}
+
+		protected boolean postponeRootElementChangedNotifications = false;
+
+		protected void notifyRootElementsChanged() {
+			if (!postponeRootElementChangedNotifications) {
+				getPropertyChangeSupport().firePropertyChange(ROOT_ELEMENTS_KEY, null, getRootElements());
+			}
 		}
 
 		private List<FlexoDocumentElement<D, TA>> computeRootElements() {
