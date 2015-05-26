@@ -50,6 +50,8 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	@PropertyIdentifier(type = String.class)
 	public static final String IDENTIFIER_KEY = "identifier";
 
+	public static final String CHILDREN_ELEMENTS_KEY = "childrenElements";
+
 	/**
 	 * Return identifier of the {@link FlexoParagraph} in the {@link FlexoDocument}<br>
 	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
@@ -70,6 +72,10 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 */
 	public List<FlexoDocumentElement<D, TA>> getChildrenElements();
+
+	public void invalidateChildrenElements();
+
+	public void notifyChildrenElementsChanged();
 
 	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
@@ -96,6 +102,18 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 			}
 			return Collections.emptyList();
 		}
+
+		@Override
+		public void invalidateChildrenElements() {
+			childrenElements = null;
+		}
+
+		@Override
+		public void notifyChildrenElementsChanged() {
+			System.out.println("We notify " + CHILDREN_ELEMENTS_KEY + " for " + getChildrenElements());
+			getPropertyChangeSupport().firePropertyChange(CHILDREN_ELEMENTS_KEY, null, getChildrenElements());
+		}
+
 	}
 
 }

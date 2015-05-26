@@ -61,8 +61,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>, ResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
@@ -108,6 +107,10 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Remover(ELEMENTS_KEY)
 	public void removeFromElements(FlexoDocumentElement<D, TA> anElement);
 
+	public void inserElementAtIndex(FlexoDocumentElement<D, TA> anElement, int index);
+
+	public void moveElementToIndex(FlexoDocumentElement<D, TA> anElement, int index);
+
 	/**
 	 * Return a new list of elements of supplied type
 	 * 
@@ -123,6 +126,10 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @return
 	 */
 	public List<FlexoDocumentElement<D, TA>> getRootElements();
+
+	public void invalidateRootElements();
+
+	public void notifyRootElementsChanged();
 
 	/**
 	 * Return the list of style used in this document
@@ -180,8 +187,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public DocumentFactory<D, TA> getFactory();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {
@@ -259,13 +266,15 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 			return rootElements;
 		}
 
-		protected void invalidateRootElements() {
+		@Override
+		public void invalidateRootElements() {
 			rootElements = null;
 		}
 
 		protected boolean postponeRootElementChangedNotifications = false;
 
-		protected void notifyRootElementsChanged() {
+		@Override
+		public void notifyRootElementsChanged() {
 			if (!postponeRootElementChangedNotifications) {
 				getPropertyChangeSupport().firePropertyChange(ROOT_ELEMENTS_KEY, null, getRootElements());
 			}

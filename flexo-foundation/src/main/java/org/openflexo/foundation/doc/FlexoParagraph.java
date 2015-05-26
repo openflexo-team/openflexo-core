@@ -56,6 +56,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 
 	public String getRawTextPreview();
 
+	public void fireTextChanged();
+
 	/**
 	 * Return the list of sub-paragraph using interpretation of
 	 * 
@@ -63,12 +65,12 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
 
 		@Override
 		public String toString() {
-			return "Paragraph(" + getIdentifier() + ") " + getRawText() + " "
+			return "Paragraph(" + getIdentifier() + ") " /* + getRawText() + " "*/
 					+ (getStyle() != null ? "[" + getStyle().getName() + "]" : "");
 		}
 
@@ -142,6 +144,12 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 			} else {
 				return rawText;
 			}
+		}
+
+		@Override
+		public void fireTextChanged() {
+			getPropertyChangeSupport().firePropertyChange("rawText", null, getRawText());
+			getPropertyChangeSupport().firePropertyChange("rawTextPreview", null, getRawTextPreview());
 		}
 	}
 
