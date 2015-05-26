@@ -112,6 +112,12 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	}
 
 	@Override
+	public void performSuperAdder(String propertyIdentifier, Object value, int index) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public void performSuperRemover(String propertyIdentifier, Object value) {
 		// TODO Auto-generated method stub
 
