@@ -80,6 +80,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String DEPENDENCIES = "dependencies";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
+	public static final String RESOURCE_CENTER = "resourceCenter";
 	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
 
 	/**
@@ -195,6 +196,20 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	@Setter(SERVICE_MANAGER)
 	public void setServiceManager(FlexoServiceManager serviceManager);
+
+	/**
+	 * Return the {@link FlexoResourceCenter} which provides this resource
+	 * 
+	 * @return
+	 */
+	@Getter(value = RESOURCE_CENTER, ignoreType = true)
+	public FlexoResourceCenter<?> getResourceCenter();
+
+	/**
+	 * Sets the {@link FlexoResourceCenter} which provides this resource
+	 */
+	@Setter(RESOURCE_CENTER)
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter);
 
 	/**
 	 * Returns the class of the resource data held by this resource.
