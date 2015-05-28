@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
 import java.io.FileNotFoundException;
@@ -111,13 +110,18 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 
 		@Override
 		public RD getAccessedResourceData() {
-			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
-				TechnologyAdapterResource<RD, ?> resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance()
-						.getInformationSpace().getResource(resourceURI, getVersion());
+			if (getVirtualModelInstance() != null && accessedResourceData == null) {
+
+				TechnologyAdapterResource<RD, ?> resource = getResource();
+
+				if (resource == null && StringUtils.isNotEmpty(resourceURI)) {
+					resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance().getInformationSpace().getResource(resourceURI,
+							getVersion());
+					setResource(resource);
+				}
 				if (resource != null) {
 					try {
 						accessedResourceData = resource.getResourceData(null);
-						this.resource = resource;
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

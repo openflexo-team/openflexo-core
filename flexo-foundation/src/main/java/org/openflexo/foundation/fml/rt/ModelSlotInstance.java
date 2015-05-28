@@ -36,12 +36,14 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -77,6 +79,12 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
 
+	@PropertyIdentifier(type = TechnologyAdapterResource.class)
+	public static final String RESOURCE_KEY = "resource";
+
+	@PropertyIdentifier(type = ResourceData.class)
+	public static final String ACCESSED_RESOURCE_DATA_KEY = "accessedResourceData";
+
 	@Getter(value = MODEL_SLOT_NAME_KEY)
 	@XMLAttribute
 	public String getModelSlotName();
@@ -94,6 +102,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @return
 	 */
+	@Getter(value = ACCESSED_RESOURCE_DATA_KEY, ignoreType = true)
 	public RD getAccessedResourceData();
 
 	/**
@@ -101,6 +110,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @param accessedResourceData
 	 */
+	@Setter(ACCESSED_RESOURCE_DATA_KEY)
 	public void setAccessedResourceData(RD accessedResourceData);
 
 	/**
@@ -109,7 +119,17 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @return
 	 */
+	@Getter(value = RESOURCE_KEY, ignoreType = true)
 	public TechnologyAdapterResource<RD, ?> getResource();
+
+	/**
+	 * Sets the resource of the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot
+	 * 
+	 * @param resource
+	 */
+	@Setter(RESOURCE_KEY)
+	public void setResource(TechnologyAdapterResource<RD, ?> resource);
 
 	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
 			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
@@ -198,6 +218,21 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		 */
 		@Override
 		public RD getAccessedResourceData() {
+			if (accessedResourceData == null && getResource() != null) {
+				try {
+					accessedResourceData = getResource().getResourceData(null);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			return accessedResourceData;
 		}
 
@@ -214,7 +249,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			}
 
 			this.accessedResourceData = accessedResourceData;
-			this.resource = (TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource();
+			setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
 
 			/*if (requiresUpdate) {
 				// The virtual model can be synchronized with the new resource data.
@@ -223,6 +258,10 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 					getVirtualModelInstance().synchronize(null);
 				}
 			}*/
+
+			if (getVirtualModelInstance() != null) {
+				getVirtualModelInstance().setModified(true);
+			}
 
 		}
 
@@ -235,6 +274,19 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		@Override
 		public TechnologyAdapterResource<RD, ?> getResource() {
 			return resource;
+		}
+
+		@Override
+		public void setResource(TechnologyAdapterResource<RD, ?> resource) {
+			if ((resource == null && this.resource != null) || (resource != null && !resource.equals(this.resource))) {
+				TechnologyAdapterResource<RD, ?> oldValue = this.resource;
+				this.resource = resource;
+				getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
+				if (getVirtualModelInstance() != null) {
+					getVirtualModelInstance().setModified(true);
+				}
+
+			}
 		}
 
 		// Serialization/deserialization only, do not use
