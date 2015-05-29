@@ -211,7 +211,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 		return availableTechnologySpecificTypes;
 	}
-
+	
 	protected List<Class<? extends TechnologySpecificType<?>>> computeAvailableTechnologySpecificTypes() {
 		availableTechnologySpecificTypes = new ArrayList<Class<? extends TechnologySpecificType<?>>>();
 		appendDeclareTechnologySpecificTypes(availableTechnologySpecificTypes, getClass());
@@ -224,7 +224,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		if (!availableTechnologySpecificTypes.contains(ViewType.class)) {
 			availableTechnologySpecificTypes.add(ViewType.class);
 		}
-
+	
 		if (hasTypeAwareModelSlot()) {
 			if (!availableTechnologySpecificTypes.contains(IndividualOfClass.class)) {
 				availableTechnologySpecificTypes.add((Class) IndividualOfClass.class);
@@ -238,7 +238,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 		return availableTechnologySpecificTypes;
 	}
-
+	
 	private void appendDeclareTechnologySpecificTypes(List<Class<? extends TechnologySpecificType<?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareTechnologySpecificTypes.class)) {
 			DeclareTechnologySpecificTypes allTypes = cl.getAnnotation(DeclareTechnologySpecificTypes.class);
@@ -251,11 +251,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		if (cl.getSuperclass() != null) {
 			appendDeclareTechnologySpecificTypes(aList, cl.getSuperclass());
 		}
-
+	
 		for (Class superInterface : cl.getInterfaces()) {
 			appendDeclareTechnologySpecificTypes(aList, superInterface);
 		}
-
+	
 	}*/
 
 	/**
@@ -305,6 +305,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resourceCenter
 	 */
 	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+		resource.setResourceCenter(resourceCenter);
 		if (resourceCenter instanceof ResourceRepository && resource != null
 				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			// Also register the resource in the ResourceCenter seen as a ResourceRepository
@@ -353,7 +354,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public List<ResourceRepository<?>> getAllRepositories() {
 		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
-		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
+				.getResourceCenters()) {
 			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(this);
 			if (repCollection != null) {
 				returned.addAll(repCollection);

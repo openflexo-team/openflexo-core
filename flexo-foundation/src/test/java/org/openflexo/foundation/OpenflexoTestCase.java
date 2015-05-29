@@ -53,8 +53,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -63,7 +61,6 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.kvc.KeyValueLibrary;
@@ -78,6 +75,8 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
+import junit.framework.AssertionFailedError;
+
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
  * 
@@ -85,6 +84,8 @@ import org.openflexo.toolbox.FileUtils;
 public abstract class OpenflexoTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
+
+	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	protected static DirectoryResourceCenter resourceCenter;
 	protected static FlexoServiceManager serviceManager;
@@ -103,7 +104,7 @@ public abstract class OpenflexoTestCase {
 
 	@AfterClass
 	public static void tearDownClass() {
-		if (serviceManager != null){
+		if (serviceManager != null) {
 			serviceManager.stopAllServices();
 		}
 		if (testResourceCenterDirectory != null) {
@@ -179,7 +180,8 @@ public abstract class OpenflexoTestCase {
 					}
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
+					rcService.addToResourceCenters(
+							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 					// ici il y a des truc a voir
@@ -293,12 +295,11 @@ public abstract class OpenflexoTestCase {
 					message.append(" Missing: " + o);
 				}
 			}
-			throw new AssertionFailedError("AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2
-					+ " Details = " + message);
+			throw new AssertionFailedError(
+					"AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2 + " Details = " + message);
 		}
 	}
 
-	
 	@After
 	public void tearDown() throws Exception {
 		KeyValueLibrary.clearCache();
