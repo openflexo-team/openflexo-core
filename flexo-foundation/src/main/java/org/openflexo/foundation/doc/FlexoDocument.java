@@ -107,9 +107,14 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Remover(ELEMENTS_KEY)
 	public void removeFromElements(FlexoDocumentElement<D, TA> anElement);
 
-	public void inserElementAtIndex(FlexoDocumentElement<D, TA> anElement, int index);
+	public void insertElementAtIndex(FlexoDocumentElement<D, TA> anElement, int index);
 
 	public void moveElementToIndex(FlexoDocumentElement<D, TA> anElement, int index);
+
+	/**
+	 * Return element identified by identifier, or null if no such element exists
+	 */
+	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
 	/**
 	 * Return a new list of elements of supplied type

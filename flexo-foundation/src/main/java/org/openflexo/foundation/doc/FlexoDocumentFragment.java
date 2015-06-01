@@ -86,8 +86,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	 */
 	public List<FlexoDocumentElement<D, TA>> getElements();
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
 
 		@Override
 		public List<FlexoDocumentElement<D, TA>> getElements() {
@@ -115,6 +115,15 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			// Otherwise, that's ok
 		}
 
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof FlexoDocumentFragment)) {
+				return false;
+			}
+			FlexoDocumentFragment f2 = (FlexoDocumentFragment) obj;
+			return getFlexoDocument().equals(f2.getFlexoDocument()) && getStartElement().equals(f2.getStartElement())
+					&& getEndElement().equals(f2.getEndElement());
+		}
 	}
 
 }
