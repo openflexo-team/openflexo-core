@@ -342,7 +342,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	// Override when required
-	public void initVirtualModelFactory(FMLModelFactory fMLModelFactory) {
+	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
 	}
 
 	/**

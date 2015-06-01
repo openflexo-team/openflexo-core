@@ -44,8 +44,7 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelEntity;
@@ -57,7 +56,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * Here the model factory is instanciated with no TechnologyAdapters
  * 
  */
-public class BasicFMLModelFactoryTest {
+public class BasicFMLModelFactoryTest extends OpenflexoTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(BasicFMLModelFactoryTest.class.getPackage().getName());
 
@@ -65,8 +64,9 @@ public class BasicFMLModelFactoryTest {
 	public void testInstantiateFMLModelFactory() {
 		try {
 			System.out.println("Instanciating FMLModelFactory");
-			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
-			FMLModelFactory factory = new FMLModelFactory(null, null, taService);
+			instanciateTestServiceManager();
+			// TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
+			FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				ModelEntity e = it.next();
