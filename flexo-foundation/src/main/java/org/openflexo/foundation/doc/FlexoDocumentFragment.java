@@ -84,13 +84,13 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	 * 
 	 * @return
 	 */
-	public List<FlexoDocumentElement<D, TA>> getElements();
+	public List<? extends FlexoDocumentElement<D, TA>> getElements();
 
 	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
 
 		@Override
-		public List<FlexoDocumentElement<D, TA>> getElements() {
+		public List<? extends FlexoDocumentElement<D, TA>> getElements() {
 			int startIndex = getFlexoDocument().getElements().indexOf(getStartElement());
 			int endIndex = getFlexoDocument().getElements().indexOf(getEndElement());
 			return getFlexoDocument().getElements().subList(startIndex, endIndex + 1);

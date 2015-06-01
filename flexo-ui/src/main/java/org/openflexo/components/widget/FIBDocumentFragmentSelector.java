@@ -243,7 +243,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 
 	}
 
-	public List<FlexoDocumentElement<D, TA>> getSelectedDocumentElements() {
+	public List<? extends FlexoDocumentElement<D, TA>> getSelectedDocumentElements() {
 		if (getSelectedValue() != null) {
 			return getSelectedValue().getElements();
 		}
