@@ -372,9 +372,9 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
-	 * Also delete the resource data
+	 * Also delete the resource data if flag set to true
 	 */
-	public void unloadResourceData();
+	public void unloadResourceData(boolean deleteResourceData);
 
 	/**
 	 * Save the &quot;real&quot; resource data of this resource.

@@ -108,8 +108,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress)
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
+			FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -375,7 +375,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			}
 
 			if (isLoaded()) {
-				unloadResourceData();
+				unloadResourceData(true);
 			}
 
 			// Handle Flexo IO delegate deletion
@@ -394,9 +394,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * Also delete the resource data
 	 */
 	@Override
-	public void unloadResourceData() {
+	public void unloadResourceData(boolean deleteResourceData) {
 		if (isLoaded()) {
-			resourceData.delete();
+			if (deleteResourceData) {
+				resourceData.delete();
+			}
 			resourceData = null;
 		}
 	}
