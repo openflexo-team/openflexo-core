@@ -110,7 +110,7 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 
 		@Override
 		public void notifyChildrenElementsChanged() {
-			System.out.println("We notify " + CHILDREN_ELEMENTS_KEY + " for " + getChildrenElements());
+			// System.out.println("We notify " + CHILDREN_ELEMENTS_KEY + " for " + getChildrenElements());
 			getPropertyChangeSupport().firePropertyChange(CHILDREN_ELEMENTS_KEY, null, getChildrenElements());
 		}
 
