@@ -7,7 +7,6 @@
         <version>1.7.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-rt-technologyadapter-ui</artifactId>
-  <version>1.7.2-SNAPSHOT</version>
 	<name>FML@runtime technology adapter : UI layer</name>
 	<build>
 		<plugins>

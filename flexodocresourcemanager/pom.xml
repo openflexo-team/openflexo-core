@@ -7,7 +7,6 @@
         <version>1.7.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexodocresourcemanager</artifactId>
-  <version>1.7.2-SNAPSHOT</version>
 	<name>Help :: FlexoDocResourceManager</name>
 	<build>
 		<plugins>
