@@ -39,27 +39,17 @@
 package org.openflexo.foundation.task;
 
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.foundation.task.FlexoTask.TaskStatus;
+import org.openflexo.gina.task.GenericTaskThreadPool;
 
 public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements FlexoTaskManager {
 
 	private static final int DEFAULT_THREAD_POOL_SIZE = 5;
 
-	private final FlexoThreadFactory threadFactory;
-	private final ExecutorService executor;
-
-	private final List<FlexoTask> scheduledTasks;
-
-	private final PropertyChangeSupport pcSupport;
+	private GenericTaskThreadPool<FlexoTask, FlexoTaskThread> threadPool;
 
 	public static ThreadPoolFlexoTaskManager createInstance(int threadPoolSize) {
 		return new ThreadPoolFlexoTaskManager(threadPoolSize);
@@ -70,44 +60,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	private ThreadPoolFlexoTaskManager(int threadPoolSize) {
-
-		pcSupport = new PropertyChangeSupport(this);
-
-		threadFactory = new FlexoThreadFactory();
-
-		executor = new ThreadPoolExecutor(threadPoolSize, threadPoolSize, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-				threadFactory) {
-			@Override
-			protected synchronized void beforeExecute(Thread t, Runnable r) {
-				if (t instanceof FlexoTaskThread && r instanceof FlexoTask) {
-					((FlexoTask) r).startExecution((FlexoTaskThread) t);
-					logger.fine("Executing " + r + " in thread " + t);
-				}
-			}
-
-			@Override
-			protected synchronized void afterExecute(Runnable task, Throwable t) {
-				if (task instanceof FlexoTask) {
-					scheduledTasks.remove(task);
-					getPropertyChangeSupport().firePropertyChange(SCHEDULED_TASK_PROPERTY, task, null);
-					((FlexoTask) task).finishedExecution();
-					logger.fine("Finished executing " + task);
-					launchReadyToExecuteTasks();
-				}
-			}
-
-			/*@Override
-			protected <V> RunnableFuture<V> newTaskFor(final Runnable runnable, V v) {
-				return new FutureTask<V>(runnable, v) {
-					@Override
-					public String toString() {
-						return runnable.toString();
-					}
-				};
-			};*/
-		};
-
-		scheduledTasks = new ArrayList<FlexoTask>();
+		threadPool = new GenericTaskThreadPool<FlexoTask, FlexoTaskThread>(threadPoolSize, new FlexoTaskAdapter(), this);
 	}
 
 	@Override
@@ -118,12 +71,12 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	@Override
 	public PropertyChangeSupport getPropertyChangeSupport() {
-		return pcSupport;
+		return threadPool.getPropertyChangeSupport();
 	}
 
 	@Override
 	public String getDeletedProperty() {
-		return null;
+		return threadPool.getDeletedProperty();
 	}
 
 	/**
@@ -133,106 +86,44 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	 */
 	@Override
 	public synchronized void scheduleExecution(FlexoTask... tasks) {
-		if (isTerminated()) {
-			return;
-		}
-		FlexoTask previous = null;
-		for (FlexoTask task : tasks) {
-			if (previous != null) {
-				task.addToDependantTasks(previous);
-			}
-			scheduledTasks.add(task);
-			getPropertyChangeSupport().firePropertyChange(SCHEDULED_TASK_PROPERTY, null, task);
-			previous = task;
-		}
-
-		launchReadyToExecuteTasks();
-	}
-
-	private synchronized void launchReadyToExecuteTasks(FlexoTask... ignoredTasks) {
-		// System.out.println("launchReadyToExecuteTasks()");
-		for (FlexoTask task : new ArrayList<FlexoTask>(getScheduledTasks())) {
-			if (task.isReadyToExecute()) {
-				boolean ignored = false;
-				if (ignoredTasks.length > 0) {
-					for (int i = 0; i < ignoredTasks.length; i++) {
-						FlexoTask ignoredTask = ignoredTasks[i];
-						if (task == ignoredTasks[i]) {
-							logger.fine("Ignoring " + task);
-							ignored = true;
-						}
-					}
-				}
-				if (!ignored) {
-					logger.fine("Task " + task + " is ready to execute");
-					task.executionScheduled();
-					executor.execute(task);
-				} else {
-					logger.fine("Task " + task + " is to be ignored");
-				}
-			} else {
-				logger.fine("Task " + task + " is NOT ready to execute");
-			}
-		}
+		threadPool.scheduleExecution(tasks);
 	}
 
 	@Override
 	public void stopExecution(FlexoTask task) {
-		task.stopExecution();
-		// task.getThread().interrupt();
-		// task.finishedExecution();
-		// scheduledTasks.remove(task);
+		threadPool.stopExecution(task);
 	}
 
 	@Override
 	@Deprecated
 	public void forceStopExecution(FlexoTask task) {
-		task.forceStopExecution();
-		// task.getThread().stop();
-		// task.finishedExecution();
-		scheduledTasks.remove(task);
+		threadPool.forceStopExecution(task);
 	}
 
 	@Override
 	public boolean isTerminated() {
-		return (executor.isTerminated() && scheduledTasks.size() == 0);
+		return threadPool.isTerminated();
 	}
 
 	@Override
 	public void shutdownAndWait() {
-		executor.shutdown();
-
-		while (!isTerminated()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		logger.fine("Finished all threads");
+		threadPool.shutdownAndWait();
 	}
 
 	@Override
 	public void stop() {
-		executor.shutdown();
+		threadPool.stop();
 	}
 	
 
 	@Override
 	public void shutdownAndExecute(final Runnable r) {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				shutdownAndWait();
-				r.run();
-			}
-		}, "Shutdown");
-		t.start();
+		threadPool.shutdownAndExecute(r);
 	}
 
 	@Override
 	public synchronized List<FlexoTask> getScheduledTasks() {
-		return scheduledTasks;
+		return threadPool.getScheduledTasks();
 	}
 
 	@Override
@@ -242,19 +133,7 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	@Override
 	public void waitTask(FlexoTask task) {
-		if (task.getTaskStatus() != TaskStatus.WAITING && task.getTaskStatus() != TaskStatus.RUNNING
-				&& task.getTaskStatus() != TaskStatus.READY_TO_EXECUTE) {
-			return;
-		}
-		while (task.getTaskStatus() == TaskStatus.WAITING || task.getTaskStatus() == TaskStatus.RUNNING
-				|| task.getTaskStatus() == TaskStatus.READY_TO_EXECUTE) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		return;
+		threadPool.waitTask(task);
 	}
 
 }

@@ -65,8 +65,8 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingx.VerticalLayout;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.task.FlexoTaskManager;
+import org.openflexo.gina.task.GinaTask.TaskStatus;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;

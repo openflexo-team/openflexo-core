@@ -1789,7 +1789,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (selectAndFocusObjectTasks.get(object) == null) {
 			SelectAndFocusObjectTask task = new SelectAndFocusObjectTask(this, object) {
 				@Override
-				protected synchronized void finishedExecution() {
+				public synchronized void finishedExecution() {
 					super.finishedExecution();
 					selectAndFocusObjectTasks.remove(object);
 				}
