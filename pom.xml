@@ -5,25 +5,24 @@
 		<artifactId>openflexo-component</artifactId>
         <version>0.4-SNAPSHOT</version>
 	</parent>
+     <!-- ************
+   Component identity and specific information
+   -->
 	<version>1.7.2-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
-	<properties> 
-		<gina.version>1.2</gina.version>
-		<connie.version>1.2</connie.version>
-		<pamela.version>1.2</pamela.version>
-		<diana.version>1.2</diana.version>
-		<openflexoutils.version>1.2</openflexoutils.version>
-		<google.guice.version>3.0</google.guice.version>
-		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
-	</properties>
+	<url>https://openflexo-core.openflexo.org/</url>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
 	    <tag>1.7.2</tag>
     </scm>
+    	<issueManagement>
+        	<system>JIRA</system>
+       	 	<url>https://bugs.openflexo.org/browse/CORE/</url>
+    	</issueManagement>
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
@@ -33,6 +32,21 @@
 		<module>flexodocresourcecenter</module>
 		<module>flexodocresourcemanager</module>
     </modules>
+	<!-- 
+	Properties
+		-->
+	<properties> 
+		<gina.version>1.2</gina.version>
+		<connie.version>1.2</connie.version>
+		<pamela.version>1.2</pamela.version>
+		<diana.version>1.2</diana.version>
+		<openflexoutils.version>1.2</openflexoutils.version>
+		<google.guice.version>3.0</google.guice.version>
+		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
+	</properties>
+	<!-- 
+	Dependencies
+		-->
 	<dependencyManagement>
 		<dependencies>
 		
@@ -233,6 +247,9 @@
 			</dependency>
 		</dependencies>
   	</dependencyManagement>
+<!-- 
+Build config
+-->
 	<build>
 		<resources>
 			<resource>
@@ -276,5 +293,59 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+    <!-- ************
+   Specific profiles used to differentiate between snapshot release and release-candidates and official-releases
+   -->
+    <profiles>
+        <profile>
+            <id>snapshot-profile</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- ************
+   		Places where to upload files for component Maven site
+   		-->
+            <distributionManagement>
+                <site>
+                    <id>ofcore.website</id>
+                    <url>scp://server-one.openflexo.org/home/www/sites/openflexo-core/SNAPSHOT/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>RC-profile</id>
+            <activation>
+                <property>
+                    <name>performRC</name>
+                </property>
+            </activation>
+            <!-- ************
+   		Places where to upload files for component Maven site
+		   -->
+            <distributionManagement>
+                <site>
+                    <id>ofcore.website</id>
+                    <url>scp://server-one.openflexo.org/home/www/sites/openflexo-core/SNAPSHOT/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>release-profile</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                </property>
+            </activation>
+            <!-- ************
+   		Places where to upload files for component Maven site
+		   -->
+            <distributionManagement>
+                <site>
+                    <id>ofcore.website</id>
+                    <url>scp://server-one.openflexo.org/home/www/sites/openflexo-core/${project.version}/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
 
