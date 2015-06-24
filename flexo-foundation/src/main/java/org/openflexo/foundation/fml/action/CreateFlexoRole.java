@@ -118,11 +118,12 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	private ModelSlot<?> modelSlot;
+	private boolean useModelSlot;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
 	private PrimitiveType primitiveType = PrimitiveType.String;
-	private PropertyCardinality propertyCardinality = PropertyCardinality.ZeroOne;
+	private PropertyCardinality cardinality = PropertyCardinality.ZeroOne;
 
 	private FlexoRole<?> newFlexoRole;
 
@@ -153,15 +154,15 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		return "role";
 	}
 
-	public PropertyCardinality getPropertyCardinality() {
-		return propertyCardinality;
+	public PropertyCardinality getCardinality() {
+		return cardinality;
 	}
 
-	public void setPropertyCardinality(PropertyCardinality propertyCardinality) {
-		if (propertyCardinality != getPropertyCardinality()) {
-			PropertyCardinality oldPropertyCardinality = getPropertyCardinality();
-			this.propertyCardinality = propertyCardinality;
-			getPropertyChangeSupport().firePropertyChange("propertyCardinality", oldPropertyCardinality, propertyCardinality);
+	public void setCardinality(PropertyCardinality propertyCardinality) {
+		if (propertyCardinality != getCardinality()) {
+			PropertyCardinality oldPropertyCardinality = getCardinality();
+			this.cardinality = propertyCardinality;
+			getPropertyChangeSupport().firePropertyChange("cardinality", oldPropertyCardinality, propertyCardinality);
 		}
 	}
 
@@ -172,7 +173,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 			vmAvailableFlexoRoleTypes.add((Class<? extends FlexoRole<?>>) PrimitiveRole.class);
 
 		}
-		if (getModelSlot() != null) {
+		if (useModelSlot && getModelSlot() != null) {
 			return getModelSlot().getAvailableFlexoRoleTypes();
 		} else {
 			FlexoConcept fc = (getFocusedObject() instanceof FlexoConcept ? (FlexoConcept) this.getFocusedObject() : this
@@ -215,7 +216,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 				}
 
 				newFlexoRole.setRoleName(getRoleName());
-				newFlexoRole.setCardinality(getPropertyCardinality());
+				newFlexoRole.setCardinality(getCardinality());
 
 				super.doAction(context);
 			}
@@ -269,7 +270,9 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	public AbstractVirtualModel<?> getModelSlotVirtualModel() {
-		if (modelSlot instanceof FMLRTModelSlot) {
+		if (modelSlot == null || !useModelSlot) {
+			return getFlexoConcept().getVirtualModel();
+		} else if (modelSlot instanceof FMLRTModelSlot) {
 			if (((FMLRTModelSlot) modelSlot).getVirtualModelResource() != null) {
 				return ((FMLRTModelSlot) modelSlot).getVirtualModelResource().getVirtualModel();
 			}
@@ -389,6 +392,20 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	public void setPrimitiveType(PrimitiveType primitiveType) {
 		this.primitiveType = primitiveType;
 		getPropertyChangeSupport().firePropertyChange("primitiveType", null, primitiveType);
+	}
+
+	public boolean isUseModelSlot() {
+		return useModelSlot;
+	}
+
+	public void setUseModelSlot(boolean useModelSlot) {
+		this.useModelSlot = useModelSlot;
+		if (!useModelSlot) {
+			setModelSlot(null);
+		}
+		getPropertyChangeSupport().firePropertyChange("useModelSlot", null, useModelSlot);
+		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
+		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 	}
 
 }

@@ -306,7 +306,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				// if (ep instanceof DiagramSpecification) {
 				// return new DiagramSpecificationView(ep, (VPMController) controller);
 				// } else {
-				return new VirtualModelView(ep, controller, perspective);
+				return new VirtualModelView((VirtualModel) ep, controller, perspective);
 				// }
 			} else {
 				// if (ep.getVirtualModel() instanceof DiagramSpecification) {
@@ -336,14 +336,14 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			return new StandardFlexoConceptView(ep, (VPMController) controller);
 			// }
 		}
-
+		
 		}*/
 
 		return new EmptyPanel<TechnologyObject<FMLTechnologyAdapter>>(controller, perspective, object);
 	}
 
 	@Override
-	protected FIBTechnologyBrowser<FMLTechnologyAdapter> makeTechnologyBrowser(FlexoController controller) {
+	protected FIBTechnologyBrowser<FMLTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBViewPointLibraryBrowser(getTechnologyAdapter(), controller);
 	}
 }

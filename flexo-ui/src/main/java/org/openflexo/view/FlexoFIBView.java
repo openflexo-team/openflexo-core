@@ -250,7 +250,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	 * This method is a hook which is called just before to initialize FIBView and FIBController, and allow to programmatically define,
 	 * check or redefine component
 	 */
-	protected void initializeFIBComponent() {
+	public void initializeFIBComponent() {
 	}
 
 	@Override

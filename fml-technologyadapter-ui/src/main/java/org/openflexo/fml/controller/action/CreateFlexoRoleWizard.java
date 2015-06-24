@@ -38,16 +38,19 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
@@ -134,6 +137,18 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 			checkValidity();
 		}
 
+		public PropertyCardinality getCardinality() {
+			return getAction().getCardinality();
+		}
+
+		public void setCardinality(PropertyCardinality roleCardinality) {
+			if (roleCardinality != getCardinality()) {
+				PropertyCardinality oldValue = getCardinality();
+				getAction().setCardinality(roleCardinality);
+				getPropertyChangeSupport().firePropertyChange("cardinality", oldValue, roleCardinality);
+			}
+		}
+
 		public ModelSlot<?> getModelSlot() {
 			return getAction().getModelSlot();
 		}
@@ -143,8 +158,10 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				ModelSlot<?> oldValue = getModelSlot();
 				getAction().setModelSlot(modelSlot);
 				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
+				getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 				checkValidity();
 			}
 		}
@@ -161,6 +178,14 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 				checkValidity();
 			}
+		}
+
+		public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
+			return getAction().getAdressedFlexoMetaModel();
+		}
+
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
+			return getAction().getAvailableFlexoRoleTypes();
 		}
 
 		public IFlexoOntologyClass getIndividualType() {
@@ -199,6 +224,22 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 				getAction().setPrimitiveType(primitiveType);
 				getPropertyChangeSupport().firePropertyChange("primitiveType", oldValue, primitiveType);
 				checkValidity();
+			}
+		}
+
+		public boolean isUseModelSlot() {
+			return getAction().isUseModelSlot();
+		}
+
+		public void setUseModelSlot(boolean useModelSlot) {
+			if (isUseModelSlot() != useModelSlot) {
+				boolean oldValue = isUseModelSlot();
+				getAction().setUseModelSlot(useModelSlot);
+				getPropertyChangeSupport().firePropertyChange("useModelSlot", oldValue, useModelSlot);
+				getPropertyChangeSupport().firePropertyChange("modelSlot", null, getModelSlot());
+				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
+				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 			}
 		}
 

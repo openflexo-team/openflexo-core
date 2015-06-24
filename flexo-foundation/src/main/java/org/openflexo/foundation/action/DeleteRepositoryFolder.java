@@ -68,7 +68,7 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 
 		@Override
 		public boolean isEnabledForSelection(RepositoryFolder folder, Vector<RepositoryFolder> globalSelection) {
-			return (folder.getResources().size() == 0);
+			return (folder.getResources().size() == 0) && (folder.getChildren().size() == 0);
 		}
 
 	};

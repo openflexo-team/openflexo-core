@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoConceptBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
@@ -257,7 +258,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		/*Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
 
 		FB es = getEditionScheme();
-		
+
 		// Perform actions
 		if (es != null) {
 			for (EditionAction action : es.getActions()) {
@@ -376,8 +377,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getFlexoBehaviour().getParameters();
+		}
+		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
+			return getFlexoConceptInstance();
+		}
+		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
+			return getVirtualModelInstance();
 		}
 
 		// Not found at this level, delegate it to the FlexoConceptInstance
@@ -414,7 +422,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variable instanceof FlexoRoleBindingVariable) {
 			getFlexoConceptInstance().setFlexoActor(value, (FlexoRole) ((FlexoRoleBindingVariable) variable).getFlexoRole());
 			return;
-		} else if (variable instanceof FlexoPropertyBindingVariable) {
+		}
+		else if (variable instanceof FlexoPropertyBindingVariable) {
 			logger.warning("Not implemented setValue() with " + variable);
 			return;
 		}
@@ -422,10 +431,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY + " in " + this + " of "
 					+ getClass());
 			return;

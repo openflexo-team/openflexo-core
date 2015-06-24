@@ -125,7 +125,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private Object currentInspectedObject = null;
 
 	/*public static FIBModelFactory INSPECTOR_FACTORY;
-
+	
 	static {
 		try {
 			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
@@ -207,7 +207,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 		if (dir != null) {
 			for (Resource f : dir.getContents(Pattern.compile(".*[.]inspector"))) {
-
+	
 				logger.fine("Loading: " + f.getURI());
 				FIBInspector inspector = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(f, false, INSPECTOR_FACTORY);
 				if (inspector != null) {
@@ -226,18 +226,18 @@ public class ModuleInspectorController extends Observable implements Observer {
 					logger.warning("Not found: " + f.getURI());
 				}
 			}
-
+	
 			for (FIBInspector inspector : inspectors.values()) {
 				// logger.info("Merging inspector: " + inspector);
 				inspector.appendSuperInspectors(this);
 			}
-
+	
 			for (FIBInspector inspector : inspectors.values()) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Initialized inspector for " + inspector.getDataClass());
 				}
 			}
-
+	
 			setChanged();
 			notifyObservers(new NewInspectorsLoaded());
 		}
@@ -352,14 +352,14 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 		if (object instanceof FlexoConceptInstance) {
-			return inspectorForFlexoConceptInstance(((FlexoConceptInstance) object).getFlexoConcept());
-
+			return inspectorForFlexoConceptInstance((FlexoConceptInstance) object);
 		}
 
 		return inspectorForClass(object.getClass());
 	}
 
-	private FIBInspector inspectorForFlexoConceptInstance(FlexoConcept concept) {
+	private FIBInspector inspectorForFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
+		FlexoConcept concept = conceptInstance.getFlexoConcept();
 		if (concept == null) {
 			return null;
 		}
@@ -367,7 +367,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (returned != null) {
 			return returned;
 		} else {
-			returned = inspectorForClass(FlexoConceptInstance.class);
+			returned = inspectorForClass(conceptInstance.getImplementedInterface());
 			returned = (FIBInspector) returned.cloneObject();
 			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
 			// System.out.println("basicTab=" + basicTab);

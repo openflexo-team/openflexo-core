@@ -22,7 +22,7 @@
 				name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)"
+			label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)"
 			tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 			defaultVisible="true" dynamicFont="" name="viewPointFolder">
 			<Children data="viewPointFolder.children" cast="" name="subFolders" />

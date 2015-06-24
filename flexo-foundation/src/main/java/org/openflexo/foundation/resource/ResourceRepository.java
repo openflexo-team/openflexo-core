@@ -178,6 +178,9 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 			logger.warning("Trying to register a null resource");
 			return;
 		}
+		if (getOwner() instanceof FlexoResourceCenter) {
+			resource.setResourceCenter((FlexoResourceCenter) getOwner());
+		}
 		resources.put(resource.getURI(), resource);
 		parentFolder.addToResources(resource);
 	}

@@ -55,10 +55,16 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
 
+/**
+ * Represents an I/O delegate based on a File<br>
+ * To be used when associated {@link FlexoResource} is serialized into a simple {@link File}
+ * 
+ * 
+ * @author vincent,sylvain
+ *
+ */
 @ModelEntity
 @XMLElement
 public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
@@ -72,9 +78,11 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 	@Setter(FILE)
 	public void setFile(File file);
 
-	public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
+	// public boolean renameFileTo(String name) throws InvalidFileNameException, IOException;
 
 	public boolean delete(boolean deleteFile);
+
+	public String getFileName();
 
 	@Implementation
 	public abstract class FileFlexoIODelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FileFlexoIODelegate {
@@ -98,14 +106,14 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 					&& (!getFile().getParentFile().exists() || getFile().getParentFile().canWrite());
 		}
 
-		@Override
-		public boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
+		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
 			File newFile = new File(getFile().getParentFile(), name);
 			if (getFile().exists()) {
 				FileUtils.rename(getFile(), newFile);
 				if (getFile().exists()) {
 					getFile().delete();
 				}
+				setFile(newFile);
 				resetDiskLastModifiedDate();
 			}
 			return true;
@@ -154,27 +162,13 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public boolean delete(boolean deleteFile) {
 			if (hasWritePermission()) {
-				// if (getFlexoResource().delete()) {
 				if (getFile() != null && getFile().exists() && deleteFile) {
 					getFlexoResource().getServiceManager().getResourceManager().addToFilesToDelete(getFile());
 					if (logger.isLoggable(Level.INFO)) {
 						logger.info("Will delete file " + getFile().getAbsolutePath() + " upon next save of RM");
 					}
-					if (getFlexoResource() instanceof DirectoryContainerResource) {
-						Resource resource = ((DirectoryContainerResource) getFlexoResource()).getDirectory();
-						if (resource instanceof FileResourceImpl) {
-							getFlexoResource().getServiceManager().getResourceManager()
-									.addToFilesToDelete(((FileResourceImpl) resource).getFile());
-							if (logger.isLoggable(Level.INFO)) {
-								logger.info("Will delete directory " + ((FileResourceImpl) resource).getFile().getAbsolutePath()
-										+ " upon next save of RM");
-							}
-						}
-					}
 				}
 				return true;
-				// }
-				// return false;
 			} else {
 				logger.warning("Delete requested for READ-ONLY file resource " + this);
 				return false;
@@ -245,6 +239,21 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 			return false;
 		}
 
+		@Override
+		public void rename() throws CannotRenameException {
+			try {
+				renameFileTo(getFileName());
+			} catch (InvalidFileNameException e) {
+				throw new CannotRenameException(getFlexoResource());
+			} catch (IOException e) {
+				throw new CannotRenameException(getFlexoResource());
+			}
+		}
+
+		@Override
+		public String getFileName() {
+			return getFlexoResource().getName();
+		}
 	}
 
 }

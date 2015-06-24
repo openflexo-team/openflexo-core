@@ -124,6 +124,12 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public void rename() throws CannotRenameException {
+			throw new CannotRenameException(getFlexoResource());
+		}
+
 	}
 
 }

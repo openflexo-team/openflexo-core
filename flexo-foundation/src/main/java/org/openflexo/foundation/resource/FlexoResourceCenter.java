@@ -95,6 +95,16 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public String getName();
 
 	/**
+	 * Return the default base URI associated with this {@link FlexoResourceCenter}.<br>
+	 * 
+	 * This URI might be used as default base URI for any resource stored in this repository, if no explicit URI was given to related
+	 * resource. Resulting URI will be given by concatenation of this base URI with base name for related resource
+	 * 
+	 * @return
+	 */
+	public abstract String getDefaultBaseURI();
+
+	/**
 	 * Initialize the FlexoResourceCenter by retrieving viewpoints defined in this {@link FlexoResourceCenter}<br>
 	 * 
 	 * @param technologyAdapterService
@@ -115,8 +125,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return a list of all resources available in this resource center.
 	 */
-	public @Nonnull
-	Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
+	public @Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
 
 	/**
 	 * Returns the resource identified by the given <code>uri</code> and the provided <code>version</code>.
@@ -132,8 +141,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code> and the provided <code>version</code>, or null if it cannot be found.
 	 */
-	public @Nullable
-	<T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
+	public @Nullable <T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
 			@Nonnull Class<T> type, @Nullable IProgress progress);
 
 	/**
@@ -146,8 +154,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
-	public @Nullable
-	FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
+	public @Nullable FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
 
 	/**
 	 * Returns all available versions of the resource identified by the given <code>uri</code>
@@ -162,8 +169,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return all available versions of the resource identified by the given <code>uri</code>. An empty list is returned if no match were
 	 *         found
 	 */
-	public @Nonnull
-	<T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
+	public @Nonnull <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
 			@Nullable IProgress progress);
 
 	/**

@@ -65,7 +65,7 @@ public class AbstractModelFactoryIntegrationTestCase extends OpenflexoTestCase {
 			System.out.println("Instanciating FMLModelFactory integrating technology adapter " + ta);
 			TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(null);
 			taService.addToTechnologyAdapters(ta);
-			FMLModelFactory factory = new FMLModelFactory(null, null, taService);
+			FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
 			for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				assertNotNull(factory.getModelContext().getModelEntity(modelSlotClass));
 			}

@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -58,7 +57,6 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/AssignationActionPanel.fib")
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
 @XMLElement
@@ -193,7 +191,8 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getAssignation().toString() + " = " + getAssignableAction().getStringRepresentation();
+			return getHeaderContext() + (getAssignation() != null ? getAssignation().toString() : "") + " = "
+					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "<no_assignable_action>");
 		}
 
 	}

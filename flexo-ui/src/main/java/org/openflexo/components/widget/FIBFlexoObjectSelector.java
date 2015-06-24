@@ -45,7 +45,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.RGBImageFilter;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -98,8 +97,8 @@ import org.openflexo.view.controller.FlexoFIBController;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends TextFieldCustomPopup<T> implements
-		FIBCustomComponent<T, FIBFlexoObjectSelector<T>>, HasPropertyChangeSupport {
+public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends TextFieldCustomPopup<T>
+		implements FIBCustomComponent<T, FIBFlexoObjectSelector<T>>, HasPropertyChangeSupport {
 
 	static final Logger logger = Logger.getLogger(FIBFlexoObjectSelector.class.getPackage().getName());
 
@@ -172,12 +171,16 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 						}
 					});
 				} else if (e.getKeyCode() == KeyEvent.VK_UP) {
-					getFIBListWidget().getDynamicJComponent().requestFocusInWindow();
-					getFIBListWidget().getDynamicJComponent().setSelectedIndex(
-							getFIBListWidget().getDynamicJComponent().getModel().getSize() - 1);
+					if (getCustomPanel() != null) {
+						getCustomPanel().getFIBListWidget().getDynamicJComponent().requestFocusInWindow();
+						getCustomPanel().getFIBListWidget().getDynamicJComponent()
+								.setSelectedIndex(getCustomPanel().getFIBListWidget().getDynamicJComponent().getModel().getSize() - 1);
+					}
 				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					getFIBListWidget().getJComponent().requestFocusInWindow();
-					getFIBListWidget().getDynamicJComponent().setSelectedIndex(0);
+					if (getCustomPanel() != null) {
+						getCustomPanel().getFIBListWidget().getJComponent().requestFocusInWindow();
+						getCustomPanel().getFIBListWidget().getDynamicJComponent().setSelectedIndex(0);
+					}
 				}
 
 			}
@@ -357,14 +360,6 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		pcSupport.firePropertyChange("matchingValues", oldMatchingValues, null);
 	}
 
-	private FIBBrowserWidget getFIBBrowserWidget() {
-		return ((SelectorDetailsPanel) getCustomPanel()).retrieveFIBBrowserWidget();
-	}
-
-	private FIBListWidget getFIBListWidget() {
-		return ((SelectorDetailsPanel) getCustomPanel()).retrieveFIBListWidget();
-	}
-
 	/**
 	 * This method is used to retrieve all potential values when implementing completion<br>
 	 * Completion will be performed on that selectable values<br>
@@ -373,7 +368,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	 * Override when required
 	 */
 	protected Collection<T> getAllSelectableValues() {
-		return ((SelectorDetailsPanel) getCustomPanel()).getAllSelectableValues();
+		return getCustomPanel().getAllSelectableValues();
 	}
 
 	/**
@@ -449,7 +444,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	}
 
 	@Override
-	protected ResizablePanel createCustomPanel(T editedObject) {
+	protected SelectorDetailsPanel createCustomPanel(T editedObject) {
 		_selectorPanel = makeCustomPanel(editedObject);
 		if (flexoController != null) {
 			_selectorPanel.getController().setFlexoController(flexoController);
@@ -470,6 +465,11 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 	}
 
+	@Override
+	public SelectorDetailsPanel getCustomPanel() {
+		return (SelectorDetailsPanel) super.getCustomPanel();
+	}
+
 	protected SelectorFIBController makeCustomFIBController(FIBComponent fibComponent) {
 		return new SelectorFIBController(fibComponent, FIBFlexoObjectSelector.this);
 	}
@@ -478,6 +478,9 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		private final FIBContainer fibComponent;
 		private final FIBView fibView;
 		private final SelectorFIBController controller;
+
+		private FIBBrowserWidget<?> browserWidget = null;
+		private FIBListWidget<?> listWidget = null;
 
 		protected SelectorDetailsPanel(T anObject) {
 			super();
@@ -494,7 +497,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			selectValue(anObject);
 		}
 
-		private void selectValue(T value) {
+		protected void selectValue(T value) {
 			FIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
 			if (browserWidget != null) {
 				// Force reselect value because tree may have been recomputed
@@ -532,21 +535,35 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			return returned;
 		}
 
-		private FIBBrowserWidget retrieveFIBBrowserWidget() {
+		public FIBBrowserWidget<?> getFIBBrowserWidget() {
+			if (browserWidget == null) {
+				browserWidget = retrieveFIBBrowserWidget();
+			}
+			return browserWidget;
+		}
+
+		public FIBListWidget<?> getFIBListWidget() {
+			if (listWidget == null) {
+				listWidget = retrieveFIBListWidget();
+			}
+			return listWidget;
+		}
+
+		private FIBBrowserWidget<?> retrieveFIBBrowserWidget() {
 			List<FIBComponent> listComponent = fibComponent.getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBBrowser) {
-					return (FIBBrowserWidget) controller.viewForComponent(c);
+					return (FIBBrowserWidget<?>) controller.viewForComponent(c);
 				}
 			}
 			return null;
 		}
 
-		private FIBListWidget retrieveFIBListWidget() {
+		private FIBListWidget<?> retrieveFIBListWidget() {
 			List<FIBComponent> listComponent = fibComponent.getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBList) {
-					return (FIBListWidget) controller.viewForComponent(c);
+					return (FIBListWidget<?>) controller.viewForComponent(c);
 				}
 			}
 			return null;
@@ -683,7 +700,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		return getSelectorPanel().getController();
 	}
 
-	protected FIBBrowser getFIBBrowser() {
+	/*protected FIBBrowser getFIBBrowser() {
 		if (getFIBComponent() == null) {
 			return null;
 		}
@@ -695,7 +712,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 		return null;
 	}
-
+	
 	protected FIBBrowserWidget retrieveFIBBrowserWidget() {
 		if (getFIBComponent() == null) {
 			return null;
@@ -710,7 +727,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			}
 		}
 		return null;
-	}
+	}*/
 
 	public SelectorDetailsPanel getSelectorPanel() {
 		return _selectorPanel;
@@ -819,30 +836,30 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		selector.createCustomPanel(null);
 		selector.setProject(prj);
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
-
+	
 			@Override
 			public Object[] getData() {
 				return FIBAbstractEditor.makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return selector.getFIBFile();
 			}
-
+	
 			@Override
 			public FIBController getController() {
 				return selector.getSelectorPanel().controller;
 			}
-
+	
 			public FIBController makeNewController() {
 				return selector.makeCustomFIBController(selector.getSelectorPanel().fibComponent);
 			}
-
+	
 		};
-
+	
 		editor.addAction("set_filtered_name", new ActionListener() {
-
+	
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				selector.setFilteredName("T");
@@ -851,16 +868,16 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		});
 		editor.launch();
 	}
-
+	
 	protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {
 		@Override
 		public DefaultFlexoEditor makeFlexoEditor(FlexoProject project) {
 			return new DefaultFlexoEditor(project);
 		}
 	};
-
+	
 	public static FileResource PRJ_FILE = new FileResource("Prj/TestBrowser.prj");
-
+	
 	public static FlexoProject loadProject() {
 		File projectFile = PRJ_FILE;
 		FlexoProject project = null;
@@ -876,7 +893,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			e.printStackTrace();
 		}
 		logger.info("Successfully loaded project " + projectFile.getAbsolutePath());
-
+	
 		return project;
 	}*/
 }

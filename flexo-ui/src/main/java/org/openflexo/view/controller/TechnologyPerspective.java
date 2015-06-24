@@ -87,7 +87,7 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 	 * 
 	 * @return
 	 */
-	private FIBTechnologyBrowser<TA> makeTechnologyBrowser() {
+	protected FIBTechnologyBrowser<TA> makeTechnologyBrowser() {
 		TechnologyAdapterController<TA> tac = getController().getApplicationContext().getTechnologyAdapterControllerService()
 				.getTechnologyAdapterController(technologyAdapter);
 		return tac.makeTechnologyBrowser(getController());

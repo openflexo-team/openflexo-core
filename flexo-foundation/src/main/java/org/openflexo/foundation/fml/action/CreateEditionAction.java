@@ -261,8 +261,10 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				|| (fetchRequestClass != null && !fetchRequestClass.equals(this.fetchRequestClass))) {
 			Class<? extends FetchRequest<?, ?>> oldValue = this.fetchRequestClass;
 			this.fetchRequestClass = fetchRequestClass;
+			updateIteration();
 			getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+			getPropertyChangeSupport().firePropertyChange("fetchRequestAction", oldValue, fetchRequestClass);
 		}
 	}
 
@@ -443,14 +445,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	}
 
-	public List<ModelSlot<?>> getAvailableModelSlotsForSelectedAction() {
+	public List<ModelSlot<?>> getAvailableModelSlotsForAction(Class<? extends EditionAction> actionType) {
 		List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
 		// if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
 		for (ModelSlot<?> ms : getModelSlotsAccessibleFromFocusedObject()) {
-			if (ms.getAvailableEditionActionTypes().contains(getEditionActionClass())) {
+			if (ms.getAvailableEditionActionTypes().contains(actionType)) {
 				returned.add(ms);
 			}
-			if (ms.getAvailableFetchRequestActionTypes().contains(getEditionActionClass())) {
+			if (ms.getAvailableFetchRequestActionTypes().contains(actionType)) {
 				returned.add(ms);
 			}
 		}
@@ -459,17 +461,17 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public ModelSlot<?> getModelSlot() {
-		List<ModelSlot<?>> availableMS = getAvailableModelSlotsForSelectedAction();
+		List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getEditionActionClass());
 		if (modelSlot == null) {
 			if (availableMS.size() > 0) {
 				// Force the model slot not to be null;
-				modelSlot = getAvailableModelSlotsForSelectedAction().get(0);
-				return getAvailableModelSlotsForSelectedAction().get(0);
+				modelSlot = getAvailableModelSlotsForAction(getEditionActionClass()).get(0);
+				return getAvailableModelSlotsForAction(getEditionActionClass()).get(0);
 			}
 		}
 		if (modelSlot != null && !availableMS.contains(modelSlot)) {
 			if (availableMS.size() > 0) {
-				modelSlot = getAvailableModelSlotsForSelectedAction().get(0);
+				modelSlot = getAvailableModelSlotsForAction(getEditionActionClass()).get(0);
 			} else {
 				modelSlot = null;
 			}
@@ -658,6 +660,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	@Override
 	public void notifiedBindingChanged(org.openflexo.connie.DataBinding<?> dataBinding) {
+		if (dataBinding == getIterationExpression()) {
+			updateIteration();
+		}
 		getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
 	}
 
@@ -704,11 +709,19 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			switch (getIterationType()) {
 			case Expression:
 				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+
+				System.out.println("Hop, je fais une iteration avec " + getIterationExpression());
 				iterationAction.setIterationAction(exp);
+				System.out.println("Hop j'obtiens " + iterationAction.getFMLRepresentation());
 				break;
 			case FetchRequest:
 				FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
 				iterationAction.setIterationAction(fetchRequest);
+				List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getFetchRequestClass());
+				if (availableMS.size() > 0) {
+					((TechnologySpecificAction) fetchRequest).setModelSlot(availableMS.get(0));
+				}
+				break;
 			default:
 				break;
 			}

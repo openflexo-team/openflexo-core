@@ -80,6 +80,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String DEPENDENCIES = "dependencies";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
+	public static final String RESOURCE_CENTER = "resourceCenter";
 	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
 
 	/**
@@ -93,12 +94,20 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public String getName();
 
 	/**
-	 * Sets the name of this resource
+	 * Rename resource
 	 * 
 	 * @param aName
 	 */
 	@Setter(NAME)
-	public void setName(String aName);
+	public void setName(String aName) throws CannotRenameException;
+
+	/**
+	 * Called to init name of the resource<br>
+	 * No renaming is performed here: use this method at the very beginning of life-cyle of FlexoResource
+	 * 
+	 * @param aName
+	 */
+	public void initName(String aName);
 
 	/**
 	 * Returns the unique resource identifier of this resource. A URI is unique in the whole universe and clearly and uniquely identifies
@@ -187,6 +196,20 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	@Setter(SERVICE_MANAGER)
 	public void setServiceManager(FlexoServiceManager serviceManager);
+
+	/**
+	 * Return the {@link FlexoResourceCenter} which provides this resource
+	 * 
+	 * @return
+	 */
+	@Getter(value = RESOURCE_CENTER, ignoreType = true)
+	public FlexoResourceCenter<?> getResourceCenter();
+
+	/**
+	 * Sets the {@link FlexoResourceCenter} which provides this resource
+	 */
+	@Setter(RESOURCE_CENTER)
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter);
 
 	/**
 	 * Returns the class of the resource data held by this resource.
@@ -349,9 +372,9 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
-	 * Also delete the resource data
+	 * Also delete the resource data if flag set to true
 	 */
-	public void unloadResourceData();
+	public void unloadResourceData(boolean deleteResourceData);
 
 	/**
 	 * Save the &quot;real&quot; resource data of this resource.
@@ -416,5 +439,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Override
 	public boolean isDeleted();
 
+	/**
+	 * Return a flag indicating if this resource is about to be deleted
+	 * 
+	 * @return
+	 */
+	public boolean isDeleting();
 	// public Date getLastUpdate();
 }

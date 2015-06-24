@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
@@ -310,7 +311,11 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		@Override
 		public void setName(String name) {
 			if (getResource() != null) {
-				getResource().setName(name);
+				try {
+					getResource().setName(name);
+				} catch (CannotRenameException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

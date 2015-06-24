@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -69,9 +68,10 @@ public class ViewLibrary extends ViewRepository {
 	 */
 	public ViewLibrary(FlexoProject project) {
 		super(project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class), project,
-				getExpectedViewLibraryDirectory(project));
+				/*getExpectedViewLibraryDirectory(project)*/project.getProjectDirectory());
 		this.project = project;
 		getRootFolder().setName(project.getName());
+		getRootFolder().setFullQualifiedPath(project.getProjectDirectory().getAbsolutePath());
 		// exploreDirectoryLookingForViews(getDirectory(), getRootFolder());
 
 	}
@@ -83,13 +83,13 @@ public class ViewLibrary extends ViewRepository {
 		return null;
 	}
 
-	public static File getExpectedViewLibraryDirectory(FlexoProject project) {
+	/*public static File getExpectedViewLibraryDirectory(FlexoProject project) {
 		File returned = new File(project.getProjectDirectory(), "Views");
 		if (!returned.exists()) {
 			returned.mkdir();
 		}
 		return returned;
-	}
+	}*/
 
 	/**
 	 * Creates and returns a newly created view library
@@ -98,8 +98,8 @@ public class ViewLibrary extends ViewRepository {
 	 */
 	public static ViewLibrary createNewViewLibrary(FlexoProject project) {
 		ViewLibrary returned = new ViewLibrary(project);
-		project.registerRepository(returned, ViewLibrary.class, project.getServiceManager().getTechnologyAdapterService()
-				.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		project.registerRepository(returned, ViewLibrary.class,
+				project.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		return returned;
 	}
 
@@ -122,7 +122,7 @@ public class ViewLibrary extends ViewRepository {
 		unregisterResource(vr);
 		vr.delete();
 	}
-
+	
 	public void delete(View v) {
 		delete(v.getResource());
 	}*/

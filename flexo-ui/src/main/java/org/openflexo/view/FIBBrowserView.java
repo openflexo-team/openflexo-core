@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBBrowser;
+import org.openflexo.fib.model.FIBBrowserAction;
 import org.openflexo.fib.model.FIBBrowserElement;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
@@ -93,7 +94,7 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
 	}
-	*/
+	 */
 
 	protected FIBBrowserView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
 		super(representedObject, controller, fibComponent, addScrollBar);
@@ -140,7 +141,19 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 					List<FlexoActionType<?, ?, ?>> actionList = FlexoObjectImpl.getActionList((Class<? extends FlexoObject>) el
 							.getDataClass());
 					for (FlexoActionType<?, ?, ?> actionType : actionList) {
-						el.addToActions(FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this));
+						boolean foundAction = false;
+						for (FIBBrowserAction action : el.getActions()) {
+							if (action instanceof FIBBrowserActionAdapter) {
+								if (((FIBBrowserActionAdapter) action).getFlexoActionType() == actionType) {
+									// This action is already present
+									foundAction = true;
+									break;
+								}
+							}
+						}
+						if (!foundAction) {
+							el.addToActions(FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this));
+						}
 					}
 				}
 			}
@@ -148,7 +161,7 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 	}
 
 	@Override
-	protected void initializeFIBComponent() {
+	public void initializeFIBComponent() {
 		super.initializeFIBComponent();
 
 		FIBBrowser browser = retrieveFIBBrowser((FIBContainer) getFIBComponent());

@@ -43,7 +43,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.ClassRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -62,7 +61,6 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/FML/AddClassPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddClass.AddClassImpl.class)
 public abstract interface AddClass<MS extends TypeAwareModelSlot<?, ?>, T extends IFlexoOntologyClass> extends AddConcept<MS, T> {

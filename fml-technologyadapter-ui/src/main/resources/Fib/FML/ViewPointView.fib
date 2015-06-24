@@ -81,7 +81,7 @@
 				<Children data="viewPoint.structuralFacet" name="structural" visible="viewPoint.resource.isLoaded"/>
 				<Children data="viewPoint.behaviouralFacet" name="behavioural" visible="viewPoint.resource.isLoaded"/>
 				<Children data="viewPoint.localizedDictionary" name="localizedDictionary" />
-				<BrowserAddAction method="controller.createVirtualModel(selected)"
+				<BrowserAddAction method="controller.createVirtualModel(selected.resource)"
 					name="create_virtual_model" />
 			</BrowserElement>
 
@@ -205,7 +205,7 @@
 				<Children data="iterationAction.controlGraph.flattenedSequence"
 					name="children" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
@@ -221,7 +221,7 @@
 				<Children data="conditionalAction.elseControlGraph.flattenedSequence"
 					name="elseChildren" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserAddAction
@@ -238,7 +238,7 @@
 				<BrowserAddAction method="controller.createEditionAction(selected)"
 					name="add_action" />
 				<BrowserRemoveAction
-					method="selected.actionContainer.removeFromActions(selected)" name="delete_action" />
+					method="controller.deleteFlexoConceptObject(selected)" name="delete_action" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"

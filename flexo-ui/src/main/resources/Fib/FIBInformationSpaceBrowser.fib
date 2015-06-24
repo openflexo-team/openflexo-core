@@ -4,7 +4,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.InformationSpace" label="&quot;Information Space&quot;" icon="controller.iconForObject(informationSpace)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="informationSpace">
       <Children data="data.technologyAdapters" visible="" cast="" name="resourceCenters" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
       <Children data="viewPointFolder.children" visible="" cast="" name="subFolders" />
       <Children data="viewPointFolder.resources" visible="" cast="" name="resource" />
     </BrowserElement>

@@ -25,7 +25,7 @@
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="folder.name" icon="controller.iconForObject(folder)"
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
 			<Children data="folder.children" visible="" cast=""

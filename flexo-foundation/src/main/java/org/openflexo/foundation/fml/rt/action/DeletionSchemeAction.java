@@ -115,7 +115,9 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
 		applyEditionActions();
-
+		if (getFlexoConceptInstanceToDelete() != null) {
+			getFlexoConceptInstanceToDelete().delete(context);
+		}
 	}
 
 	/**

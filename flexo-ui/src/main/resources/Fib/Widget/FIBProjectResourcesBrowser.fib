@@ -22,7 +22,7 @@
 			<Children data="fsResourceCenter.rootFolder.resources" name="resources" /> 
 			</BrowserElement> -->
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="folder.name" icon="controller.iconForObject(folder)"
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
 			isEditable="false" filtered="false" defaultVisible="true" name="folder">
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resources" />

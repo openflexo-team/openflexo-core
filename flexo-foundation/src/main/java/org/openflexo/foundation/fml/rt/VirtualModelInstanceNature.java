@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -47,8 +47,6 @@ import org.openflexo.foundation.nature.FlexoNature;
  * 
  * @author sylvain
  * 
- * @param <E>
- *            type of introspected concept
  */
 public interface VirtualModelInstanceNature extends FlexoNature<VirtualModelInstance> {
 

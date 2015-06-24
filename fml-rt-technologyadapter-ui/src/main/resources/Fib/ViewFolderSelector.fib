@@ -8,7 +8,7 @@
       <Children data="library.rootFolder.children" name="subFolders" />
       <Children data="library.rootFolder.resources" name="views" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewFolder.name" icon="controller.iconForObject(viewFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewFolder">
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewFolder.displayableName" icon="controller.iconForObject(viewFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewFolder">
       <Children data="viewFolder.children" visible="" cast="" name="subFolders" />
       <Children data="viewFolder.resources" visible="" cast="" name="views" />
     </BrowserElement>

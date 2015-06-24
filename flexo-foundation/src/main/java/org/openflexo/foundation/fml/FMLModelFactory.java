@@ -121,6 +121,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
 	private AbstractVirtualModelResource<?> abstractVirtualModelResource;
+	private final FlexoServiceManager serviceManager;
+
 	private IgnoreLoadingEdits ignoreHandler = null;
 	private FlexoUndoManager undoManager = null;
 
@@ -128,21 +130,13 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	/*public FMLModelFactory(EditingContext editingContext, TechnologyAdapterService taService) throws ModelDefinitionException {
-		this(editingContext, taService, null);
-	}*/
 
 	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, FlexoServiceManager serviceManager)
 			throws ModelDefinitionException {
-		this(abstractVirtualModelResource, serviceManager.getEditingContext(), serviceManager.getTechnologyAdapterService());
-	}
-
-	// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-	// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-	public FMLModelFactory(AbstractVirtualModelResource<?> abstractVirtualModelResource, EditingContext editingContext,
-			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(retrieveTechnologySpecificClasses(taService));
-		setEditingContext(editingContext);
+		super(retrieveTechnologySpecificClasses(serviceManager.getTechnologyAdapterService()));
+		this.serviceManager = serviceManager;
+		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		setEditingContext(serviceManager.getEditingContext());
 		addConverter(typeConverter = new TypeConverter(taService.getCustomTypeFactories()));
 		addConverter(new DataBindingConverter());
 		addConverter(new FlexoVersionConverter());
@@ -153,7 +147,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			addConverter(new RelativePathResourceConverter(abstractVirtualModelResource.getFlexoIODelegate().getParentPath()));
 		}
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			ta.initVirtualModelFactory(this);
+			ta.initFMLModelFactory(this);
 		}
 
 		// Init technology specific type registering
@@ -174,6 +168,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		for (Class<? extends TechnologySpecificType<?>> typeClass : allTypesToConsider) {
 			typeConverter.registerTypeClass(typeClass);
 		}*/
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
 	}
 
 	@Override

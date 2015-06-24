@@ -373,6 +373,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		}
 		setProjectDirectory(aProjectDirectory);
 		getRootFolder().setName(projectName);
+		getRootFolder().setFullQualifiedPath(aProjectDirectory.getAbsolutePath());
 	}
 
 	@Override

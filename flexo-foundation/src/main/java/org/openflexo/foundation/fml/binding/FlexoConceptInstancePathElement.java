@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.binding;
 
 import java.lang.reflect.Type;
@@ -49,16 +48,29 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
+/**
+ * A path element which represents a {@link FlexoConceptInstance} accessible at run-time<br>
+ * The {@link FlexoConceptInstance} is typed as {@link FlexoConceptInstanceType}
+ * 
+ * @author sylvain
+ * 
+ */
 public class FlexoConceptInstancePathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptInstancePathElement.class.getPackage().getName());
 
-	private FlexoConcept flexoConcept;
+	private final FlexoConcept flexoConcept;
 
 	public FlexoConceptInstancePathElement(BindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
 		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 		this.flexoConcept = flexoConcept;
+	}
+
+	public FlexoConcept getFlexoConcept() {
+		return flexoConcept;
 	}
 
 	@Override
@@ -78,6 +90,9 @@ public class FlexoConceptInstancePathElement extends SimplePathElement {
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
+		if (target instanceof FlexoBehaviourAction) {
+			return ((FlexoBehaviourAction) target).getFlexoConceptInstance();
+		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}

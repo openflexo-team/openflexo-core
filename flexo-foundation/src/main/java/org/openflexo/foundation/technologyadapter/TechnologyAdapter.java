@@ -53,14 +53,13 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.rm.ResourceLocator;
 
 /**
  * This class represents a technology adapter<br>
@@ -212,7 +211,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 		return availableTechnologySpecificTypes;
 	}
-
+	
 	protected List<Class<? extends TechnologySpecificType<?>>> computeAvailableTechnologySpecificTypes() {
 		availableTechnologySpecificTypes = new ArrayList<Class<? extends TechnologySpecificType<?>>>();
 		appendDeclareTechnologySpecificTypes(availableTechnologySpecificTypes, getClass());
@@ -225,7 +224,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		if (!availableTechnologySpecificTypes.contains(ViewType.class)) {
 			availableTechnologySpecificTypes.add(ViewType.class);
 		}
-
+	
 		if (hasTypeAwareModelSlot()) {
 			if (!availableTechnologySpecificTypes.contains(IndividualOfClass.class)) {
 				availableTechnologySpecificTypes.add((Class) IndividualOfClass.class);
@@ -239,7 +238,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 		return availableTechnologySpecificTypes;
 	}
-
+	
 	private void appendDeclareTechnologySpecificTypes(List<Class<? extends TechnologySpecificType<?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareTechnologySpecificTypes.class)) {
 			DeclareTechnologySpecificTypes allTypes = cl.getAnnotation(DeclareTechnologySpecificTypes.class);
@@ -252,11 +251,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		if (cl.getSuperclass() != null) {
 			appendDeclareTechnologySpecificTypes(aList, cl.getSuperclass());
 		}
-
+	
 		for (Class superInterface : cl.getInterfaces()) {
 			appendDeclareTechnologySpecificTypes(aList, superInterface);
 		}
-
+	
 	}*/
 
 	/**
@@ -306,16 +305,23 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param resourceCenter
 	 */
 	public void referenceResource(FlexoResource<?> resource, FlexoResourceCenter<?> resourceCenter) {
+		resource.setResourceCenter(resourceCenter);
 		if (resourceCenter instanceof ResourceRepository && resource != null
 				&& resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 			// Also register the resource in the ResourceCenter seen as a ResourceRepository
 			try {
 				File candidateFile = null;
-				if (resource instanceof DirectoryContainerResource) {
+				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
+					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
+				} else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
+				}
+
+				/*if (resource instanceof DirectoryContainerResource) {
 					candidateFile = ResourceLocator.retrieveResourceAsFile(((DirectoryContainerResource<?>) resource).getDirectory());
 				} else {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
-				}
+				}*/
 				((ResourceRepository) resourceCenter).registerResource(resource,
 						((ResourceRepository<?>) resourceCenter).getRepositoryFolder(candidateFile, true));
 			} catch (IOException e) {
@@ -336,7 +342,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	// Override when required
-	public void initVirtualModelFactory(FMLModelFactory fMLModelFactory) {
+	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
 	}
 
 	/**
@@ -348,7 +354,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public List<ResourceRepository<?>> getAllRepositories() {
 		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
-		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
+				.getResourceCenters()) {
 			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(this);
 			if (repCollection != null) {
 				returned.addAll(repCollection);

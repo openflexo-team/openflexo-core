@@ -9,7 +9,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.technologyadapter.InformationSpace" label="&quot;Information Space&quot;" icon="controller.iconForObject(informationSpace)" isEditable="false" filtered="false" defaultVisible="true" name="informationSpace">
       <Children data="informationSpace.technologyAdapters" name="resourceCenters" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="folder.name" icon="controller.iconForObject(folder)" isEditable="false" filtered="false" defaultVisible="true" name="folder">
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="folder.displayableName" icon="controller.iconForObject(folder)" isEditable="false" filtered="false" defaultVisible="true" name="folder">
       <Children data="folder.children" name="subFolders" />
       <Children data="folder.resources" name="resource" />
     </BrowserElement>

@@ -1,8 +1,6 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2012, THALES SYSTEMES AEROPORTES - All Rights Reserved
- * Copyright (c) 2011-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,16 +36,43 @@
  * 
  */
 
-package org.openflexo.foundation.ontology;
+package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.localization.FlexoLocalization;
 
 /**
- * Flexo Ontology used as a MetaModel.
- * 
- * @author gbesancon
+ * @author sylvain
  * 
  */
-public interface IFlexoOntologyMetaModel<TA extends TechnologyAdapter> extends IFlexoOntology<TA> {
+@SuppressWarnings("serial")
+public class CannotRenameException extends FlexoException {
 
+	private final FlexoResource<?> resource;
+
+	/**
+	 * @param relativePath
+	 */
+	public CannotRenameException(FlexoResource<?> resource) {
+		this.resource = resource;
+	}
+
+	@Override
+	public String getMessage() {
+		return getLocalizedMessage();
+	}
+
+	public FlexoResource<?> getResource() {
+		return resource;
+	}
+
+	/**
+	 * Overrides getLocalizedMessage
+	 * 
+	 * @see org.openflexo.foundation.FlexoException#getLocalizedMessage()
+	 */
+	@Override
+	public String getLocalizedMessage() {
+		return FlexoLocalization.localizedForKey("cannot_rename_resource") + " " + getResource();
+	}
 }

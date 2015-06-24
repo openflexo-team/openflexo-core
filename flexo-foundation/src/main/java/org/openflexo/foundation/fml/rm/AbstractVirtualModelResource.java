@@ -52,6 +52,8 @@ import org.openflexo.model.annotations.ModelEntity;
 public interface AbstractVirtualModelResource<VM extends AbstractVirtualModel<VM>> extends PamelaResource<VM, FMLModelFactory>,
 		DirectoryContainerResource<VM>, TechnologyAdapterResource<VM, FMLTechnologyAdapter> {
 
+	public static final String CORE_FILE_SUFFIX = ".xml";
+
 	public VM getVirtualModel();
 
 }

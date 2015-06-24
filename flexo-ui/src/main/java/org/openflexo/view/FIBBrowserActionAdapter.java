@@ -66,8 +66,18 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 	@Override
 	public String getName();
 
+	/**
+	 * Return type of action (might be Add, Delete or Custom)
+	 */
 	@Override
 	public ActionType getActionType();
+
+	/**
+	 * Return {@link FlexoActionType}
+	 * 
+	 * @return
+	 */
+	public FlexoActionType<?, T, ?> getFlexoActionType();
 
 	public abstract class FIBBrowserActionAdapterImpl<T extends FlexoObject> extends FIBBrowserActionImpl implements
 			FIBBrowserActionAdapter<T> {
@@ -123,6 +133,11 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 			} else {
 				return ActionType.Custom;
 			}
+		}
+
+		@Override
+		public FlexoActionType<?, T, ?> getFlexoActionType() {
+			return actionType;
 		}
 
 	}

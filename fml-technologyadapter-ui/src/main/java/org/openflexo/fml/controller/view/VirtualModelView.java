@@ -39,7 +39,6 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -50,10 +49,10 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class VirtualModelView extends FlexoConceptView<FlexoConcept> {
+public class VirtualModelView extends FlexoConceptView<VirtualModel> {
 
-	public VirtualModelView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	public VirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
 	}
 
 }

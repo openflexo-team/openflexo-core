@@ -52,6 +52,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -64,6 +65,8 @@ import org.openflexo.toolbox.IProgress;
 public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
+
+	private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
 
 	@ModelEntity
 	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
@@ -101,6 +104,11 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		super(resourceCenterDirectory);
 	}
 
+	public DirectoryResourceCenter(File resourceCenterDirectory, String defaultBaseURI) {
+		super(resourceCenterDirectory);
+		setDefaultBaseURI(defaultBaseURI);
+	}
+
 	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory) {
 		logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
 		DirectoryResourceCenter directoryResourceCenter = new DirectoryResourceCenter(resourceCenterDirectory);
@@ -126,9 +134,15 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	public void update() throws IOException {
 	}
 
+	public static final String DEFAULT_BASE_URI = "defaultBaseURI";
+
 	@Override
 	public String getDefaultBaseURI() {
-		return getDirectory().toURI().toString();
+		return fsMetaDataManager.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString(), getDirectory());
+	}
+
+	public void setDefaultBaseURI(String defaultBaseURI) {
+		fsMetaDataManager.setProperty(DEFAULT_BASE_URI, defaultBaseURI, getDirectory());
 	}
 
 	@Override

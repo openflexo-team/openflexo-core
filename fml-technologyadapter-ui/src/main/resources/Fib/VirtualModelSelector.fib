@@ -7,7 +7,7 @@
     <BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPointLibrary" label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPointLibrary">
       <Children data="viewPointLibrary.resourceCenterService.resourceCenters" visible="" cast="child.viewPointRepository.rootFolder" name="resourceCenters" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.name" icon="controller.iconForObject(viewPointFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
+    <BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder" label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="viewPointFolder">
       <Children data="viewPointFolder.children" visible="" cast="" name="subFolders" />
       <Children data="viewPointFolder.resources" visible="" cast="" name="viewPoints" />
     </BrowserElement>

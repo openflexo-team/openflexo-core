@@ -90,7 +90,7 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	}
 
 	@Override
-	protected void initializeFIBComponent() {
+	public void initializeFIBComponent() {
 		Progress.progress("initializing_fib_component");
 		super.initializeFIBComponent();
 	}
