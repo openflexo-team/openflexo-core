@@ -82,7 +82,7 @@ public class ValidationTask extends FlexoApplicationTask implements PropertyChan
 	}
 
 	@Override
-	protected synchronized void stopExecution() {
+	public synchronized void stopExecution() {
 		super.stopExecution();
 		validationModel.getPropertyChangeSupport().removePropertyChangeListener(this);
 	}

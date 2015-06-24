@@ -73,7 +73,7 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 	}
 
 	@Override
-	protected synchronized void finishedExecution() {
+	public synchronized void finishedExecution() {
 		super.finishedExecution();
 
 		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {

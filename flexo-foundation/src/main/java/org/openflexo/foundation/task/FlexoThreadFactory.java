@@ -38,35 +38,31 @@
 
 package org.openflexo.foundation.task;
 
-import java.util.Random;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class ErrorTask extends FlexoTask {
+/**
+ * The default thread factory
+ */
+class FlexoThreadFactory implements ThreadFactory {
+	static final AtomicInteger poolNumber = new AtomicInteger(1);
+	final ThreadGroup group;
+	final AtomicInteger threadNumber = new AtomicInteger(1);
+	final String namePrefix;
 
-	public ErrorTask(String name) {
-		super(name);
+	FlexoThreadFactory() {
+		SecurityManager s = System.getSecurityManager();
+		group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+		namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
 	}
 
 	@Override
-	public void performTask() {
-
-		Progress.setExpectedProgressSteps(10);
-
-		try {
-			Thread.sleep((new Random(System.currentTimeMillis())).nextInt(2000));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		int[] someInts = new int[1];
-
-		int v = someInts[2];
+	public FlexoTaskThread newThread(Runnable r) {
+		FlexoTaskThread t = new FlexoTaskThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+		if (t.isDaemon())
+			t.setDaemon(false);
+		if (t.getPriority() != Thread.NORM_PRIORITY)
+			t.setPriority(Thread.NORM_PRIORITY);
+		return t;
 	}
-
-	@Override
-	public synchronized void finishedExecution() {
-		super.finishedExecution();
-		System.out.println("A yes j'ai fini avec le status " + getTaskStatus());
-	}
-
 }
