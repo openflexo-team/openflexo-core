@@ -118,7 +118,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	private ModelSlot<?> modelSlot;
-	private boolean useModelSlot;
+	private boolean useModelSlot = true;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
 	private FlexoConcept flexoConceptInstanceType;
@@ -405,7 +405,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 		}
 		getPropertyChangeSupport().firePropertyChange("useModelSlot", null, useModelSlot);
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
-		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
+		//getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 	}
 
 }
