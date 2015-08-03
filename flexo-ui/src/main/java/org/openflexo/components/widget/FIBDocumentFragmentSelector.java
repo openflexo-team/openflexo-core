@@ -134,7 +134,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 			}
 
 		}
-		System.out.println("fragment=" + newFragment);
+		// System.out.println("fragment=" + newFragment);
 		setEditedObject(newFragment);
 	}
 
@@ -250,8 +250,8 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 		return null;
 	}
 
-	public void setSelectedDocumentElements(List<FlexoDocumentElement<D, TA>> selection) {
-		System.out.println("setSelectedDocumentElements with " + selection);
+	public void setSelectedDocumentElements(List<? extends FlexoDocumentElement<D, TA>> selection) {
+		// System.out.println("############### setSelectedDocumentElements with " + selection);
 		// System.out.println("old=" + getSelectedDocumentElements());
 		// List<FlexoDocumentElement<D, TA>> old = getSelectedDocumentElements();
 		// System.out.println("old.equals(selection)=" + old.equals(selection));
@@ -263,5 +263,13 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?> documentEditorWidget) {
 
+	}
+
+	@Override
+	public String renderedString(F editedObject) {
+		if (editedObject == null) {
+			return "";
+		}
+		return editedObject.getStringRepresentation();
 	}
 }
