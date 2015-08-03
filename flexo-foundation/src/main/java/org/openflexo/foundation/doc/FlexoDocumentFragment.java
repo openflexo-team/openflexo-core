@@ -86,6 +86,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	 */
 	public List<? extends FlexoDocumentElement<D, TA>> getElements();
 
+	public String getStringRepresentation();
+
 	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
 
@@ -123,6 +125,16 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			FlexoDocumentFragment f2 = (FlexoDocumentFragment) obj;
 			return getFlexoDocument().equals(f2.getFlexoDocument()) && getStartElement().equals(f2.getStartElement())
 					&& getEndElement().equals(f2.getEndElement());
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			return (getStartElement() instanceof FlexoParagraph ? ((FlexoParagraph) getStartElement()).getRawTextPreview()
+					: (getStartElement() != null ? getStartElement().toString() : "?"))
+					+ " : "
+					+ (getStartElement() != getEndElement() ? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement())
+							.getRawTextPreview() : (getEndElement() != null ? getEndElement().toString() : "?"))
+							: "");
 		}
 	}
 
