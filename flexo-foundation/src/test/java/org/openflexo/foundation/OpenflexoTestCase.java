@@ -53,6 +53,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import junit.framework.AssertionFailedError;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -75,8 +77,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
-import junit.framework.AssertionFailedError;
-
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
  * 
@@ -91,6 +91,7 @@ public abstract class OpenflexoTestCase {
 	protected static FlexoServiceManager serviceManager;
 
 	protected static File testResourceCenterDirectory;
+	protected static List<File> testResourceCenterDirectoriesToRemove;
 
 	static {
 		try {
@@ -104,15 +105,27 @@ public abstract class OpenflexoTestCase {
 
 	@AfterClass
 	public static void tearDownClass() {
+		deleteTestResourceCenters();
+		unloadServiceManager();
+	}
+
+	protected static void unloadServiceManager() {
 		if (serviceManager != null) {
 			serviceManager.stopAllServices();
 		}
+		serviceManager = null;
+	}
+
+	protected static void deleteTestResourceCenters() {
 		if (testResourceCenterDirectory != null) {
 			FileUtils.deleteDir(testResourceCenterDirectory);
 		}
+		if (testResourceCenterDirectoriesToRemove != null) {
+			for (File testResourceCenterDirectoryToRemove : testResourceCenterDirectoriesToRemove) {
+				FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
+			}
+		}
 		resourceCenter = null;
-		serviceManager = null;
-
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
@@ -145,6 +158,10 @@ public abstract class OpenflexoTestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+		File previousResourceCenterDirectoryToRemove = null;
+		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
+			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
+		}
 		serviceManager = new DefaultFlexoServiceManager() {
 
 			@Override
@@ -157,6 +174,7 @@ public abstract class OpenflexoTestCase {
 				try {
 					File tempFile = File.createTempFile("Temp", "");
 					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+					tempFile.delete();
 					testResourceCenterDirectory.mkdirs();
 
 					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
@@ -180,8 +198,8 @@ public abstract class OpenflexoTestCase {
 					}
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(
-							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
+					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory,
+							TEST_RESOURCE_CENTER_URI));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 					// ici il y a des truc a voir
@@ -196,6 +214,13 @@ public abstract class OpenflexoTestCase {
 			}
 
 		};
+
+		if (previousResourceCenterDirectoryToRemove != null) {
+			if (testResourceCenterDirectoriesToRemove == null) {
+				testResourceCenterDirectoriesToRemove = new ArrayList<File>();
+			}
+			testResourceCenterDirectoriesToRemove.add(previousResourceCenterDirectoryToRemove);
+		}
 		return serviceManager;
 	}
 
@@ -295,8 +320,8 @@ public abstract class OpenflexoTestCase {
 					message.append(" Missing: " + o);
 				}
 			}
-			throw new AssertionFailedError(
-					"AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2 + " Details = " + message);
+			throw new AssertionFailedError("AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2
+					+ " Details = " + message);
 		}
 	}
 
