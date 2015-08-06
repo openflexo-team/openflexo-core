@@ -71,6 +71,12 @@ import org.openflexo.toolbox.FileUtils;
  */
 public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCase {
 
+	/**
+	 * !!!!! IMPORTANT !!!!!<br>
+	 * Do not forget to set back this flag to true when committing into a production environment
+	 */
+	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = true;
+
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
@@ -100,8 +106,10 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		if (_project != null) {
 			_project.close();
 		}
-		if (_projectDirectory != null) {
-			FileUtils.deleteDir(_projectDirectory);
+		if (DELETE_PROJECT_AFTER_TEST_EXECUTION) {
+			if (_projectDirectory != null) {
+				FileUtils.deleteDir(_projectDirectory);
+			}
 		}
 		_editor = null;
 		_projectDirectory = null;
