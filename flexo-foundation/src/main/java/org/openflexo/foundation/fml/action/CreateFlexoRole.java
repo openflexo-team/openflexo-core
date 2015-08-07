@@ -118,6 +118,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	private ModelSlot<?> modelSlot;
+	private ModelSlot<?> defaultModelSlot;
 	private boolean useModelSlot;
 	private Class<? extends FlexoRole> flexoRoleClass;
 	private IFlexoOntologyClass individualType;
@@ -129,7 +130,7 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 
 	CreateFlexoRole(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		setModelSlot(retrieveDefaultModelSlot());
+		defaultModelSlot = retrieveDefaultModelSlot();
 	}
 
 	public String getRoleName() {
@@ -191,12 +192,12 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		// logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
-		// logger.info("modelSlot = " + modelSlot);
+		// logger.info("modelSlot = " + getModelSlot());
 
 		if (flexoRoleClass != null) {
-			if (modelSlot != null) {
-				newFlexoRole = modelSlot.makeFlexoRole(flexoRoleClass);
-				newFlexoRole.setModelSlot(modelSlot);
+			if (getModelSlot() != null) {
+				newFlexoRole = getModelSlot().makeFlexoRole(flexoRoleClass);
+				newFlexoRole.setModelSlot(getModelSlot());
 			} else {
 				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
@@ -304,7 +305,25 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 			return ((VirtualModel) flexoConcept).getModelSlots().get(0);
 		} else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
 				&& flexoConcept.getOwningVirtualModel().getModelSlots().size() > 0) {
-			return flexoConcept.getOwningVirtualModel().getModelSlots().get(0);
+			if (getFlexoRoleClass() == null) {
+				return flexoConcept.getOwningVirtualModel().getModelSlots().get(0);
+			}
+			// Trying to find the most adapted model slot
+			if (getFlexoRoleClass().equals(FlexoConceptInstanceRole.class)) {
+				for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots()) {
+					if (ms instanceof FMLRTModelSlot
+							&& ((FMLRTModelSlot) ms).getAddressedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
+						return ms;
+					}
+				}
+			} else {
+				for (ModelSlot<?> ms : flexoConcept.getOwningVirtualModel().getModelSlots()) {
+					if (ms.getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
+						return ms;
+					}
+				}
+			}
+
 		}
 		return null;
 	}
@@ -323,6 +342,12 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	public ModelSlot<?> getModelSlot() {
+		if (modelSlot == null) {
+			if (defaultModelSlot == null) {
+				defaultModelSlot = retrieveDefaultModelSlot();
+			}
+			return defaultModelSlot;
+		}
 		return modelSlot;
 	}
 
@@ -359,6 +384,12 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 
 	public void setFlexoRoleClass(Class<? extends FlexoRole> flexoRoleClass) {
 		this.flexoRoleClass = flexoRoleClass;
+
+		// The default model slot may change
+		ModelSlot oldModelSlot = getModelSlot();
+		defaultModelSlot = retrieveDefaultModelSlot();
+		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());
+
 		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("propertyName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
@@ -381,7 +412,12 @@ public class CreateFlexoRole extends AbstractCreateFlexoProperty<CreateFlexoRole
 	}
 
 	public void setFlexoConceptInstanceType(FlexoConcept flexoConceptInstanceType) {
+		// The default model slot may change
+		ModelSlot oldModelSlot = getModelSlot();
 		this.flexoConceptInstanceType = flexoConceptInstanceType;
+		defaultModelSlot = retrieveDefaultModelSlot();
+		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());
+
 		getPropertyChangeSupport().firePropertyChange("flexoConceptInstanceType", null, flexoConceptInstanceType);
 	}
 
