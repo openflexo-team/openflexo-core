@@ -25,10 +25,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLElement;
 
 /**
  * Generic abstract concept representing a paragraph of a text-based document (eg .docx, .odt, etc...)
@@ -43,8 +51,36 @@ import org.openflexo.model.annotations.Setter;
 @ModelEntity(isAbstract = true)
 public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentElement<D, TA> {
 
+	@PropertyIdentifier(type = FlexoRun.class, cardinality = Cardinality.LIST)
+	public static final String RUNS_KEY = "runs";
+
 	@PropertyIdentifier(type = FlexoStyle.class)
 	public static final String STYLE_KEY = "style";
+
+	/**
+	 * Return the list of runs of this paragraph
+	 * 
+	 * @return
+	 */
+	@Getter(value = RUNS_KEY, cardinality = Cardinality.LIST, inverse = FlexoRun.PARAGRAPH_KEY)
+	@XMLElement(primary = true)
+	@CloningStrategy(StrategyType.CLONE)
+	@Embedded
+	public List<FlexoRun<D, TA>> getRuns();
+
+	@Setter(RUNS_KEY)
+	public void setRuns(List<FlexoRun<D, TA>> someRuns);
+
+	@Adder(RUNS_KEY)
+	@PastingPoint
+	public void addToRuns(FlexoRun<D, TA> aRun);
+
+	@Remover(RUNS_KEY)
+	public void removeFromRuns(FlexoRun<D, TA> aRun);
+
+	public void insertRunAtIndex(FlexoRun<D, TA> anElement, int index);
+
+	public void moveRunToIndex(FlexoRun<D, TA> anElement, int index);
 
 	@Getter(value = STYLE_KEY)
 	public FlexoStyle<D, TA> getStyle();
@@ -65,8 +101,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
 
 		@Override
 		public String toString() {

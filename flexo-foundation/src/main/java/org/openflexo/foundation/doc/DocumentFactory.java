@@ -62,8 +62,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory implements
-		PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
+		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
 
@@ -99,6 +99,13 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 */
 	protected abstract FlexoParagraph<D, TA> makeParagraph();
+
+	/**
+	 * Build new empty run
+	 * 
+	 * @return
+	 */
+	protected abstract FlexoRun<D, TA> makeRun();
 
 	/**
 	 * Build new empty style
