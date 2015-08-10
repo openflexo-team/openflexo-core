@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import javax.swing.undo.UndoableEdit;
 
+import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
@@ -81,8 +82,11 @@ public class FlexoUndoManager extends UndoManager {
 	private FlexoAction<?, ?, ?> actionBeeingCurrentlyExecuted;
 	private final List<IgnoreHandler> ignoreHandlers;
 
-	public FlexoUndoManager() {
+	private final FlexoEditingContext editingContext;
+
+	public FlexoUndoManager(FlexoEditingContext editingContext) {
 		ignoreHandlers = new ArrayList<IgnoreHandler>();
+		this.editingContext = editingContext;
 	}
 
 	/**
@@ -240,17 +244,13 @@ public class FlexoUndoManager extends UndoManager {
 				return true;
 			}
 		}
+
 		// Debug
 		if (getCurrentEdition() == null || getCurrentEdition().getPresentationName().equals(UNIDENTIFIED_RECORDING)) {
 			// We are on an unidentified recording
-			logger.warning("Received edit outside legal UNDO declaration: " + edit);
-			// Thread.dumpStack();
-			/*if (edit instanceof SetCommand) {
-				if (((SetCommand) edit).getModelProperty().getPropertyIdentifier().equals("mouseClickControls")) {
-					System.out.println("Celui la je l'ignore");
-					return true;
-				}
-			}*/
+			if (editingContext.warnOnUnexpectedEdits()) {
+				logger.warning("Received edit outside legal UNDO declaration: " + edit);
+			}
 		}
 		return false;
 	}

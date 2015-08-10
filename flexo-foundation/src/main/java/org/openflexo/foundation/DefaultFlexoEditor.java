@@ -55,8 +55,8 @@ import org.openflexo.foundation.utils.FlexoProgressFactory;
 
 public class DefaultFlexoEditor implements FlexoEditor {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(DefaultFlexoEditor.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(DefaultFlexoEditor.class.getPackage().getName());
 
 	private final FlexoProject project;
 	private final FlexoServiceManager serviceManager;

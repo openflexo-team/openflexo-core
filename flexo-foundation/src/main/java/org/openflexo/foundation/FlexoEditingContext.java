@@ -88,11 +88,27 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private final PasteHandler<?> defaultPasteHandler;
 
+	private boolean warnOnUnexpectedEdits = true;
+
 	public static FlexoEditingContext createInstance() {
-		return new FlexoEditingContext();
+		return new FlexoEditingContext(true);
 	}
 
-	private FlexoEditingContext() {
+	public static FlexoEditingContext createInstance(boolean warnOnUnexpectedEdits) {
+		return new FlexoEditingContext(warnOnUnexpectedEdits);
+	}
+
+	/**
+	 * Return a flag indicating if we should warn about edits being raised outside declared UNDO scope
+	 * 
+	 * @return
+	 */
+	public boolean warnOnUnexpectedEdits() {
+		return warnOnUnexpectedEdits;
+	}
+
+	private FlexoEditingContext(boolean warnOnUnexpectedEdits) {
+		this.warnOnUnexpectedEdits = warnOnUnexpectedEdits;
 		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
 		defaultPasteHandler = new DefaultPasteHandler();
 	}
@@ -105,7 +121,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoEditingContext...");
-		undoManager = new FlexoUndoManager();
+		undoManager = new FlexoUndoManager(this);
 		copyActionType = new CopyActionType(this);
 		FlexoObjectImpl.addActionForClass(copyActionType, FlexoObject.class);
 		cutActionType = new CutActionType(this);
@@ -321,10 +337,9 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub		
-		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
-		
+		// TODO Auto-generated method stub
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
+
 	}
-	
-	
+
 }

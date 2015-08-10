@@ -83,10 +83,10 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 		FlexoUpdateService flexoUpdateService = new FlexoUpdateService();
 		registerService(flexoUpdateService);
-		
+
 		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
 		registerService(resourceCenterService);
-		
+
 		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
 		registerService(technologyAdapterService);
 

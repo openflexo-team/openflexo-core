@@ -146,12 +146,12 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	// TODO: copy all test VP in tmp dir and work with those VP instead of polling GIT workspace
 	/*protected static FlexoServiceManager instanciateTestServiceManager() {
 		serviceManager = new DefaultFlexoServiceManager() {
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return new FlexoTestEditor(null, this);
 			}
-
+	
 			@Override
 			protected FlexoResourceCenterService createResourceCenterService() {
 				File tempFile;
@@ -168,7 +168,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 					fail();
 					return null;
 				}
-
+	
 			}
 		};
 		return serviceManager;
@@ -255,8 +255,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
 			FlexoEditor anEditor = null;
-			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY,
-			/*new DefaultProjectLoadingHandler(),*/serviceManager, null));
+			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /*new DefaultProjectLoadingHandler(),*/serviceManager,
+					null));
 			// The next line is really a trouble maker and eventually causes more problems than solutions. FlexoProject can't be renamed on
 			// the fly
 			// without having a severe impact on many resources and importer projects. I therefore now comment this line which made me lost
