@@ -77,8 +77,8 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 
 	public void notifyChildrenElementsChanged();
 
-	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
+	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentElement<D, TA> {
 
 		private List<FlexoDocumentElement<D, TA>> childrenElements = null;
 
@@ -105,6 +105,11 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 
 		@Override
 		public void invalidateChildrenElements() {
+			if (childrenElements != null) {
+				for (FlexoDocumentElement<D, TA> e : childrenElements) {
+					e.invalidateChildrenElements();
+				}
+			}
 			childrenElements = null;
 		}
 
