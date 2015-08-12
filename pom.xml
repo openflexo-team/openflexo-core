@@ -27,6 +27,7 @@
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
+		<module>flexo-documentation</module>
 		<module>fml-parser</module>
 		<module>fml-technologyadapter-ui</module>
 		<module>fml-rt-technologyadapter-ui</module>
