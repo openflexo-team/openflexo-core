@@ -192,6 +192,10 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public DocumentFactory<D, TA> getFactory();
 
+	public String debugContents();
+
+	public String debugStructuredContents();
+
 	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 

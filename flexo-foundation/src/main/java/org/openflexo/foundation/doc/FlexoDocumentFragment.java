@@ -31,6 +31,7 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents a consecutive sequence of {@link FlexoDocumentElement} in a {@link FlexoDocument}
@@ -98,8 +99,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 
 	public String getStringRepresentation();
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());
 
@@ -111,7 +112,7 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 		}
 
 		/**
-		 * Return the run as identified by runIdentifier, under the form: elementIndex.runIndex
+		 * Return the run as identified by runIdentifier, under the form: elementId.runIndex
 		 * 
 		 * @param runIdentifier
 		 * @return
@@ -119,23 +120,26 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 		@Override
 		public FlexoRun<?, ?> getRun(String runIdentifier) {
 			StringTokenizer st = new StringTokenizer(runIdentifier, ".");
-			int elementId = -1;
+			String elementId = null;
 			if (st.hasMoreTokens()) {
-				elementId = Integer.parseInt(st.nextToken());
+				elementId = st.nextToken();
 			}
 			int runId = -1;
 			if (st.hasMoreTokens()) {
 				runId = Integer.parseInt(st.nextToken());
 			}
-			if (elementId > -1 && elementId < getElements().size()) {
-				FlexoDocumentElement<?, ?> element = getElements().get(elementId);
+			if (StringUtils.isNotEmpty(elementId)) {
+				FlexoDocumentElement<?, ?> element = getFlexoDocument().getElementWithIdentifier(elementId);
 				if (element instanceof FlexoParagraph) {
 					FlexoParagraph<?, ?> para = (FlexoParagraph<?, ?>) element;
 					if (runId > -1 && runId < para.getRuns().size()) {
 						return para.getRuns().get(runId);
 					}
-				} else {
+				} else if (element != null) {
 					logger.warning("!!! Not implemented: " + element.getClass());
+				} else {
+					logger.warning("!!! Cannot find element with id: " + elementId + " in " + getFlexoDocument());
+					System.out.println(getFlexoDocument().debugStructuredContents());
 				}
 			}
 			return null;
@@ -175,9 +179,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			return (getStartElement() instanceof FlexoParagraph ? ((FlexoParagraph) getStartElement()).getRawTextPreview()
 					: (getStartElement() != null ? getStartElement().toString() : "?"))
 					+ " : "
-					+ (getStartElement() != getEndElement()
-							? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement()).getRawTextPreview()
-									: (getEndElement() != null ? getEndElement().toString() : "?"))
+					+ (getStartElement() != getEndElement() ? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement())
+							.getRawTextPreview() : (getEndElement() != null ? getEndElement().toString() : "?"))
 							: "");
 		}
 	}

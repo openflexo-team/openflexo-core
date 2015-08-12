@@ -64,7 +64,8 @@ import org.openflexo.model.annotations.XMLElement;
 
 /**
  * Implements {@link ActorReference} for {@link FlexoDocumentFragment}.<br>
- * We need to store here the bindings between elements in template and corresponding elements in referenced FlexoDocument
+ * Represents the actual links in a given {@link FlexoDocument} connecting a template fragment to a generated fragment<br>
+ * We need to store here the bindings between elements in template and corresponding elements in referenced {@link FlexoDocument}
  * 
  * @author sylvain
  * 
@@ -99,6 +100,27 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	@Remover(ELEMENT_REFERENCES_KEY)
 	public void removeFromElementReferences(ElementReference anElementReference);
 
+	/**
+	 * Return element in generated fragment matching element identified by supplied templateElementId
+	 * 
+	 * @param templateElementId
+	 * @return
+	 */
+	public FlexoDocumentElement<?, ?> getElementMatchingTemplateElementId(String templateElementId);
+
+	/**
+	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
+	 * 
+	 */
+	public void applyDataToDocument();
+
+	/**
+	 * This method is called to extract a value from the fragment, and apply it to underlying federated data
+	 * 
+	 * @return
+	 */
+	public void reinjectDataFromDocument();
+
 	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F> implements
 			FragmentActorReference<F> {
 
@@ -113,13 +135,20 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 			super();
 		}
 
+		public FlexoDocument<?, ?> getFlexoDocument() {
+			ModelSlotInstance<?, ?> msInstance = getModelSlotInstance();
+			if (msInstance != null && msInstance.getAccessedResourceData() != null) {
+				return (FlexoDocument<?, ?>) msInstance.getAccessedResourceData();
+			}
+			return null;
+		}
+
 		@Override
 		public F getModellingElement() {
 
 			if (fragment == null) {
-				ModelSlotInstance<?, ?> msInstance = getModelSlotInstance();
-				if (msInstance != null && msInstance.getAccessedResourceData() != null) {
-					FlexoDocument<?, ?> document = (FlexoDocument<?, ?>) msInstance.getAccessedResourceData();
+				FlexoDocument<?, ?> document = getFlexoDocument();
+				if (document != null) {
 					if (getElementReferences().size() > 0) {
 						FlexoDocumentElement startElement = null, endElement = null;
 						int index = 0;
@@ -151,29 +180,62 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		@Override
 		public void setModellingElement(F aFragment) {
 
-			// First remove all existing ElementReference occurences when it exists
-			if (fragment != null) {
-				for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
-					removeFromElementReferences(er);
+			if (aFragment != fragment) {
+
+				// First remove all existing ElementReference occurences when it exists
+				if (fragment != null) {
+					for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
+						removeFromElementReferences(er);
+					}
 				}
-			}
 
-			// Retrieve template fragment
-			F templateFragment = (F) ((FlexoDocumentFragmentRole) getFlexoRole()).getFragment();
+				// Retrieve template fragment
+				F templateFragment = (F) ((FlexoDocumentFragmentRole) getFlexoRole()).getFragment();
 
-			for (FlexoDocumentElement<?, ?> element : aFragment.getElements()) {
-				ElementReference er = getFactory().newInstance(ElementReference.class);
-				er.setElementId(element.getIdentifier());
-				if (element.getBaseIdentifier() != null) {
-					er.setTemplateElementId(element.getBaseIdentifier());
+				for (FlexoDocumentElement<?, ?> element : aFragment.getElements()) {
+					ElementReference er = getFactory().newInstance(ElementReference.class);
+					er.setElementId(element.getIdentifier());
+					if (element.getBaseIdentifier() != null) {
+						er.setTemplateElementId(element.getBaseIdentifier());
+					}
+					addToElementReferences(er);
 				}
-				addToElementReferences(er);
-			}
 
-			fragment = aFragment;
+				fragment = aFragment;
+			}
+		}
+
+		/**
+		 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
+		 * 
+		 */
+		@Override
+		public void applyDataToDocument() {
+			System.out.println("Tiens, si on faisait du replacement ???");
+			for (TextBinding tb : ((FlexoDocumentFragmentRole<?>) getFlexoRole()).getTextBindings()) {
+				tb.applyToDocument(getFlexoConceptInstance());
+			}
+		}
+
+		/**
+		 * This method is called to extract a value from the fragment, and apply it to underlying federated data
+		 * 
+		 * @return
+		 */
+		@Override
+		public void reinjectDataFromDocument() {
 
 		}
 
+		@Override
+		public FlexoDocumentElement<?, ?> getElementMatchingTemplateElementId(String templateElementId) {
+			for (ElementReference er : getElementReferences()) {
+				if (er.getTemplateElementId().equals(templateElementId)) {
+					return getFlexoDocument().getElementWithIdentifier(er.getElementId());
+				}
+			}
+			return null;
+		}
 	}
 
 	@ModelEntity

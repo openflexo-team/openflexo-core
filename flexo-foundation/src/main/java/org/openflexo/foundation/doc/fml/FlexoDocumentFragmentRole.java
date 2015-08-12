@@ -22,8 +22,10 @@ package org.openflexo.foundation.doc.fml;
 
 import java.util.List;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
+import org.openflexo.foundation.doc.FlexoRun;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -78,8 +80,10 @@ public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>
 	@Remover(TEXT_BINDINGS_KEY)
 	public void removeFromTextBindings(TextBinding aTextBinding);
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<T extends FlexoDocumentFragment<?, ?>> extends FlexoRoleImpl<T>
-			implements FlexoDocumentFragmentRole<T> {
+	public TextBinding makeTextBinding(FlexoRun<?, ?> run, DataBinding<String> binding);
+
+	public static abstract class FlexoDocumentFragmentRoleImpl<T extends FlexoDocumentFragment<?, ?>> extends FlexoRoleImpl<T> implements
+			FlexoDocumentFragmentRole<T> {
 
 		@Override
 		public FlexoDocument<?, ?> getDocument() {
@@ -89,5 +93,16 @@ public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>
 			return null;
 		}
 
+		@Override
+		public TextBinding makeTextBinding(FlexoRun<?, ?> run, DataBinding<String> binding) {
+			TextBinding returned = getFMLModelFactory().newInstance(TextBinding.class);
+			returned.setStartParagraphIdentifier(run.getParagraph().getIdentifier());
+			returned.setStartRunIndex(run.getIndex());
+			returned.setEndParagraphIdentifier(run.getParagraph().getIdentifier());
+			returned.setEndRunIndex(run.getIndex());
+			returned.setValue(binding);
+			addToTextBindings(returned);
+			return returned;
+		}
 	}
 }

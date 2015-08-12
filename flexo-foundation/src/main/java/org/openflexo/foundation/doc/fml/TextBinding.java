@@ -45,10 +45,10 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
+import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoRun;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -75,18 +75,45 @@ import org.openflexo.model.annotations.XMLElement;
 public interface TextBinding extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = String.class)
-	public static final String RUN_IDENTIFIER_KEY = "runIdentifier";
+	public static final String START_PARAGRAPH_IDENTIFIER_KEY = "startParaId";
+	@PropertyIdentifier(type = String.class)
+	public static final String END_PARAGRAPH_IDENTIFIER_KEY = "endParaId";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String START_RUN_INDEX_KEY = "startRunId";
+	@PropertyIdentifier(type = Integer.class)
+	public static final String END_RUN_INDEX_KEY = "endRunId";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 	@PropertyIdentifier(type = FlexoDocumentFragmentRole.class)
 	public static final String FRAGMENT_ROLE_KEY = "fragmentRole";
 
-	@Getter(value = RUN_IDENTIFIER_KEY)
+	@Getter(value = START_PARAGRAPH_IDENTIFIER_KEY)
 	@XMLAttribute
-	public String getRunIdentifier();
+	public String getStartParagraphIdentifier();
 
-	@Setter(RUN_IDENTIFIER_KEY)
-	public void setRunIdentifier(String runIdentifier);
+	@Setter(START_PARAGRAPH_IDENTIFIER_KEY)
+	public void setStartParagraphIdentifier(String startParagraphIdentifier);
+
+	@Getter(value = END_PARAGRAPH_IDENTIFIER_KEY)
+	@XMLAttribute
+	public String getEndParagraphIdentifier();
+
+	@Setter(END_PARAGRAPH_IDENTIFIER_KEY)
+	public void setEndParagraphIdentifier(String endParagraphIdentifier);
+
+	@Getter(value = START_RUN_INDEX_KEY, defaultValue = "-1")
+	@XMLAttribute
+	public int getStartRunIndex();
+
+	@Setter(START_RUN_INDEX_KEY)
+	public void setStartRunIndex(int startRunIndex);
+
+	@Getter(value = END_RUN_INDEX_KEY, defaultValue = "-1")
+	@XMLAttribute
+	public int getEndRunIndex();
+
+	@Setter(END_RUN_INDEX_KEY)
+	public void setEndRunIndex(int endRunIndex);
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -100,6 +127,23 @@ public interface TextBinding extends FlexoConceptObject {
 
 	@Setter(FRAGMENT_ROLE_KEY)
 	public void setFragmentRole(FlexoDocumentFragmentRole<?> fragmentRole);
+
+	/**
+	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
+	 * 
+	 * @param gr
+	 * @param element
+	 */
+	public void applyToDocument(FlexoConceptInstance fci);
+
+	/**
+	 * This method is called to extract a value from the fragment, and apply it to underlying federated data
+	 * 
+	 * @param gr
+	 * @param element
+	 * @return
+	 */
+	public String applyToModel(FlexoConceptInstance fci);
 
 	public static abstract class TextBindingImpl extends FlexoConceptObjectImpl implements TextBinding {
 
@@ -172,13 +216,36 @@ public interface TextBinding extends FlexoConceptObject {
 		 * @param gr
 		 * @param element
 		 */
+		@Override
 		public void applyToDocument(FlexoConceptInstance fci) {
 
 			try {
-				FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
-				FlexoRun<?, ?> run = fragment.getRun(getRunIdentifier());
+				System.out.println("Pour le fci: " + fci);
+				System.out.println("role: " + getFragmentRole());
+
+				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
+				FlexoDocumentFragment<?, ?> templateFragment = getFragmentRole().getFragment();
+				FlexoDocumentFragment<?, ?> fragment = actorReference.getModellingElement();
+
+				System.out.println("getStartParagraphIdentifier()=" + getStartParagraphIdentifier());
+				System.out.println("getStartRunIndex()=" + getStartRunIndex());
+
+				FlexoParagraph<?, ?> paragraph = (FlexoParagraph<?, ?>) actorReference
+						.getElementMatchingTemplateElementId(getStartParagraphIdentifier());
+
+				System.out.println("paragraph=" + paragraph);
+
+				FlexoRun<?, ?> run = paragraph.getRuns().get(getStartRunIndex());
+
 				String value = getValue().getBindingValue(fci);
+
+				System.out.println("On cherche a remplacer le run: " + run);
+				System.out.println("Avec le binding " + getValue());
+				System.out.println("Le texte c'est: " + run.getText());
+				System.out.println("La nouvelle valeur c'est: " + value);
+
 				run.setText(value);
+
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -196,11 +263,12 @@ public interface TextBinding extends FlexoConceptObject {
 		 * @param element
 		 * @return
 		 */
+		@Override
 		public String applyToModel(FlexoConceptInstance fci) {
 			if (getValue().isSettable()) {
 				FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
-				FlexoRun<?, ?> run = fragment.getRun(getRunIdentifier());
-				String newValue = run.getText();
+				// FlexoRun<?, ?> run = fragment.getRun(getStartRunIdentifier());
+				/*String newValue = run.getText();
 				try {
 					getValue().setBindingValue(newValue, fci);
 				} catch (TypeMismatchException e) {
@@ -212,7 +280,7 @@ public interface TextBinding extends FlexoConceptObject {
 				} catch (NotSettableContextException e) {
 					e.printStackTrace();
 				}
-				return newValue;
+				return newValue;*/
 			}
 			return null;
 		}

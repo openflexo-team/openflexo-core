@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentElement<D, TA> {
+public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
 	@PropertyIdentifier(type = FlexoParagraph.class)
 	public static final String PARAGRAPH_KEY = "paragraph";
@@ -60,12 +60,28 @@ public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 
 	public void fireTextChanged();
 
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoRun<D, TA> {
+	/**
+	 * Return index of the run<br>
+	 * Index of a run is the run occurence in the paragraph
+	 * 
+	 * @return
+	 */
+	public int getIndex();
+
+	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoRun<D, TA> {
+
+		@Override
+		public int getIndex() {
+			if (getParagraph() != null) {
+				return getParagraph().getRuns().indexOf(this);
+			}
+			return -1;
+		}
 
 		@Override
 		public String toString() {
-			return "Run(" + getIdentifier() + ")";
+			return "Run" + getIndex() + "[" + getTextPreview() + "]";
 		}
 
 		@Override
