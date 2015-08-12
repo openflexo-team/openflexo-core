@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -75,6 +76,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -115,6 +117,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	private ModelSlot<?> modelSlot;
+	private FlexoRole<?> flexoRole;
 	private Class<? extends EditionAction> editionActionClass;
 	private Class<? extends FetchRequest<?, ?>> fetchRequestClass;
 
@@ -427,7 +430,13 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
 		}
 
-		if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+		System.out.println("editionActionClass=" + editionActionClass);
+		System.out.println("getFlexoRole()=" + getFlexoRole());
+		System.out.println("getModelSlot()=" + getModelSlot());
+
+		if (RoleSpecificAction.class.isAssignableFrom(editionActionClass) && getFlexoRole() != null) {
+			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
+		} else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			((TechnologySpecificAction) returned).setModelSlot(modelSlot);
 		}
 
@@ -461,6 +470,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public ModelSlot<?> getModelSlot() {
+		if (getFlexoRole() != null) {
+			return getFlexoRole().getModelSlot();
+		}
 		List<ModelSlot<?>> availableMS = getAvailableModelSlotsForAction(getEditionActionClass());
 		if (modelSlot == null) {
 			if (availableMS.size() > 0) {
@@ -484,6 +496,18 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			ModelSlot<?> oldValue = this.modelSlot;
 			this.modelSlot = modelSlot;
 			getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
+		}
+	}
+
+	public FlexoRole<?> getFlexoRole() {
+		return flexoRole;
+	}
+
+	public void setFlexoRole(FlexoRole<?> flexoRole) {
+		if ((flexoRole == null && this.flexoRole != null) || (flexoRole != null && !flexoRole.equals(this.flexoRole))) {
+			FlexoRole<?> oldValue = this.flexoRole;
+			this.flexoRole = flexoRole;
+			getPropertyChangeSupport().firePropertyChange("flexoRole", oldValue, flexoRole);
 		}
 	}
 

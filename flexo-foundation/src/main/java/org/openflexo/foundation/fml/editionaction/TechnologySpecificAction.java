@@ -63,9 +63,9 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
 
 /**
- * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
+ * Represents an {@link EditionAction} which address a specific technology through the reference to a {@link ModelSlot}
  * 
- * An edition action adresses a {@link ModelSlot}
+ * Such action must reference a {@link ModelSlot}
  * 
  * @author sylvain
  * 
@@ -103,7 +103,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			return modelSlot.getModelSlotTechnologyAdapter();
+			return getModelSlot().getModelSlotTechnologyAdapter();
 		}
 
 		@Override
