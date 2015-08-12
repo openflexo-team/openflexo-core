@@ -218,6 +218,25 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	public <T> FlexoProperty<T> getPropertyForActor(T actor);
 
+	/**
+	 * Return {@link ActorReference} object associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
+	 * If cardinality of supplied property is MULTIPLE, return first found value
+	 * 
+	 * @param flexoProperty
+	 *            the property to lookup
+	 */
+	public <T> ActorReference<T> getActorReference(FlexoRole<T> flexoRole);
+
+	/**
+	 * Return {@link ActorReference} list associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
+	 * If cardinality of supplied property is SINGLE, return a singleton list<br>
+	 * If no value are defined for this property, return an empty list
+	 * 
+	 * @param flexoProperty
+	 *            the property to lookup
+	 */
+	public <T> List<ActorReference<T>> getActorReferenceList(FlexoRole<T> flexoRole);
+
 	public String getStringRepresentation();
 
 	public boolean hasValidRenderer();
@@ -263,16 +282,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
-			// logger.info(">>>>>>>> FlexoConceptInstance "+Integer.toHexString(hashCode())+" getPatternActor() actors="+actors);
 			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
 			if (actorReferences != null && actorReferences.size() > 0) {
 				return actorReferences.get(0).getModellingElement();
 			}
-			// Pragmatic attempt to fix "inheritance issue...."
-			/*else {
-				return getParentActorReference(getFlexoConcept(), flexoProperty);
-			}*/
+
 			return null;
 		}
 
@@ -336,6 +351,46 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return null;
 			}
 			return getFlexoActorList(role);
+		}
+
+		/**
+		 * Return {@link ActorReference} object associated with supplied property, asserting cardinality of supplied property is SINGLE.<br>
+		 * If cardinality of supplied property is MULTIPLE, return first found value
+		 * 
+		 * @param flexoProperty
+		 *            the property to lookup
+		 */
+		@Override
+		public <T> ActorReference<T> getActorReference(FlexoRole<T> flexoRole) {
+			if (flexoRole == null) {
+				logger.warning("Unexpected null flexoProperty");
+				return null;
+			}
+			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
+
+			if (actorReferences != null && actorReferences.size() > 0) {
+				return actorReferences.get(0);
+			}
+
+			return null;
+		}
+
+		/**
+		 * Return {@link ActorReference} list associated with supplied property, asserting cardinality of supplied property is MULTIPLE.<br>
+		 * If cardinality of supplied property is SINGLE, return a singleton list<br>
+		 * If no value are defined for this property, return an empty list
+		 * 
+		 * @param flexoProperty
+		 *            the property to lookup
+		 */
+		@Override
+		public <T> List<ActorReference<T>> getActorReferenceList(FlexoRole<T> flexoRole) {
+			if (flexoRole == null) {
+				logger.warning("Unexpected null flexoProperty");
+				return null;
+			}
+
+			return (List) actors.get(flexoRole.getRoleName());
 		}
 
 		/*private <T> ActorReference<T> getParentActorReference(FlexoConcept flexoConcept, FlexoProperty<T> flexoProperty) {
@@ -869,7 +924,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					} else {
 						if (obj != null) {
 							return obj.toString();
-						} else return EMPTY_STRING;
+						} else
+							return EMPTY_STRING;
 					}
 
 				} catch (TypeMismatchException e) {
