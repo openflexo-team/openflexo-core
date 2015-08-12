@@ -61,8 +61,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>, ResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
@@ -193,8 +192,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public DocumentFactory<D, TA> getFactory();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {

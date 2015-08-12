@@ -38,12 +38,17 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.FlexoDocumentElement;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
+import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Embedded;
@@ -72,30 +77,30 @@ import org.openflexo.model.annotations.XMLElement;
 @FML("FragmentActorReference")
 public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> extends ActorReference<F> {
 
-	@PropertyIdentifier(type = ElementBinding.class, cardinality = Cardinality.LIST)
-	public static final String ELEMENTS_BINDINGS_KEY = "elementBindings";
+	@PropertyIdentifier(type = ElementReference.class, cardinality = Cardinality.LIST)
+	public static final String ELEMENT_REFERENCES_KEY = "elementReferences";
 
 	/**
 	 * Return the list of root elements of this document (elements like paragraphs or tables, sequentially composing the document)
 	 * 
 	 * @return
 	 */
-	@Getter(value = ELEMENTS_BINDINGS_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = ELEMENT_REFERENCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	@Embedded
-	public List<ElementBinding> getElementBindings();
+	public List<ElementReference> getElementReferences();
 
-	@Setter(ELEMENTS_BINDINGS_KEY)
-	public void setElements(List<ElementBinding> someElementBindings);
+	@Setter(ELEMENT_REFERENCES_KEY)
+	public void setElementReferences(List<ElementReference> someElementReferences);
 
-	@Adder(ELEMENTS_BINDINGS_KEY)
-	public void addToElements(ElementBinding anElementBinding);
+	@Adder(ELEMENT_REFERENCES_KEY)
+	public void addToElementReferences(ElementReference anElementReference);
 
-	@Remover(ELEMENTS_BINDINGS_KEY)
-	public void removeFromElements(ElementBinding anElementBinding);
+	@Remover(ELEMENT_REFERENCES_KEY)
+	public void removeFromElementReferences(ElementReference anElementReference);
 
-	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F>
-			implements FragmentActorReference<F> {
+	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F> implements
+			FragmentActorReference<F> {
 
 		private static final Logger logger = FlexoLogger.getLogger(FragmentActorReference.class.getPackage().toString());
 
@@ -110,54 +115,70 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 
 		@Override
 		public F getModellingElement() {
-			/*if (object == null) {
-				ModelSlotInstance msInstance = getModelSlotInstance();
+
+			if (fragment == null) {
+				ModelSlotInstance<?, ?> msInstance = getModelSlotInstance();
 				if (msInstance != null && msInstance.getAccessedResourceData() != null) {
-					object = (T) msInstance.getModelSlot().retrieveObjectWithURI(msInstance, objectURI);
+					FlexoDocument<?, ?> document = (FlexoDocument<?, ?>) msInstance.getAccessedResourceData();
+					if (getElementReferences().size() > 0) {
+						FlexoDocumentElement startElement = null, endElement = null;
+						int index = 0;
+						for (ElementReference er : getElementReferences()) {
+							FlexoDocumentElement element = document.getElementWithIdentifier(er.getElementId());
+							element.setBaseIdentifier(er.getTemplateElementId());
+							if (index == 0) {
+								startElement = element;
+							} else if (index == getElementReferences().size() - 1) {
+								endElement = element;
+							}
+							index++;
+						}
+						try {
+							fragment = (F) document.getFactory().makeFragment(startElement, endElement);
+						} catch (FragmentConsistencyException e) {
+							logger.warning("Could not build fragment");
+							e.printStackTrace();
+						}
+					}
 				} else {
-					logger.warning("Could not access to model in model slot " + getModelSlotInstance());
+					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
 				}
 			}
-			if (object == null) {
-				logger.warning("Could not retrieve object " + objectURI);
-			}
-			return object;*/
 
-			return null;
+			return fragment;
 		}
 
 		@Override
 		public void setModellingElement(F aFragment) {
 
+			// First remove all existing ElementReference occurences when it exists
+			if (fragment != null) {
+				for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
+					removeFromElementReferences(er);
+				}
+			}
+
+			// Retrieve template fragment
 			F templateFragment = (F) ((FlexoDocumentFragmentRole) getFlexoRole()).getFragment();
 
-			/*this.object = object;
-			if (object != null && getModelSlotInstance() != null) {
-				ModelSlotInstance msInstance = getModelSlotInstance();
-					objectURI = msInstance.getModelSlot().getURIForObject(msInstance, object);
-			}*/
-
-		}
-
-		/*@Override
-		public String getObjectURI() {
-			if (object != null) {
-				ModelSlotInstance msInstance = getModelSlotInstance();
-				objectURI = msInstance.getModelSlot().getURIForObject(msInstance, object);
+			for (FlexoDocumentElement<?, ?> element : aFragment.getElements()) {
+				ElementReference er = getFactory().newInstance(ElementReference.class);
+				er.setElementId(element.getIdentifier());
+				if (element.getBaseIdentifier() != null) {
+					er.setTemplateElementId(element.getBaseIdentifier());
+				}
+				addToElementReferences(er);
 			}
-			return objectURI;
+
+			fragment = aFragment;
+
 		}
-		
-		@Override
-		public void setObjectURI(String objectURI) {
-			this.objectURI = objectURI;
-		}*/
 
 	}
 
 	@ModelEntity
 	@XMLElement
-	public interface ElementBinding {
+	public interface ElementReference {
 
 		@PropertyIdentifier(type = String.class)
 		public static final String TEMPLATE_ELEMENT_IDENTIFIER_KEY = "templateElementId";

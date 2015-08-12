@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -49,21 +51,36 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 
 	@PropertyIdentifier(type = String.class)
 	public static final String IDENTIFIER_KEY = "identifier";
+	@PropertyIdentifier(type = String.class)
+	public static final String BASE_IDENTIFIER_KEY = "baseIdentifier";
 
 	public static final String CHILDREN_ELEMENTS_KEY = "childrenElements";
 
 	/**
-	 * Return identifier of the {@link FlexoParagraph} in the {@link FlexoDocument}<br>
+	 * Return identifier of the {@link FlexoDocumentElement} in the {@link FlexoDocument}<br>
 	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
 	 * Please note that two different documents may have both a paragraph with same identifier
 	 * 
 	 * @return
 	 */
 	@Getter(IDENTIFIER_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public String getIdentifier();
 
 	@Setter(IDENTIFIER_KEY)
 	public void setIdentifier(String identifier);
+
+	/**
+	 * Return identifier of the {@link FlexoDocumentElement} in the template {@link FlexoDocument} if this element<br>
+	 * has been built according to template-based operation
+	 * 
+	 * @return
+	 */
+	@Getter(BASE_IDENTIFIER_KEY)
+	public String getBaseIdentifier();
+
+	@Setter(BASE_IDENTIFIER_KEY)
+	public void setBaseIdentifier(String baseIdentifier);
 
 	/**
 	 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the
@@ -77,8 +94,8 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 
 	public void notifyChildrenElementsChanged();
 
-	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentElement<D, TA> {
+	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
 
 		private List<FlexoDocumentElement<D, TA>> childrenElements = null;
 
