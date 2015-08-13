@@ -50,25 +50,25 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateFlexoRoleInitializer extends ActionInitializer<AbstractCreateFlexoRole, FlexoConceptObject, FMLObject> {
+public class CreateTechnologyRoleInitializer extends ActionInitializer<CreateTechnologyRole, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateFlexoRoleInitializer(ControllerActionInitializer actionInitializer) {
-		super(AbstractCreateFlexoRole.actionType, actionInitializer);
+	public CreateTechnologyRoleInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateTechnologyRole.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<AbstractCreateFlexoRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<AbstractCreateFlexoRole>() {
+	protected FlexoActionInitializer<CreateTechnologyRole> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateTechnologyRole>() {
 			@Override
-			public boolean run(EventObject e, AbstractCreateFlexoRole action) {
-				Wizard wizard = new CreateFlexoRoleWizard(action, getController());
+			public boolean run(EventObject e, CreateTechnologyRole action) {
+				Wizard wizard = new CreateTechnologyRoleWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -76,17 +76,15 @@ public class CreateFlexoRoleInitializer extends ActionInitializer<AbstractCreate
 					return false;
 				}
 				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_FLEXO_ROLE_DIALOG_FIB);
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AbstractCreateFlexoRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AbstractCreateFlexoRole>() {
+	protected FlexoActionFinalizer<CreateTechnologyRole> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateTechnologyRole>() {
 			@Override
-			public boolean run(EventObject e, AbstractCreateFlexoRole action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			public boolean run(EventObject e, CreateTechnologyRole action) {
 				return true;
 			}
 		};

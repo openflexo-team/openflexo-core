@@ -61,7 +61,6 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
-import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
@@ -69,7 +68,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
@@ -142,21 +141,18 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		AbstractCreateFlexoRole createPR1 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		AbstractCreateFlexoRole createPR2 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		AbstractCreateFlexoRole createPR3 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
@@ -224,8 +220,8 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		assertNotNull(conditional1);
 		assertTrue(conditional1.getCondition().isValid());
 
-		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
-				conditional1.getThenControlGraph(), null, editor);
+		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType
+				.makeNewAction(conditional1.getThenControlGraph(), null, editor);
 		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));

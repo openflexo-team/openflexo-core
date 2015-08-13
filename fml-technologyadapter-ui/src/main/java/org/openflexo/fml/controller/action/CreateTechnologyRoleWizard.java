@@ -43,37 +43,33 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.fml.IndividualRole;
-import org.openflexo.foundation.ontology.fml.action.CreateIndividualRole;
-import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
+import org.openflexo.foundation.fml.action.CreateTechnologyRole;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<CreateIndividualRole, FlexoOntologyModelSlot<?, ?, ?>> {
+public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<CreateTechnologyRole, ModelSlot<?>> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CreateIndividualRoleWizard.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateTechnologyRoleWizard.class.getPackage().getName());
 
-	private static final String NO_INDIVIDUAL_TYPE = FlexoLocalization.localizedForKey("please_choose_individual_type");
-
-	public CreateIndividualRoleWizard(CreateIndividualRole action, FlexoController controller) {
+	public CreateTechnologyRoleWizard(CreateTechnologyRole action, FlexoController controller) {
 		super(action, controller);
 	}
 
 	@Override
-	protected DescribeIndividualRole makeDescriptionStep() {
-		return new DescribeIndividualRole();
+	protected DescribeTechnologyRole makeDescriptionStep() {
+		return new DescribeTechnologyRole();
 	}
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_individual_role");
+		return FlexoLocalization.localizedForKey("create_technology_specific_role");
 	}
 
 	@Override
-	public DescribeIndividualRole getDescribeProperty() {
-		return (DescribeIndividualRole) super.getDescribeProperty();
+	public DescribeTechnologyRole getDescribeProperty() {
+		return (DescribeTechnologyRole) super.getDescribeProperty();
 	}
 
 	/**
@@ -82,8 +78,8 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeIndividualRole.fib")
-	public class DescribeIndividualRole extends AbstractDescribeFlexoRole {
+	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib")
+	public class DescribeTechnologyRole extends AbstractDescribeFlexoRole {
 
 		@Override
 		public boolean isValid() {
@@ -97,27 +93,22 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 				return false;
 			}
 
-			if (getIndividualType() == null) {
-				setIssueMessage(NO_INDIVIDUAL_TYPE, IssueMessageType.ERROR);
-				return false;
-			}
-
 			return true;
 		}
 
 		@Override
-		public void setModelSlot(FlexoOntologyModelSlot<?, ?, ?> modelSlot) {
+		public void setModelSlot(ModelSlot<?> modelSlot) {
 			super.setModelSlot(modelSlot);
 			getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 			checkValidity();
 		}
 
 		@Override
-		public Class<? extends IndividualRole<?>> getFlexoRoleClass() {
+		public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
 			return getAction().getFlexoRoleClass();
 		}
 
-		public void setFlexoRoleClass(Class<? extends IndividualRole<?>> flexoRoleClass) {
+		public void setFlexoRoleClass(Class<? extends FlexoRole<?>> flexoRoleClass) {
 			if (getFlexoRoleClass() != flexoRoleClass) {
 				Class<? extends FlexoRole> oldValue = getFlexoRoleClass();
 				getAction().setFlexoRoleClass(flexoRoleClass);
@@ -127,21 +118,8 @@ public class CreateIndividualRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			}
 		}
 
-		public List<Class<? extends IndividualRole<?>>> getAvailableFlexoRoleTypes() {
+		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
 			return getAction().getAvailableFlexoRoleTypes();
-		}
-
-		public IFlexoOntologyClass<?> getIndividualType() {
-			return getAction().getIndividualType();
-		}
-
-		public void setIndividualType(IFlexoOntologyClass<?> individualType) {
-			if (getIndividualType() != individualType) {
-				IFlexoOntologyClass<?> oldValue = getIndividualType();
-				getAction().setIndividualType(individualType);
-				getPropertyChangeSupport().firePropertyChange("individualType", oldValue, individualType);
-				checkValidity();
-			}
 		}
 
 	}

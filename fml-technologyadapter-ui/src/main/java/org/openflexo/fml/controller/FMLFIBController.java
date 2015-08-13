@@ -71,9 +71,9 @@ import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
+import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
@@ -87,6 +87,11 @@ import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.ontology.fml.ClassParameter;
+import org.openflexo.foundation.ontology.fml.DataPropertyParameter;
+import org.openflexo.foundation.ontology.fml.IndividualParameter;
+import org.openflexo.foundation.ontology.fml.ObjectPropertyParameter;
+import org.openflexo.foundation.ontology.fml.PropertyParameter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -186,7 +191,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
-		AbstractCreateFlexoRole createFlexoRole = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
+		CreateTechnologyRole createFlexoRole = CreateTechnologyRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
 	}
@@ -447,7 +452,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIndividualParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(IndividualParameter.class);
 		newParameter.setName("individual");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -456,7 +461,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newClassParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ClassParameter.class);
 		newParameter.setName("class");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -465,7 +470,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(PropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -474,7 +479,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newObjectPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ObjectPropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
@@ -483,7 +488,7 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDataPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(DataPropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");

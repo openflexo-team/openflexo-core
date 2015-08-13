@@ -50,25 +50,25 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.ontology.fml.action.CreateIndividualRole;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateIndividualRoleInitializer extends ActionInitializer<CreateIndividualRole, FlexoConceptObject, FMLObject> {
+public class CreatePrimitiveRoleInitializer extends ActionInitializer<CreatePrimitiveRole, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public CreateIndividualRoleInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateIndividualRole.actionType, actionInitializer);
+	public CreatePrimitiveRoleInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreatePrimitiveRole.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateIndividualRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateIndividualRole>() {
+	protected FlexoActionInitializer<CreatePrimitiveRole> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreatePrimitiveRole>() {
 			@Override
-			public boolean run(EventObject e, CreateIndividualRole action) {
-				Wizard wizard = new CreateIndividualRoleWizard(action, getController());
+			public boolean run(EventObject e, CreatePrimitiveRole action) {
+				Wizard wizard = new CreatePrimitiveRoleWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
 				if (dialog.getStatus() != Status.VALIDATED) {
@@ -81,10 +81,10 @@ public class CreateIndividualRoleInitializer extends ActionInitializer<CreateInd
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateIndividualRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateIndividualRole>() {
+	protected FlexoActionFinalizer<CreatePrimitiveRole> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreatePrimitiveRole>() {
 			@Override
-			public boolean run(EventObject e, CreateIndividualRole action) {
+			public boolean run(EventObject e, CreatePrimitiveRole action) {
 				return true;
 			}
 		};

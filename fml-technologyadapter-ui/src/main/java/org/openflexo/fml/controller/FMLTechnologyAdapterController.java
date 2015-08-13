@@ -48,9 +48,12 @@ import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoConceptInitializer;
-import org.openflexo.fml.controller.action.CreateFlexoRoleInitializer;
+import org.openflexo.fml.controller.action.CreateFlexoConceptInstanceRoleInitializer;
 import org.openflexo.fml.controller.action.CreateGetSetPropertyInitializer;
+import org.openflexo.fml.controller.action.CreateIndividualRoleInitializer;
 import org.openflexo.fml.controller.action.CreateModelSlotInitializer;
+import org.openflexo.fml.controller.action.CreatePrimitiveRoleInitializer;
+import org.openflexo.fml.controller.action.CreateTechnologyRoleInitializer;
 import org.openflexo.fml.controller.action.CreateViewPointInitializer;
 import org.openflexo.fml.controller.action.CreateVirtualModelInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
@@ -125,7 +128,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateVirtualModelInitializer(actionInitializer);
 		new DeleteVirtualModelInitializer(actionInitializer);
 
-		new CreateFlexoRoleInitializer(actionInitializer);
+		new CreateTechnologyRoleInitializer(actionInitializer);
+		new CreatePrimitiveRoleInitializer(actionInitializer);
+		new CreateFlexoConceptInstanceRoleInitializer(actionInitializer);
+		new CreateIndividualRoleInitializer(actionInitializer);
 		new CreateExpressionPropertyInitializer(actionInitializer);
 		new CreateGetSetPropertyInitializer(actionInitializer);
 		new CreateAbstractPropertyInitializer(actionInitializer);

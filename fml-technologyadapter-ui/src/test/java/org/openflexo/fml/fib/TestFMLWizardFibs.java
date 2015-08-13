@@ -46,8 +46,8 @@ import org.openflexo.rm.ResourceLocator;
 public class TestFMLWizardFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(),
-				"Fib/Wizard/"));
+		System.out.println(
+				generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(), "Fib/Wizard/"));
 	}
 
 	@Test
@@ -106,8 +106,8 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDescribeFlexoRole() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib");
+	public void testDescribeFlexoConceptInstanceRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConceptInstanceRole.fib");
 	}
 
 	@Test
@@ -116,8 +116,23 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeIndividualRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeIndividualRole.fib");
+	}
+
+	@Test
 	public void testDescribeModelSlot() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
+	}
+
+	@Test
+	public void testDescribePrimitiveRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribePrimitiveRole.fib");
+	}
+
+	@Test
+	public void testDescribeTechnologyRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib");
 	}
 
 	@Test

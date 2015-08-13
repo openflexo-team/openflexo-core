@@ -53,12 +53,11 @@ import org.openflexo.fib.utils.OpenflexoFIBTestCase;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -140,21 +139,18 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		AbstractCreateFlexoRole createPR1 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		AbstractCreateFlexoRole createPR2 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		AbstractCreateFlexoRole createPR3 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
