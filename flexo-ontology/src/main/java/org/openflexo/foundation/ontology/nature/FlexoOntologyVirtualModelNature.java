@@ -68,7 +68,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	public static FlexoOntologyVirtualModelNature INSTANCE = new FlexoOntologyVirtualModelNature();
 
 	// Prevent external instantiation
-	private FlexoOntologyVirtualModelNature() {
+	protected FlexoOntologyVirtualModelNature() {
 	}
 
 	/**
@@ -85,13 +85,13 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 		return false;
 	}
 
-	public static List<FlexoOntologyModelSlot> getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
+	public static List<? extends FlexoOntologyModelSlot<?, ?, ?>> getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
 		return INSTANCE._getFlexoOntologyModelSlots(virtualModel);
 	}
 
-	private List<FlexoOntologyModelSlot> _getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
+	private List<? extends FlexoOntologyModelSlot<?, ?, ?>> _getFlexoOntologyModelSlots(AbstractVirtualModel<?> virtualModel) {
 		if (virtualModel != null && virtualModel.getModelSlots(FlexoOntologyModelSlot.class).size() > 0) {
-			return virtualModel.getModelSlots(FlexoOntologyModelSlot.class);
+			return (List) virtualModel.getModelSlots(FlexoOntologyModelSlot.class);
 		}
 		return null;
 	}
@@ -209,7 +209,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 *            the {@link AbstractVirtualModel} used to define search scope
 	 * @return
 	 */
-	public IFlexoOntologyObjectProperty<?> getOntologyObjectProperty(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyObjectProperty<?> getOntologyObjectProperty(String uri, AbstractVirtualModel<?> virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyObjectProperty) {
 			return (IFlexoOntologyObjectProperty<?>) returned;
@@ -226,7 +226,7 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 *            the {@link AbstractVirtualModel} used to define search scope
 	 * @return
 	 */
-	public IFlexoOntologyDataProperty<?> getOntologyDataProperty(String uri, AbstractVirtualModel<?> virtualModel) {
+	public static IFlexoOntologyDataProperty<?> getOntologyDataProperty(String uri, AbstractVirtualModel<?> virtualModel) {
 		Object returned = getOntologyObject(uri, virtualModel);
 		if (returned instanceof IFlexoOntologyDataProperty) {
 			return (IFlexoOntologyDataProperty<?>) returned;
