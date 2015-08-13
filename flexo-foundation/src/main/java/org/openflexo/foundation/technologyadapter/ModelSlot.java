@@ -153,6 +153,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
+	public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType);
+
 	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
 
 	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes();
@@ -361,6 +363,17 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		public abstract Class<? extends TechnologyAdapter> getTechnologyAdapterClass();
+
+		@Override
+		public <R extends FlexoRole<?>> List<Class<? extends R>> getAvailableFlexoRoleTypes(Class<R> roleType) {
+			List<Class<? extends R>> returned = new ArrayList<Class<? extends R>>();
+			for (Class<? extends FlexoRole<?>> roleClass : getAvailableFlexoRoleTypes()) {
+				if (roleType.isAssignableFrom(roleClass)) {
+					returned.add((Class<? extends R>) roleClass);
+				}
+			}
+			return returned;
+		}
 
 		@Override
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {

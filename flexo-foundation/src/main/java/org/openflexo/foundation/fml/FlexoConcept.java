@@ -342,10 +342,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public DeletionScheme generateDefaultDeletionScheme();
 
-	public List<IndividualRole> getIndividualRoles();
-
-	public List<ClassRole> getClassRoles();
-
 	public FlexoConceptInstanceType getInstanceType();
 
 	public FlexoConceptStructuralFacet getStructuralFacet();
@@ -673,16 +669,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return null;
-		}
-
-		@Override
-		public List<IndividualRole> getIndividualRoles() {
-			return getDeclaredProperties(IndividualRole.class);
-		}
-
-		@Override
-		public List<ClassRole> getClassRoles() {
-			return getDeclaredProperties(ClassRole.class);
 		}
 
 		private Vector<String> availablePropertiesNames = null;

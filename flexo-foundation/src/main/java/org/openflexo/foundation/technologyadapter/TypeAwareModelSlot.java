@@ -41,18 +41,13 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.IndividualRole;
-import org.openflexo.foundation.fml.editionaction.AddIndividual;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -120,17 +115,6 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
 
-	/**
-	 * Instantiate a new IndividualRole
-	 * 
-	 * @param ontClass
-	 * @return
-	 */
-	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass);
-
-	public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
-			AbstractCreationScheme creationScheme);
-
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
 
@@ -145,33 +129,6 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(
 				CreateVirtualModelInstance action);
-
-		/**
-		 * Instantiate a new IndividualRole
-		 * 
-		 * @param ontClass
-		 * @return
-		 */
-		@Override
-		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
-			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
-			returned.setOntologicType(ontClass);
-			return returned;
-		}
-
-		@Override
-		public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
-				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
-			AddIndividual<? extends TypeAwareModelSlot, ?> returned = makeEditionAction(addIndividualClass);
-
-			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));
-			if (creationScheme.getParameter("uri") != null) {
-				returned.setIndividualName(new DataBinding("parameters.uri"));
-			}
-			return returned;
-		}
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related

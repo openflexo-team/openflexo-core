@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.editionaction.AddIndividual"
+	dataClassName="org.openflexo.foundation.ontology.fml.editionaction.AddIndividual"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -15,7 +15,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.components.widget.FIBClassSelector"
+			<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" opaque="false" clickAction=""
 				doubleClickAction="" rightClickAction="" enterPressedAction=""
@@ -51,7 +51,7 @@
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
 			<Table
-				iteratorClassName="org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion"
+				iteratorClassName="org.openflexo.foundation.ontology.fml.editionaction.ObjectPropertyAssertion"
 				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
 				createNewRowOnClick="false" boundToSelectionManager="false"
 				showFooter="true" selectionMode="MultipleIntervalSelection"
@@ -70,7 +70,7 @@
 					format="" title="icon" columnWidth="30" resizable="false"
 					displayTitle="false" color="" bgColor="" tooltip=""
 					valueChangedAction="" name="icon" />
-				<CustomColumn componentClassName="org.openflexo.components.widget.FIBPropertySelector"
+				<CustomColumn componentClassName="org.openflexo.ontology.components.widget.FIBPropertySelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.ontologyProperty" format="object.name" title="property"
 					columnWidth="80" resizable="true" displayTitle="true" color=""
@@ -114,7 +114,7 @@
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
 			<Table
-				iteratorClassName="org.openflexo.foundation.fml.editionaction.DataPropertyAssertion"
+				iteratorClassName="org.openflexo.foundation.ontology.fml.editionaction.DataPropertyAssertion"
 				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
 				createNewRowOnClick="false" boundToSelectionManager="false"
 				showFooter="true" selectionMode="MultipleIntervalSelection"
@@ -133,7 +133,7 @@
 					format="" title="icon" columnWidth="30" resizable="false"
 					displayTitle="false" color="" bgColor="" tooltip=""
 					valueChangedAction="" name="icon" />
-				<CustomColumn componentClassName="org.openflexo.components.widget.FIBPropertySelector"
+				<CustomColumn componentClassName="org.openflexo.ontology.components.widget.FIBPropertySelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.ontologyProperty" format="object.name" title="property"
 					columnWidth="80" resizable="true" displayTitle="true" color=""

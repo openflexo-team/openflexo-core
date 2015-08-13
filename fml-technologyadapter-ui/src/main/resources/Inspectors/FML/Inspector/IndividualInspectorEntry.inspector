@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.inspector.IndividualInspectorEntry"
+	dataClassName="org.openflexo.foundation.ontology.fml.inspector.IndividualInspectorEntry"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -16,7 +16,7 @@
 				borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 				darkLevel="0" index="10"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<Custom componentClassName="org.openflexo.components.widget.FIBClassSelector"
+				<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 					localize="true" index="2" data="data.concept"
 					constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 					visible="(!(data.isDynamicConceptValue))" opaque="false">

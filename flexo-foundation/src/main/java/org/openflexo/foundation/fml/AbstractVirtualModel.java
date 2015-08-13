@@ -54,12 +54,6 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
@@ -111,8 +105,8 @@ import org.openflexo.toolbox.ToolBox;
 @ImplementationClass(AbstractVirtualModel.AbstractVirtualModelImpl.class)
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class), @Import(AddFlexoConceptInstanceParameter.class) })
-public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
-		extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>, ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
+public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>> extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>,
+		ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
 
 	// public static final String REFLEXIVE_MODEL_SLOT_NAME = "virtualModelInstance";
 
@@ -217,7 +211,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyObject getOntologyObject(String uri);
+	// public IFlexoOntologyObject getOntologyObject(String uri);
 
 	/**
 	 * Retrieve ontology class from its URI.<br>
@@ -226,7 +220,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyClass getOntologyClass(String uri);
+	// public IFlexoOntologyClass getOntologyClass(String uri);
 
 	/**
 	 * Retrieve ontology individual from its URI.<br>
@@ -235,7 +229,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyIndividual getOntologyIndividual(String uri);
+	// public IFlexoOntologyIndividual getOntologyIndividual(String uri);
 
 	/**
 	 * Retrieve ontology property from its URI.<br>
@@ -244,7 +238,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyStructuralProperty getOntologyProperty(String uri);
+	// public IFlexoOntologyStructuralProperty getOntologyProperty(String uri);
 
 	/**
 	 * Retrieve ontology object property from its URI.<br>
@@ -253,7 +247,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri);
+	// public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri);
 
 	/**
 	 * Retrieve ontology object property from its URI.<br>
@@ -262,7 +256,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	 * @param uri
 	 * @return
 	 */
-	public IFlexoOntologyDataProperty getOntologyDataProperty(String uri);
+	// public IFlexoOntologyDataProperty getOntologyDataProperty(String uri);
 
 	/**
 	 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
@@ -320,8 +314,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	@Override
 	public VirtualModelBindingModel getBindingModel();
 
-	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl
-			implements AbstractVirtualModel<VM> {
+	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl implements
+			AbstractVirtualModel<VM> {
 
 		private static final Logger logger = Logger.getLogger(AbstractVirtualModel.class.getPackage().getName());
 
@@ -487,28 +481,6 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		}
 
 		/**
-		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel}
-		 * 
-		 * @return
-		 */
-		/*
-		 * @Override public Vector<FlexoConcept> getFlexoConcepts() { return
-		 * flexoConcepts; }
-		 * 
-		 * public void setFlexoConcepts(Vector<FlexoConcept>
-		 * flexoConcepts) { this.flexoConcepts = flexoConcepts; }
-		 * 
-		 * @Override public void addToFlexoConcepts(FlexoConcept pattern) {
-		 * pattern.setVirtualModel(this); flexoConcepts.add(pattern);
-		 * setChanged(); notifyObservers(new FlexoConceptCreated(pattern)); }
-		 * 
-		 * @Override public void removeFromFlexoConcepts(FlexoConcept
-		 * pattern) { pattern.setVirtualModel(null);
-		 * flexoConcepts.remove(pattern); setChanged(); notifyObservers(new
-		 * FlexoConceptDeleted(pattern)); }
-		 */
-
-		/**
 		 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
 		 * 
 		 * @param flexoConceptId
@@ -544,35 +516,9 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			return newSynchronizationScheme;
 		}
 
-		/*@Override
-		public void updateBindingModel() {
-			logger.fine("updateBindingModel()");
-			bindingModel = null;
-			createBindingModel();
-			super.updateBindingModel();
-		}*/
-
-		/*private void createBindingModel() {
-			bindingModel = new VirtualModelBindingModel(this);
-			for (FlexoConcept ep : getFlexoConcepts()) {
-				// bindingModel.addToBindingVariables(new
-				// FlexoConceptPathElement<ViewPoint>(ep, this));
-				bindingModel.addToBindingVariables(new BindingVariable(ep.getName(), FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(ep)));
-			}
-		}*/
-
-		/*
-		 * @Override public String simpleRepresentation() { return
-		 * "VirtualModel:" +
-		 * FlexoLocalization.localizedForKey(getLocalizedDictionary(),
-		 * getName()); }
-		 */
-
-		// ==========================================================================
-		// ============================== Model Slots
-		// ===============================
-		// ==========================================================================
+		// ==============================================================
+		// ========================= Model Slots =======================
+		// ==============================================================
 
 		@Override
 		public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType) {
@@ -614,7 +560,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		 * @param uri
 		 * @return
 		 */
-		@Override
+		/*@Override
 		public Object getObject(String uri) {
 			for (FlexoMetaModel<?> mm : getAllReferencedMetaModels()) {
 				if (mm != null) {
@@ -625,103 +571,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 				}
 			}
 			return null;
-		}
-
-		/**
-		 * Retrieve ontology object from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyObject getOntologyObject(String uri) {
-			Object returned = getObject(uri);
-			if (returned instanceof IFlexoOntologyObject) {
-				return (IFlexoOntologyObject) returned;
-			}
-			return null;
-		}
-
-		/**
-		 * Retrieve ontology class from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyClass getOntologyClass(String uri) {
-			Object returned = getOntologyObject(uri);
-			if (returned instanceof IFlexoOntologyClass) {
-				return (IFlexoOntologyClass) returned;
-			}
-			return null;
-		}
-
-		/**
-		 * Retrieve ontology individual from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyIndividual getOntologyIndividual(String uri) {
-			Object returned = getOntologyObject(uri);
-			if (returned instanceof IFlexoOntologyIndividual) {
-				return (IFlexoOntologyIndividual) returned;
-			}
-			return null;
-		}
-
-		/**
-		 * Retrieve ontology property from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyStructuralProperty getOntologyProperty(String uri) {
-			Object returned = getOntologyObject(uri);
-			if (returned instanceof IFlexoOntologyStructuralProperty) {
-				return (IFlexoOntologyStructuralProperty) returned;
-			}
-			return null;
-		}
-
-		/**
-		 * Retrieve ontology object property from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyObjectProperty getOntologyObjectProperty(String uri) {
-			Object returned = getOntologyObject(uri);
-			if (returned instanceof IFlexoOntologyObjectProperty) {
-				return (IFlexoOntologyObjectProperty) returned;
-			}
-			return null;
-		}
-
-		/**
-		 * Retrieve ontology object property from its URI.<br>
-		 * Note that search is performed in the scope of current project only
-		 * 
-		 * @param uri
-		 * @return
-		 */
-		@Override
-		public IFlexoOntologyDataProperty getOntologyDataProperty(String uri) {
-			Object returned = getOntologyObject(uri);
-			if (returned instanceof IFlexoOntologyDataProperty) {
-				return (IFlexoOntologyDataProperty) returned;
-			}
-			return null;
-		}
+		}*/
 
 		/**
 		 * Return true if URI is well formed and valid regarding its unicity (no one other object has same URI)
@@ -947,8 +797,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	}
 
 	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
-			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
+			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(AbstractVirtualModel.class, "virtual_model_should_not_have_reflexive_model_slot_no_more");
@@ -967,8 +817,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot
-				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
+		protected static class RemoveReflexiveVirtualModelModelSlot extends
+				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, AbstractVirtualModel> {
 
 			private final AbstractVirtualModel vm;
 

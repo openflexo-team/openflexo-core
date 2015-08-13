@@ -46,11 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
-import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -64,21 +60,21 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface ListParameter extends FlexoBehaviourParameter {
 
-	public enum ListType {
+	/*public enum ListType {
 		String, Property, ObjectProperty, DataProperty
-	}
+	}*/
 
-	@PropertyIdentifier(type = ListType.class)
-	public static final String LIST_TYPE_KEY = "listType";
+	// @PropertyIdentifier(type = ListType.class)
+	// public static final String LIST_TYPE_KEY = "listType";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String LIST_KEY = "list";
 
-	@Getter(value = LIST_TYPE_KEY)
+	/*@Getter(value = LIST_TYPE_KEY)
 	@XMLAttribute
 	public ListType getListType();
 
 	@Setter(LIST_TYPE_KEY)
-	public void setListType(ListType listType);
+	public void setListType(ListType listType);*/
 
 	@Getter(value = LIST_KEY)
 	@XMLAttribute
@@ -91,7 +87,7 @@ public interface ListParameter extends FlexoBehaviourParameter {
 
 	public static abstract class ListParameterImpl extends FlexoBehaviourParameterImpl implements ListParameter {
 
-		private ListType listType;
+		// private ListType listType;
 		private DataBinding<List<?>> list;
 
 		public ListParameterImpl() {
@@ -100,21 +96,8 @@ public interface ListParameter extends FlexoBehaviourParameter {
 
 		@Override
 		public Type getType() {
-			if (getListType() == null) {
-				return List.class;
-			}
-			switch (getListType()) {
-			case String:
-				return new ParameterizedTypeImpl(List.class, String.class);
-			case Property:
-				return new ParameterizedTypeImpl(List.class, IFlexoOntologyStructuralProperty.class);
-			case ObjectProperty:
-				return new ParameterizedTypeImpl(List.class, IFlexoOntologyObjectProperty.class);
-			case DataProperty:
-				return new ParameterizedTypeImpl(List.class, IFlexoOntologyDataProperty.class);
-			default:
-				return List.class;
-			}
+			// return new ParameterizedTypeImpl(List.class, String.class);
+			return List.class;
 		};
 
 		@Override
@@ -122,7 +105,7 @@ public interface ListParameter extends FlexoBehaviourParameter {
 			return WidgetType.LIST;
 		}
 
-		@Override
+		/*@Override
 		public ListType getListType() {
 			return listType;
 		}
@@ -130,7 +113,7 @@ public interface ListParameter extends FlexoBehaviourParameter {
 		@Override
 		public void setListType(ListType listType) {
 			this.listType = listType;
-		}
+		}*/
 
 		@Override
 		public DataBinding<List<?>> getList() {

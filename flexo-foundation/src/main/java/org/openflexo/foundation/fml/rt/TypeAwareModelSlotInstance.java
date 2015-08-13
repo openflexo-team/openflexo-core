@@ -154,24 +154,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 
 		@Override
 		public void updateActorReferencesURI() {
-			// Browse the epi and their actors
-			for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances()) {
-				for (ActorReference<?> actor : epi.getActors()) {
-					// If it is provided by the right model slot
-					if (actor instanceof ConceptActorReference && actor.getModelSlotInstance().equals(this)) {
-
-						// This should be changed
-						ConceptActorReference<?> conceptActorRef = (ConceptActorReference<?>) actor;
-						String id = conceptActorRef.getConceptURI().substring(conceptActorRef.getConceptURI().lastIndexOf("#"));
-						conceptActorRef.setConceptURI(getAccessedResourceData().getURI() + id);
-						if (conceptActorRef.getModellingElement() == null) {
-							logger.warning("cannot retrieve objects in this resource " + conceptActorRef);
-							// conceptActorRef.delete();
-						}
-					}
-				}
-			}
-
+			super.updateActorReferencesURI();
 			setModelURI(getAccessedResourceData().getURI());
 		}
 	}

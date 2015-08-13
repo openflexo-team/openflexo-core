@@ -63,7 +63,7 @@ import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -261,7 +261,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty5inA.hasActionExecutionSucceeded());
 		assertNotNull(property5InA = (AbstractProperty<String>) createProperty5inA.getNewFlexoProperty());
 
-		CreateFlexoRole createProperty6inA = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		AbstractCreateFlexoRole createProperty6inA = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createProperty6inA.setRoleName("property6");
 		createProperty6inA.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty6inA.setPrimitiveType(PrimitiveType.String);
@@ -340,7 +340,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptB = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		CreateFlexoRole createProperty2inB = CreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		AbstractCreateFlexoRole createProperty2inB = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createProperty2inB.setRoleName("property2");
 		createProperty2inB.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty2inB.setPrimitiveType(PrimitiveType.Boolean);
@@ -357,7 +357,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty3inB.hasActionExecutionSucceeded());
 		assertNotNull(property3InB = (AbstractProperty<Integer>) createProperty3inB.getNewFlexoProperty());
 
-		CreateFlexoRole createProperty7inB = CreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		AbstractCreateFlexoRole createProperty7inB = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createProperty7inB.setRoleName("property7");
 		createProperty7inB.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty7inB.setPrimitiveType(PrimitiveType.String);
@@ -425,7 +425,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptC = " + flexoConceptC);
 		assertNotNull(flexoConceptC);
 
-		CreateFlexoRole createProperty4InC = CreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		AbstractCreateFlexoRole createProperty4InC = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createProperty4InC.setRoleName("property4");
 		createProperty4InC.setFlexoRoleClass(FlexoConceptInstanceRole.class);
 		createProperty4InC.setFlexoConceptInstanceType(flexoConceptA);
@@ -434,7 +434,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
 		assertNotNull(property4InC = (FlexoConceptInstanceRole) createProperty4InC.getNewFlexoRole());
 
-		CreateFlexoRole createProperty8InC = CreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		AbstractCreateFlexoRole createProperty8InC = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createProperty8InC.setRoleName("property8");
 		createProperty8InC.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty8InC.setPrimitiveType(PrimitiveType.String);
@@ -496,7 +496,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptD = " + flexoConceptD);
 		assertNotNull(flexoConceptD);
 
-		CreateFlexoRole createProperty1InD = CreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		AbstractCreateFlexoRole createProperty1InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty1InD.setRoleName("property1");
 		createProperty1InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty1InD.setPrimitiveType(PrimitiveType.String);
@@ -512,7 +512,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty3InD.hasActionExecutionSucceeded());
 		assertNotNull(property3InD = (ExpressionProperty<Integer>) createProperty3InD.getNewFlexoProperty());
 
-		CreateFlexoRole createProperty5InD = CreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		AbstractCreateFlexoRole createProperty5InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty5InD.setRoleName("property5");
 		createProperty5InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty5InD.setPrimitiveType(PrimitiveType.String);
@@ -521,7 +521,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty5InD.hasActionExecutionSucceeded());
 		assertNotNull(property5InD = (PrimitiveRole<String>) createProperty5InD.getNewFlexoRole());
 
-		CreateFlexoRole createProperty9InD = CreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		AbstractCreateFlexoRole createProperty9InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty9InD.setRoleName("property9");
 		createProperty9InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty9InD.setPrimitiveType(PrimitiveType.String);

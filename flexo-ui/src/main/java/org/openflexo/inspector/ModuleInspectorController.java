@@ -50,26 +50,15 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.FIBIndividualSelector;
-import org.openflexo.components.widget.FIBPropertySelector;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.fib.model.FIBCheckBox;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBComponent.HorizontalScrollBarPolicy;
-import org.openflexo.fib.model.FIBComponent.VerticalScrollBarPolicy;
 import org.openflexo.fib.model.FIBContainer;
-import org.openflexo.fib.model.FIBCustom;
-import org.openflexo.fib.model.FIBCustom.FIBCustomAssignment;
 import org.openflexo.fib.model.FIBLabel;
 import org.openflexo.fib.model.FIBModelFactory;
-import org.openflexo.fib.model.FIBNumber;
-import org.openflexo.fib.model.FIBNumber.NumberType;
 import org.openflexo.fib.model.FIBPanel.Layout;
 import org.openflexo.fib.model.FIBTab;
-import org.openflexo.fib.model.FIBTextArea;
-import org.openflexo.fib.model.FIBTextField;
 import org.openflexo.fib.model.FIBWidget;
 import org.openflexo.fib.model.TwoColsLayoutConstraints;
 import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
@@ -78,24 +67,15 @@ import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ClassInspectorEntry;
-import org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.IndividualInspectorEntry;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.PropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Represents the controller for all inspectors managed in the context of a module<br>
@@ -637,225 +617,26 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 	}
 
+	/**
+	 * Factory method used to instanciate a technology-specific FIBWidget for a given {@link InspectorEntry}<br>
+	 * We iterate on all known technologies to use the delegated {@link TechnologyAdapterController}
+	 * 
+	 * @param entry
+	 * @param newTab
+	 * @param factory
+	 * @return
+	 */
 	private FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab) {
-		if (entry instanceof TextFieldInspectorEntry) {
-			FIBTextField tf = getFactory().newFIBTextField();
-			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
-			newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return tf;
-		} else if (entry instanceof TextAreaInspectorEntry) {
-			FIBTextArea ta = getFactory().newFIBTextArea();
-			ta.setValidateOnReturn(true); // Avoid to many ontologies manipulations
-			ta.setUseScrollBar(true);
-			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-			newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
-			return ta;
-		} else if (entry instanceof CheckboxInspectorEntry) {
-			FIBCheckBox cb = getFactory().newFIBCheckBox();
-			newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return cb;
-		} else if (entry instanceof IntegerInspectorEntry) {
-			FIBNumber number = getFactory().newFIBNumber();
-			number.setNumberType(NumberType.IntegerType);
-			newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return number;
-		} else if (entry instanceof IndividualInspectorEntry) {
-			IndividualInspectorEntry individualEntry = (IndividualInspectorEntry) entry;
-			FIBCustom individualSelector = getFactory().newFIBCustom();
-			individualSelector.setComponentClass(FIBIndividualSelector.class);
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(individualSelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			individualSelector.addToAssignments(projectAssignment);
 
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.project"),
-					new DataBinding("data.project"), true));*/
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector,
-					new DataBinding("component.contextOntologyURI"), new DataBinding('"' + individualEntry.getViewPoint()
-							.getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass conceptClass = null;
-			if (individualEntry.getIsDynamicConceptValue()) {
-				// conceptClass = classEntry.evaluateConceptValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				conceptClass = individualEntry.getConcept();
+		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = flexoController.getTechnologyAdapterController(ta);
+			FIBWidget returned = tac.makeWidget(entry, newTab, getFactory());
+			if (returned != null) {
+				return returned;
 			}
-			if (conceptClass != null) {
-				FIBCustomAssignment conceptClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				conceptClassAssignment.setOwner(individualSelector);
-				conceptClassAssignment.setVariable(new DataBinding<Object>("component.typeURI"));
-				conceptClassAssignment.setValue(new DataBinding('"' + conceptClass.getURI() + '"'));
-				conceptClassAssignment.setMandatory(true);
-				individualSelector.addToAssignments(conceptClassAssignment);
-				/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.typeURI"),
-						new DataBinding('"' + conceptClass.getURI() + '"'), true));*/
-			}
-			if (StringUtils.isNotEmpty(individualEntry.getRenderer())) {
-				FIBCustomAssignment rendererAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				rendererAssignment.setOwner(individualSelector);
-				rendererAssignment.setVariable(new DataBinding<Object>("component.renderer"));
-				rendererAssignment.setValue(new DataBinding('"' + individualEntry.getRenderer() + '"'));
-				rendererAssignment.setMandatory(true);
-				individualSelector.addToAssignments(rendererAssignment);
-				/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.renderer"),
-						new DataBinding('"' + individualEntry.getRenderer() + '"'), true));*/
-			}
-
-			newTab.addToSubComponents(individualSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return individualSelector;
-		} else if (entry instanceof ClassInspectorEntry) {
-			ClassInspectorEntry classEntry = (ClassInspectorEntry) entry;
-			FIBCustom classSelector = getFactory().newFIBCustom();
-			classSelector.setComponentClass(org.openflexo.components.widget.FIBClassSelector.class);
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(classSelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			classSelector.addToAssignments(projectAssignment);
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + classEntry.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass conceptClass = null;
-			if (classEntry.getIsDynamicConceptValue()) {
-				// conceptClass = classEntry.evaluateConceptValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				conceptClass = classEntry.getConcept();
-			}
-			if (conceptClass != null) {
-				FIBCustomAssignment rootClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				rootClassAssignment.setOwner(classSelector);
-				rootClassAssignment.setVariable(new DataBinding<Object>("component.rootClassURI"));
-				rootClassAssignment.setValue(new DataBinding<Object>('"' + conceptClass.getURI() + '"'));
-				rootClassAssignment.setMandatory(true);
-				classSelector.addToAssignments(rootClassAssignment);
-				/*	classSelector.addToAssignments(new FIBCustomAssignment(classSelector,
-							new DataBinding<Object>("component.rootClassURI"), new DataBinding<Object>('"' + conceptClass.getURI() + '"'),
-							true));*/
-			}
-			newTab.addToSubComponents(classSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return classSelector;
-		} else if (entry instanceof PropertyInspectorEntry) {
-			PropertyInspectorEntry propertyEntry = (PropertyInspectorEntry) entry;
-			FIBCustom propertySelector = getFactory().newFIBCustom();
-			propertySelector.setComponentClass(FIBPropertySelector.class);
-			// Quick and dirty hack to configure FIBPropertySelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(propertySelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			propertySelector.addToAssignments(projectAssignment);
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + propertyEntry.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-
-			// Quick and dirty hack to configure FIBPropertySelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass domainClass = null;
-			if (propertyEntry.getIsDynamicDomainValue()) {
-				// domainClass = propertyEntry.evaluateDomainValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				domainClass = propertyEntry.getDomain();
-			}
-			if (domainClass != null) {
-				FIBCustomAssignment domainClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				domainClassAssignment.setOwner(propertySelector);
-				domainClassAssignment.setVariable(new DataBinding<Object>("component.domainClassURI"));
-				domainClassAssignment.setValue(new DataBinding<Object>('"' + domainClass.getURI() + '"'));
-				domainClassAssignment.setMandatory(true);
-				propertySelector.addToAssignments(domainClassAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.domainClassURI"), new DataBinding<Object>('"' + domainClass.getURI() + '"'), true));*/
-			}
-			if (propertyEntry instanceof ObjectPropertyInspectorEntry) {
-				IFlexoOntologyClass rangeClass = null;
-				if (propertyEntry.getIsDynamicDomainValue()) {
-					// domainClass = propertyEntry.evaluateDomainValue(action);
-					// TODO: implement proper scheme with new binding support
-					logger.warning("Please implement me !!!!!!!!!");
-				} else {
-					rangeClass = ((ObjectPropertyInspectorEntry) propertyEntry).getRange();
-				}
-				if (rangeClass != null) {
-					FIBCustomAssignment rangeClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-					rangeClassAssignment.setOwner(propertySelector);
-					rangeClassAssignment.setVariable(new DataBinding<Object>("component.rangeClassURI"));
-					rangeClassAssignment.setValue(new DataBinding<Object>('"' + rangeClass.getURI() + '"'));
-					rangeClassAssignment.setMandatory(true);
-					propertySelector.addToAssignments(rangeClassAssignment);
-					/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-							"component.rangeClassURI"), new DataBinding<Object>('"' + rangeClass.getURI() + '"'), true));*/
-				}
-			}
-			if (propertyEntry instanceof ObjectPropertyInspectorEntry) {
-				FIBCustomAssignment selectDataPropertiesAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				selectDataPropertiesAssignment.setOwner(propertySelector);
-				selectDataPropertiesAssignment.setVariable(new DataBinding<Object>("component.selectDataProperties"));
-				selectDataPropertiesAssignment.setValue(new DataBinding<Object>("false"));
-				selectDataPropertiesAssignment.setMandatory(true);
-				propertySelector.addToAssignments(selectDataPropertiesAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectDataProperties"), new DataBinding<Object>("false"), true));*/
-			} else if (propertyEntry instanceof DataPropertyInspectorEntry) {
-				FIBCustomAssignment selectObjectPropertiesAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				selectObjectPropertiesAssignment.setOwner(propertySelector);
-				selectObjectPropertiesAssignment.setVariable(new DataBinding<Object>("component.selectObjectProperties"));
-				selectObjectPropertiesAssignment.setValue(new DataBinding<Object>("false"));
-				selectObjectPropertiesAssignment.setMandatory(true);
-				propertySelector.addToAssignments(selectObjectPropertiesAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectObjectProperties"), new DataBinding<Object>("false"), true));*/
-			}
-
-			// Quick and dirty hack to configure PropertySelector: refactor this when new binding model will be in use
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding("component.domainClassURI"),
-					new DataBinding('"' + ((PropertyInspectorEntry) entry)._getDomainURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-			newTab.addToSubComponents(propertySelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return propertySelector;
 		}
 
-		FIBLabel unknown = getFactory().newFIBLabel();
-		unknown.setLabel("???");
-		newTab.addToSubComponents(unknown, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-		return unknown;
-
+		return null;
 	}
 
 	public FIBModelFactory getFactory() {

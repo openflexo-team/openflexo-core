@@ -50,24 +50,24 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateFlexoRoleInitializer extends ActionInitializer<CreateFlexoRole, FlexoConceptObject, FMLObject> {
+public class CreateFlexoRoleInitializer extends ActionInitializer<AbstractCreateFlexoRole, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public CreateFlexoRoleInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateFlexoRole.actionType, actionInitializer);
+		super(AbstractCreateFlexoRole.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoRole>() {
+	protected FlexoActionInitializer<AbstractCreateFlexoRole> getDefaultInitializer() {
+		return new FlexoActionInitializer<AbstractCreateFlexoRole>() {
 			@Override
-			public boolean run(EventObject e, CreateFlexoRole action) {
+			public boolean run(EventObject e, AbstractCreateFlexoRole action) {
 				Wizard wizard = new CreateFlexoRoleWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
@@ -82,10 +82,10 @@ public class CreateFlexoRoleInitializer extends ActionInitializer<CreateFlexoRol
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoRole>() {
+	protected FlexoActionFinalizer<AbstractCreateFlexoRole> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<AbstractCreateFlexoRole>() {
 			@Override
-			public boolean run(EventObject e, CreateFlexoRole action) {
+			public boolean run(EventObject e, AbstractCreateFlexoRole action) {
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 				return true;
 			}

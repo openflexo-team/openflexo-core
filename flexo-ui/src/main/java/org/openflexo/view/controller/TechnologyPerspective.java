@@ -44,7 +44,6 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -116,9 +115,6 @@ public class TechnologyPerspective<TA extends TechnologyAdapter> extends FlexoPe
 				return null;
 			}
 			return tac.getWindowTitleforObject((TechnologyObject) object, controller);
-		}
-		if (object instanceof IFlexoOntologyObject) {
-			return ((IFlexoOntologyObject) object).getName();
 		}
 		if (object != null) {
 			return object.toString();

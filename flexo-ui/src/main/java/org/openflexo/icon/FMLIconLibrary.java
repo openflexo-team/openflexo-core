@@ -38,12 +38,10 @@
 
 package org.openflexo.icon;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -60,7 +58,6 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.NavigationScheme;
-import org.openflexo.foundation.fml.OntologicObjectRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.TechnologySpecificFlexoBehaviour;
@@ -71,12 +68,10 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
-import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
@@ -236,10 +231,6 @@ public class FMLIconLibrary extends IconLibrary {
 			return CONSTRAINT_ICON;
 		} else if (object instanceof MatchingCriteria) {
 			return CONSTRAINT_ICON;
-		} else if (object instanceof DataPropertyAssertion) {
-			return FlexoController.statelessIconForTechnologyObject(((DataPropertyAssertion) object).getOntologyProperty());
-		} else if (object instanceof ObjectPropertyAssertion) {
-			return FlexoController.statelessIconForTechnologyObject(((ObjectPropertyAssertion) object).getOntologyProperty());
 		} else if (object instanceof EditionAction) {
 			if (object instanceof AddFlexoConceptInstance) {
 				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
@@ -312,7 +303,7 @@ public class FMLIconLibrary extends IconLibrary {
 			return FLEXO_CONCEPT_ICON;
 		} else if (object instanceof PrimitiveRole) {
 			return UNKNOWN_ICON;
-		} else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
+		} /*else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
 					.getModelSlotTechnologyAdapter());
 			if (tac != null) {
@@ -320,7 +311,7 @@ public class FMLIconLibrary extends IconLibrary {
 				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
 				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
 			}
-		} else if (object instanceof AbstractProperty) {
+			}*/else if (object instanceof AbstractProperty) {
 			return ABSTRACT_PROPERTY_ICON;
 		} else if (object instanceof ExpressionProperty) {
 			return EXPRESSION_PROPERTY_ICON;

@@ -132,7 +132,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public CheckboxInspectorEntry createNewCheckbox();
 
-	public IndividualInspectorEntry createNewIndividual();
+	/*public IndividualInspectorEntry createNewIndividual();
 
 	public ClassInspectorEntry createNewClass();
 
@@ -140,7 +140,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public ObjectPropertyInspectorEntry createNewObjectProperty();
 
-	public DataPropertyInspectorEntry createNewDataProperty();
+	public DataPropertyInspectorEntry createNewDataProperty();*/
 
 	public InspectorEntry deleteEntry(InspectorEntry entry);
 
@@ -271,7 +271,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return newEntry;
 		}
 
-		@Override
+		/*@Override
 		public IndividualInspectorEntry createNewIndividual() {
 			IndividualInspectorEntry newEntry = getFMLModelFactory().newIndividualInspectorEntry();
 			newEntry.setName("individual");
@@ -314,7 +314,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
-		}
+		}*/
 
 		/*
 		 * public FlexoObjectInspectorEntry createNewFlexoObject() {

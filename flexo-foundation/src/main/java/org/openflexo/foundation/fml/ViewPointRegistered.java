@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.ontology.dm.OntologyDataModification;
 
 /**
  * Notify that a new viewpoint has been registered in ViewPointLibrary
@@ -47,7 +47,7 @@ import org.openflexo.foundation.ontology.dm.OntologyDataModification;
  * @author sylvain
  * 
  */
-public class ViewPointRegistered extends OntologyDataModification {
+public class ViewPointRegistered extends DataModification {
 
 	public ViewPointRegistered(ViewPointResource newViewPointResource) {
 		super(null, newViewPointResource);

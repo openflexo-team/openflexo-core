@@ -87,11 +87,11 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class),
-		@Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ExpressionAction.class),
-		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
-		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
-		@Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
+@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(DeclarationAction.class),
+		@Import(AssignationAction.class), @Import(ExpressionAction.class), @Import(SelectFlexoConceptInstance.class),
+		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
+		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(FetchRequestIterationAction.class),
+		@Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)

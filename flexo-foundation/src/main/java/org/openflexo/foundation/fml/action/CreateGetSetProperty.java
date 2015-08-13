@@ -121,7 +121,7 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 
 			newGetSetProperty.setPropertyName(getPropertyName());
 
-			super.doAction(context);
+			finalizeDoAction(context);
 		}
 
 	}

@@ -64,7 +64,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ConceptActorReference.class), @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class) })
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)

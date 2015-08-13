@@ -22,7 +22,7 @@
 		<DropDownColumn
 			data="iterator.parameterClass" title="type" columnWidth="200"
 			resizable="true" displayTitle="true" name="parameterClassDD" format="object.simpleName"
-			array="data.availableParameterTypes"
+			list="data.availableParameterTypes"
 			iteratorClassName="java.lang.Class"
 			autoSelectFirstRow="true" />
 		<TextFieldColumn id="7" data="iterator.parameterDescription"

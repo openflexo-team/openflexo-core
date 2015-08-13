@@ -75,7 +75,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	 * !!!!! IMPORTANT !!!!!<br>
 	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
-	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = true;
+	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = false;
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
@@ -255,8 +255,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
 			FlexoEditor anEditor = null;
-			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /*new DefaultProjectLoadingHandler(),*/serviceManager,
-					null));
+			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /*new DefaultProjectLoadingHandler(),*/
+					serviceManager, null));
 			// The next line is really a trouble maker and eventually causes more problems than solutions. FlexoProject can't be renamed on
 			// the fly
 			// without having a severe impact on many resources and importer projects. I therefore now comment this line which made me lost

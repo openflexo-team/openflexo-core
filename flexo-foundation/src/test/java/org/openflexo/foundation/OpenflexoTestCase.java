@@ -53,6 +53,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import junit.framework.AssertionFailedError;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -75,8 +77,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 
-import junit.framework.AssertionFailedError;
-
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
  * 
@@ -87,7 +87,7 @@ public abstract class OpenflexoTestCase {
 	 * !!!!! IMPORTANT !!!!!<br>
 	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
-	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = true;
+	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = false;
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
 
@@ -212,8 +212,8 @@ public abstract class OpenflexoTestCase {
 					}
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(
-							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
+					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory,
+							TEST_RESOURCE_CENTER_URI));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 					// ici il y a des truc a voir
@@ -334,8 +334,8 @@ public abstract class OpenflexoTestCase {
 					message.append(" Missing: " + o);
 				}
 			}
-			throw new AssertionFailedError(
-					"AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2 + " Details = " + message);
+			throw new AssertionFailedError("AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2
+					+ " Details = " + message);
 		}
 	}
 

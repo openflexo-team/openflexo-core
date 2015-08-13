@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
@@ -55,7 +55,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<CreateFlexoRole> {
+public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<AbstractCreateFlexoRole> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoRoleWizard.class.getPackage().getName());
@@ -65,7 +65,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 	private static final String NO_PRIMITIVE_TYPE = FlexoLocalization.localizedForKey("please_choose_primitive_type");
 	private static final String NO_INDIVIDUAL_TYPE = FlexoLocalization.localizedForKey("please_choose_individual_type");
 
-	public CreateFlexoRoleWizard(CreateFlexoRole action, FlexoController controller) {
+	public CreateFlexoRoleWizard(AbstractCreateFlexoRole action, FlexoController controller) {
 		super(action, controller);
 	}
 
@@ -99,7 +99,7 @@ public class CreateFlexoRoleWizard extends AbstractCreateFlexoPropertyWizard<Cre
 		}
 
 		@Override
-		public CreateFlexoRole getAction() {
+		public AbstractCreateFlexoRole getAction() {
 			return super.getAction();
 		}
 

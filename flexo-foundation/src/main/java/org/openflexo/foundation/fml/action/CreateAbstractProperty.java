@@ -139,7 +139,7 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 				newAbstractProperty.setPropertyName(getPropertyName());
 				newAbstractProperty.setType(getPropertyType());
 
-				super.doAction(context);
+				finalizeDoAction(context);
 			}
 		}
 

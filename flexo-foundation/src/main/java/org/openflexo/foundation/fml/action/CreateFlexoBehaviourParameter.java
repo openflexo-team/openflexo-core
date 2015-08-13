@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
-import java.security.URIParameter;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -48,22 +47,11 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.CheckboxParameter;
-import org.openflexo.foundation.fml.ClassParameter;
-import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.FloatParameter;
-import org.openflexo.foundation.fml.IndividualParameter;
-import org.openflexo.foundation.fml.IntegerParameter;
-import org.openflexo.foundation.fml.ListParameter;
-import org.openflexo.foundation.fml.TechnologyObjectParameter;
-import org.openflexo.foundation.fml.TextAreaParameter;
-import org.openflexo.foundation.fml.TextFieldParameter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 
@@ -98,10 +86,6 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 	static {
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviourParameter.actionType, FlexoBehaviour.class);
 	}
-
-	public static final Class[] AVAILABLE_TYPES = new Class[] { TextFieldParameter.class, TextAreaParameter.class, IntegerParameter.class,
-			FloatParameter.class, ListParameter.class, CheckboxParameter.class, DropDownParameter.class, ClassParameter.class,
-			FlexoConceptInstanceParameter.class, IndividualParameter.class, TechnologyObjectParameter.class, URIParameter.class };
 
 	private String parameterName;
 	private String description;
