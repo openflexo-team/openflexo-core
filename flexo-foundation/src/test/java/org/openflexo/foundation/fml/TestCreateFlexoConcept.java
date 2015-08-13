@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
@@ -93,8 +93,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	public void testCreateViewPoint() {
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
-		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
-				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
+		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
+				serviceManager.getViewPointLibrary());
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);
@@ -289,25 +289,22 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 	@TestOrder(9)
 	public void testCreateSomePatternRolesToConceptA() throws SaveResourceException {
 
-		AbstractCreateFlexoRole createPR1 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 		PrimitiveRole<String> role1 = (PrimitiveRole<String>) createPR1.getNewFlexoRole();
 		assertNotNull(role1);
 
-		AbstractCreateFlexoRole createPR2 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 		PrimitiveRole<Boolean> role2 = (PrimitiveRole<Boolean>) createPR2.getNewFlexoRole();
 		assertNotNull(role2);
 
-		AbstractCreateFlexoRole createPR3 = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 		PrimitiveRole<Integer> role3 = (PrimitiveRole<Integer>) createPR3.getNewFlexoRole();
@@ -416,8 +413,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertNotNull(conditional1);
 		assertTrue(conditional1.getCondition().isValid());
 
-		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
-				conditional1.getThenControlGraph(), null, editor);
+		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType
+				.makeNewAction(conditional1.getThenControlGraph(), null, editor);
 		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
@@ -437,8 +434,8 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertNotNull(conditional2);
 		assertTrue(conditional2.getCondition().isValid());
 
-		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(
-				conditional2.getThenControlGraph(), null, editor);
+		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType
+				.makeNewAction(conditional2.getThenControlGraph(), null, editor);
 		// createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition2.setEditionActionClass(ExpressionAction.class);
 		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));

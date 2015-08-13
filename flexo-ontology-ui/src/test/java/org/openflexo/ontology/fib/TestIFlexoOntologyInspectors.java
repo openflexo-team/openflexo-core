@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.fib;
+package org.openflexo.ontology.fib;
 
 import org.junit.Test;
 import org.openflexo.fib.utils.GenericFIBInspectorTestCase;

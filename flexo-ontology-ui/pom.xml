@@ -40,6 +40,12 @@
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ui</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexo-ui</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+ 	</dependencies>
 </project>
 

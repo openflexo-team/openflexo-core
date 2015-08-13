@@ -63,7 +63,8 @@ import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -180,8 +181,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
+				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
 		viewPoint.removeFromVirtualModels(virtualModel);
@@ -203,8 +204,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
-				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
+				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -261,9 +262,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty5inA.hasActionExecutionSucceeded());
 		assertNotNull(property5InA = (AbstractProperty<String>) createProperty5inA.getNewFlexoProperty());
 
-		AbstractCreateFlexoRole createProperty6inA = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createProperty6inA = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createProperty6inA.setRoleName("property6");
-		createProperty6inA.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty6inA.setPrimitiveType(PrimitiveType.String);
 		createProperty6inA.setCardinality(PropertyCardinality.One);
 		createProperty6inA.doAction();
@@ -340,9 +340,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptB = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		AbstractCreateFlexoRole createProperty2inB = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createProperty2inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createProperty2inB.setRoleName("property2");
-		createProperty2inB.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty2inB.setPrimitiveType(PrimitiveType.Boolean);
 		createProperty2inB.setCardinality(PropertyCardinality.One);
 		createProperty2inB.doAction();
@@ -357,9 +356,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty3inB.hasActionExecutionSucceeded());
 		assertNotNull(property3InB = (AbstractProperty<Integer>) createProperty3inB.getNewFlexoProperty());
 
-		AbstractCreateFlexoRole createProperty7inB = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createProperty7inB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createProperty7inB.setRoleName("property7");
-		createProperty7inB.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty7inB.setPrimitiveType(PrimitiveType.String);
 		createProperty7inB.setCardinality(PropertyCardinality.One);
 		createProperty7inB.doAction();
@@ -425,18 +423,17 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptC = " + flexoConceptC);
 		assertNotNull(flexoConceptC);
 
-		AbstractCreateFlexoRole createProperty4InC = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		CreateFlexoConceptInstanceRole createProperty4InC = CreateFlexoConceptInstanceRole.actionType.makeNewAction(flexoConceptC, null,
+				editor);
 		createProperty4InC.setRoleName("property4");
-		createProperty4InC.setFlexoRoleClass(FlexoConceptInstanceRole.class);
 		createProperty4InC.setFlexoConceptInstanceType(flexoConceptA);
 		createProperty4InC.setCardinality(PropertyCardinality.ZeroOne);
 		createProperty4InC.doAction();
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
 		assertNotNull(property4InC = (FlexoConceptInstanceRole) createProperty4InC.getNewFlexoRole());
 
-		AbstractCreateFlexoRole createProperty8InC = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		CreatePrimitiveRole createProperty8InC = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createProperty8InC.setRoleName("property8");
-		createProperty8InC.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty8InC.setPrimitiveType(PrimitiveType.String);
 		createProperty8InC.setCardinality(PropertyCardinality.One);
 		createProperty8InC.doAction();
@@ -496,9 +493,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("flexoConceptD = " + flexoConceptD);
 		assertNotNull(flexoConceptD);
 
-		AbstractCreateFlexoRole createProperty1InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty1InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty1InD.setRoleName("property1");
-		createProperty1InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty1InD.setPrimitiveType(PrimitiveType.String);
 		createProperty1InD.setCardinality(PropertyCardinality.One);
 		createProperty1InD.doAction();
@@ -512,18 +508,16 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(createProperty3InD.hasActionExecutionSucceeded());
 		assertNotNull(property3InD = (ExpressionProperty<Integer>) createProperty3InD.getNewFlexoProperty());
 
-		AbstractCreateFlexoRole createProperty5InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty5InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty5InD.setRoleName("property5");
-		createProperty5InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty5InD.setPrimitiveType(PrimitiveType.String);
 		createProperty5InD.setCardinality(PropertyCardinality.One);
 		createProperty5InD.doAction();
 		assertTrue(createProperty5InD.hasActionExecutionSucceeded());
 		assertNotNull(property5InD = (PrimitiveRole<String>) createProperty5InD.getNewFlexoRole());
 
-		AbstractCreateFlexoRole createProperty9InD = AbstractCreateFlexoRole.actionType.makeNewAction(flexoConceptD, null, editor);
+		CreatePrimitiveRole createProperty9InD = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptD, null, editor);
 		createProperty9InD.setRoleName("property9");
-		createProperty9InD.setFlexoRoleClass(PrimitiveRole.class);
 		createProperty9InD.setPrimitiveType(PrimitiveType.String);
 		createProperty9InD.setCardinality(PropertyCardinality.One);
 		createProperty9InD.doAction();
