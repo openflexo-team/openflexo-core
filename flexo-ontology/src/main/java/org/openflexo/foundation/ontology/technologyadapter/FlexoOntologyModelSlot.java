@@ -80,18 +80,25 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	 * @param ontClass
 	 * @return
 	 */
-	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass);
+	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type);
 
-	public AddIndividual<? extends FlexoOntologyModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
+	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> individualRole,
 			AbstractCreationScheme creationScheme);
 
+	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
+
 	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter>
-			extends TypeAwareModelSlotImpl<M, MM> implements FlexoOntologyModelSlot<M, MM, TA> {
+			extends TypeAwareModelSlotImpl<M, MM>implements FlexoOntologyModelSlot<M, MM, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlot.class.getPackage().getName());
 
 		private FlexoMetaModelResource<M, MM, ?> metaModelResource;
 		private String metaModelURI;
+
+		@Override
+		public Class<? extends IndividualRole<?>> getIndividualRoleClass() {
+			return (Class) getFlexoRoleClass(IndividualRole.class);
+		}
 
 		/**
 		 * Instanciate a new model slot instance configuration for this model slot
@@ -107,18 +114,18 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		 * @return
 		 */
 		@Override
-		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
-			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
-			returned.setOntologicType(ontClass);
+		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type) {
+			IndividualRole<?> returned = makeFlexoRole(getIndividualRoleClass());
+			returned.setOntologicType(type);
 			return returned;
 		}
 
 		@Override
-		public AddIndividual<? extends FlexoOntologyModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
+		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
 				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
-			AddIndividual<? extends FlexoOntologyModelSlot, ?> returned = makeEditionAction(addIndividualClass);
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(
+					AddIndividual.class);
+			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> returned = makeEditionAction(addIndividualClass);
 
 			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));
 			if (creationScheme.getParameter("uri") != null) {
