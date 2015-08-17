@@ -74,8 +74,8 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>> extends
-		AbstractCreateFlexoProperty<A> {
+public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
+		extends AbstractCreateFlexoProperty<A> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoRole.class.getPackage().getName());
 
@@ -155,7 +155,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	}
 
 	public abstract List<MS> getAvailableModelSlots();/* {
-
+														
 														if (getFocusedObject() instanceof VirtualModel) {
 														return ((VirtualModel) getFocusedObject()).getModelSlots();
 														} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
@@ -200,7 +200,9 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	public FlexoMetaModel<?> getAdressedFlexoMetaModel() {
 		if (getModelSlot() instanceof TypeAwareModelSlot) {
 			TypeAwareModelSlot<?, ?> typeAwareModelSlot = (TypeAwareModelSlot<?, ?>) modelSlot;
-			return typeAwareModelSlot.getMetaModelResource().getMetaModelData();
+			if (typeAwareModelSlot.getMetaModelResource() != null) {
+				return typeAwareModelSlot.getMetaModelResource().getMetaModelData();
+			}
 		}
 		return null;
 	}
