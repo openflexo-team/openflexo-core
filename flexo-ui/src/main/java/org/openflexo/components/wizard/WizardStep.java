@@ -223,7 +223,7 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		issueMessageChangeRequested = false;
 		lastValidityStatus = isValid();
 		if (!issueMessageChangeRequested) {
-			setIssueMessage(null, null);
+			setIssueMessage(null, (IssueMessageType) null);
 		}
 		IssueMessageType validity = getIssueMessageType();
 
@@ -263,6 +263,25 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		issueMessageChangeRequested = true;
 		setIssueMessageType(messageType);
 		setIssueMessage(issueMessage);
+	}
+
+	public void setIssueMessage(String issueMessage,
+			org.openflexo.foundation.action.transformation.TransformationStrategy.IssueMessageType messageType) {
+		setIssueMessage(issueMessage, getIssueMessageType(messageType));
+	}
+
+	private IssueMessageType getIssueMessageType(
+			org.openflexo.foundation.action.transformation.TransformationStrategy.IssueMessageType messageType) {
+		switch (messageType) {
+		case INFO:
+			return IssueMessageType.INFO;
+		case WARNING:
+			return IssueMessageType.WARNING;
+		case ERROR:
+			return IssueMessageType.ERROR;
+		default:
+			return null;
+		}
 	}
 
 	public enum IssueMessageType {

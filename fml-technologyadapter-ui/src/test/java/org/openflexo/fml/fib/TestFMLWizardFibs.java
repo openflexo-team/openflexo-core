@@ -46,8 +46,8 @@ import org.openflexo.rm.ResourceLocator;
 public class TestFMLWizardFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(
-				generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(), "Fib/Wizard/"));
+		System.out.println(generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(),
+				"Fib/Wizard/"));
 	}
 
 	@Test
@@ -143,6 +143,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeVirtualModel() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeVirtualModel.fib");
+	}
+
+	@Test
+	public void testChooseOption() {
+		validateFIB("Fib/Wizard/DeclareInFlexoConcept/ChooseOption.fib");
 	}
 
 	@Test

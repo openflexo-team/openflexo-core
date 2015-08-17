@@ -139,8 +139,8 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	}
 
 	private final List<FlexoConceptCreationStrategy<A>> availableFlexoConceptCreationStrategies = new ArrayList<FlexoConceptCreationStrategy<A>>();
-	private final List<FlexoRoleCreationStrategy<A, FlexoRole<T1>, T1, T2>> availableFlexoRoleCreationStrategies = new ArrayList<FlexoRoleCreationStrategy<A, FlexoRole<T1>, T1, T2>>();
-	private final List<FlexoRoleSettingStrategy<A, FlexoRole<T1>, T1, T2>> availableFlexoRoleSettingStrategies = new ArrayList<FlexoRoleSettingStrategy<A, FlexoRole<T1>, T1, T2>>();
+	private final List<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleCreationStrategies = new ArrayList<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>>();
+	private final List<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>> availableFlexoRoleSettingStrategies = new ArrayList<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>>();
 
 	/**
 	 * Return the list of all available {@link FlexoConceptCreationStrategy}
@@ -154,7 +154,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	/**
 	 * Returns the strategy to be choosen as {@link FlexoRole} creation strategy
 	 */
-	public FlexoRoleCreationStrategy<A, FlexoRole<T1>, T1, T2> getFlexoRoleCreationStrategy() {
+	public FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2> getFlexoRoleCreationStrategy() {
 		if (flexoRoleCreationStrategy == null && getAvailableFlexoRoleCreationStrategies().size() > 0) {
 			return getAvailableFlexoRoleCreationStrategies().get(0);
 		}
@@ -178,14 +178,14 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public List<FlexoRoleCreationStrategy<A, FlexoRole<T1>, T1, T2>> getAvailableFlexoRoleCreationStrategies() {
+	public List<FlexoRoleCreationStrategy<A, ? extends FlexoRole<T1>, T1, T2>> getAvailableFlexoRoleCreationStrategies() {
 		return availableFlexoRoleCreationStrategies;
 	}
 
 	/**
 	 * Returns the strategy to be choosen as {@link FlexoRole} setting strategy
 	 */
-	public FlexoRoleSettingStrategy<A, FlexoRole<T1>, T1, T2> getFlexoRoleSettingStrategy() {
+	public FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2> getFlexoRoleSettingStrategy() {
 		if (flexoRoleSettingStrategy == null && getAvailableFlexoRoleSettingStrategies().size() > 0) {
 			return getAvailableFlexoRoleSettingStrategies().get(0);
 		}
@@ -209,7 +209,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public List<FlexoRoleSettingStrategy<A, FlexoRole<T1>, T1, T2>> getAvailableFlexoRoleSettingStrategies() {
+	public List<FlexoRoleSettingStrategy<A, ? extends FlexoRole<T1>, T1, T2>> getAvailableFlexoRoleSettingStrategies() {
 		return availableFlexoRoleSettingStrategies;
 	}
 

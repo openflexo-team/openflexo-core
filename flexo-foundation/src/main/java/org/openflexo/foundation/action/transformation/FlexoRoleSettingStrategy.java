@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.action.transformation;
 
+import java.util.List;
+
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.FlexoLocalization;
@@ -63,6 +65,8 @@ public abstract class FlexoRoleSettingStrategy<A extends AbstractDeclareInFlexoC
 		super(transformationAction);
 	}
 
+	public abstract Class<R> getRoleType();
+
 	public R getFlexoRole() {
 		return flexoRole;
 	}
@@ -73,6 +77,10 @@ public abstract class FlexoRoleSettingStrategy<A extends AbstractDeclareInFlexoC
 			this.flexoRole = flexoRole;
 			getPropertyChangeSupport().firePropertyChange("flexoRole", oldValue, flexoRole);
 		}
+	}
+
+	public List<R> getAvailableFlexoRoles() {
+		return getTransformationAction().getFlexoConcept().getAccessibleProperties(getRoleType());
 	}
 
 	@Override

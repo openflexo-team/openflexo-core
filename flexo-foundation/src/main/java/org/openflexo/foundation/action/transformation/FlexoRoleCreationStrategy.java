@@ -64,6 +64,8 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 		super(transformationAction);
 	}
 
+	public abstract String getDefaultRoleName();
+
 	/**
 	 * Return type of role
 	 * 
