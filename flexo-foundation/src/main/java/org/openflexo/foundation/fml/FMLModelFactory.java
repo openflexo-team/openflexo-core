@@ -208,7 +208,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 					}
 				}
 				DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
-				if (fbDeclarations != null) {
+				if (fbpDeclarations != null) {
 					for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
 						classes.add(behaviourParameterClass);
 					}
@@ -359,19 +359,19 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	/*public IndividualParameter newIndividualParameter() {
 		return newInstance(IndividualParameter.class);
 	}
-
+	
 	public ClassParameter newClassParameter() {
 		return newInstance(ClassParameter.class);
 	}
-
+	
 	public PropertyParameter newPropertyParameter() {
 		return newInstance(PropertyParameter.class);
 	}
-
+	
 	public ObjectPropertyParameter newObjectPropertyParameter() {
 		return newInstance(ObjectPropertyParameter.class);
 	}
-
+	
 	public DataPropertyParameter newDataPropertyParameter() {
 		return newInstance(DataPropertyParameter.class);
 	}*/
@@ -417,19 +417,19 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	/*public IndividualInspectorEntry newIndividualInspectorEntry() {
 		return newInstance(IndividualInspectorEntry.class);
 	}
-
+	
 	public ClassInspectorEntry newClassInspectorEntry() {
 		return newInstance(ClassInspectorEntry.class);
 	}
-
+	
 	public PropertyInspectorEntry newPropertyInspectorEntry() {
 		return newInstance(PropertyInspectorEntry.class);
 	}
-
+	
 	public ObjectPropertyInspectorEntry newObjectPropertyInspectorEntry() {
 		return newInstance(ObjectPropertyInspectorEntry.class);
 	}
-
+	
 	public DataPropertyInspectorEntry newDataPropertyInspectorEntry() {
 		return newInstance(DataPropertyInspectorEntry.class);
 	}*/

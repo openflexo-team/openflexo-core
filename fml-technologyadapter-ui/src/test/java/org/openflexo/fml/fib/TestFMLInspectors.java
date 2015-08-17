@@ -296,13 +296,13 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testClassPatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/ClassPatternRole.inspector");
+	public void testClassRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/ClassRole.inspector");
 	}
 
 	@Test
-	public void testDataPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/DataPropertyPatternRole.inspector");
+	public void testDataPropertyRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/DataPropertyRole.inspector");
 	}
 
 	@Test
@@ -321,23 +321,23 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testObjectPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/ObjectPropertyPatternRole.inspector");
+	public void testObjectPropertyRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/ObjectPropertyRole.inspector");
 	}
 
 	@Test
-	public void testOntologicObjectPatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/OntologicObjectPatternRole.inspector");
+	public void testOntologicObjectRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/OntologicObjectRole.inspector");
 	}
 
 	@Test
-	public void testPrimitivePatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/PrimitivePatternRole.inspector");
+	public void testPrimitiveRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/PrimitiveRole.inspector");
 	}
 
 	@Test
-	public void testPropertyPatternRoleInspector() {
-		validateFIB("Inspectors/FML/FlexoRole/PropertyPatternRole.inspector");
+	public void testPropertyRoleInspector() {
+		validateFIB("Inspectors/FML/FlexoRole/PropertyRole.inspector");
 	}
 
 	@Test
