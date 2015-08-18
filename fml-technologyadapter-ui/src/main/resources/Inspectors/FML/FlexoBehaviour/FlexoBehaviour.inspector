@@ -47,7 +47,9 @@
 						columnWidth="100" resizable="true" displayTitle="true" />
 					<DropDownColumn data="iterator.widget" title="widget"
 						columnWidth="80" resizable="true" displayTitle="true" name="dropdown" />
-					<AddAction method="controller.createTextFieldParameter(data)"
+					<AddAction method="controller.createFlexoBehaviourParameter(data)"
+						name="add_parameter" />
+					<!--  <AddAction method="controller.createTextFieldParameter(data)"
 						name="add_textfield_parameter" />
 					<AddAction method="controller.createTextAreaParameter(data)"
 						name="add_textarea_parameter" />
@@ -74,7 +76,7 @@
 					<AddAction method="controller.createPropertyParameter(data)"
 						name="add_property_parameter" />
 					<AddAction method="controller.createTechnologyObjectParameter(data)"
-						name="add_technology_object" />
+						name="add_technology_object" />-->
 					<RemoveAction method="controller.deleteParameter(data,selected)"
 						name="delete" />
 				</Table>
