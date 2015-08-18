@@ -140,6 +140,7 @@ public class CreateIndividualRole extends AbstractCreateFlexoRole<CreateIndividu
 
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setCardinality(getCardinality());
+				newFlexoRole.setModelSlot(getModelSlot());
 
 				finalizeDoAction(context);
 			}

@@ -128,6 +128,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 		newFlexoRole.setRoleName(getRoleName());
 		newFlexoRole.setCardinality(getCardinality());
+		newFlexoRole.setModelSlot(getModelSlot());
 
 		((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(getFlexoConceptInstanceType());
 

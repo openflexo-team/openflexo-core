@@ -117,6 +117,7 @@ public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitive
 
 		newFlexoRole.setRoleName(getRoleName());
 		newFlexoRole.setCardinality(getCardinality());
+		newFlexoRole.setModelSlot(getModelSlot());
 
 		((PrimitiveRole<?>) newFlexoRole).setPrimitiveType(getPrimitiveType());
 

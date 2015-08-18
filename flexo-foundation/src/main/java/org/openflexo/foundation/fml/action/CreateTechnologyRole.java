@@ -143,6 +143,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 			if (newFlexoRole != null) {
 				newFlexoRole.setRoleName(getRoleName());
 				newFlexoRole.setCardinality(getCardinality());
+				newFlexoRole.setModelSlot(getModelSlot());
 				finalizeDoAction(context);
 			}
 		}
