@@ -56,6 +56,7 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
+import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -123,6 +124,11 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
+
+	@Finder(collection = ENTRIES_KEY, attribute = InspectorEntry.NAME_KEY)
+	public InspectorEntry getEntry(String name);
+
+	public String getAvailableEntryName(String baseName);
 
 	public TextFieldInspectorEntry createNewTextField();
 
@@ -234,6 +240,17 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			setChanged();
 			notifyObservers(new InspectorEntryRemoved(anEntry, this));
 		}*/
+
+		@Override
+		public String getAvailableEntryName(String baseName) {
+			String testName = baseName;
+			int index = 2;
+			while (getEntry(testName) != null) {
+				testName = baseName + index;
+				index++;
+			}
+			return testName;
+		}
 
 		@Override
 		public TextFieldInspectorEntry createNewTextField() {

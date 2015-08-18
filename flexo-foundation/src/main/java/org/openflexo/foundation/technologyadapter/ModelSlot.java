@@ -51,16 +51,20 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -161,6 +165,10 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
+	public List<Class<? extends FlexoBehaviourParameter>> getAvailableFlexoBehaviourParameterTypes();
+
+	public List<Class<? extends InspectorEntry>> getAvailableInspectorEntryTypes();
+
 	/**
 	 * Creates and return a new {@link FlexoRole} of supplied class.<br>
 	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
@@ -238,6 +246,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
 		private List<Class<? extends TechnologySpecificAction<?, ?>>> availableEditionActionTypes;
 		private List<Class<? extends FetchRequest<?, ?>>> availableFetchRequestActionTypes;
+		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;
+		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
@@ -510,6 +520,68 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			}
 			for (Class superInterface : cl.getInterfaces()) {
 				appendFetchRequestActionTypes(aList, superInterface);
+			}
+		}
+
+		@Override
+		public List<Class<? extends FlexoBehaviourParameter>> getAvailableFlexoBehaviourParameterTypes() {
+			if (availableFlexoBehaviourParameterTypes == null) {
+				availableFlexoBehaviourParameterTypes = computeAvailableFlexoBehaviourParameterTypes();
+			}
+			return availableFlexoBehaviourParameterTypes;
+		}
+
+		private List<Class<? extends FlexoBehaviourParameter>> computeAvailableFlexoBehaviourParameterTypes() {
+			availableFlexoBehaviourParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
+			appendFlexoBehaviourParameterTypes(availableFlexoBehaviourParameterTypes, getClass());
+			return availableFlexoBehaviourParameterTypes;
+		}
+
+		private void appendFlexoBehaviourParameterTypes(List<Class<? extends FlexoBehaviourParameter>> aList, Class<?> cl) {
+			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
+				DeclareFlexoBehaviourParameters allFlexoBehaviourParameterActions = cl.getAnnotation(DeclareFlexoBehaviourParameters.class);
+				for (Class<? extends FlexoBehaviourParameter> parameterClass : allFlexoBehaviourParameterActions.value()) {
+					if (!availableFlexoBehaviourParameterTypes.contains(parameterClass)) {
+						availableFlexoBehaviourParameterTypes.add(parameterClass);
+					}
+				}
+			}
+			if (cl.getSuperclass() != null) {
+				appendFlexoBehaviourParameterTypes(aList, cl.getSuperclass());
+			}
+			for (Class superInterface : cl.getInterfaces()) {
+				appendFlexoBehaviourParameterTypes(aList, superInterface);
+			}
+		}
+
+		@Override
+		public List<Class<? extends InspectorEntry>> getAvailableInspectorEntryTypes() {
+			if (availableInspectorEntryTypes == null) {
+				availableInspectorEntryTypes = computeAvailableInspectorEntryTypes();
+			}
+			return availableInspectorEntryTypes;
+		}
+
+		private List<Class<? extends InspectorEntry>> computeAvailableInspectorEntryTypes() {
+			availableInspectorEntryTypes = new ArrayList<Class<? extends InspectorEntry>>();
+			appendInspectorEntryTypes(availableInspectorEntryTypes, getClass());
+			return availableInspectorEntryTypes;
+		}
+
+		private void appendInspectorEntryTypes(List<Class<? extends InspectorEntry>> aList, Class<?> cl) {
+			if (cl.isAnnotationPresent(DeclareInspectorEntries.class)) {
+				DeclareInspectorEntries allInspectorEntries = cl.getAnnotation(DeclareInspectorEntries.class);
+				for (Class<? extends InspectorEntry> inspectorEntryClass : allInspectorEntries.value()) {
+					if (!availableInspectorEntryTypes.contains(inspectorEntryClass)) {
+						availableInspectorEntryTypes.add(inspectorEntryClass);
+					}
+				}
+			}
+			if (cl.getSuperclass() != null) {
+				appendInspectorEntryTypes(aList, cl.getSuperclass());
+			}
+			for (Class superInterface : cl.getInterfaces()) {
+				appendInspectorEntryTypes(aList, superInterface);
 			}
 		}
 

@@ -70,8 +70,10 @@ import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
+import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
+import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
@@ -86,12 +88,9 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.ontology.fml.ClassParameter;
-import org.openflexo.foundation.ontology.fml.DataPropertyParameter;
-import org.openflexo.foundation.ontology.fml.IndividualParameter;
-import org.openflexo.foundation.ontology.fml.ObjectPropertyParameter;
-import org.openflexo.foundation.ontology.fml.PropertyParameter;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -132,23 +131,23 @@ public class FMLFIBController extends FlexoFIBController {
 		return createViewPoint.getNewViewPoint();
 	}
 
-	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource) throws FileNotFoundException,
+			ResourceLoadingCancelledException, FlexoException {
 		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
 		deleteViewPoint.doAction();
 	}
 
-	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource) throws FileNotFoundException,
+			ResourceLoadingCancelledException, FlexoException {
 		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
 		createVirtualModel.doAction();
 		return createVirtualModel.getNewVirtualModel();
 	}
 
-	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource) throws FileNotFoundException,
+			ResourceLoadingCancelledException, FlexoException {
 		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
 				null, getEditor());
 		deleteVirtualModel.doAction();
@@ -292,6 +291,13 @@ public class FMLFIBController extends FlexoFIBController {
 		return flexoBehaviour;
 	}
 
+	public FlexoBehaviourParameter createFlexoBehaviourParameter(FlexoBehaviour flexoBehaviour) {
+		CreateFlexoBehaviourParameter createFlexoBehaviourParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(
+				flexoBehaviour, null, getEditor());
+		createFlexoBehaviourParameter.doAction();
+		return createFlexoBehaviourParameter.getNewParameter();
+	}
+
 	public EditionAction createEditionAction(FMLControlGraph object) {
 		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
 		createEditionAction.doAction();
@@ -397,7 +403,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return flexoConceptObject;
 	}
 
-	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
+	/*public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newURIParameter();
 		newParameter.setName("uri");
 		newParameter.setBehaviour(flexoBehaviour);
@@ -494,7 +500,7 @@ public class FMLFIBController extends FlexoFIBController {
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
-	}
+	}*/
 
 	/*public EditionSchemeImplParameter createFlexoObjectParameter() {
 		FlexoBehaviourParameter newParameter = new FlexoObjectParameter(null);
@@ -504,7 +510,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return newParameter;
 	}*/
 
-	public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
+	/*public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTechnologyObjectParameter();
 		newParameter.setName("technologyObject");
 		newParameter.setBehaviour(flexoBehaviour);
@@ -529,12 +535,18 @@ public class FMLFIBController extends FlexoFIBController {
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
-	}
+	}*/
 
 	public FlexoBehaviourParameter deleteParameter(FlexoBehaviour flexoBehaviour, FlexoBehaviourParameter parameterToDelete) {
 		flexoBehaviour.removeFromParameters(parameterToDelete);
 		parameterToDelete.delete();
 		return parameterToDelete;
+	}
+
+	public InspectorEntry createInspectorEntry(FlexoConceptInspector inspector) {
+		CreateInspectorEntry createInspectorEntry = CreateInspectorEntry.actionType.makeNewAction(inspector, null, getEditor());
+		createInspectorEntry.doAction();
+		return createInspectorEntry.getNewEntry();
 	}
 
 	public void actionFirst(EditionAction action) {

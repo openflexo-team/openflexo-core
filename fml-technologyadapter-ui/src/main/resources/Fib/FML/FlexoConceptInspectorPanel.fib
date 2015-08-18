@@ -76,7 +76,9 @@
 				<LabelColumn data="iterator.widgetName" format="" title="widget"
 					columnWidth="100" resizable="true" displayTitle="true" color=""
 					bgColor="" tooltip="" valueChangedAction="" name="label" />
-				<AddAction method="data.createNewTextField" isAvailable=""
+				<AddAction method="controller.createInspectorEntry(data)" 
+					name="add_inspector_entry" />
+				<!--  <AddAction method="data.createNewTextField" isAvailable=""
 					name="add_textfield" />
 				<AddAction method="data.createNewDataProperty"
 					isAvailable="" name="add_table" />
@@ -97,7 +99,7 @@
 				<AddAction method="data.createNewDataProperty"
 					isAvailable="" name="add_data_property" />
 				<AddAction method="data.createNewProperty" isAvailable=""
-					name="add_property" />
+					name="add_property" />-->
 			</Table>
 			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
 				titleFont="SansSerif,0,11" darkLevel="0" index="2" data=""
@@ -167,13 +169,25 @@
 					<LocalizedDictionary />
 				</Label>
 			</Panel>
-			<Panel layout="twocols" borderLeft="5" borderRight="3"
+			<Panel layout="gridbag" borderLeft="5" borderRight="3"
 				titleFont="SansSerif,0,11" darkLevel="0" index="1"
-				data="InspectorPropertyTable.selected" dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
+				 dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-				visible="(InspectorPropertyTable.selected != null)" opaque="false"
+				opaque="false"
 				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="EntryPanel">
+				<!-- data="InspectorPropertyTable.selected" -->
+				<FIBReferencedComponent
+						dynamicComponentFile="controller.inspectorForObject(InspectorPropertyTable.selected)"
+						localize="true" manageDynamicModel="true" name="InspectorEntryWidget"
+						index="15" data="InspectorPropertyTable.selected"
+						constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+						visible="(InspectorPropertyTable.selected != null)"
+						opaque="false">
+						<ReferenceAssignment mandatory="true"
+							variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+				<!--  
 				<Label label="name" index="0" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 					visible="" format="" icon="" tooltip="" localize="true" enable=""
@@ -254,9 +268,6 @@
 						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 						visible="(!(OntologyClassInspectorEntryPanel.data.isDynamicConceptValue))"
 						opaque="false">
-						<!--  TODO: repair this -->
-						<!--  <Assignment variable="component.context"
-							value="data.modelSlot.metaModelResource.metaModelData" /> -->
 					</Custom>
 					<Label label="dynamic" index="1" data=""
 						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
@@ -301,9 +312,6 @@
 						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 						visible="(!(OntologyIndividualInspectorEntryPanel.data.isDynamicConceptValue))"
 						opaque="false">
-						<!--  TODO: repair this -->
-						<!--  <Assignment variable="component.context"
-							value="data.modelSlot.metaModelResource.metaModelData" /> -->
 					</Custom>
 					<Label label="dynamic" index="1" data=""
 						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
@@ -352,9 +360,6 @@
 						valueTransform="" valueValidator=""
 						data="OntologyPropertyInspectorEntryPanel1.data.parentProperty"
 						constraints="border(location=center)" visible="" opaque="false">
-						<!--  TODO: repair this -->
-						<!--  <Assignment variable="component.context"
-							value="data.modelSlot.metaModelResource.metaModelData" /> -->
 						<Assignment variable="component.selectObjectProperties"
 							value="true" />
 						<Assignment variable="component.selectDataProperties"
@@ -389,9 +394,6 @@
 							constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 							visible="(!(OntologyPropertyInspectorEntryPanel2.data.isDynamicDomainValue))"
 							opaque="false">
-						<!--  TODO: repair this -->
-						<!--  <Assignment variable="component.context"
-							value="data.modelSlot.metaModelResource.metaModelData" /> -->
 							<Dependancy componentName="InspectorPropertyDynDomainCB" />
 						</Custom>
 						<Label label="dynamic" index="1" data=""
@@ -448,9 +450,6 @@
 							constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 							visible="(!(OntologyObjectPropertyInspectorEntryPanel.data.isDynamicRangeValue))"
 							opaque="false">
-						<!--  TODO: repair this -->
-						<!--  <Assignment variable="component.context"
-							value="data.modelSlot.metaModelResource.metaModelData" /> -->
 							<Dependancy componentName="InspectorPropertyDynRangeCB" />
 						</Custom>
 						<Label label="dynamic" index="1" data=""
@@ -541,7 +540,7 @@
 					clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""
 					valueValidator="" editable="" />
-				<LocalizedDictionary />
+				<LocalizedDictionary />-->
 			</Panel>
 		</Panel>
 	</SplitPanel>

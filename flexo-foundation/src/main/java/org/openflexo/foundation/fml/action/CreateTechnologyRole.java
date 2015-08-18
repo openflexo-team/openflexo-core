@@ -80,7 +80,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 	private static final Logger logger = Logger.getLogger(CreateTechnologyRole.class.getPackage().getName());
 
 	public static FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateTechnologyRole, FlexoConceptObject, FMLObject>(
-			"create_primitive_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_technology_role", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

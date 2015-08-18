@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -47,12 +49,21 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.fml.CheckboxParameter;
+import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.FloatParameter;
+import org.openflexo.foundation.fml.IntegerParameter;
+import org.openflexo.foundation.fml.ListParameter;
+import org.openflexo.foundation.fml.TextAreaParameter;
+import org.openflexo.foundation.fml.TextFieldParameter;
+import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehaviourParameter, FlexoBehaviourObject, FMLObject> {
@@ -89,7 +100,6 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 	private String parameterName;
 	private String description;
-	private String defaultParameterValue;
 	private Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass;
 
 	private FlexoBehaviourParameter newParameter;
@@ -119,10 +129,9 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add edition scheme, name=" + getParameterName() + " type=" + flexoBehaviourParameterClass);
+		logger.info("Add FlexoBehaviourParameter, name=" + getParameterName() + " type=" + flexoBehaviourParameterClass);
 
 		if (flexoBehaviourParameterClass != null) {
-
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newParameter = factory.newInstance(flexoBehaviourParameterClass);
 			newParameter.setName(getParameterName());
@@ -135,27 +144,14 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		return newParameter;
 	}
 
-	private String errorMessage = EMPTY_NAME;
-
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("edition_behaviour_must_have_an_non_empty_and_unique_name");
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
-			errorMessage = EMPTY_NAME;
 			return false;
 		} else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
-			errorMessage = DUPLICATED_NAME;
 			return false;
-		} else {
-			errorMessage = "";
-			return true;
 		}
+		return true;
 	}
 
 	public String getDescription() {
@@ -163,7 +159,11 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
 	}
 
 	public Class<? extends FlexoBehaviourParameter> getFlexoBehaviourParameterClass() {
@@ -171,10 +171,41 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 	}
 
 	public void setFlexoBehaviourParameterClass(Class<? extends FlexoBehaviourParameter> flexoBehaviourParameterClass) {
-		boolean wasValid = isValid();
-		this.flexoBehaviourParameterClass = flexoBehaviourParameterClass;
-		getPropertyChangeSupport().firePropertyChange("flexoBehaviourParameterClass", null, flexoBehaviourParameterClass);
-		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
-		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+		if (flexoBehaviourParameterClass != this.flexoBehaviourParameterClass) {
+			Class<? extends FlexoBehaviourParameter> oldValue = this.flexoBehaviourParameterClass;
+			this.flexoBehaviourParameterClass = flexoBehaviourParameterClass;
+			getPropertyChangeSupport().firePropertyChange("flexoBehaviourParameterClass", oldValue, flexoBehaviourParameterClass);
+		}
 	}
+
+	private List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes;
+
+	public List<Class<? extends FlexoBehaviourParameter>> getAvailableParameterTypes() {
+		if (availableParameterTypes == null) {
+			availableParameterTypes = computeAvailableParameterTypes();
+		}
+		return availableParameterTypes;
+	}
+
+	private List<Class<? extends FlexoBehaviourParameter>> computeAvailableParameterTypes() {
+		availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
+		availableParameterTypes.add(TextFieldParameter.class);
+		availableParameterTypes.add(TextAreaParameter.class);
+		availableParameterTypes.add(CheckboxParameter.class);
+		availableParameterTypes.add(DropDownParameter.class);
+		availableParameterTypes.add(FloatParameter.class);
+		availableParameterTypes.add(IntegerParameter.class);
+		availableParameterTypes.add(ListParameter.class);
+		availableParameterTypes.add(URIParameter.class);
+		availableParameterTypes.add(FlexoConceptInstanceParameter.class);
+		for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
+			for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
+				if (!availableParameterTypes.contains(paramType)) {
+					availableParameterTypes.add(paramType);
+				}
+			}
+		}
+		return availableParameterTypes;
+	}
+
 }

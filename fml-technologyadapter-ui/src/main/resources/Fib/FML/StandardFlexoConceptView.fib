@@ -152,7 +152,9 @@
 				tooltip="" enabled="" isEditable="false" editableLabel="" filtered="false"
 				defaultVisible="true" dynamicFont="" name="inspector">
 				<Children data="inspector.entries" name="entries" />
-				<AddAction method="data.createNewTextField" name="add_textfield" />
+				<BrowserAddAction method="controller.createInspectorEntry(data)" 
+					name="add_inspector_entry" />
+				<!--  <BrowserAddAction method="data.createNewTextField" name="add_textfield" />
 				<BrowserAddAction method="data.inspector.createNewTextArea"
 					name="add_textarea" />
 				<BrowserAddAction method="data.inspector.createNewInteger"
@@ -168,7 +170,7 @@
 				<BrowserAddAction method="data.inspector.createNewDataProperty"
 					name="add_data_property" />
 				<BrowserAddAction method="data.inspector.createNewProperty"
-					name="add_property" />
+					name="add_property" />-->
 				<RemoveAction method="data.inspector.deleteEntry(selected)"
 					name="delete" />
 			</BrowserElement>
