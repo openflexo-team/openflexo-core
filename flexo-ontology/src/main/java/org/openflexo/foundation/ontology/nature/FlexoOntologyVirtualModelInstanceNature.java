@@ -64,6 +64,10 @@ public class FlexoOntologyVirtualModelInstanceNature implements VirtualModelInst
 	@Override
 	public boolean hasNature(VirtualModelInstance virtualModelInstance) {
 
+		if (virtualModelInstance == null) {
+			return false;
+		}
+
 		// The corresponding VirtualModel should have FlexoOntologyVirtualModelNature
 		if (virtualModelInstance.getVirtualModel().hasNature(FlexoOntologyVirtualModelNature.INSTANCE)) {
 			return true;
@@ -71,7 +75,7 @@ public class FlexoOntologyVirtualModelInstanceNature implements VirtualModelInst
 
 		/*List<FlexoOntologyModelSlot<?, ?, ?>> modelSlots = FlexoOntologyVirtualModelNature.getFlexoOntologyModelSlots(virtualModelInstance
 				.getVirtualModel());
-
+		
 		for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : modelSlots) {
 			FlexoOntologyModelSlotInstance<?, ?, ?, ?> msInstance = (FlexoOntologyModelSlotInstance<?, ?, ?, ?>) virtualModelInstance
 					.getModelSlotInstance(modelSlot);
@@ -81,7 +85,7 @@ public class FlexoOntologyVirtualModelInstanceNature implements VirtualModelInst
 			if (msInstance.getAccessedResourceData() == null) {
 				return false;
 			}
-
+		
 		}*/
 
 		return false;

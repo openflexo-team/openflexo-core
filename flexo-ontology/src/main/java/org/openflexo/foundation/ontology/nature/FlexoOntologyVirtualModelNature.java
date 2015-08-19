@@ -77,6 +77,10 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	@Override
 	public boolean hasNature(AbstractVirtualModel<?> virtualModel) {
 
+		if (virtualModel == null) {
+			return false;
+		}
+
 		// VirtualModel should have one and only one TypedDiagramModelSlot
 		if (virtualModel.getModelSlots(FlexoOntologyModelSlot.class).size() > 0) {
 			return true;
