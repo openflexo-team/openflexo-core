@@ -139,7 +139,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 		return getNewFlexoRole();
 	}
 
-	public final FlexoRole<?> getNewFlexoRole() {
+	public FlexoRole<?> getNewFlexoRole() {
 		return newFlexoRole;
 	}
 

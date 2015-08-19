@@ -240,4 +240,9 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		return FlexoConceptInstanceRole.class;
 	}
 
+	@Override
+	public final FlexoConceptInstanceRole getNewFlexoRole() {
+		return (FlexoConceptInstanceRole) super.getNewFlexoRole();
+	}
+
 }

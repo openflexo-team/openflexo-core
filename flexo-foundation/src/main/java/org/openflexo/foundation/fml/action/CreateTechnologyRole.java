@@ -210,4 +210,9 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 		getPropertyChangeSupport().firePropertyChange("flexoRoleClass", flexoRoleClass != null ? null : false, flexoRoleClass);
 	}
 
+	@Override
+	public final FlexoRole<?> getNewFlexoRole() {
+		return super.getNewFlexoRole();
+	}
+
 }

@@ -58,10 +58,12 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -72,9 +74,11 @@ import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.CreateViewPoint;
 import org.openflexo.foundation.fml.action.CreateVirtualModel;
@@ -131,23 +135,23 @@ public class FMLFIBController extends FlexoFIBController {
 		return createViewPoint.getNewViewPoint();
 	}
 
-	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource) throws FileNotFoundException,
-			ResourceLoadingCancelledException, FlexoException {
+	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
 		deleteViewPoint.doAction();
 	}
 
-	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource) throws FileNotFoundException,
-			ResourceLoadingCancelledException, FlexoException {
+	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
 				getEditor());
 		createVirtualModel.doAction();
 		return createVirtualModel.getNewVirtualModel();
 	}
 
-	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource) throws FileNotFoundException,
-			ResourceLoadingCancelledException, FlexoException {
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
 				null, getEditor());
 		deleteVirtualModel.doAction();
@@ -189,8 +193,21 @@ public class FMLFIBController extends FlexoFIBController {
 		return createAbstractProperty.getNewFlexoProperty();
 	}
 
-	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
+	public FlexoRole<?> createTechnologyRole(FlexoConcept flexoConcept) {
 		CreateTechnologyRole createFlexoRole = CreateTechnologyRole.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createFlexoRole.doAction();
+		return createFlexoRole.getNewFlexoRole();
+	}
+
+	public FlexoConceptInstanceRole createFlexoConceptInstanceRole(FlexoConcept flexoConcept) {
+		CreateFlexoConceptInstanceRole createFlexoRole = CreateFlexoConceptInstanceRole.actionType.makeNewAction(flexoConcept, null,
+				getEditor());
+		createFlexoRole.doAction();
+		return createFlexoRole.getNewFlexoRole();
+	}
+
+	public PrimitiveRole<?> createPrimitiveRole(FlexoConcept flexoConcept) {
+		CreatePrimitiveRole createFlexoRole = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
 	}
@@ -292,8 +309,8 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FlexoBehaviourParameter createFlexoBehaviourParameter(FlexoBehaviour flexoBehaviour) {
-		CreateFlexoBehaviourParameter createFlexoBehaviourParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(
-				flexoBehaviour, null, getEditor());
+		CreateFlexoBehaviourParameter createFlexoBehaviourParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(flexoBehaviour,
+				null, getEditor());
 		createFlexoBehaviourParameter.doAction();
 		return createFlexoBehaviourParameter.getNewParameter();
 	}
@@ -411,7 +428,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createTextFieldParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextFieldParameter();
 		newParameter.setName("textField");
@@ -420,7 +437,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createTextAreaParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextAreaParameter();
 		newParameter.setName("textArea");
@@ -429,7 +446,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createIntegerParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIntegerParameter();
 		newParameter.setName("integer");
@@ -438,7 +455,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createCheckBoxParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newCheckboxParameter();
 		newParameter.setName("checkbox");
@@ -447,7 +464,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createDropDownParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDropDownParameter();
 		newParameter.setName("dropdown");
@@ -456,7 +473,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(IndividualParameter.class);
 		newParameter.setName("individual");
@@ -465,7 +482,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ClassParameter.class);
 		newParameter.setName("class");
@@ -474,7 +491,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(PropertyParameter.class);
 		newParameter.setName("property");
@@ -483,7 +500,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ObjectPropertyParameter.class);
 		newParameter.setName("property");
@@ -492,7 +509,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(DataPropertyParameter.class);
 		newParameter.setName("property");
@@ -518,7 +535,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createListParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newListParameter();
 		newParameter.setName("list");
@@ -527,7 +544,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createFlexoConceptInstanceParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");

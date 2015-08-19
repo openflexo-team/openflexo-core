@@ -150,4 +150,9 @@ public class CreatePrimitiveRole extends AbstractCreateFlexoRole<CreatePrimitive
 		getPropertyChangeSupport().firePropertyChange("primitiveType", null, primitiveType);
 	}
 
+	@Override
+	public final PrimitiveRole<?> getNewFlexoRole() {
+		return (PrimitiveRole<?>) super.getNewFlexoRole();
+	}
+
 }

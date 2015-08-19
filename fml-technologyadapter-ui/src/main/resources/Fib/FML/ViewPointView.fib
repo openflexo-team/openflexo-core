@@ -288,16 +288,21 @@
 				defaultVisible="true" dynamicFont="" name="flexoConceptStructuralFacet">
 				<Children data="flexoConceptStructuralFacet.properties"
 					name="flexoProperties" />
-				<BrowserAddAction method="controller.createModelSlot(selected.flexoConcept)"
-					name="new_model_slot" />
-				<BrowserAddAction name="new_flexo_role"
-					method="controller.createFlexoRole(selected.flexoConcept)" />
+				<BrowserAddAction
+					method="controller.createModelSlot(selected.flexoConcept)" name="new_model_slot" />
+				<BrowserAddAction name="new_technology_role"
+					method="controller.createTechnologyRole(selected.flexoConcept)" />
+				<BrowserAddAction name="new_flexo_concept_instance_role"
+					method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)" />
+				<BrowserAddAction name="new_primitive_role"
+					method="controller.createPrimitiveRole(selected.flexoConcept)" />
 				<BrowserAddAction name="new_abstract_property"
 					method="controller.createAbstractProperty(selected.flexoConcept)" />
 				<BrowserAddAction name="new_expression_property"
 					method="controller.createExpressionProperty(selected.flexoConcept)" />
 				<BrowserAddAction name="new_get_set_property"
 					method="controller.createGetSetProperty(selected.flexoConcept)" />
+                <BrowserRemoveAction name="delete" method="controller.deleteFlexoProperty(data,selected)" />
 			</BrowserElement>
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
