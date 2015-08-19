@@ -174,6 +174,7 @@ public class CreateInspectorEntryWizard extends AbstractCreateFMLElementWizard<C
 				Class<? extends InspectorEntry> oldValue = getInspectorEntryClass();
 				getAction().setInspectorEntryClass(entryClass);
 				getPropertyChangeSupport().firePropertyChange("inspectorEntryClass", oldValue, entryClass);
+				getPropertyChangeSupport().firePropertyChange("entryName", oldValue, entryClass);
 				checkValidity();
 			}
 		}
