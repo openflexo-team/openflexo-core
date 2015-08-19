@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -74,6 +75,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
@@ -223,6 +225,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				if (frDeclarations != null) {
 					for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : frDeclarations.value()) {
 						classes.add(fetchRequestClass);
+					}
+				}
+				DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
+				if (ieDeclarations != null) {
+					for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
+						classes.add(entryClass);
 					}
 				}
 			}
