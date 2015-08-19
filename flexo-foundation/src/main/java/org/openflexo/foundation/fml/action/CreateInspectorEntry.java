@@ -63,16 +63,18 @@ import org.openflexo.toolbox.StringUtils;
 
 public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntry.class.getPackage().getName());
 
 	public static FlexoActionType<CreateInspectorEntry, FlexoConceptInspector, FMLObject> actionType = new FlexoActionType<CreateInspectorEntry, FlexoConceptInspector, FMLObject>(
-			"create_behaviour_parameter", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_inspector_entry", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateInspectorEntry makeNewAction(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateInspectorEntry makeNewAction(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection,
+				FlexoEditor editor) {
 			return new CreateInspectorEntry(focusedObject, globalSelection, editor);
 		}
 
@@ -105,7 +107,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	public String getEntryName() {
 		if (StringUtils.isEmpty(entryName) && inspectorEntryClass != null) {
-			return getFocusedObject().getAvailableEntryName(inspectorEntryClass.getSimpleName());
+			return getFocusedObject().getAvailableEntryName(inspectorEntryClass.getSimpleName().toLowerCase());
 		}
 		return entryName;
 	}
@@ -120,7 +122,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
-		logger.info("Add InspectorEntry, name=" + getEntryName() + " type=" + inspectorEntryClass);
+		// logger.info("Add InspectorEntry, name=" + getEntryName() + " type=" + inspectorEntryClass);
 
 		if (inspectorEntryClass != null) {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
