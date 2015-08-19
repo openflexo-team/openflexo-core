@@ -62,8 +62,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory implements
-		PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
+		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
 
@@ -170,6 +170,32 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 			map.put(endElement, returned);
 		}
 		return returned;
+	}
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentFragment<D, TA> fragment, FlexoDocumentElement<D, TA> startElement,
+			int startRunId, int startCharId, FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId)
+					throws FragmentConsistencyException {
+		TextSelection<D, TA> returned = newInstance(TextSelection.class);
+		returned.setFragment(fragment);
+		returned.setStartElement(startElement);
+		returned.setStartRunIndex(startRunId);
+		returned.setStartCharacterIndex(startCharId);
+		returned.setEndElement(endElement);
+		returned.setEndRunIndex(endRunId);
+		returned.setEndCharacterIndex(endCharId);
+		return returned;
+	}
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId, int startCharId,
+			FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
+		FlexoDocumentFragment<D, TA> fragment = getFragment(startElement, endElement);
+		return makeTextSelection(fragment, startElement, startRunId, startCharId, endElement, endRunId, endCharId);
+	}
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId,
+			FlexoDocumentElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException {
+		FlexoDocumentFragment<D, TA> fragment = getFragment(startElement, endElement);
+		return makeTextSelection(fragment, startElement, startRunId, -1, endElement, endRunId, -1);
 	}
 
 	@Override

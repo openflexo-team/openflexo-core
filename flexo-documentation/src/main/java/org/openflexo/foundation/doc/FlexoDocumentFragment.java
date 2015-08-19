@@ -28,6 +28,8 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -45,6 +47,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocumentFragment.FlexoDocumentFragmentImpl.class)
+@Imports({ @Import(TextSelection.class) })
 public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
@@ -99,8 +102,20 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 
 	public String getStringRepresentation();
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId, int startCharId,
+			FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException;
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId,
+			FlexoDocumentElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException;
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int startCharId, int endRunId,
+			int endCharId) throws FragmentConsistencyException;
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int endRunId)
+			throws FragmentConsistencyException;
+
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());
 
@@ -179,10 +194,37 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			return (getStartElement() instanceof FlexoParagraph ? ((FlexoParagraph) getStartElement()).getRawTextPreview()
 					: (getStartElement() != null ? getStartElement().toString() : "?"))
 					+ " : "
-					+ (getStartElement() != getEndElement() ? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement())
-							.getRawTextPreview() : (getEndElement() != null ? getEndElement().toString() : "?"))
+					+ (getStartElement() != getEndElement()
+							? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement()).getRawTextPreview()
+									: (getEndElement() != null ? getEndElement().toString() : "?"))
 							: "");
 		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId, int startCharId,
+				FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
+			return getFlexoDocument().getFactory().makeTextSelection(this, startElement, startRunId, startCharId, endElement, endRunId,
+					endCharId);
+		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId,
+				FlexoDocumentElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException {
+			return makeTextSelection(startElement, startRunId, -1, endElement, endRunId, -1);
+		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int startCharId, int endRunId,
+				int endCharId) throws FragmentConsistencyException {
+			return makeTextSelection(element, startRunId, startCharId, element, endRunId, endCharId);
+		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int endRunId)
+				throws FragmentConsistencyException {
+			return makeTextSelection(element, startRunId, -1, element, endRunId, -1);
+		}
+
 	}
 
 }

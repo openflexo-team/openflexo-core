@@ -63,7 +63,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 /**
  * This class represent a text binding declared in a document fragment.<br>
- * A {@link TextBinding} is an expression that is to be replaced as text of a run in a document fragment.<br>
+ * A {@link TextSelection} is an expression that is to be replaced as text of a run in a document fragment.<br>
  * More exactely we maintain here a bi-directional synchronization between text and data if the binding is declared as settable
  * 
  * @author sylvain
@@ -173,7 +173,7 @@ public interface TextBinding extends FlexoConceptObject {
 		public DataBinding<String> getValue() {
 			if (value == null) {
 				value = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
-				value.setBindingName("TextBinding" + getIndex());
+				value.setBindingName("TextSelection" + getIndex());
 				value.setMandatory(true);
 			}
 			return value;
@@ -184,7 +184,7 @@ public interface TextBinding extends FlexoConceptObject {
 			if (value != null) {
 				value.setOwner(this);
 				value.setDeclaredType(String.class);
-				value.setBindingName("TextBinding" + getIndex());
+				value.setBindingName("TextSelection" + getIndex());
 				value.setMandatory(true);
 				value.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
