@@ -98,7 +98,7 @@ import org.openflexo.model.annotations.XMLAttribute;
  * @see org.openflexo.foundation.fml.ViewPoint
  * @see org.openflexo.foundation.fml.rt.View
  * @see org.openflexo.foundation.fml.rt.ModelSlotInstance
- * */
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
@@ -233,8 +233,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD> implements
-			ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
+			implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -538,9 +538,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		private void appendFlexoBehaviourParameterTypes(List<Class<? extends FlexoBehaviourParameter>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
-				DeclareFlexoBehaviourParameters allFlexoBehaviourParameterActions = cl.getAnnotation(DeclareFlexoBehaviourParameters.class);
-				for (Class<? extends FlexoBehaviourParameter> parameterClass : allFlexoBehaviourParameterActions.value()) {
+			if (cl.isAnnotationPresent(DeclareFlexoBehaviourParameters.class)) {
+				DeclareFlexoBehaviourParameters allFlexoBehaviourParameterTypes = cl.getAnnotation(DeclareFlexoBehaviourParameters.class);
+				for (Class<? extends FlexoBehaviourParameter> parameterClass : allFlexoBehaviourParameterTypes.value()) {
 					if (!availableFlexoBehaviourParameterTypes.contains(parameterClass)) {
 						availableFlexoBehaviourParameterTypes.add(parameterClass);
 					}
