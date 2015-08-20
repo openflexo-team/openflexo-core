@@ -25,8 +25,9 @@ import java.util.List;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
-import org.openflexo.foundation.doc.FlexoRun;
+import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -40,7 +41,8 @@ import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocumentFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>> extends FlexoRole<T> {
+public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
 	public static final String TEXT_BINDINGS_KEY = "textBindings";
@@ -57,7 +59,7 @@ public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>
 	 */
 	@Getter(value = FRAGMENT_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public T getFragment();
+	public F getFragment();
 
 	/**
 	 * Sets the represented fragment in the template resource<br>
@@ -65,7 +67,7 @@ public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>
 	 * @param fragment
 	 */
 	@Setter(FRAGMENT_KEY)
-	public void setFragment(T fragment);
+	public void setFragment(F fragment);
 
 	@Getter(value = TEXT_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = TextBinding.FRAGMENT_ROLE_KEY)
 	@XMLElement
@@ -80,26 +82,24 @@ public interface FlexoDocumentFragmentRole<T extends FlexoDocumentFragment<?, ?>
 	@Remover(TEXT_BINDINGS_KEY)
 	public void removeFromTextBindings(TextBinding aTextBinding);
 
-	public TextBinding makeTextBinding(FlexoRun<?, ?> run, DataBinding<String> binding);
+	public TextBinding makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding);
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<T extends FlexoDocumentFragment<?, ?>> extends FlexoRoleImpl<T> implements
-			FlexoDocumentFragmentRole<T> {
+	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoRoleImpl<F>implements FlexoDocumentFragmentRole<F, D, TA> {
 
 		@Override
 		public FlexoDocument<?, ?> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
-				return ((FlexoDocumentModelSlot) getModelSlot()).getTemplateResource().getDocument();
+				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
 		}
 
 		@Override
-		public TextBinding makeTextBinding(FlexoRun<?, ?> run, DataBinding<String> binding) {
+		public TextBinding makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding) {
 			TextBinding returned = getFMLModelFactory().newInstance(TextBinding.class);
-			returned.setStartParagraphIdentifier(run.getParagraph().getIdentifier());
-			returned.setStartRunIndex(run.getIndex());
-			returned.setEndParagraphIdentifier(run.getParagraph().getIdentifier());
-			returned.setEndRunIndex(run.getIndex());
+			textSelection.setFragment(getFragment());
+			returned.setTextSelection(textSelection);
 			returned.setValue(binding);
 			addToTextBindings(returned);
 			return returned;

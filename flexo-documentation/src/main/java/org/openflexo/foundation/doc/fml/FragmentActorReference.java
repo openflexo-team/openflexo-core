@@ -121,8 +121,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F> implements
-			FragmentActorReference<F> {
+	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F>
+			implements FragmentActorReference<F> {
 
 		private static final Logger logger = FlexoLogger.getLogger(FragmentActorReference.class.getPackage().toString());
 
@@ -212,8 +212,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		@Override
 		public void applyDataToDocument() {
 			System.out.println("Tiens, si on faisait du replacement ???");
-			for (TextBinding tb : ((FlexoDocumentFragmentRole<?>) getFlexoRole()).getTextBindings()) {
-				tb.applyToDocument(getFlexoConceptInstance());
+			for (TextBinding tb : ((FlexoDocumentFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+				tb.applyToFragment(getFlexoConceptInstance());
 			}
 		}
 
