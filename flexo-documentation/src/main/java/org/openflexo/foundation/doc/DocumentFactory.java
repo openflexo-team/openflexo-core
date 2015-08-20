@@ -105,7 +105,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoRun<D, TA> makeRun();
+	public abstract FlexoRun<D, TA> makeRun();
 
 	/**
 	 * Build new empty style

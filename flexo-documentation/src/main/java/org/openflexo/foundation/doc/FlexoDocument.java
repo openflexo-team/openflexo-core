@@ -61,7 +61,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoDocObject<D, TA>, ResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
@@ -87,7 +88,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public String getURI();
 
 	/**
-	 * Return the list of root elements of this document (elements like paragraphs or tables, sequentially composing the document)
+	 * Return the list of top-level elements of this document (elements like paragraphs or tables, sequentially composing the document)
 	 * 
 	 * @return
 	 */
@@ -100,15 +101,31 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Setter(ELEMENTS_KEY)
 	public void setElements(List<FlexoDocumentElement<D, TA>> someElements);
 
+	/**
+	 * Add element to this {@link FlexoDocument} (public API).<br>
+	 * Element will be added to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
+	 */
 	@Adder(ELEMENTS_KEY)
 	@PastingPoint
 	public void addToElements(FlexoDocumentElement<D, TA> anElement);
 
+	/**
+	 * Remove element from this {@link FlexoDocument} (public API).<br>
+	 * Element will be removed to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
+	 */
 	@Remover(ELEMENTS_KEY)
 	public void removeFromElements(FlexoDocumentElement<D, TA> anElement);
 
+	/**
+	 * Insert element to this {@link FlexoDocument} at supplied index (public API).<br>
+	 * Element will be inserted to underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
+	 */
 	public void insertElementAtIndex(FlexoDocumentElement<D, TA> anElement, int index);
 
+	/**
+	 * Moved element to this {@link FlexoDocument} at supplied index (public API).<br>
+	 * Element will be moved inside underlying technology-specific document model and {@link FlexoDocument} will be updated accordingly
+	 */
 	public void moveElementToIndex(FlexoDocumentElement<D, TA> anElement, int index);
 
 	/**
@@ -190,14 +207,19 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public FlexoDocumentFragment<D, TA> getFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
 			throws FragmentConsistencyException;
 
+	/**
+	 * Return the {@link DocumentFactory} with which this document was built
+	 * 
+	 * @return
+	 */
 	public DocumentFactory<D, TA> getFactory();
 
 	public String debugContents();
 
 	public String debugStructuredContents();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {

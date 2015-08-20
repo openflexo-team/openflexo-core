@@ -71,15 +71,31 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Setter(RUNS_KEY)
 	public void setRuns(List<FlexoRun<D, TA>> someRuns);
 
+	/**
+	 * Add run to this {@link FlexoParagraph} (public API).<br>
+	 * Element will be added to underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 */
 	@Adder(RUNS_KEY)
 	@PastingPoint
 	public void addToRuns(FlexoRun<D, TA> aRun);
 
+	/**
+	 * Remove run from this {@link FlexoParagraph} (public API).<br>
+	 * Element will be removed from underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 */
 	@Remover(RUNS_KEY)
 	public void removeFromRuns(FlexoRun<D, TA> aRun);
 
+	/**
+	 * Insert run to this {@link FlexoParagraph} at supplied index (public API).<br>
+	 * Element will be inserted to underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 */
 	public void insertRunAtIndex(FlexoRun<D, TA> anElement, int index);
 
+	/**
+	 * Move run in this {@link FlexoParagraph} at supplied index (public API).<br>
+	 * Element will be moved inside underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 */
 	public void moveRunToIndex(FlexoRun<D, TA> anElement, int index);
 
 	@Getter(value = STYLE_KEY)

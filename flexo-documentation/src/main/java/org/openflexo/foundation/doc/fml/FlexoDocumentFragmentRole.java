@@ -71,18 +71,18 @@ public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA
 
 	@Getter(value = TEXT_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = TextBinding.FRAGMENT_ROLE_KEY)
 	@XMLElement
-	public List<TextBinding> getTextBindings();
+	public List<TextBinding<D, TA>> getTextBindings();
 
 	@Setter(TEXT_BINDINGS_KEY)
-	public void setTextBindings(List<TextBinding> someTextBindings);
+	public void setTextBindings(List<TextBinding<D, TA>> someTextBindings);
 
 	@Adder(TEXT_BINDINGS_KEY)
-	public void addToTextBindings(TextBinding aTextBinding);
+	public void addToTextBindings(TextBinding<D, TA> aTextBinding);
 
 	@Remover(TEXT_BINDINGS_KEY)
-	public void removeFromTextBindings(TextBinding aTextBinding);
+	public void removeFromTextBindings(TextBinding<D, TA> aTextBinding);
 
-	public TextBinding makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding);
+	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding);
 
 	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoRoleImpl<F>implements FlexoDocumentFragmentRole<F, D, TA> {
@@ -96,8 +96,8 @@ public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA
 		}
 
 		@Override
-		public TextBinding makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding) {
-			TextBinding returned = getFMLModelFactory().newInstance(TextBinding.class);
+		public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding) {
+			TextBinding<D, TA> returned = getFMLModelFactory().newInstance(TextBinding.class);
 			textSelection.setFragment(getFragment());
 			returned.setTextSelection(textSelection);
 			returned.setValue(binding);

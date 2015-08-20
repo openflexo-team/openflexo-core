@@ -101,12 +101,21 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	public void removeFromElementReferences(ElementReference anElementReference);
 
 	/**
-	 * Return element in generated fragment matching element identified by supplied templateElementId
+	 * Return list of elements in generated fragment matching element identified by supplied templateElementId
 	 * 
 	 * @param templateElementId
+	 *            identifier of template element
 	 * @return
 	 */
-	public FlexoDocumentElement<?, ?> getElementMatchingTemplateElementId(String templateElementId);
+	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId);
+
+	/**
+	 * Return list of elements in generated fragment matching supplied templateElement
+	 * 
+	 * @param templateElement
+	 * @return
+	 */
+	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement);
 
 	/**
 	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
@@ -227,14 +236,33 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 
 		}
 
+		/**
+		 * Return list of elements in generated fragment matching element identified by supplied templateElementId
+		 * 
+		 * @param templateElementId
+		 *            identifier of template element
+		 * @return
+		 */
 		@Override
-		public FlexoDocumentElement<?, ?> getElementMatchingTemplateElementId(String templateElementId) {
+		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId) {
+			List<FlexoDocumentElement<?, ?>> returned = new ArrayList<FlexoDocumentElement<?, ?>>();
 			for (ElementReference er : getElementReferences()) {
 				if (er.getTemplateElementId().equals(templateElementId)) {
-					return getFlexoDocument().getElementWithIdentifier(er.getElementId());
+					returned.add(getFlexoDocument().getElementWithIdentifier(er.getElementId()));
 				}
 			}
-			return null;
+			return returned;
+		}
+
+		/**
+		 * Return list of elements in generated fragment matching supplied templateElement
+		 * 
+		 * @param templateElement
+		 * @return
+		 */
+		@Override
+		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement) {
+			return getElementsMatchingTemplateElementId(templateElement.getIdentifier());
 		}
 	}
 

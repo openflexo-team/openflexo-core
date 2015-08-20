@@ -68,8 +68,8 @@ public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoRun<D, TA> {
+	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoRun<D, TA> {
 
 		@Override
 		public int getIndex() {

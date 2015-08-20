@@ -56,9 +56,11 @@ import org.openflexo.toolbox.StringUtils;
  * This class represent a text selection in a document fragment.<br>
  * 
  * Because of the structure of a {@link FlexoDocument}, a selection might be seen as a consecutive list of runs to consider, with eventually
- * a begin index for the first run and a end index for the last run<br>
+ * a begin index for the first run and a end index for the last run.<br>
+ * A {@link TextSelection} might be defined in a single paragraph (start and end element are then the same), or in multiple consecutive
+ * paragraphs.
  * 
- * A {@link TextSelection} is identified by:
+ * More formally, a {@link TextSelection} is identified by:
  * <ul>
  * <li>start document element</li>
  * <li>start run index (in the first document element)</li>
@@ -97,6 +99,11 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	@PropertyIdentifier(type = Integer.class)
 	public static final String END_CHARACTER_INDEX_KEY = "endCharId";
 
+	/**
+	 * Return the fragment in which this {@link TextSelection} is valid
+	 * 
+	 * @return
+	 */
 	@Getter(FRAGMENT_KEY)
 	public FlexoDocumentFragment<D, TA> getFragment();
 
@@ -157,7 +164,41 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Setter(END_CHARACTER_INDEX_KEY)
 	public void setEndCharacterIndex(int endRunIndex);
 
+	/**
+	 * Return {@link FlexoRun} where first character of this {@link TextSelection} is defined
+	 * 
+	 * @return
+	 */
+	public FlexoRun<D, TA> getStartRun();
+
+	/**
+	 * Return {@link FlexoRun} where last character of this {@link TextSelection} is defined
+	 * 
+	 * @return
+	 */
+	public FlexoRun<D, TA> getEndRun();
+
+	/**
+	 * Return string raw representation of text beeing selected<br>
+	 * Returned text is build accross document structure reflected in the fragment
+	 * 
+	 * @return
+	 */
 	public String getRawText();
+
+	/**
+	 * Indicates if this {@link TextSelection} concerns a single paragraph
+	 * 
+	 * @return
+	 */
+	public boolean isSingleParagraph();
+
+	/**
+	 * Indicates if this {@link TextSelection} concerns a single run in a single paragraph
+	 * 
+	 * @return
+	 */
+	public boolean isSingleRun();
 
 	public static abstract class TextSelectionImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
 			implements TextSelection<D, TA> {
@@ -252,6 +293,12 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 			}
 		}
 
+		/**
+		 * Return {@link FlexoRun} where first character of this {@link TextSelection} is defined
+		 * 
+		 * @return
+		 */
+		@Override
 		public FlexoRun<D, TA> getStartRun() {
 			if (getStartElement() instanceof FlexoParagraph
 					&& (getStartRunIndex() < ((FlexoParagraph<D, TA>) getStartElement()).getRuns().size())) {
@@ -260,6 +307,12 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 			return null;
 		}
 
+		/**
+		 * Return {@link FlexoRun} where last character of this {@link TextSelection} is defined
+		 * 
+		 * @return
+		 */
+		@Override
 		public FlexoRun<D, TA> getEndRun() {
 			if (getEndElement() instanceof FlexoParagraph
 					&& (getEndRunIndex() < ((FlexoParagraph<D, TA>) getEndElement()).getRuns().size())) {
@@ -268,6 +321,32 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 			return null;
 		}
 
+		/**
+		 * Indicates if this {@link TextSelection} concerns a single paragraph
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isSingleParagraph() {
+			return getStartElement() == getEndElement();
+		}
+
+		/**
+		 * Indicates if this {@link TextSelection} concerns a single run in a single paragraph
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isSingleRun() {
+			return isSingleParagraph() && (getStartRun() == getEndRun());
+		}
+
+		/**
+		 * Return string raw representation of text beeing selected<br>
+		 * Returned text is build accross document structure reflected in the fragment
+		 * 
+		 * @return
+		 */
 		@Override
 		public String getRawText() {
 			if (getStartElement() != null && getEndElement() != null) {
