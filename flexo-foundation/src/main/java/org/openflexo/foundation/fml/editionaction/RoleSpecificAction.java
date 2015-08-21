@@ -65,14 +65,14 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	public static final String FLEXO_ROLE_KEY = "flexoRole";
 
 	@Getter(value = FLEXO_ROLE_KEY)
-	@XMLElement(primary = false)
+	@XMLElement(primary = false, context = "Accessed")
 	public R getFlexoRole();
 
 	@Setter(FLEXO_ROLE_KEY)
 	public void setFlexoRole(R role);
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T> extends
-			TechnologySpecificActionImpl<MS, T> implements RoleSpecificAction<R, MS, T> {
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
+			extends TechnologySpecificActionImpl<MS, T>implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
