@@ -73,8 +73,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
 @Imports({ @Import(FreeModelSlotInstance.class), @Import(TypeAwareModelSlotInstance.class), @Import(VirtualModelModelSlotInstance.class) })
-public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-		VirtualModelInstanceObject {
+public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
@@ -131,8 +131,18 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	@Setter(RESOURCE_KEY)
 	public void setResource(TechnologyAdapterResource<RD, ?> resource);
 
-	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
+	/**
+	 * Sets the resource of the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot<br>
+	 * A flag allows to declare enclosing resource to be modified or not
+	 * 
+	 * @param resource
+	 * @param declareAsModified
+	 */
+	public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified);
+
+	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
@@ -140,7 +150,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		private VirtualModelInstance vmInstance;
 		private MS modelSlot;
 		protected RD accessedResourceData;
-		protected TechnologyAdapterResource<RD, ?> resource;
+		private TechnologyAdapterResource<RD, ?> resource;
 		// Serialization/deserialization only, do not use
 		private String modelSlotName;
 
@@ -278,11 +288,24 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		@Override
 		public void setResource(TechnologyAdapterResource<RD, ?> resource) {
+			setResource(resource, true);
+		}
+
+		/**
+		 * Sets the resource of the data this model slot gives access to.<br>
+		 * This is the data contractualized by the related model slot<br>
+		 * A flag allows to declare enclosing resource to be modified or not
+		 * 
+		 * @param resource
+		 * @param declareAsModified
+		 */
+		@Override
+		public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified) {
 			if ((resource == null && this.resource != null) || (resource != null && !resource.equals(this.resource))) {
 				TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 				this.resource = resource;
 				getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
-				if (getVirtualModelInstance() != null) {
+				if (declareAsModified && (getVirtualModelInstance() != null)) {
 					getVirtualModelInstance().setModified(true);
 				}
 
@@ -306,9 +329,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		@Override
 		public String toString() {
-			return "ModelSlotInstance:"
-					+ (getModelSlot() != null ? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_"
-							+ getFlexoID() : "null");
+			return "ModelSlotInstance:" + (getModelSlot() != null
+					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID() : "null");
 		}
 
 		/**

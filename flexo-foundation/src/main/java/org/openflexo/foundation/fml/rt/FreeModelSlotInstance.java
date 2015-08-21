@@ -70,8 +70,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
-		ModelSlotInstance<MS, RD> {
+public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
+		extends ModelSlotInstance<MS, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -84,7 +84,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 	public void setResourceURI(String resourceURI);
 
 	public static abstract class FreeModelSlotInstanceImpl<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-			extends ModelSlotInstanceImpl<MS, RD> implements FreeModelSlotInstance<RD, MS> {
+			extends ModelSlotInstanceImpl<MS, RD>implements FreeModelSlotInstance<RD, MS> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
@@ -117,7 +117,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 				if (resource == null && StringUtils.isNotEmpty(resourceURI)) {
 					resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance().getInformationSpace().getResource(resourceURI,
 							getVersion());
-					setResource(resource);
+					setResource(resource, false);
 				}
 				if (resource != null) {
 					try {

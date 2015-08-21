@@ -82,7 +82,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 	public M getModel();
 
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
+			extends ModelSlotInstanceImpl<MS, M>implements TypeAwareModelSlotInstance<M, MM, MS> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
@@ -118,7 +118,8 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {
 					accessedResourceData = modelResource.getModel();
-					resource = modelResource;
+					setResource(modelResource, false);
+					// resource = modelResource;
 				}
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
