@@ -140,6 +140,15 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		}
 
 		@Override
+		public TextSelection<D, TA> getTextSelection() {
+			TextSelection<D, TA> returned = (TextSelection<D, TA>) performSuperGetter(TEXT_SELECTION_KEY);
+			if (returned != null && returned.getFragment() == null && getFragmentRole() != null) {
+				returned.setFragment(getFragmentRole().getFragment());
+			}
+			return returned;
+		}
+
+		@Override
 		public String getURI() {
 			return null;
 		}
@@ -238,7 +247,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						if (getTextSelection().getEndCharacterIndex() > -1) {
 							newStructure.add(templateEndRun.getText().substring(getTextSelection().getEndCharacterIndex()));
 						}
-					} else {
+					}
+					else {
 						newStructure.add(value);
 						if (getTextSelection().getEndCharacterIndex() > -1) {
 							newStructure.add(templateEndRun.getText().substring(getTextSelection().getEndCharacterIndex()));
@@ -259,63 +269,56 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			}
 		}
 
+		/**
+		 * Internally used to perform text replacement in single paragraph context (when TextSelection apply on a single paraggraph)
+		 * 
+		 * @param newStructure
+		 * @param actorReference
+		 */
 		private void performTextReplacementInSingleParagraphContext(List<String> newStructure, FragmentActorReference<?> actorReference) {
-			// FlexoDocumentFragment<?, ?> targetFragment = actorReference.getModellingElement();
+
 			FlexoRun<D, TA> templateStartRun = getTextSelection().getStartRun();
 			FlexoRun<D, TA> templateEndRun = getTextSelection().getEndRun();
+			FlexoParagraph<D, TA> templateParagraph = (FlexoParagraph<D, TA>) getTextSelection().getStartElement();
 
 			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
-
-				// System.out.println("\n-----------------------------------------------\n");
 
 				FlexoDocumentElement<?, ?> targetDocumentElement = actorReference
 						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
 				if (targetDocumentElement instanceof FlexoParagraph) {
 					FlexoParagraph<D, TA> targetParagraph = (FlexoParagraph<D, TA>) targetDocumentElement;
+
+					// We compute start target run relatively to the beginning of actual target paragraph, because
+					// we cannot rely on structure that may have changed because of concurrent modifications
 					FlexoRun<D, TA> startTargetRun = null;
 					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
 						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
-					} else {
+					}
+					else {
 						startTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
+
+					// We compute end target run relatively to the end of actual target paragraph, because
+					// we cannot rely on structure that may have changed because of concurrent modifications
 					FlexoRun<D, TA> endTargetRun = null;
-					if (templateEndRun.getIndex() < targetParagraph.getRuns().size()) {
-						endTargetRun = targetParagraph.getRuns().get(templateEndRun.getIndex());
-					} else {
+					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
+							.getRuns().size()) {
+						endTargetRun = targetParagraph.getRuns()
+								.get(targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
+					}
+					else {
 						endTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
 
-					/*System.out.println("Starting text replacement, original structure:");
-					for (int i = startTargetRun.getIndex(); i <= endTargetRun.getIndex(); i++) {
-						FlexoRun<?, ?> run = targetParagraph.getRuns().get(i);
-						System.out.print("[" + run.getText() + "]");
-					}
-					System.out.println("\nNew structure:");
-					for (String s : newStructure) {
-						System.out.print("[" + s + "]");
-					}
-					System.out.println("\nPerforming replacement");*/
-
-					// System.out.println("Document:\n" + targetDocumentElement.getFlexoDocument().debugStructuredContents());
-
-					// System.out.println("start run: index=" + startTargetRun.getIndex() + " : " + startTargetRun.getText());
-					// System.out.println("end run: index=" + endTargetRun.getIndex() + " : " + endTargetRun.getText());
-
 					int targetRunsNb = endTargetRun.getIndex() - startTargetRun.getIndex() + 1;
 
-					/*for (FlexoRun<D, TA> r : targetParagraph.getRuns()) {
-						System.out.print("[" + r.hash() + " index=" + r.getIndex() + " " + r.getText() + "]");
-					}
-					System.out.println("");*/
+					// We compare cardinality of the two structures to synchronize
 
 					if (targetRunsNb < newStructure.size()) {
-						// We have to add extra runs
+						// We have to add extra runs, at the end of actual structure
 						int currentIndex = endTargetRun.getIndex() + 1;
 						for (int i = 0; i < newStructure.size() - targetRunsNb; i++) {
-							// System.out.println("Cloning: " + startTargetRun);
 							FlexoRun<D, TA> clonedRun = (FlexoRun<D, TA>) startTargetRun.cloneObject();
-							// FlexoRun<D, TA> clonedRun = targetParagraph.getFlexoDocument().getFactory().makeRun();
-							// System.out.println("Adding run: " + clonedRun);
 							targetParagraph.insertRunAtIndex(clonedRun, currentIndex++);
 							endTargetRun = clonedRun;
 						}
@@ -323,30 +326,20 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					else if (targetRunsNb > newStructure.size()) {
 						// We have to remove extra runs
+						// We remove runs from the end of actual structure
 						int lastRunIndex = endTargetRun.getIndex();
 						endTargetRun = targetParagraph.getRuns().get(lastRunIndex - targetRunsNb + newStructure.size());
 						for (int i = 0; i < targetRunsNb - newStructure.size(); i++) {
 							FlexoRun<D, TA> runToRemove = targetParagraph.getRuns().get(lastRunIndex - i);
-							// System.out.println("Removing: " + runToRemove.getText());
 							targetParagraph.removeFromRuns(runToRemove);
 						}
 					}
 
-					/*for (FlexoRun<D, TA> r : targetParagraph.getRuns()) {
-						System.out.print("[" + r.hash() + " index=" + r.getIndex() + " " + r.getText() + "]");
-					}
-					System.out.println("");*/
-
-					// System.out.println("start run: index=" + startTargetRun.getIndex() + " : " + startTargetRun.getText());
-					// System.out.println("end run: index=" + endTargetRun.getIndex() + " : " + endTargetRun.getText());
-
 					targetRunsNb = endTargetRun.getIndex() - startTargetRun.getIndex() + 1;
-					// System.out.println("Condition a verifier: " + (targetRunsNb == newStructure.size()));
 
-					/*if (targetRunsNb != newStructure.size()) {
-						System.out.println("Precondition requirements not meet");
-						System.exit(-1);
-					}*/
+					if (targetRunsNb != newStructure.size()) {
+						logger.warning("Something was wrong when performing text replacement");
+					}
 
 					// Now the structures are same: targetRunNb == newStructure.size()
 					for (int i = 0; i < newStructure.size(); i++) {
@@ -355,18 +348,12 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						run.setText(v);
 					}
 
-					/*System.out.println("Getting this:");
-					for (int i = startTargetRun.getIndex(); i <= endTargetRun.getIndex(); i++) {
-						FlexoRun<?, ?> run = targetParagraph.getRuns().get(i);
-						System.out.print("[" + run.getText() + "]");
-					}*/
-
-					// System.out.println("\n-----------------------------------------------\n");
-
-				} else {
+				}
+				else {
 					logger.warning("Text replacement not implemented for " + targetDocumentElement);
 				}
-			} else {
+			}
+			else {
 				logger.warning("Could not find element in target document matching " + getTextSelection().getStartElement());
 			}
 		}
