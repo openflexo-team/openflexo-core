@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,6 +55,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -242,6 +244,23 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources() {
 		// View view = getView();
 		return getContents(VirtualModelInstanceResource.class);
+	}
+
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
+	 * {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(AbstractVirtualModel<?> virtualModel) {
+		List<VirtualModelInstanceResource> returned = new ArrayList<VirtualModelInstanceResource>();
+		for (VirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
+			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getVirtualModel())) {
+				returned.add(vmiRes);
+			}
+		}
+		return returned;
 	}
 
 	@Override
