@@ -92,7 +92,8 @@ import org.openflexo.toolbox.StringUtils;
  * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.<br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.
+ * <br>
  * 
  * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
  * 
@@ -172,7 +173,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param oldFlexoConcept
 	 * @param newFlexoConcept
 	 */
-	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
+			FlexoConcept newFlexoConcept);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -268,11 +270,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
 				VirtualModel virtualModel, View view) throws SaveResourceException {
 
-			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
-					virtualModelName, virtualModel, view);
+			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl
+					.makeVirtualModelInstanceResource(virtualModelName, virtualModel, view);
 
-			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory().newInstance(
-					VirtualModelInstance.class);
+			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory()
+					.newInstance(VirtualModelInstance.class);
 			newVirtualModelInstance.setVirtualModel(virtualModel);
 
 			newVirtualModelResource.setResourceData(newVirtualModelInstance);
@@ -649,12 +651,12 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 				return modelSlotInstances;
 			}
-
+		
 			@Override
 			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
 				this.modelSlotInstances = instances;
 			}
-
+		
 			@Override
 			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
 				if (!modelSlotInstances.contains(instance)) {
@@ -664,7 +666,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
 				}
 			}
-
+		
 			@Override
 			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
 				if (modelSlotInstances.contains(instance)) {
@@ -872,8 +874,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
 				return;
 			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 
