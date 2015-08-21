@@ -166,7 +166,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 							element.setBaseIdentifier(er.getTemplateElementId());
 							if (index == 0) {
 								startElement = element;
-							} else if (index == getElementReferences().size() - 1) {
+							}
+							else if (index == getElementReferences().size() - 1) {
 								endElement = element;
 							}
 							index++;
@@ -178,7 +179,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 							e.printStackTrace();
 						}
 					}
-				} else {
+				}
+				else {
 					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
 				}
 			}
@@ -264,6 +266,7 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement) {
 			return getElementsMatchingTemplateElementId(templateElement.getIdentifier());
 		}
+
 	}
 
 	@ModelEntity

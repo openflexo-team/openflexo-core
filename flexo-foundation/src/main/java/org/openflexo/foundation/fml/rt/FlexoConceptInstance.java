@@ -423,8 +423,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
-						+ getFlexoActor(flexoRole));
+				logger.fine(
+						">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
 			}
 			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
@@ -440,7 +440,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						ActorReference<T> ref = references.get(0);
 						ref.setModellingElement(object);
 						done = true;
-					} else if (references.size() > 0) {
+					}
+					else if (references.size() > 0) {
 						// Remove all existing references
 						for (ActorReference<T> actorReference : new ArrayList<ActorReference<T>>(references)) {
 							removeFromActors(actorReference);
@@ -453,9 +454,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					addToActors(actorReference);
 				}
 
+				setIsModified();
+
 				setChanged();
 				notifyObservers(new FlexoActorChanged(this, flexoRole, oldObject, object));
-				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternProperty() actors="+actors);
+				// System.out.println("FlexoConceptInstance "+Integer.toHexString(hashCode())+" setObjectForPatternProperty()
+				// actors="+actors);
 
 				getPropertyChangeSupport().firePropertyChange(flexoRole.getRoleName(), oldObject, object);
 
@@ -609,7 +613,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not register ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 				references.add(actorReference);
 				// System.out.println("added " + actorReference + " for " + actorReference.getModellingElement());
@@ -624,7 +629,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not unregister ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 
 				actorReference.setFlexoConceptInstance(null);
@@ -675,7 +681,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					e.printStackTrace();
 				}
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -695,19 +702,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
-			} else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					return getFlexoActor(role);
 				}
 				logger.warning("Unexpected " + variable);
 				// return null;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				logger.warning("Not implemented: getValue() for " + variable);
 				// return null;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -724,21 +735,25 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					setFlexoActor(value, role);
-				} else {
+				}
+				else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				FlexoProperty property = getFlexoConcept().getAccessibleProperty(variable.getVariableName());
 				logger.warning("Not implemented: setValue() for " + variable);
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 
@@ -760,7 +775,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept().getDefaultDeletionScheme() != null) {
 				return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
-			} else {
+			}
+			else {
 				// Generate on-the-fly default deletion scheme
 				return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
 			}
@@ -921,10 +937,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 					if (obj instanceof String) {
 						return (String) obj;
-					} else {
+					}
+					else {
 						if (obj != null) {
 							return obj.toString();
-						} else
+						}
+						else
 							return EMPTY_STRING;
 					}
 
@@ -950,7 +968,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				for (ActorReference<?> ref : refList) {
 					if (ref.getModellingElement() != null) {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + ref.getModellingElement().toString());
-					} else {
+					}
+					else {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + "No object found");
 					}
 					isFirst = false;
