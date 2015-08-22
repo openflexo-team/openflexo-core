@@ -222,7 +222,6 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		 */
 		@Override
 		public void applyDataToDocument() {
-			System.out.println("Tiens, si on faisait du replacement ???");
 			for (TextBinding tb : ((FlexoDocumentFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
 				tb.applyToFragment(getFlexoConceptInstance());
 			}
@@ -235,7 +234,9 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		 */
 		@Override
 		public void reinjectDataFromDocument() {
-
+			for (TextBinding tb : ((FlexoDocumentFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+				tb.extractFromFragment(getFlexoConceptInstance());
+			}
 		}
 
 		/**

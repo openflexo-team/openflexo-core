@@ -47,11 +47,11 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentElement;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
 import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoRun;
 import org.openflexo.foundation.doc.TextSelection;
@@ -211,32 +211,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		public void applyToFragment(FlexoConceptInstance fci) {
 
 			try {
-				System.out.println("Pour le fci: " + fci);
-				System.out.println("role: " + getFragmentRole());
-
 				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
 				// FlexoDocumentFragment<?, ?> templateFragment = getFragmentRole().getFragment();
-				FlexoDocumentFragment<?, ?> fragment = actorReference.getModellingElement();
-
-				// System.out.println("getStartParagraphIdentifier()=" + getStartParagraphIdentifier());
-				// System.out.println("getStartRunIndex()=" + getStartRunIndex());
-
-				/*FlexoParagraph<?, ?> paragraph = (FlexoParagraph<?, ?>) actorReference
-						.getElementMatchingTemplateElementId(getStartParagraphIdentifier());
-				
-				System.out.println("paragraph=" + paragraph);
-				
-				FlexoRun<?, ?> run = paragraph.getRuns().get(getStartRunIndex());*/
+				// FlexoDocumentFragment<?, ?> fragment = actorReference.getModellingElement();
 
 				String value = getValue().getBindingValue(fci);
 
-				System.out.println("On cherche a remplacer la TextSelection: " + getTextSelection());
-				System.out.println("Avec le binding " + getValue());
-				System.out.println("Le texte c'est: " + getTextSelection().getRawText());
-				System.out.println("La nouvelle valeur c'est: " + value);
-
 				if (getTextSelection().isSingleParagraph()) {
-					System.out.println("Single paragraph");
 					FlexoRun<?, ?> templateStartRun = getTextSelection().getStartRun();
 					FlexoRun<?, ?> templateEndRun = getTextSelection().getEndRun();
 					List<String> newStructure = new ArrayList<String>();
@@ -369,22 +350,93 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		@Override
 		public String extractFromFragment(FlexoConceptInstance fci) {
 			if (getValue().isSettable()) {
-				FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
-				// FlexoRun<?, ?> run = fragment.getRun(getStartRunIdentifier());
-				/*String newValue = run.getText();
-				try {
-					getValue().setBindingValue(newValue, fci);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (NotSettableContextException e) {
-					e.printStackTrace();
+
+				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
+				// FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
+
+				if (getTextSelection().isSingleParagraph()) {
+					String value = extractTextInSingleParagraphContext(actorReference);
+
+					System.out.println("Sets binding " + getValue() + " with " + value);
+
+					try {
+						getValue().setBindingValue(value, fci);
+					} catch (TypeMismatchException e) {
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (NotSettableContextException e) {
+						e.printStackTrace();
+					}
 				}
-				return newValue;*/
+
 			}
+			return null;
+		}
+
+		/**
+		 * Internally used to extract text in single paragraph context (when TextSelection apply on a single paraggraph)
+		 * 
+		 * @param newStructure
+		 * @param actorReference
+		 */
+		private String extractTextInSingleParagraphContext(FragmentActorReference<?> actorReference) {
+
+			FlexoRun<D, TA> templateStartRun = getTextSelection().getStartRun();
+			FlexoRun<D, TA> templateEndRun = getTextSelection().getEndRun();
+			FlexoParagraph<D, TA> templateParagraph = (FlexoParagraph<D, TA>) getTextSelection().getStartElement();
+
+			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
+
+				FlexoDocumentElement<?, ?> targetDocumentElement = actorReference
+						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
+				if (targetDocumentElement instanceof FlexoParagraph) {
+					FlexoParagraph<D, TA> targetParagraph = (FlexoParagraph<D, TA>) targetDocumentElement;
+
+					// We compute start target run relatively to the beginning of actual target paragraph, because
+					// we cannot rely on structure that may have changed because of concurrent modifications
+					FlexoRun<D, TA> startTargetRun = null;
+					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
+						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
+					}
+					else {
+						startTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
+					}
+
+					// We compute end target run relatively to the end of actual target paragraph, because
+					// we cannot rely on structure that may have changed because of concurrent modifications
+					FlexoRun<D, TA> endTargetRun = null;
+					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
+							.getRuns().size()) {
+						endTargetRun = targetParagraph.getRuns()
+								.get(targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
+					}
+					else {
+						endTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
+					}
+
+					StringBuffer sb = new StringBuffer();
+
+					boolean extraStartRun = (getTextSelection().getStartCharacterIndex() > -1);
+					boolean extraEndRun = (getTextSelection().getEndCharacterIndex() > -1);
+
+					for (int i = startTargetRun.getIndex() + (extraStartRun ? 1 : 0); i <= endTargetRun.getIndex()
+							- (extraEndRun ? 1 : 0); i++) {
+						sb.append(targetParagraph.getRuns().get(i).getText());
+					}
+
+					return sb.toString();
+				}
+				else {
+					logger.warning("Text extraction not implemented for " + targetDocumentElement);
+				}
+			}
+			else {
+				logger.warning("Could not find element in target document matching " + getTextSelection().getStartElement());
+			}
+
 			return null;
 		}
 
