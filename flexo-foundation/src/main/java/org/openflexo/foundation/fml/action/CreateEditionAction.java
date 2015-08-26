@@ -454,7 +454,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction) returned).setFlexoRole(getFlexoRole());
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			((TechnologySpecificAction) returned).setModelSlot(modelSlot);
+			((TechnologySpecificAction) returned).setModelSlot(getModelSlot());
 		}
 
 		if (returned != null) {
@@ -754,10 +754,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			switch (getIterationType()) {
 				case Expression:
 					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-
-					System.out.println("Hop, je fais une iteration avec " + getIterationExpression());
 					iterationAction.setIterationAction(exp);
-					System.out.println("Hop j'obtiens " + iterationAction.getFMLRepresentation());
 					break;
 				case FetchRequest:
 					FetchRequest<?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
