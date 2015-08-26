@@ -114,6 +114,11 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int endRunId)
 			throws FragmentConsistencyException;
 
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+			throws FragmentConsistencyException;
+
+	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element) throws FragmentConsistencyException;
+
 	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
 
@@ -150,9 +155,11 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 					if (runId > -1 && runId < para.getRuns().size()) {
 						return para.getRuns().get(runId);
 					}
-				} else if (element != null) {
+				}
+				else if (element != null) {
 					logger.warning("!!! Not implemented: " + element.getClass());
-				} else {
+				}
+				else {
 					logger.warning("!!! Cannot find element with id: " + elementId + " in " + getFlexoDocument());
 					System.out.println(getFlexoDocument().debugStructuredContents());
 				}
@@ -223,6 +230,17 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element, int startRunId, int endRunId)
 				throws FragmentConsistencyException {
 			return makeTextSelection(element, startRunId, -1, element, endRunId, -1);
+		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+				throws FragmentConsistencyException {
+			return makeTextSelection(startElement, -1, -1, endElement, -1, -1);
+		}
+
+		@Override
+		public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element) throws FragmentConsistencyException {
+			return makeTextSelection(element, element);
 		}
 
 	}

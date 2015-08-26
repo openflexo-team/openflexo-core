@@ -84,6 +84,8 @@ public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA
 
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding);
 
+	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
+
 	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoRoleImpl<F>implements FlexoDocumentFragmentRole<F, D, TA> {
 
@@ -97,10 +99,16 @@ public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA
 
 		@Override
 		public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding) {
+			return makeTextBinding(textSelection, binding, false);
+		}
+
+		@Override
+		public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline) {
 			TextBinding<D, TA> returned = getFMLModelFactory().newInstance(TextBinding.class);
 			textSelection.setFragment(getFragment());
 			returned.setTextSelection(textSelection);
 			returned.setValue(binding);
+			returned.setMultiline(isMultiline);
 			addToTextBindings(returned);
 			return returned;
 		}

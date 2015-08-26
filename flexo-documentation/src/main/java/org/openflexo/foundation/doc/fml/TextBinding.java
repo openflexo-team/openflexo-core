@@ -41,6 +41,7 @@ package org.openflexo.foundation.doc.fml;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingFactory;
@@ -55,6 +56,7 @@ import org.openflexo.foundation.doc.FlexoDocumentElement;
 import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoRun;
 import org.openflexo.foundation.doc.TextSelection;
+import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -66,11 +68,14 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This class represent a text binding declared in a document fragment.<br>
  * A {@link TextSelection} is an expression that is to be replaced as text of a run in a document fragment.<br>
- * More exactely we maintain here a bi-directional synchronization between text and data if the binding is declared as settable
+ * More exactely we maintain here a bi-directional synchronization between text and data if the binding is declared as settable <br>
+ * A {@link TextBinding} might be declared as multiline. In this case, {@link TextSelection} applies on multiple paragraphs.
+ * 
  * 
  * @author sylvain
  * 
@@ -88,6 +93,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@PropertyIdentifier(type = FlexoDocumentFragmentRole.class)
 	public static final String FRAGMENT_ROLE_KEY = "fragmentRole";
+
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String IS_MULTILINE_KEY = "isMultiline";
 
 	@Getter(TEXT_SELECTION_KEY)
 	@XMLElement
@@ -108,6 +116,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 	@Setter(FRAGMENT_ROLE_KEY)
 	public void setFragmentRole(FlexoDocumentFragmentRole<?, D, TA> fragmentRole);
+
+	@Getter(value = IS_MULTILINE_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isMultiline();
+
+	@Setter(IS_MULTILINE_KEY)
+	public void setMultiline(boolean multiline);
 
 	/**
 	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
@@ -217,7 +232,16 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 				String value = getValue().getBindingValue(fci);
 
-				if (getTextSelection().isSingleParagraph()) {
+				if (isMultiline()) {
+					List<String> newStructure = new ArrayList<String>();
+					StringTokenizer st = new StringTokenizer(value, StringUtils.LINE_SEPARATOR);
+					while (st.hasMoreTokens()) {
+						newStructure.add(st.nextToken());
+					}
+					performTextReplacementInMultilineContext(newStructure, actorReference);
+				}
+
+				else if (getTextSelection().isSingleParagraph()) {
 					FlexoRun<?, ?> templateStartRun = getTextSelection().getStartRun();
 					FlexoRun<?, ?> templateEndRun = getTextSelection().getEndRun();
 					List<String> newStructure = new ArrayList<String>();
@@ -239,6 +263,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					performTextReplacementInSingleParagraphContext(newStructure, actorReference);
 				}
 
+				else {
+					logger.warning("Inconsistent data: TextBinding with non-single-paragraph TextSelection must be declared as multiline");
+				}
 				// run.setText(value);
 
 			} catch (TypeMismatchException e) {
@@ -340,6 +367,100 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		}
 
 		/**
+		 * Internally used to perform text replacement in multiline paragraph context (when TextSelection apply on a multiple consecutive
+		 * paragraphs)
+		 * 
+		 * @param newStructure
+		 * @param actorReference
+		 */
+		private void performTextReplacementInMultilineContext(List<String> newStructure, FragmentActorReference<?> actorReference) {
+
+			FlexoDocument<D, TA> document = (FlexoDocument<D, TA>) actorReference.getModellingElement().getFlexoDocument();
+
+			int startIndex = -1;
+			int endIndex = -1;
+
+			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
+				int index = document.getElements().indexOf(e);
+				if ((index > -1) && ((startIndex == -1) || (index < startIndex))) {
+					startIndex = index;
+				}
+			}
+			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
+				int index = document.getElements().indexOf(e);
+				if ((index > -1) && ((endIndex == -1) || (index > endIndex))) {
+					endIndex = index;
+				}
+			}
+
+			/*System.out.println("startIndex=" + startIndex);
+			System.out.println("endIndex=" + endIndex);
+			for (String l : newStructure) {
+				System.out.println("> " + l);
+			}*/
+
+			FlexoParagraph<D, TA> startParagraph = (FlexoParagraph<D, TA>) document.getElements().get(startIndex);
+			FlexoParagraph<D, TA> endParagraph = (FlexoParagraph<D, TA>) document.getElements().get(startIndex);
+
+			int targetParagraphsNb = endIndex - startIndex + 1;
+
+			// We compare cardinality of the two structures to synchronize
+
+			if (targetParagraphsNb < newStructure.size()) {
+				// We have to add extra paragraphs, at the end of actual structure
+				int currentIndex = endIndex + 1;
+				for (int i = 0; i < newStructure.size() - targetParagraphsNb; i++) {
+					// System.out.println("Adding paragraph");
+					FlexoParagraph<D, TA> clonedParagraph = (FlexoParagraph<D, TA>) startParagraph.cloneObject();
+					clonedParagraph.setBaseIdentifier(getTextSelection().getEndElement().getIdentifier());
+					document.insertElementAtIndex(clonedParagraph, currentIndex++);
+					ElementReference er = actorReference.getFactory().newInstance(ElementReference.class);
+					er.setTemplateElementId(clonedParagraph.getBaseIdentifier());
+					er.setElementId(clonedParagraph.getIdentifier());
+					actorReference.addToElementReferences(er);
+					endParagraph = clonedParagraph;
+					endIndex = document.getElements().indexOf(endParagraph);
+				}
+			}
+
+			else if (targetParagraphsNb > newStructure.size()) {
+				// We have to remove extra paragraphs
+				// We remove runs from the end of actual structure
+				int lastParagraphIndex = endIndex;
+				endParagraph = (FlexoParagraph<D, TA>) document.getElements()
+						.get(lastParagraphIndex - targetParagraphsNb + newStructure.size());
+				for (int i = 0; i < targetParagraphsNb - newStructure.size(); i++) {
+					// System.out.println("Removing paragraph");
+					FlexoParagraph<D, TA> paragraphToRemove = (FlexoParagraph<D, TA>) document.getElements().get(lastParagraphIndex - i);
+					document.removeFromElements(paragraphToRemove);
+					actorReference.removeReferencesTo(paragraphToRemove);
+				}
+			}
+
+			for (int i = 0; i < endIndex - startIndex + 1; i++) {
+				FlexoParagraph<D, TA> paragraph = (FlexoParagraph<D, TA>) document.getElements().get(i + startIndex);
+				if (paragraph.getRuns().size() > 1) {
+					// We have to remove extra runs
+					// We remove runs from the end of actual structure
+					int runsToRemove = paragraph.getRuns().size() - 1;
+					for (int j = 0; j < runsToRemove; j++) {
+						FlexoRun<D, TA> runToRemove = paragraph.getRuns().get(paragraph.getRuns().size() - 1);
+						paragraph.removeFromRuns(runToRemove);
+					}
+				}
+				else if (paragraph.getRuns().size() == 0) {
+					// We have to add default run
+					FlexoRun<D, TA> newRun = document.getFactory().makeRun();
+					paragraph.addToRuns(newRun);
+				}
+
+				paragraph.getRuns().get(0).setText(newStructure.get(i));
+
+			}
+
+		}
+
+		/**
 		 * This method is called to extract a value from the graphical representation and conform to the related feature, and apply it to
 		 * model
 		 * 
@@ -354,22 +475,34 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
 				// FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
 
-				if (getTextSelection().isSingleParagraph()) {
-					String value = extractTextInSingleParagraphContext(actorReference);
+				String value = null;
 
-					System.out.println("Sets binding " + getValue() + " with " + value);
+				if (isMultiline()) {
+					value = extractTextInMultilineContext(actorReference);
+				}
 
-					try {
-						getValue().setBindingValue(value, fci);
-					} catch (TypeMismatchException e) {
-						e.printStackTrace();
-					} catch (NullReferenceException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					} catch (NotSettableContextException e) {
-						e.printStackTrace();
-					}
+				else if (getTextSelection().isSingleParagraph()) {
+					value = extractTextInSingleParagraphContext(actorReference);
+
+				}
+
+				else {
+					logger.warning("Inconsistent data: TextBinding with non-single-paragraph TextSelection must be declared as multiline");
+					return null;
+				}
+
+				// System.out.println("Sets binding " + getValue() + " with " + value);
+
+				try {
+					getValue().setBindingValue(value, fci);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (NotSettableContextException e) {
+					e.printStackTrace();
 				}
 
 			}
@@ -379,7 +512,6 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		/**
 		 * Internally used to extract text in single paragraph context (when TextSelection apply on a single paraggraph)
 		 * 
-		 * @param newStructure
 		 * @param actorReference
 		 */
 		private String extractTextInSingleParagraphContext(FragmentActorReference<?> actorReference) {
@@ -438,6 +570,63 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			}
 
 			return null;
+		}
+
+		/**
+		 * Internally used to extract text in multiline context (when TextSelection apply on a multiple consecutive paragraphs)
+		 * 
+		 * @param actorReference
+		 */
+		private String extractTextInMultilineContext(FragmentActorReference<?> actorReference) {
+			FlexoDocument<D, TA> document = (FlexoDocument<D, TA>) actorReference.getModellingElement().getFlexoDocument();
+
+			int startIndex = -1;
+			int endIndex = -1;
+
+			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
+				int index = document.getElements().indexOf(e);
+				if ((index > -1) && ((startIndex == -1) || (index < startIndex))) {
+					startIndex = index;
+				}
+			}
+			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
+				int index = document.getElements().indexOf(e);
+				if ((index > -1) && ((endIndex == -1) || (index > endIndex))) {
+					endIndex = index;
+				}
+			}
+
+			// Now, we look for the paragraphs that come just after
+			// If they are not bound to a template paragraph, we include them as part of FragmentActorReference
+			FlexoDocumentElement<D, TA> nextElement = null;
+			if (endIndex < document.getElements().size() - 1) {
+				nextElement = document.getElements().get(endIndex + 1);
+			}
+			while (nextElement != null && StringUtils.isEmpty(nextElement.getBaseIdentifier())) {
+				// Taking under account nextElement
+				nextElement.setBaseIdentifier(getTextSelection().getEndElement().getIdentifier());
+				ElementReference er = actorReference.getFactory().newInstance(ElementReference.class);
+				er.setTemplateElementId(nextElement.getBaseIdentifier());
+				er.setElementId(nextElement.getIdentifier());
+				actorReference.addToElementReferences(er);
+				endIndex++;
+				if (endIndex < document.getElements().size() - 1) {
+					nextElement = document.getElements().get(endIndex + 1);
+				}
+				else {
+					nextElement = null;
+				}
+			}
+
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (int i = 0; i < endIndex - startIndex + 1; i++) {
+				FlexoParagraph<D, TA> paragraph = (FlexoParagraph<D, TA>) document.getElements().get(i + startIndex);
+				sb.append((isFirst ? "" : StringUtils.LINE_SEPARATOR) + paragraph.getRawText());
+				isFirst = false;
+			}
+
+			return sb.toString();
 		}
 
 	}

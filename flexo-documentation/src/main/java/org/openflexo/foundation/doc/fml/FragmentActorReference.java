@@ -117,6 +117,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	 */
 	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement);
 
+	public void removeReferencesTo(FlexoDocumentElement<?, ?> element);
+
 	/**
 	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
 	 * 
@@ -268,6 +270,19 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 			return getElementsMatchingTemplateElementId(templateElement.getIdentifier());
 		}
 
+		@Override
+		public void removeReferencesTo(FlexoDocumentElement<?, ?> element) {
+			List<ElementReference> referencesToRemove = new ArrayList<ElementReference>();
+			for (ElementReference er : getElementReferences()) {
+				if (er.getElementId().equals(element.getIdentifier())) {
+					referencesToRemove.add(er);
+				}
+			}
+			for (ElementReference er : referencesToRemove) {
+				removeFromElementReferences(er);
+			}
+		}
+
 	}
 
 	@ModelEntity
@@ -294,4 +309,5 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		public void setElementId(String elementId);
 
 	}
+
 }
