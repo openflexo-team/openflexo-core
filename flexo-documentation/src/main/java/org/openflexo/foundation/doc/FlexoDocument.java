@@ -134,6 +134,11 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
 	/**
+	 * Return elements matching supplied base identifier
+	 */
+	public List<FlexoDocumentElement<D, TA>> getElementsWithBaseIdentifier(String baseIdentifier);
+
+	/**
 	 * Return a new list of elements of supplied type
 	 * 
 	 * @param elementType
@@ -275,7 +280,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
 					}
-				} else {
+				}
+				else {
 					performSuperSetter(NAME_KEY, name);
 				}
 			}
@@ -327,7 +333,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 							l = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
-				} else {
+				}
+				else {
 					if (e instanceof FlexoParagraph) {
 						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
 							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(l)) {
