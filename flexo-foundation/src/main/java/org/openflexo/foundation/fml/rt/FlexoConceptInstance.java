@@ -282,6 +282,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
+
+			if (flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
+				// logger.warning("Should not we delegate this to owning VM ???");
+				return getVirtualModelInstance().getFlexoActor(flexoRole);
+			}
 			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
 			if (actorReferences != null && actorReferences.size() > 0) {
@@ -705,6 +710,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
+				// Handle here case of FlexoRole relates to VirtualModelInstance container
+				if (role.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
+					return getVirtualModelInstance().getValue(variable);
+				}
 				if (role != null) {
 					return getFlexoActor(role);
 				}
