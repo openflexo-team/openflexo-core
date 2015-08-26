@@ -171,12 +171,24 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 		// The action is visible for FlexoConcept and StructuralFacet.
 		if (getFocusedObject() instanceof FlexoConceptStructuralFacet) {
 			flexoConcept = ((FlexoConceptStructuralFacet) getFocusedObject()).getFlexoConcept();
-		} else {
+		}
+		else {
 			flexoConcept = (FlexoConcept) getFocusedObject();
 		}
 		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).size() > 0) {
+
+			if (getFlexoRoleClass() == null) {
+				return ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).get(0);
+			}
+			// Trying to find the most adapted model slot
+			for (ModelSlot<?> ms : ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType())) {
+				if (ms.getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
+					return (MS) ms;
+				}
+			}
 			return ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).get(0);
-		} else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
+		}
+		else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
 				&& flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType()).size() > 0) {
 			if (getFlexoRoleClass() == null) {
 				return flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType()).get(0);
@@ -227,7 +239,8 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
 		if (getModelSlot() != null) {
 			return getModelSlot().getModelSlotTechnologyAdapter();
-		} else {
+		}
+		else {
 			return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
 		}
 	}
