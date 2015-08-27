@@ -21,6 +21,7 @@
 package org.openflexo.foundation.doc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
@@ -201,6 +202,23 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	@Finder(collection = STYLES_KEY, attribute = FlexoStyle.STYLE_ID_KEY)
 	public FlexoStyle<D, TA> getStyleByIdentifier(String styleId);
+
+	/**
+	 * Activate style identified by styleId
+	 * 
+	 * @param styleId
+	 * @return
+	 */
+	public FlexoStyle<D, TA> activateStyle(String styleId);
+
+	/**
+	 * Return a collection of all identifiers of styles that can be activated for this document
+	 * 
+	 * @return
+	 */
+	public Collection<String> getKnownStyleIds();
+
+	public FlexoParagraph<D, TA> addStyledParagraphOfText(FlexoStyle<D, TA> style, String text);
 
 	/**
 	 * Return fragment identified by start and end elements (inclusive)
