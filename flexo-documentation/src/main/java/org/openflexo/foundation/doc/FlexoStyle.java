@@ -89,8 +89,8 @@ public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends Technolog
 	 */
 	public boolean isLevelled();
 
-	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoStyle<D, TA> {
+	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoStyle<D, TA> {
 
 		@Override
 		public boolean isLevelled() {
