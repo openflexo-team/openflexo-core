@@ -108,6 +108,20 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	public abstract FlexoRun<D, TA> makeRun();
 
 	/**
+	 * Build new empty table row
+	 * 
+	 * @return
+	 */
+	public abstract FlexoTable<D, TA> makeTable();
+
+	/**
+	 * Build new empty table row
+	 * 
+	 * @return
+	 */
+	public abstract FlexoTableRow<D, TA> makeTableRow();
+
+	/**
 	 * Build new empty style
 	 * 
 	 * @return
@@ -225,7 +239,8 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		if (newlyCreatedObject instanceof FlexoObject) {
 			if (getResource() != null) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
-			} else {
+			}
+			else {
 				logger.warning("Could not access resource beeing deserialized");
 			}
 		}
