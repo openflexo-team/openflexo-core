@@ -53,7 +53,7 @@ public interface FlexoTable<D extends FlexoDocument<D, TA>, TA extends Technolog
 	public static final String TABLE_ROWS_KEY = "tableRows";
 
 	/**
-	 * Return the list of runs of this paragraph
+	 * Return the list of rows of this table
 	 * 
 	 * @return
 	 */
@@ -93,8 +93,8 @@ public interface FlexoTable<D extends FlexoDocument<D, TA>, TA extends Technolog
 	 */
 	public void moveTableRowToIndex(FlexoTableRow<D, TA> anElement, int index);
 
-	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoTable<D, TA> {
+	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocumentElementImpl<D, TA> implements FlexoTable<D, TA> {
 
 		@Override
 		public String toString() {
