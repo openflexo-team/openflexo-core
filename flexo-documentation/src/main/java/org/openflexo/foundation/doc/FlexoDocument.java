@@ -218,7 +218,48 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 */
 	public Collection<String> getKnownStyleIds();
 
+	/**
+	 * Add at the end of the document a paragraph with a single run containing supplied text. The paragraph is set to supplied style.
+	 * 
+	 * @param style
+	 * @param text
+	 * @return
+	 */
 	public FlexoParagraph<D, TA> addStyledParagraphOfText(FlexoStyle<D, TA> style, String text);
+
+	/**
+	 * Insert a specified index in the document a paragraph with a single run containing supplied text. The paragraph is set to supplied
+	 * style.
+	 * 
+	 * @param style
+	 * @param text
+	 * @param index
+	 * @return
+	 */
+	public FlexoParagraph<D, TA> insertStyledParagraphOfTextAtIndex(FlexoStyle<D, TA> style, String text, int index);
+
+	/**
+	 * Add at the end of the document a table presets with supplied number of rows and columns, with empty paragraphs inside each cell
+	 * 
+	 * @param rows
+	 *            number of rows
+	 * @param cols
+	 *            number of columns
+	 * @return
+	 */
+	public FlexoTable<D, TA> addTable(int rows, int cols);
+
+	/**
+	 * Insert a specified index in the document a table presets with supplied number of rows and columns, with empty paragraphs inside each
+	 * cell style.
+	 * 
+	 * @param rows
+	 *            number of rows
+	 * @param cols
+	 *            number of columns
+	 * @return
+	 */
+	public FlexoTable<D, TA> insertTableAtIndex(int rows, int cols, int index);
 
 	/**
 	 * Return fragment identified by start and end elements (inclusive)

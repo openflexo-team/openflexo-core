@@ -114,8 +114,15 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoTableCell<D, TA> {
+	/**
+	 * Return a string representation (plain text) of contents of the cell
+	 * 
+	 * @return
+	 */
+	public String getRawText();
+
+	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoTableCell<D, TA> {
 
 		@Override
 		public int getIndex() {
