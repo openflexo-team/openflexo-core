@@ -62,8 +62,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
-		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory implements
+		PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
 
@@ -160,10 +160,10 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	public FlexoDocumentFragment<D, TA> makeFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
 			throws FragmentConsistencyException {
 		if (startElement == null) {
-			throw new FragmentConsistencyException();
+			throw new FragmentConsistencyException("Undefined start element");
 		}
 		if (endElement == null) {
-			throw new FragmentConsistencyException();
+			throw new FragmentConsistencyException("Undefined end element");
 		}
 		FlexoDocumentFragment<D, TA> returned = makeFragment(startElement.getFlexoDocument());
 		returned.setStartElement(startElement);
@@ -202,7 +202,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocumentFragment<D, TA> fragment, FlexoDocumentElement<D, TA> startElement,
 			int startRunId, int startCharId, FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId)
-					throws FragmentConsistencyException {
+			throws FragmentConsistencyException {
 		TextSelection<D, TA> returned = newInstance(TextSelection.class);
 		returned.setFragment(fragment);
 		returned.setStartElement(startElement);
@@ -253,8 +253,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		if (newlyCreatedObject instanceof FlexoObject) {
 			if (getResource() != null) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
-			}
-			else {
+			} else {
 				logger.warning("Could not access resource beeing deserialized");
 			}
 		}

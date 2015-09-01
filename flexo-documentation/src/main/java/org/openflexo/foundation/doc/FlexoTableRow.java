@@ -110,6 +110,12 @@ public interface FlexoTableRow<D extends FlexoDocument<D, TA>, TA extends Techno
 	 */
 	public int getIndex();
 
+	/**
+	 * Return element identified by identifier, asserting that this element exists in the row (eg a paragraph in a cell), or null if no such
+	 * element exists
+	 */
+	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
+
 	public static abstract class FlexoTableRowImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoTableRow<D, TA> {
 

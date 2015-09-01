@@ -21,6 +21,8 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -51,6 +53,7 @@ public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 	public void setParagraph(FlexoParagraph<D, TA> paragraph);
 
 	@Getter(TEXT_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
 	public String getText();
 
 	@Setter(TEXT_KEY)
@@ -68,8 +71,8 @@ public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyA
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoRun<D, TA> {
+	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoRun<D, TA> {
 
 		@Override
 		public int getIndex() {

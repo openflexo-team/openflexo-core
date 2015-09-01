@@ -62,8 +62,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoDocObject<D, TA>, ResourceData<D> {
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA>,
+		ResourceData<D>, FlexoDocumentElementContainer<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocumentElement.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENTS_KEY = "elements";
@@ -93,7 +93,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * 
 	 * @return
 	 */
-	@Getter(value = ELEMENTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocumentElement.DOCUMENT_KEY)
+	@Override
+	@Getter(value = ELEMENTS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocumentElement.CONTAINER_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
@@ -132,6 +133,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 	/**
 	 * Return element identified by identifier, or null if no such element exists
 	 */
+	@Override
 	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
 	/**
@@ -282,8 +284,8 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public String debugStructuredContents();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocObjectImpl<D, TA>implements FlexoDocument<D, TA> {
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override
 		public <E> List<E> getElements(Class<E> elementType) {
@@ -339,8 +341,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
 					}
-				}
-				else {
+				} else {
 					performSuperSetter(NAME_KEY, name);
 				}
 			}
@@ -392,8 +393,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 							l = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
-				}
-				else {
+				} else {
 					if (e instanceof FlexoParagraph) {
 						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
 							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(l)) {

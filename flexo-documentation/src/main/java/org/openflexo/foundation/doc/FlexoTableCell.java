@@ -47,7 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA>,
+		FlexoDocumentElementContainer<D, TA> {
 
 	@PropertyIdentifier(type = FlexoTableRow.class)
 	public static final String ROW_KEY = "row";
@@ -65,7 +66,7 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	 * 
 	 * @return
 	 */
-	@Getter(value = PARAGRAPHS_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = PARAGRAPHS_KEY, cardinality = Cardinality.LIST, inverse = FlexoParagraph.CONTAINER_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
@@ -121,8 +122,15 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	public String getRawText();
 
-	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoTableCell<D, TA> {
+	/**
+	 * Return element identified by identifier, asserting that this element exists in the table (eg a paragraph in a cell), or null if no
+	 * such element exists
+	 */
+	@Override
+	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
+
+	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoTableCell<D, TA> {
 
 		@Override
 		public int getIndex() {

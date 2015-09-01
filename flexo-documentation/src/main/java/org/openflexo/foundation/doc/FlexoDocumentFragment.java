@@ -89,7 +89,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 	public void checkConsistency() throws FragmentConsistencyException;
 
 	public class FragmentConsistencyException extends FlexoException {
-		public FragmentConsistencyException() {
+		public FragmentConsistencyException(String message) {
+			super(message);
 		}
 	}
 
@@ -119,8 +120,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element) throws FragmentConsistencyException;
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());
 
@@ -155,11 +156,9 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 					if (runId > -1 && runId < para.getRuns().size()) {
 						return para.getRuns().get(runId);
 					}
-				}
-				else if (element != null) {
+				} else if (element != null) {
 					logger.warning("!!! Not implemented: " + element.getClass());
-				}
-				else {
+				} else {
 					logger.warning("!!! Cannot find element with id: " + elementId + " in " + getFlexoDocument());
 					System.out.println(getFlexoDocument().debugStructuredContents());
 				}
@@ -170,18 +169,28 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 		@Override
 		public void checkConsistency() throws FragmentConsistencyException {
 			if (getFlexoDocument() == null) {
-				throw new FragmentConsistencyException();
+				throw new FragmentConsistencyException("Undefined FlexoDocument");
 			}
-			int startIndex = getFlexoDocument().getElements().indexOf(getStartElement());
+			if (getStartElement().getContainer() == null) {
+				throw new FragmentConsistencyException("Undefined start element container");
+			}
+			if (getEndElement().getContainer() == null) {
+				throw new FragmentConsistencyException("Undefined end element container");
+			}
+			if (getStartElement().getContainer() != getEndElement().getContainer()) {
+				throw new FragmentConsistencyException("Inconsistent containers");
+			}
+
+			int startIndex = getStartElement().getContainer().getElements().indexOf(getStartElement());
 			if (startIndex == -1) {
-				throw new FragmentConsistencyException();
+				throw new FragmentConsistencyException("Cannot find start index");
 			}
-			int endIndex = getFlexoDocument().getElements().indexOf(getEndElement());
+			int endIndex = getStartElement().getContainer().getElements().indexOf(getEndElement());
 			if (endIndex == -1) {
-				throw new FragmentConsistencyException();
+				throw new FragmentConsistencyException("Cannot find end index");
 			}
 			if (endIndex < startIndex) {
-				throw new FragmentConsistencyException();
+				throw new FragmentConsistencyException("Inconsistent fragment (reverse order)");
 			}
 			// Otherwise, that's ok
 		}
@@ -201,9 +210,8 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			return (getStartElement() instanceof FlexoParagraph ? ((FlexoParagraph) getStartElement()).getRawTextPreview()
 					: (getStartElement() != null ? getStartElement().toString() : "?"))
 					+ " : "
-					+ (getStartElement() != getEndElement()
-							? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement()).getRawTextPreview()
-									: (getEndElement() != null ? getEndElement().toString() : "?"))
+					+ (getStartElement() != getEndElement() ? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement())
+							.getRawTextPreview() : (getEndElement() != null ? getEndElement().toString() : "?"))
 							: "");
 		}
 

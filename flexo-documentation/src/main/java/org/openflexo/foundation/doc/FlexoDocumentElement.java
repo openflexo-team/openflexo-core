@@ -53,6 +53,8 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	public static final String IDENTIFIER_KEY = "identifier";
 	@PropertyIdentifier(type = String.class)
 	public static final String BASE_IDENTIFIER_KEY = "baseIdentifier";
+	@PropertyIdentifier(type = FlexoDocumentElementContainer.class)
+	public static final String CONTAINER_KEY = "container";
 
 	public static final String CHILDREN_ELEMENTS_KEY = "childrenElements";
 
@@ -93,6 +95,18 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	public void invalidateChildrenElements();
 
 	public void notifyChildrenElementsChanged();
+
+	/**
+	 * Return container of this element in the document<br>
+	 * This can be the document itself, if this element is declared as root element, or a cell of a table for example
+	 * 
+	 * @return
+	 */
+	@Getter(CONTAINER_KEY)
+	public FlexoDocumentElementContainer<D, TA> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(FlexoDocumentElementContainer<D, TA> container);
 
 	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
 			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
@@ -136,6 +150,13 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 			getPropertyChangeSupport().firePropertyChange(CHILDREN_ELEMENTS_KEY, null, getChildrenElements());
 		}
 
+		@Override
+		public D getFlexoDocument() {
+			if (getContainer() != null) {
+				return getContainer().getFlexoDocument();
+			}
+			return null;
+		}
 	}
 
 }
