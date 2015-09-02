@@ -46,6 +46,9 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentElement;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
 import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoTable;
+import org.openflexo.foundation.doc.FlexoTableCell;
+import org.openflexo.foundation.doc.FlexoTableRow;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -212,6 +215,21 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 						er.setTemplateElementId(element.getBaseIdentifier());
 					}
 					addToElementReferences(er);
+					if (element instanceof FlexoTable) {
+						FlexoTable<?, ?> table = (FlexoTable<?, ?>) element;
+						for (FlexoTableRow<?, ?> row : table.getTableRows()) {
+							for (FlexoTableCell<?, ?> cell : row.getTableCells()) {
+								for (FlexoDocumentElement<?, ?> e2 : cell.getElements()) {
+									if (e2.getBaseIdentifier() != null) {
+										ElementReference er2 = getFactory().newInstance(ElementReference.class);
+										er2.setElementId(e2.getIdentifier());
+										er2.setTemplateElementId(e2.getBaseIdentifier());
+										addToElementReferences(er2);
+									}
+								}
+							}
+						}
+					}
 				}
 
 				fragment = aFragment;

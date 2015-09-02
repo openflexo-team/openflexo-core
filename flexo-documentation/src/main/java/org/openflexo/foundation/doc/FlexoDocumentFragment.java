@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -120,16 +121,19 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> element) throws FragmentConsistencyException;
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentFragment<D, TA> {
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());
 
 		@Override
 		public List<? extends FlexoDocumentElement<D, TA>> getElements() {
-			int startIndex = getFlexoDocument().getElements().indexOf(getStartElement());
-			int endIndex = getFlexoDocument().getElements().indexOf(getEndElement());
-			return getFlexoDocument().getElements().subList(startIndex, endIndex + 1);
+			int startIndex = getStartElement().getContainer().getElements().indexOf(getStartElement());
+			int endIndex = getStartElement().getContainer().getElements().indexOf(getEndElement());
+			if (startIndex > -1 && endIndex >= startIndex) {
+				return getStartElement().getContainer().getElements().subList(startIndex, endIndex + 1);
+			}
+			return Collections.emptyList();
 		}
 
 		/**
@@ -156,9 +160,11 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 					if (runId > -1 && runId < para.getRuns().size()) {
 						return para.getRuns().get(runId);
 					}
-				} else if (element != null) {
+				}
+				else if (element != null) {
 					logger.warning("!!! Not implemented: " + element.getClass());
-				} else {
+				}
+				else {
 					logger.warning("!!! Cannot find element with id: " + elementId + " in " + getFlexoDocument());
 					System.out.println(getFlexoDocument().debugStructuredContents());
 				}
@@ -210,8 +216,9 @@ public interface FlexoDocumentFragment<D extends FlexoDocument<D, TA>, TA extend
 			return (getStartElement() instanceof FlexoParagraph ? ((FlexoParagraph) getStartElement()).getRawTextPreview()
 					: (getStartElement() != null ? getStartElement().toString() : "?"))
 					+ " : "
-					+ (getStartElement() != getEndElement() ? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement())
-							.getRawTextPreview() : (getEndElement() != null ? getEndElement().toString() : "?"))
+					+ (getStartElement() != getEndElement()
+							? (getEndElement() instanceof FlexoParagraph ? ((FlexoParagraph) getEndElement()).getRawTextPreview()
+									: (getEndElement() != null ? getEndElement().toString() : "?"))
 							: "");
 		}
 

@@ -108,8 +108,15 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	@Setter(CONTAINER_KEY)
 	public void setContainer(FlexoDocumentElementContainer<D, TA> container);
 
-	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoDocumentElement<D, TA> {
+	/**
+	 * Return index of this element in container
+	 * 
+	 * @return
+	 */
+	public int getIndex();
+
+	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentElement<D, TA> {
 
 		private List<FlexoDocumentElement<D, TA>> childrenElements = null;
 
@@ -156,6 +163,11 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 				return getContainer().getFlexoDocument();
 			}
 			return null;
+		}
+
+		@Override
+		public final int getIndex() {
+			return getContainer().getElements().indexOf(this);
 		}
 	}
 

@@ -99,8 +99,32 @@ public interface FlexoTable<D extends FlexoDocument<D, TA>, TA extends Technolog
 	 */
 	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
-	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoTable<D, TA> {
+	/**
+	 * Return cell at supplied row and column, if that position is valid. Otherwise null is returned.
+	 * 
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public FlexoTableCell<D, TA> getCell(int row, int col);
+
+	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocumentElementImpl<D, TA>implements FlexoTable<D, TA> {
+
+		/**
+		 * Return cell at supplied row and column, if that position is valid. Otherwise null is returned.
+		 * 
+		 * @param row
+		 * @param col
+		 * @return
+		 */
+		@Override
+		public FlexoTableCell<D, TA> getCell(int row, int col) {
+			if (row < getTableRows().size() && col < getTableRows().get(row).getTableCells().size()) {
+				return getTableRows().get(row).getTableCells().get(col);
+			}
+			return null;
+		}
 
 		@Override
 		public String toString() {
