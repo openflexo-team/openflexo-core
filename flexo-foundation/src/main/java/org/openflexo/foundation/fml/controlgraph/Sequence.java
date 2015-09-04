@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -222,9 +222,9 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
-			getControlGraph1().execute(action);
-			getControlGraph2().execute(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			getControlGraph1().execute(evaluationContext);
+			getControlGraph2().execute(evaluationContext);
 			return null;
 		}
 

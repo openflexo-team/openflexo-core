@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -150,13 +151,13 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 		private String _creationSchemeURI;
 		private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();
 
-		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction action) {
+		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
 				// System.out.println("getVirtualModelInstance() with " + getVirtualModelInstance());
 				// System.out.println("Valid=" + getVirtualModelInstance().isValid() + " " +
 				// getVirtualModelInstance().invalidBindingReason());
 				// System.out.println("returned: " + getVirtualModelInstance().getBindingValue(action));
-				return getVirtualModelInstance().getBindingValue(action);
+				return getVirtualModelInstance().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -272,25 +273,31 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 		}
 
 		@Override
-		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
-			logger.info("Perform performAddFlexoConceptInstance " + action);
-			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
+		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
+			logger.info("Perform performAddFlexoConceptInstance " + evaluationContext);
+			VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
 			logger.info("VirtualModelInstance: " + vmInstance);
-			CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
-			creationSchemeAction.setVirtualModelInstance(vmInstance);
-			creationSchemeAction.setCreationScheme(getCreationScheme());
-			for (AddFlexoConceptInstanceParameter p : getParameters()) {
-				FlexoBehaviourParameter param = p.getParam();
-				Object value = p.evaluateParameterValue(action);
-				logger.info("For parameter " + param + " value is " + value);
-				if (value != null) {
-					creationSchemeAction.setParameterValue(p.getParam(), p.evaluateParameterValue(action));
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
+						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				creationSchemeAction.setVirtualModelInstance(vmInstance);
+				creationSchemeAction.setCreationScheme(getCreationScheme());
+				for (AddFlexoConceptInstanceParameter p : getParameters()) {
+					FlexoBehaviourParameter param = p.getParam();
+					Object value = p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					logger.info("For parameter " + param + " value is " + value);
+					if (value != null) {
+						creationSchemeAction.setParameterValue(p.getParam(),
+								p.evaluateParameterValue((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
+					}
 				}
-			}
-			creationSchemeAction.doAction();
-			if (creationSchemeAction.hasActionExecutionSucceeded()) {
-				logger.info("Successfully performed performAddFlexoConcept " + action);
-				return creationSchemeAction.getFlexoConceptInstance();
+				creationSchemeAction.doAction();
+				if (creationSchemeAction.hasActionExecutionSucceeded()) {
+					logger.info("Successfully performed performAddFlexoConcept " + evaluationContext);
+					return creationSchemeAction.getFlexoConceptInstance();
+				}
+			} else {
+				logger.warning("Unexpected: " + evaluationContext);
 			}
 			return null;
 		}

@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.rt.View;
  * Allows reflexive access to the {@link ViewPoint} itself<br>
  * If a {@link ViewPoint} defines some statically-defined VirtualModelInstance, those instances are reflected here<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link View}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link View}
  * 
  * 
  * @author sylvain

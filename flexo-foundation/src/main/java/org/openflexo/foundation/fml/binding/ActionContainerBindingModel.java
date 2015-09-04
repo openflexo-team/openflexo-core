@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * 
  * Provides access to the parameters and parameterDefinitions<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoBehaviourAction}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoBehaviourAction}
  * 
  * 
  * @author sylvain

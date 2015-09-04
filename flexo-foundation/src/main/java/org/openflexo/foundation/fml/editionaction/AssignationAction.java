@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -143,10 +143,10 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction action) throws FlexoException {
-			T value = getAssignationValue(action);
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			T value = getAssignationValue(evaluationContext);
 			try {
-				getAssignation().setBindingValue(value, action);
+				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();

@@ -48,7 +48,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -96,9 +96,9 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 			return out.toString();
 		}*/
 
-		public T getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
+		public T getDeclaredObject(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getValue().getBindingValue(action);
+				return getValue().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -166,16 +166,16 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) {
+		public T execute(RunTimeEvaluationContext evaluationContext) {
 			logger.info("performing RemoveFromListAction");
 
 			DataBinding<? extends List<T>> list = getList();
-			T objToRemove = getDeclaredObject(action);
+			T objToRemove = getDeclaredObject(evaluationContext);
 
 			try {
 
 				if (list != null) {
-					List<T> listObj = list.getBindingValue(action);
+					List<T> listObj = list.getBindingValue(evaluationContext);
 					if (objToRemove != null) {
 						listObj.remove(objToRemove);
 					} else {

@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -179,16 +179,16 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			logger.info("performing AddToListAction");
 
 			DataBinding<? extends List<T>> list = getList();
-			T objToAdd = getAssignationValue(action);
+			T objToAdd = getAssignationValue(evaluationContext);
 
 			try {
 
 				if (list != null) {
-					List<T> listObj = list.getBindingValue(action);
+					List<T> listObj = list.getBindingValue(evaluationContext);
 					if (objToAdd != null) {
 						listObj.add(objToAdd);
 					} else {
@@ -223,9 +223,9 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			super.notifiedBindingChanged(dataBinding);
 		}*/
 
-		public T getAssignationValue(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getAssignableAction() != null) {
-				return getAssignableAction().execute(action);
+				return getAssignableAction().execute(evaluationContext);
 			}
 			return null;
 		}

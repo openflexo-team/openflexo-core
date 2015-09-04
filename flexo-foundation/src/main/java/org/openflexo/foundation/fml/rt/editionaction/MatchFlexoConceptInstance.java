@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -229,9 +230,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction action) {
+		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getVirtualModelInstance().getBindingValue(action);
+				return getVirtualModelInstance().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -508,7 +509,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					if (existingCriteria != null) {
 						criteriasToRemove.remove(existingCriteria);
 					} else {
-						// System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " + Integer.toHexString(hashCode()));
+						// System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " +
+						// Integer.toHexString(hashCode()));
 						addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(property));
 					}
 				}
@@ -550,63 +552,75 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
-		public FlexoConceptInstance execute(FlexoBehaviourAction action) {
-			logger.fine("Perform perform MatchFlexoConceptInstance " + action);
-			VirtualModelInstance vmInstance = getVirtualModelInstance(action);
-			Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
-			for (MatchingCriteria mc : getMatchingCriterias()) {
-				Object value = mc.evaluateCriteriaValue(action);
-				if (value != null) {
-					criterias.put(mc.getFlexoProperty(), value);
-				}
-			}
+		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
+			logger.fine("Perform perform MatchFlexoConceptInstance " + evaluationContext);
 
-			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>> Matching FCI with following criterias");
-				logger.fine("Type=" + getFlexoConceptType());
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+
+				VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
+				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<FlexoProperty<?>, Object>();
 				for (MatchingCriteria mc : getMatchingCriterias()) {
-					logger.fine("Criteria: " + mc.getFlexoProperty().getPropertyName() + "=" + mc.getValue() + " valid="
-							+ mc.getValue().isValid());
-				}
-			}
-
-			FlexoConceptInstance matchingFlexoConceptInstance = action.matchFlexoConceptInstance(getFlexoConceptType(), criterias);
-
-			if (matchingFlexoConceptInstance != null) {
-				// A matching FlexoConceptInstance was found
-
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("Found " + matchingFlexoConceptInstance);
-				}
-				action.foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
-			} else {
-
-				// We have to create a new FlexoConceptInstance
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("Creating new FCI for " + getCreationScheme().getFlexoConcept() + " using " + getCreationScheme().getName());
-				}
-				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null, action);
-				creationSchemeAction.setVirtualModelInstance(vmInstance);
-				creationSchemeAction.setCreationScheme(getCreationScheme());
-				// System.out.println("Creation scheme: " + getCreationScheme());
-				// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
-				for (CreateFlexoConceptInstanceParameter p : getParameters()) {
-					FlexoBehaviourParameter param = p.getParam();
-					Object value = p.evaluateParameterValue(action);
+					Object value = mc.evaluateCriteriaValue(evaluationContext);
 					if (value != null) {
-						// System.out.println("Param " + p.getParam() + " = " + value);
-						creationSchemeAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
+						criterias.put(mc.getFlexoProperty(), value);
 					}
 				}
-				creationSchemeAction.doAction();
-				if (creationSchemeAction.hasActionExecutionSucceeded()) {
-					matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
-					action.newFlexoConceptInstance(matchingFlexoConceptInstance);
-				} else {
-					logger.warning("Could not create FlexoConceptInstance for " + action);
+
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine(">>>>>>>> Matching FCI with following criterias");
+					logger.fine("Type=" + getFlexoConceptType());
+					for (MatchingCriteria mc : getMatchingCriterias()) {
+						logger.fine("Criteria: " + mc.getFlexoProperty().getPropertyName() + "=" + mc.getValue() + " valid="
+								+ mc.getValue().isValid());
+					}
 				}
+
+				FlexoConceptInstance matchingFlexoConceptInstance = ((FlexoBehaviourAction) evaluationContext).matchFlexoConceptInstance(
+						getFlexoConceptType(), criterias);
+
+				if (matchingFlexoConceptInstance != null) {
+					// A matching FlexoConceptInstance was found
+
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("Found " + matchingFlexoConceptInstance);
+					}
+					((FlexoBehaviourAction<?, ?, ?>) evaluationContext).foundMatchingFlexoConceptInstance(matchingFlexoConceptInstance);
+				} else {
+
+					// We have to create a new FlexoConceptInstance
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("Creating new FCI for " + getCreationScheme().getFlexoConcept() + " using "
+								+ getCreationScheme().getName());
+					}
+					CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
+							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
+					creationSchemeAction.setVirtualModelInstance(vmInstance);
+					creationSchemeAction.setCreationScheme(getCreationScheme());
+					// System.out.println("Creation scheme: " + getCreationScheme());
+					// System.out.println("FML=" + getCreationScheme().getFMLRepresentation());
+					for (CreateFlexoConceptInstanceParameter p : getParameters()) {
+						FlexoBehaviourParameter param = p.getParam();
+						Object value = p.evaluateParameterValue(evaluationContext);
+						if (value != null) {
+							// System.out.println("Param " + p.getParam() + " = " + value);
+							creationSchemeAction.setParameterValue(p.getParam(), value/*p.evaluateParameterValue(action)*/);
+						}
+					}
+					creationSchemeAction.doAction();
+					if (creationSchemeAction.hasActionExecutionSucceeded()) {
+						matchingFlexoConceptInstance = creationSchemeAction.getFlexoConceptInstance();
+						((FlexoBehaviourAction<?, ?, ?>) evaluationContext).newFlexoConceptInstance(matchingFlexoConceptInstance);
+					} else {
+						logger.warning("Could not create FlexoConceptInstance for " + evaluationContext);
+					}
+				}
+
+				return matchingFlexoConceptInstance;
+			} else {
+				logger.warning("Unexpected: " + evaluationContext);
+				return null;
 			}
-			return matchingFlexoConceptInstance;
+
 		}
 
 		@Override

@@ -43,7 +43,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -90,7 +90,7 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			// Nothing to do
 			return null;
 		}

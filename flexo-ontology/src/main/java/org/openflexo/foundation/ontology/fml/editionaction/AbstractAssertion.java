@@ -45,7 +45,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.ontology.fml.binding.AbstractAssertionBindingModel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -75,7 +75,7 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(FlexoBehaviourAction action);
+	public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext);
 
 	@Override
 	public AbstractAssertionBindingModel getBindingModel();
@@ -114,10 +114,10 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoBehaviourAction action) {
+		public boolean evaluateCondition(RunTimeEvaluationContext evaluationContext) {
 			if (getConditional().isValid()) {
 				try {
-					return getConditional().getBindingValue(action);
+					return getConditional().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

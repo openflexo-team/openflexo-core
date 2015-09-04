@@ -44,9 +44,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.DataModification;
@@ -68,6 +66,7 @@ import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -86,7 +85,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  */
 public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends VirtualModelInstanceObject>
-		extends FlexoAction<A, O, VirtualModelInstanceObject> implements SettableBindingEvaluationContext {
+		extends FlexoAction<A, O, VirtualModelInstanceObject> implements RunTimeEvaluationContext {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
 
@@ -166,12 +165,13 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	/**
 	 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoBehaviourAction} instance in
-	 * the context of its implementation of {@link BindingEvaluationContext}.<br>
+	 * the context of its implementation of {@link RunTimeEvaluationContext}.<br>
 	 * Variable is initialized with supplied name and value
 	 * 
 	 * @param variableName
 	 * @param value
 	 */
+	@Override
 	public void declareVariable(String variableName, Object value) {
 		variables.put(variableName, value);
 	}
@@ -181,6 +181,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @param variableName
 	 */
+	@Override
 	public void dereferenceVariable(String variableName) {
 		variables.remove(variableName);
 	}
@@ -229,6 +230,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public abstract FB getFlexoBehaviour();
 
+	@Override
 	public VirtualModelInstance getVirtualModelInstance() {
 		return retrieveVirtualModelInstance();
 	}
@@ -242,6 +244,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * 
 	 * @return
 	 */
+	@Override
 	public abstract FlexoConceptInstance getFlexoConceptInstance();
 
 	/**
@@ -377,14 +380,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getFlexoBehaviour().getParameters();
-		}
-		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
+		} else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
 			return getFlexoConceptInstance();
-		}
-		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
+		} else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
 			return getVirtualModelInstance();
 		}
 
@@ -422,8 +422,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variable instanceof FlexoRoleBindingVariable) {
 			getFlexoConceptInstance().setFlexoActor(value, (FlexoRole) ((FlexoRoleBindingVariable) variable).getFlexoRole());
 			return;
-		}
-		else if (variable instanceof FlexoPropertyBindingVariable) {
+		} else if (variable instanceof FlexoPropertyBindingVariable) {
 			logger.warning("Not implemented setValue() with " + variable);
 			return;
 		}
@@ -431,12 +430,10 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
-		}
-		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY + " in " + this + " of "
 					+ getClass());
 			return;

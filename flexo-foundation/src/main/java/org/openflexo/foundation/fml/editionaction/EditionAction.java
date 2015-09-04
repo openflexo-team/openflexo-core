@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -60,6 +61,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -115,16 +117,16 @@ public abstract interface EditionAction extends FMLControlGraph {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(FlexoBehaviourAction<?, ?, ?> action);
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
 
 	/**
 	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 	 * 
-	 * @param action
+	 * @param evaluationContext
 	 * @return
 	 */
 	@Override
-	public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
 
 	@Override
 	public BindingModel getBindingModel();
@@ -144,10 +146,10 @@ public abstract interface EditionAction extends FMLControlGraph {
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoBehaviourAction<?, ?, ?> action) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
 			if (getConditional().isValid()) {
 				try {
-					return getConditional().getBindingValue(action);
+					return getConditional().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -163,11 +165,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * Note than returned object will be used to be further reinjected in finalizer
 		 * 
-		 * @param action
+		 * @param evaluationContext
 		 * @return
 		 */
 		@Override
-		public abstract Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
 
 		@Override
 		public FlexoConcept getFlexoConcept() {

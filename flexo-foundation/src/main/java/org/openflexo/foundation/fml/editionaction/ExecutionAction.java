@@ -47,7 +47,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -122,9 +122,9 @@ public interface ExecutionAction<MS extends ModelSlot<?>> extends AssignableActi
 		}
 
 		@Override
-		public FlexoObject execute(FlexoBehaviourAction action) {
+		public FlexoObject execute(RunTimeEvaluationContext evaluationContext) {
 			try {
-				getExecution().execute(action);
+				getExecution().execute(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {

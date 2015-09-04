@@ -45,7 +45,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -74,9 +74,9 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
 
-		public T getAssignationValue(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getAssignableAction() != null) {
-				return getAssignableAction().execute(action);
+				return getAssignableAction().execute(evaluationContext);
 			}
 			return null;
 		}

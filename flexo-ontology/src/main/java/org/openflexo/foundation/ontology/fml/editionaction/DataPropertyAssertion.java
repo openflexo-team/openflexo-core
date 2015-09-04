@@ -44,7 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
@@ -96,7 +96,7 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 
 	public void setOntologyProperty(IFlexoOntologyStructuralProperty<?> p);
 
-	public Object getValue(FlexoBehaviourAction action);
+	public Object getValue(RunTimeEvaluationContext evaluationContext);
 
 	public java.lang.reflect.Type getType();
 
@@ -133,9 +133,9 @@ public interface DataPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public Object getValue(FlexoBehaviourAction action) {
+		public Object getValue(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getValue().getBindingValue(action);
+				return getValue().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {

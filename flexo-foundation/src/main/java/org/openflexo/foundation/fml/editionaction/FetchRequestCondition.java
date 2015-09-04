@@ -50,7 +50,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -93,7 +93,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 	@Setter(CONDITION_KEY)
 	public void setCondition(DataBinding<Boolean> condition);
 
-	public boolean evaluateCondition(final Object proposedFetchResult, final FlexoBehaviourAction action);
+	public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext);
 
 	public static abstract class FetchRequestConditionImpl extends FlexoConceptObjectImpl implements FetchRequestCondition {
 
@@ -150,7 +150,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		}
 
 		@Override
-		public boolean evaluateCondition(final Object proposedFetchResult, final FlexoBehaviourAction action) {
+		public boolean evaluateCondition(final Object proposedFetchResult, final RunTimeEvaluationContext evaluationContext) {
 			Boolean returned = null;
 			try {
 				returned = condition.getBindingValue(new BindingEvaluationContext() {
@@ -159,7 +159,7 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 						if (variable.getVariableName().equals(SELECTED)) {
 							return proposedFetchResult;
 						}
-						return action.getValue(variable);
+						return evaluationContext.getValue(variable);
 					}
 				});
 			} catch (TypeMismatchException e) {

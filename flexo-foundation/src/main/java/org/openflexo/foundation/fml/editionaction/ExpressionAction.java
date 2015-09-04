@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -118,9 +118,9 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			try {
-				return getExpression().getBindingValue(action);
+				return getExpression().getBindingValue(evaluationContext);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new FlexoException(e);

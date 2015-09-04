@@ -62,7 +62,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * Provides access to the {@link View}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link VirtualModelInstance}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link VirtualModelInstance}
  * 
  * 
  * @author sylvain

@@ -46,7 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
@@ -104,9 +104,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	public void setOntologyProperty(IFlexoOntologyStructuralProperty<?> p);
 
-	public Object getValue(FlexoBehaviourAction action);
+	public Object getValue(RunTimeEvaluationContext evaluationContext);
 
-	public IFlexoOntologyConcept getAssertionObject(FlexoBehaviourAction action);
+	public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext);
 
 	public static abstract class ObjectPropertyAssertionImpl extends AbstractAssertionImpl implements ObjectPropertyAssertion {
 
@@ -173,10 +173,10 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public IFlexoOntologyConcept getAssertionObject(FlexoBehaviourAction action) {
+		public IFlexoOntologyConcept getAssertionObject(RunTimeEvaluationContext evaluationContext) {
 			Object value = null;
 			try {
-				value = getObject().getBindingValue(action);
+				value = getObject().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -191,9 +191,9 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 		}
 
 		@Override
-		public Object getValue(FlexoBehaviourAction action) {
+		public Object getValue(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getObject().getBindingValue(action);
+				return getObject().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {

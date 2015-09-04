@@ -46,8 +46,8 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -90,7 +90,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
+	public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
@@ -150,7 +150,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
+		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
 			if (action.getVirtualModelInstance() != null) {
 				VirtualModelInstance vmi = action.getVirtualModelInstance();
 				// Following line does not compile with Java7 (don't understand why)

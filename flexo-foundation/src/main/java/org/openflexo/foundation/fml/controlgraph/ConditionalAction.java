@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.controlgraph;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -51,7 +52,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -200,11 +201,11 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoBehaviourAction action) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
 			if (getCondition().isSet() && getCondition().isValid()) {
 				try {
 					DataBinding condition = getCondition();
-					Boolean returned = getCondition().getBindingValue(action);
+					Boolean returned = getCondition().getBindingValue(evaluationContext);
 					if (returned == null) {
 						/*System.out.println("Evaluation of " + getCondition() + " returns null");
 						DataBinding db1 = new DataBinding<Object>("city1.name", getCondition().getOwner(), Object.class,
@@ -236,13 +237,13 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
-			if (evaluateCondition(action)) {
-				return getThenControlGraph().execute(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			if (evaluateCondition(evaluationContext)) {
+				return getThenControlGraph().execute(evaluationContext);
 				// performBatchOfActions(getActions(), action);
 			} else {
 				if (getElseControlGraph() != null) {
-					return getElseControlGraph().execute(action);
+					return getElseControlGraph().execute(evaluationContext);
 				}
 			}
 			return null;

@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.logging.FlexoLogger;
@@ -154,7 +155,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
-			return (FlexoConceptInstanceType) FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 
 		@Override
@@ -222,10 +223,10 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
 		}
 
-		public VirtualModelInstance getVirtualModelInstance(FlexoBehaviourAction<?, ?, ?> action) {
+		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
 				try {
-					return getVirtualModelInstance().getBindingValue(action);
+					return getVirtualModelInstance().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -234,26 +235,27 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 					e.printStackTrace();
 				}
 			}
-			if (getModelSlot() instanceof FMLRTModelSlot) {
-				ModelSlotInstance modelSlotInstance = action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
+			if (getModelSlot() instanceof FMLRTModelSlot && evaluationContext instanceof FlexoBehaviourAction) {
+				ModelSlotInstance modelSlotInstance = ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).getVirtualModelInstance()
+						.getModelSlotInstance(getModelSlot());
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
 					return (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();
 				} else {
 					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
 				}
+				return ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).getVirtualModelInstance();
 			}
-
-			return action.getVirtualModelInstance();
+			return null;
 
 		}
 
 		@Override
-		public List<FlexoConceptInstance> execute(FlexoBehaviourAction<?, ?, ?> action) {
-			VirtualModelInstance vmi = getVirtualModelInstance(action);
+		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
+			VirtualModelInstance vmi = getVirtualModelInstance(evaluationContext);
 			if (vmi != null) {
 				System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
-				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), action);
+				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), evaluationContext);
 			} else {
 				logger.warning(getStringRepresentation()
 						+ " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");

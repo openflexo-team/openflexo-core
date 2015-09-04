@@ -43,9 +43,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction.TechnologySpecificActionImpl;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.logging.FlexoLogger;
@@ -114,8 +113,8 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<?, ?>, T> ext
 		}
 
 		@Override
-		public TypeAwareModelSlotInstance<?, ?, MS> getModelSlotInstance(FlexoBehaviourAction action) {
-			return (TypeAwareModelSlotInstance<?, ?, MS>) super.getModelSlotInstance(action);
+		public TypeAwareModelSlotInstance<?, ?, MS> getModelSlotInstance(RunTimeEvaluationContext evaluationContext) {
+			return (TypeAwareModelSlotInstance<?, ?, MS>) super.getModelSlotInstance(evaluationContext);
 		}
 
 	}

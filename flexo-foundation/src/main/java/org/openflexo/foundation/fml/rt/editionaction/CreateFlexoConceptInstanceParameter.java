@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.CreateFlexoConceptInstanceParameterBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -97,7 +97,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction action);
+	public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext);
 
 	@Override
 	public CreateFlexoConceptInstanceParameterBindingModel getBindingModel();
@@ -164,7 +164,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction action) {
+		public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -180,7 +180,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 				return null;
 			} else if (getValue().isValid()) {
 				try {
-					return getValue().getBindingValue(action);
+					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

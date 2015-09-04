@@ -48,7 +48,7 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -191,7 +191,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			removeFromConditions(aCondition);
 		}
 
-		public List<T> filterWithConditions(List<T> fetchResult, final FlexoBehaviourAction action) {
+		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext) {
 			if (getConditions().size() == 0) {
 				return fetchResult;
 			} else {
@@ -200,7 +200,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 				for (final T proposedFetchResult : fetchResult) {
 					boolean takeIt = true;
 					for (FetchRequestCondition condition : getConditions()) {
-						if (!condition.evaluateCondition(proposedFetchResult, action)) {
+						if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
 							takeIt = false;
 							// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
 							// + condition.getCondition().isValid());
