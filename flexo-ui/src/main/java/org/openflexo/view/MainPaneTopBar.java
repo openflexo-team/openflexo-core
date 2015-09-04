@@ -113,7 +113,7 @@ public class MainPaneTopBar extends JMenuBar {
 		// if (controller.getModule().getModule().requireProject()) {
 		initProjectSelector();
 		// }
-		// initNavigationControls();
+		initNavigationControls();
 		initPerspectives();
 	}
 
@@ -150,10 +150,10 @@ public class MainPaneTopBar extends JMenuBar {
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					button.setIcon(model.getModuleLoader().isLoaded(module) ? module.getMediumIconWithHover() : module.getMediumIcon());
-					//button.setSelected(model.getModuleLoader().isActive(module));
-					if(module.equals(controller.getModule().getModule())){
+					// button.setSelected(model.getModuleLoader().isActive(module));
+					if (module.equals(controller.getModule().getModule())) {
 						button.setSelected(true);
-					}else{
+					} else {
 						button.setSelected(false);
 					}
 				}
