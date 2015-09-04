@@ -22,7 +22,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	    <tag>1.7.2</tag>
+	    <tag>1.8.0</tag>
     </scm>
 	<modules>
 		<module>flexo-foundation</module>
