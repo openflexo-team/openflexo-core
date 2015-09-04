@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -114,6 +115,9 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 			/*if (getGetControlGraph() != null) {
 				return getGetControlGraph().get
 			}*/
+			if (getGetControlGraph() instanceof AssignableAction) {
+				return ((AssignableAction) getGetControlGraph()).getAssignableType();
+			}
 			return Object.class;
 		}
 

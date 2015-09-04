@@ -40,8 +40,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FlexoDocumentFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+@ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
+public interface FlexoFragmentRole<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
@@ -87,7 +87,7 @@ public interface FlexoDocumentFragmentRole<F extends FlexoDocumentFragment<D, TA
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
 
 	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoRoleImpl<F>implements FlexoDocumentFragmentRole<F, D, TA> {
+			extends FlexoRoleImpl<F>implements FlexoFragmentRole<F, D, TA> {
 
 		@Override
 		public FlexoDocument<?, ?> getDocument() {

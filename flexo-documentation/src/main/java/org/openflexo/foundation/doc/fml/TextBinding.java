@@ -92,7 +92,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "value";
 
-	@PropertyIdentifier(type = FlexoDocumentFragmentRole.class)
+	@PropertyIdentifier(type = FlexoFragmentRole.class)
 	public static final String FRAGMENT_ROLE_KEY = "fragmentRole";
 
 	@PropertyIdentifier(type = Boolean.class)
@@ -113,10 +113,10 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	public void setValue(DataBinding<String> value);
 
 	@Getter(FRAGMENT_ROLE_KEY)
-	public FlexoDocumentFragmentRole<?, D, TA> getFragmentRole();
+	public FlexoFragmentRole<?, D, TA> getFragmentRole();
 
 	@Setter(FRAGMENT_ROLE_KEY)
-	public void setFragmentRole(FlexoDocumentFragmentRole<?, D, TA> fragmentRole);
+	public void setFragmentRole(FlexoFragmentRole<?, D, TA> fragmentRole);
 
 	@Getter(value = IS_MULTILINE_KEY, defaultValue = "false")
 	@XMLAttribute

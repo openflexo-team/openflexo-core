@@ -38,17 +38,12 @@
 
 package org.openflexo.foundation.doc.fml;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentElement;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
-import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
 import org.openflexo.foundation.doc.FlexoTable;
-import org.openflexo.foundation.doc.FlexoTableCell;
-import org.openflexo.foundation.doc.FlexoTableRow;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -67,7 +62,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 /**
  * Implements {@link ActorReference} for {@link FlexoDocumentFragment}.<br>
- * Represents the actual links in a given {@link FlexoDocument} connecting a template fragment to a generated fragment<br>
+ * Represents the actual links in a given {@link FlexoDocument} connecting a template table to a generated table<br>
  * We need to store here the bindings between elements in template and corresponding elements in referenced {@link FlexoDocument}
  * 
  * @author sylvain
@@ -76,76 +71,57 @@ import org.openflexo.model.annotations.XMLElement;
  *            type of referenced object
  */
 @ModelEntity
-@ImplementationClass(FragmentActorReference.FragmentActorReferenceImpl.class)
+@ImplementationClass(TableActorReference.TableActorReferenceImpl.class)
 @XMLElement
-@FML("FragmentActorReference")
-public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> extends ActorReference<F> {
+@FML("TableActorReference")
+public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorReference<T> {
 
-	@PropertyIdentifier(type = ElementReference.class, cardinality = Cardinality.LIST)
-	public static final String ELEMENT_REFERENCES_KEY = "elementReferences";
+	@PropertyIdentifier(type = IterationElementReference.class, cardinality = Cardinality.LIST)
+	public static final String ITERATION_ELEMENT_REFERENCES_KEY = "iterationElementReferences";
 
 	/**
-	 * Return the list of root elements of this document (elements like paragraphs or tables, sequentially composing the document)
+	 * Return the list of iteration element references
 	 * 
 	 * @return
 	 */
-	@Getter(value = ELEMENT_REFERENCES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = ITERATION_ELEMENT_REFERENCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	@Embedded
-	public List<ElementReference> getElementReferences();
+	public List<IterationElementReference> getElementReferences();
 
-	@Setter(ELEMENT_REFERENCES_KEY)
-	public void setElementReferences(List<ElementReference> someElementReferences);
+	@Setter(ITERATION_ELEMENT_REFERENCES_KEY)
+	public void setIterationElementReferences(List<IterationElementReference> someElementReferences);
 
-	@Adder(ELEMENT_REFERENCES_KEY)
-	public void addToElementReferences(ElementReference anElementReference);
+	@Adder(ITERATION_ELEMENT_REFERENCES_KEY)
+	public void addToIterationElementReferences(IterationElementReference anElementReference);
 
-	@Remover(ELEMENT_REFERENCES_KEY)
-	public void removeFromElementReferences(ElementReference anElementReference);
-
-	/**
-	 * Return list of elements in generated fragment matching element identified by supplied templateElementId
-	 * 
-	 * @param templateElementId
-	 *            identifier of template element
-	 * @return
-	 */
-	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId);
+	@Remover(ITERATION_ELEMENT_REFERENCES_KEY)
+	public void removeFromIterationElementReferences(IterationElementReference anElementReference);
 
 	/**
-	 * Return list of elements in generated fragment matching supplied templateElement
-	 * 
-	 * @param templateElement
-	 * @return
-	 */
-	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement);
-
-	public void removeReferencesTo(FlexoDocumentElement<?, ?> element);
-
-	/**
-	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
+	 * This method is called to extract a value from the federated data and apply it to the represented table representation
 	 * 
 	 */
 	public void applyDataToDocument();
 
 	/**
-	 * This method is called to extract a value from the fragment, and apply it to underlying federated data
+	 * This method is called to extract a value from the table, and apply it to underlying federated data
 	 * 
 	 * @return
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F>
-			implements FragmentActorReference<F> {
+	public abstract static class TableActorReferenceImpl<T extends FlexoTable<?, ?>> extends ActorReferenceImpl<T> implements
+			TableActorReference<T> {
 
-		private static final Logger logger = FlexoLogger.getLogger(FragmentActorReference.class.getPackage().toString());
+		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
-		private F fragment;
+		private T table;
 
 		/**
 		 * Default constructor
 		 */
-		public FragmentActorReferenceImpl() {
+		public TableActorReferenceImpl() {
 			super();
 		}
 
@@ -157,10 +133,10 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 			return null;
 		}
 
-		@Override
-		public F getModellingElement() {
+		/*@Override
+		public T getModellingElement() {
 
-			if (fragment == null) {
+			if (table == null) {
 				FlexoDocument<?, ?> document = getFlexoDocument();
 				if (document != null) {
 					if (getElementReferences().size() > 0) {
@@ -171,44 +147,42 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 							element.setBaseIdentifier(er.getTemplateElementId());
 							if (index == 0) {
 								startElement = element;
-							}
-							else if (index == getElementReferences().size() - 1) {
+							} else if (index == getElementReferences().size() - 1) {
 								endElement = element;
 							}
 							index++;
 						}
 						try {
-							fragment = (F) document.getFactory().makeFragment(startElement, endElement);
+							table = (F) document.getFactory().makeFragment(startElement, endElement);
 						} catch (FragmentConsistencyException e) {
-							logger.warning("Could not build fragment");
+							logger.warning("Could not build table");
 							e.printStackTrace();
 						}
 					}
-				}
-				else {
+				} else {
 					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
 				}
 			}
 
-			return fragment;
+			return table;
 		}
 
 		@Override
-		public void setModellingElement(F aFragment) {
+		public void setModellingElement(T aTable) {
 
-			if (aFragment != fragment) {
+			if (aTable != table) {
 
 				// First remove all existing ElementReference occurences when it exists
-				if (fragment != null) {
+				if (table != null) {
 					for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
 						removeFromElementReferences(er);
 					}
 				}
 
-				// Retrieve template fragment
+				// Retrieve template table
 				F templateFragment = (F) ((FlexoFragmentRole) getFlexoRole()).getFragment();
 
-				for (FlexoDocumentElement<?, ?> element : aFragment.getElements()) {
+				for (FlexoDocumentElement<?, ?> element : aTable.getElements()) {
 					ElementReference er = getFactory().newInstance(ElementReference.class);
 					er.setElementId(element.getIdentifier());
 					if (element.getBaseIdentifier() != null) {
@@ -232,12 +206,12 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 					}
 				}
 
-				fragment = aFragment;
+				table = aTable;
 			}
-		}
+		}*/
 
 		/**
-		 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
+		 * This method is called to extract a value from the federated data and apply it to the represented table representation
 		 * 
 		 */
 		@Override
@@ -248,7 +222,7 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		}
 
 		/**
-		 * This method is called to extract a value from the fragment, and apply it to underlying federated data
+		 * This method is called to extract a value from the table, and apply it to underlying federated data
 		 * 
 		 * @return
 		 */
@@ -259,72 +233,35 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 			}
 		}
 
-		/**
-		 * Return list of elements in generated fragment matching element identified by supplied templateElementId
-		 * 
-		 * @param templateElementId
-		 *            identifier of template element
-		 * @return
-		 */
-		@Override
-		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId) {
-			List<FlexoDocumentElement<?, ?>> returned = new ArrayList<FlexoDocumentElement<?, ?>>();
-			for (ElementReference er : getElementReferences()) {
-				if (er.getTemplateElementId().equals(templateElementId)) {
-					returned.add(getFlexoDocument().getElementWithIdentifier(er.getElementId()));
-				}
-			}
-			return returned;
-		}
-
-		/**
-		 * Return list of elements in generated fragment matching supplied templateElement
-		 * 
-		 * @param templateElement
-		 * @return
-		 */
-		@Override
-		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement) {
-			return getElementsMatchingTemplateElementId(templateElement.getIdentifier());
-		}
-
-		@Override
-		public void removeReferencesTo(FlexoDocumentElement<?, ?> element) {
-			List<ElementReference> referencesToRemove = new ArrayList<ElementReference>();
-			for (ElementReference er : getElementReferences()) {
-				if (er.getElementId().equals(element.getIdentifier())) {
-					referencesToRemove.add(er);
-				}
-			}
-			for (ElementReference er : referencesToRemove) {
-				removeFromElementReferences(er);
-			}
-		}
-
 	}
 
 	@ModelEntity
 	@XMLElement
-	public interface ElementReference {
+	public interface IterationElementReference {
 
-		@PropertyIdentifier(type = String.class)
-		public static final String TEMPLATE_ELEMENT_IDENTIFIER_KEY = "templateElementId";
-		@PropertyIdentifier(type = String.class)
-		public static final String ELEMENT_IDENTIFIER_KEY = "elementId";
+		@PropertyIdentifier(type = Integer.class)
+		public static final String INDEX_KEY = "index";
+		@PropertyIdentifier(type = Integer.class)
+		public static final String ROW_INDEX_KEY = "rowIndex";
 
-		@Getter(TEMPLATE_ELEMENT_IDENTIFIER_KEY)
+		/**
+		 * Index of iterated object as it has been appeared in iteration
+		 * 
+		 * @return
+		 */
+		@Getter(value = INDEX_KEY, defaultValue = "-1")
 		@XMLAttribute
-		public String getTemplateElementId();
+		public int getIndex();
 
-		@Setter(TEMPLATE_ELEMENT_IDENTIFIER_KEY)
-		public void setTemplateElementId(String elementId);
+		@Setter(INDEX_KEY)
+		public void setIndex(int index);
 
-		@Getter(ELEMENT_IDENTIFIER_KEY)
+		@Getter(value = ROW_INDEX_KEY, defaultValue = "-1")
 		@XMLAttribute
-		public String getElementId();
+		public int getRowIndex();
 
-		@Setter(ELEMENT_IDENTIFIER_KEY)
-		public void setElementId(String elementId);
+		@Setter(ROW_INDEX_KEY)
+		public void setRowIndex(int rowIndex);
 
 	}
 
