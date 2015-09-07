@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -73,7 +74,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 	@Setter(EXPRESSION_KEY)
 	public void setExpression(DataBinding<? super T> expression);
 
-	public static abstract class ExpressionPropertyImpl<T> extends FlexoPropertyImpl<T> implements ExpressionProperty<T> {
+	public static abstract class ExpressionPropertyImpl<T> extends FlexoPropertyImpl<T>implements ExpressionProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -127,7 +128,8 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 			if (isAnalysingType) {
 				return Object.class;
-			} else {
+			}
+			else {
 				isAnalysingType = true;
 
 				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
@@ -151,6 +153,15 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
 			return Object.class;
 		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " " + getExpression() + " as " + getTypeDescription() + " cardinality="
+					+ getCardinality() + ";", context);
+			return out.toString();
+		}
+
 	}
 
 }

@@ -109,8 +109,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, FlexoConceptInstance> implements
-			SelectFlexoConceptInstance {
+	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, FlexoConceptInstance>
+			implements SelectFlexoConceptInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectFlexoConceptInstance.class.getPackage().getName());
 
@@ -147,8 +147,9 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
-					+ " as " + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
+			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
+					+ (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
+					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
 		}
@@ -220,7 +221,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		public String getStringRepresentation() {
 			return getImplementedInterface().getSimpleName()
 					+ (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
-			/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
+					/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
 		}
 
 		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
@@ -241,7 +242,8 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				if (modelSlotInstance != null) {
 					// System.out.println("modelSlotInstance=" + modelSlotInstance + " model=" + modelSlotInstance.getModel());
 					return (VirtualModelInstance) modelSlotInstance.getAccessedResourceData();
-				} else {
+				}
+				else {
 					logger.warning("Cannot find ModelSlotInstance for " + getModelSlot());
 				}
 				return ((FlexoBehaviourAction<?, ?, ?>) evaluationContext).getVirtualModelInstance();
@@ -256,9 +258,10 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			if (vmi != null) {
 				System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
 				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), evaluationContext);
-			} else {
-				logger.warning(getStringRepresentation()
-						+ " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
+			}
+			else {
+				logger.warning(
+						getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
 				// logger.warning("Additional info: getModelSlot()=" + getModelSlot());
 				// logger.warning("Additional info: action.getVirtualModelInstance()=" + action.getVirtualModelInstance());
 				// logger.warning("Additional info: action.getVirtualModelInstance().getModelSlotInstance(getModelSlot())="

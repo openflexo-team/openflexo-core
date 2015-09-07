@@ -191,7 +191,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}
@@ -259,6 +260,11 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 			fciFactory = new FlexoConceptInstanceTypeFactory(this);
 		}
 		return fciFactory;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "FML@RT";
 	}
 
 }

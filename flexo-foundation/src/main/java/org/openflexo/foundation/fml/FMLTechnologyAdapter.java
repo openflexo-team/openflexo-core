@@ -162,9 +162,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	 */
 	private boolean isValidViewPointDirectory(final InJarResourceImpl candidateJar) {
 		String candidateJarName = FilenameUtils.getBaseName(candidateJar.getRelativePath());
-		if (candidateJar.getRelativePath().endsWith(".xml")
-				&& candidateJar.getRelativePath().endsWith(
-						candidateJarName + ViewPointResource.VIEWPOINT_SUFFIX + "/" + candidateJarName + ".xml")) {
+		if (candidateJar.getRelativePath().endsWith(".xml") && candidateJar.getRelativePath()
+				.endsWith(candidateJarName + ViewPointResource.VIEWPOINT_SUFFIX + "/" + candidateJarName + ".xml")) {
 			return true;
 		}
 		return false;
@@ -183,7 +182,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, getServiceManager());
-			} else if (candidateElement instanceof InJarResourceImpl) {
+			}
+			else if (candidateElement instanceof InJarResourceImpl) {
 				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, this.getServiceManager());
 			}
 			if (vpRes != null) {
@@ -203,7 +203,8 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 				RepositoryFolder<ViewPointResource> folder;
 				folder = repository.getRepositoryFolder(candidateElement, true);
 				repository.registerResource(vpRes, folder);
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element "
 						+ candidateElement);
 			}
@@ -270,6 +271,11 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 						+ ((File) contents).getParentFile().getAbsolutePath());
 			}
 		}
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "FML";
 	}
 
 }

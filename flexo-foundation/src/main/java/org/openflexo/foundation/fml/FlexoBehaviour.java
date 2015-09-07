@@ -179,7 +179,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLElement
 	public String getDescription();
-
+	
 	@Override
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);*/
@@ -282,8 +282,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {",
-					context);
+			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + " " + getName() + "("
+					+ getParametersFMLRepresentation(context) + ") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getControlGraph() != null) {
 				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
@@ -292,6 +292,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			out.append("}", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
+		}
+
+		protected String getTechnologyAdapterIdentifier() {
+			return "FML";
 		}
 
 		protected String getParametersFMLRepresentation(FMLRepresentationContext context) {
@@ -357,14 +361,14 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public Vector<EditionAction> getActions() {
 			return actions;
 		}
-
+		
 		@Override
 		public void setActions(Vector<EditionAction> actions) {
 			this.actions = actions;
 			setChanged();
 			notifyObservers();
 		}
-
+		
 		@Override
 		public void addToActions(EditionAction action) {
 			// action.setScheme(this);
@@ -374,7 +378,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			notifyObservers();
 			notifyChange("actions", null, actions);
 		}
-
+		
 		@Override
 		public void removeFromActions(EditionAction action) {
 			// action.setScheme(null);
@@ -389,7 +393,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public int getIndex(EditionAction action) {
 			return actions.indexOf(action);
 		}
-
+		
 		@Override
 		public void insertActionAtIndex(EditionAction action, int index) {
 			// action.setScheme(this);
@@ -399,7 +403,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			notifyObservers();
 			notifyChange("actions", null, actions);
 		}
-
+		
 		@Override
 		public void actionFirst(EditionAction a) {
 			actions.remove(a);
@@ -407,7 +411,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			setChanged();
 			notifyChange("actions", null, actions);
 		}
-
+		
 		@Override
 		public void actionUp(EditionAction a) {
 			int index = actions.indexOf(a);
@@ -418,7 +422,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				notifyChange("actions", null, actions);
 			}
 		}
-
+		
 		@Override
 		public void actionDown(EditionAction a) {
 			int index = actions.indexOf(a);
@@ -429,7 +433,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 				notifyChange("actions", null, actions);
 			}
 		}
-
+		
 		@Override
 		public void actionLast(EditionAction a) {
 			actions.remove(a);
@@ -483,13 +487,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			performSuperSetter(PARAMETERS_KEY, someParameters);
 			updateBindingModels();
 		}
-
+		
 		@Override
 		public void addToParameters(FlexoBehaviourParameter parameter) {
 			performSuperAdder(PARAMETERS_KEY, parameter);
 			updateBindingModels();
 		}
-
+		
 		@Override
 		public void removeFromParameters(FlexoBehaviourParameter parameter) {
 			performSuperRemover(PARAMETERS_KEY, parameter);
@@ -720,7 +724,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
 							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
 				}
-
+		
 			if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
 				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
 						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
@@ -805,9 +809,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
 			for (FlexoBehaviourParameter param : getParameters()) {
-				returned.append((isFirst ? "" : ",")
-						+ (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType()) : TypeUtils.simpleRepresentation(param
-								.getType())));
+				returned.append((isFirst ? "" : ",") + (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType())
+						: TypeUtils.simpleRepresentation(param.getType())));
 				isFirst = false;
 			}
 			return returned.toString();

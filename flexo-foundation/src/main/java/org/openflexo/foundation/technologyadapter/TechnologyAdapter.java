@@ -275,7 +275,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			// containerVirtualModel.addToModelSlots(returned);
 			returned.setModelSlotTechnologyAdapter(this);
 			return returned;
-		} else {
+		}
+		else {
 			logger.warning("INVESTIGATE: VirtualModel is null, unable to create a new ModelSlot!");
 			return null;
 		}
@@ -313,7 +314,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 				File candidateFile = null;
 				if (resource.getFlexoIODelegate() instanceof DirectoryBasedFlexoIODelegate) {
 					candidateFile = ((DirectoryBasedFlexoIODelegate) resource.getFlexoIODelegate()).getDirectory();
-				} else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+				}
+				else if (resource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
 					candidateFile = ((FileFlexoIODelegate) resource.getFlexoIODelegate()).getFile();
 				}
 
@@ -377,4 +379,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
 	}
+
+	/**
+	 * Return identifier as it is used in FML language
+	 * 
+	 * @return
+	 */
+	public abstract String getIdentifier();
 }

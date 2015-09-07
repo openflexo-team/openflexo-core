@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
@@ -82,6 +83,12 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 				return (MS) getFlexoRole().getModelSlot();
 			}
 			return super.getModelSlot();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return getFlexoRole().getName() + "." + getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
+					+ "()";
 		}
 
 	}

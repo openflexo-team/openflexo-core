@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -49,6 +51,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link GetSetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data for reading and writing using
@@ -77,7 +80,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 	@Setter(SET_CONTROL_GRAPH_KEY)
 	public void setSetControlGraph(FMLControlGraph aControlGraph);
 
-	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T> implements GetSetProperty<T> {
+	public static abstract class GetSetPropertyImpl<T> extends GetPropertyImpl<T>implements GetSetProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -107,7 +110,8 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
 			if (SET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setSetControlGraph(controlGraph);
-			} else {
+			}
+			else {
 				super.setControlGraph(controlGraph, ownerContext);
 			}
 		}
@@ -118,6 +122,27 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			if (getSetControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getSetControlGraph()).reduce();
 			}
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + " get={",
+					context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getGetControlGraph() != null) {
+				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getSetControlGraph() != null && !(getSetControlGraph() instanceof EmptyControlGraph)) {
+				out.append("} set={", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append("};", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+
+			return out.toString();
 		}
 
 	}

@@ -84,7 +84,7 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
-	public static abstract class AbstractPropertyImpl<T> extends FlexoPropertyImpl<T> implements AbstractProperty<T> {
+	public static abstract class AbstractPropertyImpl<T> extends FlexoPropertyImpl<T>implements AbstractProperty<T> {
 
 		@Override
 		public boolean defaultBehaviourIsToBeDeleted() {
@@ -104,7 +104,8 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + ";", context);
+			out.append("abstract FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + ";",
+					context);
 			return out.toString();
 		}
 

@@ -185,10 +185,10 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 						pcSupport = new PropertyChangeSupport(this) {
 							@Override
 							public synchronized void addPropertyChangeListener(PropertyChangeListener listener) {
-
+		
 								if (listener instanceof FlexoPropertyBindingVariable) {
 									System.out.println("prout");
-
+		
 									PropertyChangeListener[] l = getPropertyChangeListeners();
 									for (int i = 0; i < l.length; i++) {
 										if (l[i] instanceof FlexoPropertyBindingVariable
@@ -198,12 +198,12 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 											System.exit(-1);
 										}
 									}
-
+		
 								}
-
+		
 								super.addPropertyChangeListener(listener);
 							}
-
+		
 							@Override
 							public synchronized void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 								PropertyChangeListener[] l = getPropertyChangeListeners(propertyName);
@@ -235,7 +235,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			// Prevent NPE in case of null FlexoConcept (that should not happen, but....)
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getPropertyName();
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -252,14 +253,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public String toString() {
-			return getClass().getSimpleName()
-					+ ":"
-					+ getPropertyName()
-					+ "[container="
-					+ (getFlexoConcept() != null ? getFlexoConcept().getName()
-							+ "/"
-							+ (getFlexoConcept().getOwningVirtualModel() != null ? getFlexoConcept().getOwningVirtualModel().getName()
-									: "null") : "null") + "][" + Integer.toHexString(hashCode()) + "]";
+			return getClass().getSimpleName() + ":" + getPropertyName() + "[container="
+					+ (getFlexoConcept() != null
+							? getFlexoConcept().getName() + "/"
+									+ (getFlexoConcept().getOwningVirtualModel() != null
+											? getFlexoConcept().getOwningVirtualModel().getName() : "null")
+							: "null")
+					+ "][" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		/**
@@ -292,7 +292,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 						// OK type is valid
 						return resultingType;
 					}
-				} else {
+				}
+				else {
 					if (resultingType.equals(getType())) {
 						return resultingType;
 					}
@@ -302,7 +303,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			// Otherwise, compute the resulting type again
 			if (getCardinality().isMultipleCardinality()) {
 				resultingType = new ParameterizedTypeImpl(List.class, getType());
-			} else {
+			}
+			else {
 				resultingType = getType();
 			}
 
@@ -311,7 +313,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public String getTypeDescription() {
-			return TypeUtils.fullQualifiedRepresentation(getType());
+			return TypeUtils.simpleRepresentation(getType());
 		}
 
 		@Override
@@ -412,8 +414,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	}
 
 	@DefineValidationRule
-	public static class OverridenPropertiesMustBeTypeCompatible extends
-			ValidationRule<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> {
+	public static class OverridenPropertiesMustBeTypeCompatible
+			extends ValidationRule<OverridenPropertiesMustBeTypeCompatible, FlexoProperty<?>> {
 		public OverridenPropertiesMustBeTypeCompatible() {
 			super(FlexoProperty.class, "overriden_properties_must_define_compatible_types");
 		}
