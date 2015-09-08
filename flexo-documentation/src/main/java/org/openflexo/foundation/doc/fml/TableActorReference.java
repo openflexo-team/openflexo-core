@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -51,6 +53,7 @@ import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoTable;
 import org.openflexo.foundation.doc.FlexoTableCell;
 import org.openflexo.foundation.doc.FlexoTableRow;
+import org.openflexo.foundation.doc.fml.FlexoTableRole.FlexoTableRoleImpl;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -324,8 +327,63 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 
 			System.out.println("Du coup, on genere entre " + startIterationRowIndex + " et " + endIterationRowIndex);
 
-			// int currentRowNumbers
-			// if ()
+			int currentRowNumbers = endIterationRowIndex - startIterationRowIndex + 1;
+
+			if (currentRowNumbers < rowObjects.size()) {
+				// Some rows need to be added
+				System.out.println("currentRowNumbers=" + currentRowNumbers);
+				System.out.println("rowObjects.size()=" + rowObjects.size());
+				for (int i = 0; i < rowObjects.size() - currentRowNumbers; i++) {
+					System.out.println("Add row " + (i + endIterationRowIndex + 1));
+
+					FlexoTableRow clonedRow = (FlexoTableRow<?, ?>) getModellingElement().getTableRows().get(i + endIterationRowIndex)
+							.cloneObject();
+					getModellingElement().insertTableRowAtIndex(clonedRow, (i + endIterationRowIndex + 1));
+
+				}
+			}
+
+			if (currentRowNumbers > rowObjects.size()) {
+				// Some rows need to be removed
+				for (int i = 0; i < currentRowNumbers - rowObjects.size(); i++) {
+					System.out.println("remove row at index " + (i + endIterationRowIndex + 1));
+					getModellingElement()
+							.removeFromTableRows((FlexoTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
+				}
+			}
+
+			currentRowNumbers = rowObjects.size();
+
+			// At this point, we have the right number of rows
+
+			for (final Object rowObject : rowObjects) {
+				System.out.println("rowObject=" + rowObject);
+				for (ColumnTableBinding<?, ?> ctb : tableRole.getColumnBindings()) {
+					try {
+						System.out.println("ctb=" + ctb.getColumnName());
+						Object value = ctb.getValue().getBindingValue(new BindingEvaluationContext() {
+
+							@Override
+							public Object getValue(BindingVariable variable) {
+								if (variable.getVariableName().equals(FlexoTableRoleImpl.ITERATOR_NAME)) {
+									return rowObject;
+								}
+								return getFlexoConceptInstance().getValue(variable);
+							}
+						});
+						System.out.println("value=" + value);
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 
 			System.exit(-1);
 		}

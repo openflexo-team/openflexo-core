@@ -20,6 +20,7 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -230,7 +231,10 @@ public interface FlexoTableRole<T extends FlexoTable<D, TA>, D extends FlexoDocu
 
 		public Type getIteratorType() {
 			if (getIteration() != null && getIteration().isSet() && getIteration().isValid()) {
-				return getIteration().getAnalyzedType();
+				Type iterationType = getIteration().getAnalyzedType();
+				if (iterationType instanceof ParameterizedType) {
+					return ((ParameterizedType) iterationType).getActualTypeArguments()[0];
+				}
 			}
 			return Object.class;
 		}
