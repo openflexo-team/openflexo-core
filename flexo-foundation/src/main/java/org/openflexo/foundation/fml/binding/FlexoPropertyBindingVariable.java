@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 public class FlexoPropertyBindingVariable extends BindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoPropertyBindingVariable.class.getPackage().getName());
@@ -127,4 +128,11 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 			}
 		}
 	}
+
+	public Object getValue(FlexoConceptInstance flexoConceptInstance) {
+
+		return flexoConceptInstance.getFlexoPropertyValue(flexoProperty);
+
+	}
+
 }

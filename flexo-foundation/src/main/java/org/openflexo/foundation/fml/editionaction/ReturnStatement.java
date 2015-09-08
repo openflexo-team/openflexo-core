@@ -40,57 +40,54 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.model.annotations.Getter;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Represents an {@link TechnologySpecificAction} which address a specific technology through the reference to a {@link FlexoRole}
+ * Return statement<br>
+ * Note that the root control graph in which this action is embedded should be typed with a compatible type
  * 
- * Such action must reference a {@link FlexoRole}
  * 
  * @author sylvain
- * 
+ *
+ * @param <T>
  */
-@ModelEntity(isAbstract = true)
-@ImplementationClass(RoleSpecificAction.RoleSpecificActionImpl.class)
-public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends ModelSlot<?>, T> extends TechnologySpecificAction<MS, T> {
+@ModelEntity
+@ImplementationClass(ReturnStatement.DeclarationActionImpl.class)
+@XMLElement
+public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 
-	@PropertyIdentifier(type = FlexoRole.class)
-	public static final String FLEXO_ROLE_KEY = "flexoRole";
+	public static abstract class DeclarationActionImpl<T> extends AbstractAssignationActionImpl<T>implements ReturnStatement<T> {
 
-	@Getter(value = FLEXO_ROLE_KEY)
-	@XMLElement(primary = false, context = "Accessed")
-	public R getFlexoRole();
-
-	@Setter(FLEXO_ROLE_KEY)
-	public void setFlexoRole(R role);
-
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
-			extends TechnologySpecificActionImpl<MS, T>implements RoleSpecificAction<R, MS, T> {
-
-		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(ReturnStatement.class.getPackage().getName());
 
 		@Override
-		public MS getModelSlot() {
-			if (getFlexoRole() != null) {
-				return (MS) getFlexoRole().getModelSlot();
-			}
-			return super.getModelSlot();
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			T value = getAssignationValue(evaluationContext);
+			return value;
 		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return (getFlexoRole() != null ? getFlexoRole().getName() : (getModelSlot() != null ? getModelSlot().getName() : "???")) + "."
-					+ getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + "()";
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("return " + (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
+			return out.toString();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			if (getAssignableAction() != null) {
+				return getHeaderContext() + "return " + getAssignableAction().getStringRepresentation();
+			}
+			else {
+				return getHeaderContext() + "return" + " = ???";
+			}
 		}
 
 	}
-
 }

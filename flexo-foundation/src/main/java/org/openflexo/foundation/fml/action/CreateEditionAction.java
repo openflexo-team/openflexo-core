@@ -76,6 +76,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -131,6 +132,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 	private boolean isVariableDeclaration = false;
 	private boolean isAssignation = false;
+	private boolean isReturnStatement = false;
 	private boolean isAddToListAction = false;
 	private IterationType iterationType = IterationType.Expression;
 
@@ -204,6 +206,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				newDeclarationAction.setAssignableAction((AssignableAction) baseEditionAction);
 				newDeclarationAction.setVariableName(getDeclarationVariableName());
 				newEditionAction = newDeclarationAction;
+			}
+			else if (isReturnStatement()) {
+				ReturnStatement<?> newReturnStatement = getFocusedObject().getFMLModelFactory().newReturnStatement();
+				newReturnStatement.setAssignableAction((AssignableAction) baseEditionAction);
+				newEditionAction = newReturnStatement;
 			}
 			else if (isAddToListAction()) {
 				AddToListAction<?> newAddToListAction = getFocusedObject().getFMLModelFactory().newAddToListAction();
@@ -780,10 +787,28 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			this.isVariableDeclaration = isVariableDeclaration;
 			getPropertyChangeSupport().firePropertyChange("isVariableDeclaration", oldValue, isVariableDeclaration);
 			if (isVariableDeclaration) {
+				setReturnStatement(false);
 				setAssignation(false);
 				setAddToListAction(false);
 			}
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", null, getStringRepresentation());
+		}
+	}
+
+	public boolean isReturnStatement() {
+		return isReturnStatement;
+	}
+
+	public void setReturnStatement(boolean isReturnStatement) {
+		if (isReturnStatement != this.isReturnStatement) {
+			boolean oldValue = this.isReturnStatement;
+			this.isReturnStatement = isReturnStatement;
+			getPropertyChangeSupport().firePropertyChange("isReturnStatement", oldValue, isReturnStatement);
+			if (isVariableDeclaration) {
+				setVariableDeclaration(false);
+				setAssignation(false);
+				setAddToListAction(false);
+			}
 		}
 	}
 
@@ -797,6 +822,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			this.isAddToListAction = isAddToListAction;
 			getPropertyChangeSupport().firePropertyChange("isAddToListAction", oldValue, isAddToListAction);
 			if (isAddToListAction) {
+				setReturnStatement(false);
 				setVariableDeclaration(false);
 				setAssignation(false);
 			}
@@ -814,6 +840,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			this.isAssignation = isAssignation;
 			getPropertyChangeSupport().firePropertyChange("isAssignation", oldValue, isAssignation);
 			if (isAssignation) {
+				setReturnStatement(false);
 				setVariableDeclaration(false);
 				setAddToListAction(false);
 			}

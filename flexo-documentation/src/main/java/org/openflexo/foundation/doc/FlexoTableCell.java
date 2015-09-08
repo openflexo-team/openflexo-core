@@ -47,8 +47,8 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA>,
-		FlexoDocumentElementContainer<D, TA> {
+public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends InnerFlexoDocument<D, TA>, FlexoDocumentElementContainer<D, TA> {
 
 	@PropertyIdentifier(type = FlexoTableRow.class)
 	public static final String ROW_KEY = "row";
@@ -116,6 +116,13 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	public int getIndex();
 
 	/**
+	 * Return identifier of the cell
+	 * 
+	 * @return
+	 */
+	public String getIdentifier();
+
+	/**
 	 * Return a string representation (plain text) of contents of the cell
 	 * 
 	 * @return
@@ -129,8 +136,8 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Override
 	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
-	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			InnerFlexoDocumentImpl<D, TA> implements FlexoTableCell<D, TA> {
+	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoTableCell<D, TA> {
 
 		@Override
 		public int getIndex() {

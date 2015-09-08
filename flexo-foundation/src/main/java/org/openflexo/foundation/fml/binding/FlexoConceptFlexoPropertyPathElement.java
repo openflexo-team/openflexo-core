@@ -52,14 +52,14 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
-public class FlexoConceptFlexoPropertyPathElement<FR extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
+public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptFlexoPropertyPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
-	private final FR flexoProperty;
+	private final P flexoProperty;
 
-	public FlexoConceptFlexoPropertyPathElement(BindingPathElement parent, FR flexoProperty) {
+	public FlexoConceptFlexoPropertyPathElement(BindingPathElement parent, P flexoProperty) {
 		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
 		this.flexoProperty = flexoProperty;
 		if (flexoProperty != null) {
@@ -78,7 +78,7 @@ public class FlexoConceptFlexoPropertyPathElement<FR extends FlexoProperty<?>> e
 		super.delete();
 	}
 
-	public FR getFlexoProperty() {
+	public P getFlexoProperty() {
 		return flexoProperty;
 	}
 
@@ -100,24 +100,21 @@ public class FlexoConceptFlexoPropertyPathElement<FR extends FlexoProperty<?>> e
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
-			FlexoConceptInstance epi = (FlexoConceptInstance) target;
-			if (flexoProperty instanceof FlexoRole) {
-				return epi.getFlexoActor((FlexoRole<?>) flexoProperty);
-			} else {
-				logger.warning("Not implemented: getBindingValue() for " + flexoProperty);
-			}
+			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
+			return flexoConceptInstance.getFlexoPropertyValue((FlexoProperty) flexoProperty);
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
 			if (flexoProperty instanceof FlexoRole) {
 				((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) flexoProperty);
-			} else {
+			}
+			else {
 				logger.warning("Not implemented: setBindingValue() for " + flexoProperty);
 			}
 			return;

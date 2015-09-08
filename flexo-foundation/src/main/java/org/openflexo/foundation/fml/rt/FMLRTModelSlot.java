@@ -105,7 +105,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
-	public static abstract class FMLRTModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements FMLRTModelSlot {
+	public static abstract class FMLRTModelSlotImpl extends ModelSlotImpl<VirtualModelInstance>implements FMLRTModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
 
@@ -131,7 +131,8 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
-			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+			}
+			else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
 			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
@@ -242,6 +243,11 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		@Override
 		public String getModelSlotDescription() {
 			return "Virtual Model conform to " + getVirtualModelURI() /*+ (isReflexiveModelSlot() ? " [reflexive]" : "")*/;
+		}
+
+		@Override
+		protected String getFMLRepresentationForConformToStatement() {
+			return "conformTo " + getVirtualModelURI() + " ";
 		}
 
 	}

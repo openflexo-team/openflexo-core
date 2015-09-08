@@ -85,5 +85,10 @@ public interface FlexoDocumentModelSlot<D extends FlexoDocument<D, ?>> extends F
 			}
 		}
 
+		@Override
+		protected String getFMLRepresentationForConformToStatement() {
+			return "conformTo " + getTemplateDocumentURI() + " ";
+		}
+
 	}
 }

@@ -53,10 +53,10 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.BindingValueChangeListener;
-import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CloningScheme;
@@ -69,7 +69,6 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
@@ -101,7 +100,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstance.FlexoConceptInstanceImpl.class)
 @XMLElement
-public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, SettableBindingEvaluationContext {
+public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
 	public static final String EMPTY_STRING = "<emtpy>";
@@ -141,11 +140,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public String debug();
 
 	/**
-	 * Return actor associated with supplied role, asserting cardinality of supplied property is SINGLE.<br>
-	 * If cardinality of supplied property is MULTIPLE, return first found value
+	 * Compute value associated with supplied property
 	 * 
 	 * @param flexoProperty
 	 *            the property to lookup
+	 */
+	public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty);
+
+	/**
+	 * Return actor associated with supplied role, asserting cardinality of supplied property is SINGLE.<br>
+	 * If cardinality of supplied property is MULTIPLE, return first found value
+	 * 
+	 * @param flexoRole
+	 *            the role to lookup
 	 */
 	public <T> T getFlexoActor(FlexoRole<T> flexoRole);
 
@@ -270,6 +277,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return getView().getProject();
 			}
 			return super.getProject();
+		}
+
+		@Override
+		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
+			if (flexoProperty instanceof FlexoRole) {
+				return getFlexoActor((FlexoRole<T>) flexoProperty);
+			}
+			else if (flexoProperty instanceof GetProperty) {
+				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
+				try {
+					return (T) getControlGraph.execute(this);
+				} catch (FlexoException e) {
+					e.printStackTrace();
+				}
+			}
+			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
+			return null;
 		}
 
 		/**
@@ -431,8 +455,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public <T> void setFlexoActor(T object, FlexoRole<T> flexoRole) {
 			if (logger.isLoggable(Level.FINE)) {
-				logger.fine(">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was "
-						+ getFlexoActor(flexoRole));
+				logger.fine(
+						">>>>>>>>> setObjectForFlexoRole flexoRole: " + flexoRole + " set " + object + " was " + getFlexoActor(flexoRole));
 			}
 			T oldObject = getFlexoActor(flexoRole);
 			if (object != oldObject) {
@@ -448,7 +472,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						ActorReference<T> ref = references.get(0);
 						ref.setModellingElement(object);
 						done = true;
-					} else if (references.size() > 0) {
+					}
+					else if (references.size() > 0) {
 						// Remove all existing references
 						for (ActorReference<T> actorReference : new ArrayList<ActorReference<T>>(references)) {
 							removeFromActors(actorReference);
@@ -620,7 +645,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not register ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 				references.add(actorReference);
 				// System.out.println("added " + actorReference + " for " + actorReference.getModellingElement());
@@ -635,7 +661,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (actorReference.getRoleName() == null) {
 				logger.warning("Could not unregister ActorReference with null FlexoProperty: " + actorReference);
 				return;
-			} else {
+			}
+			else {
 				List<ActorReference<?>> references = (List) getReferences(actorReference.getRoleName());
 
 				actorReference.setFlexoConceptInstance(null);
@@ -686,7 +713,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					e.printStackTrace();
 				}
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -706,7 +734,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (variable.getVariableName().equals(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY)) {
 				return this;
-			} else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoRoleBindingVariable && getFlexoConcept() != null) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				// Handle here case of FlexoRole relates to VirtualModelInstance container
 				if (role.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
@@ -717,21 +746,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 				logger.warning("Unexpected " + variable);
 				// return null;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
-				FlexoProperty property = ((FlexoPropertyBindingVariable) variable).getFlexoProperty();
-				if (property instanceof GetProperty) {
-					FMLControlGraph getControlGraph = ((GetProperty) property).getGetControlGraph();
-					if (getControlGraph instanceof AssignableAction) {
-						// return ((AssignableAction)getControlGraph).e
-					}
-					return null;
-				}
-
-				logger.warning("Not implemented: getValue() for " + variable);
-				// return null;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+				return ((FlexoPropertyBindingVariable) variable).getValue(this);
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getFlexoConcept();
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -748,21 +770,25 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoRole role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
 					setFlexoActor(value, role);
-				} else {
+				}
+				else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			} else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			}
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
 				FlexoProperty property = getFlexoConcept().getAccessibleProperty(variable.getVariableName());
 				logger.warning("Not implemented: setValue() for " + variable);
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+			}
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.FLEXO_CONCEPT_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 
@@ -784,7 +810,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept().getDefaultDeletionScheme() != null) {
 				return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
-			} else {
+			}
+			else {
 				// Generate on-the-fly default deletion scheme
 				return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
 			}
@@ -945,10 +972,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 					if (obj instanceof String) {
 						return (String) obj;
-					} else {
+					}
+					else {
 						if (obj != null) {
 							return obj.toString();
-						} else
+						}
+						else
 							return EMPTY_STRING;
 					}
 
@@ -974,7 +1003,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				for (ActorReference<?> ref : refList) {
 					if (ref.getModellingElement() != null) {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + ref.getModellingElement().toString());
-					} else {
+					}
+					else {
 						sb.append((isFirst ? "" : ", ") + ref.getRoleName() + "=" + "No object found");
 					}
 					isFirst = false;

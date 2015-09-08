@@ -90,10 +90,10 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
 @Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(DeclarationAction.class),
-		@Import(AssignationAction.class), @Import(ExpressionAction.class), @Import(SelectFlexoConceptInstance.class),
-		@Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class), @Import(DeleteAction.class),
-		@Import(ConditionalAction.class), @Import(IterationAction.class), @Import(FetchRequestIterationAction.class),
-		@Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
+		@Import(AssignationAction.class), @Import(ReturnStatement.class), @Import(ExpressionAction.class),
+		@Import(SelectFlexoConceptInstance.class), @Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class),
+		@Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
+		@Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
 	@PropertyIdentifier(type = ActionContainer.class)
@@ -323,43 +323,43 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddClass createAddClassAction() {
 			AddClass newAction = new AddClass(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddIndividual createAddIndividualAction() {
 			AddIndividual newAction = new AddIndividual(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddObjectPropertyStatement createAddObjectPropertyStatementAction() {
 			AddObjectPropertyStatement newAction = new AddObjectPropertyStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddDataPropertyStatement createAddDataPropertyStatementAction() {
 			AddDataPropertyStatement newAction = new AddDataPropertyStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddIsAStatement createAddIsAPropertyAction() {
 			AddIsAStatement newAction = new AddIsAStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddRestrictionStatement createAddRestrictionAction() {
 			AddRestrictionStatement newAction = new AddRestrictionStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddConnector createAddConnectorAction() {
 			AddConnector newAction = new AddConnector(null);
 			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
@@ -368,43 +368,43 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public DeclareFlexoRole createDeclarePatternRoleAction() {
 			DeclareFlexoRole newAction = new DeclareFlexoRole(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public GraphicalAction createGraphicalAction() {
 			GraphicalAction newAction = new GraphicalAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CreateDiagram createAddDiagramAction() {
 			CreateDiagram newAction = new CreateDiagram(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddFlexoConcept createAddFlexoConceptAction() {
 			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public ConditionalAction createConditionalAction() {
 			ConditionalAction newAction = new ConditionalAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public IterationAction createIterationAction() {
 			IterationAction newAction = new IterationAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneShape createCloneShapeAction() {
 			CloneShape newAction = new CloneShape(null);
 			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
@@ -413,7 +413,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneConnector createCloneConnectorAction() {
 			CloneConnector newAction = new CloneConnector(null);
 			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
@@ -422,7 +422,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneIndividual createCloneIndividualAction() {
 			CloneIndividual newAction = new CloneIndividual(null);
 			insertActionAtCurrentIndex(newAction);
@@ -461,12 +461,12 @@ public abstract interface EditionAction extends FMLControlGraph {
 		public ConditionalBindingMustBeValid() {
 			super("'conditional'_binding_is_not_valid", EditionAction.class);
 		}
-
+	
 		@Override
 		public DataBinding<Boolean> getBinding(EditionAction object) {
 			return object.getConditional();
 		}
-
+	
 	}*/
 
 }

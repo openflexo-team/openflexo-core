@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -162,7 +163,7 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
 
-	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
+	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -226,7 +227,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 			RoleCloningStrategy returned = (RoleCloningStrategy) performSuperGetter(CLONING_STRATEGY_KEY);
 			if (returned == null) {
 				return defaultCloningStrategy();
-			} else {
+			}
+			else {
 				return returned;
 			}
 		}
@@ -246,6 +248,14 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 				performSuperSetter(CARDINALITY_KEY, cardinality);
 				notifyResultingTypeChanged();
 			}
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoRole " + getName() + " as " + getModelSlot().getModelSlotTechnologyAdapter().getIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName() + " conformTo " + getTypeDescription() + ";", context);
+			return out.toString();
 		}
 
 	}
@@ -270,8 +280,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	}
 
 	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
-			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(FlexoRole.class, "FlexoRole_should_not_have_reflexive_model_slot_no_more");
@@ -289,8 +299,8 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot extends
-				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+		protected static class RemoveReflexiveVirtualModelModelSlot
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
 
 			private final FlexoRole role;
 

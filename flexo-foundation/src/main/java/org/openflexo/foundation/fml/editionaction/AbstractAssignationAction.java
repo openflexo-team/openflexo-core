@@ -53,6 +53,13 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
+/**
+ * Abstract {@link AssignableAction} which is composed with an other {@link AssignableAction} (right hand side)
+ * 
+ * @author sylvain
+ *
+ * @param <T>
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssignationAction.AbstractAssignationActionImpl.class)
 @XMLElement
@@ -70,7 +77,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 	// public DataBinding<? super T> getAssignation();
 
-	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
+	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T>implements AbstractAssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
 

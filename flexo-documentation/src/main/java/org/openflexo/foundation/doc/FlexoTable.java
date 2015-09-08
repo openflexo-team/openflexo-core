@@ -100,6 +100,11 @@ public interface FlexoTable<D extends FlexoDocument<D, TA>, TA extends Technolog
 	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
 
 	/**
+	 * Return row identified by identifier, or null if no such row exists
+	 */
+	public FlexoTableRow<D, TA> getRowWithIdentifier(String identifier);
+
+	/**
 	 * Return cell at supplied row and column, if that position is valid. Otherwise null is returned.
 	 * 
 	 * @param row
@@ -122,6 +127,19 @@ public interface FlexoTable<D extends FlexoDocument<D, TA>, TA extends Technolog
 		public FlexoTableCell<D, TA> getCell(int row, int col) {
 			if (row < getTableRows().size() && col < getTableRows().get(row).getTableCells().size()) {
 				return getTableRows().get(row).getTableCells().get(col);
+			}
+			return null;
+		}
+
+		/**
+		 * Return row identified by identifier, or null if no such row exists
+		 */
+		@Override
+		public FlexoTableRow<D, TA> getRowWithIdentifier(String identifier) {
+			for (FlexoTableRow<D, TA> row : getTableRows()) {
+				if (row.getIdentifier().equals(identifier)) {
+					return row;
+				}
 			}
 			return null;
 		}

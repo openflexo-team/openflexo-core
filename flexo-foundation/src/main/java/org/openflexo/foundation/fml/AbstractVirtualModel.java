@@ -350,7 +350,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			}
 			if (getResource() != null) {
 				return getResource().getFactory();
-			} else {
+			}
+			else {
 				return getDeserializationFactory();
 			}
 		}
@@ -412,7 +413,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
 					}
-				} else {
+				}
+				else {
 					super.setName(name);
 				}
 			}
@@ -739,7 +741,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("VirtualModel " + getName() + " type=" + getClass().getSimpleName() + " uri=\"" + getURI() + "\"", context);
+			out.append("VirtualModel " + getName() + " type=" + getImplementedInterface().getSimpleName() + " uri=\"" + getURI() + "\"",
+					context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
 			if (getModelSlots().size() > 0) {

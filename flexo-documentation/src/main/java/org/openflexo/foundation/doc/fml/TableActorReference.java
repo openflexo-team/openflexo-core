@@ -38,12 +38,19 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
+import org.openflexo.foundation.doc.FlexoDocumentElement;
+import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoTable;
+import org.openflexo.foundation.doc.FlexoTableCell;
+import org.openflexo.foundation.doc.FlexoTableRow;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -59,16 +66,21 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implements {@link ActorReference} for {@link FlexoDocumentFragment}.<br>
+ * Implements {@link ActorReference} for {@link FlexoTableRole}.<br>
  * Represents the actual links in a given {@link FlexoDocument} connecting a template table to a generated table<br>
- * We need to store here the bindings between elements in template and corresponding elements in referenced {@link FlexoDocument}
+ * We need to store here the mapping:
+ * <ul>
+ * <li>between static rows (link between id of row in template table and id of row in generated table)</li>
+ * <li>between dynamic rows (link between occurence of object from iteration and id of row in generated table)</li>
+ * </ul>
  * 
  * @author sylvain
  * 
  * @param <T>
- *            type of referenced object
+ *            type of referenced object (here this is a {@link FlexoTable})
  */
 @ModelEntity
 @ImplementationClass(TableActorReference.TableActorReferenceImpl.class)
@@ -76,27 +88,48 @@ import org.openflexo.model.annotations.XMLElement;
 @FML("TableActorReference")
 public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorReference<T> {
 
-	@PropertyIdentifier(type = IterationElementReference.class, cardinality = Cardinality.LIST)
-	public static final String ITERATION_ELEMENT_REFERENCES_KEY = "iterationElementReferences";
+	@PropertyIdentifier(type = StaticRowReference.class, cardinality = Cardinality.LIST)
+	public static final String STATIC_ROW_REFERENCES_KEY = "staticRowReferences";
+	@PropertyIdentifier(type = DynamicRowReference.class, cardinality = Cardinality.LIST)
+	public static final String DYNAMIC_ROW_REFERENCES_KEY = "dynamicRowReferences";
 
 	/**
-	 * Return the list of iteration element references
+	 * Return the list of static row references
 	 * 
 	 * @return
 	 */
-	@Getter(value = ITERATION_ELEMENT_REFERENCES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = STATIC_ROW_REFERENCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	@Embedded
-	public List<IterationElementReference> getElementReferences();
+	public List<StaticRowReference> getStaticRowReferences();
 
-	@Setter(ITERATION_ELEMENT_REFERENCES_KEY)
-	public void setIterationElementReferences(List<IterationElementReference> someElementReferences);
+	@Setter(STATIC_ROW_REFERENCES_KEY)
+	public void setStaticRowReferences(List<StaticRowReference> someReferences);
 
-	@Adder(ITERATION_ELEMENT_REFERENCES_KEY)
-	public void addToIterationElementReferences(IterationElementReference anElementReference);
+	@Adder(STATIC_ROW_REFERENCES_KEY)
+	public void addToStaticRowReferences(StaticRowReference aReference);
 
-	@Remover(ITERATION_ELEMENT_REFERENCES_KEY)
-	public void removeFromIterationElementReferences(IterationElementReference anElementReference);
+	@Remover(STATIC_ROW_REFERENCES_KEY)
+	public void removeFromStaticRowReferences(StaticRowReference aReference);
+
+	/**
+	 * Return the list of dynamic row references
+	 * 
+	 * @return
+	 */
+	@Getter(value = DYNAMIC_ROW_REFERENCES_KEY, cardinality = Cardinality.LIST)
+	@XMLElement
+	@Embedded
+	public List<DynamicRowReference> getDynamicRowReferences();
+
+	@Setter(DYNAMIC_ROW_REFERENCES_KEY)
+	public void setDynamicRowReferences(List<DynamicRowReference> someReferences);
+
+	@Adder(DYNAMIC_ROW_REFERENCES_KEY)
+	public void addToDynamicRowReferences(DynamicRowReference aReference);
+
+	@Remover(DYNAMIC_ROW_REFERENCES_KEY)
+	public void removeFromDynamicRowReferences(DynamicRowReference aReference);
 
 	/**
 	 * This method is called to extract a value from the federated data and apply it to the represented table representation
@@ -111,8 +144,8 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class TableActorReferenceImpl<T extends FlexoTable<?, ?>> extends ActorReferenceImpl<T> implements
-			TableActorReference<T> {
+	public abstract static class TableActorReferenceImpl<T extends FlexoTable<?, ?>> extends ActorReferenceImpl<T>
+			implements TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
@@ -133,11 +166,11 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 			return null;
 		}
 
-		/*@Override
+		@Override
 		public T getModellingElement() {
 
 			if (table == null) {
-				FlexoDocument<?, ?> document = getFlexoDocument();
+				/*FlexoDocument<?, ?> document = getFlexoDocument();
 				if (document != null) {
 					if (getElementReferences().size() > 0) {
 						FlexoDocumentElement startElement = null, endElement = null;
@@ -157,11 +190,10 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 						} catch (FragmentConsistencyException e) {
 							logger.warning("Could not build table");
 							e.printStackTrace();
-						}
-					}
+						}	
 				} else {
 					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
-				}
+				}*/
 			}
 
 			return table;
@@ -172,43 +204,50 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 
 			if (aTable != table) {
 
-				// First remove all existing ElementReference occurences when it exists
+				FlexoTableRole<T, ?, ?> tableRole = ((FlexoTableRole<T, ?, ?>) getFlexoRole());
+
+				// First remove all existing static references
 				if (table != null) {
-					for (ElementReference er : new ArrayList<ElementReference>(getElementReferences())) {
-						removeFromElementReferences(er);
+					for (StaticRowReference r : new ArrayList<StaticRowReference>(getStaticRowReferences())) {
+						removeFromStaticRowReferences(r);
 					}
+					/*for (DynamicRowReference r : new ArrayList<DynamicRowReference>(getDynamicRowReferences())) {
+						removeFromDynamicRowReferences(r);
+					}*/
 				}
 
 				// Retrieve template table
-				F templateFragment = (F) ((FlexoFragmentRole) getFlexoRole()).getFragment();
+				T templateTable = tableRole.getTable();
 
-				for (FlexoDocumentElement<?, ?> element : aTable.getElements()) {
-					ElementReference er = getFactory().newInstance(ElementReference.class);
-					er.setElementId(element.getIdentifier());
-					if (element.getBaseIdentifier() != null) {
-						er.setTemplateElementId(element.getBaseIdentifier());
-					}
-					addToElementReferences(er);
-					if (element instanceof FlexoTable) {
-						FlexoTable<?, ?> table = (FlexoTable<?, ?>) element;
-						for (FlexoTableRow<?, ?> row : table.getTableRows()) {
-							for (FlexoTableCell<?, ?> cell : row.getTableCells()) {
-								for (FlexoDocumentElement<?, ?> e2 : cell.getElements()) {
-									if (e2.getBaseIdentifier() != null) {
-										ElementReference er2 = getFactory().newInstance(ElementReference.class);
-										er2.setElementId(e2.getIdentifier());
-										er2.setTemplateElementId(e2.getBaseIdentifier());
-										addToElementReferences(er2);
-									}
+				for (int i = 0; i < aTable.getTableRows().size(); i++) {
+					FlexoTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
+					if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
+						FlexoParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
+						if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
+							FlexoDocumentElement<?, ?> templateParagraph = templateTable
+									.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
+							FlexoTableCell<?, ?> templateCell = (FlexoTableCell<?, ?>) templateParagraph.getContainer();
+							FlexoTableRow<?, ?> templateRow = templateCell.getRow();
+							if (templateRow != null) {
+								if (templateRow.getIndex() < tableRole.getStartIterationIndex()
+										|| templateRow.getIndex() > tableRole.getEndIterationIndex()) {
+									// This means that we found a matching between the two rows, outside iteration area
+									// we need to store that information as a StaticRowReference
+									System.out.println("OK pour la ligne " + i + " je trouve " + templateRow.getIdentifier());
+									StaticRowReference srr = getFactory().newInstance(StaticRowReference.class);
+									srr.setRowId(generatedRow.getIdentifier());
+									srr.setTemplateRowId(templateRow.getIdentifier());
+									addToStaticRowReferences(srr);
+									System.out
+											.println("OK j'associe " + generatedRow.getIdentifier() + " a " + templateRow.getIdentifier());
 								}
 							}
 						}
 					}
 				}
-
 				table = aTable;
 			}
-		}*/
+		}
 
 		/**
 		 * This method is called to extract a value from the federated data and apply it to the represented table representation
@@ -216,9 +255,107 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		 */
 		@Override
 		public void applyDataToDocument() {
-			for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+
+			FlexoTableRole<T, ?, ?> tableRole = (FlexoTableRole<T, ?, ?>) getFlexoRole();
+
+			/*for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
 				tb.applyToFragment(getFlexoConceptInstance());
+			}*/
+			System.out.println("Hop, on genere la table !!!");
+
+			System.out.println("startIndex=" + tableRole.getStartIterationIndex());
+			System.out.println("endIndex=" + tableRole.getEndIterationIndex());
+
+			System.out.println("Template:" + tableRole.getTable());
+
+			System.out.println("Generated:" + getModellingElement());
+
+			// First, we have to retrieve all rows
+
+			List<Object> rowObjects = null;
+			try {
+				rowObjects = tableRole.getIteration().getBindingValue(getFlexoConceptInstance());
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
+			System.out.println("rowObjects=" + rowObjects);
+
+			FlexoParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
+			FlexoParagraph<?, ?> generatedP = getModellingElement().getCell(0, 0).getParagraphs().get(0);
+
+			System.out.println("templateP ID= " + templateP.getIdentifier());
+			System.out.println("templateP: " + templateP);
+			System.out.println("generatedP ID= " + generatedP.getIdentifier());
+			System.out.println("generatedP BASE-ID= " + generatedP.getBaseIdentifier());
+			System.out.println("generatedP: " + generatedP);
+
+			// First, we have to detect iteration range on generation target
+			int startIterationRowIndex = 0;
+			int endIterationRowIndex = getModellingElement().getTableRows().size() - 1;
+
+			// start iteration row index is computed from the last static reference before iteration area
+			if (tableRole.getStartIterationIndex() > 0) {
+				FlexoTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows().get(tableRole.getStartIterationIndex() - 1);
+				List<FlexoTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
+				if (lastHeaderRows.size() > 0) {
+					FlexoTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
+					System.out.println("ok c'est bon pour " + lastHeaderRow + " index=" + lastHeaderRow.getIndex());
+					startIterationRowIndex = lastHeaderRow.getIndex() + 1;
+				}
+			}
+			// end iteration row index is computed from the last static reference after iteration area
+			if (tableRole.getEndIterationIndex() > 0 && tableRole.getEndIterationIndex() < tableRole.getTable().getTableRows().size() - 1) {
+				FlexoTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows().get(tableRole.getEndIterationIndex() + 1);
+				List<FlexoTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
+				if (firstFooterRows.size() > 0) {
+					FlexoTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
+					System.out.println("ok c'est bon pour " + firstFooterRow + " index=" + firstFooterRow.getIndex());
+					endIterationRowIndex = firstFooterRow.getIndex() - 1;
+				}
+			}
+
+			System.out.println("Du coup, on genere entre " + startIterationRowIndex + " et " + endIterationRowIndex);
+
+			// int currentRowNumbers
+			// if ()
+
+			System.exit(-1);
+		}
+
+		/**
+		 * Return list of rows in generated table matching row identified by supplied rowId
+		 * 
+		 * @param templateRowId
+		 *            identifier of template row
+		 * @return
+		 */
+		public List<FlexoTableRow<?, ?>> getRowsMatchingTemplateRowId(String templateRowId) {
+			List<FlexoTableRow<?, ?>> returned = new ArrayList<FlexoTableRow<?, ?>>();
+			for (StaticRowReference srr : getStaticRowReferences()) {
+				if (srr.getTemplateRowId().equals(templateRowId)) {
+					FlexoTableRow<?, ?> matchingRow = getModellingElement().getRowWithIdentifier(srr.getRowId());
+					returned.add(matchingRow);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Return list of rows in generated table matching supplied row
+		 * 
+		 * @param templateRow
+		 * @return
+		 */
+		public List<FlexoTableRow<?, ?>> getRowsMatchingTemplateRow(FlexoTableRow<?, ?> templateRow) {
+			return getRowsMatchingTemplateRowId(templateRow.getIdentifier());
 		}
 
 		/**
@@ -228,16 +365,22 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		 */
 		@Override
 		public void reinjectDataFromDocument() {
-			for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
+			/*for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
 				tb.extractFromFragment(getFlexoConceptInstance());
-			}
+			}*/
 		}
 
 	}
 
+	/**
+	 * Used to store link between occurence of iteration object with index of row in table
+	 * 
+	 * @author sylvain
+	 *
+	 */
 	@ModelEntity
 	@XMLElement
-	public interface IterationElementReference {
+	public interface DynamicRowReference {
 
 		@PropertyIdentifier(type = Integer.class)
 		public static final String INDEX_KEY = "index";
@@ -262,6 +405,37 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 
 		@Setter(ROW_INDEX_KEY)
 		public void setRowIndex(int rowIndex);
+
+	}
+
+	/**
+	 * Used to store link between occurence of iteration object with index of row in table
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@ModelEntity
+	@XMLElement
+	public interface StaticRowReference {
+
+		@PropertyIdentifier(type = String.class)
+		public static final String TEMPLATE_ROW_IDENTIFIER_KEY = "templateRowId";
+		@PropertyIdentifier(type = String.class)
+		public static final String ROW_IDENTIFIER_KEY = "rowId";
+
+		@Getter(TEMPLATE_ROW_IDENTIFIER_KEY)
+		@XMLAttribute
+		public String getTemplateRowId();
+
+		@Setter(TEMPLATE_ROW_IDENTIFIER_KEY)
+		public void setTemplateRowId(String templateRowId);
+
+		@Getter(ROW_IDENTIFIER_KEY)
+		@XMLAttribute
+		public String getRowId();
+
+		@Setter(ROW_IDENTIFIER_KEY)
+		public void setRowId(String rowId);
 
 	}
 

@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
@@ -85,7 +84,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @XMLElement
 // TODO: View should inherit from VirtualModelInstance
 public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
-		TechnologyObject<FMLRTTechnologyAdapter>, BindingEvaluationContext {
+		TechnologyObject<FMLRTTechnologyAdapter>, RunTimeEvaluationContext {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -126,13 +125,13 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	public List<ModelSlotInstance> getModelSlotInstances();
-
+	
 	@Setter(MODEL_SLOT_INSTANCES_KEY)
 	public void setModelSlotInstances(List<ModelSlotInstance> modelSlotInstances);
-
+	
 	@Adder(MODEL_SLOT_INSTANCES_KEY)
 	public void addToModelSlotInstances(ModelSlotInstance aModelSlotInstance);
-
+	
 	@Remover(MODEL_SLOT_INSTANCES_KEY)
 	public void removeFromModelSlotInstance(ModelSlotInstance aModelSlotInstance);*/
 
@@ -237,7 +236,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			logger.info("Created new view with project " + project);
 			vmInstances = new ArrayList<VirtualModelInstance>();
 			modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-
+		
 		}*/
 
 		/*@Override
@@ -391,7 +390,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				} else {
+				}
+				else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -426,16 +426,16 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		/*public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
 			this.modelSlotInstances = instances;
 		}
-
+		
 		@Override
 		public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 			return modelSlotInstances;
 		}
-
+		
 		public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
 			modelSlotInstances.remove(instance);
 		}
-
+		
 		public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
 			modelSlotInstances.add(instance);
 		}*/
@@ -452,7 +452,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			instance.setModel(model);
 			modelSlotInstances.add(instance);
 		}
-
+		
 		public <M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> M getModel(ModelSlot modelSlot, boolean createIfDoesNotExist) {
 			M model = (M) modelsMap.get(modelSlot);
 			if (createIfDoesNotExist && model == null) {
@@ -477,7 +477,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 			return model;
 		}
-
+		
 		public <M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> M getModel(ModelSlot modelSlot) {
 			return getModel(modelSlot, true);
 		}*/
@@ -493,7 +493,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 			return allMetaModels;
 		}
-
+		
 		@Deprecated
 		public Set<FlexoModel<?, ?>> getAllModels() {
 			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
@@ -581,6 +581,11 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			if (variable.getVariableName().equals(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getViewPoint();
 			}
+
+			// TODO: do it when View will be a VirtualModelInstance !!!!
+			/*else if (variable instanceof FlexoPropertyBindingVariable) {
+				return ((FlexoPropertyBindingVariable) variable).getValue(this);
+			}*/
 
 			logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
 			return null;

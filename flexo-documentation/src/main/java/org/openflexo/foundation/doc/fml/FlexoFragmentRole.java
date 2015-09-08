@@ -27,6 +27,9 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocumentFragment;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -112,5 +115,16 @@ public interface FlexoFragmentRole<F extends FlexoDocumentFragment<D, TA>, D ext
 			addToTextBindings(returned);
 			return returned;
 		}
+
+		@Override
+		public ActorReference<F> makeActorReference(F fragment, FlexoConceptInstance fci) {
+			VirtualModelInstanceModelFactory factory = fci.getFactory();
+			FragmentActorReference<F> returned = factory.newInstance(FragmentActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setModellingElement(fragment);
+			return returned;
+		}
+
 	}
 }

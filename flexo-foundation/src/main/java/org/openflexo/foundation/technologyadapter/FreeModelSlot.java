@@ -40,8 +40,6 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
@@ -66,8 +64,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri);
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD> implements
-			FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
+			implements FreeModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
@@ -141,14 +139,6 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		@Override
 		public abstract TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter,
 				String relativePath, String filename, String modelUri);
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + " required=" + getIsRequired() + " readOnly="
-					+ getIsReadOnly() + ";", context);
-			return out.toString();
-		}
 
 		@Override
 		public final String getURIForObject(ModelSlotInstance msInstance, Object o) {

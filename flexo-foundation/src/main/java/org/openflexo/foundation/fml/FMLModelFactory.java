@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
@@ -528,6 +529,16 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
+	public <T> ReturnStatement<T> newReturnStatement() {
+		return newInstance(ReturnStatement.class);
+	}
+
+	public <T> ReturnStatement<T> newReturnStatement(AssignableAction<T> assignableAction) {
+		ReturnStatement<T> returned = newReturnStatement();
+		returned.setAssignableAction(assignableAction);
+		return returned;
+	}
+
 	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
 	}
@@ -594,7 +605,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			if (newlyCreatedObject instanceof FlexoObject) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
 			}
-		} else {
+		}
+		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
 		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {

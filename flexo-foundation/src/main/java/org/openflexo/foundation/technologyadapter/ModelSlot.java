@@ -345,17 +345,17 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			this.isRequired = isRequired;
 		}
 
-		/*@Override
-		public BindingModel getBindingModel() {
-			return viewPoint.getBindingModel();
-		}*/
-
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + "\"" + " required=" + getIsRequired()
-					+ " readOnly=" + getIsReadOnly() + ";", context);
+			out.append("ModelSlot " + getName() + " as " + getModelSlotTechnologyAdapter().getIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName() + " " + getFMLRepresentationForConformToStatement() + "required="
+					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
 			return out.toString();
+		}
+
+		protected String getFMLRepresentationForConformToStatement() {
+			return "";
 		}
 
 		@Override
