@@ -155,7 +155,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
 
-	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
