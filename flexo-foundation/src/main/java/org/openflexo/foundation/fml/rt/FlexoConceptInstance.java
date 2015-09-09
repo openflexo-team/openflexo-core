@@ -263,12 +263,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		// (when FlexoConcept is not yet known)
 		private final HashMap<String, List<ActorReference<?>>> actors;
 
+		// Stores internal variables used during execution
+		protected HashMap<String, Object> variables;
+
 		/**
 		 * Default constructor
 		 */
 		public FlexoConceptInstanceImpl(/*VirtualModelInstance virtualModelInstance*/) {
 			super();
 			actors = new HashMap<String, List<ActorReference<?>>>();
+			variables = new HashMap<String, Object>();
 		}
 
 		@Override
@@ -1017,6 +1021,34 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String toString() {
 			return getImplementedInterface().getSimpleName() + ":" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "null")
 					+ "[ID=" + getFlexoID() + "]" + (hasValidRenderer() ? " [" + getStringRepresentation() + "]" : "");
+		}
+
+		/**
+		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
+		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
+		 * Variable is initialized with supplied name and value
+		 * 
+		 * @param variableName
+		 * @param value
+		 */
+		@Override
+		public void declareVariable(String variableName, Object value) {
+			variables.put(variableName, value);
+		}
+
+		/**
+		 * Calling this method will dereference variable identified by supplied name
+		 * 
+		 * @param variableName
+		 */
+		@Override
+		public void dereferenceVariable(String variableName) {
+			variables.remove(variableName);
+		}
+
+		@Override
+		public FlexoConceptInstance getFlexoConceptInstance() {
+			return this;
 		}
 
 	}

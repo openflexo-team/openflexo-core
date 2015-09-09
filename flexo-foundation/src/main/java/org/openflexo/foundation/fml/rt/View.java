@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -186,6 +187,9 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 		private String title;
 
+		// Stores internal variables used during execution
+		protected HashMap<String, Object> variables;
+
 		// TODO: move this to ViewResource
 		public static View newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
 				FlexoProject project) throws SaveResourceException {
@@ -222,6 +226,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			super();
 			// vmInstances = new ArrayList<VirtualModelInstance>();
 			modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
+			variables = new HashMap<String, Object>();
 		}
 
 		/*public ViewImpl(FlexoProject project, ViewResource resource) {
@@ -577,6 +582,54 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		}
 
 		@Override
+		public ViewPoint getMetaModel() {
+			return getViewPoint();
+		}
+
+		@Override
+		public Object getObject(String objectURI) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		/**
+		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
+		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
+		 * Variable is initialized with supplied name and value
+		 * 
+		 * @param variableName
+		 * @param value
+		 */
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public void declareVariable(String variableName, Object value) {
+			variables.put(variableName, value);
+		}
+
+		/**
+		 * Calling this method will dereference variable identified by supplied name
+		 * 
+		 * @param variableName
+		 */
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public void dereferenceVariable(String variableName) {
+			variables.remove(variableName);
+		}
+
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public FlexoConceptInstance getFlexoConceptInstance() {
+			return null;
+		}
+
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public VirtualModelInstance getVirtualModelInstance() {
+			return null;
+		}
+
+		@Override
 		public Object getValue(BindingVariable variable) {
 			if (variable.getVariableName().equals(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getViewPoint();
@@ -591,15 +644,12 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			return null;
 		}
 
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
 		@Override
-		public ViewPoint getMetaModel() {
-			return getViewPoint();
+		public void setValue(Object value, BindingVariable variable) {
+			// TODO Auto-generated method stub
+
 		}
 
-		@Override
-		public Object getObject(String objectURI) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	}
 }
