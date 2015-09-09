@@ -91,10 +91,19 @@ import org.openflexo.toolbox.StringUtils;
 @FML("TableActorReference")
 public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorReference<T> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String TABLE_IDENTIFIER_KEY = "tableIdentifier";
 	@PropertyIdentifier(type = StaticRowReference.class, cardinality = Cardinality.LIST)
 	public static final String STATIC_ROW_REFERENCES_KEY = "staticRowReferences";
 	@PropertyIdentifier(type = DynamicRowReference.class, cardinality = Cardinality.LIST)
 	public static final String DYNAMIC_ROW_REFERENCES_KEY = "dynamicRowReferences";
+
+	@Getter(TABLE_IDENTIFIER_KEY)
+	@XMLAttribute
+	public String getTableIdentifier();
+
+	@Setter(TABLE_IDENTIFIER_KEY)
+	public void setTableIdentifier(String tableIdentifier);
 
 	/**
 	 * Return the list of static row references
@@ -153,6 +162,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
 		private T table;
+		private String tableIdentifier;
 
 		/**
 		 * Default constructor
@@ -170,9 +180,28 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		}
 
 		@Override
+		public String getTableIdentifier() {
+			if (table != null) {
+				return table.getIdentifier();
+			}
+			return tableIdentifier;
+		}
+
+		@Override
+		public void setTableIdentifier(String tableIdentifier) {
+			this.tableIdentifier = tableIdentifier;
+		}
+
+		@Override
 		public T getModellingElement() {
 
 			if (table == null) {
+				FlexoDocument<?, ?> document = getFlexoDocument();
+				if (document != null) {
+					if (StringUtils.isNotEmpty(tableIdentifier)) {
+						table = (T) document.getElementWithIdentifier(tableIdentifier);
+					}
+				}
 				/*FlexoDocument<?, ?> document = getFlexoDocument();
 				if (document != null) {
 					if (getElementReferences().size() > 0) {
@@ -290,15 +319,16 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 			}
 
 			System.out.println("rowObjects=" + rowObjects);
+			System.out.println("getModellingElement()=" + getModellingElement());
 
-			FlexoParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
+			/*FlexoParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
 			FlexoParagraph<?, ?> generatedP = getModellingElement().getCell(0, 0).getParagraphs().get(0);
-
+			
 			System.out.println("templateP ID= " + templateP.getIdentifier());
 			System.out.println("templateP: " + templateP);
 			System.out.println("generatedP ID= " + generatedP.getIdentifier());
 			System.out.println("generatedP BASE-ID= " + generatedP.getBaseIdentifier());
-			System.out.println("generatedP: " + generatedP);
+			System.out.println("generatedP: " + generatedP);*/
 
 			// First, we have to detect iteration range on generation target
 			int startIterationRowIndex = 0;
@@ -339,7 +369,6 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 					FlexoTableRow clonedRow = (FlexoTableRow<?, ?>) getModellingElement().getTableRows().get(i + endIterationRowIndex)
 							.cloneObject();
 					getModellingElement().insertTableRowAtIndex(clonedRow, (i + endIterationRowIndex + 1));
-
 				}
 			}
 
@@ -352,10 +381,12 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 				}
 			}
 
+			endIterationRowIndex = endIterationRowIndex + rowObjects.size() - currentRowNumbers;
 			currentRowNumbers = rowObjects.size();
 
 			// At this point, we have the right number of rows
 
+			int i = 0;
 			for (final Object rowObject : rowObjects) {
 				System.out.println("rowObject=" + rowObject);
 				for (ColumnTableBinding<?, ?> ctb : tableRole.getColumnBindings()) {
@@ -372,6 +403,9 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 							}
 						});
 						System.out.println("value=" + value);
+						FlexoTableCell<?, ?> cell = getModellingElement().getCell(i + startIterationRowIndex, ctb.getColumnIndex());
+						cell.setRawText((String) value);
+
 					} catch (TypeMismatchException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -383,9 +417,9 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 						e.printStackTrace();
 					}
 				}
+				i++;
 			}
 
-			System.exit(-1);
 		}
 
 		/**

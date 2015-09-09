@@ -250,7 +250,12 @@ public interface FlexoTableRole<T extends FlexoTable<D, TA>, D extends FlexoDocu
 		private void createTableBindingModel() {
 			tableBindingModel = new BindingModel(getBindingModel());
 
-			BindingVariable iteratorVariable = new BindingVariable(ITERATOR_NAME, getIteratorType());
+			BindingVariable iteratorVariable = new BindingVariable(ITERATOR_NAME, getIteratorType()) {
+				@Override
+				public Type getType() {
+					return getIteratorType();
+				}
+			};
 			iteratorVariable.setCacheable(false);
 
 			tableBindingModel.addToBindingVariables(iteratorVariable);

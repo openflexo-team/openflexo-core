@@ -130,6 +130,13 @@ public interface FlexoTableCell<D extends FlexoDocument<D, TA>, TA extends Techn
 	public String getRawText();
 
 	/**
+	 * Sets contents of the cell by erasing actual structure, and replacing it by a some paragraphs reflecting supplied text
+	 * 
+	 * @return
+	 */
+	public void setRawText(String someText);
+
+	/**
 	 * Return element identified by identifier, asserting that this element exists in the table (eg a paragraph in a cell), or null if no
 	 * such element exists
 	 */

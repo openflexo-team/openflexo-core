@@ -104,7 +104,19 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Setter(STYLE_KEY)
 	public void setStyle(FlexoStyle<D, TA> style);
 
+	/**
+	 * Return a string representation (plain text) of contents of the paragraph (styles associated to runs are not reflected)
+	 * 
+	 * @return
+	 */
 	public String getRawText();
+
+	/**
+	 * Sets contents of the paragraph by erasing actual structure, and replacing it by a unique run reflecting supplied text
+	 * 
+	 * @return
+	 */
+	public void setRawText(String someText);
 
 	public String getRawTextPreview();
 
@@ -161,7 +173,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 							childLevel = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
-				} else {
+				}
+				else {
 					if (e instanceof FlexoParagraph) {
 						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
 							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
@@ -193,7 +206,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 			String rawText = getRawText();
 			if (rawText.length() > 35) {
 				return rawText.substring(0, 35) + "...";
-			} else {
+			}
+			else {
 				return rawText;
 			}
 		}
