@@ -56,6 +56,7 @@ import org.openflexo.foundation.doc.FlexoDocumentElement;
 import org.openflexo.foundation.doc.FlexoDocumentElementContainer;
 import org.openflexo.foundation.doc.FlexoParagraph;
 import org.openflexo.foundation.doc.FlexoRun;
+import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -248,16 +249,25 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					List<String> newStructure = new ArrayList<String>();
 
 					if (getTextSelection().getStartCharacterIndex() > -1) {
-						newStructure.add(templateStartRun.getText().substring(0, getTextSelection().getStartCharacterIndex()));
+						if (templateStartRun instanceof FlexoTextRun) {
+							newStructure.add(((FlexoTextRun<?, ?>) templateStartRun).getText().substring(0,
+									getTextSelection().getStartCharacterIndex()));
+						}
 						newStructure.add(value);
 						if (getTextSelection().getEndCharacterIndex() > -1) {
-							newStructure.add(templateEndRun.getText().substring(getTextSelection().getEndCharacterIndex()));
+							if (templateEndRun instanceof FlexoTextRun) {
+								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
+										.substring(getTextSelection().getEndCharacterIndex()));
+							}
 						}
 					}
 					else {
 						newStructure.add(value);
 						if (getTextSelection().getEndCharacterIndex() > -1) {
-							newStructure.add(templateEndRun.getText().substring(getTextSelection().getEndCharacterIndex()));
+							if (templateEndRun instanceof FlexoTextRun) {
+								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
+										.substring(getTextSelection().getEndCharacterIndex()));
+							}
 						}
 					}
 
@@ -354,7 +364,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					for (int i = 0; i < newStructure.size(); i++) {
 						FlexoRun<?, ?> run = targetParagraph.getRuns().get(i + startTargetRun.getIndex());
 						String v = newStructure.get(i);
-						run.setText(v);
+						if (run instanceof FlexoTextRun) {
+							((FlexoTextRun<?, ?>) run).setText(v);
+						}
 					}
 
 				}
@@ -474,11 +486,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				}
 				else if (paragraph.getRuns().size() == 0) {
 					// We have to add default run
-					FlexoRun<D, TA> newRun = document.getFactory().makeNewDocXRun("");
+					FlexoRun<D, TA> newRun = document.getFactory().makeTextRun("");
 					paragraph.addToRuns(newRun);
 				}
 
-				paragraph.getRuns().get(0).setText(newStructure.get(i));
+				if (paragraph.getRuns().get(0) instanceof FlexoTextRun) {
+					((FlexoTextRun<?, ?>) paragraph.getRuns().get(0)).setText(newStructure.get(i));
+				}
 
 			}
 
@@ -580,7 +594,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					for (int i = startTargetRun.getIndex() + (extraStartRun ? 1 : 0); i <= endTargetRun.getIndex()
 							- (extraEndRun ? 1 : 0); i++) {
-						sb.append(targetParagraph.getRuns().get(i).getText());
+						if (targetParagraph.getRuns().get(i) instanceof FlexoTextRun) {
+							sb.append(((FlexoTextRun<?, ?>) targetParagraph.getRuns().get(i)).getText());
+						}
 					}
 
 					return sb.toString();

@@ -21,13 +21,16 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.CloningStrategy;
+import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
+import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 
 /**
- * Generic abstract concept representing a run in a paragraph of a text-based document (eg .docx, .odt, etc...)
+ * Represent a textual run in a paragraph of a text-based document (eg .docx, .odt, etc...)
  * 
  * @author sylvain
  *
@@ -37,36 +40,43 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRun<D, TA> {
 
-	@PropertyIdentifier(type = FlexoParagraph.class)
-	public static final String PARAGRAPH_KEY = "paragraph";
+	@PropertyIdentifier(type = String.class)
+	public static final String TEXT_KEY = "text";
 
-	@Getter(PARAGRAPH_KEY)
-	public FlexoParagraph<D, TA> getParagraph();
+	@Getter(TEXT_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	public String getText();
 
-	@Setter(PARAGRAPH_KEY)
-	public void setParagraph(FlexoParagraph<D, TA> paragraph);
+	@Setter(TEXT_KEY)
+	public void setText(String text);
 
-	/**
-	 * Return index of the run<br>
-	 * Index of a run is the run occurence in the paragraph
-	 * 
-	 * @return
-	 */
-	public int getIndex();
+	public String getTextPreview();
 
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoRun<D, TA> {
+	public void fireTextChanged();
+
+	@Implementation
+	public static abstract class FlexoTextRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRunImpl<D, TA>
+			implements FlexoTextRun<D, TA> {
 
 		@Override
-		public int getIndex() {
-			if (getParagraph() != null) {
-				return getParagraph().getRuns().indexOf(this);
+		public String getTextPreview() {
+			// TODO: perf issue
+			String rawText = getText();
+			if (rawText.length() > 35) {
+				return rawText.substring(0, 35) + "...";
 			}
-			return -1;
+			else {
+				return rawText;
+			}
 		}
 
+		@Override
+		public void fireTextChanged() {
+			getPropertyChangeSupport().firePropertyChange("text", null, getText());
+			getPropertyChangeSupport().firePropertyChange("textPreview", null, getTextPreview());
+		}
 	}
 
 }

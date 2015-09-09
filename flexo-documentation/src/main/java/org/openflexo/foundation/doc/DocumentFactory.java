@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.doc;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -62,8 +63,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory implements
-		PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
+		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());
 
@@ -105,14 +106,28 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	public abstract FlexoRun<D, TA> makeRun();
+	public abstract FlexoTextRun<D, TA> makeTextRun();
 
 	/**
 	 * Build new run set with supplied text
 	 * 
 	 * @return
 	 */
-	public abstract FlexoRun<D, TA> makeNewDocXRun(String text);
+	public abstract FlexoTextRun<D, TA> makeTextRun(String text);
+
+	/**
+	 * Build new empty run
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDrawingRun<D, TA> makeDrawingRun();
+
+	/**
+	 * Build new drawing run set with supplied image file
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDrawingRun<D, TA> makeDrawingRun(File imageFile);
 
 	/**
 	 * Build new empty table row
@@ -202,7 +217,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocumentFragment<D, TA> fragment, FlexoDocumentElement<D, TA> startElement,
 			int startRunId, int startCharId, FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId)
-			throws FragmentConsistencyException {
+					throws FragmentConsistencyException {
 		TextSelection<D, TA> returned = newInstance(TextSelection.class);
 		returned.setFragment(fragment);
 		returned.setStartElement(startElement);
@@ -253,7 +268,8 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		if (newlyCreatedObject instanceof FlexoObject) {
 			if (getResource() != null) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
-			} else {
+			}
+			else {
 				logger.warning("Could not access resource beeing deserialized");
 			}
 		}

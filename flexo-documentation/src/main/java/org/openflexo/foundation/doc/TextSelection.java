@@ -299,10 +299,13 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		 * @return
 		 */
 		@Override
-		public FlexoRun<D, TA> getStartRun() {
+		public FlexoTextRun<D, TA> getStartRun() {
 			if (getStartElement() instanceof FlexoParagraph
 					&& (getStartRunIndex() < ((FlexoParagraph<D, TA>) getStartElement()).getRuns().size())) {
-				return ((FlexoParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
+				FlexoRun<D, TA> returned = ((FlexoParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
+				if (returned instanceof FlexoTextRun) {
+					return (FlexoTextRun<D, TA>) returned;
+				}
 			}
 			return null;
 		}
@@ -313,10 +316,13 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		 * @return
 		 */
 		@Override
-		public FlexoRun<D, TA> getEndRun() {
+		public FlexoTextRun<D, TA> getEndRun() {
 			if (getEndElement() instanceof FlexoParagraph
 					&& (getEndRunIndex() < ((FlexoParagraph<D, TA>) getEndElement()).getRuns().size())) {
-				return ((FlexoParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
+				FlexoRun<D, TA> returned = ((FlexoParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
+				if (returned instanceof FlexoTextRun) {
+					return (FlexoTextRun<D, TA>) returned;
+				}
 			}
 			return null;
 		}
@@ -379,11 +385,40 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 								}
 								else {
 									for (int i = getStartRunIndex(); i <= getEndRunIndex(); i++) {
-										FlexoRun<D, TA> run = paragraph.getRuns().get(i);
+										if (paragraph.getRuns().get(i) instanceof FlexoTextRun) {
+											FlexoTextRun<D, TA> run = (FlexoTextRun<D, TA>) paragraph.getRuns().get(i);
+											if (i == getStartRunIndex() && getStartCharacterIndex() > -1) {
+												sb.append(run.getText().substring(getStartCharacterIndex()));
+											}
+											else if (i == getEndRunIndex() && getEndCharacterIndex() > -1) {
+												sb.append(run.getText().substring(0, getEndCharacterIndex()));
+											}
+											else {
+												sb.append(run.getText());
+											}
+										}
+									}
+								}
+							}
+							else if (isFirst) { // First paragraph
+								for (int i = getStartRunIndex(); i < paragraph.getRuns().size(); i++) {
+									if (paragraph.getRuns().get(i) instanceof FlexoTextRun) {
+										FlexoTextRun<D, TA> run = (FlexoTextRun<D, TA>) paragraph.getRuns().get(i);
 										if (i == getStartRunIndex() && getStartCharacterIndex() > -1) {
 											sb.append(run.getText().substring(getStartCharacterIndex()));
 										}
-										else if (i == getEndRunIndex() && getEndCharacterIndex() > -1) {
+										else {
+											sb.append(run.getText());
+										}
+									}
+								}
+
+							}
+							else if (isLast) { // Last paragraph
+								for (int i = 0; i <= getEndRunIndex(); i++) {
+									if (paragraph.getRuns().get(i) instanceof FlexoTextRun) {
+										FlexoTextRun<D, TA> run = (FlexoTextRun<D, TA>) paragraph.getRuns().get(i);
+										if (i == getEndRunIndex() && getEndCharacterIndex() > -1) {
 											sb.append(run.getText().substring(0, getEndCharacterIndex()));
 										}
 										else {
@@ -392,32 +427,12 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 									}
 								}
 							}
-							else if (isFirst) { // First paragraph
-								for (int i = getStartRunIndex(); i < paragraph.getRuns().size(); i++) {
-									FlexoRun<D, TA> run = paragraph.getRuns().get(i);
-									if (i == getStartRunIndex() && getStartCharacterIndex() > -1) {
-										sb.append(run.getText().substring(getStartCharacterIndex()));
-									}
-									else {
-										sb.append(run.getText());
-									}
-								}
-							}
-							else if (isLast) { // Last paragraph
-								for (int i = 0; i <= getEndRunIndex(); i++) {
-									FlexoRun<D, TA> run = paragraph.getRuns().get(i);
-									if (i == getEndRunIndex() && getEndCharacterIndex() > -1) {
-										sb.append(run.getText().substring(0, getEndCharacterIndex()));
-									}
-									else {
-										sb.append(run.getText());
-									}
-								}
-							}
 							else { // Normal paragraph, fully included in the selection
 								for (int i = 0; i < paragraph.getRuns().size(); i++) {
-									FlexoRun<D, TA> run = paragraph.getRuns().get(i);
-									sb.append(run.getText());
+									if (paragraph.getRuns().get(i) instanceof FlexoTextRun) {
+										FlexoTextRun<D, TA> run = (FlexoTextRun<D, TA>) paragraph.getRuns().get(i);
+										sb.append(run.getText());
+									}
 								}
 							}
 						}
