@@ -118,7 +118,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	protected static final Logger logger = Logger.getLogger(FlexoProject.class.getPackage().getName());
 
 	/**
-	 * This is the generic API to create a new FlexoProject without any specific ProjectNature
+	 * This is the generic API to create a new FlexoProject
 	 * 
 	 * @param aProjectDirectory
 	 * @param editorFactory
@@ -129,22 +129,6 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	 */
 	public static FlexoEditor newProject(File aProjectDirectory, FlexoEditorFactory editorFactory, FlexoServiceManager serviceManager,
 			FlexoProgress progress) throws ProjectInitializerException {
-		return newProject(aProjectDirectory, null, editorFactory, serviceManager, progress);
-	}
-
-	/**
-	 * This is the generic API to create a new FlexoProject
-	 * 
-	 * @param aProjectDirectory
-	 * @param nature
-	 * @param editorFactory
-	 * @param serviceManager
-	 * @param progress
-	 * @return
-	 * @throws ProjectInitializerException
-	 */
-	public static FlexoEditor newProject(File aProjectDirectory, ProjectNature nature, FlexoEditorFactory editorFactory,
-			FlexoServiceManager serviceManager, FlexoProgress progress) throws ProjectInitializerException {
 
 		// We should have already asked the user if the new project has to override the old one
 		// When true, old directory was renamed to backup file
@@ -190,13 +174,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		// Maybe this will be done now, but it may also be done in a task
 		// In this case, we have to reference the task to wait for its execution
 		FlexoTask addResourceCenterTask = serviceManager.resourceCenterAdded(project);
-
-		// Now, if a nature has been supplied, gives this nature to the project
-		if (nature != null) {
-			if (addResourceCenterTask != null) {
-				serviceManager.getTaskManager().waitTask(addResourceCenterTask);
-			}
-			nature.givesNature(project, editor);
+		if (addResourceCenterTask != null) {
+			serviceManager.getTaskManager().waitTask(addResourceCenterTask);
 		}
 
 		return editor;
