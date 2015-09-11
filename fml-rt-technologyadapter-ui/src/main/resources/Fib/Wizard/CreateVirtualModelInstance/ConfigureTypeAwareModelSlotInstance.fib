@@ -170,7 +170,7 @@
       <Custom id="145" visible="(OptionRadioButtonList.selected.name = &quot;SelectExistingModel&quot;)" manageDynamicModel="true" useScrollBar="false" data="data.configuration.modelResource" componentClassName="org.openflexo.components.widget.FIBModelSelector" name="ModelSelector" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" readOnly="false">
         <Assignment id="146" mandatory="true" variable="component.serviceManager" />
         <Assignment id="147" mandatory="true" value="data.modelSlot.modelSlotTechnologyAdapter" variable="component.technologyAdapter" />
-        <Assignment id="148" mandatory="true" value="data.action.virtualModel.viewPoint.viewPointLibrary.serviceManager.informationSpace" variable="component.informationSpace" />
+        <Assignment id="148" mandatory="true" value="data.action.virtualModel.viewPoint.viewPointLibrary.serviceManager.resourceManager" variable="component.resourceManager" />
         <Assignment id="149" mandatory="true" variable="component.selectableCondition" />
         <Assignment id="150" mandatory="true" value="data.modelSlot.metaModelResource" variable="component.metaModelResource" />
       </Custom>

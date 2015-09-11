@@ -341,8 +341,8 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				readOnly="false">
 				<Assignment id="124" mandatory="true"
-					value="controller.flexoController.applicationContext.informationSpace"
-					variable="component.informationSpace" />
+					value="controller.flexoController.applicationContext.resourceManager"
+					variable="component.resourceManager" />
 				<Assignment id="125" mandatory="true"
 					variable="component.resourceDataClass" />
 				<Assignment id="126" mandatory="true" variable="component.serviceManager" />

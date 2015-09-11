@@ -8,11 +8,11 @@
 		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
 		rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
 		localize="true" enable="" manageDynamicModel="true"
-		clickAction="controller.singleClick(InformationSpaceBrowser.selected)"
-		doubleClickAction="controller.doubleClick(InformationSpaceBrowser.selected)"
-		rightClickAction="controller.rightClick(InformationSpaceBrowser.selected,event)"
+		clickAction="controller.singleClick(resourceManagerBrowser.selected)"
+		doubleClickAction="controller.doubleClick(resourceManagerBrowser.selected)"
+		rightClickAction="controller.rightClick(resourceManagerBrowser.selected,event)"
 		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" name="InformationSpaceBrowser" index="0" data=""
+		valueValidator="" name="resourceManagerBrowser" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="">
 		<BrowserElement

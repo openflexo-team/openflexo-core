@@ -55,8 +55,8 @@
 		name="MetaModelSelector" index="11"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		visible="data.isTypeAwareModelSlot">
-		<Assignment variable="component.informationSpace"
-			value="data.serviceManager.informationSpace" />
+		<Assignment variable="component.resourceManager"
+			value="data.serviceManager.resourceManager" />
 		<Assignment variable="component.technologyAdapter" value="TechnologyAdapterDD.selected" />
 		<!--  <Dependancy componentName="TechnologyAdapterDD" />
 		<Dependancy componentName="modelSlotTypeDD" />-->
