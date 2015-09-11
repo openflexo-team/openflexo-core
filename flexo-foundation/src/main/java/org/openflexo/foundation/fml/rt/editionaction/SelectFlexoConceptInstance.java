@@ -149,13 +149,6 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		}
 
 		@Override
-		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			System.out.println("J'ai bien detecte que ca a change");
-			System.out.println("ResourceData=" + getResourceData());
-			super.notifiedBindingChanged(dataBinding);
-		}
-
-		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
