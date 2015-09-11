@@ -80,7 +80,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
 		newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		newViewPointResource = (ViewPointResource) newViewPoint.getResource();
 		assertNotNull(newViewPointResource);

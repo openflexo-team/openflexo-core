@@ -78,8 +78,8 @@ import org.openflexo.toolbox.IProgress;
  *
  * @param <R>
  */
-public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>> implements
-		FlexoResourceCenter<InJarResourceImpl> {
+public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepository<FlexoResource<?>>
+		implements FlexoResourceCenter<InJarResourceImpl> {
 
 	protected static final Logger logger = Logger.getLogger(ResourceRepository.class.getPackage().getName());
 
@@ -102,7 +102,6 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	public JarResourceCenter(JarResourceImpl jarResourceImpl) {
 		super(null);
-		setOwner(this);
 		this.jarFile = jarResourceImpl.getJarfile();
 		this.jarResourceImpl = jarResourceImpl;
 
@@ -115,7 +114,6 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	 */
 	public JarResourceCenter(JarFile jarFile) {
 		super(null);
-		setOwner(this);
 		ClasspathResourceLocatorImpl locator = (ClasspathResourceLocatorImpl) ResourceLocator
 				.getInstanceForLocatorClass(ClasspathResourceLocatorImpl.class);
 		jarResourceImpl = (JarResourceImpl) locator.locateResource(jarFile.getName());
@@ -129,6 +127,11 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		}
 		this.jarFile = jarFile;
 		locator.getJarResourcesList().put(jarResourceImpl.getRelativePath(), jarResourceImpl);
+	}
+
+	@Override
+	public FlexoResourceCenter<?> getResourceCenter() {
+		return this;
 	}
 
 	public JarResourceImpl getJarResourceImpl() {
@@ -201,7 +204,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -220,7 +224,8 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type, IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
+			IProgress progress) {
 		// TODO: provide support for class and version
 		return (FlexoResource<T>) retrieveResource(uri, progress);
 	}
@@ -352,12 +357,12 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		}
 		return entry;
 	}
-	
+
 	/**
 	 * Stops the Resource Center (When needed)
 	 */
 	@Override
-	public void stop(){
+	public void stop() {
 		// Nothing to do for now
 	}
 }

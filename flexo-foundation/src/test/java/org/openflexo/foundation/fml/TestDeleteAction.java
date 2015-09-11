@@ -92,7 +92,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 	@TestOrder(2)
 	public void testCreateViewPoint() {
 		viewPoint = ViewPointImpl.newViewPoint("TestViewPointToBeDeleted", "http://openflexo.org/test/TestViewPointToBeDeleted",
-				project.getExpectedViewPointDirectory(), serviceManager.getViewPointLibrary());
+				project.getExpectedViewPointDirectory(), serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(viewPoint);
 		assertNotNull(viewPoint.getResource());
 

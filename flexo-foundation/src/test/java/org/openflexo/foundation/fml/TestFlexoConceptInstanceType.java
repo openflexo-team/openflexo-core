@@ -124,7 +124,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 	@TestOrder(2)
 	public void testCreateViewPoint() {
 		viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
@@ -280,7 +280,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		createProperty4InC.setCardinality(PropertyCardinality.ZeroOne);
 		createProperty4InC.doAction();
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
-		assertNotNull(property4InC = (FlexoConceptInstanceRole) createProperty4InC.getNewFlexoRole());
+		assertNotNull(property4InC = createProperty4InC.getNewFlexoRole());
 
 		assertEquals(1, flexoConceptC.getFlexoProperties().size());
 		assertEquals(1, flexoConceptC.getDeclaredProperties().size());

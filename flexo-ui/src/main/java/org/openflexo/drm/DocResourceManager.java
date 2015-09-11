@@ -183,11 +183,12 @@ public class DocResourceManager extends FlexoServiceImpl {
 			if (drmResource instanceof FileResourceImpl) {
 				logger.info("Found DRM File : " + drmResource.getURI());
 				drmFile = ((FileResourceImpl) drmResource).getFile();
-			} else if (drmResource == null) {
+			}
+			else if (drmResource == null) {
 				logger.info("DRM File not found: " + drmResource.getURI());
 				try {
-					drmResource = new FileResourceImpl(new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(),
-							"DocResourceCenter.xml"));
+					drmResource = new FileResourceImpl(
+							new File(((FileResourceImpl) getDocResourceCenterDirectory()).getFile(), "DocResourceCenter.xml"));
 				} catch (Exception e) {
 					logger.severe("Unable to create DocResourceCenter files");
 					e.printStackTrace();
@@ -491,21 +492,21 @@ public class DocResourceManager extends FlexoServiceImpl {
 		String itemIdentifier = inspectorModel.inspectorName;
 		return getDocResourceCenter().getItemNamed(itemIdentifier);
 	}
-
+	
 	public DocItem getDocItemFor(PropertyModel propertyModel) {
 		InspectorModel inspectorModel = propertyModel.getInspectorModel();
-
+	
 		InspectorModel currentInspectorModel = propertyModel.getInspectorModel();
 		DocItem returned = null;
-
+	
 		while (returned == null && currentInspectorModel != null) {
 			String itemIdentifier = currentInspectorModel.inspectorName + "-" + propertyModel.name;
 			returned = getDocResourceCenter().getItemNamed(itemIdentifier);
 			currentInspectorModel = currentInspectorModel.getSuperInspector();
 		}
-
+	
 		return returned;
-
+	
 	}*/
 
 	public DocItem getDocItemWithId(String itemIdentifier) {
@@ -514,7 +515,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 		}
 		if (itemIdentifier != null) {
 			return getDocResourceCenter().getItemNamed(itemIdentifier);
-		} else
+		}
+		else
 			return null;
 	}
 
@@ -530,7 +532,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 		Vector actions;
 		if (actionsToImport == null) {
 			actions = docSubmissionReport.getSubmissionActions();
-		} else {
+		}
+		else {
 			actions = actionsToImport;
 		}
 		for (Enumeration en = actions.elements(); en.hasMoreElements();) {
@@ -563,7 +566,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 			existingItem.addToVersions(action.getVersion());
 			_versionsToEventuallySave.add(action.getVersion());
 			// action.getVersion().setNeedsSaving();
-		} else {
+		}
+		else {
 			logger.warning("Unable to import action: item is not locally registered (" + parsedItem.getIdentifier()
 					+ "). Please implement this feature.");
 		}
@@ -593,7 +597,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		drcResource = DocResourceCenterResourceImpl.retrieveDocResourceCenterResource(this);
+		drcResource = DocResourceCenterResourceImpl.retrieveDocResourceCenterResource(this, null);
 		load(null);
 	}
 
@@ -612,9 +616,11 @@ public class DocResourceManager extends FlexoServiceImpl {
 			parent = current.getParent();
 			if (parent instanceof JComponent) {
 				current = (JComponent) parent;
-			} else if (parent instanceof Window) {
+			}
+			else if (parent instanceof Window) {
 				return (Window) parent;
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -639,7 +645,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 				Component comp = component.getComponent(i);
 				if (comp instanceof Container) {
 					populateFrom((Container) comp);
-				} else if (initialVector.contains(comp)) {
+				}
+				else if (initialVector.contains(comp)) {
 					sortedVector.add(comp);
 				}
 			}
@@ -721,8 +728,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 		}*/
 
 		if (tooltipText == null) {
-			tooltipText = FlexoLocalization.localizedForKeyAndLanguage("no_documentation", getServiceManager().getGeneralPreferences()
-					.getLanguage());
+			tooltipText = FlexoLocalization.localizedForKeyAndLanguage("no_documentation",
+					getServiceManager().getGeneralPreferences().getLanguage());
 		}
 
 		component.setToolTipText("<html>" + tooltipText + "</html>");
@@ -825,7 +832,8 @@ public class DocResourceManager extends FlexoServiceImpl {
 				mainPaneItem.addToEmbeddingChildItems(perspectiveFolder.getPrimaryDocItem());
 			}
 			folder = getDocItem(perspectiveIdentifier).getFolder();
-		} else {
+		}
+		else {
 			folder = mainPaneItem.getFolder();
 		}
 		String moduleViewIdentifier = view.getClass().getName();

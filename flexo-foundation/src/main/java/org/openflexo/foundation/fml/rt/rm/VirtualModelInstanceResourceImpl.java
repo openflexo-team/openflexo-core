@@ -112,6 +112,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.initName(name);
 			returned.setURI(view.getResource().getURI() + "/" + baseName);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
+			returned.setResourceCenter(view.getProject());
 			returned.setServiceManager(view.getProject().getServiceManager());
 			view.getResource().addToContents(returned);
 			view.getResource().notifyContentsAdded(returned);
@@ -159,6 +160,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			}
 			viewResource.addToContents(returned);
 			viewResource.notifyContentsAdded(returned);
+			returned.setResourceCenter(viewResource.getProject());
 			returned.setServiceManager(viewResource.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
@@ -215,7 +217,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + virtualModelInstanceFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

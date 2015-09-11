@@ -93,7 +93,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
 		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory() != null);

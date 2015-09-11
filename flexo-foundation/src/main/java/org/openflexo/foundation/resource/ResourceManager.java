@@ -47,6 +47,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -80,14 +81,21 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	}
 
 	public void registerResource(FlexoResource<?> resource) {
-		if(!resources.contains(resource)){
+
+		if (resource.getResourceCenter() == null) {
+			logger.warning("Resource belonging to no ResourceCenter: " + resource);
+			Thread.dumpStack();
+		}
+
+		if (!resources.contains(resource)) {
 			resources.add(resource);
 			getServiceManager().notify(this, new ResourceRegistered(resource, null));
-		}else{
+		}
+		else {
 			logger.info("Resource already registered: " + resource);
 		}
 		if (resource.getURI() == null) {
-			logger.info("Une resource avec une URI null: " + resource);
+			logger.info("Resource with null URI: " + resource);
 			Thread.dumpStack();
 		}
 	}
@@ -141,6 +149,14 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	}
 
 	public FlexoResource<?> getResource(String resourceURI) {
+
+		System.out.println("On cherche la resource " + resourceURI);
+		System.out.println("on a ca: ");
+
+		for (FlexoResource r : resources) {
+			System.out.println(r.getURI());
+		}
+
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
@@ -168,7 +184,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 						logger.info("Successfully deleted " + f.getAbsolutePath());
 						// filesToDelete.remove(f);
 					}
-				} else if (logger.isLoggable(Level.WARNING)) {
+				}
+				else if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Could not delete " + f.getAbsolutePath());
 				}
 			} catch (RuntimeException e) {
@@ -179,5 +196,27 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 			}
 		}
 		filesToDelete.clear();
+	}
+
+	@Override
+	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
+		super.receiveNotification(caller, notification);
+		if (notification instanceof ResourceCenterRemoved) {
+			// In this case, we MUST unregister all resources contained in removed ResourceCenter
+			FlexoResourceCenter<?> removedRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
+
+			System.out.println("REMOVED RC:");
+			for (FlexoResource<?> r : removedRC.getAllResources(null)) {
+				System.out.println("Remove " + r.getURI());
+				unregisterResource(r);
+			}
+
+			for (FlexoResource<?> r : resources) {
+				System.out.println("RC: " + r.getResourceCenter() + " r: " + r);
+				if (r.getResourceCenter() == removedRC) {
+					System.out.println("Tiens faudrait desenregistrer la resource: " + r);
+				}
+			}
+		}
 	}
 }

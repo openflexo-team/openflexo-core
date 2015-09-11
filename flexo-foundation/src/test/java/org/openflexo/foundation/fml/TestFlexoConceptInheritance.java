@@ -148,7 +148,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	@TestOrder(2)
 	public void testCreateViewPoint() {
 		viewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
@@ -430,7 +430,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		createProperty4InC.setCardinality(PropertyCardinality.ZeroOne);
 		createProperty4InC.doAction();
 		assertTrue(createProperty4InC.hasActionExecutionSucceeded());
-		assertNotNull(property4InC = (FlexoConceptInstanceRole) createProperty4InC.getNewFlexoRole());
+		assertNotNull(property4InC = createProperty4InC.getNewFlexoRole());
 
 		CreatePrimitiveRole createProperty8InC = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createProperty8InC.setRoleName("property8");

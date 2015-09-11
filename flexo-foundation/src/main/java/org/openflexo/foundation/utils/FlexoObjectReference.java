@@ -285,6 +285,8 @@ public class FlexoObjectReference<O extends FlexoObject> extends KVCFlexoObject 
 		// System.out.println("modelObject=" + modelObject);
 		// System.out.println("owner=" + owner);
 		if (modelObject == null) {
+
+			System.out.println("on a pas l'objet on cherche");
 			modelObject = findObject(force);
 			if (modelObject != null) {
 				modelObject.addToReferencers(this);

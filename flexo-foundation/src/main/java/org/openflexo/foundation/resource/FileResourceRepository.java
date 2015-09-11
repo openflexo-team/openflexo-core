@@ -54,13 +54,13 @@ public abstract class FileResourceRepository<R extends FlexoResource<?>> extends
 
 	private static final Logger logger = Logger.getLogger(FileResourceRepository.class.getPackage().getName());
 
-	private File directory;
+	private final File directory;
 
 	/**
 	 * Creates a new {@link FileResourceRepository}
 	 */
-	public FileResourceRepository(Object owner, File directory) {
-		super(owner);
+	public FileResourceRepository(FlexoResourceCenter<?> resourceCenter, File directory) {
+		super(resourceCenter);
 		this.directory = directory;
 	}
 

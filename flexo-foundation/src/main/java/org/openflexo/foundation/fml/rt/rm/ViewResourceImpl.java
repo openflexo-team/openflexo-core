@@ -125,6 +125,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
 			viewLibrary.registerResource(returned, folder);
 
+			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			return returned;
@@ -160,6 +161,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
 			viewLibrary.registerResource(returned, folder);
 
+			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			logger.fine("ViewResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
@@ -298,14 +300,16 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 						if (at.getName().equals("viewPointURI")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointURI = at.getValue();
-						} else if (at.getName().equals("viewPointVersion")) {
+						}
+						else if (at.getName().equals("viewPointVersion")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointVersion = at.getValue();
 						}
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + xmlFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

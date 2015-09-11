@@ -62,12 +62,13 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>
- * Resources are organized with a folder hierarchy inside a repository
+ * Resources are organized with a folder hierarchy inside a repository<br>
+ * A {@link ResourceRepository} lives in a {@link FlexoResourceCenter}.
  * 
  * @author sylvain
  * 
  * @param <R>
- * @param <TA>
+ *            type of resources being stored in this {@link ResourceRepository}
  */
 public abstract class ResourceRepository<R extends FlexoResource<?>> extends DefaultFlexoObject implements DataFlexoObserver {
 
@@ -80,20 +81,20 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 
 	private final RepositoryFolder<R> rootFolder;
 
-	/** Stores the object which is the "owner" of this repository */
-	private Object owner;
-
-	public RepositoryFolder<R> getRootFolder() {
-		return rootFolder;
-	}
+	/** Stores the resource center which is the "owner" of this repository */
+	private FlexoResourceCenter<?> resourceCenter;
 
 	/**
 	 * Creates a new {@link ResourceRepository}
 	 */
-	public ResourceRepository(Object owner) {
-		this.owner = owner;
+	public ResourceRepository(FlexoResourceCenter<?> resourceCenter) {
+		this.resourceCenter = resourceCenter;
 		resources = new HashMap<String, R>();
 		rootFolder = new RepositoryFolder<R>("root", null, this);
+	}
+
+	public RepositoryFolder<R> getRootFolder() {
+		return rootFolder;
 	}
 
 	/**
@@ -126,10 +127,11 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	}
 
 	/**
-	 * Stores the object which is the "owner" of this repository. The owner has the responsability of this repository.
+	 * Return the object which is the "owner" of this repository.<br>
+	 * The {@link FlexoResourceCenter} as owner has the responsability of this repository.
 	 */
-	public Object getOwner() {
-		return owner;
+	public FlexoResourceCenter<?> getResourceCenter() {
+		return resourceCenter;
 	}
 
 	/**
@@ -137,8 +139,13 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 * 
 	 * @param owner
 	 */
-	public void setOwner(Object owner) {
-		this.owner = owner;
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if ((resourceCenter == null && this.resourceCenter != null)
+				|| (resourceCenter != null && !resourceCenter.equals(this.resourceCenter))) {
+			FlexoResourceCenter<?> oldValue = this.resourceCenter;
+			this.resourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+		}
 	}
 
 	/**
@@ -178,9 +185,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 			logger.warning("Trying to register a null resource");
 			return;
 		}
-		if (getOwner() instanceof FlexoResourceCenter) {
-			resource.setResourceCenter((FlexoResourceCenter) getOwner());
-		}
+		resource.setResourceCenter(getResourceCenter());
 		resources.put(resource.getURI(), resource);
 		parentFolder.addToResources(resource);
 	}
@@ -350,7 +355,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 		List<String> pathTo = null;
 		if (element instanceof File) {
 			pathTo = getPathTo((File) element);
-		} else if (element instanceof InJarResourceImpl) {
+		}
+		else if (element instanceof InJarResourceImpl) {
 			pathTo = getPathTo((InJarResourceImpl) element);
 		}
 		return getRepositoryFolder(pathTo, createWhenNonExistent);
@@ -372,7 +378,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 				f = f.getParentFile();
 			}
 			return pathTo;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -392,7 +399,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 				pathTo.add(string.nextToken());
 			}
 			return pathTo;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -414,7 +422,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 					if (createWhenNonExistent) {
 						RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
 						currentFolder = newFolder;
-					} else {
+					}
+					else {
 						return null;
 					}
 				}
@@ -431,8 +440,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	@SuppressWarnings("unchecked")
 	public final Class<?> getResourceClass() {
-		return org.openflexo.connie.type.TypeUtils.getBaseClass(TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(
-				ResourceRepository.class.getTypeParameters()[0]));
+		return org.openflexo.connie.type.TypeUtils.getBaseClass(
+				TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(ResourceRepository.class.getTypeParameters()[0]));
 	}
 
 	/**
@@ -442,8 +451,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	@SuppressWarnings("unchecked")
 	public final Class<? extends ResourceData<?>> getResourceDataClass() {
-		return (Class<? extends ResourceData<?>>) TypeUtils.getTypeArguments(getResourceClass(), FlexoResource.class).get(
-				FlexoResource.class.getTypeParameters()[0]);
+		return (Class<? extends ResourceData<?>>) TypeUtils.getTypeArguments(getResourceClass(), FlexoResource.class)
+				.get(FlexoResource.class.getTypeParameters()[0]);
 	}
 
 }

@@ -181,10 +181,11 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		if (this.isValidViewPoint(candidateElement)) {
 			ViewPointResource vpRes = null;
 			if (candidateElement instanceof File) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, getServiceManager());
+				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, resourceCenter, getServiceManager());
 			}
 			else if (candidateElement instanceof InJarResourceImpl) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, this.getServiceManager());
+				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, resourceCenter,
+						getServiceManager());
 			}
 			if (vpRes != null) {
 				ViewPointRepository viewPointFileBasedRepository = getViewPointRepository(resourceCenter);

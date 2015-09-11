@@ -38,16 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -63,7 +61,7 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 
 	static FlexoEditor editor;
 	static FlexoProject project;
-	
+
 	@Test
 	@TestOrder(1)
 	public void testInstanciateServiceManager() {
@@ -88,10 +86,9 @@ public class TestCreateViewPointInProject extends OpenflexoProjectAtRunTimeTestC
 	@TestOrder(3)
 	public void testCreateViewPoint() {
 		ViewPoint newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
-				project.getExpectedViewPointDirectory(), serviceManager.getViewPointLibrary());
+				project.getExpectedViewPointDirectory(), serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 	}
-
 
 }
