@@ -103,8 +103,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
-		logger.info("Create FlexoConceptInstance using CreationScheme");
-		logger.info("getFlexoConcept()=" + getFlexoConcept());
+		// logger.info("Create FlexoConceptInstance using CreationScheme");
 
 		retrieveMissingDefaultParameters();
 
@@ -115,7 +114,8 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		if (flexoConceptInstance == null) {
 			if (getVirtualModelInstance() != null) {
 				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-			} else {
+			}
+			else {
 				logger.warning("Could not create new FlexoConceptInstance because container VirtualModelInstance is null");
 				throw new InvalidParametersException("VirtualModelInstance");
 			}
@@ -210,7 +210,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 				getFlexoConceptInstance().setObjectForFlexoRole(assignedObject, assignableAction.getFlexoRole());
 			}
 		}
-
+	
 		return assignedObject;
 	}*/
 
