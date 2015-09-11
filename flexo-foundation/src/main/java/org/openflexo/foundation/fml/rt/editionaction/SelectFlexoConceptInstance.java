@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -67,6 +68,8 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.FixProposal;
+import org.openflexo.model.validation.ValidationIssue;
 
 /**
  * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a given
@@ -142,13 +145,21 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstance = aVirtualModelInstance;
+			notifiedBindingChanged(virtualModelInstance);
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			System.out.println("J'ai bien detecte que ca a change");
+			System.out.println("ResourceData=" + getResourceData());
+			super.notifiedBindingChanged(dataBinding);
 		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
-					+ (getModelSlot() != null ? " from " + getModelSlot().getName() : " ") + " as "
+					+ (getVirtualModelInstance() != null ? " from " + getVirtualModelInstance() : "") + " as "
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
@@ -262,12 +273,49 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 			else {
 				logger.warning(
 						getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-				// logger.warning("Additional info: getModelSlot()=" + getModelSlot());
-				// logger.warning("Additional info: action.getVirtualModelInstance()=" + action.getVirtualModelInstance());
-				// logger.warning("Additional info: action.getVirtualModelInstance().getModelSlotInstance(getModelSlot())="
-				// + action.getVirtualModelInstance().getModelSlotInstance(getModelSlot()));
+				logger.warning("Additional info: getVirtualModelInstance()=" + getVirtualModelInstance());
 				return null;
 			}
 		}
 	}
+
+	@DefineValidationRule
+	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
+			extends BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance> {
+		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
+			super("'virtual_model_instance'_binding_is_not_valid", SelectFlexoConceptInstance.class);
+		}
+
+		@Override
+		public DataBinding<VirtualModelInstance> getBinding(SelectFlexoConceptInstance object) {
+			return object.getVirtualModelInstance();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> applyValidation(
+				SelectFlexoConceptInstance object) {
+			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> returned = super.applyValidation(
+					object);
+			if (returned instanceof UndefinedRequiredBindingIssue) {
+				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
+			}
+			return returned;
+		}
+
+		protected static class UseLocalVirtualModelInstance
+				extends FixProposal<BindingIsRequiredAndMustBeValid<SelectFlexoConceptInstance>, SelectFlexoConceptInstance> {
+
+			public UseLocalVirtualModelInstance() {
+				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
+			}
+
+			@Override
+			protected void fixAction() {
+				SelectFlexoConceptInstance action = getValidable();
+				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+			}
+		}
+
+	}
+
 }
