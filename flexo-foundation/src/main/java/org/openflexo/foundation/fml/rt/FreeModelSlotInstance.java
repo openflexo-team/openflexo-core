@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -110,11 +111,12 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 
 		@Override
 		public RD getAccessedResourceData() {
-			if (getVirtualModelInstance() != null && accessedResourceData == null) {
+			if (accessedResourceData == null && getServiceManager() != null) {
 
 				TechnologyAdapterResource<RD, ?> resource = getResource();
 
-				if (resource == null && StringUtils.isNotEmpty(resourceURI)) {
+				if (resource == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
+						&& getServiceManager().getResourceManager() != null) {
 					resource = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
 							getVersion());
 					setResource(resource, false);
@@ -136,6 +138,13 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
 				logger.warning("cannot find resource " + resourceURI);
+				System.out.println("project=" + getProject());
+				System.out.println("serviceManager=" + getServiceManager());
+				if (getServiceManager() != null) {
+					for (FlexoResource r : getServiceManager().getResourceManager().getRegisteredResources()) {
+						System.out.println("> " + r.getURI());
+					}
+				}
 			}
 			return accessedResourceData;
 		}

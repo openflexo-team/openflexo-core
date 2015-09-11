@@ -81,7 +81,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	@ModelEntity
 	@XMLElement
-	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
+	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
+			@Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter();
@@ -117,6 +118,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @param technologyAdapterService
 	 */
 	public void initialize(TechnologyAdapterService technologyAdapterService);
+
+	/**
+	 * Finalize the FlexoResourceCenter<br>
+	 * 
+	 * @param technologyAdapterService
+	 */
+	public void finalize(TechnologyAdapterService technologyAdapterService);
 
 	/**
 	 * Returns all resources available in this resource center

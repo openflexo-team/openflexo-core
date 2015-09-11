@@ -210,6 +210,19 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
+	/**
+	 * Finalize the FlexoResourceCenter<br>
+	 * 
+	 * @param technologyAdapterService
+	 */
+	@Override
+	public void finalize(TechnologyAdapterService technologyAdapterService) {
+
+		logger.info("*********** FINALIZE FileSystemBasedResourceCenter on " + getDirectory());
+		// TODO
+	}
+
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (technologyAdapterService != null) {
 			return technologyAdapterService.getServiceManager();

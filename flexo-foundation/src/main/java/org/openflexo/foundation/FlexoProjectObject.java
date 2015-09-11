@@ -69,6 +69,7 @@ public interface FlexoProjectObject extends FlexoObject {
 	@Setter(PROJECT)
 	public void setProject(FlexoProject project);
 
+	@Override
 	public FlexoServiceManager getServiceManager();
 
 	public abstract class FlexoProjectObjectImpl extends FlexoObjectImpl implements FlexoProjectObject {
@@ -103,13 +104,12 @@ public interface FlexoProjectObject extends FlexoObject {
 			this.project = project;
 		}
 
-		// TODO: Should be refactored with injectors
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (getProject() != null) {
 				return getProject().getServiceManager();
 			}
-			return null;
+			return super.getServiceManager();
 		}
 
 	}

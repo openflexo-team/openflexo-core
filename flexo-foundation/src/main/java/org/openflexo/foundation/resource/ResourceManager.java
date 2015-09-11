@@ -98,6 +98,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 
 	protected static final Logger logger = Logger.getLogger(ResourceManager.class.getPackage().getName());
 
+	// TODO: implement this as a map !!!
 	private final List<FlexoResource<?>> resources;
 
 	private final List<File> filesToDelete;
@@ -188,13 +189,6 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 
 	public FlexoResource<?> getResource(String resourceURI) {
 
-		System.out.println("On cherche la resource " + resourceURI);
-		System.out.println("on a ca: ");
-
-		for (FlexoResource r : resources) {
-			System.out.println(r.getURI());
-		}
-
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
@@ -253,10 +247,11 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 				unregisterResource(r);
 			}
 
-			for (FlexoResource<?> r : resources) {
-				System.out.println("RC: " + r.getResourceCenter() + " r: " + r);
+			// Because we cannot be confident of #getAllResources() we proceed to iterate on all registered resources
+			for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(resources)) {
 				if (r.getResourceCenter() == removedRC) {
-					System.out.println("Tiens faudrait desenregistrer la resource: " + r);
+					System.out.println("Tiens faudrait desenregistrer la resource: " + r.hash() + " " + r.getURI());
+					unregisterResource(r);
 				}
 			}
 

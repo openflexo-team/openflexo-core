@@ -156,6 +156,19 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		}
 	}
 
+	/**
+	 * Finalize the FlexoResourceCenter<br>
+	 * 
+	 * @param technologyAdapterService
+	 */
+	@Override
+	public void finalize(TechnologyAdapterService technologyAdapterService) {
+
+		// logger.info("*********** FINALIZE JarResourceResourceCenter on " + getJarResource());
+		// TODO
+	}
+
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (technologyAdapterService != null) {
 			return technologyAdapterService.getServiceManager();

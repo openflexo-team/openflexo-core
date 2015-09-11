@@ -85,7 +85,8 @@ import org.openflexo.toolbox.HTMLUtils;
 /**
  * Super class for any object involved in Openflexo-Core (model layer)<br>
  * 
- * This abstract class represents an object. (a "model" in the model-view paradigm)<br>
+ * Provides a direct access to {@link FlexoServiceManager} for objects beeing part of a {@link ResourceData} accessed through a
+ * FlexoResource
  * 
  * @author sguerin
  * 
@@ -212,7 +213,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptReferences);
 
 	/*public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref);
-
+	
 	public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref);
 	*/
 
@@ -227,7 +228,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptId, long instanceId);
 
 	/**
-	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI<br>
+	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 * <br>
 	 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 	 * 
 	 * @param flexoConceptId
@@ -262,6 +264,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 	@Deprecated
 	public void notifyObservers(DataModification arg);
+
+	public FlexoServiceManager getServiceManager();
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
@@ -320,6 +324,20 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		}
 
 		/**
+		 * Implements access to service manager of objects beeing part of a {@link ResourceData} accessed through a FlexoResource
+		 */
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (this instanceof InnerResourceData) {
+				FlexoResource resource = ((InnerResourceData) this).getResourceData().getResource();
+				if (resource != null) {
+					return resource.getServiceManager();
+				}
+			}
+			return null;
+		}
+
+		/**
 		 * Test if changing a value from oldValue to newValue is significant
 		 * 
 		 * @param oldValue
@@ -327,8 +345,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 * @return
 		 */
 		protected <T> boolean requireChange(T oldValue, T newValue) {
-			return oldValue == null && newValue != null || oldValue != null && newValue == null || oldValue != null && newValue != null
-					&& !oldValue.equals(newValue);
+			return oldValue == null && newValue != null || oldValue != null && newValue == null
+					|| oldValue != null && newValue != null && !oldValue.equals(newValue);
 		}
 
 		/**
@@ -442,9 +460,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		/*@Override
 		public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
-
+		
 			FlexoObjectReference<FlexoConceptInstance> existingReference = getFlexoConceptReference(flexoConceptInstance);
-
+		
 			if (existingReference == null) {
 				addToFlexoConceptReferences(new FlexoObjectReference<FlexoConceptInstance>(flexoConceptInstance));
 			}
@@ -487,7 +505,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		public void setModified(boolean modified) {
 			if (modified) {
 				setIsModified();
-			} else {
+			}
+			else {
 				clearIsModified();
 			}
 		}
@@ -628,7 +647,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 				if (!actions.contains(actionType)) {
 					actions.add(actionType);
 				}
-			} else {
+			}
+			else {
 				logger.warning("Trying to declare null action !");
 			}
 
@@ -764,7 +784,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		public void setSpecificDescriptions(Map<String, String> specificDescriptions) {
 			if (this.specificDescriptions == null) {
 				this.specificDescriptions = new TreeMap<String, String>();
-			} else {
+			}
+			else {
 				this.specificDescriptions = specificDescriptions;
 			}
 		}
@@ -812,7 +833,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 					i++;
 				}
 				customProperties.set(i, property);
-			} else {
+			}
+			else {
 				customProperties.add(property);
 			}
 			if (property != null) {
@@ -840,7 +862,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 						return p;
 					}
 				}
-			} else {
+			}
+			else {
 				for (FlexoProperty p : getCustomProperties()) {
 					if (name.equals(p.getName())) {
 						return p;
@@ -858,7 +881,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 						v.add(p);
 					}
 				}
-			} else {
+			}
+			else {
 				for (FlexoProperty p : getCustomProperties()) {
 					if (name.equals(p.getName())) {
 						v.add(p);
@@ -945,7 +969,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			ResourceData<?> resourceData = null;
 			if (this instanceof ResourceData) {
 				resourceData = (ResourceData) this;
-			} else if (this instanceof InnerResourceData) {
+			}
+			else if (this instanceof InnerResourceData) {
 				resourceData = ((InnerResourceData) this).getResourceData();
 			}
 			if (resourceData != null && resourceData.getResource() instanceof PamelaResource) {
@@ -1063,7 +1088,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
 					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
 				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData) this).getResourceData().getResource()).getNewFlexoID();
-			} else {
+			}
+			else {
 				flexoID = -1;
 			}
 			return flexoID;
