@@ -199,8 +199,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return getModelSlot().getName() + "." + getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
-					+ "()";
+			return (getModelSlot() != null ? getModelSlot().getName() + "." : "") + getTechnologyAdapterIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName() + "()";
 		}
 
 		protected final String getTechnologyAdapterIdentifier() {
