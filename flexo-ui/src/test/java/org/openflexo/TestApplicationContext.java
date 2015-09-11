@@ -56,7 +56,6 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
@@ -170,11 +169,6 @@ public class TestApplicationContext extends ApplicationContext {
 	@Override
 	protected ViewPointLibrary createViewPointLibraryService() {
 		return new ViewPointLibrary();
-	}
-
-	@Override
-	protected InformationSpace createInformationSpace() {
-		return new InformationSpace();
 	}
 
 	@Override

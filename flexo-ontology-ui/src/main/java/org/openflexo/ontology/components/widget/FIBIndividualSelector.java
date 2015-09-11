@@ -58,8 +58,8 @@ import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.OntologyUtils;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.ontology.controller.FlexoOntologyTechnologyAdapterController;
 import org.openflexo.rm.Resource;
@@ -87,12 +87,12 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntologyIndividual> implements Bindable {
+public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntologyIndividual>implements Bindable {
 	static final Logger logger = Logger.getLogger(FIBIndividualSelector.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBIndividualSelector.fib");
 
-	private InformationSpace informationSpace;
+	private ResourceManager resourceManager;
 
 	protected OntologyBrowserModel model = null;
 	private TechnologyAdapter technologyAdapter;
@@ -132,18 +132,22 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 		return IFlexoOntologyIndividual.class;
 	}
 
-	public InformationSpace getInformationSpace() {
-		// Still use legacy: if InformationSpace is not specified by project, retrieve IS from ServiceManager
-		if (informationSpace == null && getServiceManager() != null) {
-			informationSpace = getServiceManager().getInformationSpace();
+	public ResourceManager getResourceManager() {
+		if (resourceManager == null && getServiceManager() != null) {
+			resourceManager = getServiceManager().getResourceManager();
 		}
-		return informationSpace;
+		return resourceManager;
 	}
 
-	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setInformationSpace(InformationSpace informationSpace) {
-		// System.out.println("Sets InformationSpace with " + informationSpace);
-		this.informationSpace = informationSpace;
+	@CustomComponentParameter(name = "resourceManager", type = CustomComponentParameter.Type.MANDATORY)
+	public void setResourceManager(ResourceManager resourceManager) {
+
+		if (this.resourceManager != resourceManager) {
+			ResourceManager oldValue = this.resourceManager;
+			this.resourceManager = resourceManager;
+			getPropertyChangeSupport().firePropertyChange("resourceManager", oldValue, resourceManager);
+			updateCustomPanel(getEditedObject());
+		}
 	}
 
 	public String getRenderer() {
@@ -276,8 +280,8 @@ public class FIBIndividualSelector extends FIBFlexoObjectSelector<IFlexoOntology
 	@CustomComponentParameter(name = "contextOntologyURI", type = CustomComponentParameter.Type.MANDATORY)
 	public void setContextOntologyURI(String ontologyURI) {
 		// logger.info(">>>>>>>>>>>> Sets ontology with " + ontologyURI);
-		if (getInformationSpace() != null) {
-			FlexoModelResource<?, ?, ?, ?> modelResource = getInformationSpace().getModelWithURI(ontologyURI);
+		if (getResourceManager() != null) {
+			FlexoModelResource<?, ?, ?, ?> modelResource = getResourceManager().getModelWithURI(ontologyURI);
 			if (modelResource != null && modelResource.getModel() instanceof IFlexoOntology) {
 				setContext((IFlexoOntology) modelResource.getModel());
 			}

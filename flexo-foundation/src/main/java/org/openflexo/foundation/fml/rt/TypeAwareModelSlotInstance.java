@@ -112,10 +112,10 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		 */
 		@Override
 		public M getAccessedResourceData() {
-			if (getModelSlot() != null && getVirtualModelInstance() != null && getVirtualModelInstance().getInformationSpace() != null
+			if (getModelSlot() != null && getVirtualModelInstance() != null && getServiceManager().getResourceManager() != null
 					&& accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getVirtualModelInstance()
-						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
+				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getServiceManager().getResourceManager()
+						.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {
 					accessedResourceData = modelResource.getModel();
 					setResource(modelResource, false);

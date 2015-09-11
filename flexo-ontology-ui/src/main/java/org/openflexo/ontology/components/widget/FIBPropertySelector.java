@@ -46,8 +46,8 @@ import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
@@ -87,7 +87,7 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 
 	public static final Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/FIBPropertySelector.fib");
 
-	private InformationSpace informationSpace;
+	private ResourceManager resourceManager;
 
 	protected OntologyBrowserModel model = null;
 
@@ -106,18 +106,22 @@ public class FIBPropertySelector extends FIBFlexoObjectSelector<IFlexoOntologySt
 		return IFlexoOntologyStructuralProperty.class;
 	}
 
-	public InformationSpace getInformationSpace() {
-		// Still use legacy: if InformationSpace is not specified by project, retrieve IS from ServiceManager
-		if (informationSpace == null && getServiceManager() != null) {
-			informationSpace = getServiceManager().getInformationSpace();
+	public ResourceManager getResourceManager() {
+		if (resourceManager == null && getServiceManager() != null) {
+			resourceManager = getServiceManager().getResourceManager();
 		}
-		return informationSpace;
+		return resourceManager;
 	}
 
-	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setInformationSpace(InformationSpace informationSpace) {
-		// System.out.println("Sets InformationSpace with " + informationSpace);
-		this.informationSpace = informationSpace;
+	@CustomComponentParameter(name = "resourceManager", type = CustomComponentParameter.Type.MANDATORY)
+	public void setResourceManager(ResourceManager resourceManager) {
+
+		if (this.resourceManager != resourceManager) {
+			ResourceManager oldValue = this.resourceManager;
+			this.resourceManager = resourceManager;
+			getPropertyChangeSupport().firePropertyChange("resourceManager", oldValue, resourceManager);
+			updateCustomPanel(getEditedObject());
+		}
 	}
 
 	@Override

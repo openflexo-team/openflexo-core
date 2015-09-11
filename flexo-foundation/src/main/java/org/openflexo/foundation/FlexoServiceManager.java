@@ -56,7 +56,6 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -103,7 +102,8 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		} else {
+		}
+		else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
@@ -147,9 +147,9 @@ public abstract class FlexoServiceManager {
 	public List<FlexoService> getRegisteredServices() {
 		return registeredServices;
 	}
-	
-	public void stopAllServices(){
-		for (FlexoService r: registeredServices){
+
+	public void stopAllServices() {
+		for (FlexoService r : registeredServices) {
 			r.stop();
 		}
 	}
@@ -172,10 +172,6 @@ public abstract class FlexoServiceManager {
 
 	public ViewPointLibrary getViewPointLibrary() {
 		return getService(ViewPointLibrary.class);
-	}
-
-	public InformationSpace getInformationSpace() {
-		return getService(InformationSpace.class);
 	}
 
 	public FlexoProjectReferenceLoader getProjectReferenceLoader() {
@@ -210,8 +206,6 @@ public abstract class FlexoServiceManager {
 	protected abstract ProjectNatureService createProjectNatureService();
 
 	protected abstract ViewPointLibrary createViewPointLibraryService();
-
-	protected abstract InformationSpace createInformationSpace();
 
 	protected abstract ResourceManager createResourceManager();
 

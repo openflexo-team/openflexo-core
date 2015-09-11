@@ -139,6 +139,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosedNotification;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.task.FlexoTask;
@@ -147,7 +148,6 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -2056,7 +2056,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else if (object instanceof TechnologyAdapterResource<?, ?>) {
 			return statelessIconForTechnologyAdapterResource((TechnologyAdapterResource<?, ?>) object);
 		}
-		else if (object instanceof InformationSpace) {
+		else if (object instanceof ResourceManager) {
 			return IconLibrary.INFORMATION_SPACE_ICON;
 		}
 		else if (object instanceof FlexoFacet) {

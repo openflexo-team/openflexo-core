@@ -53,7 +53,6 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.task.ThreadPoolFlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -93,9 +92,6 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		ProjectNatureService projectNatureService = createProjectNatureService();
 		registerService(projectNatureService);
 
-		InformationSpace informationSpace = createInformationSpace();
-		registerService(informationSpace);
-
 		ViewPointLibrary viewPointLibrary = createViewPointLibraryService();
 		registerService(viewPointLibrary);
 	}
@@ -128,11 +124,6 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	@Override
 	protected ViewPointLibrary createViewPointLibraryService() {
 		return new ViewPointLibrary();
-	}
-
-	@Override
-	protected InformationSpace createInformationSpace() {
-		return new InformationSpace();
 	}
 
 	@Override
@@ -177,11 +168,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 				sb.append("> " + rc.getName() + "\n");
 			}
 		}
-		if (getInformationSpace() != null) {
+		if (getResourceManager() != null) {
 			sb.append("**********************************************\n");
-			sb.append("Information Space\n");
+			sb.append("ResourceManager / Information Space\n");
 			for (TechnologyAdapter ta : getTechnologyAdapterService().getTechnologyAdapters()) {
-				for (ResourceRepository<?> rep : getInformationSpace().getAllRepositories(ta)) {
+				for (ResourceRepository<?> rep : getResourceManager().getAllRepositories(ta)) {
 					System.out.println("Technology adapter: " + ta + " repository: " + rep + "\n");
 					for (FlexoResource<?> r : rep.getAllResources()) {
 						sb.append("> " + r.getURI() + "\n");

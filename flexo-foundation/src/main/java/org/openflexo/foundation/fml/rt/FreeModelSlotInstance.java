@@ -115,7 +115,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 				TechnologyAdapterResource<RD, ?> resource = getResource();
 
 				if (resource == null && StringUtils.isNotEmpty(resourceURI)) {
-					resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance().getInformationSpace().getResource(resourceURI,
+					resource = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
 							getVersion());
 					setResource(resource, false);
 				}

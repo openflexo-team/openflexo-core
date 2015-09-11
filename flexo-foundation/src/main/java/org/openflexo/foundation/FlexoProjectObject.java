@@ -42,7 +42,6 @@ package org.openflexo.foundation;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -71,8 +70,6 @@ public interface FlexoProjectObject extends FlexoObject {
 	public void setProject(FlexoProject project);
 
 	public FlexoServiceManager getServiceManager();
-
-	public InformationSpace getInformationSpace();
 
 	public abstract class FlexoProjectObjectImpl extends FlexoObjectImpl implements FlexoProjectObject {
 
@@ -111,14 +108,6 @@ public interface FlexoProjectObject extends FlexoObject {
 		public FlexoServiceManager getServiceManager() {
 			if (getProject() != null) {
 				return getProject().getServiceManager();
-			}
-			return null;
-		}
-
-		@Override
-		public InformationSpace getInformationSpace() {
-			if (getServiceManager() != null) {
-				return getServiceManager().getInformationSpace();
 			}
 			return null;
 		}

@@ -49,7 +49,6 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.NameChanged;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.DeserializationInitializer;
@@ -81,8 +80,8 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
-public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<AbstractVirtualModel>*/,
-		TechnologyObject<FMLTechnologyAdapter> {
+public interface FMLObject
+		extends FlexoObject, Bindable, InnerResourceData/*<AbstractVirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -105,8 +104,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 	public String getURI();
 
 	public FlexoServiceManager getServiceManager();
-
-	public InformationSpace getInformationSpace();
 
 	/**
 	 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
@@ -214,14 +211,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		public ViewPointLibrary getViewPointLibrary() {
 			if (getViewPoint() != null) {
 				return getViewPoint().getViewPointLibrary();
-			}
-			return null;
-		}
-
-		@Override
-		public InformationSpace getInformationSpace() {
-			if (getViewPointLibrary() != null) {
-				return getViewPointLibrary().getServiceManager().getInformationSpace();
 			}
 			return null;
 		}
@@ -399,8 +388,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		}
 	}
 
-	public static abstract class BindingIsRequiredAndMustBeValid<C extends FMLObject> extends
-			ValidationRule<BindingIsRequiredAndMustBeValid<C>, C> {
+	public static abstract class BindingIsRequiredAndMustBeValid<C extends FMLObject>
+			extends ValidationRule<BindingIsRequiredAndMustBeValid<C>, C> {
 		public BindingIsRequiredAndMustBeValid(String ruleName, Class<C> clazz) {
 			super(clazz, ruleName);
 		}
@@ -412,7 +401,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<C>(this, object);
-			} else if (!b.isValid()) {
+			}
+			else if (!b.isValid()) {
 				FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 						+ ". Reason: " + b.invalidBindingReason());
 				return new InvalidRequiredBindingIssue<C>(this, object);
@@ -423,8 +413,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			return null;
 		}
 
-		public static class UndefinedRequiredBindingIssue<C extends FMLObject> extends
-				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+		public static class UndefinedRequiredBindingIssue<C extends FMLObject>
+				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public UndefinedRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
@@ -445,7 +435,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			}
 		}
 
-		public static class InvalidRequiredBindingIssue<C extends FMLObject> extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+		public static class InvalidRequiredBindingIssue<C extends FMLObject>
+				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
