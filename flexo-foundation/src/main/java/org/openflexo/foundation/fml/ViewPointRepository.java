@@ -59,22 +59,11 @@ public class ViewPointRepository extends TechnologyAdapterFileResourceRepository
 
 	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/ViewPoints";
 
-	private FlexoResourceCenter<?> resourceCenter;
 	private final FlexoServiceManager serviceManager;
 
 	public ViewPointRepository(FMLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);
 		this.serviceManager = adapter.getServiceManager();
-	}
-
-	@Override
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return resourceCenter;
-	}
-
-	@Override
-	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		this.resourceCenter = resourceCenter;
 	}
 
 	public ViewPointLibrary getViewPointLibrary() {

@@ -65,7 +65,6 @@ public abstract class TechnologyAdapterFileResourceRepository<R extends Technolo
 	private static final Logger logger = Logger.getLogger(TechnologyAdapterFileResourceRepository.class.getPackage().getName());
 
 	private final TA technologyAdapter;
-	private FlexoResourceCenter<?> resourceCenter;
 
 	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
 		this(technologyAdapter, resourceCenter,
@@ -76,7 +75,6 @@ public abstract class TechnologyAdapterFileResourceRepository<R extends Technolo
 	public TechnologyAdapterFileResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
 		super(resourceCenter, directory);
 		this.technologyAdapter = technologyAdapter;
-		this.resourceCenter = resourceCenter;
 		// getRootFolder().setName(resourceCenter.getName());
 		getRootFolder().setFullQualifiedPath(resourceCenter.getName());
 		getRootFolder().setDescription(
@@ -85,14 +83,6 @@ public abstract class TechnologyAdapterFileResourceRepository<R extends Technolo
 
 	public TA getTechnologyAdapter() {
 		return technologyAdapter;
-	}
-
-	public FlexoResourceCenter<?> getResourceCenter() {
-		return resourceCenter;
-	}
-
-	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
-		this.resourceCenter = resourceCenter;
 	}
 
 }
