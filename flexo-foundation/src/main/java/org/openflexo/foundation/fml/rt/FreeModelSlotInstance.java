@@ -42,7 +42,6 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
@@ -71,8 +70,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-		extends ModelSlotInstance<MS, RD> {
+public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
+		ModelSlotInstance<MS, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -85,7 +84,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 	public void setResourceURI(String resourceURI);
 
 	public static abstract class FreeModelSlotInstanceImpl<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-			extends ModelSlotInstanceImpl<MS, RD>implements FreeModelSlotInstance<RD, MS> {
+			extends ModelSlotInstanceImpl<MS, RD> implements FreeModelSlotInstance<RD, MS> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlotInstance.class.getPackage().getName());
 
@@ -138,13 +137,6 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
 				logger.warning("cannot find resource " + resourceURI);
-				System.out.println("project=" + getProject());
-				System.out.println("serviceManager=" + getServiceManager());
-				if (getServiceManager() != null) {
-					for (FlexoResource r : getServiceManager().getResourceManager().getRegisteredResources()) {
-						System.out.println("> " + r.getURI());
-					}
-				}
 			}
 			return accessedResourceData;
 		}

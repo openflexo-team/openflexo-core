@@ -239,16 +239,13 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 			// In this case, we MUST unregister all resources contained in removed ResourceCenter
 			FlexoResourceCenter<?> removedRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 
-			System.out.println("REMOVED RC:");
 			for (FlexoResource<?> r : removedRC.getAllResources(null)) {
-				System.out.println("Remove " + r.getURI());
 				unregisterResource(r);
 			}
 
 			// Because we cannot be confident of #getAllResources() we proceed to iterate on all registered resources
 			for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(resources)) {
 				if (r.getResourceCenter() == removedRC) {
-					System.out.println("Tiens faudrait desenregistrer la resource: " + r.hash() + " " + r.getURI());
 					unregisterResource(r);
 				}
 			}
