@@ -102,6 +102,12 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			return getAction().getModelSlotVirtualModel();
 		}
 
+		@Override
+		public void setModelSlot(FMLRTModelSlot modelSlot) {
+			super.setModelSlot(modelSlot);
+			getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
+		}
+
 		public FlexoConcept getFlexoConceptInstanceType() {
 			return getAction().getFlexoConceptInstanceType();
 		}
@@ -127,6 +133,7 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 				getPropertyChangeSupport().firePropertyChange("modelSlot", null, getModelSlot());
 				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getFlexoRoleClass());
 				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+				getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 			}
 		}
 
