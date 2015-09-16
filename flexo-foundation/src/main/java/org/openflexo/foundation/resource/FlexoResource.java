@@ -111,7 +111,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 
 	/**
 	 * Returns the unique resource identifier of this resource. A URI is unique in the whole universe and clearly and uniquely identifies
-	 * this resource.
+	 * this resource.<br>
+	 * If URI was not set for this resource, delegate default URI computation to resource center in which this resource exists
 	 * 
 	 * @return the unique resource identifier of this resource
 	 */
@@ -121,7 +122,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public String getURI();
 
 	/**
-	 * Sets the unique resource identifier of this resource.
+	 * Sets the unique resource identifier of this resource.<br>
+	 * By doing that, you will desactivate the URI computation performed by the resource center in which this resource exists
 	 * 
 	 * @param anURI
 	 */

@@ -124,7 +124,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		if (name == null) {
 			if (fullQualifiedPath.lastIndexOf(File.separator) > -1) {
 				name = fullQualifiedPath.substring(fullQualifiedPath.lastIndexOf(File.separator));
-			} else {
+			}
+			else {
 				name = fullQualifiedPath;
 			}
 		}
@@ -207,7 +208,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 				return ((FileResourceRepository) getResourceRepository()).getDirectory();
 			}
 			return null;
-		} else {
+		}
+		else {
 			return new File(getParentFolder().getFile(), name);
 		}
 	}
@@ -269,4 +271,26 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	public String getDisplayableName() {
 		return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "") + getName();
 	}
+
+	/**
+	 * Return the repository folder where the resource is registered
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public RepositoryFolder<R> getRepositoryFolder(R resource) {
+		if (getResources().contains(resource)) {
+			return this;
+		}
+		if (getChildren() != null && getChildren().size() > 0) {
+			for (RepositoryFolder<R> child : getChildren()) {
+				RepositoryFolder<R> returned = child.getRepositoryFolder(resource);
+				if (returned != null) {
+					return returned;
+				}
+			}
+		}
+		return null;
+	}
+
 }

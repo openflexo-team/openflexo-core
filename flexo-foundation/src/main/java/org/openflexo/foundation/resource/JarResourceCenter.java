@@ -378,4 +378,10 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 	public void stop() {
 		// Nothing to do for now
 	}
+
+	@Override
+	public String getDefaultResourceURI(FlexoResource<?> resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

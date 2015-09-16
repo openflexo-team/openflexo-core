@@ -259,4 +259,12 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	public void stop();
 
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public String getDefaultResourceURI(FlexoResource<?> resource);
 }

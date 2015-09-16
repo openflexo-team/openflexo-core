@@ -489,4 +489,24 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public boolean isContainer() {
 		return true;
 	}
+
+	/**
+	 * Return URI of this resource<br>
+	 * If URI was set for this resource, return that URI, otherwise delegate default URI computation to resource center in which this
+	 * resource exists
+	 */
+	@Override
+	public final String getURI() {
+		String returned = (String) performSuperGetter(URI);
+
+		if (returned == null && getResourceCenter() != null) {
+			returned = getResourceCenter().getDefaultResourceURI(this);
+		}
+
+		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)) {
+			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
+		}
+		return returned;
+	}
+
 }

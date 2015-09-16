@@ -265,14 +265,6 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return returned;
 	}
 
-	@Override
-	public String getURI() {
-		if (getProject() != null) {
-			return getProject().getURI() + "/" + getName();
-		}
-		return null;
-	}
-
 	private static class ViewInfo {
 		public String viewPointURI;
 		@SuppressWarnings("unused")

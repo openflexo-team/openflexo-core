@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -462,6 +463,32 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public void stop() {
 		this.stopDirectoryWatching();
+	}
+
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	@Override
+	public String getDefaultResourceURI(FlexoResource<?> resource) {
+		if (resource instanceof TechnologyAdapterResource) {
+			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
+			for (ResourceRepository repository : getRegistedRepositories(ta)) {
+				if (repository.containsResource(resource)) {
+					String path = "";
+					RepositoryFolder f = repository.getRepositoryFolder(resource);
+					while (f != null && !f.isRootFolder()) {
+						path = f.getName() + File.separator + path;
+						f = f.getParentFolder();
+					}
+					return getDefaultBaseURI() + File.separator + path + resource.getName();
+				}
+			}
+		}
+		return null;
 	}
 
 }

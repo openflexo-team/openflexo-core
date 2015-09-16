@@ -129,7 +129,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		if (!resources.contains(resource)) {
 			resources.add(resource);
 			getServiceManager().notify(this, new ResourceRegistered(resource, null));
-		} else {
+		}
+		else {
 			logger.info("Resource already registered: " + resource);
 		}
 		if (resource.getURI() == null) {
@@ -215,7 +216,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 						logger.info("Successfully deleted " + f.getAbsolutePath());
 						// filesToDelete.remove(f);
 					}
-				} else if (logger.isLoggable(Level.WARNING)) {
+				}
+				else if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Could not delete " + f.getAbsolutePath());
 				}
 			} catch (RuntimeException e) {
@@ -307,6 +309,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 					return res;
 				}
 			}
+
 		}
 		return null;
 	}
@@ -362,7 +365,8 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 		if (technologyAdapter == null) {
 			logger.warning("Unexpected null " + technologyAdapter);
 			return null;
-		} else if (technologyAdapter.getTechnologyContextManager() == null) {
+		}
+		else if (technologyAdapter.getTechnologyContextManager() == null) {
 			// logger.warning("Unexpected null technologyContextManager for " + technologyAdapter);
 			return null;
 		}

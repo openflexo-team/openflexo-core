@@ -149,13 +149,30 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	}
 
 	/**
-	 * Return resource with the supplied URI, if this resource was already declared
+	 * Return resource with the supplied URI, if this resource was already declared<br>
+	 * Also implement a scheme to resolve resources from URI whose value has changed since registration
 	 * 
 	 * @param resourceURI
 	 * @return
 	 */
 	public R getResource(String resourceURI) {
-		return resources.get(resourceURI);
+		R returned = resources.get(resourceURI);
+
+		// TODO: perf issue : implement a scheme to avoid another search for an URI that could not be resolved once (unless some other
+		// resources are registered or unregistered)
+
+		// scheme to resolve resources from URI whose value has changed since registration
+		for (String oldURI : new ArrayList<String>(resources.keySet())) {
+			R resource = resources.get(oldURI);
+			if (!oldURI.equals(resource.getURI())) {
+				resources.remove(oldURI);
+				resources.put(resource.getURI(), resource);
+			}
+			if (resource.getURI().equals(resourceURI)) {
+				return resource;
+			}
+		}
+		return returned;
 	}
 
 	/**
@@ -263,6 +280,27 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	public Collection<R> getAllResources() {
 		return resources.values();
+	}
+
+	/**
+	 * Return flag indicating if supplied resource is contained in this repository
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	// TODO: perf issue
+	public boolean containsResource(R resource) {
+		return getAllResources().contains(resource);
+	}
+
+	/**
+	 * Return the repository folder where the resource is registered
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public RepositoryFolder<R> getRepositoryFolder(R resource) {
+		return getRootFolder().getRepositoryFolder(resource);
 	}
 
 	@Override
