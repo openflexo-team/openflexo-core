@@ -139,6 +139,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 				newVirtualModelInstance.addToModelSlotInstances(msi);
 			}
 			else {
+				logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
+						+ configuration.getErrorMessage());
 				throw new InvalidArgumentException(
 						"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
 			}
