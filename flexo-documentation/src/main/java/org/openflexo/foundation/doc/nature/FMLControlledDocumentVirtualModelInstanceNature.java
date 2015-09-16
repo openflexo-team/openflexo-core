@@ -86,14 +86,20 @@ public abstract class FMLControlledDocumentVirtualModelInstanceNature<MS extends
 		return true;
 	}
 
+	protected MS _getModelSlot(VirtualModelInstance virtualModelInstance) {
+		return virtualModelInstance.getVirtualModel().getModelSlots(getModelSlotClass()).get(0);
+	}
+
 	protected ModelSlotInstance<MS, D> _getModelSlotInstance(VirtualModelInstance virtualModelInstance) {
-		MS documentMS = virtualModelInstance.getVirtualModel().getModelSlots(getModelSlotClass()).get(0);
+
+		MS documentMS = _getModelSlot(virtualModelInstance);
 
 		return virtualModelInstance.getModelSlotInstance(documentMS);
 
 	}
 
 	protected D _getDocument(VirtualModelInstance virtualModelInstance) {
+		System.out.println("msi=" + _getModelSlotInstance(virtualModelInstance));
 		return _getModelSlotInstance(virtualModelInstance).getAccessedResourceData();
 	}
 
