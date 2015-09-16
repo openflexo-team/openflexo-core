@@ -141,8 +141,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public static abstract class AddFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance> implements
-			AddFlexoConceptInstance {
+	public static abstract class AddFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance>
+			implements AddFlexoConceptInstance {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
@@ -260,7 +260,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
-					} else {
+					}
+					else {
 						if (getFMLModelFactory() != null) {
 							addToParameters(getFMLModelFactory().newAddFlexoConceptInstanceParameter(p));
 						}
@@ -277,6 +278,10 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 			logger.info("Perform performAddFlexoConceptInstance " + evaluationContext);
 			VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
 			logger.info("VirtualModelInstance: " + vmInstance);
+			if (vmInstance == null) {
+				logger.warning("null VirtualModelInstance");
+				return null;
+			}
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -296,7 +301,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 					logger.info("Successfully performed performAddFlexoConcept " + evaluationContext);
 					return creationSchemeAction.getFlexoConceptInstance();
 				}
-			} else {
+			}
+			else {
 				logger.warning("Unexpected: " + evaluationContext);
 			}
 			return null;
@@ -311,7 +317,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 		public Type getAssignableType() {
 			if (getViewPoint() != null) {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
-			} else {
+			}
+			else {
 				return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 			}
 			// NPE Protection
@@ -327,8 +334,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 	}
 
 	@DefineValidationRule
-	public static class AddFlexoConceptInstanceMustAddressACreationScheme extends
-			ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
+	public static class AddFlexoConceptInstanceMustAddressACreationScheme
+			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
 		public AddFlexoConceptInstanceMustAddressACreationScheme() {
 			super(AddFlexoConceptInstance.class, "add_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
@@ -340,7 +347,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
 							"add_flexo_concept_action_doesn't_define_any_flexo_concept");
-				} else {
+				}
+				else {
 					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
 							"add_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}
@@ -350,8 +358,8 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 	}
 
 	@DefineValidationRule
-	public static class AddFlexoConceptInstanceParametersMustBeValid extends
-			ValidationRule<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance> {
+	public static class AddFlexoConceptInstanceParametersMustBeValid
+			extends ValidationRule<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance> {
 
 		public AddFlexoConceptInstanceParametersMustBeValid() {
 			super(AddFlexoConceptInstance.class, "add_flexo_concept_parameters_must_be_valid");
@@ -370,22 +378,26 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 							DataBinding<String> uri = ((URIParameter) param).getBaseURI();
 							if (param instanceof URIParameter && uri.isSet() && uri.isValid()) {
 								// Special case, we will find a way to manage this
-							} else {
+							}
+							else {
 								issues.add(new ValidationError(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 							}
-						} else if (!p.getValue().isValid()) {
-							AddFlexoConceptInstanceImpl.logger.info("Binding NOT valid: " + p.getValue() + " for " + p.getName()
-									+ " object=" + p.getAction().getStringRepresentation() + ". Reason: "
-									+ p.getValue().invalidBindingReason());
+						}
+						else if (!p.getValue().isValid()) {
+							AddFlexoConceptInstanceImpl.logger
+									.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
+											+ p.getAction().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
 							issues.add(new ValidationError(this, action, "parameter_s_value_is_not_valid: " + param.getName()));
 						}
 					}
 				}
 				if (issues.size() == 0) {
 					return null;
-				} else if (issues.size() == 1) {
+				}
+				else if (issues.size() == 1) {
 					return issues.firstElement();
-				} else {
+				}
+				else {
 					return new CompoundIssue<AddFlexoConceptInstanceParametersMustBeValid, AddFlexoConceptInstance>(action, issues);
 				}
 			}
@@ -394,14 +406,17 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 	}
 
 	@DefineValidationRule
-	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid extends
-			BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance> {
+	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
+			extends BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
 			super("'virtual_model_instance'_binding_is_not_valid", AddFlexoConceptInstance.class);
 		}
 
 		@Override
 		public DataBinding<VirtualModelInstance> getBinding(AddFlexoConceptInstance object) {
+			System.out.println("Alors, j'ai pour " + object);
+			System.out.println("FML " + object.getFMLRepresentation());
+			System.out.println("VMI=" + object.getVirtualModelInstance());
 			return object.getVirtualModelInstance();
 		}
 
