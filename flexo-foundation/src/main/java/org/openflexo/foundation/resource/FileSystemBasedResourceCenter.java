@@ -76,7 +76,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -236,8 +236,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		}
-		else {
+		} else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -411,8 +410,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		}
-		else {
+		} else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -430,8 +428,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-			IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type, IProgress progress) {
 		// TODO: provide support for class and version
 		return (FlexoResource<T>) retrieveResource(uri, progress);
 	}
@@ -484,7 +481,11 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						path = f.getName() + File.separator + path;
 						f = f.getParentFolder();
 					}
-					return getDefaultBaseURI() + File.separator + path + resource.getName();
+					if (getDefaultBaseURI().endsWith(File.separator)) {
+						return getDefaultBaseURI() + path + resource.getName();
+					} else {
+						return getDefaultBaseURI() + File.separator + path + resource.getName();
+					}
 				}
 			}
 		}
