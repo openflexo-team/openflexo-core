@@ -166,13 +166,15 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 				public void selectionChanged(List<Object> selection) {
 					List<FlexoDocumentElement<?, ?>> elements = new ArrayList<>();
 					FlexoDocument<?, ?> doc = null;
-					for (Object o : selection) {
-						if (o instanceof FlexoDocumentElement && ((FlexoDocumentElement) o).getFlexoDocument() != null) {
-							if (doc == null) {
-								doc = ((FlexoDocumentElement) o).getFlexoDocument();
-							}
-							if (doc == ((FlexoDocumentElement) o).getFlexoDocument()) {
-								elements.add((FlexoDocumentElement<?, ?>) o);
+					if (selection != null) {
+						for (Object o : selection) {
+							if (o instanceof FlexoDocumentElement && ((FlexoDocumentElement) o).getFlexoDocument() != null) {
+								if (doc == null) {
+									doc = ((FlexoDocumentElement) o).getFlexoDocument();
+								}
+								if (doc == ((FlexoDocumentElement) o).getFlexoDocument()) {
+									elements.add((FlexoDocumentElement<?, ?>) o);
+								}
 							}
 						}
 					}

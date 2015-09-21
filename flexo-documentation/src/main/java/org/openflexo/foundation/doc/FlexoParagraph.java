@@ -37,6 +37,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Generic abstract concept representing a paragraph of a text-based document (eg .docx, .odt, etc...)
@@ -129,8 +130,8 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 */
 	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoParagraph<D, TA> {
+	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
 
 		@Override
 		public String toString() {
@@ -173,8 +174,7 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 							childLevel = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
-				}
-				else {
+				} else {
 					if (e instanceof FlexoParagraph) {
 						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
 							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
@@ -206,9 +206,10 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 			String rawText = getRawText();
 			if (rawText.length() > 35) {
 				return rawText.substring(0, 35) + "...";
-			}
-			else {
+			} else if (StringUtils.isNotEmpty(rawText)) {
 				return rawText;
+			} else {
+				return "<newline>";
 			}
 		}
 
