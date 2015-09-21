@@ -97,8 +97,8 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 		}
 
 		@Override
-		public void setModelSlot(ModelSlot<?> modelSlot) {
-			super.setModelSlot(modelSlot);
+		protected void fireModelSlotChanged(ModelSlot<?> oldValue, ModelSlot<?> newValue) {
+			super.fireModelSlotChanged(oldValue, newValue);
 			getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 			checkValidity();
 		}

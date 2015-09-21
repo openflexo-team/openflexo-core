@@ -135,8 +135,7 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 			if (getModelSlot() != null) {
 				newFlexoRole = getModelSlot().makeFlexoRole(flexoRoleClass);
 				newFlexoRole.setModelSlot(getModelSlot());
-			}
-			else {
+			} else {
 				FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 				newFlexoRole = factory.newInstance(flexoRoleClass);
 			}
@@ -171,26 +170,24 @@ public class CreateTechnologyRole extends AbstractCreateFlexoRole<CreateTechnolo
 
 		if (getFocusedObject() instanceof VirtualModel) {
 			return ((VirtualModel) getFocusedObject()).getModelSlots();
-		}
-		else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
+		} else if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null) {
 			return getFocusedObject().getOwningVirtualModel().getModelSlots();
 		}
 		return null;
 	}
 
 	@Override
-	public void setModelSlot(ModelSlot<?> modelSlot) {
-		super.setModelSlot(modelSlot);
+	public void fireModelSlotChanged() {
+		super.fireModelSlotChanged();
 		getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
 		if (getFlexoRoleClass() != null && !getAvailableFlexoRoleTypes().contains(getFlexoRoleClass())) {
 			if (getAvailableFlexoRoleTypes().size() > 0) {
 				setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
-			}
-			else {
+			} else {
 				setFlexoRoleClass(null);
 			}
 		}
-		if (modelSlot != null && getFlexoRoleClass() == null && getAvailableFlexoRoleTypes().size() > 0) {
+		if (getModelSlot() != null && getFlexoRoleClass() == null && getAvailableFlexoRoleTypes().size() > 0) {
 			setFlexoRoleClass(getAvailableFlexoRoleTypes().get(0));
 		}
 	}

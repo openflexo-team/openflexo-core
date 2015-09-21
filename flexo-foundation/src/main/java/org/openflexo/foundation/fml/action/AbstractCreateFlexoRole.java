@@ -74,8 +74,8 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
-		extends AbstractCreateFlexoProperty<A> {
+public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>> extends
+		AbstractCreateFlexoProperty<A> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoRole.class.getPackage().getName());
 
@@ -171,8 +171,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 		// The action is visible for FlexoConcept and StructuralFacet.
 		if (getFocusedObject() instanceof FlexoConceptStructuralFacet) {
 			flexoConcept = ((FlexoConceptStructuralFacet) getFocusedObject()).getFlexoConcept();
-		}
-		else {
+		} else {
 			flexoConcept = (FlexoConcept) getFocusedObject();
 		}
 		if (flexoConcept instanceof VirtualModel && ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).size() > 0) {
@@ -187,8 +186,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 				}
 			}
 			return ((VirtualModel) flexoConcept).getModelSlots(getModelSlotType()).get(0);
-		}
-		else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
+		} else if (flexoConcept != null && flexoConcept.getOwningVirtualModel() != null
 				&& flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType()).size() > 0) {
 			if (getFlexoRoleClass() == null) {
 				return flexoConcept.getOwningVirtualModel().getModelSlots(getModelSlotType()).get(0);
@@ -231,6 +229,10 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 
 	public void setModelSlot(MS modelSlot) {
 		this.modelSlot = modelSlot;
+		fireModelSlotChanged();
+	}
+
+	protected void fireModelSlotChanged() {
 		getPropertyChangeSupport().firePropertyChange("modelSlot", null, modelSlot);
 		getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
 		getPropertyChangeSupport().firePropertyChange("propertyName", null, getRoleName());
@@ -239,8 +241,7 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 	public TechnologyAdapter getTechnologyAdapterForModelSlot() {
 		if (getModelSlot() != null) {
 			return getModelSlot().getModelSlotTechnologyAdapter();
-		}
-		else {
+		} else {
 			return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
 		}
 	}

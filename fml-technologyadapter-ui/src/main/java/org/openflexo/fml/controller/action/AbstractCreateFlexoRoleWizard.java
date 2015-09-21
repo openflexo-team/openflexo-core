@@ -52,8 +52,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>>
-		extends AbstractCreateFlexoPropertyWizard<A> {
+public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlexoRole<A, MS>, MS extends ModelSlot<?>> extends
+		AbstractCreateFlexoPropertyWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoRoleWizard.class.getPackage().getName());
@@ -135,12 +135,16 @@ public abstract class AbstractCreateFlexoRoleWizard<A extends AbstractCreateFlex
 			if (getModelSlot() != modelSlot) {
 				ModelSlot<?> oldValue = getModelSlot();
 				getAction().setModelSlot(modelSlot);
-				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
-				getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
-				getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
-				getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
-				checkValidity();
+				fireModelSlotChanged(oldValue, modelSlot);
 			}
+		}
+
+		protected void fireModelSlotChanged(ModelSlot<?> oldValue, ModelSlot<?> newValue) {
+			getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, newValue);
+			getPropertyChangeSupport().firePropertyChange("adressedFlexoMetaModel", null, getAdressedFlexoMetaModel());
+			getPropertyChangeSupport().firePropertyChange("flexoRoleClass", null, getModelSlot());
+			getPropertyChangeSupport().firePropertyChange("roleName", null, getRoleName());
+			checkValidity();
 		}
 
 		public Class<? extends FlexoRole<?>> getFlexoRoleClass() {
