@@ -64,13 +64,13 @@ import org.openflexo.rm.Resource;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBDocumentFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FIBFlexoObjectSelector<F> {
-	static final Logger logger = Logger.getLogger(FIBDocumentFragmentSelector.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FIBDocFragmentSelector.class.getPackage().getName());
 
 	private D document;
 
-	public FIBDocumentFragmentSelector(F editedObject) {
+	public FIBDocFragmentSelector(F editedObject) {
 		super(editedObject);
 	}
 
@@ -108,7 +108,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocFragment<D, 
 	private void updateWith(List<FlexoDocElement<D, TA>> elements) {
 
 		if (document == null) {
-			logger.warning("No document defined in FIBDocumentFragmentSelector");
+			logger.warning("No document defined in FIBDocFragmentSelector");
 			return;
 		}
 
@@ -159,7 +159,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocFragment<D, 
 	}
 
 	public static class FragmentSelectorFIBController extends SelectorFIBController {
-		public FragmentSelectorFIBController(final FIBComponent component, final FIBDocumentFragmentSelector selector) {
+		public FragmentSelectorFIBController(final FIBComponent component, final FIBDocFragmentSelector selector) {
 			super(component, selector);
 			addSelectionListener(new FIBSelectionListener() {
 				@Override

@@ -28,6 +28,7 @@
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
 		<module>flexo-documentation</module>
+		<module>flexo-documentation-ui</module>
 		<module>flexo-ontology</module>
 		<module>flexo-ontology-ui</module>
 		<module>fml-parser</module>

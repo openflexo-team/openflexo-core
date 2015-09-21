@@ -6,8 +6,8 @@
 		<artifactId>openflexo-core</artifactId>
         <version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	</parent>
-	<artifactId>flexo-documentation</artifactId>
-	<name>Openflexo-core : FlexoDocumentation core layer</name>
+	<artifactId>flexo-documentation-ui</artifactId>
+	<name>Openflexo-core : FlexoDocumentation UI layer</name>
 	<build>
 		<plugins>
 			<plugin>
@@ -28,7 +28,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.openflexo</groupId>
-			<artifactId>flexo-foundation</artifactId>
+			<artifactId>flexo-documentation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ui</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.openflexo</groupId>
