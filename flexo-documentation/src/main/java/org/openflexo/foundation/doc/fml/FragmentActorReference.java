@@ -43,12 +43,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentElement;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
-import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
-import org.openflexo.foundation.doc.FlexoTable;
-import org.openflexo.foundation.doc.FlexoTableCell;
-import org.openflexo.foundation.doc.FlexoTableRow;
+import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocFragment;
+import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoDocTable;
+import org.openflexo.foundation.doc.FlexoDocTableCell;
+import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -66,7 +66,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
 /**
- * Implements {@link ActorReference} for {@link FlexoDocumentFragment}.<br>
+ * Implements {@link ActorReference} for {@link FlexoDocFragment}.<br>
  * Represents the actual links in a given {@link FlexoDocument} connecting a template fragment to a generated fragment<br>
  * We need to store here the bindings between elements in template and corresponding elements in referenced {@link FlexoDocument}
  * 
@@ -79,7 +79,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(FragmentActorReference.FragmentActorReferenceImpl.class)
 @XMLElement
 @FML("FragmentActorReference")
-public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> extends ActorReference<F> {
+public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extends ActorReference<F> {
 
 	@PropertyIdentifier(type = ElementReference.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENT_REFERENCES_KEY = "elementReferences";
@@ -110,7 +110,7 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	 *            identifier of template element
 	 * @return
 	 */
-	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId);
+	public List<FlexoDocElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId);
 
 	/**
 	 * Return list of elements in generated fragment matching supplied templateElement
@@ -118,9 +118,9 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	 * @param templateElement
 	 * @return
 	 */
-	public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement);
+	public List<FlexoDocElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocElement<?, ?> templateElement);
 
-	public void removeReferencesTo(FlexoDocumentElement<?, ?> element);
+	public void removeReferencesTo(FlexoDocElement<?, ?> element);
 
 	/**
 	 * This method is called to extract a value from the federated data and apply it to the represented fragment representation
@@ -135,7 +135,7 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocumentFragment<?, ?>> extends ActorReferenceImpl<F>
+	public abstract static class FragmentActorReferenceImpl<F extends FlexoDocFragment<?, ?>> extends ActorReferenceImpl<F>
 			implements FragmentActorReference<F> {
 
 		private static final Logger logger = FlexoLogger.getLogger(FragmentActorReference.class.getPackage().toString());
@@ -164,10 +164,10 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 				FlexoDocument<?, ?> document = getFlexoDocument();
 				if (document != null) {
 					if (getElementReferences().size() > 0) {
-						FlexoDocumentElement startElement = null, endElement = null;
+						FlexoDocElement startElement = null, endElement = null;
 						int index = 0;
 						for (ElementReference er : getElementReferences()) {
-							FlexoDocumentElement element = document.getElementWithIdentifier(er.getElementId());
+							FlexoDocElement element = document.getElementWithIdentifier(er.getElementId());
 							element.setBaseIdentifier(er.getTemplateElementId());
 							if (index == 0) {
 								startElement = element;
@@ -208,18 +208,18 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 				// Retrieve template fragment
 				F templateFragment = (F) ((FlexoFragmentRole) getFlexoRole()).getFragment();
 
-				for (FlexoDocumentElement<?, ?> element : aFragment.getElements()) {
+				for (FlexoDocElement<?, ?> element : aFragment.getElements()) {
 					ElementReference er = getFactory().newInstance(ElementReference.class);
 					er.setElementId(element.getIdentifier());
 					if (element.getBaseIdentifier() != null) {
 						er.setTemplateElementId(element.getBaseIdentifier());
 					}
 					addToElementReferences(er);
-					if (element instanceof FlexoTable) {
-						FlexoTable<?, ?> table = (FlexoTable<?, ?>) element;
-						for (FlexoTableRow<?, ?> row : table.getTableRows()) {
-							for (FlexoTableCell<?, ?> cell : row.getTableCells()) {
-								for (FlexoDocumentElement<?, ?> e2 : cell.getElements()) {
+					if (element instanceof FlexoDocTable) {
+						FlexoDocTable<?, ?> table = (FlexoDocTable<?, ?>) element;
+						for (FlexoDocTableRow<?, ?> row : table.getTableRows()) {
+							for (FlexoDocTableCell<?, ?> cell : row.getTableCells()) {
+								for (FlexoDocElement<?, ?> e2 : cell.getElements()) {
 									if (e2.getBaseIdentifier() != null) {
 										ElementReference er2 = getFactory().newInstance(ElementReference.class);
 										er2.setElementId(e2.getIdentifier());
@@ -267,8 +267,8 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		 * @return
 		 */
 		@Override
-		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId) {
-			List<FlexoDocumentElement<?, ?>> returned = new ArrayList<FlexoDocumentElement<?, ?>>();
+		public List<FlexoDocElement<?, ?>> getElementsMatchingTemplateElementId(String templateElementId) {
+			List<FlexoDocElement<?, ?>> returned = new ArrayList<FlexoDocElement<?, ?>>();
 			for (ElementReference er : getElementReferences()) {
 				if (er.getTemplateElementId().equals(templateElementId)) {
 					returned.add(getFlexoDocument().getElementWithIdentifier(er.getElementId()));
@@ -284,12 +284,12 @@ public interface FragmentActorReference<F extends FlexoDocumentFragment<?, ?>> e
 		 * @return
 		 */
 		@Override
-		public List<FlexoDocumentElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocumentElement<?, ?> templateElement) {
+		public List<FlexoDocElement<?, ?>> getElementsMatchingTemplateElement(FlexoDocElement<?, ?> templateElement) {
 			return getElementsMatchingTemplateElementId(templateElement.getIdentifier());
 		}
 
 		@Override
-		public void removeReferencesTo(FlexoDocumentElement<?, ?> element) {
+		public void removeReferencesTo(FlexoDocElement<?, ?> element) {
 			List<ElementReference> referencesToRemove = new ArrayList<ElementReference>();
 			for (ElementReference er : getElementReferences()) {
 				if (er.getElementId().equals(element.getIdentifier())) {

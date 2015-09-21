@@ -51,20 +51,20 @@ import org.openflexo.fib.model.listener.FIBSelectionListener;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBCustomWidget;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentElement;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
-import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocFragment;
+import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.rm.Resource;
 
 /**
- * Widget allowing to select an {@link FlexoDocumentFragment} inside a {@link FlexoDocument}<br>
+ * Widget allowing to select an {@link FlexoDocFragment} inside a {@link FlexoDocument}<br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public abstract class FIBDocumentFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FIBFlexoObjectSelector<F> {
 	static final Logger logger = Logger.getLogger(FIBDocumentFragmentSelector.class.getPackage().getName());
 
@@ -105,7 +105,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 		super.updateCustomPanel(editedObject);
 	}
 
-	private void updateWith(List<FlexoDocumentElement<D, TA>> elements) {
+	private void updateWith(List<FlexoDocElement<D, TA>> elements) {
 
 		if (document == null) {
 			logger.warning("No document defined in FIBDocumentFragmentSelector");
@@ -116,7 +116,7 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 		if (elements.size() == 0) {
 			newFragment = null;
 		} else if (elements.size() == 1) {
-			FlexoDocumentElement<D, TA> startElement = elements.get(0);
+			FlexoDocElement<D, TA> startElement = elements.get(0);
 			try {
 				newFragment = (F) document.getFragment(startElement, startElement);
 			} catch (FragmentConsistencyException e) {
@@ -124,8 +124,8 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 			}
 		} else {
 
-			FlexoDocumentElement<D, TA> startElement = elements.get(0);
-			FlexoDocumentElement<D, TA> endElement = elements.get(elements.size() - 1);
+			FlexoDocElement<D, TA> startElement = elements.get(0);
+			FlexoDocElement<D, TA> endElement = elements.get(elements.size() - 1);
 			try {
 				newFragment = (F) document.getFragment(startElement, endElement);
 			} catch (FragmentConsistencyException e) {
@@ -164,24 +164,24 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 			addSelectionListener(new FIBSelectionListener() {
 				@Override
 				public void selectionChanged(List<Object> selection) {
-					List<FlexoDocumentElement<?, ?>> elements = new ArrayList<>();
+					List<FlexoDocElement<?, ?>> elements = new ArrayList<>();
 					FlexoDocument<?, ?> doc = null;
 					if (selection != null) {
 						for (Object o : selection) {
-							if (o instanceof FlexoDocumentElement && ((FlexoDocumentElement) o).getFlexoDocument() != null) {
+							if (o instanceof FlexoDocElement && ((FlexoDocElement) o).getFlexoDocument() != null) {
 								if (doc == null) {
-									doc = ((FlexoDocumentElement) o).getFlexoDocument();
+									doc = ((FlexoDocElement) o).getFlexoDocument();
 								}
-								if (doc == ((FlexoDocumentElement) o).getFlexoDocument()) {
-									elements.add((FlexoDocumentElement<?, ?>) o);
+								if (doc == ((FlexoDocElement) o).getFlexoDocument()) {
+									elements.add((FlexoDocElement<?, ?>) o);
 								}
 							}
 						}
 					}
 					final FlexoDocument<?, ?> docReference = doc;
-					Collections.sort(elements, new Comparator<FlexoDocumentElement>() {
+					Collections.sort(elements, new Comparator<FlexoDocElement>() {
 						@Override
-						public int compare(FlexoDocumentElement o1, FlexoDocumentElement o2) {
+						public int compare(FlexoDocElement o1, FlexoDocElement o2) {
 							return docReference.getElements().indexOf(o1) - docReference.getElements().indexOf(o2);
 						}
 					});
@@ -245,17 +245,17 @@ public abstract class FIBDocumentFragmentSelector<F extends FlexoDocumentFragmen
 
 	}
 
-	public List<? extends FlexoDocumentElement<D, TA>> getSelectedDocumentElements() {
+	public List<? extends FlexoDocElement<D, TA>> getSelectedDocumentElements() {
 		if (getSelectedValue() != null) {
 			return getSelectedValue().getElements();
 		}
 		return null;
 	}
 
-	public void setSelectedDocumentElements(List<? extends FlexoDocumentElement<D, TA>> selection) {
+	public void setSelectedDocumentElements(List<? extends FlexoDocElement<D, TA>> selection) {
 		// System.out.println("############### setSelectedDocumentElements with " + selection);
 		// System.out.println("old=" + getSelectedDocumentElements());
-		// List<FlexoDocumentElement<D, TA>> old = getSelectedDocumentElements();
+		// List<FlexoDocElement<D, TA>> old = getSelectedDocumentElements();
 		// System.out.println("old.equals(selection)=" + old.equals(selection));
 		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
 		/*if (getSelectedObject() != getSelectedValue()) {

@@ -34,9 +34,9 @@ import org.openflexo.model.annotations.Setter;
 
 /**
  * Generic abstract concept representing an object beeing part of a text-based document at root level<br>
- * A {@link FlexoDocument} is composed of a sequence of {@link FlexoDocumentElement}<br>
+ * A {@link FlexoDocument} is composed of a sequence of {@link FlexoDocElement}<br>
  * 
- * A FlexoDocumentElement has a unique identifier
+ * A FlexoDocElement has a unique identifier
  * 
  * @author sylvain
  *
@@ -46,20 +46,20 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FlexoDocumentElement.FlexoDocumentElementImpl.class)
-public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+@ImplementationClass(FlexoDocElement.FlexoDocumentElementImpl.class)
+public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String IDENTIFIER_KEY = "identifier";
 	@PropertyIdentifier(type = String.class)
 	public static final String BASE_IDENTIFIER_KEY = "baseIdentifier";
-	@PropertyIdentifier(type = FlexoDocumentElementContainer.class)
+	@PropertyIdentifier(type = FlexoDocElementContainer.class)
 	public static final String CONTAINER_KEY = "container";
 
 	public static final String CHILDREN_ELEMENTS_KEY = "childrenElements";
 
 	/**
-	 * Return identifier of the {@link FlexoDocumentElement} in the {@link FlexoDocument}<br>
+	 * Return identifier of the {@link FlexoDocElement} in the {@link FlexoDocument}<br>
 	 * The identifier is here a {@link String} and MUST be unique regarding the whole {@link FlexoDocument}.<br>
 	 * Please note that two different documents may have both a paragraph with same identifier
 	 * 
@@ -73,7 +73,7 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	public void setIdentifier(String identifier);
 
 	/**
-	 * Return identifier of the {@link FlexoDocumentElement} in the template {@link FlexoDocument} if this element<br>
+	 * Return identifier of the {@link FlexoDocElement} in the template {@link FlexoDocument} if this element<br>
 	 * has been built according to template-based operation
 	 * 
 	 * @return
@@ -90,7 +90,7 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	public List<FlexoDocumentElement<D, TA>> getChildrenElements();
+	public List<FlexoDocElement<D, TA>> getChildrenElements();
 
 	public void invalidateChildrenElements();
 
@@ -103,10 +103,10 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 */
 	@Getter(CONTAINER_KEY)
-	public FlexoDocumentElementContainer<D, TA> getContainer();
+	public FlexoDocElementContainer<D, TA> getContainer();
 
 	@Setter(CONTAINER_KEY)
-	public void setContainer(FlexoDocumentElementContainer<D, TA> container);
+	public void setContainer(FlexoDocElementContainer<D, TA> container);
 
 	/**
 	 * Return index of this element in container
@@ -116,9 +116,9 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 	public int getIndex();
 
 	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocumentElement<D, TA> {
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocElement<D, TA> {
 
-		private List<FlexoDocumentElement<D, TA>> childrenElements = null;
+		private List<FlexoDocElement<D, TA>> childrenElements = null;
 
 		/**
 		 * Return the list of children elements for this element, which are infered to be children of current element while interpreting the
@@ -127,14 +127,14 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 		 * @return
 		 */
 		@Override
-		public List<FlexoDocumentElement<D, TA>> getChildrenElements() {
+		public List<FlexoDocElement<D, TA>> getChildrenElements() {
 			if (childrenElements == null) {
 				childrenElements = computeChildrenElements();
 			}
 			return childrenElements;
 		}
 
-		protected List<FlexoDocumentElement<D, TA>> computeChildrenElements() {
+		protected List<FlexoDocElement<D, TA>> computeChildrenElements() {
 			if (getFlexoDocument() == null) {
 				return null;
 			}
@@ -144,7 +144,7 @@ public interface FlexoDocumentElement<D extends FlexoDocument<D, TA>, TA extends
 		@Override
 		public void invalidateChildrenElements() {
 			if (childrenElements != null) {
-				for (FlexoDocumentElement<D, TA> e : childrenElements) {
+				for (FlexoDocElement<D, TA> e : childrenElements) {
 					e.invalidateChildrenElements();
 				}
 			}

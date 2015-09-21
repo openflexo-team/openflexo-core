@@ -47,60 +47,60 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoTableRow<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoDocTableRow<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
-	@PropertyIdentifier(type = FlexoTable.class)
+	@PropertyIdentifier(type = FlexoDocTable.class)
 	public static final String TABLE_KEY = "table";
 
-	@PropertyIdentifier(type = FlexoTableCell.class, cardinality = Cardinality.LIST)
+	@PropertyIdentifier(type = FlexoDocTableCell.class, cardinality = Cardinality.LIST)
 	public static final String TABLE_CELLS_KEY = "tableCells";
 
 	@Getter(TABLE_KEY)
-	public FlexoTable<D, TA> getTable();
+	public FlexoDocTable<D, TA> getTable();
 
 	@Setter(TABLE_KEY)
-	public void setTable(FlexoTable<D, TA> table);
+	public void setTable(FlexoDocTable<D, TA> table);
 
 	/**
 	 * Return the list of cells of this row
 	 * 
 	 * @return
 	 */
-	@Getter(value = TABLE_CELLS_KEY, cardinality = Cardinality.LIST, inverse = FlexoTableCell.ROW_KEY)
+	@Getter(value = TABLE_CELLS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocTableCell.ROW_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoTableCell<D, TA>> getTableCells();
+	public List<FlexoDocTableCell<D, TA>> getTableCells();
 
 	@Setter(TABLE_CELLS_KEY)
-	public void setTableCells(List<FlexoTableCell<D, TA>> someTableCells);
+	public void setTableCells(List<FlexoDocTableCell<D, TA>> someTableCells);
 
 	/**
-	 * Add table cell to this {@link FlexoTableRow} (public API).<br>
-	 * Element will be added to underlying technology-specific model and {@link FlexoTableRow} will be updated accordingly
+	 * Add table cell to this {@link FlexoDocTableRow} (public API).<br>
+	 * Element will be added to underlying technology-specific model and {@link FlexoDocTableRow} will be updated accordingly
 	 */
 	@Adder(TABLE_CELLS_KEY)
 	@PastingPoint
-	public void addToTableCells(FlexoTableCell<D, TA> aTableCell);
+	public void addToTableCells(FlexoDocTableCell<D, TA> aTableCell);
 
 	/**
-	 * Remove table cell from this {@link FlexoTableRow} (public API).<br>
-	 * Element will be removed from underlying technology-specific model and {@link FlexoTableRow} will be updated accordingly
+	 * Remove table cell from this {@link FlexoDocTableRow} (public API).<br>
+	 * Element will be removed from underlying technology-specific model and {@link FlexoDocTableRow} will be updated accordingly
 	 */
 	@Remover(TABLE_CELLS_KEY)
-	public void removeFromTableCells(FlexoTableCell<D, TA> aTableCell);
+	public void removeFromTableCells(FlexoDocTableCell<D, TA> aTableCell);
 
 	/**
-	 * Insert table cell to this {@link FlexoTableRow} at supplied index (public API).<br>
-	 * Element will be inserted to underlying technology-specific model and {@link FlexoTableRow} will be updated accordingly
+	 * Insert table cell to this {@link FlexoDocTableRow} at supplied index (public API).<br>
+	 * Element will be inserted to underlying technology-specific model and {@link FlexoDocTableRow} will be updated accordingly
 	 */
-	public void insertTableCellAtIndex(FlexoTableCell<D, TA> anElement, int index);
+	public void insertTableCellAtIndex(FlexoDocTableCell<D, TA> anElement, int index);
 
 	/**
-	 * Move table cell in this {@link FlexoTableRow} at supplied index (public API).<br>
-	 * Element will be moved inside underlying technology-specific model and {@link FlexoTableRow} will be updated accordingly
+	 * Move table cell in this {@link FlexoDocTableRow} at supplied index (public API).<br>
+	 * Element will be moved inside underlying technology-specific model and {@link FlexoDocTableRow} will be updated accordingly
 	 */
-	public void moveTableCellToIndex(FlexoTableCell<D, TA> anElement, int index);
+	public void moveTableCellToIndex(FlexoDocTableCell<D, TA> anElement, int index);
 
 	/**
 	 * Return index of the row<br>
@@ -121,10 +121,10 @@ public interface FlexoTableRow<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * Return element identified by identifier, asserting that this element exists in the row (eg a paragraph in a cell), or null if no such
 	 * element exists
 	 */
-	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
+	public FlexoDocElement<D, TA> getElementWithIdentifier(String identifier);
 
 	public static abstract class FlexoTableRowImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoTableRow<D, TA> {
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocTableRow<D, TA> {
 
 		@Override
 		public int getIndex() {

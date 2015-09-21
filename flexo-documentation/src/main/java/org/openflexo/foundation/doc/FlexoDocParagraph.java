@@ -50,12 +50,12 @@ import org.openflexo.toolbox.StringUtils;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentElement<D, TA> {
+public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
 
-	@PropertyIdentifier(type = FlexoRun.class, cardinality = Cardinality.LIST)
+	@PropertyIdentifier(type = FlexoDocRun.class, cardinality = Cardinality.LIST)
 	public static final String RUNS_KEY = "runs";
 
-	@PropertyIdentifier(type = FlexoStyle.class)
+	@PropertyIdentifier(type = FlexoDocStyle.class)
 	public static final String STYLE_KEY = "style";
 
 	/**
@@ -63,47 +63,47 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 * 
 	 * @return
 	 */
-	@Getter(value = RUNS_KEY, cardinality = Cardinality.LIST, inverse = FlexoRun.PARAGRAPH_KEY)
+	@Getter(value = RUNS_KEY, cardinality = Cardinality.LIST, inverse = FlexoDocRun.PARAGRAPH_KEY)
 	@XMLElement(primary = true)
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
-	public List<FlexoRun<D, TA>> getRuns();
+	public List<FlexoDocRun<D, TA>> getRuns();
 
 	@Setter(RUNS_KEY)
-	public void setRuns(List<FlexoRun<D, TA>> someRuns);
+	public void setRuns(List<FlexoDocRun<D, TA>> someRuns);
 
 	/**
-	 * Add run to this {@link FlexoParagraph} (public API).<br>
-	 * Element will be added to underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 * Add run to this {@link FlexoDocParagraph} (public API).<br>
+	 * Element will be added to underlying technology-specific model and {@link FlexoDocParagraph} will be updated accordingly
 	 */
 	@Adder(RUNS_KEY)
 	@PastingPoint
-	public void addToRuns(FlexoRun<D, TA> aRun);
+	public void addToRuns(FlexoDocRun<D, TA> aRun);
 
 	/**
-	 * Remove run from this {@link FlexoParagraph} (public API).<br>
-	 * Element will be removed from underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 * Remove run from this {@link FlexoDocParagraph} (public API).<br>
+	 * Element will be removed from underlying technology-specific model and {@link FlexoDocParagraph} will be updated accordingly
 	 */
 	@Remover(RUNS_KEY)
-	public void removeFromRuns(FlexoRun<D, TA> aRun);
+	public void removeFromRuns(FlexoDocRun<D, TA> aRun);
 
 	/**
-	 * Insert run to this {@link FlexoParagraph} at supplied index (public API).<br>
-	 * Element will be inserted to underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 * Insert run to this {@link FlexoDocParagraph} at supplied index (public API).<br>
+	 * Element will be inserted to underlying technology-specific model and {@link FlexoDocParagraph} will be updated accordingly
 	 */
-	public void insertRunAtIndex(FlexoRun<D, TA> anElement, int index);
+	public void insertRunAtIndex(FlexoDocRun<D, TA> anElement, int index);
 
 	/**
-	 * Move run in this {@link FlexoParagraph} at supplied index (public API).<br>
-	 * Element will be moved inside underlying technology-specific model and {@link FlexoParagraph} will be updated accordingly
+	 * Move run in this {@link FlexoDocParagraph} at supplied index (public API).<br>
+	 * Element will be moved inside underlying technology-specific model and {@link FlexoDocParagraph} will be updated accordingly
 	 */
-	public void moveRunToIndex(FlexoRun<D, TA> anElement, int index);
+	public void moveRunToIndex(FlexoDocRun<D, TA> anElement, int index);
 
 	@Getter(value = STYLE_KEY)
-	public FlexoStyle<D, TA> getStyle();
+	public FlexoDocStyle<D, TA> getStyle();
 
 	@Setter(STYLE_KEY)
-	public void setStyle(FlexoStyle<D, TA> style);
+	public void setStyle(FlexoDocStyle<D, TA> style);
 
 	/**
 	 * Return a string representation (plain text) of contents of the paragraph (styles associated to runs are not reflected)
@@ -128,10 +128,10 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 	 * 
 	 * @return
 	 */
-	// public List<FlexoParagraph<D,TA>> getSubParagraphs();
+	// public List<FlexoDocParagraph<D,TA>> getSubParagraphs();
 
 	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoParagraph<D, TA> {
+			FlexoDocumentElementImpl<D, TA> implements FlexoDocParagraph<D, TA> {
 
 		@Override
 		public String toString() {
@@ -140,7 +140,7 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 		}
 
 		@Override
-		protected List<FlexoDocumentElement<D, TA>> computeChildrenElements() {
+		protected List<FlexoDocElement<D, TA>> computeChildrenElements() {
 			if (getFlexoDocument() == null) {
 				return null;
 			}
@@ -154,14 +154,14 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 
 			int i = start;
 
-			List<FlexoDocumentElement<D, TA>> returned = new ArrayList<FlexoDocumentElement<D, TA>>();
+			List<FlexoDocElement<D, TA>> returned = new ArrayList<FlexoDocElement<D, TA>>();
 
 			while (i < getFlexoDocument().getElements().size()) {
-				FlexoDocumentElement<D, TA> e = getFlexoDocument().getElements().get(i);
+				FlexoDocElement<D, TA> e = getFlexoDocument().getElements().get(i);
 
-				if (e instanceof FlexoParagraph) {
-					if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
-						if (((FlexoParagraph<D, TA>) e).getStyle().getLevel() <= parentLevel) {
+				if (e instanceof FlexoDocParagraph) {
+					if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
+						if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel() <= parentLevel) {
 							return returned;
 						}
 					}
@@ -169,15 +169,15 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 
 				if (childLevel == null) {
 					returned.add(e);
-					if (e instanceof FlexoParagraph) {
-						if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
-							childLevel = ((FlexoParagraph<D, TA>) e).getStyle().getLevel();
+					if (e instanceof FlexoDocParagraph) {
+						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
+							childLevel = ((FlexoDocParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
 				} else {
-					if (e instanceof FlexoParagraph) {
-						if (((FlexoParagraph<D, TA>) e).getStyle() != null) {
-							if (((FlexoParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
+					if (e instanceof FlexoDocParagraph) {
+						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null) {
+							if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
 								returned.add(e);
 							}
 						}
@@ -185,9 +185,9 @@ public interface FlexoParagraph<D extends FlexoDocument<D, TA>, TA extends Techn
 				}
 
 				/*if (childLevel == null) 
-				if (e instanceof FlexoParagraph) {
-					if (((FlexoParagraph<D, TA>) e).getStyle() != null && ((FlexoParagraph<D, TA>) e).getStyle().isLevelled()) {
-						if (((FlexoParagraph<D, TA>) e).getStyle().getLevel() <= l) {
+				if (e instanceof FlexoDocParagraph) {
+					if (((FlexoDocParagraph<D, TA>) e).getStyle() != null && ((FlexoDocParagraph<D, TA>) e).getStyle().isLevelled()) {
+						if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel() <= l) {
 							return returned;
 						}
 					}

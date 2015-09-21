@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
+import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -44,12 +44,12 @@ import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoFragmentRole<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
 	public static final String TEXT_BINDINGS_KEY = "textBindings";
-	@PropertyIdentifier(type = FlexoDocumentFragment.class)
+	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String FRAGMENT_KEY = "fragment";
 
 	public FlexoDocument<?, ?> getDocument();
@@ -89,7 +89,7 @@ public interface FlexoFragmentRole<F extends FlexoDocumentFragment<D, TA>, D ext
 
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocumentFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoRoleImpl<F>implements FlexoFragmentRole<F, D, TA> {
 
 		@Override

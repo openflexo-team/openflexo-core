@@ -20,14 +20,13 @@
 
 package org.openflexo.foundation.doc;
 
+import java.util.List;
+
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
 
 /**
- * Generic abstract concept representing a run in a paragraph of a text-based document (eg .docx, .odt, etc...)
+ * Implemented by all concepts which may contains some FlexoDocElement
  * 
  * @author sylvain
  *
@@ -37,36 +36,14 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoDocElementContainer<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+		InnerFlexoDocument<D, TA> {
 
-	@PropertyIdentifier(type = FlexoParagraph.class)
-	public static final String PARAGRAPH_KEY = "paragraph";
-
-	@Getter(PARAGRAPH_KEY)
-	public FlexoParagraph<D, TA> getParagraph();
-
-	@Setter(PARAGRAPH_KEY)
-	public void setParagraph(FlexoParagraph<D, TA> paragraph);
+	public List<? extends FlexoDocElement<D, TA>> getElements();
 
 	/**
-	 * Return index of the run<br>
-	 * Index of a run is the run occurence in the paragraph
-	 * 
-	 * @return
+	 * Return element identified by identifier, or null if no such element exists
 	 */
-	public int getIndex();
-
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoRun<D, TA> {
-
-		@Override
-		public int getIndex() {
-			if (getParagraph() != null) {
-				return getParagraph().getRuns().indexOf(this);
-			}
-			return -1;
-		}
-
-	}
+	public FlexoDocElement<D, TA> getElementWithIdentifier(String identifier);
 
 }

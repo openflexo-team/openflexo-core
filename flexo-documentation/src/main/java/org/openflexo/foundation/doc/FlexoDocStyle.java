@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
+public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -47,7 +47,7 @@ public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends Technolog
 	public static final String LEVEL_KEY = "level";
 
 	/**
-	 * Return name of the {@link FlexoStyle} in the {@link FlexoDocument}<br>
+	 * Return name of the {@link FlexoDocStyle} in the {@link FlexoDocument}<br>
 	 * 
 	 * @return
 	 */
@@ -58,7 +58,7 @@ public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends Technolog
 	public void setName(String name);
 
 	/**
-	 * Return identifier of the {@link FlexoStyle} in the {@link FlexoDocument}<br>
+	 * Return identifier of the {@link FlexoDocStyle} in the {@link FlexoDocument}<br>
 	 * 
 	 * @return
 	 */
@@ -90,7 +90,7 @@ public interface FlexoStyle<D extends FlexoDocument<D, TA>, TA extends Technolog
 	public boolean isLevelled();
 
 	public static abstract class FlexoStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends InnerFlexoDocumentImpl<D, TA>implements FlexoStyle<D, TA> {
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocStyle<D, TA> {
 
 		@Override
 		public boolean isLevelled() {

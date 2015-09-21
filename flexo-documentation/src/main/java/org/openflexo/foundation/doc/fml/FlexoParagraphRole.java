@@ -20,16 +20,16 @@
 
 package org.openflexo.foundation.doc.fml;
 
-import org.openflexo.foundation.doc.FlexoParagraph;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoParagraphRole.FlexoParagraphRoleImpl.class)
-public interface FlexoParagraphRole<T extends FlexoParagraph<?, ?>> extends FlexoRole<T> {
+public interface FlexoParagraphRole<T extends FlexoDocParagraph<?, ?>> extends FlexoRole<T> {
 
-	public static abstract class FlexoParagraphRoleImpl<T extends FlexoParagraph<?, ?>> extends FlexoRoleImpl<T> implements
+	public static abstract class FlexoParagraphRoleImpl<T extends FlexoDocParagraph<?, ?>> extends FlexoRoleImpl<T> implements
 			FlexoParagraphRole<T> {
 
 	}

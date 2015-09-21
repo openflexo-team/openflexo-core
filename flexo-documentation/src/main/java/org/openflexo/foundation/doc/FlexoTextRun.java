@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRun<D, TA> {
+public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocRun<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TEXT_KEY = "text";

@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -103,7 +103,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoParagraph<D, TA> makeParagraph();
+	protected abstract FlexoDocParagraph<D, TA> makeParagraph();
 
 	/**
 	 * Build new empty run
@@ -138,35 +138,35 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * 
 	 * @return
 	 */
-	public abstract FlexoTable<D, TA> makeTable();
+	public abstract FlexoDocTable<D, TA> makeTable();
 
 	/**
 	 * Build new empty table row
 	 * 
 	 * @return
 	 */
-	public abstract FlexoTableRow<D, TA> makeTableRow();
+	public abstract FlexoDocTableRow<D, TA> makeTableRow();
 
 	/**
 	 * Build new empty table cell
 	 * 
 	 * @return
 	 */
-	public abstract FlexoTableCell<D, TA> makeTableCell();
+	public abstract FlexoDocTableCell<D, TA> makeTableCell();
 
 	/**
 	 * Build new empty style
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoStyle<D, TA> makeStyle();
+	protected abstract FlexoDocStyle<D, TA> makeStyle();
 
 	/**
 	 * Build new empty fragment
 	 * 
 	 * @return
 	 */
-	protected abstract FlexoDocumentFragment<D, TA> makeFragment(D document);
+	protected abstract FlexoDocFragment<D, TA> makeFragment(D document);
 
 	/**
 	 * Build new fragment
@@ -176,7 +176,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 * @throws FragmentConsistencyException
 	 */
-	public FlexoDocumentFragment<D, TA> makeFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+	public FlexoDocFragment<D, TA> makeFragment(FlexoDocElement<D, TA> startElement, FlexoDocElement<D, TA> endElement)
 			throws FragmentConsistencyException {
 		if (startElement == null) {
 			throw new FragmentConsistencyException("Undefined start element");
@@ -184,7 +184,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		if (endElement == null) {
 			throw new FragmentConsistencyException("Undefined end element");
 		}
-		FlexoDocumentFragment<D, TA> returned = makeFragment(startElement.getFlexoDocument());
+		FlexoDocFragment<D, TA> returned = makeFragment(startElement.getFlexoDocument());
 		returned.setStartElement(startElement);
 		returned.setEndElement(endElement);
 		// Perform some checks
@@ -192,7 +192,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return returned;
 	}
 
-	private final Map<FlexoDocumentElement<D, TA>, Map<FlexoDocumentElement<D, TA>, FlexoDocumentFragment<D, TA>>> fragments = new HashMap<FlexoDocumentElement<D, TA>, Map<FlexoDocumentElement<D, TA>, FlexoDocumentFragment<D, TA>>>();
+	private final Map<FlexoDocElement<D, TA>, Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>> fragments = new HashMap<FlexoDocElement<D, TA>, Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>>();
 
 	/**
 	 * Retrieve fragment identified by start and end element<br>
@@ -203,15 +203,15 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 * @throws FragmentConsistencyException
 	 */
-	public FlexoDocumentFragment<D, TA> getFragment(FlexoDocumentElement<D, TA> startElement, FlexoDocumentElement<D, TA> endElement)
+	public FlexoDocFragment<D, TA> getFragment(FlexoDocElement<D, TA> startElement, FlexoDocElement<D, TA> endElement)
 			throws FragmentConsistencyException {
 
-		Map<FlexoDocumentElement<D, TA>, FlexoDocumentFragment<D, TA>> map = fragments.get(startElement);
+		Map<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>> map = fragments.get(startElement);
 		if (map == null) {
-			map = new HashMap<FlexoDocumentElement<D, TA>, FlexoDocumentFragment<D, TA>>();
+			map = new HashMap<FlexoDocElement<D, TA>, FlexoDocFragment<D, TA>>();
 			fragments.put(startElement, map);
 		}
-		FlexoDocumentFragment<D, TA> returned = map.get(endElement);
+		FlexoDocFragment<D, TA> returned = map.get(endElement);
 		if (returned == null) {
 			returned = makeFragment(startElement, endElement);
 			map.put(endElement, returned);
@@ -219,8 +219,8 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return returned;
 	}
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocumentFragment<D, TA> fragment, FlexoDocumentElement<D, TA> startElement,
-			int startRunId, int startCharId, FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId)
+	public TextSelection<D, TA> makeTextSelection(FlexoDocFragment<D, TA> fragment, FlexoDocElement<D, TA> startElement,
+			int startRunId, int startCharId, FlexoDocElement<D, TA> endElement, int endRunId, int endCharId)
 					throws FragmentConsistencyException {
 		TextSelection<D, TA> returned = newInstance(TextSelection.class);
 		returned.setFragment(fragment);
@@ -233,15 +233,15 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return returned;
 	}
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId, int startCharId,
-			FlexoDocumentElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
-		FlexoDocumentFragment<D, TA> fragment = getFragment(startElement, endElement);
+	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId, int startCharId,
+			FlexoDocElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
+		FlexoDocFragment<D, TA> fragment = getFragment(startElement, endElement);
 		return makeTextSelection(fragment, startElement, startRunId, startCharId, endElement, endRunId, endCharId);
 	}
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocumentElement<D, TA> startElement, int startRunId,
-			FlexoDocumentElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException {
-		FlexoDocumentFragment<D, TA> fragment = getFragment(startElement, endElement);
+	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId,
+			FlexoDocElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException {
+		FlexoDocFragment<D, TA> fragment = getFragment(startElement, endElement);
 		return makeTextSelection(fragment, startElement, startRunId, -1, endElement, endRunId, -1);
 	}
 

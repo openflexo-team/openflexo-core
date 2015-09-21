@@ -20,13 +20,14 @@
 
 package org.openflexo.foundation.doc;
 
-import java.util.List;
-
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
 
 /**
- * Implemented by all concepts which may contains some FlexoDocumentElement
+ * Generic abstract concept representing a run in a paragraph of a text-based document (eg .docx, .odt, etc...)
  * 
  * @author sylvain
  *
@@ -36,14 +37,36 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocumentElementContainer<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		InnerFlexoDocument<D, TA> {
+public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends InnerFlexoDocument<D, TA> {
 
-	public List<? extends FlexoDocumentElement<D, TA>> getElements();
+	@PropertyIdentifier(type = FlexoDocParagraph.class)
+	public static final String PARAGRAPH_KEY = "paragraph";
+
+	@Getter(PARAGRAPH_KEY)
+	public FlexoDocParagraph<D, TA> getParagraph();
+
+	@Setter(PARAGRAPH_KEY)
+	public void setParagraph(FlexoDocParagraph<D, TA> paragraph);
 
 	/**
-	 * Return element identified by identifier, or null if no such element exists
+	 * Return index of the run<br>
+	 * Index of a run is the run occurence in the paragraph
+	 * 
+	 * @return
 	 */
-	public FlexoDocumentElement<D, TA> getElementWithIdentifier(String identifier);
+	public int getIndex();
+
+	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends InnerFlexoDocumentImpl<D, TA>implements FlexoDocRun<D, TA> {
+
+		@Override
+		public int getIndex() {
+			if (getParagraph() != null) {
+				return getParagraph().getRuns().indexOf(this);
+			}
+			return -1;
+		}
+
+	}
 
 }

@@ -29,8 +29,8 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentFragment;
-import org.openflexo.foundation.doc.FlexoTable;
+import org.openflexo.foundation.doc.FlexoDocFragment;
+import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -50,10 +50,10 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoTableRole.FlexoTableRoleImpl.class)
-public interface FlexoTableRole<T extends FlexoTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FlexoRole<T> {
 
-	@PropertyIdentifier(type = FlexoDocumentFragment.class)
+	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String TABLE_KEY = "table";
 	@PropertyIdentifier(type = String.class)
 	public static final String TABLE_ID_KEY = "tableId";
@@ -146,7 +146,7 @@ public interface FlexoTableRole<T extends FlexoTable<D, TA>, D extends FlexoDocu
 
 	public BindingModel getTableBindingModel();
 
-	public static abstract class FlexoTableRoleImpl<T extends FlexoTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 			extends FlexoRoleImpl<T>implements FlexoTableRole<T, D, TA> {
 
 		private BindingModel tableBindingModel;

@@ -48,11 +48,11 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentElement;
-import org.openflexo.foundation.doc.FlexoParagraph;
-import org.openflexo.foundation.doc.FlexoTable;
-import org.openflexo.foundation.doc.FlexoTableCell;
-import org.openflexo.foundation.doc.FlexoTableRow;
+import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocTable;
+import org.openflexo.foundation.doc.FlexoDocTableCell;
+import org.openflexo.foundation.doc.FlexoDocTableRow;
 import org.openflexo.foundation.doc.fml.FlexoTableRole.FlexoTableRoleImpl;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -83,13 +83,13 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  * @param <T>
- *            type of referenced object (here this is a {@link FlexoTable})
+ *            type of referenced object (here this is a {@link FlexoDocTable})
  */
 @ModelEntity
 @ImplementationClass(TableActorReference.TableActorReferenceImpl.class)
 @XMLElement
 @FML("TableActorReference")
-public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorReference<T> {
+public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TABLE_IDENTIFIER_KEY = "tableIdentifier";
@@ -156,7 +156,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class TableActorReferenceImpl<T extends FlexoTable<?, ?>> extends ActorReferenceImpl<T>
+	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T>
 			implements TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
@@ -205,10 +205,10 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 				/*FlexoDocument<?, ?> document = getFlexoDocument();
 				if (document != null) {
 					if (getElementReferences().size() > 0) {
-						FlexoDocumentElement startElement = null, endElement = null;
+						FlexoDocElement startElement = null, endElement = null;
 						int index = 0;
 						for (ElementReference er : getElementReferences()) {
-							FlexoDocumentElement element = document.getElementWithIdentifier(er.getElementId());
+							FlexoDocElement element = document.getElementWithIdentifier(er.getElementId());
 							element.setBaseIdentifier(er.getTemplateElementId());
 							if (index == 0) {
 								startElement = element;
@@ -252,14 +252,14 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 				T templateTable = tableRole.getTable();
 
 				for (int i = 0; i < aTable.getTableRows().size(); i++) {
-					FlexoTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
+					FlexoDocTableRow<?, ?> generatedRow = aTable.getTableRows().get(i);
 					if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
-						FlexoParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
+						FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
 						if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
-							FlexoDocumentElement<?, ?> templateParagraph = templateTable
+							FlexoDocElement<?, ?> templateParagraph = templateTable
 									.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
-							FlexoTableCell<?, ?> templateCell = (FlexoTableCell<?, ?>) templateParagraph.getContainer();
-							FlexoTableRow<?, ?> templateRow = templateCell.getRow();
+							FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
+							FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
 							if (templateRow != null) {
 								if (templateRow.getIndex() < tableRole.getStartIterationIndex()
 										|| templateRow.getIndex() > tableRole.getEndIterationIndex()) {
@@ -321,8 +321,8 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 			System.out.println("rowObjects=" + rowObjects);
 			System.out.println("getModellingElement()=" + getModellingElement());
 
-			/*FlexoParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
-			FlexoParagraph<?, ?> generatedP = getModellingElement().getCell(0, 0).getParagraphs().get(0);
+			/*FlexoDocParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
+			FlexoDocParagraph<?, ?> generatedP = getModellingElement().getCell(0, 0).getParagraphs().get(0);
 			
 			System.out.println("templateP ID= " + templateP.getIdentifier());
 			System.out.println("templateP: " + templateP);
@@ -336,20 +336,20 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 
 			// start iteration row index is computed from the last static reference before iteration area
 			if (tableRole.getStartIterationIndex() > 0) {
-				FlexoTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows().get(tableRole.getStartIterationIndex() - 1);
-				List<FlexoTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
+				FlexoDocTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows().get(tableRole.getStartIterationIndex() - 1);
+				List<FlexoDocTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
 				if (lastHeaderRows.size() > 0) {
-					FlexoTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
+					FlexoDocTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
 					System.out.println("ok c'est bon pour " + lastHeaderRow + " index=" + lastHeaderRow.getIndex());
 					startIterationRowIndex = lastHeaderRow.getIndex() + 1;
 				}
 			}
 			// end iteration row index is computed from the last static reference after iteration area
 			if (tableRole.getEndIterationIndex() > 0 && tableRole.getEndIterationIndex() < tableRole.getTable().getTableRows().size() - 1) {
-				FlexoTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows().get(tableRole.getEndIterationIndex() + 1);
-				List<FlexoTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
+				FlexoDocTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows().get(tableRole.getEndIterationIndex() + 1);
+				List<FlexoDocTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
 				if (firstFooterRows.size() > 0) {
-					FlexoTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
+					FlexoDocTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
 					System.out.println("ok c'est bon pour " + firstFooterRow + " index=" + firstFooterRow.getIndex());
 					endIterationRowIndex = firstFooterRow.getIndex() - 1;
 				}
@@ -366,7 +366,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 				for (int i = 0; i < rowObjects.size() - currentRowNumbers; i++) {
 					System.out.println("Add row " + (i + endIterationRowIndex + 1));
 
-					FlexoTableRow clonedRow = (FlexoTableRow<?, ?>) getModellingElement().getTableRows().get(i + endIterationRowIndex)
+					FlexoDocTableRow clonedRow = (FlexoDocTableRow<?, ?>) getModellingElement().getTableRows().get(i + endIterationRowIndex)
 							.cloneObject();
 					getModellingElement().insertTableRowAtIndex(clonedRow, (i + endIterationRowIndex + 1));
 				}
@@ -377,7 +377,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 				for (int i = 0; i < currentRowNumbers - rowObjects.size(); i++) {
 					System.out.println("remove row at index " + (i + endIterationRowIndex + 1));
 					getModellingElement()
-							.removeFromTableRows((FlexoTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
+							.removeFromTableRows((FlexoDocTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
 				}
 			}
 
@@ -403,7 +403,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 							}
 						});
 						System.out.println("value=" + value);
-						FlexoTableCell<?, ?> cell = getModellingElement().getCell(i + startIterationRowIndex, ctb.getColumnIndex());
+						FlexoDocTableCell<?, ?> cell = getModellingElement().getCell(i + startIterationRowIndex, ctb.getColumnIndex());
 						cell.setRawText((String) value);
 
 					} catch (TypeMismatchException e) {
@@ -429,11 +429,11 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		 *            identifier of template row
 		 * @return
 		 */
-		public List<FlexoTableRow<?, ?>> getRowsMatchingTemplateRowId(String templateRowId) {
-			List<FlexoTableRow<?, ?>> returned = new ArrayList<FlexoTableRow<?, ?>>();
+		public List<FlexoDocTableRow<?, ?>> getRowsMatchingTemplateRowId(String templateRowId) {
+			List<FlexoDocTableRow<?, ?>> returned = new ArrayList<FlexoDocTableRow<?, ?>>();
 			for (StaticRowReference srr : getStaticRowReferences()) {
 				if (srr.getTemplateRowId().equals(templateRowId)) {
-					FlexoTableRow<?, ?> matchingRow = getModellingElement().getRowWithIdentifier(srr.getRowId());
+					FlexoDocTableRow<?, ?> matchingRow = getModellingElement().getRowWithIdentifier(srr.getRowId());
 					returned.add(matchingRow);
 				}
 			}
@@ -446,7 +446,7 @@ public interface TableActorReference<T extends FlexoTable<?, ?>> extends ActorRe
 		 * @param templateRow
 		 * @return
 		 */
-		public List<FlexoTableRow<?, ?>> getRowsMatchingTemplateRow(FlexoTableRow<?, ?> templateRow) {
+		public List<FlexoDocTableRow<?, ?>> getRowsMatchingTemplateRow(FlexoDocTableRow<?, ?> templateRow) {
 			return getRowsMatchingTemplateRowId(templateRow.getIdentifier());
 		}
 

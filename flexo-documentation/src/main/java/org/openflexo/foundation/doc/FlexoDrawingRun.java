@@ -34,6 +34,6 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRun<D, TA> {
+public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocRun<D, TA> {
 
 }

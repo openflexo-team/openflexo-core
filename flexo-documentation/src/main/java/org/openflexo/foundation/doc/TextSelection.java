@@ -41,7 +41,7 @@ package org.openflexo.foundation.doc;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.doc.FlexoDocumentFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -69,7 +69,7 @@ import org.openflexo.toolbox.StringUtils;
  * <li>end run index (in the last document element)</li>
  * <li>end character index (in the start run)</li>
  * </ul>
- * A {@link TextSelection} MUST reference a valid {@link FlexoDocumentFragment} containing the text selection
+ * A {@link TextSelection} MUST reference a valid {@link FlexoDocFragment} containing the text selection
  * 
  * @author sylvain
  * 
@@ -79,14 +79,14 @@ import org.openflexo.toolbox.StringUtils;
 @XMLElement
 public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObject {
 
-	@PropertyIdentifier(type = FlexoDocumentFragment.class)
+	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String FRAGMENT_KEY = "fragment";
 
-	@PropertyIdentifier(type = FlexoDocumentElement.class)
+	@PropertyIdentifier(type = FlexoDocElement.class)
 	public static final String START_ELEMENT_KEY = "startElement";
 	@PropertyIdentifier(type = String.class)
 	public static final String START_ELEMENT_IDENTIFIER_KEY = "startElementId";
-	@PropertyIdentifier(type = FlexoDocumentElement.class)
+	@PropertyIdentifier(type = FlexoDocElement.class)
 	public static final String END_ELEMENT_KEY = "endElement";
 	@PropertyIdentifier(type = String.class)
 	public static final String END_ELEMENT_IDENTIFIER_KEY = "endElementId";
@@ -105,16 +105,16 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	 * @return
 	 */
 	@Getter(FRAGMENT_KEY)
-	public FlexoDocumentFragment<D, TA> getFragment();
+	public FlexoDocFragment<D, TA> getFragment();
 
 	@Setter(FRAGMENT_KEY)
-	public void setFragment(FlexoDocumentFragment<D, TA> fragment);
+	public void setFragment(FlexoDocFragment<D, TA> fragment);
 
 	@Getter(START_ELEMENT_KEY)
-	public FlexoDocumentElement<D, TA> getStartElement();
+	public FlexoDocElement<D, TA> getStartElement();
 
 	@Setter(START_ELEMENT_KEY)
-	public void setStartElement(FlexoDocumentElement<D, TA> startElement);
+	public void setStartElement(FlexoDocElement<D, TA> startElement);
 
 	@Getter(START_ELEMENT_IDENTIFIER_KEY)
 	@XMLAttribute
@@ -124,10 +124,10 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	public void setStartElementIdentifier(String startElementIdentifier);
 
 	@Getter(END_ELEMENT_KEY)
-	public FlexoDocumentElement<D, TA> getEndElement();
+	public FlexoDocElement<D, TA> getEndElement();
 
 	@Setter(END_ELEMENT_KEY)
-	public void setEndElement(FlexoDocumentElement<D, TA> endElement);
+	public void setEndElement(FlexoDocElement<D, TA> endElement);
 
 	@Getter(END_ELEMENT_IDENTIFIER_KEY)
 	@XMLAttribute
@@ -165,18 +165,18 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	public void setEndCharacterIndex(int endRunIndex);
 
 	/**
-	 * Return {@link FlexoRun} where first character of this {@link TextSelection} is defined
+	 * Return {@link FlexoDocRun} where first character of this {@link TextSelection} is defined
 	 * 
 	 * @return
 	 */
-	public FlexoRun<D, TA> getStartRun();
+	public FlexoDocRun<D, TA> getStartRun();
 
 	/**
-	 * Return {@link FlexoRun} where last character of this {@link TextSelection} is defined
+	 * Return {@link FlexoDocRun} where last character of this {@link TextSelection} is defined
 	 * 
 	 * @return
 	 */
-	public FlexoRun<D, TA> getEndRun();
+	public FlexoDocRun<D, TA> getEndRun();
 
 	/**
 	 * Return string raw representation of text beeing selected<br>
@@ -206,9 +206,9 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TextSelection.class.getPackage().getName());
 
-		private FlexoDocumentElement<D, TA> startElement = null;
+		private FlexoDocElement<D, TA> startElement = null;
 		private String startElementIdentifier = null;
-		private FlexoDocumentElement<D, TA> endElement = null;
+		private FlexoDocElement<D, TA> endElement = null;
 		private String endElementIdentifier = null;
 
 		@Override
@@ -224,7 +224,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 
 			if ((startElementIdentifier == null && this.startElementIdentifier != null)
 					|| (startElementIdentifier != null && !startElementIdentifier.equals(this.startElementIdentifier))) {
-				FlexoDocumentElement<D, TA> oldStartElement = getStartElement();
+				FlexoDocElement<D, TA> oldStartElement = getStartElement();
 				String oldStartElementId = getStartElementIdentifier();
 				this.startElementIdentifier = startElementIdentifier;
 				this.startElement = null;
@@ -234,7 +234,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		@Override
-		public FlexoDocumentElement<D, TA> getStartElement() {
+		public FlexoDocElement<D, TA> getStartElement() {
 			if (startElement == null && startElementIdentifier != null && getFragment() != null) {
 				startElement = getFragment().getFlexoDocument().getElementWithIdentifier(startElementIdentifier);
 			}
@@ -242,9 +242,9 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		@Override
-		public void setStartElement(FlexoDocumentElement<D, TA> startElement) {
+		public void setStartElement(FlexoDocElement<D, TA> startElement) {
 			if (startElement != this.startElement) {
-				FlexoDocumentElement<D, TA> oldValue = this.startElement;
+				FlexoDocElement<D, TA> oldValue = this.startElement;
 				this.startElement = startElement;
 				getPropertyChangeSupport().firePropertyChange(START_ELEMENT_KEY, oldValue, startElement);
 				getPropertyChangeSupport().firePropertyChange(START_ELEMENT_IDENTIFIER_KEY,
@@ -265,7 +265,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 
 			if ((endElementIdentifier == null && this.endElementIdentifier != null)
 					|| (endElementIdentifier != null && !endElementIdentifier.equals(this.endElementIdentifier))) {
-				FlexoDocumentElement<D, TA> oldEndElement = getEndElement();
+				FlexoDocElement<D, TA> oldEndElement = getEndElement();
 				String oldEndElementId = getEndElementIdentifier();
 				this.endElementIdentifier = endElementIdentifier;
 				this.endElement = null;
@@ -275,7 +275,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		@Override
-		public FlexoDocumentElement<D, TA> getEndElement() {
+		public FlexoDocElement<D, TA> getEndElement() {
 			if (endElement == null && endElementIdentifier != null && getFragment() != null) {
 				endElement = getFragment().getFlexoDocument().getElementWithIdentifier(endElementIdentifier);
 			}
@@ -283,9 +283,9 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		@Override
-		public void setEndElement(FlexoDocumentElement<D, TA> endElement) {
+		public void setEndElement(FlexoDocElement<D, TA> endElement) {
 			if (endElement != this.endElement) {
-				FlexoDocumentElement<D, TA> oldValue = this.endElement;
+				FlexoDocElement<D, TA> oldValue = this.endElement;
 				this.endElement = endElement;
 				getPropertyChangeSupport().firePropertyChange(END_ELEMENT_KEY, oldValue, endElement);
 				getPropertyChangeSupport().firePropertyChange(END_ELEMENT_IDENTIFIER_KEY,
@@ -294,15 +294,15 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		/**
-		 * Return {@link FlexoRun} where first character of this {@link TextSelection} is defined
+		 * Return {@link FlexoDocRun} where first character of this {@link TextSelection} is defined
 		 * 
 		 * @return
 		 */
 		@Override
 		public FlexoTextRun<D, TA> getStartRun() {
-			if (getStartElement() instanceof FlexoParagraph
-					&& (getStartRunIndex() < ((FlexoParagraph<D, TA>) getStartElement()).getRuns().size())) {
-				FlexoRun<D, TA> returned = ((FlexoParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
+			if (getStartElement() instanceof FlexoDocParagraph
+					&& (getStartRunIndex() < ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().size())) {
+				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
 				if (returned instanceof FlexoTextRun) {
 					return (FlexoTextRun<D, TA>) returned;
 				}
@@ -311,15 +311,15 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		}
 
 		/**
-		 * Return {@link FlexoRun} where last character of this {@link TextSelection} is defined
+		 * Return {@link FlexoDocRun} where last character of this {@link TextSelection} is defined
 		 * 
 		 * @return
 		 */
 		@Override
 		public FlexoTextRun<D, TA> getEndRun() {
-			if (getEndElement() instanceof FlexoParagraph
-					&& (getEndRunIndex() < ((FlexoParagraph<D, TA>) getEndElement()).getRuns().size())) {
-				FlexoRun<D, TA> returned = ((FlexoParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
+			if (getEndElement() instanceof FlexoDocParagraph
+					&& (getEndRunIndex() < ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().size())) {
+				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
 				if (returned instanceof FlexoTextRun) {
 					return (FlexoTextRun<D, TA>) returned;
 				}
@@ -358,10 +358,10 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 			if (getStartElement() != null && getEndElement() != null) {
 				try {
 					StringBuffer sb = new StringBuffer();
-					FlexoDocumentFragment<D, TA> f = getStartElement().getFlexoDocument().getFragment(startElement, endElement);
-					for (FlexoDocumentElement<D, TA> element : f.getElements()) {
-						if (element instanceof FlexoParagraph) {
-							FlexoParagraph<D, TA> paragraph = (FlexoParagraph<D, TA>) element;
+					FlexoDocFragment<D, TA> f = getStartElement().getFlexoDocument().getFragment(startElement, endElement);
+					for (FlexoDocElement<D, TA> element : f.getElements()) {
+						if (element instanceof FlexoDocParagraph) {
+							FlexoDocParagraph<D, TA> paragraph = (FlexoDocParagraph<D, TA>) element;
 							boolean isFirst = (paragraph == getStartElement());
 							boolean isLast = (paragraph == getEndElement());
 							boolean isUnique = isFirst && isLast;

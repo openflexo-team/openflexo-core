@@ -52,10 +52,10 @@ import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.doc.FlexoDocumentElement;
-import org.openflexo.foundation.doc.FlexoDocumentElementContainer;
-import org.openflexo.foundation.doc.FlexoParagraph;
-import org.openflexo.foundation.doc.FlexoRun;
+import org.openflexo.foundation.doc.FlexoDocElement;
+import org.openflexo.foundation.doc.FlexoDocElementContainer;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
@@ -229,8 +229,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			try {
 				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
-				// FlexoDocumentFragment<?, ?> templateFragment = getFragmentRole().getFragment();
-				// FlexoDocumentFragment<?, ?> fragment = actorReference.getModellingElement();
+				// FlexoDocFragment<?, ?> templateFragment = getFragmentRole().getFragment();
+				// FlexoDocFragment<?, ?> fragment = actorReference.getModellingElement();
 
 				String value = getValue().getBindingValue(fci);
 
@@ -244,8 +244,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				}
 
 				else if (getTextSelection().isSingleParagraph()) {
-					FlexoRun<?, ?> templateStartRun = getTextSelection().getStartRun();
-					FlexoRun<?, ?> templateEndRun = getTextSelection().getEndRun();
+					FlexoDocRun<?, ?> templateStartRun = getTextSelection().getStartRun();
+					FlexoDocRun<?, ?> templateEndRun = getTextSelection().getEndRun();
 					List<String> newStructure = new ArrayList<String>();
 
 					if (getTextSelection().getStartCharacterIndex() > -1) {
@@ -296,20 +296,20 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		 */
 		private void performTextReplacementInSingleParagraphContext(List<String> newStructure, FragmentActorReference<?> actorReference) {
 
-			FlexoRun<D, TA> templateStartRun = getTextSelection().getStartRun();
-			FlexoRun<D, TA> templateEndRun = getTextSelection().getEndRun();
-			FlexoParagraph<D, TA> templateParagraph = (FlexoParagraph<D, TA>) getTextSelection().getStartElement();
+			FlexoDocRun<D, TA> templateStartRun = getTextSelection().getStartRun();
+			FlexoDocRun<D, TA> templateEndRun = getTextSelection().getEndRun();
+			FlexoDocParagraph<D, TA> templateParagraph = (FlexoDocParagraph<D, TA>) getTextSelection().getStartElement();
 
 			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
 
-				FlexoDocumentElement<?, ?> targetDocumentElement = actorReference
+				FlexoDocElement<?, ?> targetDocumentElement = actorReference
 						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
-				if (targetDocumentElement instanceof FlexoParagraph) {
-					FlexoParagraph<D, TA> targetParagraph = (FlexoParagraph<D, TA>) targetDocumentElement;
+				if (targetDocumentElement instanceof FlexoDocParagraph) {
+					FlexoDocParagraph<D, TA> targetParagraph = (FlexoDocParagraph<D, TA>) targetDocumentElement;
 
 					// We compute start target run relatively to the beginning of actual target paragraph, because
 					// we cannot rely on structure that may have changed because of concurrent modifications
-					FlexoRun<D, TA> startTargetRun = null;
+					FlexoDocRun<D, TA> startTargetRun = null;
 					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
 						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
 					}
@@ -319,7 +319,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					// We compute end target run relatively to the end of actual target paragraph, because
 					// we cannot rely on structure that may have changed because of concurrent modifications
-					FlexoRun<D, TA> endTargetRun = null;
+					FlexoDocRun<D, TA> endTargetRun = null;
 					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
 							.getRuns().size()) {
 						endTargetRun = targetParagraph.getRuns()
@@ -337,7 +337,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						// We have to add extra runs, at the end of actual structure
 						int currentIndex = endTargetRun.getIndex() + 1;
 						for (int i = 0; i < newStructure.size() - targetRunsNb; i++) {
-							FlexoRun<D, TA> clonedRun = (FlexoRun<D, TA>) startTargetRun.cloneObject();
+							FlexoDocRun<D, TA> clonedRun = (FlexoDocRun<D, TA>) startTargetRun.cloneObject();
 							targetParagraph.insertRunAtIndex(clonedRun, currentIndex++);
 							endTargetRun = clonedRun;
 						}
@@ -349,7 +349,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						int lastRunIndex = endTargetRun.getIndex();
 						endTargetRun = targetParagraph.getRuns().get(lastRunIndex - targetRunsNb + newStructure.size());
 						for (int i = 0; i < targetRunsNb - newStructure.size(); i++) {
-							FlexoRun<D, TA> runToRemove = targetParagraph.getRuns().get(lastRunIndex - i);
+							FlexoDocRun<D, TA> runToRemove = targetParagraph.getRuns().get(lastRunIndex - i);
 							targetParagraph.removeFromRuns(runToRemove);
 						}
 					}
@@ -362,7 +362,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					// Now the structures are same: targetRunNb == newStructure.size()
 					for (int i = 0; i < newStructure.size(); i++) {
-						FlexoRun<?, ?> run = targetParagraph.getRuns().get(i + startTargetRun.getIndex());
+						FlexoDocRun<?, ?> run = targetParagraph.getRuns().get(i + startTargetRun.getIndex());
 						String v = newStructure.get(i);
 						if (run instanceof FlexoTextRun) {
 							((FlexoTextRun<?, ?>) run).setText(v);
@@ -394,12 +394,12 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			int endIndex = -1;
 
 			// This is the container of elements located in generated fragment (not template fragment)
-			FlexoDocumentElementContainer<D, TA> container = null;
+			FlexoDocElementContainer<D, TA> container = null;
 
 			System.out.println("start=" + getTextSelection().getStartElement());
 			System.out.println("end=" + getTextSelection().getEndElement());
 
-			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
+			for (FlexoDocElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
 				if (container == null) {
 					container = e.getContainer();
 				}
@@ -409,7 +409,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					startIndex = index;
 				}
 			}
-			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
+			for (FlexoDocElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
 				if (container == null) {
 					container = e.getContainer();
 				}
@@ -433,8 +433,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				System.out.println("> " + l);
 			}
 
-			FlexoParagraph<D, TA> startParagraph = (FlexoParagraph<D, TA>) container.getElements().get(startIndex);
-			FlexoParagraph<D, TA> endParagraph = (FlexoParagraph<D, TA>) container.getElements().get(endIndex);
+			FlexoDocParagraph<D, TA> startParagraph = (FlexoDocParagraph<D, TA>) container.getElements().get(startIndex);
+			FlexoDocParagraph<D, TA> endParagraph = (FlexoDocParagraph<D, TA>) container.getElements().get(endIndex);
 
 			int targetParagraphsNb = endIndex - startIndex + 1;
 
@@ -445,7 +445,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				int currentIndex = endIndex + 1;
 				for (int i = 0; i < newStructure.size() - targetParagraphsNb; i++) {
 					// System.out.println("Adding paragraph");
-					FlexoParagraph<D, TA> clonedParagraph = (FlexoParagraph<D, TA>) startParagraph.cloneObject();
+					FlexoDocParagraph<D, TA> clonedParagraph = (FlexoDocParagraph<D, TA>) startParagraph.cloneObject();
 					clonedParagraph.setBaseIdentifier(getTextSelection().getEndElement().getIdentifier());
 					document.insertElementAtIndex(clonedParagraph, currentIndex++);
 					ElementReference er = actorReference.getFactory().newInstance(ElementReference.class);
@@ -462,31 +462,31 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				// We have to remove extra paragraphs
 				// We remove runs from the end of actual structure
 				int lastParagraphIndex = endIndex;
-				endParagraph = (FlexoParagraph<D, TA>) document.getElements()
+				endParagraph = (FlexoDocParagraph<D, TA>) document.getElements()
 						.get(lastParagraphIndex - targetParagraphsNb + newStructure.size());
 				endIndex = endParagraph.getIndex();
 				for (int i = 0; i < targetParagraphsNb - newStructure.size(); i++) {
 					// System.out.println("Removing paragraph");
-					FlexoParagraph<D, TA> paragraphToRemove = (FlexoParagraph<D, TA>) container.getElements().get(lastParagraphIndex - i);
+					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements().get(lastParagraphIndex - i);
 					document.removeFromElements(paragraphToRemove);
 					actorReference.removeReferencesTo(paragraphToRemove);
 				}
 			}
 
 			for (int i = 0; i < endIndex - startIndex + 1; i++) {
-				FlexoParagraph<D, TA> paragraph = (FlexoParagraph<D, TA>) container.getElements().get(i + startIndex);
+				FlexoDocParagraph<D, TA> paragraph = (FlexoDocParagraph<D, TA>) container.getElements().get(i + startIndex);
 				if (paragraph.getRuns().size() > 1) {
 					// We have to remove extra runs
 					// We remove runs from the end of actual structure
 					int runsToRemove = paragraph.getRuns().size() - 1;
 					for (int j = 0; j < runsToRemove; j++) {
-						FlexoRun<D, TA> runToRemove = paragraph.getRuns().get(paragraph.getRuns().size() - 1);
+						FlexoDocRun<D, TA> runToRemove = paragraph.getRuns().get(paragraph.getRuns().size() - 1);
 						paragraph.removeFromRuns(runToRemove);
 					}
 				}
 				else if (paragraph.getRuns().size() == 0) {
 					// We have to add default run
-					FlexoRun<D, TA> newRun = document.getFactory().makeTextRun("");
+					FlexoDocRun<D, TA> newRun = document.getFactory().makeTextRun("");
 					paragraph.addToRuns(newRun);
 				}
 
@@ -511,7 +511,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			if (getValue().isSettable()) {
 
 				FragmentActorReference<?> actorReference = (FragmentActorReference<?>) fci.getActorReference(getFragmentRole());
-				// FlexoDocumentFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
+				// FlexoDocFragment<?, ?> fragment = fci.getFlexoActor(getFragmentRole());
 
 				String value = null;
 
@@ -554,20 +554,20 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		 */
 		private String extractTextInSingleParagraphContext(FragmentActorReference<?> actorReference) {
 
-			FlexoRun<D, TA> templateStartRun = getTextSelection().getStartRun();
-			FlexoRun<D, TA> templateEndRun = getTextSelection().getEndRun();
-			FlexoParagraph<D, TA> templateParagraph = (FlexoParagraph<D, TA>) getTextSelection().getStartElement();
+			FlexoDocRun<D, TA> templateStartRun = getTextSelection().getStartRun();
+			FlexoDocRun<D, TA> templateEndRun = getTextSelection().getEndRun();
+			FlexoDocParagraph<D, TA> templateParagraph = (FlexoDocParagraph<D, TA>) getTextSelection().getStartElement();
 
 			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
 
-				FlexoDocumentElement<?, ?> targetDocumentElement = actorReference
+				FlexoDocElement<?, ?> targetDocumentElement = actorReference
 						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
-				if (targetDocumentElement instanceof FlexoParagraph) {
-					FlexoParagraph<D, TA> targetParagraph = (FlexoParagraph<D, TA>) targetDocumentElement;
+				if (targetDocumentElement instanceof FlexoDocParagraph) {
+					FlexoDocParagraph<D, TA> targetParagraph = (FlexoDocParagraph<D, TA>) targetDocumentElement;
 
 					// We compute start target run relatively to the beginning of actual target paragraph, because
 					// we cannot rely on structure that may have changed because of concurrent modifications
-					FlexoRun<D, TA> startTargetRun = null;
+					FlexoDocRun<D, TA> startTargetRun = null;
 					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
 						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
 					}
@@ -577,7 +577,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 					// We compute end target run relatively to the end of actual target paragraph, because
 					// we cannot rely on structure that may have changed because of concurrent modifications
-					FlexoRun<D, TA> endTargetRun = null;
+					FlexoDocRun<D, TA> endTargetRun = null;
 					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
 							.getRuns().size()) {
 						endTargetRun = targetParagraph.getRuns()
@@ -624,9 +624,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			int endIndex = -1;
 
 			// This is the container of elements located in generated fragment (not template fragment)
-			FlexoDocumentElementContainer<D, TA> container = null;
+			FlexoDocElementContainer<D, TA> container = null;
 
-			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
+			for (FlexoDocElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement())) {
 				if (container == null) {
 					container = e.getContainer();
 				}
@@ -635,7 +635,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					startIndex = index;
 				}
 			}
-			for (FlexoDocumentElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
+			for (FlexoDocElement e : actorReference.getElementsMatchingTemplateElement(getTextSelection().getEndElement())) {
 				if (container == null) {
 					container = e.getContainer();
 				}
@@ -647,7 +647,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			// Now, we look for the paragraphs that come just after
 			// If they are not bound to a template paragraph, we include them as part of FragmentActorReference
-			FlexoDocumentElement<D, TA> nextElement = null;
+			FlexoDocElement<D, TA> nextElement = null;
 			if (endIndex < container.getElements().size() - 1) {
 				nextElement = container.getElements().get(endIndex + 1);
 			}
@@ -670,7 +670,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			StringBuffer sb = new StringBuffer();
 			boolean isFirst = true;
 			for (int i = 0; i < endIndex - startIndex + 1; i++) {
-				FlexoParagraph<D, TA> paragraph = (FlexoParagraph<D, TA>) container.getElements().get(i + startIndex);
+				FlexoDocParagraph<D, TA> paragraph = (FlexoDocParagraph<D, TA>) container.getElements().get(i + startIndex);
 				sb.append((isFirst ? "" : StringUtils.LINE_SEPARATOR) + paragraph.getRawText());
 				isFirst = false;
 			}
