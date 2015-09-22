@@ -119,6 +119,13 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 		return (TableSelectorDetailsPanel) super.getCustomPanel();
 	}
 
+	@Override
+	public void setSelectedObject(Object selectedObject) {
+		// TODO Auto-generated method stub
+		super.setSelectedObject(selectedObject);
+		selectTableInDocumentEditor((T) selectedObject, getCustomPanel().getDocEditorWidget());
+	}
+
 	public static class TableSelectorFIBController extends SelectorFIBController {
 		public TableSelectorFIBController(final FIBComponent component, final FIBDocTableSelector selector) {
 			super(component, selector);
@@ -199,12 +206,19 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 			if (browserWidget != null) {
 				if (value == null) {
 					browserWidget.clearSelection();
-				} else {
+				}
+				else {
 					browserWidget.setSelected(value);
 				}
 			}
 
 			selectTableInDocumentEditor(value, getDocEditorWidget());
+		}
+
+		@Override
+		public void update() {
+			// TODO Auto-generated method stub
+			super.update();
 		}
 
 	}
