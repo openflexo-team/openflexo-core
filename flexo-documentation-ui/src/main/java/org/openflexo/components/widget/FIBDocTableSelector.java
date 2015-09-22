@@ -123,7 +123,10 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 	public void setSelectedObject(Object selectedObject) {
 		// TODO Auto-generated method stub
 		super.setSelectedObject(selectedObject);
-		selectTableInDocumentEditor((T) selectedObject, getCustomPanel().getDocEditorWidget());
+		TableSelectorDetailsPanel customPanel = (TableSelectorDetailsPanel) getCustomPanel(false);
+		if (customPanel != null) {
+			selectTableInDocumentEditor((T) selectedObject, customPanel.getDocEditorWidget());
+		}
 	}
 
 	public static class TableSelectorFIBController extends SelectorFIBController {
@@ -192,8 +195,6 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 		@Override
 		protected void selectValue(T value) {
 
-			System.out.println("Hop, on selectionne " + value);
-
 			/*FIBBrowserWidget browserWidget = getFIBBrowserWidget();
 			if (browserWidget != null) {
 				// Force reselect value because tree may have been recomputed
@@ -206,8 +207,7 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 			if (browserWidget != null) {
 				if (value == null) {
 					browserWidget.clearSelection();
-				}
-				else {
+				} else {
 					browserWidget.setSelected(value);
 				}
 			}
