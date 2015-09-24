@@ -414,9 +414,6 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 
 		@Override
 		public DataBinding<VirtualModelInstance> getBinding(AddFlexoConceptInstance object) {
-			System.out.println("Alors, j'ai pour " + object);
-			System.out.println("FML " + object.getFMLRepresentation());
-			System.out.println("VMI=" + object.getVirtualModelInstance());
 			return object.getVirtualModelInstance();
 		}
 
