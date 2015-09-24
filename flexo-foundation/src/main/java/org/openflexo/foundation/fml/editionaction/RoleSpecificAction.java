@@ -38,17 +38,23 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 /**
  * Represents an {@link TechnologySpecificAction} which address a specific technology through the reference to a {@link FlexoRole}
@@ -72,8 +78,12 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	@Setter(FLEXO_ROLE_KEY)
 	public void setFlexoRole(R role);
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
-			extends TechnologySpecificActionImpl<MS, T>implements RoleSpecificAction<R, MS, T> {
+	public Class<R> getRoleClass();
+
+	public List<R> getAvailableRoles();
+
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T> extends
+			TechnologySpecificActionImpl<MS, T> implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
@@ -91,6 +101,44 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 					+ getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + "()";
 		}
 
+		@Override
+		public List<R> getAvailableRoles() {
+			List<R> conceptRoles = getFlexoConcept().getAccessibleProperties(getRoleClass());
+			List<R> vmRoles = null;
+			if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+				vmRoles = getFlexoConcept().getOwningVirtualModel().getAccessibleProperties(getRoleClass());
+			}
+			if (conceptRoles.size() > 0) {
+				if (vmRoles != null && vmRoles.size() > 0) {
+					List<R> returned = new ArrayList<R>(vmRoles);
+					returned.addAll(conceptRoles);
+					return returned;
+				}
+				return conceptRoles;
+			}
+			if (vmRoles != null && vmRoles.size() > 0) {
+				return vmRoles;
+			}
+			return conceptRoles;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class RoleSpecificActionMustReferenceARole extends
+			ValidationRule<RoleSpecificActionMustReferenceARole, RoleSpecificAction> {
+		public RoleSpecificActionMustReferenceARole() {
+			super(RoleSpecificAction.class, "role_specific_action_must_adress_a_valid_role");
+		}
+
+		@Override
+		public ValidationIssue<RoleSpecificActionMustReferenceARole, RoleSpecificAction> applyValidation(RoleSpecificAction action) {
+			if (action.getFlexoRole() == null) {
+				return new ValidationError<RoleSpecificActionMustReferenceARole, RoleSpecificAction>(this, action,
+						"action_does_not_define_any_role");
+			}
+			return null;
+		}
 	}
 
 }
