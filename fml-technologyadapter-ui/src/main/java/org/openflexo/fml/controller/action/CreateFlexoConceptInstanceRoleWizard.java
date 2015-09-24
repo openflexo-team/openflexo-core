@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
@@ -102,9 +103,14 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 			return getAction().getModelSlotVirtualModel();
 		}
 
-		@Override
+		/*@Override
 		public void setModelSlot(FMLRTModelSlot modelSlot) {
 			super.setModelSlot(modelSlot);
+		}*/
+
+		@Override
+		protected void fireModelSlotChanged(ModelSlot<?> oldValue, ModelSlot<?> newValue) {
+			super.fireModelSlotChanged(oldValue, newValue);
 			getPropertyChangeSupport().firePropertyChange("modelSlotVirtualModel", null, getModelSlotVirtualModel());
 		}
 
