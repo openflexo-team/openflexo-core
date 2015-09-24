@@ -98,12 +98,6 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		return "";
 	}
 
-	@Override
-	public void updateCustomPanel(F editedObject) {
-		// TODO Auto-generated method stub
-		super.updateCustomPanel(editedObject);
-	}
-
 	private void updateWith(List<FlexoDocElement<D, TA>> elements) {
 
 		if (document == null) {
@@ -224,38 +218,15 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		// The browser must reflect the selection and DocXEditor should highlight selected fragment
 		@Override
 		protected void selectValue(F value) {
-			/*FIBBrowserWidget browserWidget = getFIBBrowserWidget();
-			if (browserWidget != null) {
-				// Force reselect value because tree may have been recomputed
-				browserWidget.setSelected(value);
-			}*/
 
-			System.out.println("selectValue with " + value);
-
-			// setSelectedValue(value);
-
+			// First notify selectedDocumentElements so that the browser will be notified
+			// for its selection to reflect selected fragment
 			if (value == null) {
 				FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", false, null);
-
-				System.out.println("CLEAR with " + getSelectedDocumentElements());
 			} else {
-				// FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null,
-				// value.getElements());
 				FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null,
 						value.getElements());
-				System.out.println("SELECT with " + value.getElements());
 			}
-
-			/*FIBBrowserWidget browserWidget = getFIBBrowserWidget();
-			if (browserWidget != null) {
-				if (value == null) {
-					FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", false, null);
-					// browserWidget.clearSelection();
-				} else {
-					FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null,
-							value.getElements());
-				}
-			}*/
 
 			selectFragmentInDocumentEditor(value, getDocEditorWidget());
 		}
@@ -266,22 +237,11 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		if (getEditedObject() != null) {
 			return getEditedObject().getElements();
 		}
-
-		/*if (getSelectedValue() != null) {
-			return getSelectedValue().getElements();
-		}*/
 		return Collections.emptyList();
 	}
 
 	public void setSelectedDocumentElements(List<? extends FlexoDocElement<D, TA>> selection) {
-		// System.out.println("############### setSelectedDocumentElements with " + selection);
-		// System.out.println("old=" + getSelectedDocumentElements());
-		// List<FlexoDocElement<D, TA>> old = getSelectedDocumentElements();
-		// System.out.println("old.equals(selection)=" + old.equals(selection));
 		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
-		/*if (getSelectedObject() != getSelectedValue()) {
-			setSelectedObject(selectedValue);
-		}*/
 	}
 
 	protected void selectFragmentInDocumentEditor(F fragment, FIBCustomWidget<?, ?> documentEditorWidget) {
