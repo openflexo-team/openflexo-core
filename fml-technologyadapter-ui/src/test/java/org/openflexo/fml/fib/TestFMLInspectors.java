@@ -136,6 +136,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testRoleSpecificActionInspector() {
+		validateFIB("Inspectors/FML/EditionAction/RoleSpecificAction.inspector");
+	}
+
+	@Test
 	public void testSelectFlexoConceptInstanceInspector() {
 		validateFIB("Inspectors/FML/EditionAction/SelectFlexoConceptInstance.inspector");
 	}

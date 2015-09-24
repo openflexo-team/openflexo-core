@@ -38,36 +38,6 @@
 				<Assignment variable="component.viewPoint" value="data.viewPoint" />
 				<Dependancy componentName="SelectFlexoConceptDropDown" />
 			</Custom>
-			<Label label="conditions" index="10"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" />
-			<Table
-				iteratorClassName="org.openflexo.foundation.fml.editionaction.FetchRequestCondition"
-				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="true" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
-				backgroundSecondarySelectionColor="173,215,255"
-				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConditionsTable" index="11"
-				data="data.conditions"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				opaque="false">
-				<IconColumn data="controller.iconForObject(iterator)"
-					title="icon" columnWidth="30" resizable="false" displayTitle="false"
-					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-					customRendering="false" disableTerminateEditOnFocusLost="false"
-					data="iterator.condition" format="object.toString" title="condition"
-					columnWidth="80" resizable="true" displayTitle="true">
-					<ColumnAssignment variable="component.bindable"
-						value="iterator" />
-				</CustomColumn>
-				<AddAction method="data.createCondition" name="add_condition" />
-				<RemoveAction method="data.deleteCondition(selected)"
-					name="remove_condition" />
-			</Table>
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>
