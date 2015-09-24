@@ -49,13 +49,16 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.URIParameter;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -76,6 +79,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.CompoundIssue;
+import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -415,6 +419,82 @@ public interface AddFlexoConceptInstance extends FMLRTAction<FlexoConceptInstanc
 		@Override
 		public DataBinding<VirtualModelInstance> getBinding(AddFlexoConceptInstance object) {
 			return object.getVirtualModelInstance();
+		}
+
+		@Override
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance>, AddFlexoConceptInstance> applyValidation(
+				AddFlexoConceptInstance object) {
+			ValidationIssue<BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance>, AddFlexoConceptInstance> returned = super.applyValidation(
+					object);
+			if (returned instanceof UndefinedRequiredBindingIssue) {
+				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseLocalVirtualModelInstance());
+			}
+			else {
+				DataBinding<VirtualModelInstance> binding = getBinding(object);
+				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
+					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
+							.getVirtualModel()) {
+						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
+
+						/*System.out.println(object.getRootOwner().getFMLRepresentation());
+						System.out.println("FC=" + object.getRootOwner().getFlexoConcept());
+						System.out.println("VM=" + object.getOwningVirtualModel());
+						System.out.println("modelSlots=" + object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class));*/
+
+						// Attempt to find some solutions...
+
+						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+							}
+						}
+
+						if (object.getRootOwner().getFlexoConcept() instanceof AbstractVirtualModel) {
+							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
+									.getModelSlots(FMLRTModelSlot.class)) {
+								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+								}
+							}
+						}
+
+					}
+				}
+			}
+			return returned;
+		}
+
+		protected static class UseLocalVirtualModelInstance
+				extends FixProposal<BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance>, AddFlexoConceptInstance> {
+
+			public UseLocalVirtualModelInstance() {
+				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
+			}
+
+			@Override
+			protected void fixAction() {
+				AddFlexoConceptInstance action = getValidable();
+				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+			}
+		}
+
+		protected static class UseFMLRTModelSlot
+				extends FixProposal<BindingIsRequiredAndMustBeValid<AddFlexoConceptInstance>, AddFlexoConceptInstance> {
+
+			private final FMLRTModelSlot modelSlot;
+
+			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
+				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
+				this.modelSlot = modelSlot;
+			}
+
+			@Override
+			protected void fixAction() {
+				AddFlexoConceptInstance action = getValidable();
+				action.setVirtualModelInstance(new DataBinding<VirtualModelInstance>(modelSlot.getName()));
+			}
 		}
 
 	}
