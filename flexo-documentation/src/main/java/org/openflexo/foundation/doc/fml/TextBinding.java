@@ -59,9 +59,12 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -85,7 +88,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
 @XMLElement
-public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoConceptObject {
+public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelSlotObject<D>, FlexoConceptObject {
 
 	@PropertyIdentifier(type = TextSelection.class)
 	public static final String TEXT_SELECTION_KEY = "textSelection";
@@ -143,8 +146,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	 */
 	public String extractFromFragment(FlexoConceptInstance fci);
 
-	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoConceptObjectImpl implements TextBinding<D, TA> {
+	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+			FlexoConceptObjectImpl implements TextBinding<D, TA> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TextBinding.class.getPackage().getName());
@@ -154,6 +157,30 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 		// Use it only for deserialization
 		public TextBindingImpl() {
 			super();
+		}
+
+		@Override
+		public ModelSlot<D> getModelSlot() {
+			if (getFragmentRole() != null) {
+				return (ModelSlot) getFragmentRole().getModelSlot();
+			}
+			return null;
+		}
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getModelSlot() != null) {
+				return getModelSlot().getModelSlotTechnologyAdapter();
+			}
+			return null;
+		}
+
+		@Override
+		public AbstractVirtualModel<?> getVirtualModel() {
+			if (getFragmentRole() != null) {
+				return getFragmentRole().getFlexoConcept().getVirtualModel();
+			}
+			return null;
 		}
 
 		@Override
@@ -256,17 +283,16 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						newStructure.add(value);
 						if (getTextSelection().getEndCharacterIndex() > -1) {
 							if (templateEndRun instanceof FlexoTextRun) {
-								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
-										.substring(getTextSelection().getEndCharacterIndex()));
+								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText().substring(
+										getTextSelection().getEndCharacterIndex()));
 							}
 						}
-					}
-					else {
+					} else {
 						newStructure.add(value);
 						if (getTextSelection().getEndCharacterIndex() > -1) {
 							if (templateEndRun instanceof FlexoTextRun) {
-								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText()
-										.substring(getTextSelection().getEndCharacterIndex()));
+								newStructure.add(((FlexoTextRun<?, ?>) templateEndRun).getText().substring(
+										getTextSelection().getEndCharacterIndex()));
 							}
 						}
 					}
@@ -302,8 +328,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
 
-				FlexoDocElement<?, ?> targetDocumentElement = actorReference
-						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
+				FlexoDocElement<?, ?> targetDocumentElement = actorReference.getElementsMatchingTemplateElement(
+						getTextSelection().getStartElement()).get(0);
 				if (targetDocumentElement instanceof FlexoDocParagraph) {
 					FlexoDocParagraph<D, TA> targetParagraph = (FlexoDocParagraph<D, TA>) targetDocumentElement;
 
@@ -312,8 +338,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					FlexoDocRun<D, TA> startTargetRun = null;
 					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
 						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
-					}
-					else {
+					} else {
 						startTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
 
@@ -322,10 +347,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					FlexoDocRun<D, TA> endTargetRun = null;
 					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
 							.getRuns().size()) {
-						endTargetRun = targetParagraph.getRuns()
-								.get(targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
-					}
-					else {
+						endTargetRun = targetParagraph.getRuns().get(
+								targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
+					} else {
 						endTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
 
@@ -369,12 +393,10 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						}
 					}
 
-				}
-				else {
+				} else {
 					logger.warning("Text replacement not implemented for " + targetDocumentElement);
 				}
-			}
-			else {
+			} else {
 				logger.warning("Could not find element in target document matching " + getTextSelection().getStartElement());
 			}
 		}
@@ -462,13 +484,13 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				// We have to remove extra paragraphs
 				// We remove runs from the end of actual structure
 				int lastParagraphIndex = endIndex;
-				endParagraph = (FlexoDocParagraph<D, TA>) document.getElements()
-						.get(lastParagraphIndex - targetParagraphsNb + newStructure.size());
+				endParagraph = (FlexoDocParagraph<D, TA>) document.getElements().get(
+						lastParagraphIndex - targetParagraphsNb + newStructure.size());
 				endIndex = endParagraph.getIndex();
 				for (int i = 0; i < targetParagraphsNb - newStructure.size(); i++) {
 					// System.out.println("Removing paragraph");
-					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements()
-							.get(lastParagraphIndex - i);
+					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements().get(
+							lastParagraphIndex - i);
 					document.removeFromElements(paragraphToRemove);
 					actorReference.removeReferencesTo(paragraphToRemove);
 				}
@@ -484,8 +506,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 						FlexoDocRun<D, TA> runToRemove = paragraph.getRuns().get(paragraph.getRuns().size() - 1);
 						paragraph.removeFromRuns(runToRemove);
 					}
-				}
-				else if (paragraph.getRuns().size() == 0) {
+				} else if (paragraph.getRuns().size() == 0) {
 					// We have to add default run
 					FlexoDocRun<D, TA> newRun = document.getFactory().makeTextRun("");
 					paragraph.addToRuns(newRun);
@@ -561,8 +582,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 
 			if (actorReference.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).size() > 0) {
 
-				FlexoDocElement<?, ?> targetDocumentElement = actorReference
-						.getElementsMatchingTemplateElement(getTextSelection().getStartElement()).get(0);
+				FlexoDocElement<?, ?> targetDocumentElement = actorReference.getElementsMatchingTemplateElement(
+						getTextSelection().getStartElement()).get(0);
 				if (targetDocumentElement instanceof FlexoDocParagraph) {
 					FlexoDocParagraph<D, TA> targetParagraph = (FlexoDocParagraph<D, TA>) targetDocumentElement;
 
@@ -571,8 +592,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					FlexoDocRun<D, TA> startTargetRun = null;
 					if (templateStartRun.getIndex() < targetParagraph.getRuns().size()) {
 						startTargetRun = targetParagraph.getRuns().get(templateStartRun.getIndex());
-					}
-					else {
+					} else {
 						startTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
 
@@ -581,10 +601,9 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					FlexoDocRun<D, TA> endTargetRun = null;
 					if (targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex() < targetParagraph
 							.getRuns().size()) {
-						endTargetRun = targetParagraph.getRuns()
-								.get(targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
-					}
-					else {
+						endTargetRun = targetParagraph.getRuns().get(
+								targetParagraph.getRuns().size() - templateParagraph.getRuns().size() + templateEndRun.getIndex());
+					} else {
 						endTargetRun = targetParagraph.getRuns().get(targetParagraph.getRuns().size() - 1);
 					}
 
@@ -593,20 +612,17 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					boolean extraStartRun = (getTextSelection().getStartCharacterIndex() > -1);
 					boolean extraEndRun = (getTextSelection().getEndCharacterIndex() > -1);
 
-					for (int i = startTargetRun.getIndex() + (extraStartRun ? 1 : 0); i <= endTargetRun.getIndex()
-							- (extraEndRun ? 1 : 0); i++) {
+					for (int i = startTargetRun.getIndex() + (extraStartRun ? 1 : 0); i <= endTargetRun.getIndex() - (extraEndRun ? 1 : 0); i++) {
 						if (targetParagraph.getRuns().get(i) instanceof FlexoTextRun) {
 							sb.append(((FlexoTextRun<?, ?>) targetParagraph.getRuns().get(i)).getText());
 						}
 					}
 
 					return sb.toString();
-				}
-				else {
+				} else {
 					logger.warning("Text extraction not implemented for " + targetDocumentElement);
 				}
-			}
-			else {
+			} else {
 				logger.warning("Could not find element in target document matching " + getTextSelection().getStartElement());
 			}
 
@@ -662,8 +678,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				endIndex++;
 				if (endIndex < container.getElements().size() - 1) {
 					nextElement = container.getElements().get(endIndex + 1);
-				}
-				else {
+				} else {
 					nextElement = null;
 				}
 			}
