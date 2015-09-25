@@ -51,11 +51,11 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocElementContainer;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocRun;
+import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
@@ -467,7 +467,8 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				endIndex = endParagraph.getIndex();
 				for (int i = 0; i < targetParagraphsNb - newStructure.size(); i++) {
 					// System.out.println("Removing paragraph");
-					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements().get(lastParagraphIndex - i);
+					FlexoDocParagraph<D, TA> paragraphToRemove = (FlexoDocParagraph<D, TA>) container.getElements()
+							.get(lastParagraphIndex - i);
 					document.removeFromElements(paragraphToRemove);
 					actorReference.removeReferencesTo(paragraphToRemove);
 				}

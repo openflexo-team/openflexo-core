@@ -41,26 +41,31 @@ package org.openflexo.fib.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.logging.Logger;
 
+import org.junit.runner.RunWith;
+import org.openflexo.OpenflexoTestCaseWithGUI;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBModelFactory;
+import org.openflexo.fib.swing.FIBJPanel;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
+import org.openflexo.test.OrderedRunner;
 
 /**
- * Generic test case allowing to test a FIB component used as an inspector (a .inspector file)
+ * Provides a JUnit 4 generic environment of Openflexo-core for a FIB testing purposes in graphics environment
  * 
  * @author sylvain
  * 
  */
-public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
+@RunWith(OrderedRunner.class)
+public abstract class OpenflexoFIBInspectorTestCase extends OpenflexoTestCaseWithGUI {
 
-	static final Logger logger = Logger.getLogger(GenericFIBInspectorTestCase.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(OpenflexoFIBInspectorTestCase.class.getPackage().getName());
 
 	public static FIBModelFactory INSPECTOR_FACTORY;
 
@@ -72,59 +77,39 @@ public abstract class GenericFIBInspectorTestCase extends GenericFIBTestCase {
 		}
 	}
 
-	@Override
-	public void validateFIB(Resource fibResource) {
+	public void validateFIB(Resource fibResouce) throws InterruptedException {
 		try {
-			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResource, false, INSPECTOR_FACTORY);
+			System.out.println("Validating fib file " + fibResouce);
+			FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResouce, false, INSPECTOR_FACTORY);
 			if (component == null) {
-				fail("Component not found: " + fibResource.getURI());
+				fail("Component not found: " + fibResouce.getURI());
 			}
 			ValidationReport validationReport = component.validate();
 			for (ValidationError error : validationReport.getErrors()) {
-				String message = validationReport.getValidationModel().localizedIssueMessage(error);
-				String details = validationReport.getValidationModel().localizedIssueDetailedInformations(error);
-				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + message + "\ndetails: "
-						+ details);
+				logger.severe("FIBComponent validation error: Object: " + error.getValidable() + " message: " + error.getMessage());
 			}
 			assertEquals(0, validationReport.getErrorsCount());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail("Interrupted FIB validation");
 		} finally {
-			FIBLibrary.instance().removeFIBComponentFromCache(fibResource);
+			FIBLibrary.instance().removeFIBComponentFromCache(fibResouce);
 		}
 	}
 
-	public static String generateInspectorTestCaseClass(File directory, String relativePath) {
-		StringBuffer sb = new StringBuffer();
-		for (File f : directory.listFiles()) {
-			if (f.isDirectory()) {
-				generateInspectorTestCaseClass(f, relativePath + f.getName() + File.separator, sb);
-			}
-			else if (f.getName().endsWith(".inspector")) {
-				String fibName = f.getName().substring(0, f.getName().indexOf(".inspector"));
-				sb.append("@Test\n");
-				sb.append("public void test" + fibName + "Inspector() {\n");
-				sb.append("  validateFIB(\"" + relativePath + f.getName() + "\");\n");
-				sb.append("}\n\n");
-			}
-		}
-		return sb.toString();
-	}
+	public <T> FIBJPanel<T> instanciateFIB(Resource fibResource, T context, final Class<T> contextType) {
 
-	private static void generateInspectorTestCaseClass(File directory, String relativePath, StringBuffer sb) {
-		for (File f : directory.listFiles()) {
-			if (f.isDirectory()) {
-				generateFIBTestCaseClass(f, relativePath + f.getName() + File.separator);
-			}
-			else if (f.getName().endsWith(".inspector")) {
-				String fibName = f.getName().substring(0, f.getName().indexOf(".inspector"));
-				sb.append("@Test\n");
-				sb.append("public void test" + fibName + "Inspector() {\n");
-				sb.append("  validateFIB(\"" + relativePath + f.getName() + "\");\n");
-				sb.append("}\n\n");
-			}
-		}
-	}
+		FIBComponent component = FIBLibrary.instance().retrieveFIBComponent(fibResource, false, INSPECTOR_FACTORY);
 
+		return new FIBJPanel<T>(component, context, FlexoLocalization.getMainLocalizer()) {
+
+			@Override
+			public Class<T> getRepresentedType() {
+				return contextType;
+			}
+
+			@Override
+			public void delete() {
+			}
+
+		};
+
+	}
 }

@@ -78,6 +78,8 @@ public class TestApplicationContext extends ApplicationContext {
 
 	protected static DirectoryResourceCenter resourceCenter;
 
+	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
+
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
 		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
 			super(project, sm);
@@ -132,7 +134,8 @@ public class TestApplicationContext extends ApplicationContext {
 			}
 
 			FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-			rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
+			rcService.addToResourceCenters(
+					resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 			System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 			// ici il y a des truc a voir
