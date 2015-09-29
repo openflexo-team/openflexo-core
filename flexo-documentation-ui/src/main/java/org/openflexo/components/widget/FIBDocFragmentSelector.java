@@ -108,14 +108,16 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 		F newFragment = null;
 		if (elements.size() == 0) {
 			newFragment = null;
-		} else if (elements.size() == 1) {
+		}
+		else if (elements.size() == 1) {
 			FlexoDocElement<D, TA> startElement = elements.get(0);
 			try {
 				newFragment = (F) document.getFragment(startElement, startElement);
 			} catch (FragmentConsistencyException e) {
 				e.printStackTrace();
 			}
-		} else {
+		}
+		else {
 
 			FlexoDocElement<D, TA> startElement = elements.get(0);
 			FlexoDocElement<D, TA> endElement = elements.get(elements.size() - 1);
@@ -190,6 +192,7 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 
 		protected FragmentSelectorDetailsPanel(F anObject) {
 			super(anObject);
+			update();
 		}
 
 		public FIBCustomWidget<?, ?> getDocEditorWidget() {
@@ -223,7 +226,8 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 			// for its selection to reflect selected fragment
 			if (value == null) {
 				FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", false, null);
-			} else {
+			}
+			else {
 				FIBDocFragmentSelector.this.getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null,
 						value.getElements());
 			}
@@ -241,6 +245,7 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 	}
 
 	public void setSelectedDocumentElements(List<? extends FlexoDocElement<D, TA>> selection) {
+		System.out.println("je change de selection pour " + selection);
 		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
 	}
 
