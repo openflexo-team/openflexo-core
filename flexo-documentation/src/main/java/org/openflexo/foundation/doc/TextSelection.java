@@ -447,5 +447,14 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 			}
 			return null;
 		}
+
+		@Override
+		public String toString() {
+			return getStartElementIdentifier()
+					+ (getStartRunIndex() > -1
+							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "") : "")
+					+ "-" + getEndElementIdentifier() + (getEndRunIndex() > -1
+							? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "") : "");
+		}
 	}
 }
