@@ -61,6 +61,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -287,6 +288,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
 			if (flexoProperty instanceof FlexoRole) {
 				return getFlexoActor((FlexoRole<T>) flexoProperty);
+			}
+			else if (flexoProperty instanceof ExpressionProperty) {
+				try {
+					T returned = (T) ((ExpressionProperty<T>) flexoProperty).getExpression().getBindingValue(this);
+					return returned;
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
 			}
 			else if (flexoProperty instanceof GetProperty) {
 				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
