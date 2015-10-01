@@ -32,6 +32,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.DefineValidationRule;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -41,11 +43,14 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-		FlexoRole<F> {
+public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
 	public static final String TEXT_BINDINGS_KEY = "textBindings";
@@ -73,10 +78,12 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	public void setFragment(F fragment);
 
 	@Getter(value = TEXT_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = TextBinding.FRAGMENT_ROLE_KEY)
+	@Embedded
 	@XMLElement
 	public List<TextBinding<D, TA>> getTextBindings();
 
 	@Setter(TEXT_BINDINGS_KEY)
+
 	public void setTextBindings(List<TextBinding<D, TA>> someTextBindings);
 
 	@Adder(TEXT_BINDINGS_KEY)
@@ -90,7 +97,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
 
 	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoRoleImpl<F> implements FlexoFragmentRole<F, D, TA> {
+			extends FlexoRoleImpl<F>implements FlexoFragmentRole<F, D, TA> {
 
 		@Override
 		public FlexoDocument<?, ?> getDocument() {
@@ -127,4 +134,22 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class FragmentRoleMustAddressATemplateFragment
+			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> {
+		public FragmentRoleMustAddressATemplateFragment() {
+			super(FlexoFragmentRole.class, "fragment_role_must_reference_a_template_fragment");
+		}
+
+		@Override
+		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> applyValidation(FlexoFragmentRole role) {
+			if (role.getFragment() == null) {
+				return new ValidationError<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole>(this, role,
+						"fragment_role_doesn't_reference_any_template_fragment");
+			}
+			return null;
+		}
+	}
+
 }

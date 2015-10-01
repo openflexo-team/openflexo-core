@@ -300,6 +300,12 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		 */
 		@Override
 		public FlexoTextRun<D, TA> getStartRun() {
+			if (getStartElement() instanceof FlexoDocParagraph && (getStartRunIndex() == -1)) {
+				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().get(0);
+				if (returned instanceof FlexoTextRun) {
+					return (FlexoTextRun<D, TA>) returned;
+				}
+			}
 			if (getStartElement() instanceof FlexoDocParagraph
 					&& (getStartRunIndex() < ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
@@ -317,6 +323,13 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		 */
 		@Override
 		public FlexoTextRun<D, TA> getEndRun() {
+			if (getEndElement() instanceof FlexoDocParagraph && (getEndRunIndex() == -1)) {
+				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns()
+						.get(((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().size() - 1);
+				if (returned instanceof FlexoTextRun) {
+					return (FlexoTextRun<D, TA>) returned;
+				}
+			}
 			if (getEndElement() instanceof FlexoDocParagraph
 					&& (getEndRunIndex() < ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
@@ -455,6 +468,23 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "") : "")
 					+ "-" + getEndElementIdentifier() + (getEndRunIndex() > -1
 							? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "") : "");
+		}
+	}
+
+	public static class TextMarker {
+		public FlexoDocElement<?, ?> documentElement;
+		public int runIndex = -1;
+		public int characterIndex = -1;
+		public boolean firstChar = false;
+		public boolean lastChar = false;
+		public boolean firstRun = false;
+		public boolean lastRun = false;
+
+		@Override
+		public String toString() {
+			return (documentElement != null ? documentElement.getIdentifier() : "null") + ":" + runIndex + ":" + characterIndex
+					+ (firstChar ? "[FIRST_CHAR]" : (lastChar ? "[LAST_CHAR]" : ""))
+					+ (firstRun ? "[FIRST_RUN]" : (lastRun ? "[LAST_RUN]" : ""));
 		}
 	}
 }

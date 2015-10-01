@@ -51,6 +51,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
+import org.openflexo.foundation.doc.TextSelection.TextMarker;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -219,9 +220,8 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return returned;
 	}
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocFragment<D, TA> fragment, FlexoDocElement<D, TA> startElement,
-			int startRunId, int startCharId, FlexoDocElement<D, TA> endElement, int endRunId, int endCharId)
-					throws FragmentConsistencyException {
+	public TextSelection<D, TA> makeTextSelection(FlexoDocFragment<D, TA> fragment, FlexoDocElement<D, TA> startElement, int startRunId,
+			int startCharId, FlexoDocElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException {
 		TextSelection<D, TA> returned = newInstance(TextSelection.class);
 		returned.setFragment(fragment);
 		returned.setStartElement(startElement);
@@ -239,10 +239,50 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		return makeTextSelection(fragment, startElement, startRunId, startCharId, endElement, endRunId, endCharId);
 	}
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId,
-			FlexoDocElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException {
+	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId, FlexoDocElement<D, TA> endElement,
+			int endRunId) throws FragmentConsistencyException {
 		FlexoDocFragment<D, TA> fragment = getFragment(startElement, endElement);
 		return makeTextSelection(fragment, startElement, startRunId, -1, endElement, endRunId, -1);
+	}
+
+	public TextSelection<D, TA> makeTextSelection(TextMarker start, TextMarker end) throws FragmentConsistencyException {
+		FlexoDocElement<D, TA> startElement = (FlexoDocElement<D, TA>) start.documentElement;
+		FlexoDocElement<D, TA> endElement = (FlexoDocElement<D, TA>) end.documentElement;
+		int startRunId, endRunId;
+		int startCharId, endCharId;
+
+		if (start.firstChar) {
+			startCharId = -1;
+		}
+		else {
+			startCharId = start.characterIndex;
+		}
+		if (end.lastChar) {
+			endCharId = -1;
+		}
+		else {
+			endCharId = end.characterIndex;
+		}
+
+		if (start.firstRun && start.firstChar) {
+			startRunId = -1;
+		}
+		else {
+			startRunId = start.runIndex;
+		}
+		if (end.lastRun && end.lastChar && startRunId == -1) {
+			endRunId = -1;
+		}
+		else {
+			endRunId = end.runIndex;
+		}
+
+		/*System.out.println("startRunId=" + startRunId);
+		System.out.println("startCharId=" + startCharId);
+		System.out.println("endRunId=" + endRunId);
+		System.out.println("endCharId=" + endCharId);*/
+
+		return makeTextSelection(startElement, startRunId, startCharId, endElement, endRunId, endCharId);
 	}
 
 	@Override
