@@ -45,8 +45,11 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -66,7 +69,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ColumnTableBinding.ColumnTableBindingImpl.class)
 @XMLElement
-public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoConceptObject {
+public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+		extends ModelSlotObject<D>, FlexoConceptObject {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String COLUMN_NAME_KEY = "columnName";
@@ -111,8 +115,8 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	@Setter(TABLE_ROLE_KEY)
 	public void setTableRole(FlexoTableRole<?, D, TA> tableRole);
 
-	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoConceptObjectImpl implements ColumnTableBinding<D, TA> {
+	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoConceptObjectImpl implements ColumnTableBinding<D, TA> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ColumnTableBinding.class.getPackage().getName());
@@ -161,6 +165,30 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 		public BindingModel getBindingModel() {
 			if (getTableRole() != null) {
 				return getTableRole().getTableBindingModel();
+			}
+			return null;
+		}
+
+		@Override
+		public ModelSlot<D> getModelSlot() {
+			if (getTableRole() != null) {
+				return (ModelSlot) getTableRole().getModelSlot();
+			}
+			return null;
+		}
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getModelSlot() != null) {
+				return getModelSlot().getModelSlotTechnologyAdapter();
+			}
+			return null;
+		}
+
+		@Override
+		public AbstractVirtualModel<?> getVirtualModel() {
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getVirtualModel();
 			}
 			return null;
 		}

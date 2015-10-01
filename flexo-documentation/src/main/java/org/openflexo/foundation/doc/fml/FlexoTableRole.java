@@ -63,8 +63,14 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public static final String START_ITERATION_INDEX_KEY = "startIterationIndex";
 	@PropertyIdentifier(type = Integer.class)
 	public static final String END_ITERATION_INDEX_KEY = "endIterationIndex";
+	@PropertyIdentifier(type = DataOrientation.class)
+	public static final String DATA_ORIENTATION_KEY = "dataOrientation";
 	@PropertyIdentifier(type = ColumnTableBinding.class, cardinality = Cardinality.LIST)
 	public static final String COLUMN_BINDINGS_KEY = "columnBindings";
+
+	public static enum DataOrientation {
+		Vertical, Horizontal
+	}
 
 	/**
 	 * Return the template document
@@ -131,6 +137,13 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	@Setter(END_ITERATION_INDEX_KEY)
 	public void setEndIterationIndex(int endIterationIndex);
 
+	@Getter(value = DATA_ORIENTATION_KEY)
+	@XMLAttribute
+	public DataOrientation getDataOrientation();
+
+	@Setter(DATA_ORIENTATION_KEY)
+	public void setDataOrientation(DataOrientation dataOrientation);
+
 	@Getter(value = COLUMN_BINDINGS_KEY, cardinality = Cardinality.LIST, inverse = ColumnTableBinding.TABLE_ROLE_KEY)
 	@XMLElement
 	public List<ColumnTableBinding<D, TA>> getColumnBindings();
@@ -190,6 +203,15 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 				getPropertyChangeSupport().firePropertyChange(TABLE_KEY, oldValue, table);
 				getPropertyChangeSupport().firePropertyChange(TABLE_ID_KEY, null, getTableId());
 			}
+		}
+
+		@Override
+		public DataOrientation getDataOrientation() {
+			DataOrientation returned = (DataOrientation) performSuperGetter(DATA_ORIENTATION_KEY);
+			if (returned == null) {
+				return DataOrientation.Vertical;
+			}
+			return returned;
 		}
 
 		@Override
