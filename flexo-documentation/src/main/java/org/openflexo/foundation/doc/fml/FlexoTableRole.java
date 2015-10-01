@@ -28,9 +28,9 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocTable;
+import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -176,7 +176,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 		@Override
 		public T getTable() {
-			if (table == null && StringUtils.isNotEmpty(tableId)) {
+			if (table == null && StringUtils.isNotEmpty(tableId) && getDocument() != null) {
 				table = (T) getDocument().getElementWithIdentifier(tableId);
 			}
 			return table;
@@ -195,7 +195,9 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		@Override
 		public FlexoDocument<?, ?> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
-				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+				if (((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource() != null) {
+					return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
+				}
 			}
 			return null;
 		}
