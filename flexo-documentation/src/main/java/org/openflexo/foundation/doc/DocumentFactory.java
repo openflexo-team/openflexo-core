@@ -246,6 +246,9 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	}
 
 	public TextSelection<D, TA> makeTextSelection(TextMarker start, TextMarker end) throws FragmentConsistencyException {
+		if ((start.documentElement == null || end.documentElement == null)) {
+			return null;
+		}
 		FlexoDocElement<D, TA> startElement = (FlexoDocElement<D, TA>) start.documentElement;
 		FlexoDocElement<D, TA> endElement = (FlexoDocElement<D, TA>) end.documentElement;
 		int startRunId, endRunId;
