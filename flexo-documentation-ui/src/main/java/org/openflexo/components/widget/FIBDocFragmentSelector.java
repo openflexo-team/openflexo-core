@@ -245,7 +245,6 @@ public abstract class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, 
 	}
 
 	public void setSelectedDocumentElements(List<? extends FlexoDocElement<D, TA>> selection) {
-		System.out.println("je change de selection pour " + selection);
 		getPropertyChangeSupport().firePropertyChange("selectedDocumentElements", null, selection);
 	}
 
