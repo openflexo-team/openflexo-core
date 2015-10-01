@@ -276,6 +276,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		}
 	}
 
+	@DefineValidationRule
 	public static class SelectFlexoConceptInstanceMustAddressAFlexoConceptType
 			extends ValidationRule<SelectFlexoConceptInstanceMustAddressAFlexoConceptType, SelectFlexoConceptInstance> {
 		public SelectFlexoConceptInstanceMustAddressAFlexoConceptType() {
