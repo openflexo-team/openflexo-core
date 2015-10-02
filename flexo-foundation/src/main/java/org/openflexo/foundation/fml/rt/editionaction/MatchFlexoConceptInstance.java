@@ -181,6 +181,12 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		private String _creationSchemeURI;
 
 		@Override
+		public String getParametersStringRepresentation() {
+			return "(type=" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "null") + ","
+					+ getMatchingCriteriasFMLRepresentation(null) + ")";
+		}
+
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			/*if (getAssignation().isSet()) {
@@ -203,15 +209,17 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			List<MatchingCriteria> matchingCriterias = getMatchingCriterias();
 			if (matchingCriterias.size() > 0) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("match ");
+				sb.append("match=");
 				if (matchingCriterias.size() > 1) {
 					sb.append("(");
 				}
+				boolean isFirst = true;
 				for (MatchingCriteria mc : matchingCriterias) {
 					FlexoProperty<?> pr = mc.getFlexoProperty();
 					DataBinding<?> val = mc.getValue();
-					if (pr != null && val != null) {
-						sb.append((pr.getName() != null ? pr.getName() : "null") + "=" + mc.getValue().toString() + ";");
+					if (pr != null && val != null && val.isSet()) {
+						sb.append((isFirst ? "" : ",") + (pr.getName() != null ? pr.getName() : "null") + "=" + mc.getValue().toString());
+						isFirst = false;
 					}
 				}
 				if (matchingCriterias.size() > 1) {

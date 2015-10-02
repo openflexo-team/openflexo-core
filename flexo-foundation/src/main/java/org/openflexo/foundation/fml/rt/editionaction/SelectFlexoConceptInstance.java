@@ -153,6 +153,13 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		}
 
 		@Override
+		public String getParametersStringRepresentation() {
+			String whereClauses = getWhereClausesFMLRepresentation(null);
+			return "(type=" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "null")
+					+ (whereClauses != null ? "," + whereClauses : "") + ")";
+		}
+
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
@@ -223,13 +230,6 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				}*/
 				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, oldValue);
 			}
-		}
-
-		@Override
-		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName()
-					+ (getFlexoConceptType() != null ? " : " + getFlexoConceptType().getName() : "")
-					/*+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "")*/;
 		}
 
 		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {

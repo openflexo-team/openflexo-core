@@ -82,8 +82,8 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 
 	public List<R> getAvailableRoles();
 
-	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T> extends
-			TechnologySpecificActionImpl<MS, T> implements RoleSpecificAction<R, MS, T> {
+	public static abstract class RoleSpecificActionImpl<R extends FlexoRole<T>, MS extends ModelSlot<?>, T>
+			extends TechnologySpecificActionImpl<MS, T>implements RoleSpecificAction<R, MS, T> {
 
 		private static final Logger logger = Logger.getLogger(RoleSpecificAction.class.getPackage().getName());
 
@@ -93,6 +93,15 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 				return (MS) getFlexoRole().getModelSlot();
 			}
 			return super.getModelSlot();
+		}
+
+		/**
+		 * Return a string representation suitable for a common user<br>
+		 * This representation will used in all GUIs
+		 */
+		@Override
+		public String getStringRepresentation() {
+			return (getFlexoRole() != null ? getFlexoRole().getName() + "." : "") + super.getStringRepresentation();
 		}
 
 		@Override
@@ -125,8 +134,8 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 	}
 
 	@DefineValidationRule
-	public static class RoleSpecificActionMustReferenceARole extends
-			ValidationRule<RoleSpecificActionMustReferenceARole, RoleSpecificAction> {
+	public static class RoleSpecificActionMustReferenceARole
+			extends ValidationRule<RoleSpecificActionMustReferenceARole, RoleSpecificAction> {
 		public RoleSpecificActionMustReferenceARole() {
 			super(RoleSpecificAction.class, "role_specific_action_must_adress_a_valid_role");
 		}

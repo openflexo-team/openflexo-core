@@ -12,19 +12,14 @@
 
 			<Label label="flexo_role" align="right" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" name="FlexoRoleLabel" visible="data.getAvailableRoles().size>0"/>
+				localize="true" name="FlexoRoleLabel" />
 			<DropDown data="data.flexoRole" index="7"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				name="FlexoRoleDD" format="object.name"
 				icon="controller.iconForObject(object)"
 				localize="false" list="data.getAvailableRoles()" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.fml.FlexoRole"
-				visible="data.getAvailableRoles().size>1"
 				autoSelectFirstRow="true" showReset="false" />
-			 <TextField data="data.flexoRole.name" index="8"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				readOnly="true" localize="false" columns="7" name="RoleTextField" 
-				visible="data.getAvailableRoles().size=1" />
 				
 		</Tab>
 	</TabPanel>

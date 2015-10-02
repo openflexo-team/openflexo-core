@@ -103,8 +103,8 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 
 	public Type getFetchedType();
 
-	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends TechnologySpecificActionImpl<MS, List<T>> implements
-			FetchRequest<MS, T> {
+	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends TechnologySpecificActionImpl<MS, List<T>>
+			implements FetchRequest<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
 
@@ -125,7 +125,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
 			if (getConditions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("where ");
+				sb.append("where=");
 				if (getConditions().size() > 1) {
 					sb.append("(");
 				}
@@ -158,11 +158,11 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 		public Vector<FetchRequestCondition> getConditions() {
 			return conditions;
 		}
-
+		
 		public void setConditions(Vector<FetchRequestCondition> conditions) {
 			this.conditions = conditions;
 		}
-
+		
 		@Override
 		public void addToConditions(FetchRequestCondition condition) {
 			condition.setFetchRequest(this);
@@ -170,7 +170,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			setChanged();
 			notifyObservers(new DataModification("conditions", null, condition));
 		}
-
+		
 		@Override
 		public void removeFromConditions(FetchRequestCondition condition) {
 			condition.setFetchRequest(null);
@@ -194,7 +194,8 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext) {
 			if (getConditions().size() == 0) {
 				return fetchResult;
-			} else {
+			}
+			else {
 				// System.out.println("Filtering with " + getConditions() + " fetchResult=" + fetchResult);
 				List<T> returned = new ArrayList<T>();
 				for (final T proposedFetchResult : fetchResult) {
@@ -210,7 +211,8 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 					if (takeIt) {
 						returned.add(proposedFetchResult);
 						// System.out.println("I take " + proposedFetchResult);
-					} else {
+					}
+					else {
 					}
 				}
 				return returned;
@@ -234,7 +236,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 		}
 
 		/*private FetchRequestBindingModel inferedBindingModel = null;
-
+		
 		@Override
 		public FetchRequestBindingModel getInferedBindingModel() {
 			if (inferedBindingModel == null) {
@@ -242,6 +244,11 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			}
 			return inferedBindingModel;
 		}*/
+
+		@Override
+		public String getParametersStringRepresentation() {
+			return "(" + getWhereClausesFMLRepresentation(null) + ")";
+		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {

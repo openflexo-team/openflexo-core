@@ -253,7 +253,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 */
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getImplementedInterface().getSimpleName();
+			return getHeaderContext() + getImplementedInterface().getSimpleName() + getParametersStringRepresentation();
+		}
+
+		public String getParametersStringRepresentation() {
+			return "()";
 		}
 
 		public final String getHeaderContext() {
