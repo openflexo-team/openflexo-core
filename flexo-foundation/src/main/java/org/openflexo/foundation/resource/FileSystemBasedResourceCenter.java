@@ -236,7 +236,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		} else {
+		}
+		else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -410,7 +411,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -482,9 +484,10 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						f = f.getParentFolder();
 					}
 					if (getDefaultBaseURI().endsWith(File.separator)) {
-						return getDefaultBaseURI() + path + resource.getName();
-					} else {
-						return getDefaultBaseURI() + File.separator + path + resource.getName();
+						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
+					}
+					else {
+						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
 					}
 				}
 			}
