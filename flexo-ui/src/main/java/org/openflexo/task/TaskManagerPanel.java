@@ -95,7 +95,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		this.taskManager = taskManager;
 		taskManager.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		setAlwaysOnTop(false);
+		setAlwaysOnTop(true);
 		setUndecorated(true);
 
 		contentPane = new JPanel();
@@ -259,7 +259,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		private void updateStatusLabel() {
 			if (StringUtils.isEmpty(task.getCurrentStepName())) {
 				statusLabel.setText(task.getTaskStatus().getLocalizedName());
-			} else {
+			}
+			else {
 				statusLabel.setText(task.getCurrentStepName());
 			}
 		}
@@ -274,7 +275,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 						progressBar.setStringPainted(false);
 						progressBar.setIndeterminate(true);
 						progressBar.setEnabled(true);
-					} else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)
+					}
+					else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)
 							|| (task.getTaskStatus() == TaskStatus.EXCEPTION_THROWN)) {
 						taskPanels.remove(task);
 						contentPane.remove(this);
@@ -282,15 +284,18 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 						TaskManagerPanel.this.repaint();
 						updateSizeAndCenter();
 					}
-				} else if (evt.getPropertyName().equals(FlexoTask.EXPECTED_PROGRESS_STEPS_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.EXPECTED_PROGRESS_STEPS_PROPERTY)) {
 					progressBar.setStringPainted(true);
 					progressBar.setIndeterminate(false);
 					progressBar.setMinimum(0);
 					progressBar.setMaximum(task.getExpectedProgressSteps());
 					progressBar.setValue(task.getCurrentProgress());
-				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_PROGRESS_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.CURRENT_PROGRESS_PROPERTY)) {
 					progressBar.setValue(task.getCurrentProgress());
-				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
 					updateStatusLabel();
 				}
 			}
