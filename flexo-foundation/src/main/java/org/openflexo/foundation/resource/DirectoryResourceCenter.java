@@ -138,7 +138,8 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 	@Override
 	public String getDefaultBaseURI() {
-		return fsMetaDataManager.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString(), getDirectory());
+		return fsMetaDataManager.getProperty(DEFAULT_BASE_URI, getDirectory().toURI().toString().replace(File.separator, "/"),
+				getDirectory());
 	}
 
 	public void setDefaultBaseURI(String defaultBaseURI) {
