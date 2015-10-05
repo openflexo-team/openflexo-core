@@ -32,7 +32,6 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -77,7 +76,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	 * 
 	 * @return
 	 */
-	public FlexoDocument<?, ?> getDocument();
+	public FlexoDocument<D, TA> getDocument();
 
 	/**
 	 * Return the represented table in the template document resource<br>
@@ -215,7 +214,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		}
 
 		@Override
-		public FlexoDocument<?, ?> getDocument() {
+		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
 				if (((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource() != null) {
 					return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
@@ -289,7 +288,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		}
 
 		@Override
-		public ActorReference<T> makeActorReference(T table, FlexoConceptInstance fci) {
+		public TableActorReference<T> makeActorReference(T table, FlexoConceptInstance fci) {
 
 			VirtualModelInstanceModelFactory factory = fci.getFactory();
 			TableActorReference<T> returned = factory.newInstance(TableActorReference.class);

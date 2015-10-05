@@ -46,25 +46,27 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBCustom;
 import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fib.view.widget.FIBCustomWidget;
-import org.openflexo.foundation.doc.FlexoDocTable;
+import org.openflexo.foundation.doc.FlexoDocParagraph;
+import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
+import org.openflexo.foundation.doc.FlexoDrawingRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.rm.Resource;
 
 /**
- * Widget allowing to select an {@link FlexoDocTable} inside a {@link FlexoDocument}<br>
+ * Widget allowing to select an {@link FlexoDrawingRun} inside a {@link FlexoDocument}<br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public abstract class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
 		extends FIBFlexoObjectSelector<T> {
-	static final Logger logger = Logger.getLogger(FIBDocTableSelector.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(FIBDocImageSelector.class.getPackage().getName());
 
 	private D document;
 
-	public FIBDocTableSelector(T editedObject) {
+	public FIBDocImageSelector(T editedObject) {
 		super(editedObject);
 	}
 
@@ -86,81 +88,64 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 		}
 	}
 
-	public String renderedString(D editedObject) {
-		if (editedObject != null) {
-			return editedObject.getName();
-		}
-		return "";
+	@Override
+	protected ImageSelectorDetailsPanel makeCustomPanel(T editedObject) {
+		return new ImageSelectorDetailsPanel(editedObject);
 	}
 
 	@Override
-	protected TableSelectorDetailsPanel makeCustomPanel(T editedObject) {
-		return new TableSelectorDetailsPanel(editedObject);
+	protected ImageSelectorFIBController makeCustomFIBController(FIBComponent fibComponent) {
+		return new ImageSelectorFIBController(fibComponent, this);
 	}
 
 	@Override
-	protected TableSelectorFIBController makeCustomFIBController(FIBComponent fibComponent) {
-		return new TableSelectorFIBController(fibComponent, this);
+	protected ImageSelectorFIBController getController() {
+		return (ImageSelectorFIBController) super.getController();
 	}
 
 	@Override
-	protected TableSelectorFIBController getController() {
-		return (TableSelectorFIBController) super.getController();
-	}
-
-	@Override
-	public TableSelectorDetailsPanel getCustomPanel() {
-		return (TableSelectorDetailsPanel) super.getCustomPanel();
+	public ImageSelectorDetailsPanel getCustomPanel() {
+		return (ImageSelectorDetailsPanel) super.getCustomPanel();
 	}
 
 	@Override
 	public void setSelectedObject(Object selectedObject) {
 		// TODO Auto-generated method stub
 		super.setSelectedObject(selectedObject);
-		TableSelectorDetailsPanel customPanel = (TableSelectorDetailsPanel) getCustomPanel(false);
+		ImageSelectorDetailsPanel customPanel = (ImageSelectorDetailsPanel) getCustomPanel(false);
 		if (customPanel != null) {
-			selectTableInDocumentEditor((T) selectedObject, customPanel.getDocEditorWidget());
+			selectImageInDocumentEditor((T) selectedObject, customPanel.getDocEditorWidget());
 		}
 	}
 
-	public static class TableSelectorFIBController extends SelectorFIBController {
-		public TableSelectorFIBController(final FIBComponent component, final FIBDocTableSelector selector) {
+	public static class ImageSelectorFIBController extends SelectorFIBController {
+		public ImageSelectorFIBController(final FIBComponent component, final FIBDocImageSelector selector) {
 			super(component, selector);
-			/*addSelectionListener(new FIBSelectionListener() {
-				@Override
-				public void selectionChanged(List<Object> selection) {
-					List<FlexoDocElement<?, ?>> elements = new ArrayList<>();
-					FlexoDocument<?, ?> doc = null;
-					if (selection != null) {
-						for (Object o : selection) {
-							if (o instanceof FlexoDocElement && ((FlexoDocElement) o).getFlexoDocument() != null) {
-								if (doc == null) {
-									doc = ((FlexoDocElement) o).getFlexoDocument();
-								}
-								if (doc == ((FlexoDocElement) o).getFlexoDocument()) {
-									elements.add((FlexoDocElement<?, ?>) o);
-								}
-							}
-						}
-					}
-					final FlexoDocument<?, ?> docReference = doc;
-					Collections.sort(elements, new Comparator<FlexoDocElement>() {
-						@Override
-						public int compare(FlexoDocElement o1, FlexoDocElement o2) {
-							return docReference.getElements().indexOf(o1) - docReference.getElements().indexOf(o2);
-						}
-					});
-					selector.updateWith(elements);
-				}
-			});*/
 		}
+
+		public boolean containsDrawingRun(FlexoDocParagraph<?, ?> paragraph) {
+			if (paragraph.getChildrenElements().size() > 0) {
+				return true;
+			}
+			for (FlexoDocRun<?, ?> run : paragraph.getRuns()) {
+				if (run instanceof FlexoDrawingRun) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public boolean isSingleDrawingRun(FlexoDocParagraph<?, ?> paragraph) {
+			return (paragraph.getDrawingRuns().size() == 1);
+		}
+
 	}
 
-	public class TableSelectorDetailsPanel extends SelectorDetailsPanel {
+	public class ImageSelectorDetailsPanel extends SelectorDetailsPanel {
 
 		private FIBCustomWidget<?, ?> docEditorWidget = null;
 
-		protected TableSelectorDetailsPanel(T anObject) {
+		protected ImageSelectorDetailsPanel(T anObject) {
 			super(anObject);
 		}
 
@@ -182,8 +167,8 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 		}
 
 		@Override
-		public TableSelectorFIBController getController() {
-			return (TableSelectorFIBController) super.getController();
+		public ImageSelectorFIBController getController() {
+			return (ImageSelectorFIBController) super.getController();
 		}
 
 		@Override
@@ -207,7 +192,7 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 				}
 			}
 
-			selectTableInDocumentEditor(value, getDocEditorWidget());
+			selectImageInDocumentEditor(value, getDocEditorWidget());
 		}
 
 		@Override
@@ -218,7 +203,7 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 
 	}
 
-	protected void selectTableInDocumentEditor(T table, FIBCustomWidget<?, ?> documentEditorWidget) {
+	protected void selectImageInDocumentEditor(T drawingRun, FIBCustomWidget<?, ?> documentEditorWidget) {
 
 	}
 
@@ -227,6 +212,6 @@ public abstract class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D exte
 		if (editedObject == null) {
 			return "";
 		}
-		return "<Table>";
+		return editedObject.getImageName();
 	}
 }

@@ -158,10 +158,10 @@ public abstract interface FlexoRole<T> extends FlexoProperty<T> {
 	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
 	 * 
 	 * @param object
-	 * @param epi
+	 * @param fci
 	 * @return
 	 */
-	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance epi);
+	public abstract ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci);
 
 	public static abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T>implements FlexoRole<T> {
 

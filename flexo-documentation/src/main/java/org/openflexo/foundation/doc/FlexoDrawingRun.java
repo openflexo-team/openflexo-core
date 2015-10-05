@@ -36,4 +36,6 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity(isAbstract = true)
 public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocRun<D, TA> {
 
+	public String getImageName();
+
 }

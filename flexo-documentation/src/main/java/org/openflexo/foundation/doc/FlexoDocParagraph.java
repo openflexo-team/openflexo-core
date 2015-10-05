@@ -124,14 +124,14 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 	public void fireTextChanged();
 
 	/**
-	 * Return the list of sub-paragraph using interpretation of
+	 * Return a new list containing {@link FlexoDrawingRun} for this paragraph
 	 * 
 	 * @return
 	 */
-	// public List<FlexoDocParagraph<D,TA>> getSubParagraphs();
+	public List<FlexoDrawingRun<D, TA>> getDrawingRuns();
 
-	public static abstract class FlexoParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
-			FlexoDocumentElementImpl<D, TA> implements FlexoDocParagraph<D, TA> {
+	public static abstract class FlexoDocParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+			extends FlexoDocumentElementImpl<D, TA>implements FlexoDocParagraph<D, TA> {
 
 		@Override
 		public String toString() {
@@ -174,7 +174,8 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 							childLevel = ((FlexoDocParagraph<D, TA>) e).getStyle().getLevel();
 						}
 					}
-				} else {
+				}
+				else {
 					if (e instanceof FlexoDocParagraph) {
 						if (((FlexoDocParagraph<D, TA>) e).getStyle() != null) {
 							if (((FlexoDocParagraph<D, TA>) e).getStyle().getLevel().equals(childLevel)) {
@@ -206,9 +207,11 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 			String rawText = getRawText();
 			if (rawText.length() > 35) {
 				return rawText.substring(0, 35) + "...";
-			} else if (StringUtils.isNotEmpty(rawText)) {
+			}
+			else if (StringUtils.isNotEmpty(rawText)) {
 				return rawText;
-			} else {
+			}
+			else {
 				return "<newline>";
 			}
 		}
@@ -217,6 +220,17 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 		public void fireTextChanged() {
 			getPropertyChangeSupport().firePropertyChange("rawText", null, getRawText());
 			getPropertyChangeSupport().firePropertyChange("rawTextPreview", null, getRawTextPreview());
+		}
+
+		@Override
+		public List<FlexoDrawingRun<D, TA>> getDrawingRuns() {
+			List<FlexoDrawingRun<D, TA>> returned = new ArrayList<>();
+			for (FlexoDocRun<?, ?> run : getRuns()) {
+				if (run instanceof FlexoDrawingRun) {
+					returned.add((FlexoDrawingRun) run);
+				}
+			}
+			return returned;
 		}
 	}
 

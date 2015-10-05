@@ -27,7 +27,6 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -57,7 +56,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String FRAGMENT_KEY = "fragment";
 
-	public FlexoDocument<?, ?> getDocument();
+	public FlexoDocument<D, TA> getDocument();
 
 	/**
 	 * Return the represented fragment in the template resource<br>
@@ -100,7 +99,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 			extends FlexoRoleImpl<F>implements FlexoFragmentRole<F, D, TA> {
 
 		@Override
-		public FlexoDocument<?, ?> getDocument() {
+		public FlexoDocument<D, TA> getDocument() {
 			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
 				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
 			}
@@ -124,7 +123,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 		}
 
 		@Override
-		public ActorReference<F> makeActorReference(F fragment, FlexoConceptInstance fci) {
+		public FragmentActorReference<F> makeActorReference(F fragment, FlexoConceptInstance fci) {
 			VirtualModelInstanceModelFactory factory = fci.getFactory();
 			FragmentActorReference<F> returned = factory.newInstance(FragmentActorReference.class);
 			returned.setFlexoRole(this);
