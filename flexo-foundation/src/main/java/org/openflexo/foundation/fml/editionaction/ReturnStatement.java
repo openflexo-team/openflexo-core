@@ -44,6 +44,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -67,9 +68,10 @@ public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 		private static final Logger logger = Logger.getLogger(ReturnStatement.class.getPackage().getName());
 
 		@Override
-		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			T value = getAssignationValue(evaluationContext);
-			return value;
+			System.out.println("ok je lance bien " + value);
+			throw new ReturnException(value);
 		}
 
 		@Override

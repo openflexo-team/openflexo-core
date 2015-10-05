@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -230,7 +231,11 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		}*/
 
 		public List<?> evaluateIteration(RunTimeEvaluationContext evaluationContext) throws FlexoException {
-			return getIterationAction().execute(evaluationContext);
+			try {
+				return getIterationAction().execute(evaluationContext);
+			} catch (ReturnException e) {
+				return (List<?>) e.getReturnedValue();
+			}
 			/*if (getIteration().isValid()) {
 				try {
 					return getIteration().getBindingValue(action);
@@ -246,16 +251,21 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			List<?> items = evaluateIteration(evaluationContext);
 			if (items != null) {
 				for (Object item : items) {
 					// System.out.println("> working with " + getIteratorName() + "=" + item);
 					evaluationContext.declareVariable(getIteratorName(), item);
-					getControlGraph().execute(evaluationContext);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						throw e;
+					}
 				}
+				evaluationContext.dereferenceVariable(getIteratorName());
 			}
-			evaluationContext.dereferenceVariable(getIteratorName());
 			return null;
 		}
 

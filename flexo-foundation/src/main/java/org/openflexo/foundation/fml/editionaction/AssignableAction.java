@@ -48,6 +48,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -103,7 +104,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 * @return
 	 */
 	@Override
-	public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+	public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	/**
 	 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
@@ -178,7 +179,7 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		 * @return
 		 */
 		@Override
-		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	}
 

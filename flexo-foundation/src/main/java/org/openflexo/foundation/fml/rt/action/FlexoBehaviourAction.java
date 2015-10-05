@@ -85,7 +85,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  */
 public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB, O>, FB extends FlexoBehaviour, O extends VirtualModelInstanceObject>
-		extends FlexoAction<A, O, VirtualModelInstanceObject> implements RunTimeEvaluationContext {
+		extends FlexoAction<A, O, VirtualModelInstanceObject>implements RunTimeEvaluationContext {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourAction.class.getPackage().getName());
 
@@ -190,7 +190,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		System.out.println("OK, on me demande le parametre " + parameterName + ", je retourne " + parameterValues.get(parameterName));
 		return (String) parameterValues.get(parameterName);
 	}
-
+	
 	public String getURIParameter(String parameterName) {
 		System.out.println("OK, on me demande l'uri " + parameterName + ", je retourned " + parameterValues.get(parameterName));
 		return (String) parameterValues.get(parameterName);
@@ -204,8 +204,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		/*System.out.println("On me demande la valeur du parametre " + parameter.getName() + " a priori c'est "
 				+ parameterValues.get(parameter));*/
 		if (parameter instanceof URIParameter) {
-			if (parameterValues.get(parameter) == null || parameterValues.get(parameter) instanceof String
-					&& StringUtils.isEmpty((String) parameterValues.get(parameter))) {
+			if (parameterValues.get(parameter) == null
+					|| parameterValues.get(parameter) instanceof String && StringUtils.isEmpty((String) parameterValues.get(parameter))) {
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
 		}
@@ -259,9 +259,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}*/
 
 		/*Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
-
+		
 		FB es = getEditionScheme();
-
+		
 		// Perform actions
 		if (es != null) {
 			for (EditionAction action : es.getActions()) {
@@ -273,16 +273,26 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		} else {
 			logger.warning("Trying to execute an Action with null Behaviour");
 		}
-
+		
 		// Finalize actions
 		for (EditionAction action : performedActions.keySet()) {
 			action.finalizePerformAction(this, performedActions.get(action));
 		}*/
 
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
-			getFlexoBehaviour().getControlGraph().execute(this);
+			try {
+				getFlexoBehaviour().getControlGraph().execute(this);
+			} catch (ReturnException e) {
+				returnedValue = e.getReturnedValue();
+			}
 		}
 
+	}
+
+	private Object returnedValue = null;
+
+	public Object getReturnedValue() {
+		return returnedValue;
 	}
 
 	/**
@@ -342,9 +352,9 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @throws FlexoException
 	 */
 	/*protected Object performAction(EditionAction action, Hashtable<EditionAction, Object> performedActions) throws FlexoException {
-
+	
 		Object assignedObject = action.execute(this);
-
+	
 		if (assignedObject != null) {
 			performedActions.put(action, assignedObject);
 		}*/
@@ -380,11 +390,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 		if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
 			return getParametersValues();
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			return getFlexoBehaviour().getParameters();
-		} else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
+		}
+		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.FLEXO_CONCEPT_INSTANCE)) {
 			return getFlexoConceptInstance();
-		} else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
+		}
+		else if (variable.getVariableName().equals(FlexoConceptBindingFactory.VIRTUAL_MODEL_INSTANCE)) {
 			return getVirtualModelInstance();
 		}
 
@@ -403,15 +416,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		} else if (variable instanceof FlexoPropertyBindingVariable) {
 			return getFlexoConceptInstance().getFlexoActor(((FlexoPropertyBindingVariable) variable).getFlexoRole());
 		}
-
+		
 		if (getEditionScheme().getVirtualModel().handleVariable(variable)) {
 			return getVirtualModelInstance().getValueForVariable(variable);
 		}
-
+		
 		if (variables.get(variable.getVariableName()) != null) {
 			return variables.get(variable.getVariableName());
 		}
-
+		
 		logger.warning("Unexpected variable requested in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 		return null;*/
 	}
@@ -422,7 +435,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variable instanceof FlexoRoleBindingVariable) {
 			getFlexoConceptInstance().setFlexoActor(value, (FlexoRole) ((FlexoRoleBindingVariable) variable).getFlexoRole());
 			return;
-		} else if (variable instanceof FlexoPropertyBindingVariable) {
+		}
+		else if (variable instanceof FlexoPropertyBindingVariable) {
 			logger.warning("Not implemented setValue() with " + variable);
 			return;
 		}
@@ -430,10 +444,13 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		if (variables.get(variable.getVariableName()) != null) {
 			variables.put(variable.getVariableName(), value);
 			return;
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
-			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY)) {
+			logger.warning(
+					"Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_PROPERTY + " in " + this + " of " + getClass());
 			return;
-		} else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
+		}
+		else if (variable.getVariableName().equals(FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY)) {
 			logger.warning("Forbidden write access " + FlexoBehaviourBindingModel.PARAMETERS_DEFINITION_PROPERTY + " in " + this + " of "
 					+ getClass());
 			return;
@@ -444,8 +461,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return;
 		}
 
-		logger.warning("Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of "
-				+ variable.getClass());
+		logger.warning(
+				"Unexpected variable requested in settable context in FlexoBehaviourAction: " + variable + " of " + variable.getClass());
 	}
 
 	/*	public GraphicalRepresentation getOverridingGraphicalRepresentation(GraphicalElementPatternRole patternRole) {
@@ -479,8 +496,8 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 					try {
 						newURI = uriParam.getBaseURI().getBindingValue(FlexoBehaviourAction.this);
 
-						newURI = modelSlot.generateUniqueURIName((TypeAwareModelSlotInstance) getVirtualModelInstance()
-								.getModelSlotInstance(modelSlot), newURI);
+						newURI = modelSlot.generateUniqueURIName(
+								(TypeAwareModelSlotInstance) getVirtualModelInstance().getModelSlotInstance(modelSlot), newURI);
 						logger.info("Generated new URI " + newURI + " for " + getVirtualModelInstance().getModelSlotInstance(modelSlot));
 						// NPE Protection
 						if (newURI != null) {

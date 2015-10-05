@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -99,7 +100,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	@Setter(ASSIGNABLE_ACTION_KEY)
 	public void setAssignableAction(AssignableAction<T> assignableAction);
 
-	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T> implements AddToListAction<T> {
+	public static abstract class AddToListActionImpl<T> extends AssignableActionImpl<T>implements AddToListAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AddToListAction.class.getPackage().getName());
 
@@ -191,11 +192,13 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 					List<T> listObj = list.getBindingValue(evaluationContext);
 					if (objToAdd != null) {
 						listObj.add(objToAdd);
-					} else {
+					}
+					else {
 						logger.warning("Won't add null object to list");
 
 					}
-				} else {
+				}
+				else {
 					logger.warning("Cannot perform Assignation as assignation is null");
 				}
 			} catch (TypeMismatchException e) {
@@ -225,7 +228,11 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 
 		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getAssignableAction() != null) {
-				return getAssignableAction().execute(evaluationContext);
+				try {
+					return getAssignableAction().execute(evaluationContext);
+				} catch (ReturnException e) {
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
@@ -277,12 +284,12 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		public ValueBindingIsRequiredAndMustBeValid() {
 			super("'value'_binding_is_not_valid", AddToListAction.class);
 		}
-
+	
 		@Override
 		public DataBinding<?> getBinding(AddToListAction object) {
 			return object.getValue();
 		}
-
+	
 	}*/
 
 	@DefineValidationRule

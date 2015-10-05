@@ -370,7 +370,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
 				try {
 					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-					return (T) getControlGraph.execute(localEvaluationContext);
+					T returnedValue = null;
+					try {
+						getControlGraph.execute(localEvaluationContext);
+					} catch (ReturnException e) {
+						returnedValue = (T) e.getReturnedValue();
+					}
+					return returnedValue;
 				} catch (FlexoException e) {
 					e.printStackTrace();
 				}

@@ -83,4 +83,18 @@ public interface RunTimeEvaluationContext extends SettableBindingEvaluationConte
 	 */
 	public void dereferenceVariable(String variableName);
 
+	@SuppressWarnings("serial")
+	public class ReturnException extends Exception {
+
+		private final Object returnedValue;
+
+		public ReturnException(Object returnedValue) {
+			this.returnedValue = returnedValue;
+		}
+
+		public Object getReturnedValue() {
+			return returnedValue;
+		}
+	}
+
 }

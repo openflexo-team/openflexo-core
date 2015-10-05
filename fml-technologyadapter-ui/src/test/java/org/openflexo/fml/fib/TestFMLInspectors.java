@@ -136,6 +136,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testReturnStatementInspector() {
+		validateFIB("Inspectors/FML/EditionAction/ReturnStatement.inspector");
+	}
+
+	@Test
 	public void testRoleSpecificActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/RoleSpecificAction.inspector");
 	}
@@ -148,6 +153,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testSelectIndividualInspector() {
 		validateFIB("Inspectors/FML/EditionAction/SelectIndividual.inspector");
+	}
+
+	@Test
+	public void testSelectVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/SelectVirtualModelInstance.inspector");
 	}
 
 	@Test

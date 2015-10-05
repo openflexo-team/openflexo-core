@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.lang.reflect.Type;
-
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
 /**
@@ -49,6 +47,9 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * 
  */
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
+
+	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType(
+			(AbstractVirtualModel<?>) null);
 
 	public VirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		super(aVirtualModel);
@@ -67,12 +68,14 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		return (AbstractVirtualModel<?>) getFlexoConcept();
 	}
 
-	public static Type getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
+	public static VirtualModelInstanceType getVirtualModelInstanceType(AbstractVirtualModel<?> aVirtualModel) {
 		if (aVirtualModel != null) {
-			return aVirtualModel.getInstanceType();
-		} else {
-			logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
-			return null;
+			return (VirtualModelInstanceType) aVirtualModel.getInstanceType();
+		}
+		else {
+			// logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
+			return UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 		}
 	}
+
 }

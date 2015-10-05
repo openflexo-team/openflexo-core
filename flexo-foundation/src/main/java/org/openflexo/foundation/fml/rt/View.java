@@ -641,6 +641,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}*/
 
 			logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
+			Thread.dumpStack();
 			return null;
 		}
 

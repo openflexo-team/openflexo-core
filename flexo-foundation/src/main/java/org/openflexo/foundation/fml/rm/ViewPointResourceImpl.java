@@ -391,6 +391,16 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	}
 
 	@Override
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI) {
+		for (VirtualModelResource vmRes : getVirtualModelResources()) {
+			if (vmRes.getName().equals(virtualModelNameOrURI) || vmRes.getURI().equals(virtualModelNameOrURI)) {
+				return vmRes;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean isDeprecatedVersion() {
 		if (getModelVersion() == null) {
 			return true;

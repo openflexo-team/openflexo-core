@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -155,7 +156,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 * @param evaluationContext
 	 * @return
 	 */
-	public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	/**
 	 * This method allows to retrieve a flattened list of all chained control graphs

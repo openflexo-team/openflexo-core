@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -126,7 +127,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 	 * @return
 	 */
 	@Override
-	public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	@Override
 	public BindingModel getBindingModel();
@@ -169,7 +170,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 * @return
 		 */
 		@Override
-		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException;
+		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 		@Override
 		public FlexoConcept getFlexoConcept() {

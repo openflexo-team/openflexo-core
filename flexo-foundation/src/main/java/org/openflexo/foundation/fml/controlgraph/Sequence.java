@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -148,7 +149,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (getControlGraph1() instanceof EmptyControlGraph) {
 				replaceWith(getControlGraph2(), owner, ownerContext);
-			} else if (getControlGraph2() instanceof EmptyControlGraph) {
+			}
+			else if (getControlGraph2() instanceof EmptyControlGraph) {
 				replaceWith(getControlGraph1(), owner, ownerContext);
 			}
 		}
@@ -157,7 +159,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (CONTROL_GRAPH1_KEY.equals(ownerContext)) {
 				return getControlGraph1();
-			} else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
+			}
+			else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
 				return getControlGraph2();
 			}
 			return null;
@@ -168,7 +171,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (CONTROL_GRAPH1_KEY.equals(ownerContext)) {
 				setControlGraph1(controlGraph);
-			} else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
+			}
+			else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
 				setControlGraph2(controlGraph);
 			}
 		}
@@ -177,12 +181,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
 			if (controlGraph == getControlGraph1()) {
 				return getBindingModel();
-			} else if (controlGraph == getControlGraph2()) {
+			}
+			else if (controlGraph == getControlGraph2()) {
 				// If control graph 1 declares a new variable, this variable should be added
 				// to context of control graph 2 binding model
 				if (getControlGraph1() instanceof AssignableAction) {
 					return getControlGraph1().getInferedBindingModel();
-				} else {
+				}
+				else {
 					return getBindingModel();
 				}
 
@@ -196,12 +202,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			List<FMLControlGraph> returned = new ArrayList<FMLControlGraph>();
 			if (getControlGraph1() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph1()).getFlattenedSequence());
-			} else {
+			}
+			else {
 				returned.add(getControlGraph1());
 			}
 			if (getControlGraph2() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph2()).getFlattenedSequence());
-			} else {
+			}
+			else {
 				returned.add(getControlGraph2());
 			}
 			return returned;
@@ -222,7 +230,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			getControlGraph1().execute(evaluationContext);
 			getControlGraph2().execute(evaluationContext);
 			return null;
@@ -246,12 +254,12 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 				/*if (getBaseBindingModel(getControlGraph2()) != getInferedBindingModel()) {
 					System.out.println("Ya un pb la !!!!");
-
+				
 					if (getBaseBindingModel(getControlGraph2()) == getControlGraph1().getInferedBindingModel()) {
 						System.out.println("c'est bien ca, c'est un " + getControlGraph1().getInferedBindingModel().getClass());
 						System.out.println("Base BM = " + getControlGraph1().getInferedBindingModel().getBaseBindingModel());
 					}
-
+				
 					// System.exit(-1);
 				}*/
 			}

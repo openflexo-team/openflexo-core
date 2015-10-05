@@ -103,6 +103,7 @@ public interface FMLObject
 	 */
 	public String getURI();
 
+	@Override
 	public FlexoServiceManager getServiceManager();
 
 	/**
@@ -112,6 +113,8 @@ public interface FMLObject
 	 * 
 	 */
 	public ViewPoint getViewPoint();
+
+	public ViewPointResource getViewPointResource();
 
 	public ViewPointLibrary getViewPointLibrary();
 
@@ -241,6 +244,14 @@ public interface FMLObject
 			}
 			// Do not warn as it might be called during deserialization
 			// logger.warning("Found FMLObject " + getClass() + " with resource data =" + getResourceData());
+			return null;
+		}
+
+		@Override
+		public ViewPointResource getViewPointResource() {
+			if (getViewPoint() != null) {
+				return (ViewPointResource) getViewPoint().getResource();
+			}
 			return null;
 		}
 

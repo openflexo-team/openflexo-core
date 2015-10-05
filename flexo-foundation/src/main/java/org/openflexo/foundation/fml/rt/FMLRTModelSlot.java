@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -76,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class })
-@DeclareFetchRequests({ SelectFlexoConceptInstance.class })
+@DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
 @XMLElement

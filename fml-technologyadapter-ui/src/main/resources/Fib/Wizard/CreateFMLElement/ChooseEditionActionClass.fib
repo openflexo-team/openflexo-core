@@ -37,7 +37,8 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			borderBottom="2" borderTop="2" trackViewPortHeight="true">
 			<CheckBox id="6" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isVariableDeclaration" enable="(!(data.action.isAssignation)  &amp; (!(data.action.isAddToListAction)))"
+				data="data.action.isVariableDeclaration"
+				enable="(!(data.action.isAssignation)  &amp; (!(data.action.isAddToListAction))) &amp; (!(data.action.isReturnStatement))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -61,7 +62,8 @@
 					readOnly="false" validateOnReturn="false" />
 			</Panel>
 			<CheckBox id="10" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isAssignation" enable="(!(data.action.isVariableDeclaration)  &amp; (!(data.action.isAddToListAction)))"
+				data="data.action.isAssignation"
+				enable="(!(data.action.isVariableDeclaration)  &amp; (!(data.action.isAddToListAction))) &amp; (!(data.action.isReturnStatement))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -78,10 +80,9 @@
 					label="assign_to" readOnly="false" />
 				<Custom id="13" manageDynamicModel="true" useScrollBar="false"
 					data="data.action.assignation"
-					enable="(data.action.isAssignation &amp; (!(data.action.isVariableDeclaration)))"
+					enable="(data.action.isAssignation &amp; (!(data.action.isVariableDeclaration)) &amp; (!(data.action.isReturnStatement)))"
 					componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-					opaque="false" name="AddIndividualAssignationCC"
-					controllerClassName="org.openflexo.fib.controller.FIBController"
+					opaque="false" name="AssignationValue" controllerClassName="org.openflexo.fib.controller.FIBController"
 					index="3" localize="true" constraints="border(location=center)"
 					readOnly="false">
 					<Assignment id="14" mandatory="true" value="data.action"
@@ -89,7 +90,8 @@
 				</Custom>
 			</Panel>
 			<CheckBox id="100" manageDynamicModel="false" useScrollBar="false"
-				data="data.action.isAddToListAction" enable="(!(data.action.isVariableDeclaration) &amp; (!(data.action.isAssignation)))"
+				data="data.action.isAddToListAction"
+				enable="(!(data.action.isVariableDeclaration) &amp; (!(data.action.isAssignation)) &amp; (!(data.action.isReturnStatement)))"
 				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
 				negate="false" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -105,17 +107,29 @@
 					localize="true" align="left" constraints="border(location=west)"
 					label="add_to_list" readOnly="false" />
 				<Custom id="103" manageDynamicModel="true" useScrollBar="false"
-					data="data.action.listExpression"
-					enable="data.action.isAddToListAction"
+					data="data.action.listExpression" enable="data.action.isAddToListAction"
 					componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-					opaque="false" name="ListBindingCC"
-					controllerClassName="org.openflexo.fib.controller.FIBController"
+					opaque="false" name="ListBindingCC" controllerClassName="org.openflexo.fib.controller.FIBController"
 					index="3" localize="true" constraints="border(location=center)"
 					readOnly="false">
 					<Assignment id="104" mandatory="true" value="data.action"
 						variable="component.bindable" />
 				</Custom>
 			</Panel>
+
+			<CheckBox id="206" manageDynamicModel="false" useScrollBar="false"
+				data="data.action.isReturnStatement"
+				enable="(!(data.action.isAssignation)  &amp; (!(data.action.isAddToListAction)) &amp; (!(data.action.isVariableDeclaration)))"
+				selected="true" name="checkbox" controllerClassName="org.openflexo.fib.controller.FIBController"
+				negate="false" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				readOnly="false" />
+			<Label id="208" manageDynamicModel="false" useScrollBar="false"
+				controllerClassName="org.openflexo.fib.controller.FIBController"
+				localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				label="return" readOnly="false" />
+
 		</Panel>
 		<Panel darkLevel="1" visible="data.action.isIterationAction"
 			useScrollBar="false" protectContent="false" layout="twocols"

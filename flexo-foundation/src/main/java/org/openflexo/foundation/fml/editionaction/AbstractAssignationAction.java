@@ -46,6 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -85,7 +86,11 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getAssignableAction() != null) {
-				return getAssignableAction().execute(evaluationContext);
+				try {
+					return getAssignableAction().execute(evaluationContext);
+				} catch (ReturnException e) {
+					return (T) e.getReturnedValue();
+				}
 			}
 			return null;
 		}

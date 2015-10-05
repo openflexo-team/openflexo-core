@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -134,7 +135,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getThenControlGraph();
-			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getElseControlGraph();
 			}
 			return null;
@@ -145,7 +147,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setThenControlGraph(controlGraph);
-			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setElseControlGraph(controlGraph);
 			}
 		}
@@ -237,11 +240,11 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			if (evaluateCondition(evaluationContext)) {
 				return getThenControlGraph().execute(evaluationContext);
-				// performBatchOfActions(getActions(), action);
-			} else {
+			}
+			else {
 				if (getElseControlGraph() != null) {
 					return getElseControlGraph().execute(evaluationContext);
 				}
@@ -274,7 +277,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			}
 			// performSuperAdder(ACTIONS_KEY, anAction);
 		}
-
+		
 		@Deprecated
 		@Override
 		public void removeFromActions(EditionAction anAction) {

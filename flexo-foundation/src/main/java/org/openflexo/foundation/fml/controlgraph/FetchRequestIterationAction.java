@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.binding.FetchRequestIterationActionBindingMo
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -153,7 +154,8 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			if (fetchRequest != null) {
 				fetchRequest.setActionContainer(this);
 				fetchRequest.setEmbeddingIteration(this);
-			} else {
+			}
+			else {
 				logger.warning("INVESTIGATE : Setting a Null FetchRequest");
 			}
 		}
@@ -175,7 +177,7 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 					logger.info("What should i return for " + getIteratorName() + " ? target " + target + " context=" + context);
 					return super.getBindingValue(target, context);
 				}
-
+		
 				@Override
 				public Type getType() {
 					return getItemType();
@@ -186,7 +188,12 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 
 		private List<?> fetchItems(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getFetchRequest() != null) {
-				return getFetchRequest().execute(evaluationContext);
+				try {
+					return getFetchRequest().execute(evaluationContext);
+				} catch (ReturnException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return Collections.emptyList();
 		}
@@ -197,7 +204,12 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			if (items != null) {
 				for (Object item : items) {
 					evaluationContext.declareVariable(getIteratorName(), item);
-					getControlGraph().execute(evaluationContext);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						return e.getReturnedValue();
+					}
 					// performBatchOfActions(getActions(), action);
 				}
 			}

@@ -69,5 +69,7 @@ public interface ViewPointResource extends AbstractVirtualModelResource<ViewPoin
 
 	public List<VirtualModelResource> getVirtualModelResources();
 
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);
+
 	public boolean isDeprecatedVersion();
 }

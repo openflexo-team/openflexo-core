@@ -339,7 +339,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		}
 
 		@Override
-		public FlexoConceptInstanceType getInstanceType() {
+		public VirtualModelInstanceType getInstanceType() {
 			return vmInstanceType;
 		}
 

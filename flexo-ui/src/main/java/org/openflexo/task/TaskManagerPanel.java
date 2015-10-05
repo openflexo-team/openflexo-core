@@ -92,6 +92,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	public TaskManagerPanel(FlexoTaskManager taskManager) {
 		super((Frame) null, "TaskManager", false);
 
+		Thread.dumpStack();
+
 		this.taskManager = taskManager;
 		taskManager.getPropertyChangeSupport().addPropertyChangeListener(this);
 
@@ -148,7 +150,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		// contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT * 3));
 
 		if (!isVisible() && taskManager.getScheduledTasks().size() > 0) {
-			System.out.println("Showing TaskManagerPanel...");
+			System.out.println("Showing TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 			setVisible(true);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -175,11 +177,12 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		center();
 
 		if (taskManager.getScheduledTasks().size() == 0) {
-			System.out.println("Hidding TaskManagerPanel...");
+			System.out.println("Hidding TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 			setVisible(false);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
+					System.out.println("Hidding Again TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 					setVisible(false);
 				}
 			});

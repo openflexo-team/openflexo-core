@@ -234,11 +234,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public TechnologyAdapter getTechnologyAdapter(Class<? extends EditionAction> editionActionClass) {
+		System.out.println("Pour " + editionActionClass);
 		TechnologyAdapter returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
 		if (returned != null) {
+			System.out.println("return1 " + returned);
 			return returned;
 		}
 		FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		System.out.println("return2 " + fmlTA);
 		return fmlTA;
 	}
 
@@ -804,7 +807,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			boolean oldValue = this.isReturnStatement;
 			this.isReturnStatement = isReturnStatement;
 			getPropertyChangeSupport().firePropertyChange("isReturnStatement", oldValue, isReturnStatement);
-			if (isVariableDeclaration) {
+			if (isReturnStatement) {
 				setVariableDeclaration(false);
 				setAssignation(false);
 				setAddToListAction(false);
