@@ -52,6 +52,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
@@ -77,6 +79,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	private TechnologyAdapterService technologyAdapterService;
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
+	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
 
 	// private List<Class<? extends TechnologySpecificType<?>>> availableTechnologySpecificTypes;
 
@@ -203,6 +206,25 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			}
 		}
 		return availableModelSlotTypes;
+	}
+
+	public List<Class<? extends VirtualModelInstanceNature>> getAvailableVirtualModelInstanceNatures() {
+		if (availableVirtualModelInstanceNatures == null) {
+			availableVirtualModelInstanceNatures = computeAvailableVirtualModelInstanceNatures();
+		}
+		return availableVirtualModelInstanceNatures;
+	}
+
+	private List<Class<? extends VirtualModelInstanceNature>> computeAvailableVirtualModelInstanceNatures() {
+		availableVirtualModelInstanceNatures = new ArrayList<Class<? extends VirtualModelInstanceNature>>();
+		Class<?> cl = getClass();
+		if (cl.isAnnotationPresent(DeclareVirtualModelInstanceNatures.class)) {
+			DeclareVirtualModelInstanceNatures allVirtualModelInstanceNatures = cl.getAnnotation(DeclareVirtualModelInstanceNatures.class);
+			for (Class<? extends VirtualModelInstanceNature> natureClass : allVirtualModelInstanceNatures.value()) {
+				availableVirtualModelInstanceNatures.add(natureClass);
+			}
+		}
+		return availableVirtualModelInstanceNatures;
 	}
 
 	/*public List<Class<? extends TechnologySpecificType<?>>> getAvailableTechnologySpecificTypes() {
