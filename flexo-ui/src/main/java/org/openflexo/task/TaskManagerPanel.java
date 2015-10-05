@@ -148,12 +148,15 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		// contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT * 3));
 
 		if (!isVisible() && taskManager.getScheduledTasks().size() > 0) {
+			System.out.println("Showing TaskManagerPanel...");
 			setVisible(true);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					requestFocusInWindow();
-					requestFocus();
+					if (isVisible()) {
+						requestFocusInWindow();
+						requestFocus();
+					}
 				}
 			});
 
@@ -172,7 +175,14 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		center();
 
 		if (taskManager.getScheduledTasks().size() == 0) {
+			System.out.println("Hidding TaskManagerPanel...");
 			setVisible(false);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					setVisible(false);
+				}
+			});
 		}
 	}
 
