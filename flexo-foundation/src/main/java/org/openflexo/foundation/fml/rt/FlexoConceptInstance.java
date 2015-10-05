@@ -284,6 +284,71 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return super.getProject();
 		}
 
+		/**
+		 * Implements a local RunTimeEvaluationContext, in the context of this FlexoConceptInstance, but isolated. Variables beeing declared
+		 * here won't be visible from outside scope of this LocalRunTimeEvaluationContext
+		 * 
+		 * @author sylvain
+		 *
+		 */
+		public class LocalRunTimeEvaluationContext implements RunTimeEvaluationContext {
+
+			// Stores internal variables used during execution of this isolated RunTimeEvaluationContext
+			protected HashMap<String, Object> localVariables = new HashMap<String, Object>();
+
+			@Override
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return FlexoConceptInstanceImpl.this;
+			}
+
+			@Override
+			public VirtualModelInstance getVirtualModelInstance() {
+				return getFlexoConceptInstance().getVirtualModelInstance();
+			}
+
+			/**
+			 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
+			 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
+			 * Variable is initialized with supplied name and value
+			 * 
+			 * @param variableName
+			 * @param value
+			 */
+			@Override
+			public void declareVariable(String variableName, Object value) {
+				localVariables.put(variableName, value);
+			}
+
+			/**
+			 * Calling this method will dereference variable identified by supplied name
+			 * 
+			 * @param variableName
+			 */
+			@Override
+			public void dereferenceVariable(String variableName) {
+				localVariables.remove(variableName);
+			}
+
+			@Override
+			public Object getValue(BindingVariable variable) {
+				if (localVariables.containsKey(variable.getVariableName())) {
+					return localVariables.get(variable.getVariableName());
+				}
+				return FlexoConceptInstanceImpl.this.getValue(variable);
+			}
+
+			@Override
+			public void setValue(Object value, BindingVariable variable) {
+				if (localVariables.containsKey(variable.getVariableName())) {
+					localVariables.put(variable.getVariableName(), value);
+				}
+				else {
+					FlexoConceptInstanceImpl.this.setValue(value, variable);
+				}
+			}
+
+		}
+
 		@Override
 		public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty) {
 			if (flexoProperty instanceof FlexoRole) {
@@ -304,7 +369,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else if (flexoProperty instanceof GetProperty) {
 				FMLControlGraph getControlGraph = ((GetProperty<T>) flexoProperty).getGetControlGraph();
 				try {
-					return (T) getControlGraph.execute(this);
+					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+					return (T) getControlGraph.execute(localEvaluationContext);
 				} catch (FlexoException e) {
 					e.printStackTrace();
 				}
