@@ -281,7 +281,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param object
 	 * @return
 	 */
-	public abstract ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass);
+	public abstract ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> flexoRoleClass);
 
 	/**
 	 * Return icon representing supplied edition action

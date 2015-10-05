@@ -221,7 +221,7 @@ public class FMLIconLibrary extends IconLibrary {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
 					.getModelSlotTechnologyAdapter());
 			if (tac != null) {
-				return tac.getIconForPatternRole((Class<? extends FlexoRole<?>>) object.getClass());
+				return tac.getIconForFlexoRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}
 		} else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
