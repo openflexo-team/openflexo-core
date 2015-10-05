@@ -25,7 +25,7 @@
 	<DropDown index="6" data="data.flexoRoleClass"
 		constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		name="PatternRoleTypeDD" format="object.simpleName"
-		icon="controller.getTechnologyAdapterController(data.technologyAdapterForModelSlot).getIconForPatternRole(object)"
+		icon="controller.getTechnologyAdapterController(data.technologyAdapterForModelSlot).getIconForFlexoRole(object)"
 		localize="true" list="data.availableFlexoRoleTypes" showIcon="true"
 		iteratorClassName="java.lang.Class" autoSelectFirstRow="true">
 	</DropDown>
