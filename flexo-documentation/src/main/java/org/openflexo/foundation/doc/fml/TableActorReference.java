@@ -47,12 +47,12 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
+import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.fml.FlexoTableRole.FlexoTableRoleImpl;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -156,8 +156,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T>
-			implements TableActorReference<T> {
+	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T> implements
+			TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
@@ -256,8 +256,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 					if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
 						FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
 						if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
-							FlexoDocElement<?, ?> templateParagraph = templateTable
-									.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
+							FlexoDocElement<?, ?> templateParagraph = templateTable.getElementWithIdentifier(generatedParagraph
+									.getBaseIdentifier());
 							FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
 							FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
 							if (templateRow != null) {
@@ -336,7 +336,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 			// start iteration row index is computed from the last static reference before iteration area
 			if (tableRole.getStartIterationIndex() > 0) {
-				FlexoDocTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows().get(tableRole.getStartIterationIndex() - 1);
+				FlexoDocTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows()
+						.get(tableRole.getStartIterationIndex() - 1);
 				List<FlexoDocTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
 				if (lastHeaderRows.size() > 0) {
 					FlexoDocTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
@@ -346,7 +347,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 			}
 			// end iteration row index is computed from the last static reference after iteration area
 			if (tableRole.getEndIterationIndex() > 0 && tableRole.getEndIterationIndex() < tableRole.getTable().getTableRows().size() - 1) {
-				FlexoDocTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows().get(tableRole.getEndIterationIndex() + 1);
+				FlexoDocTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows()
+						.get(tableRole.getEndIterationIndex() + 1);
 				List<FlexoDocTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
 				if (firstFooterRows.size() > 0) {
 					FlexoDocTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
@@ -359,6 +361,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 			int currentRowNumbers = endIterationRowIndex - startIterationRowIndex + 1;
 
+			System.out.println("rowObjects = " + rowObjects);
+
 			if (currentRowNumbers < rowObjects.size()) {
 				// Some rows need to be added
 				System.out.println("currentRowNumbers=" + currentRowNumbers);
@@ -366,8 +370,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				for (int i = 0; i < rowObjects.size() - currentRowNumbers; i++) {
 					System.out.println("Add row " + (i + endIterationRowIndex + 1));
 
-					FlexoDocTableRow clonedRow = (FlexoDocTableRow<?, ?>) getModellingElement().getTableRows().get(i + endIterationRowIndex)
-							.cloneObject();
+					FlexoDocTableRow clonedRow = (FlexoDocTableRow<?, ?>) getModellingElement().getTableRows()
+							.get(i + endIterationRowIndex).cloneObject();
 					getModellingElement().insertTableRowAtIndex(clonedRow, (i + endIterationRowIndex + 1));
 				}
 			}
@@ -376,8 +380,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				// Some rows need to be removed
 				for (int i = 0; i < currentRowNumbers - rowObjects.size(); i++) {
 					System.out.println("remove row at index " + (i + endIterationRowIndex + 1));
-					getModellingElement()
-							.removeFromTableRows((FlexoDocTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
+					getModellingElement().removeFromTableRows(
+							(FlexoDocTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
 				}
 			}
 
