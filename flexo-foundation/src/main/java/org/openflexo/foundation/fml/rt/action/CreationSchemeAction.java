@@ -121,7 +121,12 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 			}
 		}
 
-		applyEditionActions();
+		try {
+			executeControlGraph();
+		} catch (FlexoException e) {
+			System.out.println("Caught exception " + e);
+			throw e;
+		}
 
 	}
 

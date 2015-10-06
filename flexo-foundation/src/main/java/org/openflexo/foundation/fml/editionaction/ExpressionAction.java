@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
@@ -78,7 +79,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 	@Override
 	public Type getAssignableType();
 
-	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
+	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T>implements ExpressionAction<T> {
 
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
@@ -121,6 +122,12 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			try {
 				return getExpression().getBindingValue(evaluationContext);
+			} catch (InvocationTargetException e) {
+				System.out.println("ok je recois " + e.getTargetException());
+				if (e.getTargetException() instanceof FlexoException) {
+					throw (FlexoException) e.getTargetException();
+				}
+				throw new FlexoException(e);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new FlexoException(e);

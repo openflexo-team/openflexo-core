@@ -94,7 +94,7 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 		}
 
 		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
-			applyEditionActions();
+			executeControlGraph();
 		}
 	}
 

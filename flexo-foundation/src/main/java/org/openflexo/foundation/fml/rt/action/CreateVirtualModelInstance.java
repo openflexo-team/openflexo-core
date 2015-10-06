@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
@@ -59,7 +60,6 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance.VirtualModelInstanceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.resource.InvalidFileNameException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.toolbox.StringUtils;
@@ -98,7 +98,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	@Override
-	protected void doAction(Object context) throws InvalidFileNameException, SaveResourceException, InvalidArgumentException {
+	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
 		System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
@@ -150,6 +150,10 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
+			if (creationSchemeAction.getThrownException() != null) {
+				throw creationSchemeAction.getThrownException();
+			}
+
 		}
 
 		// We add the VirtualModelInstance to the view

@@ -250,7 +250,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
-	protected void applyEditionActions() throws FlexoException {
+	protected void executeControlGraph() throws FlexoException {
 
 		// logger.info("******** Executing\n" + getEditionScheme().getFMLRepresentation());
 

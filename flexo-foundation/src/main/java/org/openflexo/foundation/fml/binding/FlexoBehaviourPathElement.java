@@ -46,8 +46,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingPathElement;
-import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.Function.FunctionArgument;
+import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -106,8 +106,8 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 	}
 
 	@Override
-	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException,
-			InvocationTargetTransformException {
+	public Object getBindingValue(Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
 		// System.out.println("evaluate " + getMethodDefinition().getSignature() + " for " + target);
 
@@ -146,11 +146,14 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + epi);
 					return actionSchemeAction.getFlexoConceptInstance();
 				}
+				if (actionSchemeAction.getThrownException() != null) {
+					throw new InvocationTargetTransformException(new InvocationTargetException(actionSchemeAction.getThrownException()));
+				}
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
 		} catch (IllegalArgumentException e) {
-			StringBuffer warningMessage = new StringBuffer("While evaluating edition scheme " + getFlexoBehaviour()
-					+ " exception occured: " + e.getMessage());
+			StringBuffer warningMessage = new StringBuffer(
+					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
 			for (i = 0; i < getFunction().getArguments().size(); i++) {
 				warningMessage.append(", arg[" + i + "] = " + args[i]);
