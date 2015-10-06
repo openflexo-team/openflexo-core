@@ -42,7 +42,9 @@ package org.openflexo.foundation;
 import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
+import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.nature.ScreenshotService;
 import org.openflexo.foundation.remoteresources.FlexoUpdateService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -94,6 +96,10 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 		ViewPointLibrary viewPointLibrary = createViewPointLibraryService();
 		registerService(viewPointLibrary);
+
+		ScreenshotService screenshotService = createScreenshotService();
+		registerService(screenshotService);
+
 	}
 
 	@Override
@@ -129,6 +135,11 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	@Override
 	protected FlexoTaskManager createTaskManager() {
 		return ThreadPoolFlexoTaskManager.createInstance();
+	}
+
+	@Override
+	protected ScreenshotService createScreenshotService() {
+		return DefaultScreenshotService.createInstance();
 	}
 
 	@Override

@@ -38,8 +38,12 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -47,6 +51,8 @@ import org.openflexo.foundation.doc.FlexoDrawingRun;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.nature.ScreenshotService.CouldNotGenerateScreenshotException;
+import org.openflexo.foundation.nature.ScreenshotableNature;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -110,7 +116,7 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 	 * This method is called to generate the image
 	 * 
 	 */
-	public void generateImage();
+	public void generateImage() throws CouldNotGenerateScreenshotException;
 
 	public abstract static class ImageActorReferenceImpl<R extends FlexoDrawingRun<?, ?>> extends ActorReferenceImpl<R>
 			implements ImageActorReference<R> {
@@ -184,10 +190,29 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 		/**
 		 * This method is called to generate the image
 		 * 
+		 * @throws CouldNotGenerateScreenshotException
+		 * 
 		 */
 		@Override
-		public void generateImage() {
+		public void generateImage() throws CouldNotGenerateScreenshotException {
 			System.out.println("On y va on genere l'image pour " + getFlexoRole());
+			System.out.println("getServiceManager()=" + getServiceManager());
+			System.out.println("getScreenshotService()=" + getServiceManager().getScreenshotService());
+
+			FlexoImageRole<R, ?, ?> imageRole = (FlexoImageRole<R, ?, ?>) getFlexoRole();
+
+			FlexoObject objectToRepresent;
+			try {
+				objectToRepresent = imageRole.getRepresentedObject().getBindingValue(getFlexoConceptInstance());
+				Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
+				getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent, (Class) natureClass);
+			} catch (TypeMismatchException e) {
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

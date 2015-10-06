@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.nature.ScreenshotService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -190,6 +191,10 @@ public abstract class FlexoServiceManager {
 		return getService(FlexoTaskManager.class);
 	}
 
+	public ScreenshotService getScreenshotService() {
+		return getService(ScreenshotService.class);
+	}
+
 	public class ServiceRegistered implements ServiceNotification {
 	}
 
@@ -210,5 +215,7 @@ public abstract class FlexoServiceManager {
 	protected abstract ResourceManager createResourceManager();
 
 	protected abstract FlexoTaskManager createTaskManager();
+
+	protected abstract ScreenshotService createScreenshotService();
 
 }

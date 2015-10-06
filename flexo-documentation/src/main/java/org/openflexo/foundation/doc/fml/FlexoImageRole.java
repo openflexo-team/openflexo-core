@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -120,7 +121,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 */
 	@Getter(REPRESENTED_OBJECT_KEY)
 	@XMLAttribute
-	public DataBinding<Object> getRepresentedObject();
+	public DataBinding<FlexoObject> getRepresentedObject();
 
 	/**
 	 * Sets {@link DataBinding} representing the object to represent
@@ -128,7 +129,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 	 * @param value
 	 */
 	@Setter(REPRESENTED_OBJECT_KEY)
-	public void setRepresentedObject(DataBinding<Object> value);
+	public void setRepresentedObject(DataBinding<FlexoObject> value);
 
 	/**
 	 * Return the nature used to extract screenshot<br>
@@ -234,12 +235,12 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 			return returned;
 		}
 
-		private DataBinding<Object> representedObject;
+		private DataBinding<FlexoObject> representedObject;
 
 		@Override
-		public DataBinding<Object> getRepresentedObject() {
+		public DataBinding<FlexoObject> getRepresentedObject() {
 			if (representedObject == null) {
-				representedObject = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				representedObject = new DataBinding<FlexoObject>(this, FlexoObject.class, DataBinding.BindingDefinitionType.GET);
 				representedObject.setBindingName("representedObject");
 				representedObject.setMandatory(false);
 			}
@@ -247,10 +248,10 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		}
 
 		@Override
-		public void setRepresentedObject(DataBinding<Object> representedObject) {
+		public void setRepresentedObject(DataBinding<FlexoObject> representedObject) {
 			if (representedObject != null) {
 				representedObject.setOwner(this);
-				representedObject.setDeclaredType(Object.class);
+				representedObject.setDeclaredType(FlexoObject.class);
 				representedObject.setBindingName("representedObject");
 				representedObject.setMandatory(true);
 				representedObject.setBindingDefinitionType(BindingDefinitionType.GET);
