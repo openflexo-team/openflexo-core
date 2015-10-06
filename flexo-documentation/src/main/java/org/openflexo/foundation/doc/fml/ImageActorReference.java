@@ -106,6 +106,12 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 	@Setter(RUN_INDEX_KEY)
 	public void setRunIndex(int runIndex);
 
+	/**
+	 * This method is called to generate the image
+	 * 
+	 */
+	public void generateImage();
+
 	public abstract static class ImageActorReferenceImpl<R extends FlexoDrawingRun<?, ?>> extends ActorReferenceImpl<R>
 			implements ImageActorReference<R> {
 
@@ -174,6 +180,16 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 				getPropertyChangeSupport().firePropertyChange(RUN_INDEX_KEY, null, getRunIndex());
 			}
 		}
+
+		/**
+		 * This method is called to generate the image
+		 * 
+		 */
+		@Override
+		public void generateImage() {
+			System.out.println("On y va on genere l'image pour " + getFlexoRole());
+		}
+
 	}
 
 }
