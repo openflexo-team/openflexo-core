@@ -66,7 +66,8 @@ import org.openflexo.logging.FlexoLogger;
  * 
  * @author sguerin
  */
-public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> extends FlexoObservable {
+public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject>
+		extends FlexoObservable {
 
 	private static final Logger logger = FlexoLogger.getLogger(FlexoAction.class.getPackage().getName());
 
@@ -145,7 +146,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			for (T2 o : globalSelection) {
 				_globalSelection.add(o);
 			}
-		} else {
+		}
+		else {
 			_globalSelection = null;
 		}
 	}
@@ -198,7 +200,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	public A doAction() {
 		if (_editor != null) {
 			_editor.performAction((A) this, null);
-		} else {
+		}
+		else {
 			try {
 				doActionInContext();
 			} catch (FlexoException e) {
@@ -426,7 +429,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	public FlexoServiceManager getServiceManager() {
 		if (getEditor() != null) {
 			return getEditor().getServiceManager();
-		} else if (getFocusedObject() instanceof FlexoProjectObject) {
+		}
+		else if (getFocusedObject() instanceof FlexoProjectObject) {
 			return ((FlexoProjectObject) getFocusedObject()).getServiceManager();
 		}
 		return null;
