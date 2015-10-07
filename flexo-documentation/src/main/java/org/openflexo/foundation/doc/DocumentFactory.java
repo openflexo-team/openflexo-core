@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.doc;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,6 +48,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -133,6 +137,15 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 */
 	public abstract FlexoDrawingRun<D, TA> makeDrawingRun(File imageFile);
+
+	/**
+	 * Build new drawing run set with supplied image
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDrawingRun<D, TA> makeDrawingRun(BufferedImage image);
+
+	public abstract void updateDrawingRun(FlexoDrawingRun<D, TA> drawingRun, BufferedImage image);
 
 	/**
 	 * Build new empty table row
@@ -350,6 +363,24 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 		}
 		is.close();
 		return bytes;
+	}
+
+	/**
+	 * Convert the image from the file into an array of bytes.
+	 *
+	 * @param file
+	 *            the image file to be converted
+	 * @return the byte array containing the bytes from the image
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	protected static byte[] convertImageToByteArray(BufferedImage image) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(image, "jpg", baos);
+		baos.flush();
+		byte[] imageInByte = baos.toByteArray();
+		baos.close();
+		return imageInByte;
 	}
 
 }

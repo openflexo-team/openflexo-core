@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.doc.fml;
 
+import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
@@ -207,9 +208,16 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 				System.out.println("fci:" + getFlexoConceptInstance());
 				System.out.println("representedObjectBinding: " + imageRole.getRepresentedObject());
 				System.out.println("objectToRepresent=" + objectToRepresent);
+				System.out.println("drawingRun=" + drawingRun);
+				R drawingRun = getModellingElement();
 				if (objectToRepresent != null) {
 					Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
-					getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent, (Class) natureClass);
+					BufferedImage image = getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent,
+							(Class) natureClass);
+					drawingRun.getFlexoDocument().getFactory().updateDrawingRun((FlexoDrawingRun) drawingRun, image);
+				}
+				else {
+					drawingRun.getFlexoDocument().getFactory().updateDrawingRun((FlexoDrawingRun) drawingRun, null);
 				}
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
