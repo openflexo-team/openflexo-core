@@ -177,7 +177,13 @@ public class TestApplicationContext extends ApplicationContext {
 	@Override
 	protected PreferencesService createPreferencesService() {
 		// needed for testing the VEModule
-		return new PreferencesService();
+		return new PreferencesService() {
+			@Override
+			public boolean readOnly() {
+				// We force the PreferencesService to be read-only in test scope
+				return true;
+			}
+		};
 	}
 
 	@Override

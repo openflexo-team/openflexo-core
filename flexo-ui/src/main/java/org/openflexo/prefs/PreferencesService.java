@@ -111,15 +111,14 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
 		if (caller instanceof FlexoResourceCenterService) {
-			if (notification instanceof ResourceCenterAdded) {
+			if (notification instanceof ResourceCenterAdded && !readOnly()) {
 				FlexoResourceCenter addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				if (!(addedFlexoResourceCenter instanceof FlexoProject)) {
-					System.out.println("Tiens: un resource center: " + addedFlexoResourceCenter + " of "
-							+ addedFlexoResourceCenter.getClass());
 					getResourceCenterPreferences().ensureResourceEntryIsPresent(addedFlexoResourceCenter.getResourceCenterEntry());
 				}
 				savePreferences();
-			} else if (notification instanceof ResourceCenterRemoved) {
+			}
+			else if (notification instanceof ResourceCenterRemoved && !readOnly()) {
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();
@@ -165,7 +164,8 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 					}
 				}
 			}
-		} else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
+		}
+		else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
 			outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
 		}
 		return outputDir;
@@ -195,4 +195,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		return managePreferences(ResourceCenterPreferences.class, getFlexoPreferences());
 	}
 
+	public boolean readOnly() {
+		return false;
+	}
 }
