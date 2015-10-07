@@ -63,8 +63,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCaseWithGUI.class.getPackage().getName());
 
-	protected static DirectoryResourceCenter resourceCenter;
-	protected static ApplicationContext serviceManager;
+	// protected static DirectoryResourceCenter resourceCenter;
+	// protected static ApplicationContext serviceManager;
 
 	static {
 		try {
@@ -95,7 +95,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	protected static ApplicationContext instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		serviceManager = new TestApplicationContext(generateCompoundTestResourceCenter);
 		resourceCenter = (DirectoryResourceCenter) serviceManager.getResourceCenterService().getResourceCenters().get(0);
-		return serviceManager;
+		return (ApplicationContext) serviceManager;
 	}
 
 	protected static FlexoServiceManager getFlexoServiceManager() {
