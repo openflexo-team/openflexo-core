@@ -46,7 +46,9 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.model.annotations.ModelEntity;
 
 /**
- * This service provides management layer for {@link ProjectNature}<br>
+ * Implemented by a service that provides screenshot generation features<br>
+ * A given Screenshot generation is handled by a {@link ScreenshotServiceDelegate} specific to related object type and nature<br>
+ * When no {@link ScreenshotServiceDelegate} is registered, generally throw a {@link CouldNotGenerateScreenshotException}
  * 
  * @author sylvain
  * 
@@ -54,8 +56,56 @@ import org.openflexo.model.annotations.ModelEntity;
 @ModelEntity
 public interface ScreenshotService extends FlexoService {
 
+	/**
+	 * Register delegate for a given {@link ScreenshotableNature}
+	 * 
+	 * @param delegate
+	 */
+	public void registerDelegate(ScreenshotServiceDelegate<?, ?> delegate);
+
+	/**
+	 * Un-register delegate
+	 * 
+	 * @param delegate
+	 */
+	public void unregisterDelegate(ScreenshotServiceDelegate<?, ?> delegate);
+
+	/**
+	 * Return applicable {@link ScreenshotServiceDelegate} for supplied nature class
+	 * 
+	 * @param natureClass
+	 * @return
+	 */
+	public <T extends FlexoObject, N extends ScreenshotableNature<T>> ScreenshotServiceDelegate<T, N> getDelegate(Class<N> natureClass);
+
+	/**
+	 * Generate screenshot for given object and natureClass<br>
+	 * Screenshot generation is handled by a {@link ScreenshotServiceDelegate} specific to related object type and nature<br>
+	 * When no {@link ScreenshotServiceDelegate} is registered for supplied nature, throw a {@link CouldNotGenerateScreenshotException}
+	 * 
+	 * @param object
+	 * @param natureClass
+	 * @return
+	 * @throws CouldNotGenerateScreenshotException
+	 */
 	public <T extends FlexoObject> BufferedImage generateScreenshot(T object, Class<? extends ScreenshotableNature<T>> natureClass)
 			throws CouldNotGenerateScreenshotException;
+
+	/**
+	 * A delegate which handle screenshot service for a given object type and nature
+	 * 
+	 * @author sylvain
+	 *
+	 * @param <T>
+	 * @param <N>
+	 */
+	public static interface ScreenshotServiceDelegate<T extends FlexoObject, N extends ScreenshotableNature<T>> {
+
+		public Class<N> getNatureClass();
+
+		public BufferedImage generateScreenshot(T object);
+
+	}
 
 	@SuppressWarnings("serial")
 	public static class CouldNotGenerateScreenshotException extends FlexoException {

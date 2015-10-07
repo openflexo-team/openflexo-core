@@ -204,8 +204,13 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 			FlexoObject objectToRepresent;
 			try {
 				objectToRepresent = imageRole.getRepresentedObject().getBindingValue(getFlexoConceptInstance());
-				Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
-				getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent, (Class) natureClass);
+				System.out.println("fci:" + getFlexoConceptInstance());
+				System.out.println("representedObjectBinding: " + imageRole.getRepresentedObject());
+				System.out.println("objectToRepresent=" + objectToRepresent);
+				if (objectToRepresent != null) {
+					Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
+					getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent, (Class) natureClass);
+				}
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {

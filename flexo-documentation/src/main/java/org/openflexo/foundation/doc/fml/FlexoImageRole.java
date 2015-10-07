@@ -279,11 +279,8 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		@Override
 		public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures() {
 			if (availableNatures == null && getServiceManager() != null) {
-				System.out.println("on recalcule");
 				availableNatures = new ArrayList<>();
 				for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-					System.out.println("hop pour " + ta);
-					System.out.println(">>> " + ta.getAvailableVirtualModelInstanceNatures());
 					for (Class<? extends VirtualModelInstanceNature> natureClass : ta.getAvailableVirtualModelInstanceNatures()) {
 						if (ScreenshotableNature.class.isAssignableFrom(natureClass)) {
 							availableNatures.add((Class<? extends ScreenshotableNature<?>>) natureClass);

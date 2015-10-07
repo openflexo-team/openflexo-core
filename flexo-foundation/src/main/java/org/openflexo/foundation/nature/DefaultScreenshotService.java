@@ -39,6 +39,8 @@
 package org.openflexo.foundation.nature;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
@@ -48,7 +50,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 
 /**
- * Default implementation for {@link ProjectNatureService}
+ * Default implementation for {@link ScreenshotService}
  * 
  * @author sylvain
  * 
@@ -69,6 +71,8 @@ public abstract class DefaultScreenshotService extends FlexoServiceImpl implemen
 		return null;
 	}
 
+	private Map<Class<? extends ScreenshotableNature<?>>, ScreenshotServiceDelegate<?, ?>> registeredDelegates;
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		super.receiveNotification(caller, notification);
@@ -76,11 +80,38 @@ public abstract class DefaultScreenshotService extends FlexoServiceImpl implemen
 
 	@Override
 	public void initialize() {
+		registeredDelegates = new HashMap<>();
+	}
+
+	@Override
+	public void registerDelegate(ScreenshotServiceDelegate<?, ?> delegate) {
+		registeredDelegates.put(delegate.getNatureClass(), delegate);
+	}
+
+	@Override
+	public void unregisterDelegate(ScreenshotServiceDelegate<?, ?> delegate) {
+		registeredDelegates.remove(delegate.getNatureClass());
+	}
+
+	@Override
+	public <T extends FlexoObject, N extends ScreenshotableNature<T>> ScreenshotServiceDelegate<T, N> getDelegate(Class<N> natureClass) {
+		return (ScreenshotServiceDelegate<T, N>) registeredDelegates.get(natureClass);
 	}
 
 	@Override
 	public <T extends FlexoObject> BufferedImage generateScreenshot(T object, Class<? extends ScreenshotableNature<T>> natureClass)
 			throws CouldNotGenerateScreenshotException {
+
+		if (object == null) {
+			throw new CouldNotGenerateScreenshotException();
+		}
+
+		ScreenshotServiceDelegate<T, ? extends ScreenshotableNature<T>> delegate = getDelegate(natureClass);
+
+		if (delegate != null) {
+			return delegate.generateScreenshot(object);
+		}
+
 		throw new CouldNotGenerateScreenshotException();
 	}
 
