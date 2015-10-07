@@ -145,7 +145,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 */
 	public abstract FlexoDrawingRun<D, TA> makeDrawingRun(BufferedImage image);
 
-	public abstract void updateDrawingRun(FlexoDrawingRun<D, TA> drawingRun, BufferedImage image);
+	// public abstract void updateDrawingRun(FlexoDrawingRun<D, TA> drawingRun, BufferedImage image);
 
 	/**
 	 * Build new empty table row

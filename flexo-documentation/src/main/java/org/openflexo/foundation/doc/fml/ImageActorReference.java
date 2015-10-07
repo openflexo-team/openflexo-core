@@ -45,10 +45,12 @@ import java.util.logging.Logger;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.doc.DocumentFactory;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDrawingRun;
+import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -162,6 +164,18 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 			this.runIndex = index;
 		}
 
+		private FlexoDocParagraph<?, ?> getParagraph() {
+			if (drawingRun != null) {
+				return drawingRun.getParagraph();
+			}
+			FlexoDocument<?, ?> document = getFlexoDocument();
+			FlexoDocElement<?, ?> element = document.getElementWithIdentifier(paragraphId);
+			if (element instanceof FlexoDocParagraph) {
+				return (FlexoDocParagraph) element;
+			}
+			return null;
+		}
+
 		@Override
 		public R getModellingElement() {
 
@@ -188,6 +202,12 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 			}
 		}
 
+		private void deleteDrawingRun() {
+			drawingRun.getParagraph().removeFromRuns((FlexoDrawingRun) drawingRun);
+			drawingRun.delete();
+			drawingRun = null;
+		}
+
 		/**
 		 * This method is called to generate the image
 		 * 
@@ -209,15 +229,39 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 				System.out.println("representedObjectBinding: " + imageRole.getRepresentedObject());
 				System.out.println("objectToRepresent=" + objectToRepresent);
 				System.out.println("drawingRun=" + drawingRun);
-				R drawingRun = getModellingElement();
-				if (objectToRepresent != null) {
+				drawingRun = getModellingElement(); // To be sure we are in sync
+				FlexoDocParagraph<?, ?> paragraph = getParagraph(); // take care that getParagraph() will return null during next code !!!
+				if (getParagraph() == null) {
+					logger.warning("Could not find pararaph, abort");
+				}
+				else if (objectToRepresent != null) {
+					System.out.println("***************** We have to represent: " + objectToRepresent);
 					Class<? extends ScreenshotableNature> natureClass = imageRole.getNature();
 					BufferedImage image = getServiceManager().getScreenshotService().generateScreenshot(objectToRepresent,
 							(Class) natureClass);
-					drawingRun.getFlexoDocument().getFactory().updateDrawingRun((FlexoDrawingRun) drawingRun, image);
+					if (drawingRun != null) {
+						deleteDrawingRun();
+					}
+					DocumentFactory<?, ?> factory = getFlexoDocument().getFactory();
+					drawingRun = (R) factory.makeDrawingRun(image);
+
+					// Add eventual required empty run, for that runIndex matches generated drawingRun
+					while (getRunIndex() > paragraph.getRuns().size()) {
+						FlexoTextRun<?, ?> emptyRun = factory.makeTextRun();
+						paragraph.addToRuns((FlexoTextRun) emptyRun);
+					}
+
+					// Now, getRunIndex() <= getParagraph().getRuns().size()) {
+					paragraph.insertRunAtIndex((FlexoDrawingRun) drawingRun, getRunIndex());
+
 				}
-				else {
-					drawingRun.getFlexoDocument().getFactory().updateDrawingRun((FlexoDrawingRun) drawingRun, null);
+				else { // object to represent = null > delete the drawing run !
+					System.out.println("***************** No object represent: " + objectToRepresent);
+					System.out.println("drawingRun=" + drawingRun);
+					if (drawingRun != null) {
+						// Existing run must be removed
+						deleteDrawingRun();
+					}
 				}
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
