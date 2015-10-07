@@ -49,7 +49,6 @@ import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
@@ -111,12 +110,8 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		if (target instanceof FlexoConceptInstance) {
-			if (flexoProperty instanceof FlexoRole) {
-				((FlexoConceptInstance) target).setFlexoActor(value, (FlexoRole) flexoProperty);
-			}
-			else {
-				logger.warning("Not implemented: setBindingValue() for " + flexoProperty);
-			}
+			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
+			flexoConceptInstance.setFlexoPropertyValue((FlexoProperty) flexoProperty, value);
 			return;
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);

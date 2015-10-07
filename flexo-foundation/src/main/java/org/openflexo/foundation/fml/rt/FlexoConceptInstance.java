@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetProperty;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
@@ -147,6 +148,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 *            the property to lookup
 	 */
 	public <T> T getFlexoPropertyValue(FlexoProperty<T> flexoProperty);
+
+	/**
+	 * Sets value associated with supplied property
+	 * 
+	 * @param flexoProperty
+	 *            the property to lookup
+	 * @param value
+	 *            the new value to set
+	 */
+	public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value);
 
 	/**
 	 * Return actor associated with supplied role, asserting cardinality of supplied property is SINGLE.<br>
@@ -383,6 +394,51 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
 			return null;
+		}
+
+		/**
+		 * Sets value associated with supplied property
+		 * 
+		 * @param flexoProperty
+		 *            the property to lookup
+		 * @param value
+		 *            the new value to set
+		 */
+		@Override
+		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
+			if (flexoProperty instanceof FlexoRole) {
+				setFlexoActor(value, (FlexoRole) flexoProperty);
+			}
+			else if (flexoProperty instanceof ExpressionProperty) {
+				try {
+					System.out.println(
+							"*********************** OK pour l'expression " + ((ExpressionProperty<T>) flexoProperty).getExpression());
+					System.out.println("*************** je tente de setter: " + value);
+					((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (NotSettableContextException e) {
+					e.printStackTrace();
+				}
+			}
+			else if (flexoProperty instanceof GetSetProperty) {
+				FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
+				try {
+					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+					T returnedValue = null;
+					try {
+						setControlGraph.execute(localEvaluationContext);
+					} catch (ReturnException e) {
+						// Ignore
+					}
+				} catch (FlexoException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		/**
