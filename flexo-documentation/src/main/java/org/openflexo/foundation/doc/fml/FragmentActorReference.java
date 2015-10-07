@@ -42,13 +42,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocTableCell;
 import org.openflexo.foundation.doc.FlexoDocTableRow;
+import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -168,12 +168,17 @@ public interface FragmentActorReference<F extends FlexoDocFragment<?, ?>> extend
 						int index = 0;
 						for (ElementReference er : getElementReferences()) {
 							FlexoDocElement element = document.getElementWithIdentifier(er.getElementId());
-							element.setBaseIdentifier(er.getTemplateElementId());
-							if (index == 0) {
-								startElement = element;
+							if (element != null) {
+								element.setBaseIdentifier(er.getTemplateElementId());
+								if (index == 0) {
+									startElement = element;
+								}
+								else if (index == getElementReferences().size() - 1) {
+									endElement = element;
+								}
 							}
-							else if (index == getElementReferences().size() - 1) {
-								endElement = element;
+							else {
+								logger.warning("Could not find element matching " + er.getElementId());
 							}
 							index++;
 						}
