@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
@@ -46,6 +47,8 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.ExplicitNullType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -65,6 +68,9 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 @FIBPanel("Fib/FML/ConditionalActionPanel.fib")
@@ -313,6 +319,41 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			}
 		}
 
+		@Override
+		public Type getInferedType() {
+
+			if (getThenControlGraph() != null) {
+
+				Type inferedType1 = getThenControlGraph().getInferedType();
+
+				if (getElseControlGraph() != null) {
+					Type inferedType2 = getElseControlGraph().getInferedType();
+
+					if (inferedType1 instanceof ExplicitNullType) {
+						if (inferedType2 instanceof ExplicitNullType) {
+							return Object.class;
+						}
+						return inferedType2;
+					}
+
+					if (inferedType2 instanceof ExplicitNullType) {
+						return inferedType1;
+					}
+
+					if (TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)) {
+						return inferedType1;
+					}
+					if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+						return inferedType2;
+					}
+				}
+
+				return inferedType1;
+			}
+
+			return Void.class;
+		}
+
 	}
 
 	@DefineValidationRule
@@ -326,6 +367,32 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return object.getCondition();
 		}
 
+	}
+
+	@DefineValidationRule
+	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, ConditionalAction> {
+		public InferedTypesMustBeCompatible() {
+			super(ConditionalAction.class, "infered_types_must_be_compatible_in_a_conditional");
+		}
+
+		@Override
+		public ValidationIssue<InferedTypesMustBeCompatible, ConditionalAction> applyValidation(ConditionalAction conditional) {
+
+			if (conditional.getThenControlGraph() != null) {
+				Type inferedType1 = conditional.getThenControlGraph().getInferedType();
+				if (conditional.getElseControlGraph() != null) {
+					Type inferedType2 = conditional.getElseControlGraph().getInferedType();
+					if (!TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
+							&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+						return new ValidationError<InferedTypesMustBeCompatible, ConditionalAction>(this, conditional,
+								"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
+										+ TypeUtils.simpleRepresentation(inferedType2) + ")");
+					}
+				}
+			}
+
+			return null;
+		}
 	}
 
 }

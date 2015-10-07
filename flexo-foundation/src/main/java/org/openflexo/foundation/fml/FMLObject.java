@@ -451,7 +451,13 @@ public interface FMLObject
 
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
-				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid: ($binding)", fixProposals);
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
+
+				/*System.out.println("InvalidRequiredBindingIssue:");
+				System.out.println("object: " + anObject);
+				System.out.println(anObject.getFMLRepresentation());
+				System.out.println("binding=" + rule.getBinding(anObject));
+				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());*/
 			}
 
 			public DataBinding<?> getBinding() {

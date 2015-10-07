@@ -376,6 +376,14 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			}
 		}
 
+		@Override
+		public Type getInferedType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.class;
+		}
+
 	}
 
 	@DefineValidationRule

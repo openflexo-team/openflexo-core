@@ -252,33 +252,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	protected void executeControlGraph() throws FlexoException {
 
-		// logger.info("******** Executing\n" + getEditionScheme().getFMLRepresentation());
-
-		/*for (FlexoBehaviourParameter param : parameterValues.keySet()) {
-			logger.info("Parameter " + param.getName() + " value=" + parameterValues.get(param));
-		}*/
-
-		/*Hashtable<EditionAction, Object> performedActions = new Hashtable<EditionAction, Object>();
-		
-		FB es = getEditionScheme();
-		
-		// Perform actions
-		if (es != null) {
-			for (EditionAction action : es.getActions()) {
-				if (action.evaluateCondition(this)) {
-					performAction(action, performedActions);
-				}
-			}
-			// Otherwise, we just ignore the action
-		} else {
-			logger.warning("Trying to execute an Action with null Behaviour");
-		}
-		
-		// Finalize actions
-		for (EditionAction action : performedActions.keySet()) {
-			action.finalizePerformAction(this, performedActions.get(action));
-		}*/
-
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
 			try {
 				getFlexoBehaviour().getControlGraph().execute(this);

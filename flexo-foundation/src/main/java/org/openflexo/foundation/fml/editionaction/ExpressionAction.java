@@ -123,7 +123,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			try {
 				return getExpression().getBindingValue(evaluationContext);
 			} catch (InvocationTargetException e) {
-				System.out.println("ok je recois " + e.getTargetException());
 				if (e.getTargetException() instanceof FlexoException) {
 					throw (FlexoException) e.getTargetException();
 				}

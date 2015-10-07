@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -168,21 +169,12 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	public Sequence getParentFlattenedSequence();
 
 	/**
-	 * Return type of this {@link FMLControlGraph}. Must be compatible with an eventual return statement.<br>
-	 * Might be null
+	 * Computed and return type of this {@link FMLControlGraph}, with the semantics of return statement<br>
+	 * Unless a return (@see {@link ReturnStatement}) is declared, infered type is Void
 	 * 
 	 * @return
 	 */
-	/*@Getter(value = TYPE_KEY, ignoreType = true)
-	public Type getType();*/
-
-	/**
-	 * Sets type of this {@link FMLControlGraph}. Must be compatible with an eventual return statement.<br>
-	 * 
-	 * @param type
-	 */
-	/*@Setter(TYPE_KEY)
-	public void setType(Type type);*/
+	public Type getInferedType();
 
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 

@@ -38,10 +38,13 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.type.ExplicitNullType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -50,6 +53,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -57,6 +61,9 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -264,5 +271,63 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				}*/
 			}
 		}
+
+		@Override
+		public Type getInferedType() {
+			Type inferedType1 = getControlGraph1().getInferedType();
+			Type inferedType2 = getControlGraph2().getInferedType();
+			if (inferedType1.equals(Void.class)) {
+				return inferedType2;
+			}
+
+			if (inferedType2.equals(Void.class)) {
+				return inferedType1;
+			}
+
+			if (inferedType1 instanceof ExplicitNullType) {
+				if (inferedType2 instanceof ExplicitNullType) {
+					return ExplicitNullType.INSTANCE;
+				}
+				return inferedType2;
+			}
+
+			if (inferedType2 instanceof ExplicitNullType) {
+				return inferedType1;
+			}
+
+			if (TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)) {
+				return inferedType1;
+			}
+
+			if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+				return inferedType2;
+			}
+
+			return Void.class;
+		}
 	}
+
+	@DefineValidationRule
+	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, Sequence> {
+		public InferedTypesMustBeCompatible() {
+			super(Sequence.class, "infered_types_must_be_compatible_in_a_sequence");
+		}
+
+		@Override
+		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
+			Type inferedType1 = sequence.getControlGraph1().getInferedType();
+			Type inferedType2 = sequence.getControlGraph2().getInferedType();
+
+			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
+					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
+					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+				System.out.println("Types are not compatible in:");
+				System.out.println(sequence.getFMLRepresentation());
+				return new ValidationError<InferedTypesMustBeCompatible, Sequence>(this, sequence, "types_are_not_compatible ("
+						+ TypeUtils.simpleRepresentation(inferedType1) + " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
+			}
+			return null;
+		}
+	}
+
 }

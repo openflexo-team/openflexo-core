@@ -256,30 +256,30 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		private DataBinding<VirtualModelInstance> virtualModelInstance;
-
-		@Override
-		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName("virtualModelInstance");
-				virtualModelInstance.setMandatory(true);
+		/*	private DataBinding<VirtualModelInstance> virtualModelInstance;
+		
+			@Override
+			public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
+				if (virtualModelInstance == null) {
+					virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
+							DataBinding.BindingDefinitionType.GET);
+					virtualModelInstance.setBindingName("virtualModelInstance");
+					virtualModelInstance.setMandatory(true);
+				}
+				return virtualModelInstance;
 			}
-			return virtualModelInstance;
-		}
-
-		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-				aVirtualModelInstance.setMandatory(true);
-			}
-			this.virtualModelInstance = aVirtualModelInstance;
-		}
+		
+			@Override
+			public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
+				if (aVirtualModelInstance != null) {
+					aVirtualModelInstance.setOwner(this);
+					aVirtualModelInstance.setBindingName("virtualModelInstance");
+					aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+					aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+					aVirtualModelInstance.setMandatory(true);
+				}
+				this.virtualModelInstance = aVirtualModelInstance;
+			}*/
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {

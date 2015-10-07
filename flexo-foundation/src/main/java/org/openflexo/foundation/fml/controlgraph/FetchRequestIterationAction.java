@@ -310,5 +310,13 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			}*/
 		}
 
+		@Override
+		public Type getInferedType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.class;
+		}
+
 	}
 }

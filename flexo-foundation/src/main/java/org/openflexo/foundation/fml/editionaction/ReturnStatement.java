@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -59,18 +60,22 @@ import org.openflexo.model.annotations.XMLElement;
  * @param <T>
  */
 @ModelEntity
-@ImplementationClass(ReturnStatement.DeclarationActionImpl.class)
+@ImplementationClass(ReturnStatement.ReturnActionImpl.class)
 @XMLElement
 public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 
-	public static abstract class DeclarationActionImpl<T> extends AbstractAssignationActionImpl<T>implements ReturnStatement<T> {
+	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T>implements ReturnStatement<T> {
 
 		private static final Logger logger = Logger.getLogger(ReturnStatement.class.getPackage().getName());
 
 		@Override
+		public Type getInferedType() {
+			return getAssignableType();
+		}
+
+		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			T value = getAssignationValue(evaluationContext);
-			System.out.println("ok je lance bien " + value);
 			throw new ReturnException(value);
 		}
 

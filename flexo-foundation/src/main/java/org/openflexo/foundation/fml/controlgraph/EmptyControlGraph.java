@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
@@ -99,5 +100,11 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return "";
 		}
+
+		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
+
 	}
 }

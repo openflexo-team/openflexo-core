@@ -44,7 +44,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -114,13 +113,10 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 
 		@Override
 		public Type getType() {
-			/*if (getGetControlGraph() != null) {
-				return getGetControlGraph().get
-			}*/
-			if (getGetControlGraph() instanceof AssignableAction) {
-				return ((AssignableAction) getGetControlGraph()).getAssignableType();
+			if (getGetControlGraph() != null) {
+				return getGetControlGraph().getInferedType();
 			}
-			return Object.class;
+			return Void.class;
 		}
 
 		@Override
@@ -134,6 +130,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				aControlGraph.setOwnerContext(GET_CONTROL_GRAPH_KEY);
 			}
 			performSuperSetter(GET_CONTROL_GRAPH_KEY, aControlGraph);
+			getPropertyChangeSupport().firePropertyChange("type", null, getType());
 		}
 
 		@Override

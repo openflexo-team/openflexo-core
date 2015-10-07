@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -154,6 +155,11 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 				e.printStackTrace();
 			}
 			return objectToDelete;
+		}
+
+		@Override
+		public Type getInferedType() {
+			return Void.class;
 		}
 
 	}

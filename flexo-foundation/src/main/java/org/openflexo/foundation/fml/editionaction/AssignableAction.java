@@ -154,6 +154,11 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		public abstract Type getAssignableType();
 
 		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
+
+		@Override
 		public boolean isIterable() {
 			if (!TypeUtils.isTypeAssignableFrom(List.class, getAssignableType())) {
 				return false;
