@@ -614,6 +614,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
+		// This is no more necessary, since this is now handled by task manager
 		/*if (!SwingUtilities.isEventDispatchThread()) {
 			   SwingUtilities.invokeLater(new Runnable() {
 				   @Override
