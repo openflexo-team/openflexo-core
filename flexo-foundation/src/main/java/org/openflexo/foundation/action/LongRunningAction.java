@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.action;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
 
@@ -51,6 +52,10 @@ import org.openflexo.foundation.task.FlexoTaskManager;
  *
  */
 public interface LongRunningAction {
+
+	public String getLocalizedName();
+
+	public FlexoServiceManager getServiceManager();
 
 	public int getExpectedProgressSteps();
 }

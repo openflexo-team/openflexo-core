@@ -72,7 +72,7 @@ public class LoadProjectTask extends FlexoApplicationTask {
 	private final boolean asImportedProject;
 
 	public LoadProjectTask(ProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
-		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName(), projectLoader);
+		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName(), projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.asImportedProject = asImportedProject;

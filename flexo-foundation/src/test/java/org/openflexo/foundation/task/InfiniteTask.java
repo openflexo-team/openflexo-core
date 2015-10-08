@@ -81,7 +81,7 @@ public class InfiniteTask extends FlexoTask {
 
 		/*try {
 			synchronized (this) {
-
+		
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -101,11 +101,11 @@ public class InfiniteTask extends FlexoTask {
 
 	/*public class PrimeProducer extends Thread {
 		private final BlockingQueue<BigInteger> queue;
-
+	
 		PrimeProducer(BlockingQueue<BigInteger> queue) {
 			this.queue = queue;
 		}
-
+	
 		@Override
 		public void run() {
 			try {
@@ -118,7 +118,7 @@ public class InfiniteTask extends FlexoTask {
 				// Allow thread to exit
 			}
 		}
-
+	
 		//public void cancel() {
 		//	interrupt();
 		//}

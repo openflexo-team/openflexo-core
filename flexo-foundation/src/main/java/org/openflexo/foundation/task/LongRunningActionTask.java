@@ -36,43 +36,28 @@
  * 
  */
 
-package org.openflexo.rm;
+package org.openflexo.foundation.task;
 
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.task.FlexoApplicationTask;
+import org.openflexo.foundation.action.LongRunningAction;
 
 /**
- * A task used to load a Flexo module
+ * An abstract task used in the context of application.<br>
+ * Thrown exceptions are managed here
  * 
  * @author sylvain
  *
  */
-public class AddResourceCenterTask extends FlexoApplicationTask {
-	/**
-	 * 
-	 */
-	private final FlexoResourceCenterService rcService;
-	private final FlexoResourceCenter<?> newResourceCenter;
+public abstract class LongRunningActionTask extends FlexoTask {
 
-	public AddResourceCenterTask(FlexoResourceCenterService rcService, FlexoResourceCenter<?> newResourceCenter) {
-		super(FlexoLocalization.localizedForKey("adding_resource_center") + " " + newResourceCenter.toString(),
-				rcService.getServiceManager());
-		this.rcService = rcService;
-		this.newResourceCenter = newResourceCenter;
+	private final LongRunningAction action;
+
+	public LongRunningActionTask(LongRunningAction action) {
+		super(action.getLocalizedName());
+		this.action = action;
 	}
 
-	@Override
-	public void performTask() {
-
-		Progress.setExpectedProgressSteps(getServiceManager().getTechnologyAdapterService().getTechnologyAdapters().size() + 2);
-		rcService.addToResourceCenters(newResourceCenter);
+	public LongRunningAction getAction() {
+		return action;
 	}
 
-	@Override
-	public boolean isCancellable() {
-		return true;
-	}
 }

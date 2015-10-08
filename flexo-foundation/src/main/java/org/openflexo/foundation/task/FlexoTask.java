@@ -170,7 +170,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 			thread.setTask(this);
 			status = TaskStatus.RUNNING;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, TaskStatus.READY_TO_EXECUTE);
-		} else {
+		}
+		else {
 			logger.warning("Start execution of FlexoTask " + this + " called for a task with status " + status);
 		}
 	}
@@ -179,7 +180,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.RUNNING) {
 			status = TaskStatus.CANCEL_REQUESTED;
 			thread.interrupt();
-		} else {
+		}
+		else {
 			logger.warning("Stop execution of FlexoTask called for a task with status " + status);
 		}
 	}
@@ -189,7 +191,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.RUNNING) {
 			status = TaskStatus.CANCEL_REQUESTED;
 			thread.stop();
-		} else {
+		}
+		else {
 			logger.warning("Force stop execution of FlexoTask called for a task with status " + status);
 		}
 	}
@@ -199,14 +202,17 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 			thread.setTask(null);
 			status = TaskStatus.FINISHED;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, status);
-		} else if (status == TaskStatus.CANCEL_REQUESTED) {
+		}
+		else if (status == TaskStatus.CANCEL_REQUESTED) {
 			thread.setTask(null);
 			status = TaskStatus.CANCELLED;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.CANCEL_REQUESTED, status);
-		} else if (status == TaskStatus.EXCEPTION_THROWN) {
+		}
+		else if (status == TaskStatus.EXCEPTION_THROWN) {
 			thread.setTask(null);
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, status);
-		} else {
+		}
+		else {
 			Thread.dumpStack();
 			logger.warning("Finished execution of FlexoTask called for a task with status " + status);
 		}
@@ -216,7 +222,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.WAITING) {
 			status = TaskStatus.READY_TO_EXECUTE;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, status);
-		} else {
+		}
+		else {
 			Thread.dumpStack();
 			logger.warning("executionScheduled() of FlexoTask called for a task with status " + status);
 		}
@@ -343,7 +350,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	 * 
 	 */
 	@Override
-	public final void run() {
+	public void run() {
 		try {
 			performTask();
 		} catch (InterruptedException e) {

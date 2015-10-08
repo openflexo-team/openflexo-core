@@ -112,8 +112,8 @@ import org.openflexo.toolbox.ZipUtils;
  * 
  * @author sguerin
  */
-public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceRepository<FlexoResource<?>>*/implements Validable,
-		ResourceData<FlexoProject>, ReferenceOwner {
+public class FlexoProject extends FileSystemBasedResourceCenter
+		/*ResourceRepository<FlexoResource<?>>*/implements Validable, ResourceData<FlexoProject>, ReferenceOwner {
 
 	protected static final Logger logger = Logger.getLogger(FlexoProject.class.getPackage().getName());
 
@@ -345,7 +345,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		projectName = aProjectDirectory.getName().replaceAll(BAD_CHARACTERS_REG_EXP, " ");
 		if (projectName.endsWith(".prj")) {
 			projectName = projectName.substring(0, projectName.length() - 4);
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Project directory does not end with '.prj'");
 			}
@@ -426,8 +427,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			throws SaveResourceException {
 		try {
 			FileUtils.createNewFile(zipFile);
-			File tempProjectDirectory = FileUtils.createTempDirectory(getProjectName().length() > 2 ? getProjectName() : "FlexoProject-"
-					+ getProjectName(), "");
+			File tempProjectDirectory = FileUtils
+					.createTempDirectory(getProjectName().length() > 2 ? getProjectName() : "FlexoProject-" + getProjectName(), "");
 			tempProjectDirectory = new File(tempProjectDirectory, getProjectDirectory().getName());
 			// saveAs(tempProjectDirectory, progress, null, false, copyCVSFiles);
 			if (lightenProject) {
@@ -438,8 +439,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 			if (progress != null) {
 				progress.setProgress(FlexoLocalization.localizedForKey("zipping_project"));
 			}
-			ZipUtils.makeZip(zipFile, tempProjectDirectory, progress, null, lightenProject ? Deflater.BEST_COMPRESSION
-					: Deflater.DEFAULT_COMPRESSION);
+			ZipUtils.makeZip(zipFile, tempProjectDirectory, progress, null,
+					lightenProject ? Deflater.BEST_COMPRESSION : Deflater.DEFAULT_COMPRESSION);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new SaveResourceException(null, e);
@@ -539,7 +540,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	}
 
 	private void _saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException
-	/*SaveXMLResourceException, SaveResourcePermissionDeniedException*/{
+	/*SaveXMLResourceException, SaveResourcePermissionDeniedException*/ {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Saving modified resources of project...");
 		}
@@ -709,7 +710,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		if (!BAD_CHARACTERS_PATTERN.matcher(aName).find()) {
 			projectName = aName;
 			// resources.restoreKeys();
-		} else {
+		}
+		else {
 			throw new InvalidNameException();
 		}
 	}
@@ -727,7 +729,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		String prefix = null;
 		if (getProjectName().length() > 2) {
 			prefix = getProjectName().substring(0, 3).toUpperCase();
-		} else {
+		}
+		else {
 			prefix = getProjectName().toUpperCase();
 		}
 		return ToolBox.getJavaName(prefix, true, false);
@@ -780,8 +783,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	}
 	*/
 	/**
- *
- */
+	*
+	*/
 
 	// TODO Code to be Removed as no use for that
 	/*
@@ -804,8 +807,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		File mainCVSIgnoreFile = new File(projectDirectory, ".cvsignore");
 		if (!mainCVSIgnoreFile.exists()) {
 			try {
-				FileUtils.saveToFile(mainCVSIgnoreFile, "*~\n" + ".#*\n" + "*.rmxml.ts\n" + "temp?.xml\n" + "*.ini\n" + "*.cvsrepository\n"
-						+ "*.bak\n" + "*.autosave\n");
+				FileUtils.saveToFile(mainCVSIgnoreFile,
+						"*~\n" + ".#*\n" + "*.rmxml.ts\n" + "temp?.xml\n" + "*.ini\n" + "*.cvsrepository\n" + "*.bak\n" + "*.autosave\n");
 			} catch (IOException e) {
 				logger.warning("Could not create file " + mainCVSIgnoreFile + ": " + e.getMessage());
 				e.printStackTrace();
@@ -1024,7 +1027,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 						logger.info("Successfully deleted " + f.getAbsolutePath());
 						// filesToDelete.remove(f);
 					}
-				} else if (logger.isLoggable(Level.WARNING)) {
+				}
+				else if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Could not delete " + f.getAbsolutePath());
 				}
 			} catch (RuntimeException e) {
@@ -1071,7 +1075,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 							"identifier_of_($object.fullyQualifiedName)_was_duplicated_and_reset_to_($object.flexoID)"));
 				}
 				return issues;
-			} else {
+			}
+			else {
 				return new InformationIssue<FlexoIDMustBeUnique, FlexoProject>(object, "no_duplicated_identifiers_found");
 			}
 		}
@@ -1091,7 +1096,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 				getProjectData().setProjectVersion(new FlexoVersion("0.1"));
 			}
 			return getProjectData().getProjectVersion();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -1119,7 +1125,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 				getProjectData().setURI(projectURI);
 			}
 			return getProjectData().getURI();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -1134,7 +1141,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public String getDescription() {
 		if (getProjectData() != null) {
 			return getProjectData().getDescription();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -1152,7 +1160,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 				getProjectData().setCreationDate(new Date());
 			}
 			return getProjectData().getCreationDate();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -1173,7 +1182,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public String getCreationUserId() {
 		if (getProjectData() != null) {
 			return getProjectData().getCreationUserId();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -1262,7 +1272,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 	public String canImportProject(FlexoProject project) {
 		if (getProjectData() == null) {
 			return null;
-		} else {
+		}
+		else {
 			return getProjectData().canImportProject(project);
 		}
 	}
@@ -1322,7 +1333,8 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 		for (FlexoProjectReference ref : project.getProjectData().getImportedProjects()) {
 			if (ref.getReferredProject() == null) {
 				return false;
-			} else if (!ref.getReferredProject().areAllImportedProjectsLoaded()) {
+			}
+			else if (!ref.getReferredProject().areAllImportedProjectsLoaded()) {
 				return false;
 			}
 		}
@@ -1461,7 +1473,7 @@ public class FlexoProject extends FileSystemBasedResourceCenter /*ResourceReposi
 
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		logger.warning("TODO: implement this");
+		// logger.warning("TODO: implement this");
 	}
 
 	@Override

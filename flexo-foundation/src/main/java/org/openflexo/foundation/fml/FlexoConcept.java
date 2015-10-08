@@ -422,9 +422,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public FlexoConceptStructuralFacet getStructuralFacet() {
 			FMLModelFactory factory = getFMLModelFactory();
 			if (structuralFacet == null && factory != null) {
-				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
+				}
 				structuralFacet = factory.newFlexoConceptStructuralFacet(this);
-				factory.getEditingContext().getUndoManager().stopRecording(ce);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
 			}
 			return structuralFacet;
 		}
@@ -433,9 +438,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
 			FMLModelFactory factory = getFMLModelFactory();
 			if (behaviouralFacet == null && factory != null) {
-				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
+				}
 				behaviouralFacet = factory.newFlexoConceptBehaviouralFacet(this);
-				factory.getEditingContext().getUndoManager().stopRecording(ce);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
 			}
 			return behaviouralFacet;
 		}
