@@ -397,7 +397,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
-		 * Sets value associated with supplied property
+		 * Sets value associated with supplied property, if supplied value is not equals (java semantics) to actual value
 		 * 
 		 * @param flexoProperty
 		 *            the property to lookup
@@ -406,38 +406,43 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public <T> void setFlexoPropertyValue(FlexoProperty<T> flexoProperty, T value) {
-			if (flexoProperty instanceof FlexoRole) {
-				setFlexoActor(value, (FlexoRole) flexoProperty);
-			}
-			else if (flexoProperty instanceof ExpressionProperty) {
-				try {
-					System.out.println(
-							"*********************** OK pour l'expression " + ((ExpressionProperty<T>) flexoProperty).getExpression());
-					System.out.println("*************** je tente de setter: " + value);
-					((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (NotSettableContextException e) {
-					e.printStackTrace();
+			T oldValue = getFlexoPropertyValue(flexoProperty);
+			if ((value == null && oldValue != null) || (value != null && !value.equals(oldValue))) {
+				if (flexoProperty instanceof FlexoRole) {
+					setFlexoActor(value, (FlexoRole) flexoProperty);
 				}
-			}
-			else if (flexoProperty instanceof GetSetProperty) {
-				FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
-				try {
-					RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
-					T returnedValue = null;
+				else if (flexoProperty instanceof ExpressionProperty) {
 					try {
-						setControlGraph.execute(localEvaluationContext);
-					} catch (ReturnException e) {
-						// Ignore
+						((ExpressionProperty<T>) flexoProperty).getExpression().setBindingValue(value, this);
+					} catch (TypeMismatchException e) {
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (NotSettableContextException e) {
+						e.printStackTrace();
 					}
-				} catch (FlexoException e) {
-					e.printStackTrace();
 				}
+				else if (flexoProperty instanceof GetSetProperty) {
+					FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
+					try {
+						// TODO: handle value beeing set, both in BindingModel AND he in LocalRunTimeEvaluationContext
+						RunTimeEvaluationContext localEvaluationContext = new LocalRunTimeEvaluationContext();
+						T returnedValue = null;
+						try {
+							setControlGraph.execute(localEvaluationContext);
+						} catch (ReturnException e) {
+							// Ignore
+						}
+					} catch (FlexoException e) {
+						e.printStackTrace();
+					}
+				}
+
+				setIsModified();
+
+				getPropertyChangeSupport().firePropertyChange(flexoProperty.getPropertyName(), oldValue, value);
 			}
 		}
 
