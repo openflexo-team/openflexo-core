@@ -167,7 +167,10 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 
 		@Override
 		public final int getIndex() {
-			return getContainer().getElements().indexOf(this);
+			if (getContainer() != null && getContainer().getElements() != null) {
+				return getContainer().getElements().indexOf(this);
+			}
+			return -1;
 		}
 	}
 
