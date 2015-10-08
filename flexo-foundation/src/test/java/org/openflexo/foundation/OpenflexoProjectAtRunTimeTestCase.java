@@ -99,7 +99,6 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		deleteProject();
 		deleteTestResourceCenters();
 		unloadServiceManager();
-
 	}
 
 	protected static void deleteProject() {
@@ -136,7 +135,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
