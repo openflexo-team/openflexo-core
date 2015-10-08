@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.model.ModelProperty;
 import org.openflexo.model.undo.AddCommand;
 import org.openflexo.model.undo.AtomicEdit;
@@ -72,6 +73,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+// TODO: this implementation is not thread safe: we cannot support many concurrent access to undo-manager
 @SuppressWarnings("serial")
 public class FlexoUndoManager extends UndoManager {
 
@@ -80,6 +82,7 @@ public class FlexoUndoManager extends UndoManager {
 	public static final String ACTION_HISTORY = "actionHistory";
 
 	private FlexoAction<?, ?, ?> actionBeeingCurrentlyExecuted;
+	private FlexoTask taskBeeingCurrentlyExecuted;
 	private final List<IgnoreHandler> ignoreHandlers;
 
 	private final FlexoEditingContext editingContext;
@@ -130,14 +133,46 @@ public class FlexoUndoManager extends UndoManager {
 			boolean success) {
 		if (success) {
 			hasSuccessfullyDone(action);
-		} else {
+		}
+		else {
 			compensateFailedAction(action);
 		}
 	}
 
+	/**
+	 * Called when a FlexoTask is about to be executed
+	 * 
+	 * @param task
+	 *            : the FlexoTask that will be executed
+	 */
+	public void taskWillBeExecuted(FlexoTask task) {
+		taskBeeingCurrentlyExecuted = task;
+		FlexoTaskCompoundEdit compoundEdit = (FlexoTaskCompoundEdit) startRecording(task.getTaskTitle());
+	}
+
+	/**
+	 * Called when a FlexoTask has just been executed
+	 * 
+	 * @param task
+	 *            : the FlexoTask that has just been executed
+	 */
+	public void taskHasBeenExecuted(FlexoTask task) {
+		if (getCurrentEdition() != null) {
+			stopRecording(getCurrentEdition());
+		}
+		taskBeeingCurrentlyExecuted = null;
+	}
+
 	@Override
-	public FlexoActionCompoundEdit startRecording(String presentationName) {
-		return (FlexoActionCompoundEdit) super.startRecording(presentationName);
+	public CompoundEdit startRecording(String presentationName) {
+		logger.info(">>>>>>>>>>>>>>>>> START RECORDING " + presentationName);
+		return super.startRecording(presentationName);
+	}
+
+	@Override
+	public synchronized CompoundEdit stopRecording(CompoundEdit edit) {
+		logger.info("<<<<<<<<<<<<<<<<< STOP RECORDING " + edit.getPresentationName());
+		return super.stopRecording(edit);
 	}
 
 	/**
@@ -182,12 +217,16 @@ public class FlexoUndoManager extends UndoManager {
 		if (!action.isEmbedded()) {
 			if (action.getCompoundEdit() != null) {
 				// CompoundEdit has already been initialized
-			} else {
+			}
+			else {
 				actionBeeingCurrentlyExecuted = action;
-				FlexoActionCompoundEdit compoundEdit = startRecording(action.getLocalizedName());
+				taskBeeingCurrentlyExecuted = null; // Force to consider the action
+				// TODO : this is not thread safe
+				FlexoActionCompoundEdit compoundEdit = (FlexoActionCompoundEdit) startRecording(action.getLocalizedName());
 				action.setCompoundEdit(compoundEdit);
 			}
-		} else {
+		}
+		else {
 			// embedded action
 			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
 				((FlexoActionCompoundEdit) getCurrentEdition()).willDoEmbeddedAction(action);
@@ -206,7 +245,8 @@ public class FlexoUndoManager extends UndoManager {
 			stopRecording(getCurrentEdition());
 			actionBeeingCurrentlyExecuted = null;
 			getPropertyChangeSupport().firePropertyChange(ACTION_HISTORY, null, action);
-		} else {
+		}
+		else {
 			// embedded action
 			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
 				((FlexoActionCompoundEdit) getCurrentEdition()).hasDoneEmbeddedAction(action);
@@ -233,8 +273,13 @@ public class FlexoUndoManager extends UndoManager {
 	}
 
 	@Override
-	protected FlexoActionCompoundEdit makeCompoundEdit(String presentationName) {
-		return new FlexoActionCompoundEdit(actionBeeingCurrentlyExecuted, presentationName);
+	protected CompoundEdit makeCompoundEdit(String presentationName) {
+		if (taskBeeingCurrentlyExecuted != null) {
+			return new FlexoTaskCompoundEdit(taskBeeingCurrentlyExecuted, presentationName);
+		}
+		else {
+			return new FlexoActionCompoundEdit(actionBeeingCurrentlyExecuted, presentationName);
+		}
 	}
 
 	@Override
@@ -250,6 +295,7 @@ public class FlexoUndoManager extends UndoManager {
 			// We are on an unidentified recording
 			if (editingContext.warnOnUnexpectedEdits()) {
 				logger.warning("Received edit outside legal UNDO declaration: " + edit);
+				Thread.dumpStack();
 			}
 		}
 		return false;
@@ -448,9 +494,11 @@ public class FlexoUndoManager extends UndoManager {
 		public ModelProperty<?> getProperty(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getModelProperty();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return ((AddCommand<?>) edit).getModelProperty();
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return ((RemoveCommand<?>) edit).getModelProperty();
 			}
 			return null;
@@ -459,9 +507,11 @@ public class FlexoUndoManager extends UndoManager {
 		public Object getOldValue(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getOldValue();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return null;
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return ((RemoveCommand<?>) edit).getRemovedValue();
 			}
 			return null;
@@ -470,9 +520,11 @@ public class FlexoUndoManager extends UndoManager {
 		public Object getNewValue(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getNewValue();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return ((AddCommand<?>) edit).getAddedValue();
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return null;
 			}
 			return null;
@@ -481,7 +533,8 @@ public class FlexoUndoManager extends UndoManager {
 		public String getStackTraceAsString() {
 			if (_stackTraceAsString != null) {
 				return _stackTraceAsString;
-			} else if (stackTrace != null) {
+			}
+			else if (stackTrace != null) {
 				StringBuilder returned = new StringBuilder();
 				int beginAt;
 				beginAt = 6;
@@ -490,7 +543,73 @@ public class FlexoUndoManager extends UndoManager {
 					returned.append("\t").append("at ").append(stackTrace[i]).append('\n');
 				}
 				return returned.toString();
-			} else {
+			}
+			else {
+				return "StackTrace not available";
+			}
+		}
+
+		private String _stackTraceAsString;
+
+		public void printStackTrace() {
+			System.err.println("Stack trace for '" + this + "':");
+			StringTokenizer st = new StringTokenizer(getStackTraceAsString(), StringUtils.LINE_SEPARATOR);
+			while (st.hasMoreTokens()) {
+				System.err.println("\t" + st.nextToken());
+			}
+		}
+
+	}
+
+	/**
+	 * An Openflexo-specific CompoundEdit wrapping all edits of a FlexoTask<br>
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class FlexoTaskCompoundEdit extends CompoundEdit implements HasPropertyChangeSupport {
+
+		private final FlexoTask task;
+		private final PropertyChangeSupport pcSupport;
+
+		private final StackTraceElement[] stackTrace;
+
+		public FlexoTaskCompoundEdit(FlexoTask task, String presentationName) {
+			super(task != null ? task.getTaskTitle() : presentationName);
+			this.task = task;
+			pcSupport = new PropertyChangeSupport(this);
+			stackTrace = new Exception().getStackTrace();
+		}
+
+		public FlexoTask getTask() {
+			return task;
+		}
+
+		@Override
+		public PropertyChangeSupport getPropertyChangeSupport() {
+			return pcSupport;
+		}
+
+		@Override
+		public String getDeletedProperty() {
+			return null;
+		}
+
+		public String getStackTraceAsString() {
+			if (_stackTraceAsString != null) {
+				return _stackTraceAsString;
+			}
+			else if (stackTrace != null) {
+				StringBuilder returned = new StringBuilder();
+				int beginAt;
+				beginAt = 6;
+				for (int i = beginAt; i < stackTrace.length; i++) {
+					// returned += ("\tat " + stackTrace[i] + "\n");
+					returned.append("\t").append("at ").append(stackTrace[i]).append('\n');
+				}
+				return returned.toString();
+			}
+			else {
 				return "StackTrace not available";
 			}
 		}
