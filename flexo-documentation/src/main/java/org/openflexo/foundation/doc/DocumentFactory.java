@@ -104,6 +104,13 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	protected abstract D makeDocument();
 
 	/**
+	 * Generate a new unique id
+	 * 
+	 * @return
+	 */
+	public abstract String generateId();
+
+	/**
 	 * Build new empty paragraph
 	 * 
 	 * @return
