@@ -176,7 +176,7 @@ public class ResourceManager extends FlexoServiceImpl implements FlexoService {
 	// TODO: optimize this
 	public List<FlexoResource<?>> getUnsavedResources() {
 		List<FlexoResource<?>> returned = new ArrayList<FlexoResource<?>>();
-		for (FlexoResource<?> r : resources) {
+		for (FlexoResource<?> r : new ArrayList<FlexoResource<?>>(resources)) {
 			if (r.isLoaded() && r.getLoadedResourceData().isModified()) {
 				returned.add(r);
 			}
