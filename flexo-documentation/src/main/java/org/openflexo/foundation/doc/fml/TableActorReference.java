@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.doc.FlexoDocElement;
@@ -156,8 +157,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	 */
 	public void reinjectDataFromDocument();
 
-	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T> implements
-			TableActorReference<T> {
+	public abstract static class TableActorReferenceImpl<T extends FlexoDocTable<?, ?>> extends ActorReferenceImpl<T>
+			implements TableActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TableActorReference.class.getPackage().toString());
 
@@ -202,30 +203,6 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 						table = (T) document.getElementWithIdentifier(tableIdentifier);
 					}
 				}
-				/*FlexoDocument<?, ?> document = getFlexoDocument();
-				if (document != null) {
-					if (getElementReferences().size() > 0) {
-						FlexoDocElement startElement = null, endElement = null;
-						int index = 0;
-						for (ElementReference er : getElementReferences()) {
-							FlexoDocElement element = document.getElementWithIdentifier(er.getElementId());
-							element.setBaseIdentifier(er.getTemplateElementId());
-							if (index == 0) {
-								startElement = element;
-							} else if (index == getElementReferences().size() - 1) {
-								endElement = element;
-							}
-							index++;
-						}
-						try {
-							table = (F) document.getFactory().makeFragment(startElement, endElement);
-						} catch (FragmentConsistencyException e) {
-							logger.warning("Could not build table");
-							e.printStackTrace();
-						}	
-				} else {
-					logger.warning("Could not access to document from model slot " + getModelSlotInstance());
-				}*/
 			}
 
 			return table;
@@ -256,8 +233,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 					if (generatedRow.getTableCells().size() > 0 && generatedRow.getTableCells().get(0).getParagraphs().size() > 0) {
 						FlexoDocParagraph<?, ?> generatedParagraph = generatedRow.getTableCells().get(0).getParagraphs().get(0);
 						if (StringUtils.isNotEmpty(generatedParagraph.getBaseIdentifier())) {
-							FlexoDocElement<?, ?> templateParagraph = templateTable.getElementWithIdentifier(generatedParagraph
-									.getBaseIdentifier());
+							FlexoDocElement<?, ?> templateParagraph = templateTable
+									.getElementWithIdentifier(generatedParagraph.getBaseIdentifier());
 							FlexoDocTableCell<?, ?> templateCell = (FlexoDocTableCell<?, ?>) templateParagraph.getContainer();
 							FlexoDocTableRow<?, ?> templateRow = templateCell.getRow();
 							if (templateRow != null) {
@@ -290,17 +267,7 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 			FlexoTableRole<T, ?, ?> tableRole = (FlexoTableRole<T, ?, ?>) getFlexoRole();
 
-			/*for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
-				tb.applyToFragment(getFlexoConceptInstance());
-			}*/
-			System.out.println("Hop, on genere la table !!!");
-
-			System.out.println("startIndex=" + tableRole.getStartIterationIndex());
-			System.out.println("endIndex=" + tableRole.getEndIterationIndex());
-
-			System.out.println("Template:" + tableRole.getTable());
-
-			System.out.println("Generated:" + getModellingElement());
+			logger.info("Updating table");
 
 			// First, we have to retrieve all rows
 
@@ -318,84 +285,55 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 				e.printStackTrace();
 			}
 
-			System.out.println("rowObjects=" + rowObjects);
-			System.out.println("getModellingElement()=" + getModellingElement());
-
-			/*FlexoDocParagraph<?, ?> templateP = tableRole.getTable().getCell(0, 0).getParagraphs().get(0);
-			FlexoDocParagraph<?, ?> generatedP = getModellingElement().getCell(0, 0).getParagraphs().get(0);
-			
-			System.out.println("templateP ID= " + templateP.getIdentifier());
-			System.out.println("templateP: " + templateP);
-			System.out.println("generatedP ID= " + generatedP.getIdentifier());
-			System.out.println("generatedP BASE-ID= " + generatedP.getBaseIdentifier());
-			System.out.println("generatedP: " + generatedP);*/
-
 			// First, we have to detect iteration range on generation target
-			int startIterationRowIndex = 0;
-			int endIterationRowIndex = getModellingElement().getTableRows().size() - 1;
+			ObjectRowLookupResult lookup = lookupObjects();
 
-			// start iteration row index is computed from the last static reference before iteration area
-			if (tableRole.getStartIterationIndex() > 0) {
-				FlexoDocTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows()
-						.get(tableRole.getStartIterationIndex() - 1);
-				List<FlexoDocTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
-				if (lastHeaderRows.size() > 0) {
-					FlexoDocTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
-					System.out.println("ok c'est bon pour " + lastHeaderRow + " index=" + lastHeaderRow.getIndex());
-					startIterationRowIndex = lastHeaderRow.getIndex() + 1;
-				}
-			}
-			// end iteration row index is computed from the last static reference after iteration area
-			if (tableRole.getEndIterationIndex() > 0 && tableRole.getEndIterationIndex() < tableRole.getTable().getTableRows().size() - 1) {
-				FlexoDocTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows()
-						.get(tableRole.getEndIterationIndex() + 1);
-				List<FlexoDocTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
-				if (firstFooterRows.size() > 0) {
-					FlexoDocTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
-					System.out.println("ok c'est bon pour " + firstFooterRow + " index=" + firstFooterRow.getIndex());
-					endIterationRowIndex = firstFooterRow.getIndex() - 1;
-				}
-			}
+			logger.info("Generate between " + lookup.startIterationRowIndex + " et " + lookup.endIterationRowIndex);
 
-			System.out.println("Du coup, on genere entre " + startIterationRowIndex + " et " + endIterationRowIndex);
-
-			int currentRowNumbers = endIterationRowIndex - startIterationRowIndex + 1;
-
-			System.out.println("rowObjects = " + rowObjects);
+			int currentRowNumbers = lookup.endIterationRowIndex - lookup.startIterationRowIndex + 1;
 
 			if (currentRowNumbers < rowObjects.size()) {
 				// Some rows need to be added
-				System.out.println("currentRowNumbers=" + currentRowNumbers);
-				System.out.println("rowObjects.size()=" + rowObjects.size());
 				for (int i = 0; i < rowObjects.size() - currentRowNumbers; i++) {
-					System.out.println("Add row " + (i + endIterationRowIndex + 1));
+					logger.info("Add row " + (i + lookup.endIterationRowIndex + 1));
+					FlexoDocTableRow<?, ?> rowToClone = getModellingElement().getTableRows().get(i + lookup.endIterationRowIndex);
+					FlexoDocTableRow<?, ?> clonedRow = (FlexoDocTableRow<?, ?>) rowToClone.cloneObject();
+					for (int j = 0; j < clonedRow.getTableCells().size(); j++) {
+						FlexoDocTableCell<?, ?> cell = clonedRow.getTableCells().get(j);
+						for (int k = 0; k < cell.getParagraphs().size(); k++) {
+							FlexoDocParagraph<?, ?> paragraph = cell.getParagraphs().get(k);
+							paragraph.setIdentifier(paragraph.getFlexoDocument().getFactory().generateId());
+						}
+					}
 
-					FlexoDocTableRow clonedRow = (FlexoDocTableRow<?, ?>) getModellingElement().getTableRows()
-							.get(i + endIterationRowIndex).cloneObject();
-					getModellingElement().insertTableRowAtIndex(clonedRow, (i + endIterationRowIndex + 1));
+					getModellingElement().insertTableRowAtIndex((FlexoDocTableRow) clonedRow, (i + lookup.endIterationRowIndex + 1));
 				}
 			}
 
 			if (currentRowNumbers > rowObjects.size()) {
 				// Some rows need to be removed
 				for (int i = 0; i < currentRowNumbers - rowObjects.size(); i++) {
-					System.out.println("remove row at index " + (i + endIterationRowIndex + 1));
+					logger.info("Remove row at index " + (i + lookup.endIterationRowIndex + 1));
 					getModellingElement().removeFromTableRows(
-							(FlexoDocTableRow) getModellingElement().getTableRows().get(i + endIterationRowIndex));
+							(FlexoDocTableRow) getModellingElement().getTableRows().get(i + lookup.endIterationRowIndex));
 				}
 			}
 
-			endIterationRowIndex = endIterationRowIndex + rowObjects.size() - currentRowNumbers;
+			lookup.endIterationRowIndex = lookup.endIterationRowIndex + rowObjects.size() - currentRowNumbers;
 			currentRowNumbers = rowObjects.size();
+
+			if (getModellingElement() != null) {
+				for (DynamicRowReference drr : new ArrayList<DynamicRowReference>(getDynamicRowReferences())) {
+					removeFromDynamicRowReferences(drr);
+				}
+			}
 
 			// At this point, we have the right number of rows
 
 			int i = 0;
 			for (final Object rowObject : rowObjects) {
-				System.out.println("rowObject=" + rowObject);
 				for (ColumnTableBinding<?, ?> ctb : tableRole.getColumnBindings()) {
 					try {
-						System.out.println("ctb=" + ctb.getColumnName());
 						Object value = ctb.getValue().getBindingValue(new BindingEvaluationContext() {
 
 							@Override
@@ -406,8 +344,8 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 								return getFlexoConceptInstance().getValue(variable);
 							}
 						});
-						System.out.println("value=" + value);
-						FlexoDocTableCell<?, ?> cell = getModellingElement().getCell(i + startIterationRowIndex, ctb.getColumnIndex());
+						FlexoDocTableCell<?, ?> cell = getModellingElement().getCell(i + lookup.startIterationRowIndex,
+								ctb.getColumnIndex());
 						cell.setRawText((String) value);
 
 					} catch (TypeMismatchException e) {
@@ -421,7 +359,14 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 						e.printStackTrace();
 					}
 				}
+
+				DynamicRowReference drr = getFactory().newInstance(DynamicRowReference.class);
+				drr.setRowId(getModellingElement().getTableRows().get(i + lookup.startIterationRowIndex).getIdentifier());
+				drr.setIndex(i);
+				addToDynamicRowReferences(drr);
+
 				i++;
+
 			}
 
 		}
@@ -461,10 +406,163 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 		 */
 		@Override
 		public void reinjectDataFromDocument() {
-			/*for (TextBinding tb : ((FlexoFragmentRole<?, ?, ?>) getFlexoRole()).getTextBindings()) {
-				tb.extractFromFragment(getFlexoConceptInstance());
-			}*/
+
+			FlexoTableRole<T, ?, ?> tableRole = (FlexoTableRole<T, ?, ?>) getFlexoRole();
+
+			logger.info("DocXTable: reinjectDataFromDocument");
+
+			// First, we have to retrieve all rows
+
+			List<Object> rowObjects = null;
+			try {
+				rowObjects = tableRole.getIteration().getBindingValue(getFlexoConceptInstance());
+			} catch (TypeMismatchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullReferenceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			System.out.println("rowObjects=" + rowObjects);
+			System.out.println("getModellingElement()=" + getModellingElement());
+
+			ObjectRowLookupResult lookup = lookupObjects();
+
+			System.out.println("Du coup, on reinjecte entre " + lookup.startIterationRowIndex + " et " + lookup.endIterationRowIndex);
+
+			List<Object> objectsToCallFromDeletion = new ArrayList<Object>(rowObjects);
+
+			for (int rowIndex = lookup.startIterationRowIndex; rowIndex <= lookup.endIterationRowIndex; rowIndex++) {
+				System.out.println("Row " + rowIndex);
+				FlexoDocTableRow<?, ?> row = table.getTableRows().get(rowIndex);
+				int objectIndex = expectedObjectIndexForRowId(row.getIdentifier());
+				if (objectIndex == -1) {
+					// Attempt to *guess*
+					objectIndex = rowIndex - lookup.startIterationRowIndex;
+				}
+				if (objectIndex < rowObjects.size()) {
+					final Object rowObject = rowObjects.get(objectIndex);
+					System.out.println("Found a matching object : " + rowObject);
+
+					for (ColumnTableBinding<?, ?> ctb : tableRole.getColumnBindings()) {
+						FlexoDocTableCell<?, ?> cell = getModellingElement().getCell(rowIndex, ctb.getColumnIndex());
+						String rawTextToReinject = cell.getRawText();
+
+						try {
+							ctb.getValue().setBindingValue(rawTextToReinject, new BindingEvaluationContext() {
+
+								@Override
+								public Object getValue(BindingVariable variable) {
+									if (variable.getVariableName().equals(FlexoTableRoleImpl.ITERATOR_NAME)) {
+										return rowObject;
+									}
+									return getFlexoConceptInstance().getValue(variable);
+								}
+							});
+
+						} catch (TypeMismatchException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NullReferenceException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NotSettableContextException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+					objectsToCallFromDeletion.remove(rowObject);
+				}
+				else {
+					// This appear to be a new object
+					System.out.println("Consider create a new object from row");
+				}
+			}
+
+			for (Object toDelete : objectsToCallFromDeletion) {
+				System.out.println("Consider delete this object: " + toDelete);
+			}
+
 		}
+
+		private int expectedObjectIndexForRowId(String rowId) {
+			if (rowId == null) {
+				return -1;
+			}
+			for (DynamicRowReference drr : getDynamicRowReferences()) {
+				if (rowId.equals(drr.getRowId())) {
+					return drr.getIndex();
+				}
+			}
+			return -1;
+		}
+
+		class ObjectRowLookupResult {
+			int startIterationRowIndex;
+			int endIterationRowIndex;
+		}
+
+		private ObjectRowLookupResult lookupObjects() {
+			ObjectRowLookupResult returned = new ObjectRowLookupResult();
+
+			FlexoTableRole<T, ?, ?> tableRole = (FlexoTableRole<T, ?, ?>) getFlexoRole();
+
+			// First, we have to detect iteration range on generation target
+			returned.startIterationRowIndex = 0;
+			returned.endIterationRowIndex = getModellingElement().getTableRows().size() - 1;
+
+			// start iteration row index is computed from the last static reference before iteration area
+			if (tableRole.getStartIterationIndex() > 0) {
+				FlexoDocTableRow<?, ?> lastTemplateHeaderRow = tableRole.getTable().getTableRows()
+						.get(tableRole.getStartIterationIndex() - 1);
+				List<FlexoDocTableRow<?, ?>> lastHeaderRows = getRowsMatchingTemplateRow(lastTemplateHeaderRow);
+				if (lastHeaderRows.size() > 0) {
+					FlexoDocTableRow<?, ?> lastHeaderRow = lastHeaderRows.get(0);
+					returned.startIterationRowIndex = lastHeaderRow.getIndex() + 1;
+				}
+			}
+			// end iteration row index is computed from the last static reference after iteration area
+			if (tableRole.getEndIterationIndex() > 0 && tableRole.getEndIterationIndex() < tableRole.getTable().getTableRows().size() - 1) {
+				FlexoDocTableRow<?, ?> firstTemplateFooterRow = tableRole.getTable().getTableRows()
+						.get(tableRole.getEndIterationIndex() + 1);
+				List<FlexoDocTableRow<?, ?>> firstFooterRows = getRowsMatchingTemplateRow(firstTemplateFooterRow);
+				if (firstFooterRows.size() > 0) {
+					FlexoDocTableRow<?, ?> firstFooterRow = firstFooterRows.get(0);
+					returned.endIterationRowIndex = firstFooterRow.getIndex() - 1;
+				}
+			}
+
+			return returned;
+		}
+
+	}
+
+	/**
+	 * Used to store link between a row and its data
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@ModelEntity(isAbstract = true)
+	public interface AbstractRowReference {
+
+		@PropertyIdentifier(type = String.class)
+		public static final String ROW_IDENTIFIER_KEY = "rowId";
+
+		@Getter(ROW_IDENTIFIER_KEY)
+		@XMLAttribute
+		public String getRowId();
+
+		@Setter(ROW_IDENTIFIER_KEY)
+		public void setRowId(String rowId);
 
 	}
 
@@ -476,12 +574,10 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	 */
 	@ModelEntity
 	@XMLElement
-	public interface DynamicRowReference {
+	public interface DynamicRowReference extends AbstractRowReference {
 
 		@PropertyIdentifier(type = Integer.class)
 		public static final String INDEX_KEY = "index";
-		@PropertyIdentifier(type = Integer.class)
-		public static final String ROW_INDEX_KEY = "rowIndex";
 
 		/**
 		 * Index of iterated object as it has been appeared in iteration
@@ -495,13 +591,6 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 		@Setter(INDEX_KEY)
 		public void setIndex(int index);
 
-		@Getter(value = ROW_INDEX_KEY, defaultValue = "-1")
-		@XMLAttribute
-		public int getRowIndex();
-
-		@Setter(ROW_INDEX_KEY)
-		public void setRowIndex(int rowIndex);
-
 	}
 
 	/**
@@ -512,12 +601,10 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 	 */
 	@ModelEntity
 	@XMLElement
-	public interface StaticRowReference {
+	public interface StaticRowReference extends AbstractRowReference {
 
 		@PropertyIdentifier(type = String.class)
 		public static final String TEMPLATE_ROW_IDENTIFIER_KEY = "templateRowId";
-		@PropertyIdentifier(type = String.class)
-		public static final String ROW_IDENTIFIER_KEY = "rowId";
 
 		@Getter(TEMPLATE_ROW_IDENTIFIER_KEY)
 		@XMLAttribute
@@ -525,13 +612,6 @@ public interface TableActorReference<T extends FlexoDocTable<?, ?>> extends Acto
 
 		@Setter(TEMPLATE_ROW_IDENTIFIER_KEY)
 		public void setTemplateRowId(String templateRowId);
-
-		@Getter(ROW_IDENTIFIER_KEY)
-		@XMLAttribute
-		public String getRowId();
-
-		@Setter(ROW_IDENTIFIER_KEY)
-		public void setRowId(String rowId);
 
 	}
 
