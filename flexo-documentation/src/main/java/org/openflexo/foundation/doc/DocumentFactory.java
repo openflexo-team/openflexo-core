@@ -155,7 +155,7 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	// public abstract void updateDrawingRun(FlexoDrawingRun<D, TA> drawingRun, BufferedImage image);
 
 	/**
-	 * Build new empty table row
+	 * Build new empty table
 	 * 
 	 * @return
 	 */
@@ -174,6 +174,20 @@ public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends
 	 * @return
 	 */
 	public abstract FlexoDocTableCell<D, TA> makeTableCell();
+
+	/**
+	 * Build new empty FlexoDocSdtBlock
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDocSdtBlock<D, TA> makeSdtBlock();
+
+	/**
+	 * Build new empty FlexoDocUnmappedElement
+	 * 
+	 * @return
+	 */
+	public abstract FlexoDocUnmappedElement<D, TA> makeUnmappedElement();
 
 	/**
 	 * Build new empty style
