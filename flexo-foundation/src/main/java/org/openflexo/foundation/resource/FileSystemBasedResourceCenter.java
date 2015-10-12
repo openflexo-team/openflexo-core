@@ -65,6 +65,7 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.DirectoryWatcher;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -76,7 +77,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -102,6 +103,44 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	public File getRootDirectory() {
 		return rootDirectory;
+	}
+
+	/**
+	 * Return (first when many) resource matching supplied File
+	 */
+	@Override
+	public <R extends FlexoResource<?>> R getResource(File aFile, Class<R> resourceClass) {
+		if (!FileUtils.directoryContainsFile(getRootDirectory(), aFile, true)) {
+			return null;
+		}
+
+		RepositoryFolder<?> folder = null;
+		try {
+			folder = getRepositoryFolder(aFile, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		if (folder == null) {
+			return null;
+		}
+
+		for (FlexoResource<?> r : folder.getResources()) {
+			if ((r.getFlexoIODelegate() instanceof FileFlexoIODelegate)
+					&& ((FileFlexoIODelegate) r.getFlexoIODelegate()).getFile().equals(aFile)) {
+				if (resourceClass.isAssignableFrom(r.getClass())) {
+					return (R) r;
+				}
+				logger.warning("Found resource matching file " + aFile + " but not of desired type: " + r.getClass() + " instead of "
+						+ resourceClass);
+				return null;
+			}
+		}
+
+		// Cannot find the resource
+		return null;
+
 	}
 
 	@Override
@@ -430,7 +469,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type, IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
+			IProgress progress) {
 		// TODO: provide support for class and version
 		return (FlexoResource<T>) retrieveResource(uri, progress);
 	}

@@ -248,6 +248,12 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		return getResource(uri);
 	}
 
+	@Override
+	public <R2 extends FlexoResource<?>> R2 getResource(InJarResourceImpl resourceArtefact, Class<R2> resourceClass) {
+		// TODO
+		return null;
+	}
+
 	/**
 	 * Add all the jars from the class path to resource centers
 	 * 

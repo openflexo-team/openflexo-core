@@ -136,6 +136,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public @Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
 
 	/**
+	 * Return resource matching supplied artefact
+	 * 
+	 * @param resourceArtefact
+	 * @return
+	 */
+	public <R extends FlexoResource<?>> R getResource(I resourceArtefact, Class<R> resourceClass);
+
+	/**
 	 * Returns the resource identified by the given <code>uri</code> and the provided <code>version</code>.
 	 * 
 	 * @param uri
