@@ -171,12 +171,22 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
-	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
+	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
+	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 	 * 
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType = true)
 	public List<VirtualModel> getVirtualModels();
+
+	/**
+	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * When forceLoad set to true, force the loading of all virtual models
+	 * 
+	 * @return
+	 */
+	public List<VirtualModel> getVirtualModels(boolean forceLoad);
 
 	@Setter(VIRTUAL_MODELS_KEY)
 	public void setVirtualModels(List<VirtualModel> virtualModels);
@@ -367,13 +377,28 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		/**
-		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
+		 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
+		 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 		 * 
 		 * @return
 		 */
 		@Override
 		public List<VirtualModel> getVirtualModels() {
-			loadVirtualModelsWhenUnloaded();
+			return getVirtualModels(false);
+		}
+
+		/**
+		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * When forceLoad set to true, force the loading of all virtual models
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<VirtualModel> getVirtualModels(boolean forceLoad) {
+			if (forceLoad) {
+				loadVirtualModelsWhenUnloaded();
+			}
 			return virtualModels;
 		}
 
@@ -531,7 +556,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getVirtualModels() != null) {
-				for (VirtualModel vm : getVirtualModels()) {
+				for (VirtualModel vm : new ArrayList<VirtualModel>(getVirtualModels())) {
 					out.append(vm.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 				}
