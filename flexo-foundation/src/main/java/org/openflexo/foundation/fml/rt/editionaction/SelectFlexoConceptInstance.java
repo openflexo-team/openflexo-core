@@ -264,13 +264,31 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 		public List<FlexoConceptInstance> execute(RunTimeEvaluationContext evaluationContext) {
 			VirtualModelInstance vmi = getVirtualModelInstance(evaluationContext);
 			if (vmi != null) {
-				System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
+				// System.out.println("Returning " + vmi.getFlexoConceptInstances(getFlexoConceptType()));
 				return filterWithConditions(vmi.getFlexoConceptInstances(getFlexoConceptType()), evaluationContext);
 			}
 			else {
 				logger.warning(
 						getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-				logger.warning("Additional info: getVirtualModelInstance()=" + getVirtualModelInstance());
+				logger.warning("getVirtualModelInstance()=" + getVirtualModelInstance());
+				/*logger.warning("evaluationContext=" + evaluationContext);
+				logger.warning("isSet=" + getVirtualModelInstance().isSet());
+				logger.warning("isValid=" + getVirtualModelInstance().isValid());
+				logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
+				logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
+				try {
+					logger.warning("value=" + getVirtualModelInstance().getBindingValue(evaluationContext));
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+				logger.warning(getOwner().getFMLRepresentation());
 				return null;
 			}
 		}

@@ -374,6 +374,14 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			return getVirtualModelInstance();
 		}
 
+		// Not found at this level, delegate it to the VirtualModelInstance
+		/*if (getVirtualModelInstance() != null) {
+			Object returned = getVirtualModelInstance().getValue(variable);
+			if (returned != null) {
+				return returned;
+			}
+		}*/
+
 		// Not found at this level, delegate it to the FlexoConceptInstance
 		if (getFlexoConceptInstance() != null) {
 			return getFlexoConceptInstance().getValue(variable);

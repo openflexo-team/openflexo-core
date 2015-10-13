@@ -123,27 +123,26 @@ public class FlexoBehaviourPathElement extends FunctionPathElement {
 			i++;
 		}
 		try {
-			logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
-					+ context.getClass() + " target=" + target);
+			// logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
+			// + context.getClass() + " target=" + target);
 
 			if (context instanceof FlexoBehaviourAction && target instanceof FlexoConceptInstance) {
 
 				FlexoBehaviourAction action = (FlexoBehaviourAction) context;
-				FlexoConceptInstance epi = (FlexoConceptInstance) target;
-				logger.info("EPI: " + epi);
-				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), epi);
-				ActionSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(epi.getVirtualModelInstance(), null, action);
+				FlexoConceptInstance fci = (FlexoConceptInstance) target;
+				ActionSchemeActionType actionType = new ActionSchemeActionType((ActionScheme) getFlexoBehaviour(), fci);
+				ActionSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, action);
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);
 					Object paramValue = param.getBindingValue(context);
-					logger.info("For parameter " + param + " value is " + paramValue);
+					logger.fine("For parameter " + param + " value is " + paramValue);
 					if (paramValue != null) {
 						actionSchemeAction.setParameterValue(p, paramValue);
 					}
 				}
 				actionSchemeAction.doAction();
 				if (actionSchemeAction.hasActionExecutionSucceeded()) {
-					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + epi);
+					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
 					return actionSchemeAction.getFlexoConceptInstance();
 				}
 				if (actionSchemeAction.getThrownException() != null) {

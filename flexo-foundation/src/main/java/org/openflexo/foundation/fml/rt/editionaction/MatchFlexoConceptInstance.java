@@ -613,8 +613,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 								+ getCreationScheme().getName());
 					}
 
-					System.out.println("***************** vmInstance=" + vmInstance);
-
 					CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
 					creationSchemeAction.setVirtualModelInstance(vmInstance);
