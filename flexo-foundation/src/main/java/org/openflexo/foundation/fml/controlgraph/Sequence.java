@@ -210,13 +210,13 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			if (getControlGraph1() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph1()).getFlattenedSequence());
 			}
-			else {
+			else if (getControlGraph1() != null) {
 				returned.add(getControlGraph1());
 			}
 			if (getControlGraph2() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph2()).getFlattenedSequence());
 			}
-			else {
+			else if (getControlGraph2() != null) {
 				returned.add(getControlGraph2());
 			}
 			return returned;
@@ -230,7 +230,9 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				if (!isFirst) {
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
-				out.append(cg.getFMLRepresentation(context), context);
+				if (cg != null) {
+					out.append(cg.getFMLRepresentation(context), context);
+				}
 				isFirst = false;
 			}
 			return out.toString();
