@@ -267,6 +267,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 	public FlexoServiceManager getServiceManager();
 
+	/**
+	 * Mark the current object to be in 'modified' status<br>
+	 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be modified.
+	 * Also notify the {@link FlexoEditingContext}
+	 */
+	public void setIsModified();
+
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
 		private static final Logger logger = Logger.getLogger(FlexoObject.class.getPackage().getName());
@@ -516,6 +523,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be
 		 * modified. Also notify the {@link FlexoEditingContext}
 		 */
+		@Override
 		public synchronized void setIsModified() {
 
 			// If ignore notification flag set to true, just return

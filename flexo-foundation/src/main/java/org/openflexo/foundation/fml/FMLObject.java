@@ -68,7 +68,7 @@ import org.openflexo.model.validation.ValidationRule;
  * A {@link FMLObject} has a name, a description and can be identified by an URI
  * 
  * It represents an object which is part of a FML model.<br>
- * As such, you securely access to the {@link AbstractVirtualModel} in which this object "lives" #getR.<br>
+ * As such, you securely access to the {@link AbstractVirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
  * 
  * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
  * A {@link FMLObject} is a {@link InnerResourceData} (in a ViewPoint or in a VirtualModel)<br>
@@ -256,6 +256,14 @@ public interface FMLObject
 		}
 
 		@Override
+		public synchronized void setIsModified() {
+			super.setIsModified();
+			fmlRepresentation = null;
+			getPropertyChangeSupport().firePropertyChange("fMLRepresentation", false, true);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);
+		}
+
+		@Override
 		public final void setChanged() {
 			super.setChanged();
 			if (getResourceData() != null) {
@@ -270,9 +278,10 @@ public interface FMLObject
 					getPropertyChangeSupport().firePropertyChange(dataBinding.getBindingName(), null, dataBinding);
 				}
 			}
-			if (getResourceData() != null) {
+			setIsModified();
+			/*if (getResourceData() != null) {
 				getResourceData().setIsModified();
-			}
+			}*/
 		}
 
 		@Override
@@ -308,9 +317,14 @@ public interface FMLObject
 		@Override
 		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
+		private String fmlRepresentation;
+
 		@Override
 		public final String getFMLRepresentation() {
-			return getFMLRepresentation(new FMLRepresentationContext());
+			if (fmlRepresentation == null) {
+				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
+			}
+			return fmlRepresentation;
 		}
 
 		@Override

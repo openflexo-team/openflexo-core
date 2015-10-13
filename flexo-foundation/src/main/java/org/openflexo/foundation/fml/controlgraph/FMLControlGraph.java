@@ -305,5 +305,13 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			return returned;
 		}
 
+		@Override
+		public synchronized void setIsModified() {
+			super.setIsModified();
+			if (getOwner() != null) {
+				getOwner().setIsModified();
+			}
+		}
+
 	}
 }
