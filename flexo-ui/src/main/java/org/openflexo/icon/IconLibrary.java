@@ -225,6 +225,10 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Utils/Markers/Warning.gif")), 0, 9);
 	public static final IconMarker IMPORT = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Import.gif")), 10, 7);
+	public static final IconMarker GENERATE = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Generate.png")), 10, 7);
+	public static final IconMarker REINJECT = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Reinject.png")), 10, 7);
 	public static final IconMarker ERROR = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Error.gif")), 0, 9);
 	public static final IconMarker ERROR2 = new IconMarker(new ImageIconResource(
