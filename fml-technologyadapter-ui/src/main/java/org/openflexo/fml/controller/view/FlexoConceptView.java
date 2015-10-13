@@ -38,9 +38,15 @@
 
 package org.openflexo.fml.controller.view;
 
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
@@ -63,6 +69,9 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, controller, fibFile);
 		this.perspective = perspective;
+		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
+		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
+		getFIBView().getController().objectAddedToSelection(flexoConcept);
 	}
 
 	public FlexoConceptView(EP flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective) {
@@ -73,6 +82,33 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	@Override
 	public FlexoPerspective getPerspective() {
 		return perspective;
+	}
+
+
+	@Override
+	public void fireObjectSelected(FlexoObject object) {
+		//System.out.println("Object selected: " + object);
+		if (object instanceof FetchRequestCondition) {
+			object = ((FetchRequestCondition) object).getAction();
+		}
+		if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof AbstractAssignationAction
+				&& ((AbstractAssignationAction<?>) ((FMLControlGraph) object).getOwner()).getAssignableAction() == object) {
+			// Special case for actions that are beeing represented by a single BrowserCell
+			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
+		} else if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof IterationAction
+				&& ((IterationAction) ((FMLControlGraph) object).getOwner()).getIterationAction() == object) {
+			// Special case for actions that are beeing represented by a single BrowserCell
+			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
+		}
+		else {
+			super.fireObjectSelected(object);
+		}
+	}
+
+	@Override
+	public void fireObjectDeselected(FlexoObject object) {
+		//System.out.println("Object deselected: " + object);
+		super.fireObjectDeselected(object);
 	}
 
 }

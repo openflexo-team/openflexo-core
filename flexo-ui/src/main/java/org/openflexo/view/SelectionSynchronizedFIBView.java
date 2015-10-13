@@ -100,11 +100,9 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		super(representedObject, controller, fibComponent, addScrollBar);
 		getFIBView().getController().addSelectionListener(this);
 		if (controller != null && controller.getSelectionManager() != null) {
+			logger.fine("Added selection manager for " + getClass().getSimpleName());
 			controller.getSelectionManager().addToSelectionListeners(this);
 		}
-		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
-		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
-		getFIBView().getController().objectAddedToSelection(representedObject);
 	}
 
 	@Override
