@@ -26,7 +26,7 @@
 			visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
 			selectionMode="DiscontiguousTreeSelection" showFooter="true"
 			rootVisible="true" showRootsHandle="true" localize="true" enable=""
-			manageDynamicModel="true"
+			manageDynamicModel="true" deepExploration="true"
 			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
 			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
 			rightClickAction="controller.rightClick(FlexoConceptBrowser.selected,event)"
