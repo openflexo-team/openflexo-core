@@ -438,6 +438,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newSelectFlexoConceptInstance();
 		}
+		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newSelectVirtualModelInstance();
+		}
 		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newDeleteAction();
 		}
