@@ -88,7 +88,9 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 		return new FlexoActionFinalizer<CreateEditionAction>() {
 			@Override
 			public boolean run(EventObject e, CreateEditionAction action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+				// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
+				// getController().getCurrentPerspective());
+				getController().selectAndFocusObject(action.getNewEditionAction());
 				return true;
 			}
 		};
