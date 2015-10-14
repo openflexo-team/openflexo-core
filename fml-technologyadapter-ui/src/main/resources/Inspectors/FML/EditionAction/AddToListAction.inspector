@@ -41,15 +41,21 @@
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>-->
-			<FIBReferencedComponent
-				dynamicComponent="controller.inspectorForObject(data.assignableAction)"
-				localize="true" manageDynamicModel="true" name="AssignableActionWidget"
-				index="15" data="data.assignableAction"
+			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
+				layout="border" borderRight="2" border="rounded3d"
+				trackViewPortWidth="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				opaque="false">
-				<ReferenceAssignment mandatory="true"
-					variable="controller.flexoController" value="controller.flexoController" />
-			</FIBReferencedComponent>
+				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
+				borderTop="2" trackViewPortHeight="true">
+				<FIBReferencedComponent
+					dynamicComponent="controller.basicInspectorTabForObject(data.assignableAction)"
+					localize="true" manageDynamicModel="true" name="AssignableActionWidget"
+					index="15" data="data.assignableAction" constraints="border(location=center)"
+					opaque="false">
+					<ReferenceAssignment mandatory="true"
+						variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+			</Panel>
 
 			 <Label name="DescriptionLabel">
 				<Parameter name="hidden" value="true" />

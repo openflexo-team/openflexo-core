@@ -23,17 +23,42 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<FIBReferencedComponent manageDynamicModel="true"
+			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
+				layout="border" borderRight="2" border="rounded3d"
+				trackViewPortWidth="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
+				borderTop="2" trackViewPortHeight="true">
+				<FIBReferencedComponent
+					dynamicComponent="controller.basicInspectorTabForObject(data.iterationAction)"
+					localize="true" manageDynamicModel="true" name="IterationActionWidget"
+					index="15" data="data.iterationAction" constraints="border(location=center)"
+					opaque="false">
+					<ReferenceAssignment mandatory="true"
+						variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+			</Panel>
+			<Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>
+			<!--  <FIBReferencedComponent manageDynamicModel="true"
 				useScrollBar="false" data="data.iterationAction" opaque="false"
-				name="FetchRequestWidget" controllerClassName="org.openflexo.fib.controller.FIBController"
+				name="FetchRequestWidget"
 				index="10" localize="true"
 				dynamicComponent="controller.inspectorForObject(data.iterationAction)"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=center)"
 				readOnly="false">
 				<ReferenceAssignment mandatory="true"
 					value="controller.flexoController" variable="controller.flexoController" />
-			</FIBReferencedComponent>
+			</FIBReferencedComponent>-->
 		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
 	</TabPanel>
 	<LocalizedDictionary>
 		<Localized key="Advanced" lang="French" value="Avancé" />

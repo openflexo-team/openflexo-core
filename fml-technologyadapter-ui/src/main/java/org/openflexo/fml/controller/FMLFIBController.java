@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.model.FIBPanel;
 import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
 import org.openflexo.foundation.FlexoException;
@@ -383,7 +384,8 @@ public class FMLFIBController extends FlexoFIBController {
 			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
 			createFlexoConcept.doAction();
 			return createFlexoConcept.getNewFlexoConcept();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
 					getEditor());
 			createFlexoConcept.addToParentConcepts(flexoConcept);
@@ -403,7 +405,8 @@ public class FMLFIBController extends FlexoFIBController {
 			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
 					getEditor());
 			deleteVirtualModel.doAction();
-		} else if (flexoConcept != null) {
+		}
+		else if (flexoConcept != null) {
 			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
 					getEditor());
 			deleteFlexoConcept.doAction();
@@ -610,10 +613,12 @@ public class FMLFIBController extends FlexoFIBController {
 			if (technologyAdapter != null) {
 				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
-			} else
+			}
+			else
 				// No specific TechnologyAdapter, lookup in generic libraries
 				return getFIBPanelForObject(action);
-		} else {
+		}
+		else {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		}
@@ -633,10 +638,16 @@ public class FMLFIBController extends FlexoFIBController {
 		return getFlexoController().getModuleInspectorController().inspectorForObject(object);
 	}
 
-	public FIBTab basicInspectorTabForObject(FMLObject object) {
+	public FIBPanel basicInspectorTabForObject(FMLObject object) {
+		// return inspectorForObject(object);
+
 		FIBInspector inspector = inspectorForObject(object);
 		if (inspector != null && inspector.getTabPanel() != null) {
-			return (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+			FIBTab returned = (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+			if (returned != null) {
+				returned.setControllerClass(FMLFIBInspectorController.class);
+			}
+			return returned;
 		}
 		return null;
 	}
