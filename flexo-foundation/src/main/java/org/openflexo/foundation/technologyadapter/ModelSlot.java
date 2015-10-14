@@ -102,8 +102,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, ModelSlotObject<RD>,
-		VirtualModelObject {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends FlexoRole<RD>, ModelSlotObject<RD>, VirtualModelObject {
 
 	@PropertyIdentifier(type = AbstractVirtualModel.class)
 	public static final String OWNER_KEY = "owner";
@@ -235,8 +235,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD> implements
-			ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
+			implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -720,6 +720,18 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public boolean isReadOnly() {
 			return false;
+		}
+
+		@Override
+		public boolean delete(Object... context) {
+			for (FlexoRole<?> role : getVirtualModel().getAccessibleRoles()) {
+				if (role.getModelSlot() == this) {
+					System.out.println(">>>>>>> nullify model slot for role: " + role);
+					role.setModelSlot(null);
+				}
+			}
+			// TODO: also iterate on all behaviours, and find EditionAction that are declared with this model slot
+			return super.delete(context);
 		}
 	}
 
