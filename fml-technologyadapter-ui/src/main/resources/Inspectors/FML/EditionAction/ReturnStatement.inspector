@@ -9,9 +9,11 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="return" index="4" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
 			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
 				layout="border" borderRight="2" border="rounded3d"
-				trackViewPortWidth="true"
+				trackViewPortWidth="true" index="5"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
 				borderTop="2" trackViewPortHeight="true">

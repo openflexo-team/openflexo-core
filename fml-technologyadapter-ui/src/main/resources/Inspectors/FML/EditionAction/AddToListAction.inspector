@@ -41,9 +41,11 @@
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>-->
+			<Label label="added_value" index="8" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
 			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
 				layout="border" borderRight="2" border="rounded3d"
-				trackViewPortWidth="true"
+				trackViewPortWidth="true" index="9"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
 				borderTop="2" trackViewPortHeight="true">
