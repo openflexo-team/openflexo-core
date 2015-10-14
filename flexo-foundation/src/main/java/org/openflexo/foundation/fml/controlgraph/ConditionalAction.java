@@ -176,8 +176,10 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			out.append("if " + getCondition().toString() + "", context);
 			out.append(" {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
-			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getThenControlGraph() != null) {
+				out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+			}
 			out.append("}", context);
 			if (getElseControlGraph() != null) {
 				out.append(" else {", context);
