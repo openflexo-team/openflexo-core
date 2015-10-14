@@ -176,6 +176,13 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 */
 	public Type getInferedType();
 
+	/**
+	 * Called to explore an FML control graph
+	 * 
+	 * @param visitor
+	 */
+	public void accept(FMLControlGraphVisitor visitor);
+
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 
 		private ControlGraphBindingModel<?> bindingModel;

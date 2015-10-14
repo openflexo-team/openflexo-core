@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
@@ -450,6 +451,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 		@Override
 		public List<? extends EditionAction> getFlattenedSequence() {
 			return Collections.singletonList(this);
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
 		}
 
 		/*@Override

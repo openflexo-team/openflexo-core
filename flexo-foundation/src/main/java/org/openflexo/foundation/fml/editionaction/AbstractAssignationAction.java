@@ -45,6 +45,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.Embedded;
@@ -130,6 +131,14 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 			performSuperSetter(OWNER_KEY, owner);
 			if (getAssignableAction() != null) {
 				getAssignableAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getAssignableAction()));
+			}
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getAssignableAction() != null) {
+				getAssignableAction().accept(visitor);
 			}
 		}
 

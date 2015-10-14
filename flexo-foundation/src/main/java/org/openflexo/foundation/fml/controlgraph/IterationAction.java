@@ -384,6 +384,14 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			return Void.class;
 		}
 
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getControlGraph() != null) {
+				getControlGraph().accept(visitor);
+			}
+		}
+
 	}
 
 	@DefineValidationRule

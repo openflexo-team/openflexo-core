@@ -318,5 +318,13 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			return Void.class;
 		}
 
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getControlGraph() != null) {
+				getControlGraph().accept(visitor);
+			}
+		}
+
 	}
 }

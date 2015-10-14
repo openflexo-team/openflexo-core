@@ -354,6 +354,17 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return Void.class;
 		}
 
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getThenControlGraph() != null) {
+				getThenControlGraph().accept(visitor);
+			}
+			if (getElseControlGraph() != null) {
+				getElseControlGraph().accept(visitor);
+			}
+		}
+
 	}
 
 	@DefineValidationRule

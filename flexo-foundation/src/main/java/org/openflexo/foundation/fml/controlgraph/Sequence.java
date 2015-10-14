@@ -307,6 +307,18 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			return Void.class;
 		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
+			if (getControlGraph1() != null) {
+				getControlGraph1().accept(visitor);
+			}
+			if (getControlGraph2() != null) {
+				getControlGraph2().accept(visitor);
+			}
+		}
+
 	}
 
 	@DefineValidationRule

@@ -106,5 +106,10 @@ public interface EmptyControlGraph extends FMLControlGraph {
 			return Void.class;
 		}
 
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
+		}
+
 	}
 }
