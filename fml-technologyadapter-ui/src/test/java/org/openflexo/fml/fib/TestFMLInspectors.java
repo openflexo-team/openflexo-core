@@ -466,11 +466,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testVirtualModelInspector() {
-		validateFIB("Inspectors/FML/VirtualModel.inspector");
-	}
-
-	@Test
 	public void testVirtualModelResourceInspector() {
 		validateFIB("Inspectors/FML/VirtualModelResource.inspector");
 	}
