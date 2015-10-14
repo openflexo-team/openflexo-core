@@ -169,7 +169,7 @@
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab">
 			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
 				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)"
-				width="120" height="120" useScrollBar="true"
+				width="120" height="120" useScrollBar="true" font="SansSerif,0,13"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
 		</Tab>
