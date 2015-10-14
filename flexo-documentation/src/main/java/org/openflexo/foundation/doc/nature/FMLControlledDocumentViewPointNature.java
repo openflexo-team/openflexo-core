@@ -63,18 +63,19 @@ public abstract class FMLControlledDocumentViewPointNature<MS extends FlexoDocum
 	 * Return boolean indicating if supplied {@link VirtualModelInstance} might be interpreted as a FML-Controlled document
 	 */
 	public boolean hasNature(ViewPoint viewPoint, FMLControlledDocumentVirtualModelNature<MS> vmNature) {
-		for (VirtualModel vm : viewPoint.getVirtualModels()) {
+		for (VirtualModel vm : viewPoint.getVirtualModels(true)) {
 			if (vm.hasNature(vmNature)) {
 				return true;
 			}
 		}
+		System.exit(-1);
 		return false;
 	}
 
 	protected List<VirtualModel> _getControlledDocumentVirtualModels(ViewPoint viewPoint,
 			FMLControlledDocumentVirtualModelNature<MS> vmNature) {
 		List<VirtualModel> returned = new ArrayList<VirtualModel>();
-		for (VirtualModel vm : viewPoint.getVirtualModels()) {
+		for (VirtualModel vm : viewPoint.getVirtualModels(true)) {
 			if (vm.hasNature(vmNature)) {
 				returned.add(vm);
 			}
