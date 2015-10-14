@@ -52,7 +52,10 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.GetProperty;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelObject;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
@@ -61,6 +64,8 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -726,11 +731,45 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		public boolean delete(Object... context) {
 			for (FlexoRole<?> role : getVirtualModel().getAccessibleRoles()) {
 				if (role.getModelSlot() == this) {
-					System.out.println(">>>>>>> nullify model slot for role: " + role);
+					// nullify model slot for role
 					role.setModelSlot(null);
 				}
 			}
-			// TODO: also iterate on all behaviours, and find EditionAction that are declared with this model slot
+
+			FMLControlGraphVisitor cgVisitor = new FMLControlGraphVisitor() {
+				@Override
+				public void visit(FMLControlGraph controlGraph) {
+					if (controlGraph instanceof TechnologySpecificAction
+							&& ((TechnologySpecificAction<?, ?>) controlGraph).getModelSlot() == ModelSlotImpl.this) {
+						TechnologySpecificAction action = (TechnologySpecificAction<?, ?>) controlGraph;
+						// nullify model slot for action
+						action.setModelSlot(null);
+					}
+				}
+			};
+
+			// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
+			for (FlexoBehaviour behaviour : getVirtualModel().getFlexoBehaviours()) {
+				behaviour.getControlGraph().accept(cgVisitor);
+			}
+			// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
+			for (FlexoConcept concept : getVirtualModel().getFlexoConcepts()) {
+				for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
+					behaviour.getControlGraph().accept(cgVisitor);
+				}
+			}
+			// Also iterate on GetProperty
+			for (GetProperty<?> property : getVirtualModel().getAccessibleProperties(GetProperty.class)) {
+				if (property.getGetControlGraph() != null) {
+					property.getGetControlGraph().accept(cgVisitor);
+				}
+				if (property instanceof GetSetProperty) {
+					if (((GetSetProperty<?>) property).getSetControlGraph() != null) {
+						((GetSetProperty<?>) property).getSetControlGraph().accept(cgVisitor);
+					}
+				}
+			}
+
 			return super.delete(context);
 		}
 	}
