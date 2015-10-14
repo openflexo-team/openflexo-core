@@ -38,9 +38,9 @@
 
 package org.openflexo.fml.controller.view;
 
-import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -51,6 +51,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -84,10 +85,9 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		return perspective;
 	}
 
-
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		//System.out.println("Object selected: " + object);
+		// System.out.println("Object selected: " + object);
 		if (object instanceof FetchRequestCondition) {
 			object = ((FetchRequestCondition) object).getAction();
 		}
@@ -95,7 +95,8 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 				&& ((AbstractAssignationAction<?>) ((FMLControlGraph) object).getOwner()).getAssignableAction() == object) {
 			// Special case for actions that are beeing represented by a single BrowserCell
 			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
-		} else if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof IterationAction
+		}
+		else if (object instanceof FMLControlGraph && ((FMLControlGraph) object).getOwner() instanceof IterationAction
 				&& ((IterationAction) ((FMLControlGraph) object).getOwner()).getIterationAction() == object) {
 			// Special case for actions that are beeing represented by a single BrowserCell
 			super.fireObjectSelected(((FMLControlGraph) object).getOwner());
@@ -107,7 +108,7 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 
 	@Override
 	public void fireObjectDeselected(FlexoObject object) {
-		//System.out.println("Object deselected: " + object);
+		// System.out.println("Object deselected: " + object);
 		super.fireObjectDeselected(object);
 	}
 
