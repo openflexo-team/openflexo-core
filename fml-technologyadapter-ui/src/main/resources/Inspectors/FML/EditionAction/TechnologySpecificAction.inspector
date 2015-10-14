@@ -11,19 +11,19 @@
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
 			<Label label="model_slot" align="right" index="2"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" name="ModelSlotLabel" visible="data.getAvailableModelSlots().size>0"/>
+				localize="true" name="ModelSlotLabel"/>
 			<DropDown data="data.modelSlot" index="3"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				name="ModelSlotDD" format="object.name"
 				icon="controller.iconForObject(object)"
 				localize="false" list="data.getAvailableModelSlots()" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
-				visible="data.getAvailableModelSlots().size>1"
+				visible="data.getAvailableModelSlots().size &gt; 1"
 				autoSelectFirstRow="true" showReset="false" />
 			  <TextField data="data.modelSlot.name" index="4"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				readOnly="true" localize="false" columns="7" text="ModelSlotTextField" 
-				visible="data.getAvailableModelSlots().size=1" />
+				readOnly="true" localize="false" columns="7" name="ModelSlotTextField" 
+				visible="data.getAvailableModelSlots().size &lt; 2" />
 				
 		</Tab>
 	</TabPanel>

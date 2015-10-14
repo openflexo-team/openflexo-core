@@ -9,8 +9,18 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="view" align="right" index="6"
-				data=""
+
+			<Label name="ModelSlotLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<DropDown name="ModelSlotDD">
+				<Parameter name="hidden" value="true" />
+			</DropDown>
+			<TextField name="ModelSlotTextField">
+				<Parameter name="hidden" value="true" />
+			</TextField>
+
+			<Label label="view" align="right" index="6" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""

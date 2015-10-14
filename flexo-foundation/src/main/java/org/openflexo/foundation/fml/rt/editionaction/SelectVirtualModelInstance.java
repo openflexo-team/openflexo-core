@@ -50,18 +50,19 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -77,20 +78,17 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FlexoConceptInstance} matching some conditions and a given
- * {@link FlexoConcept}.<br>
+ * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link VirtualModelInstance} matching some conditions and a given
+ * {@link VirtualModel}.<br>
  * 
  * @author sylvain
  * 
- * @param <M>
- * @param <MM>
- * @param <T>
  */
-@FIBPanel("Fib/FML/SelectFlexoConceptInstancePanel.fib")
+@FIBPanel("Fib/FML/SelectVirtualModelInstancePanel.fib")
 @ModelEntity
-@ImplementationClass(SelectVirtualModelInstance.SelectFlexoConceptInstanceImpl.class)
+@ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
-@FML("SelectFlexoConceptInstance")
+@FML("SelectVirtualModelInstance")
 public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot, VirtualModelInstance> {
 
 	@PropertyIdentifier(type = String.class)
@@ -117,7 +115,7 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 
 	public void setVirtualModelType(VirtualModelResource virtualModelType);
 
-	public static abstract class SelectFlexoConceptInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, VirtualModelInstance>
+	public static abstract class SelectVirtualModelInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, VirtualModelInstance>
 			implements SelectVirtualModelInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
@@ -125,8 +123,16 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 		private VirtualModelResource virtualModelType;
 		private String virtualModelTypeURI;
 
-		public SelectFlexoConceptInstanceImpl() {
+		public SelectVirtualModelInstanceImpl() {
 			super();
+		}
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			}
+			return super.getModelSlotTechnologyAdapter();
 		}
 
 		private DataBinding<View> view;

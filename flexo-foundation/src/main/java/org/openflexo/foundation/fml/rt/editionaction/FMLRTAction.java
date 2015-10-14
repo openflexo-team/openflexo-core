@@ -43,8 +43,10 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -73,8 +75,8 @@ public interface FMLRTAction<T extends ViewObject> extends TechnologySpecificAct
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
 
-	public static abstract class FMLRTActionImpl<T extends ViewObject> extends TechnologySpecificActionImpl<FMLRTModelSlot, T> implements
-			FMLRTAction<T> {
+	public static abstract class FMLRTActionImpl<T extends ViewObject> extends TechnologySpecificActionImpl<FMLRTModelSlot, T>
+			implements FMLRTAction<T> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 
@@ -99,6 +101,14 @@ public interface FMLRTAction<T extends ViewObject> extends TechnologySpecificAct
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstance = aVirtualModelInstance;
+		}
+
+		@Override
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			}
+			return super.getModelSlotTechnologyAdapter();
 		}
 
 	}

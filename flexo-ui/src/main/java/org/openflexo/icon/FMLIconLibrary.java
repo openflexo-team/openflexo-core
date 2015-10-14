@@ -87,6 +87,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -191,12 +192,12 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/TextFieldIcon.png"));
 
 	// Markers
-	public static final IconMarker ABSTRACT_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 0, 0);
-	public static final IconMarker PROPERTY_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/Markers/Property.png")), 8, 8);
-	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
+	public static final IconMarker ABSTRACT_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 0, 0);
+	public static final IconMarker PROPERTY_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Property.png")), 8, 8);
+	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/ModelSlot.png")), 2, 6);
 
 	public static final ImageIcon ABSTRACT_PROPERTY_ICON = IconFactory.getImageIcon(FLEXO_ROLE_ICON, ABSTRACT_MARKER);
 	public static final ImageIcon EXPRESSION_PROPERTY_ICON = IconFactory.getImageIcon(EXPRESSION_ACTION_ICON, PROPERTY_MARKER);
@@ -209,131 +210,181 @@ public class FMLIconLibrary extends IconLibrary {
 
 		if (object instanceof ViewPoint) {
 			return VIEWPOINT_ICON;
-		} else if (object instanceof VirtualModel) {
+		}
+		else if (object instanceof VirtualModel) {
 			return VIRTUAL_MODEL_ICON;
-		} else if (object instanceof ModelSlot) {
+		}
+		else if (object instanceof ModelSlot) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((ModelSlot) object).getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 			}
 			return MODEL_SLOT_ICON;
-		} else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((FlexoRole) object).getModelSlot()
-					.getModelSlotTechnologyAdapter());
+		}
+		else if (object instanceof FlexoRole && ((FlexoRole) object).getModelSlot() != null) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+					((FlexoRole) object).getModelSlot().getModelSlotTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForFlexoRole((Class<? extends FlexoRole<?>>) object.getClass());
 			}
-		} else if (object instanceof FlexoConceptInspector) {
+		}
+		else if (object instanceof FlexoConceptInspector) {
 			return INSPECT_ICON;
-		} else if (object instanceof FlexoConceptConstraint) {
+		}
+		else if (object instanceof FlexoConceptConstraint) {
 			return CONSTRAINT_ICON;
-		} else if (object instanceof FetchRequestCondition) {
+		}
+		else if (object instanceof FetchRequestCondition) {
 			return CONSTRAINT_ICON;
-		} else if (object instanceof MatchingCriteria) {
+		}
+		else if (object instanceof MatchingCriteria) {
 			return CONSTRAINT_ICON;
-		} else if (object instanceof EditionAction) {
-			if (object instanceof AddFlexoConceptInstance) {
-				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
-			} else if (object instanceof SelectFlexoConceptInstance) {
-				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.IMPORT);
-			} else if (object instanceof MatchFlexoConceptInstance) {
-				return IconFactory.getImageIcon(FLEXO_CONCEPT_ICON, IconLibrary.SYNC);
-			} else if (object instanceof AddToListAction) {
+		}
+		else if (object instanceof EditionAction) {
+			if ((object instanceof TechnologySpecificAction)
+					&& (((TechnologySpecificAction<?, ?>) object).getModelSlotTechnologyAdapter() != null)) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+						((TechnologySpecificAction<?, ?>) object).getModelSlotTechnologyAdapter());
+				if (tac != null) {
+					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?>>) object.getClass());
+					if (returned != null) {
+						return returned;
+					}
+					else {
+						return tac.getTechnologyIcon();
+					}
+				}
+				else {
+					return UNKNOWN_ICON;
+				}
+			}
+			else if (object instanceof AddFlexoConceptInstance) {
+				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
+			}
+			else if (object instanceof SelectFlexoConceptInstance) {
+				System.out.println("et pas la ?");
+				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
+			}
+			else if (object instanceof MatchFlexoConceptInstance) {
+				return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.SYNC);
+			}
+			else if (object instanceof SelectVirtualModelInstance) {
+				return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+			}
+			else if (object instanceof AddToListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.POSITIVE_MARKER);
-			} else if (object instanceof RemoveFromListAction) {
+			}
+			else if (object instanceof RemoveFromListAction) {
 				return IconFactory.getImageIcon(LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-			} else if (object instanceof ExpressionAction) {
+			}
+			else if (object instanceof ExpressionAction) {
 				return EXPRESSION_ACTION_ICON;
-			} else if (object instanceof AbstractAssignationAction) {
+			}
+			else if (object instanceof AbstractAssignationAction) {
 				return iconForObject(((AbstractAssignationAction) object).getAssignableAction());
-			} else if (object instanceof ConditionalAction) {
+			}
+			else if (object instanceof ConditionalAction) {
 				return CONDITIONAL_ACTION_ICON;
-			} else if (object instanceof IterationAction) {
+			}
+			else if (object instanceof IterationAction) {
 				return ITERATION_ACTION_ICON;
-			} else if (object instanceof DeleteAction) {
+			}
+			else if (object instanceof DeleteAction) {
 				FlexoProperty<?> pr = ((DeleteAction) object).getAssignedFlexoProperty();
 				if (pr != null) {
 					ImageIcon baseIcon = iconForObject(pr);
 					return IconFactory.getImageIcon(baseIcon, DELETE);
 				}
 				return DELETE_ICON;
-			} else if ((object instanceof TechnologySpecificAction) && (((TechnologySpecificAction<?, ?>) object).getModelSlot() != null)) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificAction<?, ?>) object)
-						.getModelSlotTechnologyAdapter());
-				if (tac != null) {
-					ImageIcon returned = tac.getIconForEditionAction((Class<? extends TechnologySpecificAction<?, ?>>) object.getClass());
-					if (returned != null) {
-						return returned;
-					} else {
-						return tac.getTechnologyIcon();
-					}
-				}
 			}
 			return UNKNOWN_ICON;
-		} else if (object instanceof FlexoConcept) {
+		}
+		else if (object instanceof FlexoConcept) {
 			return FLEXO_CONCEPT_ICON;
-		} else if (object instanceof FlexoBehaviourParameter) {
+		}
+		else if (object instanceof FlexoBehaviourParameter) {
 			return FLEXO_CONCEPT_PARAMETER_ICON;
-		} else if (object instanceof FlexoBehaviour) {
+		}
+		else if (object instanceof FlexoBehaviour) {
 			if (object instanceof ActionScheme) {
 				return ACTION_SCHEME_ICON;
-			} else if (object instanceof SynchronizationScheme) {
+			}
+			else if (object instanceof SynchronizationScheme) {
 				return IconFactory.getImageIcon(VIRTUAL_MODEL_ICON, IconLibrary.SYNC);
-			} else if (object instanceof CloningScheme) {
+			}
+			else if (object instanceof CloningScheme) {
 				return CLONING_SCHEME_ICON;
-			} else if (object instanceof CreationScheme) {
+			}
+			else if (object instanceof CreationScheme) {
 				return CREATION_SCHEME_ICON;
-			} else if (object instanceof NavigationScheme) {
+			}
+			else if (object instanceof NavigationScheme) {
 				return NAVIGATION_SCHEME_ICON;
-			} else if (object instanceof DeletionScheme) {
+			}
+			else if (object instanceof DeletionScheme) {
 				return DELETION_SCHEME_ICON;
-			} else if (object instanceof TechnologySpecificFlexoBehaviour) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(((TechnologySpecificFlexoBehaviour) object)
-						.getSpecificTechnologyAdapter());
+			}
+			else if (object instanceof TechnologySpecificFlexoBehaviour) {
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+						((TechnologySpecificFlexoBehaviour) object).getSpecificTechnologyAdapter());
 				if (tac != null) {
 					ImageIcon returned = tac.getIconForFlexoBehaviour((Class<? extends FlexoBehaviour>) object.getClass());
 					if (returned != null) {
 						return returned;
-					} else {
+					}
+					else {
 						return tac.getTechnologyIcon();
 					}
 				}
 			}
-		} else if (object instanceof FlexoConceptInstanceRole) {
+		}
+		else if (object instanceof FlexoConceptInstanceRole) {
 			return FLEXO_CONCEPT_ICON;
-		} else if (object instanceof PrimitiveRole) {
+		}
+		else if (object instanceof PrimitiveRole) {
 			return UNKNOWN_ICON;
-		} /*else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
-					.getModelSlotTechnologyAdapter());
-			if (tac != null) {
-				Type accessedType = ((OntologicObjectRole<?>) object).getType();
-				Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
-				return tac.getIconForTechnologyObject(accessedTypeBaseClass);
-			}
-			}*/else if (object instanceof AbstractProperty) {
+		}
+		/*else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
+		TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
+				.getModelSlotTechnologyAdapter());
+		if (tac != null) {
+			Type accessedType = ((OntologicObjectRole<?>) object).getType();
+			Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
+			return tac.getIconForTechnologyObject(accessedTypeBaseClass);
+		}
+		}*/else if (object instanceof AbstractProperty) {
 			return ABSTRACT_PROPERTY_ICON;
-		} else if (object instanceof ExpressionProperty) {
+		}
+		else if (object instanceof ExpressionProperty) {
 			return EXPRESSION_PROPERTY_ICON;
-		} else if (object instanceof GetSetProperty) {
+		}
+		else if (object instanceof GetSetProperty) {
 			return GET_SET_PROPERTY_ICON;
-		} else if (object instanceof FlexoRole) {
+		}
+		else if (object instanceof FlexoRole) {
 			return FLEXO_ROLE_ICON;
-		} else if (object instanceof ViewPointLocalizedDictionary) {
+		}
+		else if (object instanceof ViewPointLocalizedDictionary) {
 			return LOCALIZATION_ICON;
-		} else if (object instanceof InspectorEntry) {
+		}
+		else if (object instanceof InspectorEntry) {
 			if (object instanceof CheckboxInspectorEntry) {
 				return CHECKBOX_ICON;
-			} else if (object instanceof FloatInspectorEntry) {
+			}
+			else if (object instanceof FloatInspectorEntry) {
 				return SPINNER_ICON;
-			} else if (object instanceof IntegerInspectorEntry) {
+			}
+			else if (object instanceof IntegerInspectorEntry) {
 				return SPINNER_ICON;
-			} else if (object instanceof TextAreaInspectorEntry) {
+			}
+			else if (object instanceof TextAreaInspectorEntry) {
 				return TEXT_AREA_ICON;
-			} else if (object instanceof TextFieldInspectorEntry) {
+			}
+			else if (object instanceof TextFieldInspectorEntry) {
 				return TEXT_FIELD_ICON;
 			}
-		} else if (object instanceof TechnologyObject) {
+		}
+		else if (object instanceof TechnologyObject) {
 			return FlexoController.statelessIconForTechnologyObject((TechnologyObject<?>) object);
 		}
 		logger.warning("No icon for " + object.getClass());
