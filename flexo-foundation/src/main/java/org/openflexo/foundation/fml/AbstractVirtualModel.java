@@ -80,6 +80,7 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
@@ -103,7 +104,7 @@ import org.openflexo.toolbox.ToolBox;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModel.AbstractVirtualModelImpl.class)
-@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class),
+@Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class), @Import(AddFlexoConceptInstanceParameter.class) })
 public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 		extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VM>, ResourceData<VM>, TechnologyObject<FMLTechnologyAdapter> {
@@ -314,6 +315,8 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 	@Override
 	public VirtualModelBindingModel getBindingModel();
 
+	public InnerConceptsFacet getInnerConceptsFacet();
+
 	public static abstract class AbstractVirtualModelImpl<VM extends AbstractVirtualModel<VM>> extends FlexoConceptImpl
 			implements AbstractVirtualModel<VM> {
 
@@ -468,6 +471,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
 				}
 			}
+			getInnerConceptsFacet().notifiedConceptsChanged();
 		}
 
 		// Override PAMELA internal call by providing custom notification support
@@ -480,6 +484,7 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
 				}
 			}
+			getInnerConceptsFacet().notifiedConceptsChanged();
 		}
 
 		/**
@@ -803,6 +808,23 @@ public interface AbstractVirtualModel<VM extends AbstractVirtualModel<VM>>
 			return null;
 		}
 
+		private InnerConceptsFacet innerConceptsFacet;
+
+		@Override
+		public InnerConceptsFacet getInnerConceptsFacet() {
+			FMLModelFactory factory = getFMLModelFactory();
+			if (innerConceptsFacet == null && factory != null) {
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_INNER_CONCEPTS_FACET");
+				}
+				innerConceptsFacet = factory.newInnerConceptsFacet(this);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+			}
+			return innerConceptsFacet;
+		}
 	}
 
 	@DefineValidationRule

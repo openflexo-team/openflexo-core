@@ -1001,6 +1001,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 				if (getOwningVirtualModel() != null) {
+					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 							getOwningVirtualModel().getAllRootFlexoConcepts());
 				}
@@ -1015,6 +1016,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 						getOwningVirtualModel().getAllRootFlexoConcepts());
 			}

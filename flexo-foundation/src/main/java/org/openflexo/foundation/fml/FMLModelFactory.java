@@ -341,6 +341,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
+	public InnerConceptsFacet newInnerConceptsFacet(AbstractVirtualModel<?> virtualModel) {
+		InnerConceptsFacet returned = newInstance(InnerConceptsFacet.class);
+		returned.setVirtualModel(virtualModel);
+		return returned;
+	}
+
 	public URIParameter newURIParameter() {
 		return newInstance(URIParameter.class);
 	}
