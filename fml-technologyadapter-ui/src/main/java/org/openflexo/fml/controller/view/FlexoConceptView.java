@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -51,7 +51,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -70,9 +69,17 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	public FlexoConceptView(EP flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(flexoConcept, controller, fibFile);
 		this.perspective = perspective;
+
+		if (getFIBView("FlexoConceptBrowser") instanceof FIBBrowserWidget) {
+			FIBBrowserWidget<?> browser = (FIBBrowserWidget<?>) getFIBView("FlexoConceptBrowser");
+			browser.performExpand(flexoConcept.getStructuralFacet());
+			browser.performExpand(flexoConcept.getBehaviouralFacet());
+		}
+
 		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
 		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
 		getFIBView().getController().objectAddedToSelection(flexoConcept);
+
 	}
 
 	public FlexoConceptView(EP flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective) {
