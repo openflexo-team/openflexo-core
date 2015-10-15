@@ -113,6 +113,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		_editor = null;
 		_projectDirectory = null;
 		_project = null;
+		_projectIdentifier = null;
 	}
 
 	protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {
@@ -135,8 +136,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		}
-		else if (logger.isLoggable(Level.WARNING)) {
+		} else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
