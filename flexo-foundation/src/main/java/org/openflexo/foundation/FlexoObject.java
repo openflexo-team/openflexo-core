@@ -641,6 +641,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			return returned;
 		}
 
+		/**
+		 * @deprecated should not be used anymore since this is a potential memory leak
+		 * 
+		 * @param actionType
+		 * @param objectClass
+		 */
+		@Deprecated
 		public static <T1 extends FlexoObject, T extends T1> void addActionForClass(FlexoActionType<?, T1, ?> actionType,
 				Class<T> objectClass) {
 			if (logger.isLoggable(Level.FINE)) {
@@ -673,6 +680,16 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 				}
 			}
 
+		}
+
+		@Deprecated
+		public static <T1 extends FlexoObject, T extends T1> void removeActionFromClass(FlexoActionType<?, T1, ?> actionType,
+				Class<T> objectClass) {
+
+			List<FlexoActionType<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
+			if (actions.contains(actionType)) {
+				actions.remove(actionType);
+			}
 		}
 
 		private static <T extends FlexoObject> List<FlexoActionType<?, ?, ?>> updateActionListFor(Class<T> aClass) {

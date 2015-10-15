@@ -279,7 +279,8 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 			if (returned != null) {
 				return returned;
 			}
-		} else if (matchingHandlers.size() > 0) {
+		}
+		else if (matchingHandlers.size() > 0) {
 			// System.out.println("Found multiple paste handler:");
 			/*for (List<PasteHandler<?>> hList : matchingHandlers.values()) {
 				System.out.println("> " + hList);
@@ -318,9 +319,11 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	private PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
 		if (l.size() == 0) {
 			return null;
-		} else if (l.size() == 1) {
+		}
+		else if (l.size() == 1) {
 			return l.get(0);
-		} else if (l.size() > 1) {
+		}
+		else if (l.size() > 1) {
 			// In this case, this is not easy, we have to define a strategy
 			// Lets' try to return the most specialized class
 			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<Class<?>, PasteHandler<?>>();
@@ -337,9 +340,11 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
-
+		// Fixed memory leak
+		FlexoObjectImpl.removeActionFromClass(copyActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(cutActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(pasteActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(selectAllActionType, FlexoObject.class);
 	}
 
 }
