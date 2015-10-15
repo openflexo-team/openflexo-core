@@ -70,10 +70,12 @@
 				<LabelColumn data="iterator.widgetName" format="" title="widget"
 					columnWidth="100" resizable="true" displayTitle="true" color=""
 					bgColor="" tooltip="" valueChangedAction="" name="label" />
-				<AddAction method="data.createNewTextField" isAvailable=""
-					name="add_textfield" />
+				<AddAction method="controller.createInspectorEntry(data)" 
+					name="add_inspector_entry" />
 				<RemoveAction method="data.deleteEntry(selected)"
 					isAvailable="" name="delete" />
+				<!--  <AddAction method="data.createNewTextField" isAvailable=""
+					name="add_textfield" />
 				<AddAction method="data.createNewTextArea" isAvailable=""
 					name="add_textarea" />
 				<AddAction method="data.createNewInteger" isAvailable=""
@@ -89,7 +91,7 @@
 				<AddAction method="data.createNewDataProperty"
 					isAvailable="" name="add_data_property" />
 				<AddAction method="data.createNewProperty" isAvailable=""
-					name="add_property" />
+					name="add_property" />-->
 			</Table>
 			<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
 				titleFont="SansSerif,0,11" darkLevel="0" index="2" data=""

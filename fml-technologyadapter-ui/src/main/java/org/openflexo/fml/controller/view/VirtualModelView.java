@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller.view;
 
+import org.openflexo.fib.view.widget.FIBBrowserWidget;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.view.controller.FlexoController;
@@ -53,6 +54,10 @@ public class VirtualModelView extends FlexoConceptView<VirtualModel> {
 
 	public VirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
 		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+		if (getFIBView("FlexoConceptBrowser") instanceof FIBBrowserWidget) {
+			FIBBrowserWidget<?> browser = (FIBBrowserWidget<?>) getFIBView("FlexoConceptBrowser");
+			browser.performExpand(virtualModel.getInnerConceptsFacet());
+		}
 	}
 
 }

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -92,7 +93,8 @@ import org.openflexo.toolbox.StringUtils;
  * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.<br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.
+ * <br>
  * 
  * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
  * 
@@ -172,7 +174,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param oldFlexoConcept
 	 * @param newFlexoConcept
 	 */
-	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
+			FlexoConcept newFlexoConcept);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -268,11 +271,11 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
 				VirtualModel virtualModel, View view) throws SaveResourceException {
 
-			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
-					virtualModelName, virtualModel, view);
+			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl
+					.makeVirtualModelInstanceResource(virtualModelName, virtualModel, view);
 
-			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory().newInstance(
-					VirtualModelInstance.class);
+			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory()
+					.newInstance(VirtualModelInstance.class);
 			newVirtualModelInstance.setVirtualModel(virtualModel);
 
 			newVirtualModelResource.setResourceData(newVirtualModelInstance);
@@ -446,7 +449,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
-			} else {
+			}
+			else {
 				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -519,6 +523,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			for (FlexoConcept childEP : flexoConcept.getChildFlexoConcepts()) {
 				returned.addAll(getFlexoConceptInstances(childEP));
 			}
+			// TODO: performance issue here
+			// We attempt to return the FCI in the order they are registered in the VMI
+			Collections.sort(returned, new Comparator<FlexoConceptInstance>() {
+				@Override
+				public int compare(FlexoConceptInstance o1, FlexoConceptInstance o2) {
+					return getFlexoConceptInstances().indexOf(o1) - getFlexoConceptInstances().indexOf(o2);
+				}
+			});
 			return returned;
 		}
 
@@ -649,12 +661,12 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 				return modelSlotInstances;
 			}
-
+		
 			@Override
 			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
 				this.modelSlotInstances = instances;
 			}
-
+		
 			@Override
 			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
 				if (!modelSlotInstances.contains(instance)) {
@@ -664,7 +676,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
 				}
 			}
-
+		
 			@Override
 			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
 				if (modelSlotInstances.contains(instance)) {
@@ -755,7 +767,8 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			} else {
+			}
+			else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
@@ -827,11 +840,14 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				}
 				logger.warning("Unexpected model slot " + variable);
 				return null;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -857,23 +873,28 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				if (ms != null) {
 					if (value instanceof ResourceData) {
 						((ModelSlotInstance) getModelSlotInstance(ms)).setAccessedResourceData((ResourceData) value);
-					} else {
+					}
+					else {
 						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
 					}
-				} else {
+				}
+				else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
 				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 

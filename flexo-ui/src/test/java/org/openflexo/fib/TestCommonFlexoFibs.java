@@ -70,53 +70,8 @@ public class TestCommonFlexoFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBClassSelector() {
-		validateFIB("Fib/FIBClassSelector.fib");
-	}
-
-	@Test
-	public void testFIBIndividualSelector() {
-		validateFIB("Fib/FIBIndividualSelector.fib");
-	}
-
-	@Test
 	public void testFIBInformationSpaceBrowser() {
 		validateFIB("Fib/FIBInformationSpaceBrowser.fib");
-	}
-
-	@Test
-	public void testFIBOntologyBrowser() {
-		validateFIB("Fib/FIBOntologyBrowser.fib");
-	}
-
-	@Test
-	public void testFIBOntologyClassEditor() {
-		validateFIB("Fib/FIBOntologyClassEditor.fib");
-	}
-
-	@Test
-	public void testFIBOntologyDataPropertyEditor() {
-		validateFIB("Fib/FIBOntologyDataPropertyEditor.fib");
-	}
-
-	@Test
-	public void testFIBOntologyEditor() {
-		validateFIB("Fib/FIBOntologyEditor.fib");
-	}
-
-	@Test
-	public void testFIBOntologyIndividualEditor() {
-		validateFIB("Fib/FIBOntologyIndividualEditor.fib");
-	}
-
-	@Test
-	public void testFIBOntologyObjectPropertyEditor() {
-		validateFIB("Fib/FIBOntologyObjectPropertyEditor.fib");
-	}
-
-	@Test
-	public void testFIBPropertySelector() {
-		validateFIB("Fib/FIBPropertySelector.fib");
 	}
 
 	@Test

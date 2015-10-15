@@ -46,7 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -95,9 +95,9 @@ public interface DeclareFlexoRole extends AssignableAction<Object> {
 			return true;
 		}*/
 
-		public Object getDeclaredObject(FlexoBehaviourAction action) {
+		public Object getDeclaredObject(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getObject().getBindingValue(action);
+				return getObject().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -134,8 +134,8 @@ public interface DeclareFlexoRole extends AssignableAction<Object> {
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) {
-			return getDeclaredObject(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) {
+			return getDeclaredObject(evaluationContext);
 		}
 
 		@Override

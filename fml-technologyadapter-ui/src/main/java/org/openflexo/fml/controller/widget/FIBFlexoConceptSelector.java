@@ -42,10 +42,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -116,14 +116,14 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
-	private VirtualModel virtualModel;
+	private AbstractVirtualModel<?> virtualModel;
 
-	public VirtualModel getVirtualModel() {
+	public AbstractVirtualModel<?> getVirtualModel() {
 		return virtualModel;
 	}
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(VirtualModel virtualModel) {
+	public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();
 			this.virtualModel = virtualModel;

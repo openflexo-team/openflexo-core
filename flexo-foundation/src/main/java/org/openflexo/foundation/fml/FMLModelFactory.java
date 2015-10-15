@@ -51,8 +51,10 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -62,7 +64,6 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.editionaction.DataPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeclareFlexoRole;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
@@ -71,16 +72,12 @@ import org.openflexo.foundation.fml.editionaction.ExecutionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.editionaction.ObjectPropertyAssertion;
 import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ClassInspectorEntry;
-import org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.inspector.IndividualInspectorEntry;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.PropertyInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
 import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
@@ -92,6 +89,7 @@ import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceP
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -213,6 +211,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 						classes.add(behaviourClass);
 					}
 				}
+				DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
+				if (fbpDeclarations != null) {
+					for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
+						classes.add(behaviourParameterClass);
+					}
+				}
 				DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
 				if (eaDeclarations != null) {
 					for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
@@ -223,6 +227,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				if (frDeclarations != null) {
 					for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : frDeclarations.value()) {
 						classes.add(fetchRequestClass);
+					}
+				}
+				DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
+				if (ieDeclarations != null) {
+					for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
+						classes.add(entryClass);
 					}
 				}
 			}
@@ -320,14 +330,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return returned;
 	}
 
-	public DataPropertyAssertion newDataPropertyAssertion() {
-		return newInstance(DataPropertyAssertion.class);
-	}
-
-	public ObjectPropertyAssertion newObjectPropertyAssertion() {
-		return newInstance(ObjectPropertyAssertion.class);
-	}
-
 	public FlexoConceptBehaviouralFacet newFlexoConceptBehaviouralFacet(FlexoConcept flexoConcept) {
 		FlexoConceptBehaviouralFacet returned = newInstance(FlexoConceptBehaviouralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
@@ -337,6 +339,12 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public FlexoConceptStructuralFacet newFlexoConceptStructuralFacet(FlexoConcept flexoConcept) {
 		FlexoConceptStructuralFacet returned = newInstance(FlexoConceptStructuralFacet.class);
 		returned.setFlexoConcept(flexoConcept);
+		return returned;
+	}
+
+	public InnerConceptsFacet newInnerConceptsFacet(AbstractVirtualModel<?> virtualModel) {
+		InnerConceptsFacet returned = newInstance(InnerConceptsFacet.class);
+		returned.setVirtualModel(virtualModel);
 		return returned;
 	}
 
@@ -364,25 +372,25 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(DropDownParameter.class);
 	}
 
-	public IndividualParameter newIndividualParameter() {
+	/*public IndividualParameter newIndividualParameter() {
 		return newInstance(IndividualParameter.class);
 	}
-
+	
 	public ClassParameter newClassParameter() {
 		return newInstance(ClassParameter.class);
 	}
-
+	
 	public PropertyParameter newPropertyParameter() {
 		return newInstance(PropertyParameter.class);
 	}
-
+	
 	public ObjectPropertyParameter newObjectPropertyParameter() {
 		return newInstance(ObjectPropertyParameter.class);
 	}
-
+	
 	public DataPropertyParameter newDataPropertyParameter() {
 		return newInstance(DataPropertyParameter.class);
-	}
+	}*/
 
 	public TechnologyObjectParameter newTechnologyObjectParameter() {
 		return newInstance(TechnologyObjectParameter.class);
@@ -422,25 +430,25 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(CheckboxInspectorEntry.class);
 	}
 
-	public IndividualInspectorEntry newIndividualInspectorEntry() {
+	/*public IndividualInspectorEntry newIndividualInspectorEntry() {
 		return newInstance(IndividualInspectorEntry.class);
 	}
-
+	
 	public ClassInspectorEntry newClassInspectorEntry() {
 		return newInstance(ClassInspectorEntry.class);
 	}
-
+	
 	public PropertyInspectorEntry newPropertyInspectorEntry() {
 		return newInstance(PropertyInspectorEntry.class);
 	}
-
+	
 	public ObjectPropertyInspectorEntry newObjectPropertyInspectorEntry() {
 		return newInstance(ObjectPropertyInspectorEntry.class);
 	}
-
+	
 	public DataPropertyInspectorEntry newDataPropertyInspectorEntry() {
 		return newInstance(DataPropertyInspectorEntry.class);
-	}
+	}*/
 
 	public CreateFlexoConceptInstanceParameter newCreateFlexoConceptInstanceParameter(FlexoBehaviourParameter p) {
 		CreateFlexoConceptInstanceParameter returned = newInstance(CreateFlexoConceptInstanceParameter.class);
@@ -464,6 +472,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstance() {
 		return newInstance(SelectFlexoConceptInstance.class);
+	}
+
+	public SelectVirtualModelInstance newSelectVirtualModelInstance() {
+		return newInstance(SelectVirtualModelInstance.class);
 	}
 
 	public FlexoConcept newFlexoConcept() {
@@ -525,6 +537,16 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		DeclarationAction<T> returned = newDeclarationAction();
 		returned.setVariableName(variableName);
 		returned.setAssignableAction(newExpressionAction(expression));
+		return returned;
+	}
+
+	public <T> ReturnStatement<T> newReturnStatement() {
+		return newInstance(ReturnStatement.class);
+	}
+
+	public <T> ReturnStatement<T> newReturnStatement(AssignableAction<T> assignableAction) {
+		ReturnStatement<T> returned = newReturnStatement();
+		returned.setAssignableAction(assignableAction);
 		return returned;
 	}
 
@@ -594,7 +616,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			if (newlyCreatedObject instanceof FlexoObject) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
 			}
-		} else {
+		}
+		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
 		if (newlyCreatedObject instanceof ViewPoint && ((ViewPoint) newlyCreatedObject).getLocalizedDictionary() == null) {

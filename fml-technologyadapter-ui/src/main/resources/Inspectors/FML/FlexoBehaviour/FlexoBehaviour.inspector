@@ -47,7 +47,9 @@
 						columnWidth="100" resizable="true" displayTitle="true" />
 					<DropDownColumn data="iterator.widget" title="widget"
 						columnWidth="80" resizable="true" displayTitle="true" name="dropdown" />
-					<AddAction method="controller.createTextFieldParameter(data)"
+					<AddAction method="controller.createFlexoBehaviourParameter(data)"
+						name="add_parameter" />
+					<!--  <AddAction method="controller.createTextFieldParameter(data)"
 						name="add_textfield_parameter" />
 					<AddAction method="controller.createTextAreaParameter(data)"
 						name="add_textarea_parameter" />
@@ -74,7 +76,7 @@
 					<AddAction method="controller.createPropertyParameter(data)"
 						name="add_property_parameter" />
 					<AddAction method="controller.createTechnologyObjectParameter(data)"
-						name="add_technology_object" />
+						name="add_technology_object" />-->
 					<RemoveAction method="controller.deleteParameter(data,selected)"
 						name="delete" />
 				</Table>
@@ -147,22 +149,30 @@
 					name="Integer" localize="true" enable="data.definePopupDefaultSize" />
 			</Panel>
 			<Label manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				localize="true" align="left" index="10000"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
 				label="description" readOnly="false" />
 			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				manageDynamicModel="false" useScrollBar="true" columns="8"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				text="TextArea" localize="true" index="10001"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 				rows="3" readOnly="false" validateOnReturn="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 		</Tab>
-		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+	    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+		<Tab title="FML" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab">
+			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
+				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)"
+				width="120" height="120" useScrollBar="true" font="SansSerif,0,13"
+				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>
 		<Localized key="Advanced" lang="French" value="Avancé" />

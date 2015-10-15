@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoProperty;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -66,7 +66,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @param <A>
  * @see CreateAbstractProperty
- * @see CreateFlexoRole
+ * @see AbstractCreateFlexoRole
  * @see CreateExpressionProperty
  * @see CreateGetSetProperty
  */

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
@@ -52,6 +53,9 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -70,6 +74,9 @@ import org.openflexo.model.annotations.XMLAttribute;
  * In a control flow graph each node in the graph represents a basic block, i.e. a straight-line piece of code without any jumps or jump
  * targets; jump targets start a block, and jumps end a block (from http://en.wikipedia.org/wiki/Control_flow_graph)
  * 
+ * A {@link FMLControlGraph} might be typed. In this case, use {@link #getType()} and {@link #setType(Type)} methods. Return statements are
+ * only usable in typed control graph (a {@link FMLControlGraph} with a non-null {@link #getType()}
+ * 
  * @author sylvain
  * 
  */
@@ -82,6 +89,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String OWNER_CONTEXT_KEY = "ownerContext";
+	// @PropertyIdentifier(type = Type.class)
+	// public static final String TYPE_KEY = "type";
 
 	@Getter(value = OWNER_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -145,10 +154,10 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	/**
 	 * Execute this control graph in the context provided by supplied {@link FlexoBehaviourAction}<br>
 	 * 
-	 * @param action
+	 * @param evaluationContext
 	 * @return
 	 */
-	public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	/**
 	 * This method allows to retrieve a flattened list of all chained control graphs
@@ -158,6 +167,21 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	public List<? extends FMLControlGraph> getFlattenedSequence();
 
 	public Sequence getParentFlattenedSequence();
+
+	/**
+	 * Computed and return type of this {@link FMLControlGraph}, with the semantics of return statement<br>
+	 * Unless a return (@see {@link ReturnStatement}) is declared, infered type is Void
+	 * 
+	 * @return
+	 */
+	public Type getInferedType();
+
+	/**
+	 * Called to explore an FML control graph
+	 * 
+	 * @param visitor
+	 */
+	public void accept(FMLControlGraphVisitor visitor);
 
 	public static abstract class FMLControlGraphImpl extends FlexoConceptObjectImpl implements FMLControlGraph {
 
@@ -286,6 +310,14 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 				p = returned.getOwner();
 			}
 			return returned;
+		}
+
+		@Override
+		public synchronized void setIsModified() {
+			super.setIsModified();
+			if (getOwner() != null) {
+				getOwner().setIsModified();
+			}
 		}
 
 	}

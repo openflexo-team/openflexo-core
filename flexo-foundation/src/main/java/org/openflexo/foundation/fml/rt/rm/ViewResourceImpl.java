@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,6 +55,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -123,6 +125,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
 			viewLibrary.registerResource(returned, folder);
 
+			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			return returned;
@@ -158,6 +161,7 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
 			viewLibrary.registerResource(returned, folder);
 
+			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
 
 			logger.fine("ViewResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
@@ -244,12 +248,21 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 		return getContents(VirtualModelInstanceResource.class);
 	}
 
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
+	 * {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
 	@Override
-	public String getURI() {
-		if (getProject() != null) {
-			return getProject().getURI() + "/" + getName();
+	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(AbstractVirtualModel<?> virtualModel) {
+		List<VirtualModelInstanceResource> returned = new ArrayList<VirtualModelInstanceResource>();
+		for (VirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
+			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getVirtualModel())) {
+				returned.add(vmiRes);
+			}
 		}
-		return null;
+		return returned;
 	}
 
 	private static class ViewInfo {
@@ -279,14 +292,16 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 						if (at.getName().equals("viewPointURI")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointURI = at.getValue();
-						} else if (at.getName().equals("viewPointVersion")) {
+						}
+						else if (at.getName().equals("viewPointVersion")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointVersion = at.getValue();
 						}
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + xmlFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
@@ -59,10 +60,8 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance.VirtualModelInstanceImpl;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.resource.InvalidFileNameException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -99,10 +98,12 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	@Override
-	protected void doAction(Object context) throws InvalidFileNameException, SaveResourceException, InvalidArgumentException {
+	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
-		newVirtualModelInstanceName = JavaUtils.getClassName(newVirtualModelInstanceName);
+		System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
+
+		newVirtualModelInstanceName = /*JavaUtils.getClassName(*/getNewVirtualModelInstanceName()/*)*/;
 
 		if (StringUtils.isNotEmpty(newVirtualModelInstanceName) && StringUtils.isEmpty(newVirtualModelInstanceTitle)) {
 			newVirtualModelInstanceTitle = newVirtualModelInstanceName;
@@ -126,8 +127,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in view " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
-		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI()
-				+ " delegate=" + newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
+		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
+				+ newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
 		for (ModelSlot ms : virtualModel.getModelSlots()) {
 			// System.out.println("*** ModelSlot: " + ms);
@@ -136,9 +137,12 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getFocusedObject());
 				msi.setVirtualModelInstance(newVirtualModelInstance);
 				newVirtualModelInstance.addToModelSlotInstances(msi);
-			} else {
-				throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot() + " configuration="
-						+ configuration);
+			}
+			else {
+				logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
+						+ configuration.getErrorMessage());
+				throw new InvalidArgumentException(
+						"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
 			}
 		}
 
@@ -146,6 +150,10 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
+			if (creationSchemeAction.getThrownException() != null) {
+				throw creationSchemeAction.getThrownException();
+			}
+
 		}
 
 		// We add the VirtualModelInstance to the view
@@ -163,7 +171,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	}
 
 	/*private String errorMessage;
-
+	
 	public String getErrorMessage() {
 		isValid();
 		// System.out.println("valid=" + isValid());
@@ -174,9 +182,11 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 	public int getStepsNumber() {
 		if (virtualModel == null) {
 			return 1;
-		} else if (!getVirtualModel().hasCreationScheme()) {
+		}
+		else if (!getVirtualModel().hasCreationScheme()) {
 			return virtualModel.getModelSlots().size() + 1;
-		} else {
+		}
+		else {
 			return virtualModel.getModelSlots().size() + 2;
 		}
 	}
@@ -230,7 +240,7 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			return null;
 		}
 	}
-
+	
 	public void setDiagramSpecification(DiagramSpecification diagramSpecification) {
 		if (diagramSpecification != this.virtualModel) {
 			this.virtualModel = diagramSpecification;
@@ -311,7 +321,8 @@ public abstract class CreateVirtualModelInstance<A extends CreateVirtualModelIns
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
-		} else {
+		}
+		else {
 			creationSchemeAction = null;
 		}
 		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);

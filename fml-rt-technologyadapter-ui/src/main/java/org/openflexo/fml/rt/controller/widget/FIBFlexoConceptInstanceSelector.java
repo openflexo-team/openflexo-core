@@ -149,7 +149,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	@CustomComponentParameter(name = "flexoConcept", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setFlexoConcept(FlexoConcept flexoConcept) {
-		System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
+		//System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
 		this.flexoConcept = flexoConcept;
 	}
 
@@ -192,7 +192,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	public void setView(View view) {
 		this.view = view;
-		System.out.println(">>>>>>>>> Sets view with " + view);
+		//System.out.println(">>>>>>>>> Sets view with " + view);
 	}
 
 	public VirtualModelInstance getVirtualModelInstance() {
@@ -201,7 +201,6 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	public void setVirtualModelInstance(VirtualModelInstance virtualModelInstance) {
 		this.virtualModelInstance = virtualModelInstance;
-		System.out.println(">>>>>>>>> Sets VirtualModelInstance with " + virtualModelInstance);
 	}
 
 	// Please uncomment this for a live test

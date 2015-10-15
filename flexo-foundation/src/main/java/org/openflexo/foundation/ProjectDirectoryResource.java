@@ -74,12 +74,12 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject> implements ProjectDirectoryResource {
+	public static abstract class ProjectDirectoryResourceImpl extends FlexoResourceImpl<FlexoProject>implements ProjectDirectoryResource {
 
 		public static ProjectDirectoryResource makeProjectDirectoryResource(FlexoProject project) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-						ProjectDirectoryResource.class));
+				ModelFactory resourceFactory = new ModelFactory(
+						ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, ProjectDirectoryResource.class));
 				ProjectDirectoryResource returned = resourceFactory.newInstance(ProjectDirectoryResource.class);
 				returned.setProject(project);
 				returned.initName(project.getProjectName());
@@ -87,6 +87,7 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 				returned.setFlexoIODelegate(fileIODelegate);
 				fileIODelegate.setFile(project.getProjectDirectory());
 				returned.setURI(project.getURI());
+				returned.setResourceCenter(project);
 				returned.setServiceManager(project.getServiceManager());
 				if (!(fileIODelegate.getFile()).exists()) {
 					fileIODelegate.getFile().mkdirs();
@@ -127,8 +128,8 @@ public interface ProjectDirectoryResource extends FlexoProjectResource<FlexoProj
 		}
 
 		@Override
-		public FlexoProject loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException,
-				FlexoException {
+		public FlexoProject loadResourceData(IProgress progress)
+				throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 			// TODO Auto-generated method stub
 			return null;
 		}

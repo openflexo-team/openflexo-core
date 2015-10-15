@@ -58,6 +58,7 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
@@ -170,12 +171,22 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	public FlexoConcept getFlexoConcept(String flexoConceptId);
 
 	/**
-	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
+	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
+	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 	 * 
 	 * @return
 	 */
 	@Getter(value = VIRTUAL_MODELS_KEY, cardinality = Cardinality.LIST, inverse = VirtualModel.VIEW_POINT_KEY, ignoreType = true)
 	public List<VirtualModel> getVirtualModels();
+
+	/**
+	 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * When forceLoad set to true, force the loading of all virtual models
+	 * 
+	 * @return
+	 */
+	public List<VirtualModel> getVirtualModels(boolean forceLoad);
 
 	@Setter(VIRTUAL_MODELS_KEY)
 	public void setVirtualModels(List<VirtualModel> virtualModels);
@@ -214,8 +225,9 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private ViewType viewType = null;
 
 		// TODO: move this code to the ViewPointResource
-		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library) {
-			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir,
+		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
+				FlexoResourceCenter<?> resourceCenter) {
+			ViewPointResource vpRes = ViewPointResourceImpl.makeViewPointResource(baseName, viewpointURI, containerDir, resourceCenter,
 					library.getServiceManager());
 			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
 			vpRes.setResourceData(viewpoint);
@@ -345,7 +357,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				} else {
+				}
+				else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -364,13 +377,28 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		}
 
 		/**
-		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}
+		 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
+		 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 		 * 
 		 * @return
 		 */
 		@Override
 		public List<VirtualModel> getVirtualModels() {
-			loadVirtualModelsWhenUnloaded();
+			return getVirtualModels(false);
+		}
+
+		/**
+		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * When forceLoad set to true, force the loading of all virtual models
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<VirtualModel> getVirtualModels(boolean forceLoad) {
+			if (forceLoad) {
+				loadVirtualModelsWhenUnloaded();
+			}
 			return virtualModels;
 		}
 
@@ -528,7 +556,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getVirtualModels() != null) {
-				for (VirtualModel vm : getVirtualModels()) {
+				for (VirtualModel vm : new ArrayList<VirtualModel>(getVirtualModels())) {
 					out.append(vm.getFMLRepresentation(context), context, 1);
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 				}
@@ -621,7 +649,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			} else {
+			}
+			else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

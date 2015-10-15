@@ -92,8 +92,8 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		assertNotNull(vpLib);
 		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
 		assertNotNull(viewPoint);
-		assertEquals(1, viewPoint.getVirtualModels().size());
-		virtualModel = viewPoint.getVirtualModels().get(0);
+		assertEquals(1, viewPoint.getVirtualModels(true).size());
+		virtualModel = viewPoint.getVirtualModels(true).get(0);
 		assertNotNull(virtualModel);
 	}
 

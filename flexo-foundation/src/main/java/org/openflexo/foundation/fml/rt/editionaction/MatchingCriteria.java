@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -97,7 +97,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 
 	public void setFlexoProperty(FlexoProperty<?> property);
 
-	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
+	public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext);
 
 	@Override
 	public MatchingCriteriaBindingModel getBindingModel();
@@ -154,7 +154,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public Object evaluateCriteriaValue(FlexoBehaviourAction action) {
+		public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -170,7 +170,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 				return null;
 			} else if (getValue().isValid()) {
 				try {
-					return getValue().getBindingValue(action);
+					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {

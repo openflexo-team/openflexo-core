@@ -56,7 +56,6 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
@@ -78,6 +77,8 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 public class TestApplicationContext extends ApplicationContext {
 
 	protected static DirectoryResourceCenter resourceCenter;
+
+	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
 		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
@@ -133,7 +134,8 @@ public class TestApplicationContext extends ApplicationContext {
 			}
 
 			FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-			rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory));
+			rcService.addToResourceCenters(
+					resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 			System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 			// ici il y a des truc a voir
@@ -173,14 +175,15 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected InformationSpace createInformationSpace() {
-		return new InformationSpace();
-	}
-
-	@Override
 	protected PreferencesService createPreferencesService() {
 		// needed for testing the VEModule
-		return new PreferencesService();
+		return new PreferencesService() {
+			@Override
+			public boolean readOnly() {
+				// We force the PreferencesService to be read-only in test scope
+				return true;
+			}
+		};
 	}
 
 	@Override

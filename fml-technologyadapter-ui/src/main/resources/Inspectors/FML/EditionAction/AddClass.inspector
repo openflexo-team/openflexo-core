@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.editionaction.AddClass"
+	dataClassName="org.openflexo.foundation.ontology.fml.editionaction.AddClass"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -15,7 +15,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.components.widget.FIBClassSelector"
+			<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" clickAction="" doubleClickAction=""
 				rightClickAction="" enterPressedAction="" valueChangedAction=""

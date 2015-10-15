@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -57,9 +58,12 @@ import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.EditionActionBindingModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
@@ -87,10 +91,10 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(EditionAction.EditionActionImpl.class)
-@Imports({ @Import(AddClass.class), @Import(AddIndividual.class), @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class),
-		@Import(DeclarationAction.class), @Import(AssignationAction.class), @Import(ExpressionAction.class),
-		@Import(SelectFlexoConceptInstance.class), @Import(SelectIndividual.class), @Import(MatchFlexoConceptInstance.class),
-		@Import(RemoveFromListAction.class), @Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
+@Imports({ @Import(AddToListAction.class), @Import(AddFlexoConceptInstance.class), @Import(DeclarationAction.class),
+		@Import(AssignationAction.class), @Import(ReturnStatement.class), @Import(ExpressionAction.class),
+		@Import(SelectFlexoConceptInstance.class), @Import(MatchFlexoConceptInstance.class), @Import(RemoveFromListAction.class),
+		@Import(DeleteAction.class), @Import(ConditionalAction.class), @Import(IterationAction.class),
 		@Import(FetchRequestIterationAction.class), @Import(ExecutionAction.class), @Import(DeclareFlexoRole.class) })
 public abstract interface EditionAction extends FMLControlGraph {
 
@@ -115,16 +119,16 @@ public abstract interface EditionAction extends FMLControlGraph {
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
-	public boolean evaluateCondition(FlexoBehaviourAction<?, ?, ?> action);
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
 
 	/**
 	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 	 * 
-	 * @param action
+	 * @param evaluationContext
 	 * @return
 	 */
 	@Override
-	public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+	public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	@Override
 	public BindingModel getBindingModel();
@@ -144,10 +148,10 @@ public abstract interface EditionAction extends FMLControlGraph {
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoBehaviourAction<?, ?, ?> action) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
 			if (getConditional().isValid()) {
 				try {
-					return getConditional().getBindingValue(action);
+					return getConditional().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -163,11 +167,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * Note than returned object will be used to be further reinjected in finalizer
 		 * 
-		 * @param action
+		 * @param evaluationContext
 		 * @return
 		 */
 		@Override
-		public abstract Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+		public abstract Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
@@ -251,7 +255,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 		 */
 		@Override
 		public String getStringRepresentation() {
-			return getHeaderContext() + getImplementedInterface().getSimpleName();
+			return getHeaderContext() + getImplementedInterface().getSimpleName() + getParametersStringRepresentation();
+		}
+
+		public String getParametersStringRepresentation() {
+			return "()";
 		}
 
 		public final String getHeaderContext() {
@@ -321,43 +329,43 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddClass createAddClassAction() {
 			AddClass newAction = new AddClass(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddIndividual createAddIndividualAction() {
 			AddIndividual newAction = new AddIndividual(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddObjectPropertyStatement createAddObjectPropertyStatementAction() {
 			AddObjectPropertyStatement newAction = new AddObjectPropertyStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddDataPropertyStatement createAddDataPropertyStatementAction() {
 			AddDataPropertyStatement newAction = new AddDataPropertyStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddIsAStatement createAddIsAPropertyAction() {
 			AddIsAStatement newAction = new AddIsAStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddRestrictionStatement createAddRestrictionAction() {
 			AddRestrictionStatement newAction = new AddRestrictionStatement(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddConnector createAddConnectorAction() {
 			AddConnector newAction = new AddConnector(null);
 			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
@@ -366,43 +374,43 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public DeclareFlexoRole createDeclarePatternRoleAction() {
 			DeclareFlexoRole newAction = new DeclareFlexoRole(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public GraphicalAction createGraphicalAction() {
 			GraphicalAction newAction = new GraphicalAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CreateDiagram createAddDiagramAction() {
 			CreateDiagram newAction = new CreateDiagram(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public AddFlexoConcept createAddFlexoConceptAction() {
 			AddFlexoConcept newAction = new AddFlexoConcept(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public ConditionalAction createConditionalAction() {
 			ConditionalAction newAction = new ConditionalAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public IterationAction createIterationAction() {
 			IterationAction newAction = new IterationAction(null);
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneShape createCloneShapeAction() {
 			CloneShape newAction = new CloneShape(null);
 			if (getFlexoConcept().getDefaultShapePatternRole() != null) {
@@ -411,7 +419,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneConnector createCloneConnectorAction() {
 			CloneConnector newAction = new CloneConnector(null);
 			if (getFlexoConcept().getDefaultConnectorPatternRole() != null) {
@@ -420,7 +428,7 @@ public abstract interface EditionAction extends FMLControlGraph {
 			insertActionAtCurrentIndex(newAction);
 			return newAction;
 		}
-
+		
 		public CloneIndividual createCloneIndividualAction() {
 			CloneIndividual newAction = new CloneIndividual(null);
 			insertActionAtCurrentIndex(newAction);
@@ -445,6 +453,11 @@ public abstract interface EditionAction extends FMLControlGraph {
 			return Collections.singletonList(this);
 		}
 
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
+		}
+
 		/*@Override
 		public void setOwner(FMLControlGraphOwner owner) {
 			System.out.println("BEGIN / EditionAction, on set le owner de " + this + " avec " + owner);
@@ -459,12 +472,12 @@ public abstract interface EditionAction extends FMLControlGraph {
 		public ConditionalBindingMustBeValid() {
 			super("'conditional'_binding_is_not_valid", EditionAction.class);
 		}
-
+	
 		@Override
 		public DataBinding<Boolean> getBinding(EditionAction object) {
 			return object.getConditional();
 		}
-
+	
 	}*/
 
 }

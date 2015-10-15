@@ -83,6 +83,12 @@ import junit.framework.AssertionFailedError;
  */
 public abstract class OpenflexoTestCase {
 
+	/**
+	 * !!!!! IMPORTANT !!!!!<br>
+	 * Do not forget to set back this flag to true when committing into a production environment
+	 */
+	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = false;
+
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
 
 	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
@@ -91,6 +97,7 @@ public abstract class OpenflexoTestCase {
 	protected static FlexoServiceManager serviceManager;
 
 	protected static File testResourceCenterDirectory;
+	protected static List<File> testResourceCenterDirectoriesToRemove;
 
 	static {
 		try {
@@ -104,15 +111,32 @@ public abstract class OpenflexoTestCase {
 
 	@AfterClass
 	public static void tearDownClass() {
+		deleteTestResourceCenters();
+		unloadServiceManager();
+	}
+
+	protected static void unloadServiceManager() {
 		if (serviceManager != null) {
+			if (resourceCenter != null) {
+				deleteTestResourceCenters();
+			}
 			serviceManager.stopAllServices();
 		}
-		if (testResourceCenterDirectory != null) {
-			FileUtils.deleteDir(testResourceCenterDirectory);
+		serviceManager = null;
+	}
+
+	protected static void deleteTestResourceCenters() {
+		if (DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION) {
+			if (testResourceCenterDirectory != null) {
+				FileUtils.deleteDir(testResourceCenterDirectory);
+			}
+			if (testResourceCenterDirectoriesToRemove != null) {
+				for (File testResourceCenterDirectoryToRemove : testResourceCenterDirectoriesToRemove) {
+					FileUtils.deleteDir(testResourceCenterDirectoryToRemove);
+				}
+			}
 		}
 		resourceCenter = null;
-		serviceManager = null;
-
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
@@ -134,7 +158,8 @@ public abstract class OpenflexoTestCase {
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -145,7 +170,17 @@ public abstract class OpenflexoTestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
+		File previousResourceCenterDirectoryToRemove = null;
+		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
+			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
+		}
 		serviceManager = new DefaultFlexoServiceManager() {
+
+			@Override
+			protected FlexoEditingContext createEditingContext() {
+				// In unit tests, we do NOT want to be warned against unexpected edits
+				return FlexoEditingContext.createInstance(false);
+			}
 
 			@Override
 			protected FlexoEditor createApplicationEditor() {
@@ -157,6 +192,7 @@ public abstract class OpenflexoTestCase {
 				try {
 					File tempFile = File.createTempFile("Temp", "");
 					testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+					tempFile.delete();
 					testResourceCenterDirectory.mkdirs();
 
 					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
@@ -172,7 +208,8 @@ public abstract class OpenflexoTestCase {
 							System.out.println(tstRC.toString());
 							FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 						}
-					} else {
+					}
+					else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
 						System.out.println("Copied from " + tstRC);
@@ -196,6 +233,13 @@ public abstract class OpenflexoTestCase {
 			}
 
 		};
+
+		if (previousResourceCenterDirectoryToRemove != null) {
+			if (testResourceCenterDirectoriesToRemove == null) {
+				testResourceCenterDirectoriesToRemove = new ArrayList<File>();
+			}
+			testResourceCenterDirectoriesToRemove.add(previousResourceCenterDirectoryToRemove);
+		}
 		return serviceManager;
 	}
 
@@ -225,7 +269,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should not be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -238,7 +283,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -268,6 +314,29 @@ public abstract class OpenflexoTestCase {
 	protected void log(String step) {
 		logger.info("\n******************************************************************************\n" + step
 				+ "\n******************************************************************************\n");
+	}
+
+	protected void debugMemory() {
+
+		int mb = 1024 * 1024;
+
+		// Getting the runtime reference from system
+		Runtime runtime = Runtime.getRuntime();
+
+		log("##### Heap utilization statistics [MB] #####");
+
+		// Print used memory
+		logger.info("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+
+		// Print free memory
+		logger.info("Free Memory:" + runtime.freeMemory() / mb);
+
+		// Print total available memory
+		logger.info("Total Memory:" + runtime.totalMemory() / mb);
+
+		// Print Maximum available memory
+		logger.info("Max Memory:" + runtime.maxMemory() / mb);
+
 	}
 
 	/**

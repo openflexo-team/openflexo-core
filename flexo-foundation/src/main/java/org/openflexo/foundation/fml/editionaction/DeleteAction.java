@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -131,10 +133,10 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction action) {
+		public T execute(RunTimeEvaluationContext evaluationContext) {
 			T objectToDelete = null;
 			try {
-				objectToDelete = getObject().getBindingValue(action);
+				objectToDelete = getObject().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e1) {
 				e1.printStackTrace();
 			} catch (NullReferenceException e1) {
@@ -153,6 +155,11 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 				e.printStackTrace();
 			}
 			return objectToDelete;
+		}
+
+		@Override
+		public Type getInferedType() {
+			return Void.class;
 		}
 
 	}

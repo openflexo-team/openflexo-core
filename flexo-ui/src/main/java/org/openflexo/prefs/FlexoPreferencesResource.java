@@ -94,8 +94,8 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 
 		public static FlexoPreferencesResource makePreferencesResource(ApplicationContext applicationContext) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-						FlexoPreferencesResource.class));
+				ModelFactory resourceFactory = new ModelFactory(
+						ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, FlexoPreferencesResource.class));
 				FlexoPreferencesResourceImpl returned = (FlexoPreferencesResourceImpl) resourceFactory
 						.newInstance(FlexoPreferencesResource.class);
 
@@ -107,11 +107,13 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				// returned.setFile(preferencesFile);
 
 				returned.setFactory(makePreferencesFactory(returned, applicationContext));
+				// TODO: setResourceCenter()
 				returned.setServiceManager(applicationContext);
 
 				if (preferencesFile.exists()) {
 					returned.loadResourceData(null);
-				} else {
+				}
+				else {
 					FlexoPreferences newFlexoPreferences = returned.getFactory().newInstance(FlexoPreferences.class);
 					returned.setResourceData(newFlexoPreferences);
 					returned.save(null);
@@ -145,8 +147,8 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
 				classes.add(m.getPreferencesClass());
 			}
-			return new FlexoPreferencesFactory(resource, ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes
-					.size()])));
+			return new FlexoPreferencesFactory(resource,
+					ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
 		}
 
 		@Override

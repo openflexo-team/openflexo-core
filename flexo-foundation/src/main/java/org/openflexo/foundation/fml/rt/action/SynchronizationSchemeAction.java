@@ -102,14 +102,14 @@ public class SynchronizationSchemeAction extends
 
 			// System.out.println("Executing code: ");
 			// System.out.println(getSynchronizationScheme().getFMLRepresentation());
-			applyEditionActions();
+			executeControlGraph();
 		}
 	}
 
 	@Override
-	protected void applyEditionActions() throws FlexoException {
+	protected void executeControlGraph() throws FlexoException {
 		beginSynchronization();
-		super.applyEditionActions();
+		super.executeControlGraph();
 		endSynchronization();
 	}
 

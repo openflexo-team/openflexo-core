@@ -89,12 +89,12 @@ public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction,
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Perform action " + actionType);
 		}
 
 		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
-			applyEditionActions();
+			executeControlGraph();
 		}
 	}
 

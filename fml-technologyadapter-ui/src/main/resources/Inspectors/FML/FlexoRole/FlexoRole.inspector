@@ -9,14 +9,14 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="model_slot" index="2"
+			<Label label="model_slot" index="2" name="ModelSlotLabel"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<DropDown index="3" data="data.modelSlot"
+			<DropDown index="3" data="data.modelSlot" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				name="ModelSlotDD" readOnly="true" format="object.name"
 				icon="controller.iconForObject(object)" localize="true"
-				list="data.owningVirtualModel.modelSlots" showIcon="true"
+				list="data.flexoConcept.virtualModel.modelSlots" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
 				autoSelectFirstRow="false" showReset="true" />
 			<Label label="cardinality" index="4"

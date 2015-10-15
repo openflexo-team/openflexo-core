@@ -5,28 +5,32 @@
 		<artifactId>openflexo-component</artifactId>
         <version>0.4-SNAPSHOT</version>
 	</parent>
-	<version>1.8.0-SNAPSHOT</version>
+	<version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>openflexo-core</artifactId>
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>1.3-SNAPSHOT</gina.version>
-		<connie.version>1.3-SNAPSHOT</connie.version>
-		<pamela.version>1.3-SNAPSHOT</pamela.version>
-		<diana.version>1.3-SNAPSHOT</diana.version>
-		<openflexoutils.version>1.3-SNAPSHOT</openflexoutils.version>
+		<gina.version>1.3-SYLVAIN-SNAPSHOT</gina.version>
+		<connie.version>1.3-SYLVAIN-SNAPSHOT</connie.version>
+		<pamela.version>1.3-SYLVAIN-SNAPSHOT</pamela.version>
+		<diana.version>1.3-SYLVAIN-SNAPSHOT</diana.version>
+		<openflexoutils.version>1.3-SYLVAIN-SNAPSHOT</openflexoutils.version>
 		<google.guice.version>3.0</google.guice.version>
 		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	    <tag>1.7.2</tag>
+	    <tag>1.8.0</tag>
     </scm>
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
+		<module>flexo-documentation</module>
+		<module>flexo-documentation-ui</module>
+		<module>flexo-ontology</module>
+		<module>flexo-ontology-ui</module>
 		<module>fml-parser</module>
 		<module>fml-technologyadapter-ui</module>
 		<module>fml-rt-technologyadapter-ui</module>
@@ -56,6 +60,42 @@
 			<dependency>
 				<groupId>org.openflexo</groupId>
 				<artifactId>flexo-ui</artifactId>
+				<version>${project.version}</version>
+				<classifier>tests</classifier>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-documentation</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-documentation</artifactId>
+				<version>${project.version}</version>
+				<classifier>tests</classifier>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-ontology</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-ontology</artifactId>
+				<version>${project.version}</version>
+				<classifier>tests</classifier>
+			</dependency>
+		
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-ontology-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-ontology-ui</artifactId>
 				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>

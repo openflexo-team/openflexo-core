@@ -75,8 +75,8 @@ import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
@@ -101,7 +101,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 	private static XMLRootElementReader reader = new XMLRootElementReader();
 
-	public static ViewPointResource makeViewPointResource(String name, String uri, File containerDir, FlexoServiceManager serviceManager) {
+	public static ViewPointResource makeViewPointResource(String name, String uri, File containerDir, FlexoResourceCenter<?> resourceCenter,
+			FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(
 					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewPointResource.class));
@@ -120,6 +121,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
 			}
 
+			returned.setResourceCenter(resourceCenter);
 			returned.setServiceManager(serviceManager);
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
@@ -130,7 +132,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		return null;
 	}
 
-	public static ViewPointResource retrieveViewPointResource(File viewPointDirectory, FlexoServiceManager serviceManager) {
+	public static ViewPointResource retrieveViewPointResource(File viewPointDirectory, FlexoResourceCenter<?> resourceCenter,
+			FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(
 					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewPointResource.class));
@@ -175,7 +178,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 			if (StringUtils.isEmpty(vpi.modelVersion)) {
 				returned.setModelVersion(new FlexoVersion("0.1"));
-			} else {
+			}
+			else {
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
@@ -187,6 +191,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
 			}
 
+			returned.setResourceCenter(resourceCenter);
 			returned.setServiceManager(serviceManager);
 
 			logger.fine("ViewPointResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
@@ -201,7 +206,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		return null;
 	}
 
-	public static ViewPointResource retrieveViewPointResource(InJarResourceImpl inJarResource, FlexoServiceManager serviceManager) {
+	public static ViewPointResource retrieveViewPointResource(InJarResourceImpl inJarResource, FlexoResourceCenter<?> resourceCenter,
+			FlexoServiceManager serviceManager) {
 		try {
 			ModelFactory factory = new ModelFactory(
 					ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class, ViewPointResource.class));
@@ -228,7 +234,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 			if (StringUtils.isEmpty(vpi.modelVersion)) {
 				returned.setModelVersion(new FlexoVersion("0.1"));
-			} else {
+			}
+			else {
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 
@@ -240,6 +247,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
 			}
 
+			returned.setResourceCenter(resourceCenter);
 			returned.setServiceManager(serviceManager);
 
 			// Now look for virtual models
@@ -258,11 +266,12 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		if (parent == null) {
 			return;
 		}
-		
+
 		for (Resource child : parent.getContents()) {
 			if (child.isContainer()) {
 				exploreVirtualModels(child);
-			} else {
+			}
+			else {
 				try {
 					if (child.getURI().endsWith(".xml")) {
 						result = reader.readRootElement(child);
@@ -382,6 +391,16 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	}
 
 	@Override
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI) {
+		for (VirtualModelResource vmRes : getVirtualModelResources()) {
+			if (vmRes.getName().equals(virtualModelNameOrURI) || vmRes.getURI().equals(virtualModelNameOrURI)) {
+				return vmRes;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public boolean isDeprecatedVersion() {
 		if (getModelVersion() == null) {
 			return true;
@@ -482,13 +501,16 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 					if (at.getName().equals("uri")) {
 						logger.fine("Returned " + at.getValue());
 						returned.uri = at.getValue();
-					} else if (at.getName().equals("name")) {
+					}
+					else if (at.getName().equals("name")) {
 						logger.fine("Returned " + at.getValue());
 						returned.name = at.getValue();
-					} else if (at.getName().equals("version")) {
+					}
+					else if (at.getName().equals("version")) {
 						logger.fine("Returned " + at.getValue());
 						returned.version = at.getValue();
-					} else if (at.getName().equals("modelVersion")) {
+					}
+					else if (at.getName().equals("modelVersion")) {
 						logger.fine("Returned " + at.getValue());
 						returned.modelVersion = at.getValue();
 					}
@@ -497,9 +519,11 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 					if (StringUtils.isNotEmpty(returned.uri)) {
 						if (returned.uri.indexOf("/") > -1) {
 							returned.name = returned.uri.substring(returned.uri.lastIndexOf("/") + 1);
-						} else if (returned.uri.indexOf("\\") > -1) {
+						}
+						else if (returned.uri.indexOf("\\") > -1) {
 							returned.name = returned.uri.substring(returned.uri.lastIndexOf("\\") + 1);
-						} else {
+						}
+						else {
 							returned.name = returned.uri;
 						}
 					}
@@ -750,7 +774,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 							diagramMs.setAttribute("idref", typedDiagramModelSlot.getAttributeValue("id"));
 							diagramMs.setName("TypedDiagramModelSlot");
 						}
-					} else {
+					}
+					else {
 						diagramMs.setName(MODELSLOT_VIRTUAL_MODEL_MODEL_SLOT);
 					}
 				}
@@ -1008,41 +1033,58 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 						|| element.getParentElement().getName().equals("VirtualModel"))) {
 					if (element.getName().equals("EMFModelSlot")) {
 						element.setName("ModelSlot_EMFModelSlot");
-					} else if (element.getName().equals("XMLModelSlot")) {
+					}
+					else if (element.getName().equals("XMLModelSlot")) {
 						element.setName("ModelSlot_XMLModelSlot");
-					} else if (element.getName().equals("XSDModelSlot")) {
+					}
+					else if (element.getName().equals("XSDModelSlot")) {
 						element.setName("ModelSlot_XSDModelSlot");
-					} else if (element.getName().equals("BasicExcelModelSlot")) {
+					}
+					else if (element.getName().equals("BasicExcelModelSlot")) {
 						element.setName("ModelSlot_BasicExcelModelSlot");
-					} else if (element.getName().equals("SemanticsExcelModelSlot")) {
+					}
+					else if (element.getName().equals("SemanticsExcelModelSlot")) {
 						element.setName("ModelSlot_SemanticsExcelModelSlot");
-					} else if (element.getName().equals("BasicPowerpointModelSlot")) {
+					}
+					else if (element.getName().equals("BasicPowerpointModelSlot")) {
 						element.setName("ModelSlot_SemanticsPowerpointModelSlot");
-					} else if (element.getName().equals("OWLModelSlot")) {
+					}
+					else if (element.getName().equals("OWLModelSlot")) {
 						element.setName("ModelSlot_OWLModelSlot");
-					} else if (element.getName().equals("FMLRTModelSlot")) {
+					}
+					else if (element.getName().equals("FMLRTModelSlot")) {
 						element.setName("ModelSlot_VirtualModelModelSlot");
 					}
-				} else {
+				}
+				else {
 					if (element.getName().equals("AddressedEMFModelSlot")) {
 						element.setName("EMFModelSlot");
-					} else if (element.getName().equals("AddressedXMLModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedXMLModelSlot")) {
 						element.setName("XMLModelSlot");
-					} else if (element.getName().equals("AddressedXSDModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedXSDModelSlot")) {
 						element.setName("XSDModelSlot");
-					} else if (element.getName().equals("AddressedBasicExcelModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedBasicExcelModelSlot")) {
 						element.setName("BasicExcelModelSlot");
-					} else if (element.getName().equals("AddressedSemanticsExcelModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedSemanticsExcelModelSlot")) {
 						element.setName("SemanticsExcelModelSlot");
-					} else if (element.getName().equals("AddressedBasicPowerpointModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedBasicPowerpointModelSlot")) {
 						element.setName("BasicPowerpointModelSlot");
-					} else if (element.getName().equals("AddressedSemanticsPowerpointModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedSemanticsPowerpointModelSlot")) {
 						element.setName("SemanticsPowerpointModelSlot");
-					} else if (element.getName().equals("AddressedOWLModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedOWLModelSlot")) {
 						element.setName("OWLModelSlot");
-					} else if (element.getName().equals("AddressedDiagramModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedDiagramModelSlot")) {
 						element.setName("TypedDiagramModelSlot");
-					} else if (element.getName().equals("AddressedVirtualModelModelSlot")) {
+					}
+					else if (element.getName().equals("AddressedVirtualModelModelSlot")) {
 						element.setName("FMLRTModelSlot");
 					}
 				}
@@ -1058,11 +1100,14 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			Element grSpec = null;
 			if (connectorGRElement.getChild("RectPolylinConnector") != null) {
 				grSpec = connectorGRElement.getChild("RectPolylinConnector");
-			} else if (connectorGRElement.getChild("LineConnector") != null) {
+			}
+			else if (connectorGRElement.getChild("LineConnector") != null) {
 				grSpec = connectorGRElement.getChild("LineConnector");
-			} else if (connectorGRElement.getChild("CurvedPolylinConnector") != null) {
+			}
+			else if (connectorGRElement.getChild("CurvedPolylinConnector") != null) {
 				grSpec = connectorGRElement.getChild("CurvedPolylinConnector");
-			} else if (connectorGRElement.getChild("ArcConnector") != null) {
+			}
+			else if (connectorGRElement.getChild("ArcConnector") != null) {
 				grSpec = connectorGRElement.getChild("ArcConnector");
 			}
 			if (connectorGRElement.getAttribute("startSymbol") != null) {
@@ -1141,7 +1186,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 						}
 						if (attribute.getName().equals("virtualModelInstance")) {
 							attribute.setValue(attribute.getValue().replace("this", "virtualModelInstance"));
-						} else {
+						}
+						else {
 							attribute.setValue(attribute.getValue().replace("this", "flexoBehaviourInstance"));
 						}
 					}

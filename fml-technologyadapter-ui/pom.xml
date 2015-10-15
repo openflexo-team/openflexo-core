@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
+        <version>1.8.0-SYLVAIN-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-technologyadapter-ui</artifactId>
 	<name>FML technology adapter : UI layer</name>
@@ -35,6 +35,10 @@
 			<artifactId>flexo-ui</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ontology-ui</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.openflexo</groupId>

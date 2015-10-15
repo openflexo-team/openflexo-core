@@ -51,12 +51,17 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sguerin
  * 
  */
+// Not sure it is still used
+@Deprecated
 public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 
-	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
-		super((new ParametersRetriever(action)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+	private final FlexoController flexoController;
+
+	public FIBParametersRetrieverWidget(FlexoBehaviourAction action, FlexoController flexoController) {
+		super((new ParametersRetriever(action, flexoController)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+		this.flexoController = flexoController;
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	public void fireEditedObjectChanged() {
 		FlexoBehaviourAction action = getEditedObject();
 		if (action != null) {
-			fibComponent = (new ParametersRetriever(action)).makeFIB(false, false);
+			fibComponent = (new ParametersRetriever(action, flexoController)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
 			fibView = controller.buildView(fibComponent);
 			removeAll();

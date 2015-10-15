@@ -92,8 +92,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public FMLRTModelSlot getVirtualModelModelSlot();
 
-	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
-			FlexoConceptInstanceRole {
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
+			implements FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -142,7 +142,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public boolean getIsPrimaryRole() {
 			return false;
 		}
-
+		
 		@Override
 		public void setIsPrimaryRole(boolean isPrimary) {
 			// Not relevant
@@ -258,22 +258,15 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return returned;
 		}
 
-		@Override
+		/*@Override
 		public FMLRTModelSlot getModelSlot() {
 			FMLRTModelSlot returned = (FMLRTModelSlot) super.getModelSlot();
-			/* This is not true any-more => when no ModelSlot is set, Role is from current VirtualModel
-			if (returned == null) {
-				if (getVirtualModel() != null && getVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
-					return getVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
-				}
-			}
-			 */
 			return returned;
-		}
+		}*/
 
 		@Override
 		public FMLRTModelSlot getVirtualModelModelSlot() {
-			return getModelSlot();
+			return (FMLRTModelSlot) getModelSlot();
 		}
 
 		public void setVirtualModelModelSlot(FMLRTModelSlot modelSlot) {

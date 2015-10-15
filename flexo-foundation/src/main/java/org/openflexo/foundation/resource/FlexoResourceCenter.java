@@ -81,7 +81,8 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	@ModelEntity
 	@XMLElement
-	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class), @Import(JarResourceCenterEntry.class) })
+	@Imports({ @Import(DirectoryResourceCenterEntry.class), @Import(RemoteResourceCenterEntry.class),
+			@Import(JarResourceCenterEntry.class) })
 	public static interface ResourceCenterEntry<RC extends FlexoResourceCenter<?>> {
 
 		public RC makeResourceCenter();
@@ -119,6 +120,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	public void initialize(TechnologyAdapterService technologyAdapterService);
 
 	/**
+	 * Finalize the FlexoResourceCenter<br>
+	 * 
+	 * @param technologyAdapterService
+	 */
+	public void finalize(TechnologyAdapterService technologyAdapterService);
+
+	/**
 	 * Returns all resources available in this resource center
 	 * 
 	 * @param progress
@@ -126,6 +134,14 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return a list of all resources available in this resource center.
 	 */
 	public @Nonnull Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
+
+	/**
+	 * Return resource matching supplied artefact
+	 * 
+	 * @param resourceArtefact
+	 * @return
+	 */
+	public <R extends FlexoResource<?>> R getResource(I resourceArtefact, Class<R> resourceClass);
 
 	/**
 	 * Returns the resource identified by the given <code>uri</code> and the provided <code>version</code>.
@@ -251,4 +267,12 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	public void stop();
 
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public String getDefaultResourceURI(FlexoResource<?> resource);
 }

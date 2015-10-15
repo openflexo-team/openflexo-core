@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.rm;
 
 import java.util.List;
 
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
@@ -79,6 +80,11 @@ public interface ViewResource extends PamelaResource<View, ViewModelFactory>, Fl
 	public static final String DIRECTORY = "directory";
 	public static final String VIEWPOINT_RESOURCE = "viewPointResource";
 
+	/**
+	 * Return the {@link ViewPoint} this view is conform to
+	 * 
+	 * @return
+	 */
 	public ViewPoint getViewPoint();
 
 	@Getter(value = VIEW_LIBRARY, ignoreType = true)
@@ -93,8 +99,26 @@ public interface ViewResource extends PamelaResource<View, ViewModelFactory>, Fl
 	@Setter(VIEWPOINT_RESOURCE)
 	public void setViewPointResource(ViewPointResource viewPointResource);
 
+	/**
+	 * Return the {@link View} this resource gives access to
+	 * 
+	 * @return
+	 */
 	public View getView();
 
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource}
+	 * 
+	 * @return
+	 */
 	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources();
+
+	/**
+	 * Return the list of all {@link VirtualModelInstanceResource} defined in this {@link ViewResource} conform to supplied
+	 * {@link AbstractVirtualModel}
+	 * 
+	 * @return
+	 */
+	public List<VirtualModelInstanceResource> getVirtualModelInstanceResources(AbstractVirtualModel<?> virtualModel);
 
 }

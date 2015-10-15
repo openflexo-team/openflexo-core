@@ -10,13 +10,12 @@
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
 			<Label id="2" manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				index="2" localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="Expression" readOnly="false" />
 			<Custom id="3" manageDynamicModel="true" useScrollBar="false"
 				data="data.expression" componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-				opaque="false" name="AssignCC" controllerClassName="org.openflexo.fib.controller.FIBController"
+				opaque="false" name="AssignCC"
 				index="3" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
 				readOnly="false">

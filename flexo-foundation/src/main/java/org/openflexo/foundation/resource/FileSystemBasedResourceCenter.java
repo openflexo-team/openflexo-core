@@ -59,11 +59,13 @@ import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.resource.DirectoryResourceCenter.DirectoryResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.DirectoryWatcher;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -75,7 +77,7 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>> implements FlexoResourceCenter<File> {
+public abstract class FileSystemBasedResourceCenter extends FileResourceRepository<FlexoResource<?>>implements FlexoResourceCenter<File> {
 
 	protected static final Logger logger = Logger.getLogger(FileSystemBasedResourceCenter.class.getPackage().getName());
 
@@ -90,13 +92,55 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 
 	public FileSystemBasedResourceCenter(File rootDirectory) {
 		super(null, rootDirectory);
-		setOwner(this);
 		this.rootDirectory = rootDirectory;
 		startDirectoryWatching();
 	}
 
+	@Override
+	public FlexoResourceCenter<?> getResourceCenter() {
+		return this;
+	}
+
 	public File getRootDirectory() {
 		return rootDirectory;
+	}
+
+	/**
+	 * Return (first when many) resource matching supplied File
+	 */
+	@Override
+	public <R extends FlexoResource<?>> R getResource(File aFile, Class<R> resourceClass) {
+		if (!FileUtils.directoryContainsFile(getRootDirectory(), aFile, true)) {
+			return null;
+		}
+
+		RepositoryFolder<?> folder = null;
+		try {
+			folder = getRepositoryFolder(aFile, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		if (folder == null) {
+			return null;
+		}
+
+		for (FlexoResource<?> r : folder.getResources()) {
+			if ((r.getFlexoIODelegate() instanceof FileFlexoIODelegate)
+					&& ((FileFlexoIODelegate) r.getFlexoIODelegate()).getFile().equals(aFile)) {
+				if (resourceClass.isAssignableFrom(r.getClass())) {
+					return (R) r;
+				}
+				logger.warning("Found resource matching file " + aFile + " but not of desired type: " + r.getClass() + " instead of "
+						+ resourceClass);
+				return null;
+			}
+		}
+
+		// Cannot find the resource
+		return null;
+
 	}
 
 	@Override
@@ -188,7 +232,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 						+ candidateFile.getAbsolutePath());
 			}
 		}
-
+	
 		return null;
 	}*/
 
@@ -206,6 +250,19 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 	}
 
+	/**
+	 * Finalize the FlexoResourceCenter<br>
+	 * 
+	 * @param technologyAdapterService
+	 */
+	@Override
+	public void finalize(TechnologyAdapterService technologyAdapterService) {
+
+		logger.info("*********** FINALIZE FileSystemBasedResourceCenter on " + getDirectory());
+		// TODO
+	}
+
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (technologyAdapterService != null) {
 			return technologyAdapterService.getServiceManager();
@@ -218,7 +275,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		List<File> allFiles = new ArrayList<File>();
 		if (getRootDirectory() != null) {
 			appendFiles(getRootDirectory(), allFiles);
-		} else {
+		}
+		else {
 			logger.warning("ResourceCenter: " + this + " rootDirectory is null");
 		}
 		return allFiles.iterator();
@@ -392,7 +450,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		HashMap<Class<? extends ResourceRepository<?>>, ResourceRepository<?>> map = getRepositoriesForAdapter(technologyAdapter);
 		if (map.get(repositoryType) == null) {
 			map.put(repositoryType, repository);
-		} else {
+		}
+		else {
 			logger.warning("Repository already registered: " + repositoryType + " for " + repository);
 		}
 	}
@@ -410,7 +469,8 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	}
 
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type, IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
+			IProgress progress) {
 		// TODO: provide support for class and version
 		return (FlexoResource<T>) retrieveResource(uri, progress);
 	}
@@ -442,6 +502,37 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	@Override
 	public void stop() {
 		this.stopDirectoryWatching();
+	}
+
+	/**
+	 * Compute and return a default URI for supplied resource<br>
+	 * If resource does not provide URI support, this might be delegated to the {@link FlexoResourceCenter} through this method
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	@Override
+	public String getDefaultResourceURI(FlexoResource<?> resource) {
+		if (resource instanceof TechnologyAdapterResource) {
+			TechnologyAdapter ta = ((TechnologyAdapterResource<?, ?>) resource).getTechnologyAdapter();
+			for (ResourceRepository repository : getRegistedRepositories(ta)) {
+				if (repository.containsResource(resource)) {
+					String path = "";
+					RepositoryFolder f = repository.getRepositoryFolder(resource);
+					while (f != null && !f.isRootFolder()) {
+						path = f.getName() + File.separator + path;
+						f = f.getParentFolder();
+					}
+					if (getDefaultBaseURI().endsWith(File.separator)) {
+						return getDefaultBaseURI() + path.replace(File.separator, "/") + resource.getName();
+					}
+					else {
+						return getDefaultBaseURI() + "/" + path.replace(File.separator, "/") + resource.getName();
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }

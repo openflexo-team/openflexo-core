@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 
 /**
  * Action allowing to create a {@link GetSetProperty}<br>
@@ -120,10 +121,41 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 		if (newGetSetProperty != null) {
 
 			newGetSetProperty.setPropertyName(getPropertyName());
-
-			super.doAction(context);
+			newGetSetProperty.setGetControlGraph(getGetControlGraph());
+			if (getSetControlGraph() != null) {
+				newGetSetProperty.setSetControlGraph(getSetControlGraph());
+			}
+			finalizeDoAction(context);
 		}
 
 	}
 
+	private FMLControlGraph getControlGraph;
+	private FMLControlGraph setControlGraph;
+
+	public FMLControlGraph getGetControlGraph() {
+		return getControlGraph;
+	}
+
+	public void setGetControlGraph(FMLControlGraph getControlGraph) {
+		if ((getControlGraph == null && this.getControlGraph != null)
+				|| (getControlGraph != null && !getControlGraph.equals(this.getControlGraph))) {
+			FMLControlGraph oldValue = this.getControlGraph;
+			this.getControlGraph = getControlGraph;
+			getPropertyChangeSupport().firePropertyChange("getControlGraph", oldValue, getControlGraph);
+		}
+	}
+
+	public FMLControlGraph getSetControlGraph() {
+		return setControlGraph;
+	}
+
+	public void setSetControlGraph(FMLControlGraph setControlGraph) {
+		if ((setControlGraph == null && this.setControlGraph != null)
+				|| (setControlGraph != null && !setControlGraph.equals(this.setControlGraph))) {
+			FMLControlGraph oldValue = this.setControlGraph;
+			this.setControlGraph = setControlGraph;
+			getPropertyChangeSupport().firePropertyChange("setControlGraph", oldValue, setControlGraph);
+		}
+	}
 }

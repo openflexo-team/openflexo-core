@@ -155,7 +155,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public FlexoBehaviour getFlexoBehaviourForURI(String uri);
 
-	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoRole.FLEXO_CONCEPT_KEY)
+	@Getter(value = FLEXO_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.FLEXO_CONCEPT_KEY)
 	@XMLElement
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
@@ -254,6 +254,16 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	 */
 	public List<FlexoRole> getDeclaredRoles();
 
+	/**
+	 * Return {@link FlexoRole} identified by supplied name, which is to be retrieved in all accessible properties<br>
+	 * Note that returned role is not necessary one of declared role, but might be inherited.
+	 * 
+	 * @param propertyName
+	 * @return
+	 * @see #getAccessibleRoles()
+	 */
+	public FlexoRole<?> getAccessibleRole(String roleName);
+
 	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
 	@XMLElement(xmlTag = "Inspector")
 	@CloningStrategy(StrategyType.CLONE)
@@ -342,10 +352,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 
 	public DeletionScheme generateDefaultDeletionScheme();
 
-	public List<IndividualRole> getIndividualRoles();
-
-	public List<ClassRole> getClassRoles();
-
 	public FlexoConceptInstanceType getInstanceType();
 
 	public FlexoConceptStructuralFacet getStructuralFacet();
@@ -416,9 +422,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public FlexoConceptStructuralFacet getStructuralFacet() {
 			FMLModelFactory factory = getFMLModelFactory();
 			if (structuralFacet == null && factory != null) {
-				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_STRUCTURAL_FACET");
+				}
 				structuralFacet = factory.newFlexoConceptStructuralFacet(this);
-				factory.getEditingContext().getUndoManager().stopRecording(ce);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
 			}
 			return structuralFacet;
 		}
@@ -427,9 +438,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public FlexoConceptBehaviouralFacet getBehaviouralFacet() {
 			FMLModelFactory factory = getFMLModelFactory();
 			if (behaviouralFacet == null && factory != null) {
-				CompoundEdit ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
+				CompoundEdit ce = null;
+				if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					ce = factory.getEditingContext().getUndoManager().startRecording("CREATE_BEHAVIOURAL_FACET");
+				}
 				behaviouralFacet = factory.newFlexoConceptBehaviouralFacet(this);
-				factory.getEditingContext().getUndoManager().stopRecording(ce);
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
 			}
 			return behaviouralFacet;
 		}
@@ -480,7 +496,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public String getURI() {
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getURI() + "#" + getName();
-			} else {
+			}
+			else {
 				return "null#" + getName();
 			}
 		}
@@ -641,6 +658,24 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		}
 
 		/**
+		 * Return {@link FlexoRole} identified by supplied name, which is to be retrieved in all accessible properties<br>
+		 * Note that returned role is not necessary one of declared role, but might be inherited.
+		 * 
+		 * @param propertyName
+		 * @return
+		 * @see #getAccessibleRoles()
+		 */
+		@Override
+		public FlexoRole<?> getAccessibleRole(String roleName) {
+			for (FlexoRole<?> p : getAccessibleRoles()) {
+				if (p.getName().equals(roleName)) {
+					return p;
+				}
+			}
+			return null;
+		}
+
+		/**
 		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
 		 * Note that returned property is not necessary one of declared property, but might be inherited.
 		 * 
@@ -673,16 +708,6 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 				}
 			}
 			return null;
-		}
-
-		@Override
-		public List<IndividualRole> getIndividualRoles() {
-			return getDeclaredProperties(IndividualRole.class);
-		}
-
-		@Override
-		public List<ClassRole> getClassRoles() {
-			return getDeclaredProperties(ClassRole.class);
 		}
 
 		private Vector<String> availablePropertiesNames = null;
@@ -727,7 +752,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 					String behaviourname = uri.replace(getOwningVirtualModel().getURI(), "").substring(1);
 					System.out.println("XTOF :: je récupère " + behaviourname);
 					return getFlexoBehaviour(behaviourname);
-				} else {
+				}
+				else {
 					logger.warning("Trying to retrieve a FlexoBehaviour (" + uri + ") that does not belong to current Concept " + getURI());
 					return null;
 				}
@@ -910,7 +936,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public AbstractVirtualModel<?> getParentVirtualModel() {
 			return virtualModel;
 		}
-
+		
 		@Override
 		public void setParentVirtualModel(AbstractVirtualModel<?> virtualModel) {
 			if (this.virtualModel != virtualModel) {
@@ -975,12 +1001,14 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
 				performSuperAdder(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 				if (getOwningVirtualModel() != null) {
+					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 							getOwningVirtualModel().getAllRootFlexoConcepts());
 				}
-			} else {
-				throw new InconsistentFlexoConceptHierarchyException("FlexoConcept " + this + " : Could not add as parent FlexoConcept: "
-						+ parentFlexoConcept);
+			}
+			else {
+				throw new InconsistentFlexoConceptHierarchyException(
+						"FlexoConcept " + this + " : Could not add as parent FlexoConcept: " + parentFlexoConcept);
 			}
 		}
 
@@ -988,6 +1016,7 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 		public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept) {
 			performSuperRemover(PARENT_FLEXO_CONCEPTS_KEY, parentFlexoConcept);
 			if (getOwningVirtualModel() != null) {
+				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
 				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 						getOwningVirtualModel().getAllRootFlexoConcepts());
 			}
@@ -1087,8 +1116,8 @@ public interface FlexoConcept extends FlexoConceptObject, VirtualModelObject {
 	}
 
 	@DefineValidationRule
-	public static class NonAbstractFlexoConceptShouldHaveProperties extends
-			ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
+	public static class NonAbstractFlexoConceptShouldHaveProperties
+			extends ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
 		public NonAbstractFlexoConceptShouldHaveProperties() {
 			super(FlexoConcept.class, "non_abstract_flexo_concept_should_have_properties");
 		}

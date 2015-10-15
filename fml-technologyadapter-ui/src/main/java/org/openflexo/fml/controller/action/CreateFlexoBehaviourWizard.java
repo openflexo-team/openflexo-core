@@ -42,27 +42,40 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.CheckboxParameter;
+import org.openflexo.foundation.fml.DropDownParameter;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FloatParameter;
+import org.openflexo.foundation.fml.IntegerParameter;
+import org.openflexo.foundation.fml.ListParameter;
+import org.openflexo.foundation.fml.TechnologyObjectParameter;
+import org.openflexo.foundation.fml.TextAreaParameter;
+import org.openflexo.foundation.fml.TextFieldParameter;
+import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
-import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
 
@@ -223,9 +236,35 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 			return FlexoLocalization.localizedForKey("configure_behaviour_parameters");
 		}
 
-		public Class[] getAvailableParameterTypes() {
-			return CreateFlexoBehaviourParameter.AVAILABLE_TYPES;
+		private List<Class<? extends FlexoBehaviourParameter>> availableParameterTypes = null;
+
+		public List<Class<? extends FlexoBehaviourParameter>> getAvailableParameterTypes() {
+			if (availableParameterTypes == null) {
+				availableParameterTypes = new ArrayList<Class<? extends FlexoBehaviourParameter>>();
+				availableParameterTypes.add(TextFieldParameter.class);
+				availableParameterTypes.add(TextAreaParameter.class);
+				availableParameterTypes.add(IntegerParameter.class);
+				availableParameterTypes.add(FloatParameter.class);
+				availableParameterTypes.add(ListParameter.class);
+				availableParameterTypes.add(CheckboxParameter.class);
+				availableParameterTypes.add(DropDownParameter.class);
+				availableParameterTypes.add(FlexoConceptInstanceParameter.class);
+				availableParameterTypes.add(TechnologyObjectParameter.class);
+				availableParameterTypes.add(URIParameter.class);
+
+				for (TechnologyAdapter ta : getController().getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+					TechnologyAdapterController<?> tac = getController().getTechnologyAdapterController(ta);
+					tac.appendSpecificFlexoBehaviourParameters(availableParameterTypes);
+				}
+			}
+
+			return availableParameterTypes;
 		}
+
+		/*public static final Class[] AVAILABLE_TYPES = new Class[] { TextFieldParameter.class, TextAreaParameter.class, IntegerParameter.class,
+		FloatParameter.class, ListParameter.class, CheckboxParameter.class, DropDownParameter.class, ClassParameter.class,
+		FlexoConceptInstanceParameter.class, IndividualParameter.class, TechnologyObjectParameter.class, URIParameter.class };
+		*/
 
 		public List<BehaviourParameterEntry> getParameterEntries() {
 			return getAction().getParameterEntries();

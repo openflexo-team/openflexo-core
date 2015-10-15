@@ -108,8 +108,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
-			FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress)
+			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -179,7 +179,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (getFlexoIODelegate() != null) {
 				getFlexoIODelegate().rename();
 			}
-		} else if (!isDeleting()) {
+		}
+		else if (!isDeleting()) {
 			throw new CannotRenameException(this);
 		}
 	}
@@ -210,7 +211,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		} else {
+		}
+		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -361,7 +363,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		} else {
+		}
+		else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
@@ -486,4 +489,24 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public boolean isContainer() {
 		return true;
 	}
+
+	/**
+	 * Return URI of this resource<br>
+	 * If URI was set for this resource, return that URI, otherwise delegate default URI computation to resource center in which this
+	 * resource exists
+	 */
+	@Override
+	public final String getURI() {
+		String returned = (String) performSuperGetter(URI);
+
+		if (returned == null && getResourceCenter() != null) {
+			returned = getResourceCenter().getDefaultResourceURI(this);
+		}
+
+		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)) {
+			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
+		}
+		return returned;
+	}
+
 }

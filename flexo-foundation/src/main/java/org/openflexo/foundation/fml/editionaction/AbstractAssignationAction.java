@@ -45,7 +45,10 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
+import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -53,6 +56,13 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
+/**
+ * Abstract {@link AssignableAction} which is composed with an other {@link AssignableAction} (right hand side)
+ * 
+ * @author sylvain
+ *
+ * @param <T>
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAssignationAction.AbstractAssignationActionImpl.class)
 @XMLElement
@@ -63,6 +73,7 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 	@Getter(value = ASSIGNABLE_ACTION_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "AssignableAction_")
+	@Embedded
 	public AssignableAction<T> getAssignableAction();
 
 	@Setter(ASSIGNABLE_ACTION_KEY)
@@ -70,13 +81,17 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 
 	// public DataBinding<? super T> getAssignation();
 
-	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T> implements AbstractAssignationAction<T> {
+	public static abstract class AbstractAssignationActionImpl<T> extends AssignableActionImpl<T>implements AbstractAssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AbstractAssignationAction.class.getPackage().getName());
 
-		public T getAssignationValue(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T getAssignationValue(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getAssignableAction() != null) {
-				return getAssignableAction().execute(action);
+				try {
+					return getAssignableAction().execute(evaluationContext);
+				} catch (ReturnException e) {
+					return (T) e.getReturnedValue();
+				}
 			}
 			return null;
 		}
@@ -116,6 +131,14 @@ public interface AbstractAssignationAction<T> extends AssignableAction<T>, FMLCo
 			performSuperSetter(OWNER_KEY, owner);
 			if (getAssignableAction() != null) {
 				getAssignableAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getAssignableAction()));
+			}
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getAssignableAction() != null) {
+				getAssignableAction().accept(visitor);
 			}
 		}
 

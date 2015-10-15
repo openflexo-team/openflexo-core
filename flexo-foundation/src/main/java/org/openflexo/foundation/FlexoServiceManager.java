@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.nature.ScreenshotService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -56,7 +57,6 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -103,7 +103,8 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		} else {
+		}
+		else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
@@ -147,9 +148,9 @@ public abstract class FlexoServiceManager {
 	public List<FlexoService> getRegisteredServices() {
 		return registeredServices;
 	}
-	
-	public void stopAllServices(){
-		for (FlexoService r: registeredServices){
+
+	public void stopAllServices() {
+		for (FlexoService r : registeredServices) {
 			r.stop();
 		}
 	}
@@ -174,10 +175,6 @@ public abstract class FlexoServiceManager {
 		return getService(ViewPointLibrary.class);
 	}
 
-	public InformationSpace getInformationSpace() {
-		return getService(InformationSpace.class);
-	}
-
 	public FlexoProjectReferenceLoader getProjectReferenceLoader() {
 		return getService(FlexoProjectReferenceLoader.class);
 	}
@@ -192,6 +189,10 @@ public abstract class FlexoServiceManager {
 
 	public FlexoTaskManager getTaskManager() {
 		return getService(FlexoTaskManager.class);
+	}
+
+	public ScreenshotService getScreenshotService() {
+		return getService(ScreenshotService.class);
 	}
 
 	public class ServiceRegistered implements ServiceNotification {
@@ -211,10 +212,10 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ViewPointLibrary createViewPointLibraryService();
 
-	protected abstract InformationSpace createInformationSpace();
-
 	protected abstract ResourceManager createResourceManager();
 
 	protected abstract FlexoTaskManager createTaskManager();
+
+	protected abstract ScreenshotService createScreenshotService();
 
 }

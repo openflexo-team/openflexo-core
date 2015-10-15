@@ -167,10 +167,12 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 					logger.fine("Task " + task + " is ready to execute");
 					task.executionScheduled();
 					executor.execute(task);
-				} else {
+				}
+				else {
 					logger.fine("Task " + task + " is to be ignored");
 				}
-			} else {
+			}
+			else {
 				logger.fine("Task " + task + " is NOT ready to execute");
 			}
 		}
@@ -216,7 +218,6 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	public void stop() {
 		executor.shutdown();
 	}
-	
 
 	@Override
 	public void shutdownAndExecute(final Runnable r) {

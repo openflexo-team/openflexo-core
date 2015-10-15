@@ -49,7 +49,6 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.NameChanged;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.DeserializationFinalizer;
 import org.openflexo.model.annotations.DeserializationInitializer;
@@ -69,7 +68,7 @@ import org.openflexo.model.validation.ValidationRule;
  * A {@link FMLObject} has a name, a description and can be identified by an URI
  * 
  * It represents an object which is part of a FML model.<br>
- * As such, you securely access to the {@link AbstractVirtualModel} in which this object "lives" #getR.<br>
+ * As such, you securely access to the {@link AbstractVirtualModel} in which this object "lives" using {@link #getResourceData()}<br>
  * 
  * A {@link FMLObject} is a {@link Bindable} as conforming to CONNIE binding scheme<br>
  * A {@link FMLObject} is a {@link InnerResourceData} (in a ViewPoint or in a VirtualModel)<br>
@@ -81,8 +80,8 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
-public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<AbstractVirtualModel>*/,
-		TechnologyObject<FMLTechnologyAdapter> {
+public interface FMLObject
+		extends FlexoObject, Bindable, InnerResourceData/*<AbstractVirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -104,9 +103,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 	 */
 	public String getURI();
 
+	@Override
 	public FlexoServiceManager getServiceManager();
-
-	public InformationSpace getInformationSpace();
 
 	/**
 	 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
@@ -115,6 +113,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 	 * 
 	 */
 	public ViewPoint getViewPoint();
+
+	public ViewPointResource getViewPointResource();
 
 	public ViewPointLibrary getViewPointLibrary();
 
@@ -218,14 +218,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			return null;
 		}
 
-		@Override
-		public InformationSpace getInformationSpace() {
-			if (getViewPointLibrary() != null) {
-				return getViewPointLibrary().getServiceManager().getInformationSpace();
-			}
-			return null;
-		}
-
 		/**
 		 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 		 * The container is the {@link ResourceData} of this object.<br>
@@ -256,6 +248,22 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		}
 
 		@Override
+		public ViewPointResource getViewPointResource() {
+			if (getViewPoint() != null) {
+				return (ViewPointResource) getViewPoint().getResource();
+			}
+			return null;
+		}
+
+		@Override
+		public synchronized void setIsModified() {
+			super.setIsModified();
+			fmlRepresentation = null;
+			getPropertyChangeSupport().firePropertyChange("fMLRepresentation", false, true);
+			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);
+		}
+
+		@Override
 		public final void setChanged() {
 			super.setChanged();
 			if (getResourceData() != null) {
@@ -270,9 +278,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 					getPropertyChangeSupport().firePropertyChange(dataBinding.getBindingName(), null, dataBinding);
 				}
 			}
-			if (getResourceData() != null) {
+			setIsModified();
+			/*if (getResourceData() != null) {
 				getResourceData().setIsModified();
-			}
+			}*/
 		}
 
 		@Override
@@ -308,9 +317,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		@Override
 		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
+		private String fmlRepresentation;
+
 		@Override
 		public final String getFMLRepresentation() {
-			return getFMLRepresentation(new FMLRepresentationContext());
+			if (fmlRepresentation == null) {
+				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
+			}
+			return fmlRepresentation;
 		}
 
 		@Override
@@ -399,8 +413,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 		}
 	}
 
-	public static abstract class BindingIsRequiredAndMustBeValid<C extends FMLObject> extends
-			ValidationRule<BindingIsRequiredAndMustBeValid<C>, C> {
+	public static abstract class BindingIsRequiredAndMustBeValid<C extends FMLObject>
+			extends ValidationRule<BindingIsRequiredAndMustBeValid<C>, C> {
 		public BindingIsRequiredAndMustBeValid(String ruleName, Class<C> clazz) {
 			super(clazz, ruleName);
 		}
@@ -412,7 +426,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			DataBinding<?> b = getBinding(object);
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<C>(this, object);
-			} else if (!b.isValid()) {
+			}
+			else if (!b.isValid()) {
 				FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 						+ ". Reason: " + b.invalidBindingReason());
 				return new InvalidRequiredBindingIssue<C>(this, object);
@@ -423,8 +438,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			return null;
 		}
 
-		public static class UndefinedRequiredBindingIssue<C extends FMLObject> extends
-				ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+		public static class UndefinedRequiredBindingIssue<C extends FMLObject>
+				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public UndefinedRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
@@ -445,11 +460,18 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Ab
 			}
 		}
 
-		public static class InvalidRequiredBindingIssue<C extends FMLObject> extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
+		public static class InvalidRequiredBindingIssue<C extends FMLObject>
+				extends ValidationError<BindingIsRequiredAndMustBeValid<C>, C> {
 
 			public InvalidRequiredBindingIssue(BindingIsRequiredAndMustBeValid<C> rule, C anObject,
 					FixProposal<BindingIsRequiredAndMustBeValid<C>, C>... fixProposals) {
-				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid: ($binding)", fixProposals);
+				super(rule, anObject, "binding_'($binding.bindingName)'_is_required_but_value_is_invalid: ($binding)", fixProposals);
+
+				/*System.out.println("InvalidRequiredBindingIssue:");
+				System.out.println("object: " + anObject);
+				System.out.println(anObject.getFMLRepresentation());
+				System.out.println("binding=" + rule.getBinding(anObject));
+				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());*/
 			}
 
 			public DataBinding<?> getBinding() {

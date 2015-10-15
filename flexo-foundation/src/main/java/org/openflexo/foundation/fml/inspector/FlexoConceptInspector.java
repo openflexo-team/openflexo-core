@@ -56,6 +56,7 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
+import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -124,6 +125,11 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
 
+	@Finder(collection = ENTRIES_KEY, attribute = InspectorEntry.NAME_KEY)
+	public InspectorEntry getEntry(String name);
+
+	public String getAvailableEntryName(String baseName);
+
 	public TextFieldInspectorEntry createNewTextField();
 
 	public TextAreaInspectorEntry createNewTextArea();
@@ -132,7 +138,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public CheckboxInspectorEntry createNewCheckbox();
 
-	public IndividualInspectorEntry createNewIndividual();
+	/*public IndividualInspectorEntry createNewIndividual();
 
 	public ClassInspectorEntry createNewClass();
 
@@ -140,7 +146,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 
 	public ObjectPropertyInspectorEntry createNewObjectProperty();
 
-	public DataPropertyInspectorEntry createNewDataProperty();
+	public DataPropertyInspectorEntry createNewDataProperty();*/
 
 	public InspectorEntry deleteEntry(InspectorEntry entry);
 
@@ -236,6 +242,17 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		}*/
 
 		@Override
+		public String getAvailableEntryName(String baseName) {
+			String testName = baseName;
+			int index = 2;
+			while (getEntry(testName) != null) {
+				testName = baseName + index;
+				index++;
+			}
+			return testName;
+		}
+
+		@Override
 		public TextFieldInspectorEntry createNewTextField() {
 			TextFieldInspectorEntry newEntry = getFMLModelFactory().newTextFieldInspectorEntry();
 			newEntry.setName("textfield");
@@ -271,7 +288,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			return newEntry;
 		}
 
-		@Override
+		/*@Override
 		public IndividualInspectorEntry createNewIndividual() {
 			IndividualInspectorEntry newEntry = getFMLModelFactory().newIndividualInspectorEntry();
 			newEntry.setName("individual");
@@ -314,7 +331,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			// newEntry.setLabel("class");
 			addToEntries(newEntry);
 			return newEntry;
-		}
+		}*/
 
 		/*
 		 * public FlexoObjectInspectorEntry createNewFlexoObject() {

@@ -51,7 +51,8 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.FetchRequestIterationActionBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
@@ -153,7 +154,8 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			if (fetchRequest != null) {
 				fetchRequest.setActionContainer(this);
 				fetchRequest.setEmbeddingIteration(this);
-			} else {
+			}
+			else {
 				logger.warning("INVESTIGATE : Setting a Null FetchRequest");
 			}
 		}
@@ -171,11 +173,11 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			BindingModel returned = super.buildInferedBindingModel();
 			returned.addToBindingVariables(new BindingVariable(getIteratorName(), getItemType()) {
 				@Override
-				public Object getBindingValue(Object target, BindingEvaluationContext context) {
+				public Object getBindingValue(Object target, RunTimeEvaluationContext context) {
 					logger.info("What should i return for " + getIteratorName() + " ? target " + target + " context=" + context);
 					return super.getBindingValue(target, context);
 				}
-
+		
 				@Override
 				public Type getType() {
 					return getItemType();
@@ -184,24 +186,34 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			return returned;
 		}*/
 
-		private List<?> fetchItems(FlexoBehaviourAction action) throws FlexoException {
+		private List<?> fetchItems(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			if (getFetchRequest() != null) {
-				return getFetchRequest().execute(action);
+				try {
+					return getFetchRequest().execute(evaluationContext);
+				} catch (ReturnException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return Collections.emptyList();
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) throws FlexoException {
-			List<?> items = fetchItems(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			List<?> items = fetchItems(evaluationContext);
 			if (items != null) {
 				for (Object item : items) {
-					action.declareVariable(getIteratorName(), item);
-					getControlGraph().execute(action);
+					evaluationContext.declareVariable(getIteratorName(), item);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						return e.getReturnedValue();
+					}
 					// performBatchOfActions(getActions(), action);
 				}
 			}
-			action.dereferenceVariable(getIteratorName());
+			evaluationContext.dereferenceVariable(getIteratorName());
 			return null;
 		}
 
@@ -296,6 +308,22 @@ public interface FetchRequestIterationAction extends ControlStructureAction, FML
 			/*if (getIterationAction() != null) {
 				getIterationAction().getBindingModel().setBaseBindingModel(getBaseBindingModel(getIterationAction()));
 			}*/
+		}
+
+		@Override
+		public Type getInferedType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.class;
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getControlGraph() != null) {
+				getControlGraph().accept(visitor);
+			}
 		}
 
 	}

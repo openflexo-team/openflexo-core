@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -52,6 +53,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link GetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using a typed control graph<br>
@@ -86,11 +88,11 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Getter(value = TYPE_KEY, ignoreType = true)
 	@XMLAttribute
 	public Type getType();
-
+	
 	@Setter(TYPE_KEY)
 	public void setType(Type type);*/
 
-	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T> implements GetProperty<T> {
+	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T>implements GetProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
@@ -111,10 +113,10 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 
 		@Override
 		public Type getType() {
-			/*if (getGetControlGraph() != null) {
-				return getGetControlGraph().get
-			}*/
-			return Object.class;
+			if (getGetControlGraph() != null) {
+				return getGetControlGraph().getInferedType();
+			}
+			return Void.class;
 		}
 
 		@Override
@@ -128,6 +130,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				aControlGraph.setOwnerContext(GET_CONTROL_GRAPH_KEY);
 			}
 			performSuperSetter(GET_CONTROL_GRAPH_KEY, aControlGraph);
+			getPropertyChangeSupport().firePropertyChange("type", null, getType());
 		}
 
 		@Override
@@ -156,6 +159,22 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 			if (getGetControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getGetControlGraph()).reduce();
 			}
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + " get={",
+					context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getGetControlGraph() != null) {
+				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("};", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+
+			return out.toString();
 		}
 
 	}

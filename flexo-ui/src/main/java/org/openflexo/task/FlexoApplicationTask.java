@@ -40,9 +40,9 @@ package org.openflexo.task;
 
 import javax.swing.SwingUtilities;
 
-import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -54,22 +54,41 @@ import org.openflexo.view.controller.FlexoController;
  */
 public abstract class FlexoApplicationTask extends FlexoTask {
 
-	private final FlexoService service;
+	private final FlexoServiceManager serviceManager;
 
-	public FlexoApplicationTask(String title, FlexoService service) {
+	public FlexoApplicationTask(String title, FlexoServiceManager serviceManager) {
 		super(title);
-		this.service = service;
-	}
-
-	public FlexoService getService() {
-		return service;
+		this.serviceManager = serviceManager;
 	}
 
 	public FlexoServiceManager getServiceManager() {
-		if (getService() != null) {
-			return getService().getServiceManager();
+		return serviceManager;
+	}
+
+	/**
+	 * Final run method<br>
+	 * Please implement performTask()
+	 * 
+	 */
+	@Override
+	public final void run() {
+		try {
+			CompoundEdit taskCompoundEdit = null;
+			if (getServiceManager() != null) {
+				if (!getServiceManager().getEditingContext().getUndoManager().isBeeingRecording()) {
+					taskCompoundEdit = getServiceManager().getEditingContext().getUndoManager().startRecording(getTaskTitle());
+				}
+			}
+			performTask();
+			if (getServiceManager() != null && taskCompoundEdit != null) {
+				getServiceManager().getEditingContext().getUndoManager().stopRecording(taskCompoundEdit);
+			}
+		} catch (InterruptedException e) {
+			System.out.println("Tiens, je choppe bien l'interruption");
+		} catch (Exception e) {
+			throwException(e);
 		}
-		return null;
+
 	}
 
 	@Override

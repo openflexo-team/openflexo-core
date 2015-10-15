@@ -45,8 +45,8 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a VirtualModel
@@ -108,14 +108,15 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 
 	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewPoint(ViewPointResource viewPoint) {
-		System.out.println("Setting viewpoint with " + viewPoint);
+		// System.out.println("Setting viewpoint with " + viewPoint);
 		this.viewPoint = viewPoint;
 	}
 
 	public FlexoObject getRootObject() {
 		if (getViewPoint() != null) {
 			return getViewPoint();
-		} else {
+		}
+		else {
 			return getViewPointLibrary();
 		}
 	}
@@ -133,12 +134,12 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

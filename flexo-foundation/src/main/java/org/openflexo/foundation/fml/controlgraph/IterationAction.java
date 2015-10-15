@@ -52,7 +52,8 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.IterationActionBindingModel;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -96,6 +97,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 	@Getter(value = ITERATION_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "Iteration_")
+	@Embedded
 	public AssignableAction<? extends List<?>> getIterationAction();
 
 	@Setter(ITERATION_CONTROL_GRAPH_KEY)
@@ -215,11 +217,11 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			BindingModel returned = super.buildInferedBindingModel();
 			returned.addToBindingVariables(new BindingVariable(getIteratorName(), getItemType()) {
 				@Override
-				public Object getBindingValue(Object target, BindingEvaluationContext context) {
+				public Object getBindingValue(Object target, RunTimeEvaluationContext context) {
 					logger.info("What should i return for " + getIteratorName() + " ? target " + target + " context=" + context);
 					return super.getBindingValue(target, context);
 				}
-
+		
 				@Override
 				public Type getType() {
 					return getItemType();
@@ -228,8 +230,12 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			return returned;
 		}*/
 
-		public List<?> evaluateIteration(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
-			return getIterationAction().execute(action);
+		public List<?> evaluateIteration(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			try {
+				return getIterationAction().execute(evaluationContext);
+			} catch (ReturnException e) {
+				return (List<?>) e.getReturnedValue();
+			}
 			/*if (getIteration().isValid()) {
 				try {
 					return getIteration().getBindingValue(action);
@@ -245,26 +251,31 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction action) throws FlexoException {
-			List<?> items = evaluateIteration(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+			List<?> items = evaluateIteration(evaluationContext);
 			if (items != null) {
 				for (Object item : items) {
 					// System.out.println("> working with " + getIteratorName() + "=" + item);
-					action.declareVariable(getIteratorName(), item);
-					getControlGraph().execute(action);
+					evaluationContext.declareVariable(getIteratorName(), item);
+					try {
+						getControlGraph().execute(evaluationContext);
+					} catch (ReturnException e) {
+						evaluationContext.dereferenceVariable(getIteratorName());
+						throw e;
+					}
 				}
+				evaluationContext.dereferenceVariable(getIteratorName());
 			}
-			action.dereferenceVariable(getIteratorName());
 			return null;
 		}
 
 		@Override
 		public String getStringRepresentation() {
 			// NPE Protection when action has been deleted e.g.
-			if (getIterationAction() != null){
+			if (getIterationAction() != null) {
 				return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
 			}
-			else 
+			else
 				return "NULL ITERATION ACTION";
 		}
 
@@ -299,7 +310,8 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getControlGraph();
-			} else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getIterationAction();
 			}
 			return null;
@@ -310,7 +322,8 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 
 			if (CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setControlGraph(controlGraph);
-			} else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ITERATION_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setIterationAction((AssignableAction<List<?>>) controlGraph);
 			}
 		}
@@ -336,7 +349,8 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			if (controlGraph == getControlGraph()) {
 				return getInferedBindingModel();
 				// return getControlGraph().getBindingModel();
-			} else if (controlGraph == getIterationAction()) {
+			}
+			else if (controlGraph == getIterationAction()) {
 				return getBindingModel();
 			}
 			logger.warning("Unexpected control graph: " + controlGraph);
@@ -362,11 +376,27 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 			}
 		}
 
+		@Override
+		public Type getInferedType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.class;
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getControlGraph() != null) {
+				getControlGraph().accept(visitor);
+			}
+		}
+
 	}
 
 	@DefineValidationRule
-	public static class IterationActionMustDefineAValidIteration extends
-	ValidationRule<IterationActionMustDefineAValidIteration, IterationAction> {
+	public static class IterationActionMustDefineAValidIteration
+			extends ValidationRule<IterationActionMustDefineAValidIteration, IterationAction> {
 		public IterationActionMustDefineAValidIteration() {
 			super(IterationAction.class, "iteration_action_must_define_a_valid_iteration");
 		}
@@ -381,6 +411,7 @@ public interface IterationAction extends ControlStructureAction, FMLControlGraph
 				return new ValidationError<IterationActionMustDefineAValidIteration, IterationAction>(this, action,
 						"iteration_action_is_not_iterable");
 			}
+
 			return null;
 		}
 

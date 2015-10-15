@@ -64,7 +64,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
  * Provides access to the {@link VirtualModelInstance}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoConceptInstance}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoConceptInstance}
  * 
  * 
  * @author sylvain

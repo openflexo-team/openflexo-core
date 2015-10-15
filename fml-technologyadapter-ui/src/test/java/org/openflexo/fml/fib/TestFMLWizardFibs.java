@@ -101,13 +101,18 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeFlexoBehaviourParameter() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoBehaviourParameter.fib");
+	}
+
+	@Test
 	public void testDescribeFlexoConcept() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConcept.fib");
 	}
 
 	@Test
-	public void testDescribeFlexoRole() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib");
+	public void testDescribeFlexoConceptInstanceRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConceptInstanceRole.fib");
 	}
 
 	@Test
@@ -116,8 +121,28 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeIndividualRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeIndividualRole.fib");
+	}
+
+	@Test
+	public void testDescribeInspectorEntry() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeInspectorEntry.fib");
+	}
+
+	@Test
 	public void testDescribeModelSlot() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
+	}
+
+	@Test
+	public void testDescribePrimitiveRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribePrimitiveRole.fib");
+	}
+
+	@Test
+	public void testDescribeTechnologyRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib");
 	}
 
 	@Test
@@ -128,6 +153,11 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	@Test
 	public void testDescribeVirtualModel() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeVirtualModel.fib");
+	}
+
+	@Test
+	public void testChooseOption() {
+		validateFIB("Fib/Wizard/DeclareInFlexoConcept/ChooseOption.fib");
 	}
 
 	@Test

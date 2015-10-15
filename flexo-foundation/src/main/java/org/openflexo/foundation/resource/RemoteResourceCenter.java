@@ -57,7 +57,7 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 // TODO
-public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>> implements FlexoResourceCenter {
+public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResource<?>>implements FlexoResourceCenter {
 
 	protected static final Logger logger = Logger.getLogger(RemoteResourceCenter.class.getPackage().getName());
 
@@ -85,8 +85,8 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 
 	}
 
-	public RemoteResourceCenter(Object owner) {
-		super(owner);
+	public RemoteResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		super(resourceCenter);
 	}
 
 	public String getURL() {
@@ -112,12 +112,12 @@ public abstract class RemoteResourceCenter extends ResourceRepository<FlexoResou
 		}
 		return entry;
 	}
-	
+
 	/**
 	 * Stops the Resource Center (When needed)
 	 */
 	@Override
-	public void stop(){
+	public void stop() {
 		logger.warning("STOP method needs to be implemented for RemoteResourceCenters");
 	}
 

@@ -13,5 +13,5 @@
     <Localized key="Advanced" lang="French" value="Avancé" />
     <Localized key="Basic" lang="French" value="Basique" />
   </LocalizedDictionary>
-  <Parameter name="title" value="Edition Pattern Instance Pattern Role" />
+  <Parameter name="title" value="Flexo Concept Instance Role" />
 </Panel>

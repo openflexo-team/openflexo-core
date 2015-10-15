@@ -72,7 +72,7 @@ public class NewProjectTask extends FlexoApplicationTask {
 	}
 
 	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
-		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader);
+		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.projectNature = projectNature;
@@ -104,8 +104,8 @@ public class NewProjectTask extends FlexoApplicationTask {
 		}
 
 		try {
-			flexoEditor = FlexoProject.newProject(projectDirectory, projectNature, projectLoader.getServiceManager(),
-					projectLoader.getServiceManager(), null);
+			flexoEditor = FlexoProject.newProject(projectDirectory, projectLoader.getServiceManager(), projectLoader.getServiceManager(),
+					null);
 		} catch (ProjectInitializerException e) {
 			throwException(e);
 		}
@@ -114,6 +114,12 @@ public class NewProjectTask extends FlexoApplicationTask {
 
 		// Notify project just loaded
 		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
+
+		// Now, if a nature has been supplied, gives this nature to the project
+		if (projectNature != null) {
+			projectNature.givesNature(flexoEditor.getProject(), flexoEditor);
+		}
+
 	}
 
 	public FlexoEditor getFlexoEditor() {

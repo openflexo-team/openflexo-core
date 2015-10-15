@@ -105,7 +105,8 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 			if (getExpression() == null || !getExpression().isSet()) {
 				setIssueMessage(NO_EXPRESSION, IssueMessageType.ERROR);
 				return false;
-			} else if (getExpression() != null && getExpression().isSet() && !getExpression().isValid()) {
+			}
+			else if (getExpression() != null && getExpression().isSet() && !getExpression().isValid()) {
 				setIssueMessage(INVALID_EXPRESSION, IssueMessageType.ERROR);
 				return false;
 			}
@@ -146,10 +147,16 @@ public class CreateExpressionPropertyWizard extends AbstractCreateFlexoPropertyW
 			return getAction().getFlexoConcept().getBindingFactory();
 		}
 
+		private boolean isNotifying = false;
+
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			System.out.println("Hop, le binding a change pour " + dataBinding);
+			if (isNotifying) {
+				return;
+			}
+			isNotifying = true;
 			getPropertyChangeSupport().firePropertyChange("expression", null, getExpression());
+			isNotifying = false;
 			checkValidity();
 		}
 

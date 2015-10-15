@@ -71,6 +71,12 @@ import org.openflexo.toolbox.FileUtils;
  */
 public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCase {
 
+	/**
+	 * !!!!! IMPORTANT !!!!!<br>
+	 * Do not forget to set back this flag to true when committing into a production environment
+	 */
+	public static final boolean DELETE_PROJECT_AFTER_TEST_EXECUTION = false;
+
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoProjectAtRunTimeTestCase.class.getPackage().getName());
 
 	protected static FlexoEditor _editor;
@@ -90,20 +96,24 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 	@AfterClass
 	public static void tearDownClass() {
+		deleteProject();
+		deleteTestResourceCenters();
+		unloadServiceManager();
+	}
+
+	protected static void deleteProject() {
 		if (_project != null) {
 			_project.close();
 		}
-		if (serviceManager != null){
-			serviceManager.stopAllServices();
-		}
-		if (_projectDirectory != null) {
-			FileUtils.deleteDir(_projectDirectory);
+		if (DELETE_PROJECT_AFTER_TEST_EXECUTION) {
+			if (_projectDirectory != null) {
+				FileUtils.deleteDir(_projectDirectory);
+			}
 		}
 		_editor = null;
 		_projectDirectory = null;
 		_project = null;
-
-
+		_projectIdentifier = null;
 	}
 
 	protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {
@@ -136,12 +146,12 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	// TODO: copy all test VP in tmp dir and work with those VP instead of polling GIT workspace
 	/*protected static FlexoServiceManager instanciateTestServiceManager() {
 		serviceManager = new DefaultFlexoServiceManager() {
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return new FlexoTestEditor(null, this);
 			}
-
+	
 			@Override
 			protected FlexoResourceCenterService createResourceCenterService() {
 				File tempFile;
@@ -158,7 +168,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 					fail();
 					return null;
 				}
-
+	
 			}
 		};
 		return serviceManager;
@@ -208,7 +218,10 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 
 		FlexoEditor reply;
 		try {
-			reply = FlexoProject.newProject(_projectDirectory, nature, EDITOR_FACTORY, serviceManager, null);
+			reply = FlexoProject.newProject(_projectDirectory, EDITOR_FACTORY, serviceManager, null);
+			if (nature != null) {
+				nature.givesNature(reply.getProject(), reply);
+			}
 		} catch (ProjectInitializerException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -245,8 +258,8 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 	protected FlexoEditor reloadProject(File prjDir) {
 		try {
 			FlexoEditor anEditor = null;
-			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY,
-			/*new DefaultProjectLoadingHandler(),*/serviceManager, null));
+			assertNotNull(anEditor = FlexoProject.openProject(prjDir, EDITOR_FACTORY, /*new DefaultProjectLoadingHandler(),*/
+					serviceManager, null));
 			// The next line is really a trouble maker and eventually causes more problems than solutions. FlexoProject can't be renamed on
 			// the fly
 			// without having a severe impact on many resources and importer projects. I therefore now comment this line which made me lost

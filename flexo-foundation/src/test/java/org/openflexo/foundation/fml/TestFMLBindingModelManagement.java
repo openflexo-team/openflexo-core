@@ -71,8 +71,8 @@ import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
@@ -160,7 +160,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(2)
 	public void testCreateViewPoint() {
 		viewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
-				serviceManager.getViewPointLibrary());
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((ViewPointResource) viewPoint.getResource()).getFile().exists());
 		assertTrue(((ViewPointResource) viewPoint.getResource()).getDirectory() != null);
@@ -287,21 +287,18 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(5)
 	public void testFlexoRoleBindingModelManagement() throws SaveResourceException {
 
-		CreateFlexoRole createPR1 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aStringInA");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBooleanInA");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anIntegerInA");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
@@ -402,18 +399,16 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		addFlexoConceptC.doAction();
 		flexoConceptC = addFlexoConceptC.getNewFlexoConcept();
 
-		CreateFlexoRole createRoleInFlexoConceptB = CreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createRoleInFlexoConceptB = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createRoleInFlexoConceptB.setRoleName("aStringInB");
-		createRoleInFlexoConceptB.setFlexoRoleClass(PrimitiveRole.class);
 		createRoleInFlexoConceptB.setPrimitiveType(PrimitiveType.String);
 		createRoleInFlexoConceptB.doAction();
 
 		assertEquals(1, flexoConceptB.getFlexoProperties().size());
 		assertTrue(flexoConceptB.getFlexoProperties().contains(createRoleInFlexoConceptB.getNewFlexoRole()));
 
-		CreateFlexoRole createRoleInFlexoConceptC = CreateFlexoRole.actionType.makeNewAction(flexoConceptC, null, editor);
+		CreatePrimitiveRole createRoleInFlexoConceptC = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptC, null, editor);
 		createRoleInFlexoConceptC.setRoleName("aStringInC");
-		createRoleInFlexoConceptC.setFlexoRoleClass(PrimitiveRole.class);
 		createRoleInFlexoConceptC.setPrimitiveType(PrimitiveType.String);
 		createRoleInFlexoConceptC.doAction();
 
@@ -505,9 +500,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aRenamedStringInB").getType());
 
 		// We now try to add a FlexoRole in FlexoConceptB
-		CreateFlexoRole createRoleInFlexoConceptB2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptB, null, editor);
+		CreatePrimitiveRole createRoleInFlexoConceptB2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptB, null, editor);
 		createRoleInFlexoConceptB2.setRoleName("anOtherStringInB");
-		createRoleInFlexoConceptB2.setFlexoRoleClass(PrimitiveRole.class);
 		createRoleInFlexoConceptB2.setPrimitiveType(PrimitiveType.String);
 		createRoleInFlexoConceptB2.doAction();
 
@@ -554,9 +548,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(12, flexoConceptD.getBindingModel().getBindingVariablesCount());
 
 		// add property in FlexoConceptA
-		CreateFlexoRole createOtherBooleanInA = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createOtherBooleanInA = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createOtherBooleanInA.setRoleName("anOtherBooleanInA");
-		createOtherBooleanInA.setFlexoRoleClass(PrimitiveRole.class);
 		createOtherBooleanInA.setPrimitiveType(PrimitiveType.Boolean);
 		createOtherBooleanInA.doAction();
 
@@ -632,9 +625,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// VirtualModel should have two FMLRTModelSlot
 		assertEquals(2, virtualModel3.getModelSlots(FMLRTModelSlot.class).size());
 
-		CreateFlexoRole createRoleInVM3 = CreateFlexoRole.actionType.makeNewAction(virtualModel3, null, editor);
+		CreatePrimitiveRole createRoleInVM3 = CreatePrimitiveRole.actionType.makeNewAction(virtualModel3, null, editor);
 		createRoleInVM3.setRoleName("aStringInVM3");
-		createRoleInVM3.setFlexoRoleClass(PrimitiveRole.class);
 		createRoleInVM3.setPrimitiveType(PrimitiveType.String);
 		createRoleInVM3.doAction();
 
@@ -924,7 +916,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("valid=" + ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 		System.out.println("reason="
 				+ ((ExpressionAction) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().invalidBindingReason());
-
+		
 		System.out.println("viewpoint1=" + declareFlexoRoleInIteration2.getAssignableAction().getViewPoint());
 		System.out.println("viewpoint2=" + declareFlexoRoleInIteration2.getViewPoint());
 		System.out.println("getBindingFactory=" + declareFlexoRoleInIteration2.getBindingFactory());*/
@@ -1065,6 +1057,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
 				.getNewEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
 		condition1.setCondition(new DataBinding<Boolean>("selected.aBooleanInA = parameters.aBoolean"));
@@ -1159,6 +1152,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		/*CreateEditionAction createFetchRequest = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration.getControlGraph(),
@@ -1168,7 +1162,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createFetchRequest.doAction();
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createFetchRequest.getNewEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-
+		
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);*/
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
@@ -1311,6 +1305,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
@@ -1327,6 +1322,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		MatchFlexoConceptInstance matchFlexoConceptInstance = (MatchFlexoConceptInstance) createMatchFlexoConceptInstanceAction
 				.getNewEditionAction();
 		matchFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
+		matchFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
@@ -1407,9 +1403,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// We add a property
 		// We check here that matching criterias were updated: an other criteria should appear
 
-		CreateFlexoRole createRole = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createRole = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createRole.setRoleName("anOtherIntegerInA");
-		createRole.setFlexoRoleClass(PrimitiveRole.class);
 		createRole.setPrimitiveType(PrimitiveType.Integer);
 		createRole.doAction();
 		FlexoRole newRole = createRole.getNewFlexoRole();

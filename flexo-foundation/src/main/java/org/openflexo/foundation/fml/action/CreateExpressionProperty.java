@@ -148,7 +148,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 				newExpressionProperty.setPropertyName(getPropertyName());
 				newExpressionProperty.setExpression((DataBinding) getExpression());
 
-				super.doAction(context);
+				finalizeDoAction(context);
 			}
 		}
 

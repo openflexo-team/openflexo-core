@@ -39,10 +39,10 @@
 package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InnerResourceData;
@@ -85,7 +85,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @XMLElement
 // TODO: View should inherit from VirtualModelInstance
 public interface View extends ViewObject, ResourceData<View>, InnerResourceData<View>, FlexoModel<View, ViewPoint>,
-		TechnologyObject<FMLRTTechnologyAdapter>, BindingEvaluationContext {
+		TechnologyObject<FMLRTTechnologyAdapter>, RunTimeEvaluationContext {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIEW_POINT_URI_KEY = "viewPointURI";
@@ -126,13 +126,13 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 	/*@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST)
 	@XMLElement
 	public List<ModelSlotInstance> getModelSlotInstances();
-
+	
 	@Setter(MODEL_SLOT_INSTANCES_KEY)
 	public void setModelSlotInstances(List<ModelSlotInstance> modelSlotInstances);
-
+	
 	@Adder(MODEL_SLOT_INSTANCES_KEY)
 	public void addToModelSlotInstances(ModelSlotInstance aModelSlotInstance);
-
+	
 	@Remover(MODEL_SLOT_INSTANCES_KEY)
 	public void removeFromModelSlotInstance(ModelSlotInstance aModelSlotInstance);*/
 
@@ -187,6 +187,9 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 		private String title;
 
+		// Stores internal variables used during execution
+		protected HashMap<String, Object> variables;
+
 		// TODO: move this to ViewResource
 		public static View newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
 				FlexoProject project) throws SaveResourceException {
@@ -223,6 +226,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			super();
 			// vmInstances = new ArrayList<VirtualModelInstance>();
 			modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
+			variables = new HashMap<String, Object>();
 		}
 
 		/*public ViewImpl(FlexoProject project, ViewResource resource) {
@@ -237,7 +241,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			logger.info("Created new view with project " + project);
 			vmInstances = new ArrayList<VirtualModelInstance>();
 			modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-
+		
 		}*/
 
 		/*@Override
@@ -391,7 +395,8 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				} else {
+				}
+				else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -426,16 +431,16 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		/*public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
 			this.modelSlotInstances = instances;
 		}
-
+		
 		@Override
 		public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 			return modelSlotInstances;
 		}
-
+		
 		public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
 			modelSlotInstances.remove(instance);
 		}
-
+		
 		public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
 			modelSlotInstances.add(instance);
 		}*/
@@ -452,7 +457,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			instance.setModel(model);
 			modelSlotInstances.add(instance);
 		}
-
+		
 		public <M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> M getModel(ModelSlot modelSlot, boolean createIfDoesNotExist) {
 			M model = (M) modelsMap.get(modelSlot);
 			if (createIfDoesNotExist && model == null) {
@@ -477,7 +482,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 			return model;
 		}
-
+		
 		public <M extends FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>> M getModel(ModelSlot modelSlot) {
 			return getModel(modelSlot, true);
 		}*/
@@ -493,7 +498,7 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			}
 			return allMetaModels;
 		}
-
+		
 		@Deprecated
 		public Set<FlexoModel<?, ?>> getAllModels() {
 			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
@@ -577,16 +582,6 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 		}
 
 		@Override
-		public Object getValue(BindingVariable variable) {
-			if (variable.getVariableName().equals(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
-				return getViewPoint();
-			}
-
-			logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
-			return null;
-		}
-
-		@Override
 		public ViewPoint getMetaModel() {
 			return getViewPoint();
 		}
@@ -596,5 +591,66 @@ public interface View extends ViewObject, ResourceData<View>, InnerResourceData<
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		/**
+		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
+		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
+		 * Variable is initialized with supplied name and value
+		 * 
+		 * @param variableName
+		 * @param value
+		 */
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public void declareVariable(String variableName, Object value) {
+			variables.put(variableName, value);
+		}
+
+		/**
+		 * Calling this method will dereference variable identified by supplied name
+		 * 
+		 * @param variableName
+		 */
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public void dereferenceVariable(String variableName) {
+			variables.remove(variableName);
+		}
+
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public FlexoConceptInstance getFlexoConceptInstance() {
+			return null;
+		}
+
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public VirtualModelInstance getVirtualModelInstance() {
+			return null;
+		}
+
+		@Override
+		public Object getValue(BindingVariable variable) {
+			if (variable.getVariableName().equals(ViewPointBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+				return getViewPoint();
+			}
+
+			// TODO: do it when View will be a VirtualModelInstance !!!!
+			/*else if (variable instanceof FlexoPropertyBindingVariable) {
+				return ((FlexoPropertyBindingVariable) variable).getValue(this);
+			}*/
+
+			logger.warning("Unexpected variable requested in View: " + variable + " of " + variable.getClass());
+			Thread.dumpStack();
+			return null;
+		}
+
+		// TODO remove implementation when View will be a VirtualModelInstance !!!
+		@Override
+		public void setValue(Object value, BindingVariable variable) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 }

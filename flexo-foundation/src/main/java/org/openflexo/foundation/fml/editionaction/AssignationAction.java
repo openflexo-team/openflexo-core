@@ -43,11 +43,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -87,11 +88,19 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 	@Override
 	public FlexoProperty<T> getAssignedFlexoProperty();
 
-	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T> implements AssignationAction<T> {
+	public static abstract class AssignationActionImpl<T> extends AbstractAssignationActionImpl<T>implements AssignationAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignationAction.class.getPackage().getName());
 
 		private DataBinding<? super T> assignation;
+
+		private Type getAssignableNotNullType() {
+			Type returned = getAssignableType();
+			if (returned instanceof ExplicitNullType) {
+				return Object.class;
+			}
+			return returned;
+		}
 
 		@Override
 		public DataBinding<? super T> getAssignation() {
@@ -99,15 +108,15 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
 					@Override
 					public Type getDeclaredType() {
-						return getAssignableType();
+						return getAssignableNotNullType();
 					}
 				};
-				assignation.setDeclaredType(getAssignableType());
+				assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 
 			}
-			assignation.setDeclaredType(getAssignableType());
+			assignation.setDeclaredType(getAssignableNotNullType());
 			return assignation;
 		}
 
@@ -118,10 +127,10 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 						DataBinding.BindingDefinitionType.GET_SET) {
 					@Override
 					public Type getDeclaredType() {
-						return getAssignableType();
+						return getAssignableNotNullType();
 					}
 				};
-				assignation.setDeclaredType(getAssignableType());
+				assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 			}
@@ -143,10 +152,10 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction action) throws FlexoException {
-			T value = getAssignationValue(action);
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			T value = getAssignationValue(evaluationContext);
 			try {
-				getAssignation().setBindingValue(value, action);
+				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();

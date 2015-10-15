@@ -39,6 +39,12 @@
 				<RemoveAction method="data.deleteCondition(selected)"
 					name="remove_condition" />
 			</Table>
+			<!--  <Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>-->
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

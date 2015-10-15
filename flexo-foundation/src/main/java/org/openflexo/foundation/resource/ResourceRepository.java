@@ -62,12 +62,13 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>
- * Resources are organized with a folder hierarchy inside a repository
+ * Resources are organized with a folder hierarchy inside a repository<br>
+ * A {@link ResourceRepository} lives in a {@link FlexoResourceCenter}.
  * 
  * @author sylvain
  * 
  * @param <R>
- * @param <TA>
+ *            type of resources being stored in this {@link ResourceRepository}
  */
 public abstract class ResourceRepository<R extends FlexoResource<?>> extends DefaultFlexoObject implements DataFlexoObserver {
 
@@ -80,20 +81,20 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 
 	private final RepositoryFolder<R> rootFolder;
 
-	/** Stores the object which is the "owner" of this repository */
-	private Object owner;
-
-	public RepositoryFolder<R> getRootFolder() {
-		return rootFolder;
-	}
+	/** Stores the resource center which is the "owner" of this repository */
+	private FlexoResourceCenter<?> resourceCenter;
 
 	/**
 	 * Creates a new {@link ResourceRepository}
 	 */
-	public ResourceRepository(Object owner) {
-		this.owner = owner;
+	public ResourceRepository(FlexoResourceCenter<?> resourceCenter) {
+		this.resourceCenter = resourceCenter;
 		resources = new HashMap<String, R>();
 		rootFolder = new RepositoryFolder<R>("root", null, this);
+	}
+
+	public RepositoryFolder<R> getRootFolder() {
+		return rootFolder;
 	}
 
 	/**
@@ -126,10 +127,11 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	}
 
 	/**
-	 * Stores the object which is the "owner" of this repository. The owner has the responsability of this repository.
+	 * Return the object which is the "owner" of this repository.<br>
+	 * The {@link FlexoResourceCenter} as owner has the responsability of this repository.
 	 */
-	public Object getOwner() {
-		return owner;
+	public FlexoResourceCenter<?> getResourceCenter() {
+		return resourceCenter;
 	}
 
 	/**
@@ -137,18 +139,40 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 * 
 	 * @param owner
 	 */
-	public void setOwner(Object owner) {
-		this.owner = owner;
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter) {
+		if ((resourceCenter == null && this.resourceCenter != null)
+				|| (resourceCenter != null && !resourceCenter.equals(this.resourceCenter))) {
+			FlexoResourceCenter<?> oldValue = this.resourceCenter;
+			this.resourceCenter = resourceCenter;
+			getPropertyChangeSupport().firePropertyChange("resourceCenter", oldValue, resourceCenter);
+		}
 	}
 
 	/**
-	 * Return resource with the supplied URI, if this resource was already declared
+	 * Return resource with the supplied URI, if this resource was already declared<br>
+	 * Also implement a scheme to resolve resources from URI whose value has changed since registration
 	 * 
 	 * @param resourceURI
 	 * @return
 	 */
 	public R getResource(String resourceURI) {
-		return resources.get(resourceURI);
+		R returned = resources.get(resourceURI);
+
+		// TODO: perf issue : implement a scheme to avoid another search for an URI that could not be resolved once (unless some other
+		// resources are registered or unregistered)
+
+		// scheme to resolve resources from URI whose value has changed since registration
+		for (String oldURI : new ArrayList<String>(resources.keySet())) {
+			R resource = resources.get(oldURI);
+			if (!oldURI.equals(resource.getURI())) {
+				resources.remove(oldURI);
+				resources.put(resource.getURI(), resource);
+			}
+			if (resource.getURI().equals(resourceURI)) {
+				return resource;
+			}
+		}
+		return returned;
 	}
 
 	/**
@@ -178,9 +202,7 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 			logger.warning("Trying to register a null resource");
 			return;
 		}
-		if (getOwner() instanceof FlexoResourceCenter) {
-			resource.setResourceCenter((FlexoResourceCenter) getOwner());
-		}
+		resource.setResourceCenter(getResourceCenter());
 		resources.put(resource.getURI(), resource);
 		parentFolder.addToResources(resource);
 	}
@@ -258,6 +280,27 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	public Collection<R> getAllResources() {
 		return resources.values();
+	}
+
+	/**
+	 * Return flag indicating if supplied resource is contained in this repository
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	// TODO: perf issue
+	public boolean containsResource(R resource) {
+		return getAllResources().contains(resource);
+	}
+
+	/**
+	 * Return the repository folder where the resource is registered
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public RepositoryFolder<R> getRepositoryFolder(R resource) {
+		return getRootFolder().getRepositoryFolder(resource);
 	}
 
 	@Override
@@ -350,7 +393,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 		List<String> pathTo = null;
 		if (element instanceof File) {
 			pathTo = getPathTo((File) element);
-		} else if (element instanceof InJarResourceImpl) {
+		}
+		else if (element instanceof InJarResourceImpl) {
 			pathTo = getPathTo((InJarResourceImpl) element);
 		}
 		return getRepositoryFolder(pathTo, createWhenNonExistent);
@@ -372,7 +416,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 				f = f.getParentFile();
 			}
 			return pathTo;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -392,7 +437,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 				pathTo.add(string.nextToken());
 			}
 			return pathTo;
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -414,7 +460,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 					if (createWhenNonExistent) {
 						RepositoryFolder<R> newFolder = new RepositoryFolder<R>(pathElement, returned, this);
 						currentFolder = newFolder;
-					} else {
+					}
+					else {
 						return null;
 					}
 				}
@@ -431,8 +478,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	@SuppressWarnings("unchecked")
 	public final Class<?> getResourceClass() {
-		return org.openflexo.connie.type.TypeUtils.getBaseClass(TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(
-				ResourceRepository.class.getTypeParameters()[0]));
+		return org.openflexo.connie.type.TypeUtils.getBaseClass(
+				TypeUtils.getTypeArguments(getClass(), ResourceRepository.class).get(ResourceRepository.class.getTypeParameters()[0]));
 	}
 
 	/**
@@ -442,8 +489,8 @@ public abstract class ResourceRepository<R extends FlexoResource<?>> extends Def
 	 */
 	@SuppressWarnings("unchecked")
 	public final Class<? extends ResourceData<?>> getResourceDataClass() {
-		return (Class<? extends ResourceData<?>>) TypeUtils.getTypeArguments(getResourceClass(), FlexoResource.class).get(
-				FlexoResource.class.getTypeParameters()[0]);
+		return (Class<? extends ResourceData<?>>) TypeUtils.getTypeArguments(getResourceClass(), FlexoResource.class)
+				.get(FlexoResource.class.getTypeParameters()[0]);
 	}
 
 }

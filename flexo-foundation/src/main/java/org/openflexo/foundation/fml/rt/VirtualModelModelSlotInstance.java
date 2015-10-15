@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
@@ -54,8 +53,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
- * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link VirtualModelInstance} conform to a given
- * {@link VirtualModel}<br>
+ * Concretize the binding of a {@link FMLRTModelSlot} to a concrete {@link VirtualModelInstance} conform to a given {@link VirtualModel}<br>
  * 
  * @author Sylvain Guerin
  * @see FMLRTModelSlot
@@ -76,8 +74,8 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTMo
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl extends
-			ModelSlotInstanceImpl<FMLRTModelSlot, VirtualModelInstance> implements VirtualModelModelSlotInstance {
+	public static abstract class VirtualModelModelSlotInstanceImpl extends ModelSlotInstanceImpl<FMLRTModelSlot, VirtualModelInstance>
+			implements VirtualModelModelSlotInstance {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
@@ -105,13 +103,15 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTMo
 				VirtualModelInstanceResource vmiResource;
 				if (getProject() != null) {
 					vmiResource = getProject().getViewLibrary().getVirtualModelInstance(getVirtualModelInstanceURI());
-				} else {
+				}
+				else {
 					vmiResource = getVirtualModelInstance().getView().getProject().getViewLibrary()
 							.getVirtualModelInstance(getVirtualModelInstanceURI());
 				}
 				if (vmiResource != null) {
 					accessedResourceData = vmiResource.getVirtualModelInstance();
-					resource = vmiResource;
+					setResource(vmiResource, false);
+					// resource = vmiResource;
 				}
 			}
 			// Special case to handle reflexive model slots

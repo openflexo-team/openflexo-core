@@ -95,7 +95,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 		if (evaluateCondition()) {
 			// If target diagram is not existant, we must create it
 			if (getTargetObject() == null) {
-				applyEditionActions();
+				executeControlGraph();
 			}
 		}
 	}

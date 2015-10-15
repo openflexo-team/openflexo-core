@@ -72,7 +72,7 @@ import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.task.LongRunningActionTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
@@ -148,34 +148,48 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 				executeAction(action, e);
 				return action;
-			} else {
+			}
+			else {
 				logger.warning("Action Type was NULL!");
 				return null;
 			}
-		} else {
+		}
+		else {
 			logger.warning("Action was NULL!");
 			return null;
 		}
 	}
 
+	/**
+	 * This is the CORE execution method
+	 * 
+	 * @param action
+	 * @param event
+	 * @return
+	 */
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A executeAction(
 			final A action, final EventObject event) {
 		final boolean progressIsShowing = ProgressWindow.hasInstance();
+
+		// We do it sooner to embed eventual initializer execution in the record session of the undo manager
+		if (!action.isEmbedded()) {
+			actionWillBePerformed(action);
+		}
+
 		// If action is embedded and valid, we skip initializer
 		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
 		if (confirmDoAction) {
-			actionWillBePerformed(action);
 			if (action instanceof LongRunningAction && (!action.isEmbedded()) && SwingUtilities.isEventDispatchThread()) {
-
-				FlexoTask task = new FlexoTask(action.getLocalizedName()) {
+				LongRunningActionTask task = new LongRunningActionTask((LongRunningAction) action) {
 					@Override
-					public void performTask() {
+					public void performTask() throws InterruptedException {
 						Progress.setExpectedProgressSteps(((LongRunningAction) action).getExpectedProgressSteps());
 						doExecuteAction(action, event);
 					}
 				};
 				applicationContext.getTaskManager().scheduleExecution(task);
-			} else {
+			}
+			else {
 				// Do it now, in this thread
 				doExecuteAction(action, event);
 			}
@@ -196,6 +210,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (!action.isEmbedded()) {
 			runFinalizer(action, event);
 		}
+
+		// We do it later to embed eventual finalizer execution in the record session of the undo manager
+		if (!action.isEmbedded()) {
+			actionHasBeenPerformed(action, true); // Action succeeded
+		}
+
 	}
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runInitializer(A action,
@@ -219,7 +239,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		/*if (getProject() != null) {
 			getProject().notifyRecentlyCreatedObjects();
 		}*/
-		actionHasBeenPerformed(action, true); // Action succeeded
+		// actionHasBeenPerformed(action, true); // Action succeeded
 	}
 
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void runFinalizer(
@@ -246,11 +266,13 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			if (exceptionHandler.handleException(exception, action)) {
 				// The exception has been handled, we may still have to execute finalizer, if any
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -339,10 +361,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isEnabled(actionType, focusedObject, globalSelection, this);
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 		return true;
@@ -358,10 +382,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isVisible(actionType, focusedObject, globalSelection, this);
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 		return true;
@@ -376,7 +402,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 		if (actionType instanceof DeletionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
-		} else if (actionType instanceof ActionSchemeActionType) {
+		}
+		else if (actionType instanceof ActionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
 		}
 

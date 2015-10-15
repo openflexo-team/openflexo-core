@@ -225,6 +225,10 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Utils/Markers/Warning.gif")), 0, 9);
 	public static final IconMarker IMPORT = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Import.gif")), 10, 7);
+	public static final IconMarker GENERATE = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Generate.png")), 10, 7);
+	public static final IconMarker REINJECT = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Reinject.png")), 10, 7);
 	public static final IconMarker ERROR = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Error.gif")), 0, 9);
 	public static final IconMarker ERROR2 = new IconMarker(new ImageIconResource(
@@ -244,6 +248,8 @@ public class IconLibrary {
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
 	public static final IconMarker NEW_32_32 = new IconMarker(new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
+	public static final IconMarker NEW_MARKER = new IconMarker(new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(

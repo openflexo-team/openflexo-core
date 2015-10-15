@@ -48,6 +48,7 @@ import org.openflexo.foundation.ProjectDataResource;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -61,20 +62,22 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<DocResourceCenter, DRMModelFactory> implements
-		DocResourceCenterResource {
+public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<DocResourceCenter, DRMModelFactory>
+		implements DocResourceCenterResource {
 
 	static final Logger logger = Logger.getLogger(DocResourceCenterResourceImpl.class.getPackage().getName());
 
-	public static DocResourceCenterResource retrieveDocResourceCenterResource(DocResourceManager docResourceManager) {
+	public static DocResourceCenterResource retrieveDocResourceCenterResource(DocResourceManager docResourceManager,
+			FlexoResourceCenter<?> resourceCenter) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-					DocResourceCenterResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, DocResourceCenterResource.class));
 			DocResourceCenterResourceImpl returned = (DocResourceCenterResourceImpl) factory.newInstance(DocResourceCenterResource.class);
 			returned.setFactory(docResourceManager.getDRMModelFactory());
 			returned.initName("DocResourceCenter");
 			returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(docResourceManager.getDRMFile(), factory));
 			returned.setURI("http://www.openflexo.org/DocResourceCenter");
+			returned.setResourceCenter(resourceCenter);
 			returned.setServiceManager(docResourceManager.getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {

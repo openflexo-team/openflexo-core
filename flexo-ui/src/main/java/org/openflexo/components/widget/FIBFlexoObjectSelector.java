@@ -170,13 +170,15 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 							}
 						}
 					});
-				} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_UP) {
 					if (getCustomPanel() != null) {
 						getCustomPanel().getFIBListWidget().getDynamicJComponent().requestFocusInWindow();
 						getCustomPanel().getFIBListWidget().getDynamicJComponent()
 								.setSelectedIndex(getCustomPanel().getFIBListWidget().getDynamicJComponent().getModel().getSize() - 1);
 					}
-				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				}
+				else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					if (getCustomPanel() != null) {
 						getCustomPanel().getFIBListWidget().getJComponent().requestFocusInWindow();
 						getCustomPanel().getFIBListWidget().getDynamicJComponent().setSelectedIndex(0);
@@ -303,7 +305,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		pcSupport.firePropertyChange("selectedObject", old, selectedObject);
 		if (isAcceptableValue(selectedObject)) {
 			setSelectedValue((T) selectedObject);
-		} else {
+		}
+		else {
 			setSelectedValue(null);
 		}
 	}
@@ -389,11 +392,14 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 	}
 
 	public FlexoServiceManager getServiceManager() {
+		if (serviceManager == null && getFlexoController() != null) {
+			return getFlexoController().getApplicationContext();
+		}
 		return serviceManager;
 	}
 
 	// FIBModelObjectSelector is applicable to something else than objects in a project
-	@CustomComponentParameter(name = "serviceManager", type = CustomComponentParameter.Type.MANDATORY)
+	@CustomComponentParameter(name = "serviceManager", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setServiceManager(FlexoServiceManager serviceManager) {
 		if (this.serviceManager != serviceManager) {
 			FlexoServiceManager oldServiceManager = this.serviceManager;
@@ -407,30 +413,24 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 	}
 
-	// FIBModelObjectSelector is applicable to something else than objects in a project
-	/*@Deprecated
-	public FlexoProject getProject() {
-		return project;
-	}*/
+	public FlexoController getFlexoController() {
+		return flexoController;
+	}
 
-	// FIBModelObjectSelector is applicable to something else than objects in a project
-	/*@Deprecated
-	@CustomComponentParameter(name = "project", type = CustomComponentParameter.Type.MANDATORY)
-	public void setProject(FlexoProject project) {
-		if (project == null) {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Passing null project. If you rely on project this is unlikely to work");
-			}
+	@CustomComponentParameter(name = "flexoController", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setFlexoController(FlexoController flexoController) {
+		this.flexoController = flexoController;
+		if (_selectorPanel != null) {
+			_selectorPanel.getController().setFlexoController(flexoController);
 		}
-		this.project = project;
-		pcSupport.firePropertyChange("project", null, project);
-	}*/
+	}
 
 	@Override
 	public void setRevertValue(T oldValue) {
 		if (oldValue != null) {
 			_revertValue = oldValue;
-		} else {
+		}
+		else {
 			_revertValue = null;
 		}
 		if (logger.isLoggable(Level.FINE)) {
@@ -615,7 +615,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 					&& !object.hasDescription()) {
 				if (returned instanceof ImageIcon) {
 					returned = IconFactory.getImageIcon((ImageIcon) returned, new IconMarker[] { IconLibrary.WARNING });
-				} else {
+				}
+				else {
 					logger.severe("CANNOT decorate a non ImageIcon for " + this);
 				}
 			}
@@ -639,7 +640,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			public int filterRGB(int x, int y, int rgb) {
 				if (rgb == target1) {
 					return replacement1;
-				} else if (rgb == target2) {
+				}
+				else if (rgb == target2) {
 					return replacement2;
 				}
 				return rgb;
@@ -820,80 +822,4 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		this.candidateValue = candidateValue;
 	}
 
-	public FlexoController getFlexoController() {
-		return flexoController;
-	}
-
-	public void setFlexoController(FlexoController flexoController) {
-		this.flexoController = flexoController;
-		if (_selectorPanel != null) {
-			_selectorPanel.getController().setFlexoController(flexoController);
-		}
-	}
-
-	/*public static void testSelector(final FIBModelObjectSelector selector) {
-		final FlexoProject prj = loadProject();
-		selector.createCustomPanel(null);
-		selector.setProject(prj);
-		FIBAbstractEditor editor = new FIBAbstractEditor() {
-	
-			@Override
-			public Object[] getData() {
-				return FIBAbstractEditor.makeArray(selector);
-			}
-	
-			@Override
-			public File getFIBFile() {
-				return selector.getFIBFile();
-			}
-	
-			@Override
-			public FIBController getController() {
-				return selector.getSelectorPanel().controller;
-			}
-	
-			public FIBController makeNewController() {
-				return selector.makeCustomFIBController(selector.getSelectorPanel().fibComponent);
-			}
-	
-		};
-	
-		editor.addAction("set_filtered_name", new ActionListener() {
-	
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				selector.setFilteredName("T");
-				selector.updateMatchingValues();
-			}
-		});
-		editor.launch();
-	}
-	
-	protected static final FlexoEditorFactory EDITOR_FACTORY = new FlexoEditorFactory() {
-		@Override
-		public DefaultFlexoEditor makeFlexoEditor(FlexoProject project) {
-			return new DefaultFlexoEditor(project);
-		}
-	};
-	
-	public static FileResource PRJ_FILE = new FileResource("Prj/TestBrowser.prj");
-	
-	public static FlexoProject loadProject() {
-		File projectFile = PRJ_FILE;
-		FlexoProject project = null;
-		FlexoEditor editor;
-		logger.info("Found project " + projectFile.getAbsolutePath());
-		try {
-			editor = FlexoResourceManager.initializeExistingProject(projectFile, EDITOR_FACTORY, null);
-			project = editor.getProject();
-		} catch (ProjectLoadingCancelledException e) { // TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProjectInitializerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		logger.info("Successfully loaded project " + projectFile.getAbsolutePath());
-	
-		return project;
-	}*/
 }

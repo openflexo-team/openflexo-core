@@ -80,13 +80,13 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class ProjectDataResourceImpl extends PamelaResourceImpl<ProjectData, ProjectDataFactory> implements
-			ProjectDataResource {
+	public static abstract class ProjectDataResourceImpl extends PamelaResourceImpl<ProjectData, ProjectDataFactory>
+			implements ProjectDataResource {
 
 		public static ProjectDataResource makeProjectDataResource(FlexoProject project) {
 			try {
-				ModelFactory resourceFactory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-						ProjectDataResource.class));
+				ModelFactory resourceFactory = new ModelFactory(
+						ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, ProjectDataResource.class));
 				ProjectDataResourceImpl returned = (ProjectDataResourceImpl) resourceFactory.newInstance(ProjectDataResource.class);
 				File xmlFile = new File(project.getProjectDirectory(), FILE_NAME);
 				returned.setProject(project);
@@ -98,10 +98,12 @@ public interface ProjectDataResource extends PamelaResource<ProjectData, Project
 				String projectURI = FlexoProject.BASE_PROJECT_URI + "/" + (1900 + currentDate.getYear()) + "/"
 						+ (currentDate.getMonth() + 1) + "/" + project.projectName + "_" + System.currentTimeMillis();
 				returned.setURI(projectURI);
+				returned.setResourceCenter(project);
 				returned.setServiceManager(project.getServiceManager());
 				if (xmlFile.exists()) {
 					returned.loadResourceData(null);
-				} else {
+				}
+				else {
 					ProjectData newProjectData = returned.getFactory().newInstance(ProjectData.class);
 					returned.setResourceData(newProjectData);
 				}

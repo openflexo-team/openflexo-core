@@ -72,7 +72,8 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 		return new FlexoActionInitializer<ActionSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, ActionSchemeAction action) {
-				ParametersRetriever<AbstractActionScheme> parameterRetriever = new ParametersRetriever<AbstractActionScheme>(action);
+				ParametersRetriever<AbstractActionScheme> parameterRetriever = new ParametersRetriever<AbstractActionScheme>(action,
+						getController());
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}

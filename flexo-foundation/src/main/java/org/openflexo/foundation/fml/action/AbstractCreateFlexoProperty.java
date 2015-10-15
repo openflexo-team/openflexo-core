@@ -120,8 +120,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 		}
 	}
 
-	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
+	protected void finalizeDoAction(Object context) throws NotImplementedException, InvalidParameterException {
 		if (getFlexoConcept() != null && getNewFlexoProperty() != null) {
 			getNewFlexoProperty().setDescription(getDescription());
 			getFlexoConcept().addToFlexoProperties(getNewFlexoProperty());

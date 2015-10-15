@@ -43,11 +43,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -63,9 +64,9 @@ import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.model.validation.ValidationWarning;
 
 /**
- * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
+ * Represents an {@link EditionAction} which address a specific technology through the reference to a {@link ModelSlot}
  * 
- * An edition action adresses a {@link ModelSlot}
+ * Such action must reference a {@link ModelSlot}
  * 
  * @author sylvain
  * 
@@ -90,12 +91,12 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
 
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
+	public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext evaluationContext);
 
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T> implements
-			TechnologySpecificAction<MS, T> {
+	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
+			implements TechnologySpecificAction<MS, T> {
 
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
@@ -103,7 +104,10 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			return modelSlot.getModelSlotTechnologyAdapter();
+			if (getModelSlot() != null) {
+				return getModelSlot().getModelSlotTechnologyAdapter();
+			}
+			return null;
 		}
 
 		@Override
@@ -129,7 +133,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
-			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+			}
+			else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
 				return getFlexoConcept().getOwningVirtualModel().getModelSlots(msType);
 			}
 			return null;
@@ -150,14 +155,15 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
+		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
 			if (action.getVirtualModelInstance() != null) {
 				VirtualModelInstance vmi = action.getVirtualModelInstance();
 				// Following line does not compile with Java7 (don't understand why)
 				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
 				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
 				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
-			} else {
+			}
+			else {
 				logger.severe("Could not access virtual model instance for action " + action);
 				return null;
 			}
@@ -167,7 +173,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
 			if (getFlexoConcept() != null && getFlexoConcept() instanceof VirtualModel) {
 				return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
-			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
+			}
+			else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
 				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
 			}
 			return null;
@@ -189,11 +196,35 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			}
 			return returned;
 		}
+
+		/**
+		 * Return a string representation suitable for a common user<br>
+		 * This representation will used in all GUIs
+		 */
+		@Override
+		public String getStringRepresentation() {
+			return getHeaderContext() + getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName()
+					+ getParametersStringRepresentation();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return (getModelSlot() != null ? getModelSlot().getName() + "." : "") + getTechnologyAdapterIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName() + "()";
+		}
+
+		protected final String getTechnologyAdapterIdentifier() {
+			if (getModelSlotTechnologyAdapter() != null) {
+				return getModelSlotTechnologyAdapter().getIdentifier();
+			}
+			return "FML";
+		}
+
 	}
 
 	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
-			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
+	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(TechnologySpecificAction.class, "EditionAction_should_not_have_reflexive_model_slot_no_more");
@@ -212,8 +243,8 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return null;
 		}
 
-		protected static class RemoveReflexiveVirtualModelModelSlot extends
-				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
+		protected static class RemoveReflexiveVirtualModelModelSlot
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
 
 			private final TechnologySpecificAction<?, ?> action;
 
@@ -229,5 +260,23 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		}
 
 	}
+
+	/*@DefineValidationRule
+	public static class TechnologypecificActionMustReferenceAModelSlot extends
+			ValidationRule<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction> {
+		public TechnologypecificActionMustReferenceAModelSlot() {
+			super(TechnologySpecificAction.class, "technology_specific_action_must_adress_a_valid_model_slot");
+		}
+	
+		@Override
+		public ValidationIssue<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction> applyValidation(
+				TechnologySpecificAction action) {
+			if (action.getModelSlot() == null) {
+				return new ValidationError<TechnologypecificActionMustReferenceAModelSlot, TechnologySpecificAction>(this, action,
+						"action_does_not_define_any_model_slot");
+			}
+			return null;
+		}
+	}*/
 
 }

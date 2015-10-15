@@ -96,8 +96,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		instanciateTestServiceManager();
 		System.out.println("ResourceCenter= " + resourceCenter);
-		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint",
-				resourceCenter.getDirectory(), serviceManager.getViewPointLibrary());
+		newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint", "http://openflexo.org/test/TestViewPoint", resourceCenter.getDirectory(),
+				serviceManager.getViewPointLibrary(), resourceCenter);
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
 		// assertTrue(((ViewPointResource) newViewPoint.getResource()).getDirectory().exists());

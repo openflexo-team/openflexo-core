@@ -82,20 +82,18 @@
 					name="delete_constraint" />
 			</Table>
 			<Label manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				localize="true" align="left" index="10000"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
 				label="description" readOnly="false" />
 			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				manageDynamicModel="false" useScrollBar="true" columns="8"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				data="data.description" localize="true" index="10001"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 				rows="3" readOnly="false" validateOnReturn="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 
 		</Tab>
-		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+	    <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
@@ -103,7 +101,7 @@
 			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab">
-			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
+			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor" font="SansSerif,0,13"
 				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)"
 				width="120" height="120" useScrollBar="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"

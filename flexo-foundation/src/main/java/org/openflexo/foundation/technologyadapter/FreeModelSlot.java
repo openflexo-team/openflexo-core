@@ -40,15 +40,11 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.IndividualRole;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -68,8 +64,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri);
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD> implements
-			FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
+			implements FreeModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
@@ -86,12 +82,12 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * @param ontClass
 		 * @return
 		 */
-		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
+		/*public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
 			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
 			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
 			returned.setOntologicType(ontClass);
 			return returned;
-		}
+		}*/
 
 		/**
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
@@ -143,14 +139,6 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		@Override
 		public abstract TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter,
 				String relativePath, String filename, String modelUri);
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + " required=" + getIsRequired() + " readOnly="
-					+ getIsReadOnly() + ";", context);
-			return out.toString();
-		}
 
 		@Override
 		public final String getURIForObject(ModelSlotInstance msInstance, Object o) {
