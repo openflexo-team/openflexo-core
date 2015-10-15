@@ -53,8 +53,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openflexo.foundation.fml.FMLObject;
@@ -76,6 +74,8 @@ import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
+
+import junit.framework.AssertionFailedError;
 
 /**
  * Provides a JUnit 4 generic environment of Openflexo-core for testing purposes
@@ -117,6 +117,9 @@ public abstract class OpenflexoTestCase {
 
 	protected static void unloadServiceManager() {
 		if (serviceManager != null) {
+			if (resourceCenter != null) {
+				deleteTestResourceCenters();
+			}
 			serviceManager.stopAllServices();
 		}
 		serviceManager = null;
@@ -155,7 +158,8 @@ public abstract class OpenflexoTestCase {
 		retval = new File("tmp/tests/FlexoResources/", resourceRelativeName);
 		if (retval.exists()) {
 			return retval;
-		} else if (logger.isLoggable(Level.WARNING)) {
+		}
+		else if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Could not find resource " + resourceRelativeName);
 		}
 		return null;
@@ -204,7 +208,8 @@ public abstract class OpenflexoTestCase {
 							System.out.println(tstRC.toString());
 							FileUtils.copyResourceToDir(tstRC, testResourceCenterDirectory);
 						}
-					} else {
+					}
+					else {
 
 						Resource tstRC = ResourceLocator.locateResource("TestResourceCenter");
 						System.out.println("Copied from " + tstRC);
@@ -212,8 +217,8 @@ public abstract class OpenflexoTestCase {
 					}
 
 					FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance();
-					rcService.addToResourceCenters(resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory,
-							TEST_RESOURCE_CENTER_URI));
+					rcService.addToResourceCenters(
+							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 
 					// ici il y a des truc a voir
@@ -264,7 +269,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertFalse("Resource " + resource.getURI() + " should not be modfied", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should not be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -277,7 +283,8 @@ public abstract class OpenflexoTestCase {
 		try {
 			if (resource.isLoaded()) {
 				assertTrue("Resource " + resource.getURI() + " should be modified", resource.getLoadedResourceData().isModified());
-			} else {
+			}
+			else {
 				fail("Resource " + resource.getURI() + " should be modified but is not even loaded");
 			}
 		} catch (AssertionFailedError e) {
@@ -309,6 +316,29 @@ public abstract class OpenflexoTestCase {
 				+ "\n******************************************************************************\n");
 	}
 
+	protected void debugMemory() {
+
+		int mb = 1024 * 1024;
+
+		// Getting the runtime reference from system
+		Runtime runtime = Runtime.getRuntime();
+
+		log("##### Heap utilization statistics [MB] #####");
+
+		// Print used memory
+		logger.info("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+
+		// Print free memory
+		logger.info("Free Memory:" + runtime.freeMemory() / mb);
+
+		// Print total available memory
+		logger.info("Total Memory:" + runtime.totalMemory() / mb);
+
+		// Print Maximum available memory
+		logger.info("Max Memory:" + runtime.maxMemory() / mb);
+
+	}
+
 	/**
 	 * Assert this is the same list, doesn't care about order
 	 * 
@@ -334,8 +364,8 @@ public abstract class OpenflexoTestCase {
 					message.append(" Missing: " + o);
 				}
 			}
-			throw new AssertionFailedError("AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2
-					+ " Details = " + message);
+			throw new AssertionFailedError(
+					"AssertionFailedError when comparing lists, expected: " + set1 + " but was " + set2 + " Details = " + message);
 		}
 	}
 
