@@ -110,7 +110,7 @@ public abstract class OpenflexoTestCase {
 	}
 
 	@AfterClass
-	public static void tearDownClass() {
+	public static void tearDownClass() throws Exception {
 		deleteTestResourceCenters();
 		unloadServiceManager();
 	}
