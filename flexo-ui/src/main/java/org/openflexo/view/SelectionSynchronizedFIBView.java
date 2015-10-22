@@ -49,7 +49,7 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.listener.FIBSelectionListener;
-import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.swing.view.FIBView;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -61,7 +61,7 @@ import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Default implementation for a FIBView which is synchronized with a {@link SelectionManager}
+ * Default implementation for a FIBViewImpl which is synchronized with a {@link SelectionManager}
  * 
  * @author sylvain
  * 

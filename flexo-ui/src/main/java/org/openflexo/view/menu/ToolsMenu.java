@@ -60,7 +60,7 @@ import org.openflexo.br.view.JIRAIssueReportDialog;
 import org.openflexo.components.ResourceCenterEditorDialog;
 import org.openflexo.components.UndoManagerDialog;
 import org.openflexo.drm.DocResourceManager;
-import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
+import org.openflexo.fib.swing.utils.logging.FlexoLoggingViewer;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;

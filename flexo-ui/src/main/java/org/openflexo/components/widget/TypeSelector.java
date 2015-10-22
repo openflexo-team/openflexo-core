@@ -72,10 +72,10 @@ import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBCustom;
 import org.openflexo.fib.model.FIBCustom.FIBCustomComponent;
-import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo.ClassInfo;
-import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.swing.utils.logging.FlexoLoggingViewer;
+import org.openflexo.fib.swing.view.FIBView;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
@@ -736,7 +736,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public class TypeSelectorDetailsPanel extends ResizablePanel {
 		private final FIBComponent fibComponent;
-		private FIBView<?, ?, ?> fibView;
+		private FIBView<?, ?> fibView;
 		private CustomFIBController controller;
 
 		protected TypeSelectorDetailsPanel(Type aClass) {

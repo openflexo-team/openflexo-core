@@ -68,7 +68,7 @@ public class ViewPointLocalizedDictionaryView extends FIBModuleView<ViewPointLoc
 	}
 
 	/*@Override
-	public void mouseClicked(FIBView<?, ?, ?> view, int clickCount) {
+	public void mouseClicked(FIBViewImpl<?, ?, ?> view, int clickCount) {
 		if (view instanceof FIBTableWidget && ((FIBTableWidget<?>) view).getSelected() instanceof FlexoObject && clickCount == 2) {
 			FlexoObject o = (FlexoObject) ((FIBTableWidget<?>) view).getSelected();
 			if (o instanceof ViewPoint || o instanceof FlexoConcept ) {

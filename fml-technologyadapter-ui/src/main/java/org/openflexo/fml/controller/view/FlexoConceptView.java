@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.view.widget.FIBBrowserWidget;
+import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;

@@ -47,7 +47,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.fib.swing.FIBJPanel;
+import org.openflexo.fib.swing.utils.FIBJPanel;
 import org.openflexo.fib.testutils.GraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
 import org.openflexo.foundation.FlexoEditor;

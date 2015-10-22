@@ -38,7 +38,7 @@
 
 package org.openflexo.fml.controller.view;
 
-import org.openflexo.fib.view.widget.FIBBrowserWidget;
+import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.view.controller.FlexoController;

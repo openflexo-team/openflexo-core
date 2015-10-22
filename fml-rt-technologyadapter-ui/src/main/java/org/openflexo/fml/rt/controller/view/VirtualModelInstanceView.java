@@ -39,7 +39,7 @@
 package org.openflexo.fml.rt.controller.view;
 
 import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.swing.view.FIBView;
 import org.openflexo.fml.rt.controller.CommonFIB;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.view.FIBModuleView;
@@ -68,7 +68,7 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 	}
 
 	@Override
-	public void mouseClicked(FIBView<?, ?, ?> view, int clickCount) {
+	public void mouseClicked(FIBView<?, ?> view, int clickCount) {
 		System.out.println("mouseClicked with " + view + " and " + clickCount);
 		/*if (data instanceof FIBTableDynamicModel && ((FIBTableDynamicModel) data).selected instanceof FlexoModelObject && clickCount == 2) {
 			FlexoObject o = (FlexoObject) ((FIBTableDynamicModel) data).selected;

@@ -69,7 +69,7 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 
 	// private O representedObject;
 	// private FlexoController controller;
-	// private FIBView fibView;
+	// private FIBViewImpl fibView;
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource) {
 		this(representedObject, controller, fibResource, false);

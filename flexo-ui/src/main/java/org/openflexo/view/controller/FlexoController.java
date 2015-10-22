@@ -104,7 +104,7 @@ import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.editor.ComponentValidationWindow;
-import org.openflexo.fib.swing.localization.LocalizedEditor;
+import org.openflexo.fib.swing.utils.localization.LocalizedEditor;
 import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;

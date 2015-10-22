@@ -73,7 +73,7 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	// private Object representedObject;
 	// private FlexoController controller;
-	// private FIBView fibView;
+	// private FIBViewImpl fibView;
 
 	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource) {
 		this(representedObject, controller, fibResource, false);

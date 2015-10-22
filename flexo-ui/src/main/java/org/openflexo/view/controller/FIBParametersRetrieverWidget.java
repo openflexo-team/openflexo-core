@@ -41,7 +41,7 @@ package org.openflexo.view.controller;
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.swing.FIBJPanel;
+import org.openflexo.fib.swing.utils.FIBJPanel;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.localization.FlexoLocalization;
 

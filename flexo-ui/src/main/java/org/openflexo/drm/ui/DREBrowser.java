@@ -41,7 +41,7 @@ package org.openflexo.drm.ui;
 import java.util.logging.Logger;
 
 import org.openflexo.drm.DocResourceCenter;
-import org.openflexo.fib.swing.FIBJPanel;
+import org.openflexo.fib.swing.utils.FIBJPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;

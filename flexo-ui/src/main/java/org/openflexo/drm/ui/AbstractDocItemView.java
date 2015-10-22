@@ -92,7 +92,7 @@ import org.openflexo.drm.action.AddToRelatedToItem;
 import org.openflexo.drm.action.RemoveEmbeddingChildItem;
 import org.openflexo.drm.action.RemoveInheritanceChildItem;
 import org.openflexo.drm.action.RemoveRelatedToItem;
-import org.openflexo.fib.view.widget.FIBHtmlEditorWidget;
+import org.openflexo.fib.swing.view.widget.FIBHtmlEditorWidget;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;

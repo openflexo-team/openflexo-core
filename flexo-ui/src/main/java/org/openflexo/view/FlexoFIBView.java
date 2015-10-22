@@ -52,7 +52,7 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.swing.view.FIBView;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -247,7 +247,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	}
 
 	/**
-	 * This method is a hook which is called just before to initialize FIBView and FIBController, and allow to programmatically define,
+	 * This method is a hook which is called just before to initialize FIBViewImpl and FIBController, and allow to programmatically define,
 	 * check or redefine component
 	 */
 	public void initializeFIBComponent() {
