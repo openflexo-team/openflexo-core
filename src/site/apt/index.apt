@@ -1,5 +1,5 @@
  -----
- Openflexo GINA
+ Openflexo Core
  -----
  The Openflexo team
  -----
@@ -38,7 +38,7 @@ Contents of this package
 
   Openflexo Core Library mainly contains two parts:
   
-  * The "model-layer":
+  The "model-layer":
   
     * {{{./flexo-foundation/index.html}FlexoFoundation}}, which contains the core code for FML
   
@@ -48,7 +48,7 @@ Contents of this package
   
     * {{{./flexo-documentation/index.html}FlexoDocumentation}}, which is an extension of fml-core dedicated to formatted text tools
   
-   * The "UI-layer" (Swing):
+  The "UI-layer" (Swing):
   
     * {{{./flexo-ui/index.html}Flexo-UI}}, which contains the core code for FML-core Swing tooling
   
@@ -60,5 +60,5 @@ Contents of this package
   
     * {{{./flexo-documentation/index.html}FlexoDocumentation}}, which provides Swing tooling for FlexoDocumentation extension
   
-    
+   
   
