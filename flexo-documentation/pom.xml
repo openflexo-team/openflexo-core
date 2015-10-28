@@ -7,7 +7,7 @@
         <version>1.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexo-documentation</artifactId>
-	<name>Openflexo-core : FlexoDocumentation core layer</name>
+	<name>FlexoDocumentation</name>
 	<build>
 		<plugins>
 			<plugin>

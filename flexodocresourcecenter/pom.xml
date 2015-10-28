@@ -7,7 +7,7 @@
         <version>1.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>flexodocresourcecenter</artifactId>
-	<name>Help :: FlexoDocResourceCenter</name>
+	<name>FlexoDocResourceCenter</name>
 	<build>
 		<plugins>
 			<plugin>

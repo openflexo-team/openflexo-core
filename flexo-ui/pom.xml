@@ -7,7 +7,7 @@
         <version>1.8.0-SNAPSHOT</version>
     </parent>
     <artifactId>flexo-ui</artifactId>
-    <name>Openflexo-core : UI layer</name>
+    <name>Flexo-UI</name>
     <build>
         <plugins>
             <plugin>

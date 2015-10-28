@@ -58,7 +58,7 @@ Contents of this package
 
     * {{{./flexo-ontology-ui/index.html}FlexoOntology-UI}}, which provides Swing tooling for FlexoOntology extension
   
-    * {{{./flexo-documentation/index.html}FlexoDocumentation}}, which provides Swing tooling for FlexoDocumentation extension
+    * {{{./flexo-documentation-ui/index.html}FlexoDocumentation-UI}}, which provides Swing tooling for FlexoDocumentation extension
   
    
   

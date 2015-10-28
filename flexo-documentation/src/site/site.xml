@@ -3,16 +3,6 @@
 <project name="Maven" xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
    
-  <bannerLeft>
-	<name>Openflexo Core</name>
-	<src>${core.logo}</src>
-	<href>https://openflexo.org/tiki/OpenflexoCore</href>
-  </bannerLeft> 
-  <bannerRight>
-    <name>Openflexo</name>
-    <src>${organization.logo}</src>
-    <href>http://openflexo.org/</href>
-  </bannerRight>
   <skin>
     <groupId>org.openflexo</groupId>
     <artifactId>openflexo-skin</artifactId>
@@ -29,7 +19,7 @@
  </custom>
    
   <body>
-    <menu name="FlexoDocResourceCenter">
+    <menu name="FlexoDocumentation">
       <item name="Home" 		href="index.html" />
       <item name="Javadoc"    	href="./apidocs/index.html" />
     </menu>
@@ -37,4 +27,5 @@
     <menu ref="modules" />
     <menu ref="reports" />
   </body>
+
 </project>

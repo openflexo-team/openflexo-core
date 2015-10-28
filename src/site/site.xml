@@ -32,7 +32,7 @@
   
     <menu name="Openflexo-core">
       <item name="Home" 		href="index.html" />
-      <item name="FlexoFoundation"    	href="flexo-fondation/index.html" />
+      <item name="FlexoFoundation"    	href="flexo-foundation/index.html" />
       <item name="FML-parser"    	href="fml-parser/index.html" />
       <item name="FlexoOntology"    	href="flexo-ontology/index.html" />
       <item name="FlexoDocumentation"    	href="flexo-documentation/index.html" />

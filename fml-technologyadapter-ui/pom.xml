@@ -7,7 +7,7 @@
         <version>1.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>fml-technologyadapter-ui</artifactId>
-	<name>FML technology adapter : UI layer</name>
+	<name>FML-UI</name>
 	<build>
 		<plugins>
 			<plugin>
