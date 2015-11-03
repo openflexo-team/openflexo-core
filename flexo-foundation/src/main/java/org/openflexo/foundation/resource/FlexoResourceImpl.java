@@ -108,8 +108,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress)
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
+			FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -179,8 +179,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			if (getFlexoIODelegate() != null) {
 				getFlexoIODelegate().rename();
 			}
-		}
-		else if (!isDeleting()) {
+		} else if (!isDeleting()) {
 			throw new CannotRenameException(this);
 		}
 	}
@@ -211,8 +210,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		}
-		else {
+		} else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
@@ -363,8 +361,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		}
-		else {
+		} else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
 			if (getContainer() != null) {
@@ -503,7 +500,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			returned = getResourceCenter().getDefaultResourceURI(this);
 		}
 
-		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)) {
+		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)
+				&& (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null)) {
 			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
 		}
 		return returned;
