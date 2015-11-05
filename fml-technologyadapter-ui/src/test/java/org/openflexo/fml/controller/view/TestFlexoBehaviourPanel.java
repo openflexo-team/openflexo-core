@@ -50,7 +50,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.swing.utils.FIBJPanel;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
+import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.fib.utils.OpenflexoFIBTestCase;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
@@ -87,7 +87,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	private static Resource fibResource;
 
@@ -279,7 +279,7 @@ public class TestFlexoBehaviourPanel extends OpenflexoFIBTestCase {
 	}*/
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestFlexoBehaviourPanel.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestFlexoBehaviourPanel.class.getSimpleName());
 	}
 
 	@AfterClass

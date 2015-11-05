@@ -44,8 +44,9 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.fib.swing.view.SwingViewFactory;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -90,7 +91,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	public FlexoProject getProject() {
 		if (getEditor() != null) {
 			return getEditor().getProject();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -104,8 +106,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 
 	public boolean instanciateAndShowDialog(Object object, Resource fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
-				new FlexoFIBController(fibComponent, getController()));
+		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus() == Status.VALIDATED;
 	}
 
@@ -118,8 +120,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 
 	public Status instanciateShowDialogAndReturnStatus(Object object, Resource fibResource) {
 		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(fibResource);
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
-				new FlexoFIBController(fibComponent, getController()));
+		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, object, FlexoFrame.getActiveFrame(), true,
+				new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, getController()));
 		return dialog.getStatus();
 	}
 

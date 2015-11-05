@@ -49,7 +49,7 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.listener.FIBSelectionListener;
-import org.openflexo.fib.swing.view.FIBView;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -88,7 +88,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath) {
 			this(representedObject, controller, fibResourcePath, false, controller != null ? controller.willLoad(fibResourcePath) : null);
 		}
-
+	
 		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
 				FlexoProgress progress) {
 			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(ResourceLocator.locateResource(fibResourcePath)), addScrollBar, progress);

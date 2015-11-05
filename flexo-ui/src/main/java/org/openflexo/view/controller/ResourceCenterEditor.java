@@ -45,8 +45,8 @@ import java.util.logging.Logger;
 import org.openflexo.fib.AskResourceCenterDirectory;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -99,7 +99,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 	public void addResourceCenter() {
 		FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
 		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
+		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
 			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory());

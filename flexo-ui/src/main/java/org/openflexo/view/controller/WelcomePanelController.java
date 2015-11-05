@@ -45,6 +45,7 @@ import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.task.FlexoTaskManager;
@@ -59,8 +60,8 @@ import org.openflexo.project.ProjectLoader;
 
 public class WelcomePanelController extends FlexoFIBController {
 
-	public WelcomePanelController(FIBComponent component) {
-		super(component);
+	public WelcomePanelController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
 	@Override
@@ -161,7 +162,8 @@ public class WelcomePanelController extends FlexoFIBController {
 		if (module instanceof NatureSpecificModule) {
 			ProjectNature<?, ?> nature = getProjectNatureService().getProjectNature(((NatureSpecificModule) module).getNatureClass());
 			getProjectLoader().newProject(projectDirectory, nature, loadModuleTask);
-		} else {
+		}
+		else {
 			getProjectLoader().newProject(projectDirectory, loadModuleTask);
 		}
 		validateAndDispose();

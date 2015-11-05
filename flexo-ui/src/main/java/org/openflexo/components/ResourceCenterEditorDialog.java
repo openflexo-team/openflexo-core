@@ -42,7 +42,7 @@ import java.awt.Window;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.localization.FlexoLocalization;
@@ -57,7 +57,7 @@ import org.openflexo.view.controller.ResourceCenterEditor;
  * 
  */
 @SuppressWarnings("serial")
-public class ResourceCenterEditorDialog extends FIBDialog<ResourceCenterEditor> {
+public class ResourceCenterEditorDialog extends JFIBDialog<ResourceCenterEditor> {
 
 	static final Logger logger = Logger.getLogger(ResourceCenterEditorDialog.class.getPackage().getName());
 

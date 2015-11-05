@@ -40,8 +40,9 @@ package org.openflexo.fml.controller.view;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
+import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -70,8 +71,8 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		super(flexoConcept, controller, fibFile);
 		this.perspective = perspective;
 
-		if (getFIBView("FlexoConceptBrowser") instanceof FIBBrowserWidget) {
-			FIBBrowserWidget<?> browser = (FIBBrowserWidget<?>) getFIBView("FlexoConceptBrowser");
+		if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
+			JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
 			browser.performExpand(flexoConcept.getStructuralFacet());
 			browser.performExpand(flexoConcept.getBehaviouralFacet());
 		}

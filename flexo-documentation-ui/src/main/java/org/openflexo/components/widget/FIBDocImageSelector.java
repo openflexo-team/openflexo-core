@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBCustom;
-import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
-import org.openflexo.fib.swing.view.widget.FIBCustomWidget;
+import org.openflexo.fib.swing.utils.swing.view.widget.FIBCustomWidget;
+import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocRun;
 import org.openflexo.foundation.doc.FlexoDocument;
@@ -182,7 +182,7 @@ public abstract class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D ex
 
 			setSelectedValue(value);
 
-			FIBBrowserWidget browserWidget = getFIBBrowserWidget();
+			JFIBBrowserWidget browserWidget = getFIBBrowserWidget();
 			if (browserWidget != null) {
 				if (value == null) {
 					browserWidget.clearSelection();

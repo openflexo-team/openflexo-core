@@ -52,7 +52,8 @@ import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.swing.view.FIBView;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
@@ -99,7 +100,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
 		this(representedObject, controller, fibResourcePath, false, progress);
 	}
-
+	
 	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
 			FlexoProgress progress) {
 		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
@@ -114,7 +115,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
+		}
+		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
 		}
 
@@ -138,7 +140,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		if (addScrollBar) {
 			add(new JScrollPane(fibView.getJComponent()), BorderLayout.CENTER);
-		} else {
+		}
+		else {
 			add(fibView.getJComponent(), BorderLayout.CENTER);
 		}
 
@@ -155,14 +158,16 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	 * @return the newly created FlexoFIBController
 	 */
 	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
-		FIBController returned = FIBController.instanciateController(fibComponent, FlexoLocalization.getMainLocalizer());
+		FIBController returned = FIBController.instanciateController(fibComponent, SwingViewFactory.INSTANCE,
+				FlexoLocalization.getMainLocalizer());
 		if (returned instanceof FlexoFIBController) {
 			((FlexoFIBController) returned).setFlexoController(controller);
 			return (FlexoFIBController) returned;
-		} else if (fibComponent.getControllerClass() != null) {
+		}
+		else if (fibComponent.getControllerClass() != null) {
 			logger.warning("Controller for component " + fibComponent + " is not an instanceof FlexoFIBController");
 		}
-		return fibController = new FlexoFIBController(fibComponent, controller);
+		return fibController = new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, controller);
 	}
 
 	public FlexoController getFlexoController() {
@@ -193,13 +198,15 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		// logger.info(">>>>>>> setDataObject with " + object);
 		if (this.dataObject instanceof HasPropertyChangeSupport) {
 			manager.removeListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (this.dataObject instanceof FlexoObservable) {
+		}
+		else if (this.dataObject instanceof FlexoObservable) {
 			((FlexoObservable) this.dataObject).deleteObserver(this);
 		}
 		dataObject = object;
 		if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
+		}
+		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
 		}
 		fibController.setDataObject(object, true);
@@ -297,7 +304,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 					}
 				}, "InvokeLaterThread");
 				invokeLaterThread.start();
-			} else {
+			}
+			else {
 				System.out.println("Ignoring invokeLater");
 			}
 		}

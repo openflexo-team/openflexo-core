@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBCustom;
 import org.openflexo.fib.model.listener.FIBSelectionListener;
-import org.openflexo.fib.swing.view.widget.FIBCustomWidget;
+import org.openflexo.fib.swing.utils.swing.view.widget.FIBCustomWidget;
 import org.openflexo.foundation.doc.FlexoDocElement;
 import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;

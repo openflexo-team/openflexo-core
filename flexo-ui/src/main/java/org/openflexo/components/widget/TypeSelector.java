@@ -75,7 +75,8 @@ import org.openflexo.fib.model.FIBCustom.FIBCustomComponent;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo;
 import org.openflexo.fib.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.fib.swing.utils.logging.FlexoLoggingViewer;
-import org.openflexo.fib.swing.view.FIBView;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
@@ -96,8 +97,8 @@ import org.openflexo.view.controller.FlexoFIBController;
  * 
  */
 @SuppressWarnings("serial")
-public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCustomComponent<Type, TypeSelector>, HasPropertyChangeSupport,
-		PropertyChangeListener {
+public class TypeSelector extends TextFieldCustomPopup<Type>
+		implements FIBCustomComponent<Type>, HasPropertyChangeSupport, PropertyChangeListener {
 	static final Logger LOGGER = Logger.getLogger(TypeSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/TypeSelector.fib");
@@ -358,12 +359,15 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 						// That may happen if we have changed from a CustomTypefactory to another CustomTypefactory
 						setEditedObject(factory.makeCustomType(null));
 					}
-				} else {
+				}
+				else {
 					setEditedObject(factory.makeCustomType(null));
 				}
-			} else if (choice instanceof PrimitiveType) {
+			}
+			else if (choice instanceof PrimitiveType) {
 				setEditedObject(((PrimitiveType) choice).getType());
-			} else {
+			}
+			else {
 				// Will cause the edited object to be recomputed from new configuration values
 				setBaseClass(oldBaseClass);
 			}
@@ -383,7 +387,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	}
 
 	public boolean isJavaType() {
-		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_LIST || choice == JAVA_MAP || choice == JAVA_ARRAY || choice == JAVA_WILDCARD);
+		return (choice instanceof PrimitiveType || choice == JAVA_TYPE || choice == JAVA_LIST || choice == JAVA_MAP || choice == JAVA_ARRAY
+				|| choice == JAVA_WILDCARD);
 	}
 
 	public boolean isPrimitiveType() {
@@ -496,7 +501,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		PrimitiveType primitiveType = getPrimitiveType();
 		if (primitiveType != null) {
 			setChoice(primitiveType);
-		} else {
+		}
+		else {
 			if (getEditedObject() instanceof CustomType && serviceManager != null) {
 				CustomTypeFactory ctFactory = serviceManager.getTechnologyAdapterService().getCustomTypeFactories()
 						.get(getEditedObject().getClass());
@@ -504,7 +510,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 					setChoice(ctFactory);
 					ctFactory.configureFactory((CustomType) getEditedObject());
 				}
-			} else if (getEditedObject() instanceof Class) {
+			}
+			else if (getEditedObject() instanceof Class) {
 				setChoice(JAVA_TYPE);
 			}
 		}
@@ -563,7 +570,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 	private void updateGenericParameters(Class<?> baseClass) {
 		if (baseClass == null || baseClass.getTypeParameters().length == 0) {
 			genericParameters.clear();
-		} else {
+		}
+		else {
 			List<GenericParameter> genericParametersToRemove = new ArrayList<GenericParameter>(genericParameters);
 			for (TypeVariable<?> tv : baseClass.getTypeParameters()) {
 				GenericParameter foundGenericParameter = null;
@@ -618,27 +626,35 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		if (choice == JAVA_LIST) {
 			if (hasGenericParameters()) {
 				setEditedObject(new ParameterizedTypeImpl((List.class), makeParameterizedType(baseClass)));
-			} else {
+			}
+			else {
 				setEditedObject(new ParameterizedTypeImpl((List.class), baseClass));
 			}
-		} else if (choice == JAVA_MAP) {
+		}
+		else if (choice == JAVA_MAP) {
 			if (hasGenericParameters()) {
 				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), makeParameterizedType(baseClass) }));
-			} else {
+			}
+			else {
 				setEditedObject(new ParameterizedTypeImpl((Map.class), new Type[] { getKeyType(), baseClass }));
 			}
-		} else if (choice == JAVA_ARRAY) {
+		}
+		else if (choice == JAVA_ARRAY) {
 			if (hasGenericParameters()) {
 				setEditedObject(new GenericArrayTypeImpl(makeParameterizedType(baseClass)));
-			} else {
+			}
+			else {
 				setEditedObject(new GenericArrayTypeImpl(baseClass));
 			}
-		} else if (choice == JAVA_WILDCARD) {
+		}
+		else if (choice == JAVA_WILDCARD) {
 			updateWildcardType();
-		} else {
+		}
+		else {
 			if (hasGenericParameters()) {
 				setEditedObject(makeParameterizedType(baseClass));
-			} else {
+			}
+			else {
 				setEditedObject(baseClass);
 			}
 		}
@@ -703,7 +719,8 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 		// WARNING: we need here to clone to keep track back of previous data !!!
 		if (oldValue != null) {
 			_revertValue = oldValue;
-		} else {
+		}
+		else {
 			_revertValue = null;
 		}
 		if (LOGGER.isLoggable(Level.FINE)) {
@@ -775,7 +792,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 		public class CustomFIBController extends FlexoFIBController {
 			public CustomFIBController(FIBComponent component) {
-				super(component);
+				super(component, SwingViewFactory.INSTANCE);
 			}
 
 			public void apply() {
@@ -829,11 +846,6 @@ public class TypeSelector extends TextFieldCustomPopup<Type> implements FIBCusto
 
 	public TypeSelectorDetailsPanel getSelectorPanel() {
 		return _selectorPanel;
-	}
-
-	@Override
-	public TypeSelector getJComponent() {
-		return this;
 	}
 
 	@Override

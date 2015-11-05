@@ -53,7 +53,7 @@ import org.openflexo.fib.model.FIBBrowser;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.swing.utils.FIBJPanel;
-import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
+import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.foundation.ontology.BuiltInDataType;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -469,7 +469,7 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> i
 	 */
 	protected Vector<IFlexoOntologyConcept> getAllSelectableValues() {
 		Vector<IFlexoOntologyConcept> returned = new Vector<IFlexoOntologyConcept>();
-		FIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
+		JFIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
 		if (browserWidget == null) {
 			return null;
 		}
@@ -495,12 +495,12 @@ public abstract class FIBOntologyBrowser extends FIBJPanel<FIBOntologyBrowser> i
 		return null;
 	}
 
-	private FIBBrowserWidget retrieveFIBBrowserWidget() {
+	private JFIBBrowserWidget retrieveFIBBrowserWidget() {
 		if (getFIBComponent() instanceof FIBContainer) {
 			List<FIBComponent> listComponent = ((FIBContainer) getFIBComponent()).getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBBrowser) {
-					return (FIBBrowserWidget) getController().viewForComponent(c);
+					return (JFIBBrowserWidget) getController().viewForComponent(c);
 				}
 			}
 		}

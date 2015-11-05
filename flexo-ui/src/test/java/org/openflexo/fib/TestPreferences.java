@@ -40,8 +40,6 @@ package org.openflexo.fib;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,7 +48,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.TestApplicationContext;
 import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
+import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
+import org.openflexo.fib.swing.view.SwingViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.rm.Resource;
@@ -67,7 +66,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestPreferences extends FIBTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	private static TestApplicationContext applicationContext;
 
@@ -88,7 +87,7 @@ public class TestPreferences extends FIBTestCase {
 		Resource generalPreferences = ResourceLocator.locateResource("Fib/Prefs/GeneralPreferences.fib");
 
 		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(generalPreferences),
-				FlexoLocalization.getMainLocalizer());
+				SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer());
 		assertNotNull(controller);
 		controller.setDataObject(applicationContext.getGeneralPreferences());
 		controller.buildView();
@@ -103,7 +102,7 @@ public class TestPreferences extends FIBTestCase {
 		Resource advancedPrefs = ResourceLocator.locateResource("Fib/Prefs/AdvancedPrefs.fib");
 
 		FIBController controller = FIBController.instanciateController(FIBLibrary.instance().retrieveFIBComponent(advancedPrefs),
-				FlexoLocalization.getMainLocalizer());
+				SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer());
 		assertNotNull(controller);
 		controller.setDataObject(applicationContext.getAdvancedPrefs());
 		controller.buildView();
@@ -114,7 +113,7 @@ public class TestPreferences extends FIBTestCase {
 
 	@BeforeClass
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestPreferences.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestPreferences.class.getSimpleName());
 	}
 
 	@AfterClass
@@ -130,7 +129,7 @@ public class TestPreferences extends FIBTestCase {
 	@Override
 	@After
 	public void tearDown() throws Exception {
-		if(gcDelegate != null){
+		if (gcDelegate != null) {
 			gcDelegate.tearDown();
 		}
 	}

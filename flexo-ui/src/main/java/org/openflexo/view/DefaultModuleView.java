@@ -42,7 +42,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-import org.openflexo.fib.swing.view.FIBView;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;

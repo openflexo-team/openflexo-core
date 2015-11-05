@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.BorderLayoutConstraints;
 import org.openflexo.fib.model.BorderLayoutConstraints.BorderLayoutLocation;
 import org.openflexo.fib.model.FIBButton;
@@ -59,6 +58,8 @@ import org.openflexo.fib.model.FIBPanel.FlowLayoutAlignment;
 import org.openflexo.fib.model.FIBPanel.Layout;
 import org.openflexo.fib.model.TwoColsLayoutConstraints;
 import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -109,7 +110,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	public boolean retrieveParameters() {
 
 		FIBComponent component = makeFIB(true, true);
-		FIBDialog dialog = FIBDialog.instanciateDialog(component, action, null, true, FlexoLocalization.getMainLocalizer());
+		JFIBDialog dialog = JFIBDialog.instanciateDialog(component, action, null, true, FlexoLocalization.getMainLocalizer());
 		if (!action.getFlexoBehaviour().getDefinePopupDefaultSize()) {
 			dialog.setMinimumSize(new Dimension(500, 50));
 		}
@@ -180,7 +181,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			} else {
+			}
+			else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -272,7 +274,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	/*public class URIPanel extends FIBPanel {
 	public FIBTextField tf;
 	public FIBLabel uriLabel;
-
+	
 	public URIPanel(final URIParameter parameter) {
 		super();
 		setName(parameter.getName() + "URIPanel");
@@ -297,8 +299,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	public static class ParametersRetrieverController extends FlexoFIBController {
 
-		public ParametersRetrieverController(FIBComponent component) {
-			super(component);
+		public ParametersRetrieverController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+			super(component, viewFactory);
 		}
 
 		public boolean isValidable(FlexoBehaviourAction<?, ?, ?> action) {

@@ -39,7 +39,7 @@
 package org.openflexo.components.validation;
 
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.validation.FIBValidationController;
+import org.openflexo.fib.swing.utils.validation.FIBValidationController;
 import org.openflexo.view.controller.FlexoController;
 
 public class FlexoFIBValidationController extends FIBValidationController {

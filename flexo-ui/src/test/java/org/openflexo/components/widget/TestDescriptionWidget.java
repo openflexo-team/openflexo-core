@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.editor.FIBAbstractEditor;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
+import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointModelFactory;
@@ -63,7 +63,7 @@ import org.openflexo.rm.ResourceLocator;
  */
 public class TestDescriptionWidget extends OpenflexoTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	@BeforeClass
 	public static void setupClass() {
@@ -81,7 +81,7 @@ public class TestDescriptionWidget extends OpenflexoTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestDescriptionWidget.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestDescriptionWidget.class.getSimpleName());
 	}
 
 	@AfterClass

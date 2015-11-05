@@ -92,7 +92,7 @@ import org.openflexo.drm.action.AddToRelatedToItem;
 import org.openflexo.drm.action.RemoveEmbeddingChildItem;
 import org.openflexo.drm.action.RemoveInheritanceChildItem;
 import org.openflexo.drm.action.RemoveRelatedToItem;
-import org.openflexo.fib.swing.view.widget.FIBHtmlEditorWidget;
+import org.openflexo.fib.swing.view.widget.JFIBHtmlEditorWidget;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -446,8 +446,8 @@ public abstract class AbstractDocItemView extends JPanel {
 		private final JPanel fullHTMLDescriptionPanel;
 		private final JEditorPane shortHTMLDescriptionLabel;
 		private final JEditorPane fullHTMLDescriptionLabel;
-		FIBHtmlEditorWidget shortHTMLDescriptionEditor;
-		FIBHtmlEditorWidget fullHTMLDescriptionEditor;
+		JFIBHtmlEditorWidget shortHTMLDescriptionEditor;
+		JFIBHtmlEditorWidget fullHTMLDescriptionEditor;
 		private boolean _isEditing;
 
 		protected EditorPanel() {

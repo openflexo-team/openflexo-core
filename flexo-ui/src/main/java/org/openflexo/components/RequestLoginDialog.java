@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.RequestLoginDialog.LoginData;
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.ResourceLocator;
@@ -55,7 +55,7 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
-public class RequestLoginDialog extends FIBDialog<LoginData> {
+public class RequestLoginDialog extends JFIBDialog<LoginData> {
 
 	private static final Logger logger = FlexoLogger.getLogger(RequestLoginDialog.class.getPackage().getName());
 	

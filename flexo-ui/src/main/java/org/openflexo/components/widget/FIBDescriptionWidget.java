@@ -45,11 +45,12 @@ import java.util.logging.Logger;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.swing.utils.FIBJPanel;
+import org.openflexo.fib.swing.view.SwingViewFactory;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to represent/edit specific descriptions related to a {@link FlexoObject} instance
@@ -61,7 +62,6 @@ import org.openflexo.rm.Resource;
 public class FIBDescriptionWidget extends FIBJPanel<FlexoObject> {
 
 	static final Logger logger = Logger.getLogger(FIBDescriptionWidget.class.getPackage().getName());
-	
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/DescriptionWidget.fib");
 
@@ -90,7 +90,7 @@ public class FIBDescriptionWidget extends FIBJPanel<FlexoObject> {
 		private String specificDescriptionKey;
 
 		public DescriptionWidgetFIBController(FIBComponent c) {
-			super(c);
+			super(c, SwingViewFactory.INSTANCE);
 		}
 
 		public String getSpecificDescription() {

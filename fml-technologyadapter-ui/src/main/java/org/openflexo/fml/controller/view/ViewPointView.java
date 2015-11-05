@@ -39,8 +39,8 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.swing.view.FIBView;
-import org.openflexo.fib.swing.view.widget.FIBTableWidget;
+import org.openflexo.fib.swing.view.widget.JFIBTableWidget;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -56,7 +56,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class ViewPointView extends FIBModuleView<ViewPoint> implements FIBMouseClickListener {
+public class ViewPointView extends FIBModuleView<ViewPoint>implements FIBMouseClickListener {
 
 	private final FlexoPerspective perspective;
 
@@ -72,8 +72,8 @@ public class ViewPointView extends FIBModuleView<ViewPoint> implements FIBMouseC
 
 	@Override
 	public void mouseClicked(FIBView<?, ?> view, int clickCount) {
-		if (view instanceof FIBTableWidget && ((FIBTableWidget<?>) view).getSelected() instanceof FlexoObject && clickCount == 2) {
-			FlexoObject o = (FlexoObject) ((FIBTableWidget<?>) view).getSelected();
+		if (view instanceof JFIBTableWidget && ((JFIBTableWidget<?>) view).getSelected() instanceof FlexoObject && clickCount == 2) {
+			FlexoObject o = (FlexoObject) ((JFIBTableWidget<?>) view).getSelected();
 			if (o instanceof ViewPoint || o instanceof FlexoConcept /*|| o instanceof ExampleDiagram || o instanceof DiagramPalette*/) {
 				getFlexoController().selectAndFocusObject(o);
 			}

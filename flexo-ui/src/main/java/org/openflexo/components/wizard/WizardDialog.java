@@ -44,8 +44,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
@@ -60,7 +62,7 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sylvain
  */
-public class WizardDialog extends FIBDialog<Wizard> {
+public class WizardDialog extends JFIBDialog<Wizard> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WizardDialog.class.getPackage().getName());
 
@@ -69,8 +71,8 @@ public class WizardDialog extends FIBDialog<Wizard> {
 	public WizardDialog(Wizard wizard, FlexoController controller) {
 		// We first initialize the FIBComponent in order to have the FlexoController well initialized in the WizardPanelController
 		// Otherwise, first step of wizard will have a controller with a null FlexoController
-		super(getFIBComponent(), wizard, FlexoFrame.getActiveFrame(), true, makeFIBController(getFIBComponent(),
-				FlexoLocalization.getMainLocalizer(), wizard));
+		super(getFIBComponent(), wizard, FlexoFrame.getActiveFrame(), true,
+				makeFIBController(getFIBComponent(), SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer(), wizard));
 		if (wizard instanceof FlexoWizard) {
 			getController().setFlexoController(((FlexoWizard) wizard).getController());
 		}
@@ -94,8 +96,9 @@ public class WizardDialog extends FIBDialog<Wizard> {
 	}
 
 	@Override
-	protected FIBController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer) {
-		WizardPanelController returned = new WizardPanelController(fibComponent);
+	protected FIBController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
+			LocalizedDelegate parentLocalizer) {
+		WizardPanelController returned = new WizardPanelController(fibComponent, viewFactory);
 		returned.setParentLocalizer(parentLocalizer);
 		return returned;
 	}
@@ -104,8 +107,9 @@ public class WizardDialog extends FIBDialog<Wizard> {
 		return FIBLibrary.instance().retrieveFIBComponent(FIB_FILE);
 	}
 
-	protected static WizardPanelController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer, Wizard data) {
-		WizardPanelController returned = new WizardPanelController(fibComponent);
+	protected static WizardPanelController makeFIBController(FIBComponent fibComponent, GinaViewFactory<?> viewFactory,
+			LocalizedDelegate parentLocalizer, Wizard data) {
+		WizardPanelController returned = new WizardPanelController(fibComponent, viewFactory);
 		if (data instanceof FlexoWizard) {
 			returned.setFlexoController(((FlexoWizard) data).getController());
 		}

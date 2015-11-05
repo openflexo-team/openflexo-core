@@ -62,7 +62,7 @@ import org.openflexo.ApplicationVersion;
 import org.openflexo.Flexo;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
@@ -248,7 +248,7 @@ public class JIRAIssueReportDialog {
 				}
 			}*/
 			
-			FIBDialog<JIRAIssueReportDialog> dialog = FIBDialog.instanciateAndShowDialog(FIB_FILE, report, FlexoFrame.getActiveFrame(),
+			JFIBDialog<JIRAIssueReportDialog> dialog = JFIBDialog.instanciateAndShowDialog(FIB_FILE, report, FlexoFrame.getActiveFrame(),
 					true, FlexoLocalization.getMainLocalizer());
 			
 			
@@ -432,7 +432,7 @@ public class JIRAIssueReportDialog {
 		} finally {
 			ProgressWindow.hideProgressWindow();
 		}
-		FIBDialog
+		JFIBDialog
 				.instanciateAndShowDialog(REPORT_FIB_FILE, report, FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		return !report.hasErrors();
 	}
@@ -467,7 +467,7 @@ public class JIRAIssueReportDialog {
 					if (frame instanceof FlexoFrame) {
 						steps++;
 						for (Window w : frame.getOwnedWindows()) {
-							if (w instanceof FlexoDialog || w instanceof FIBDialog) {
+							if (w instanceof FlexoDialog || w instanceof JFIBDialog) {
 								steps++;
 							}
 						}
@@ -609,7 +609,7 @@ public class JIRAIssueReportDialog {
 								progressAdapter.resetCount();
 								attachScreenshotToIssue(client, result, frame, frame.getTitle(), progressAdapter, report);
 								for (Window w : frame.getOwnedWindows()) {
-									if (w instanceof FlexoDialog || w instanceof FIBDialog) {
+									if (w instanceof FlexoDialog || w instanceof JFIBDialog) {
 										ProgressWindow.instance().setProgress(
 												FlexoLocalization.localizedForKey("sending_screenshot") + " " + ((Dialog) w).getTitle());
 										progressAdapter.resetCount();

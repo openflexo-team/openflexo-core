@@ -72,10 +72,11 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.fib.model.FIBCustom;
 import org.openflexo.fib.model.FIBCustom.FIBCustomComponent;
-import org.openflexo.fib.swing.view.FIBView;
-import org.openflexo.fib.swing.view.widget.FIBBrowserWidget;
-import org.openflexo.fib.swing.view.widget.FIBListWidget;
 import org.openflexo.fib.model.FIBList;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.view.widget.FIBListWidget;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.icon.IconFactory;
@@ -98,7 +99,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  */
 @SuppressWarnings("serial")
 public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends TextFieldCustomPopup<T>
-		implements FIBCustomComponent<T, FIBFlexoObjectSelector<T>>, HasPropertyChangeSupport {
+		implements FIBCustomComponent<T>, HasPropertyChangeSupport {
 
 	static final Logger logger = Logger.getLogger(FIBFlexoObjectSelector.class.getPackage().getName());
 
@@ -173,15 +174,15 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_UP) {
 					if (getCustomPanel() != null) {
-						getCustomPanel().getFIBListWidget().getDynamicJComponent().requestFocusInWindow();
-						getCustomPanel().getFIBListWidget().getDynamicJComponent()
-								.setSelectedIndex(getCustomPanel().getFIBListWidget().getDynamicJComponent().getModel().getSize() - 1);
+						getCustomPanel().getFIBListWidget().requestFocusInWindow();
+						getCustomPanel().getFIBListWidget()
+								.setSelectedIndex(getCustomPanel().getFIBListWidget().getMultipleValueModel().getSize() - 1);
 					}
 				}
 				else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					if (getCustomPanel() != null) {
-						getCustomPanel().getFIBListWidget().getJComponent().requestFocusInWindow();
-						getCustomPanel().getFIBListWidget().getDynamicJComponent().setSelectedIndex(0);
+						getCustomPanel().getFIBListWidget().requestFocusInWindow();
+						getCustomPanel().getFIBListWidget().setSelectedIndex(0);
 					}
 				}
 
@@ -479,8 +480,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		private final FIBView fibView;
 		private final SelectorFIBController controller;
 
-		private FIBBrowserWidget<?> browserWidget = null;
-		private FIBListWidget<?> listWidget = null;
+		private JFIBBrowserWidget<?> browserWidget = null;
+		private FIBListWidget<?, ?> listWidget = null;
 
 		protected SelectorDetailsPanel(T anObject) {
 			super();
@@ -498,7 +499,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 
 		protected void selectValue(T value) {
-			FIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
+			JFIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
 			if (browserWidget != null) {
 				// Force reselect value because tree may have been recomputed
 				browserWidget.setSelected(value);
@@ -521,7 +522,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 		protected Set<T> getAllSelectableValues() {
 			Set<T> returned = new HashSet<T>();
-			FIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
+			JFIBBrowserWidget browserWidget = retrieveFIBBrowserWidget();
 			if (browserWidget == null) {
 				return null;
 			}
@@ -535,35 +536,35 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			return returned;
 		}
 
-		public FIBBrowserWidget<?> getFIBBrowserWidget() {
+		public JFIBBrowserWidget<?> getFIBBrowserWidget() {
 			if (browserWidget == null) {
 				browserWidget = retrieveFIBBrowserWidget();
 			}
 			return browserWidget;
 		}
 
-		public FIBListWidget<?> getFIBListWidget() {
+		public FIBListWidget<?, ?> getFIBListWidget() {
 			if (listWidget == null) {
 				listWidget = retrieveFIBListWidget();
 			}
 			return listWidget;
 		}
 
-		private FIBBrowserWidget<?> retrieveFIBBrowserWidget() {
+		private JFIBBrowserWidget<?> retrieveFIBBrowserWidget() {
 			List<FIBComponent> listComponent = fibComponent.getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBBrowser) {
-					return (FIBBrowserWidget<?>) controller.viewForComponent(c);
+					return (JFIBBrowserWidget) controller.viewForComponent(c);
 				}
 			}
 			return null;
 		}
 
-		private FIBListWidget<?> retrieveFIBListWidget() {
+		private FIBListWidget<?, ?> retrieveFIBListWidget() {
 			List<FIBComponent> listComponent = fibComponent.getAllSubComponents();
 			for (FIBComponent c : listComponent) {
 				if (c instanceof FIBList) {
-					return (FIBListWidget<?>) controller.viewForComponent(c);
+					return (FIBListWidget) controller.viewForComponent(c);
 				}
 			}
 			return null;
@@ -586,7 +587,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		private final FIBFlexoObjectSelector selector;
 
 		public SelectorFIBController(FIBComponent component, FIBFlexoObjectSelector selector) {
-			super(component);
+			super(component, SwingViewFactory.INSTANCE);
 			this.selector = selector;
 		}
 
@@ -733,11 +734,6 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 	public SelectorDetailsPanel getSelectorPanel() {
 		return _selectorPanel;
-	}
-
-	@Override
-	public FIBFlexoObjectSelector getJComponent() {
-		return this;
 	}
 
 	@Override

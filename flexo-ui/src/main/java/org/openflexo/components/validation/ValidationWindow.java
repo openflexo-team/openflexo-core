@@ -44,7 +44,7 @@ import javax.swing.JFrame;
 import org.openflexo.editor.SelectAndFocusObjectTask;
 import org.openflexo.fib.editor.ComponentValidationWindow;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.validation.ValidationPanel;
+import org.openflexo.fib.swing.utils.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;

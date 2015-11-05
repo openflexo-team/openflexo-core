@@ -39,20 +39,19 @@
 package org.openflexo.components;
 
 import java.awt.Window;
-import java.io.File;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.model.ModelEntity;
+import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.PreferencesContainer;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -62,12 +61,11 @@ import org.openflexo.view.controller.FlexoFIBController;
  * 
  */
 @SuppressWarnings("serial")
-public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
+public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 
 	static final Logger logger = Logger.getLogger(PreferencesDialog.class.getPackage().getName());
-	
 
-	public static final Resource  PREFERENCES_FIB = ResourceLocator.locateResource("Fib/Preferences.fib");
+	public static final Resource PREFERENCES_FIB = ResourceLocator.locateResource("Fib/Preferences.fib");
 
 	private static PreferencesDialog dialog;
 
@@ -92,9 +90,9 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 
 	public PreferencesDialog(ApplicationContext applicationContext, Window parent) {
 
-		super(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB,true),
-				applicationContext.getPreferencesService().getFlexoPreferences(), parent, true, new PreferencesFIBController(FIBLibrary
-						.instance().retrieveFIBComponent(PREFERENCES_FIB,true)));
+		super(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB, true),
+				applicationContext.getPreferencesService().getFlexoPreferences(), parent, true,
+				new PreferencesFIBController(FIBLibrary.instance().retrieveFIBComponent(PREFERENCES_FIB, true), SwingViewFactory.INSTANCE));
 
 		setTitle("Preferences");
 
@@ -102,38 +100,38 @@ public class PreferencesDialog extends FIBDialog<FlexoPreferences> {
 
 	public static class PreferencesFIBController extends FlexoFIBController {
 
-		public PreferencesFIBController(FIBComponent component) {
-			super(component);
+		public PreferencesFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+			super(component, viewFactory);
 		}
 
 		public Resource fibForPreference(PreferencesContainer prefs) {
 
 			if (prefs == null) {
 				return null;
-			} 
-			
-			if(getFIBPanelForObject(prefs)!=null){
+			}
+
+			if (getFIBPanelForObject(prefs) != null) {
 				return getFIBPanelForObject(prefs);
 			}
 
 			return null;
-			
+
 			/*ModelEntity<?> prefsEntity = prefs.getFlexoPreferencesFactory().getModelEntityForInstance(prefs);
-
+			
 			if (prefsEntity != null) {
-
+			
 				// System.out.println("Entity=" + prefsEntity);
 				// System.out.println("Class=" + prefsEntity.getImplementedInterface());
-
+			
 				FIBPanel fibDeclaration = prefsEntity.getImplementedInterface().getAnnotation(FIBPanel.class);
-
+			
 				if (fibDeclaration != null) {
 					Resource returned = ResourceLocator.locateResource(fibDeclaration.value());
 					// System.out.println("Returning " + returned);
 					return returned;
 				}
 			}
-
+			
 			return null;*/
 		}
 	}

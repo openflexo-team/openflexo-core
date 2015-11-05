@@ -39,12 +39,13 @@
 package org.openflexo.components.wizard;
 
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.view.controller.FlexoFIBController;
 
 public class WizardPanelController extends FlexoFIBController {
 
-	public WizardPanelController(FIBComponent component) {
-		super(component);
+	public WizardPanelController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
 	@Override

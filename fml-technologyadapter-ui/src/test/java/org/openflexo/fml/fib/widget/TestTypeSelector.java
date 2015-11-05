@@ -49,7 +49,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.components.widget.TypeSelector;
 import org.openflexo.components.widget.TypeSelector.TypeSelectorDetailsPanel;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
+import org.openflexo.fib.swing.utils.SwingGraphicalContextDelegate;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.OpenflexoTestCase;
@@ -74,7 +74,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestTypeSelector extends OpenflexoTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
@@ -158,7 +158,7 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestTypeSelector.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestTypeSelector.class.getSimpleName());
 	}
 
 	@AfterClass

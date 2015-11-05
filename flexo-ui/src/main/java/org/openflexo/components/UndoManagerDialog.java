@@ -42,7 +42,7 @@ import java.awt.Window;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.undo.UndoManager;
@@ -56,7 +56,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class UndoManagerDialog extends FIBDialog<UndoManager> {
+public class UndoManagerDialog extends JFIBDialog<UndoManager> {
 
 	static final Logger logger = Logger.getLogger(UndoManagerDialog.class.getPackage().getName());
 

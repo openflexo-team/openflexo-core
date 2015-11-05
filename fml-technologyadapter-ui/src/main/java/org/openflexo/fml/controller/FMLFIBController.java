@@ -45,6 +45,7 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBPanel;
 import org.openflexo.fib.model.FIBTab;
 import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -117,12 +118,12 @@ public class FMLFIBController extends FlexoFIBController {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FMLFIBController.class.getPackage().getName());
 
-	public FMLFIBController(FIBComponent component) {
-		super(component);
+	public FMLFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
-	public FMLFIBController(FIBComponent component, FlexoController controller) {
-		super(component, controller);
+	public FMLFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+		super(component, viewFactory, controller);
 	}
 
 	public void deleteFolder(RepositoryFolder<?> folder) {

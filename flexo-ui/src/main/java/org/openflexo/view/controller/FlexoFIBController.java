@@ -48,12 +48,11 @@ import javax.naming.InvalidNameException;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
-import org.openflexo.Flexo;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.controller.FIBController;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBModelFactory;
-import org.openflexo.fib.swing.view.FIBView;
+import org.openflexo.fib.view.FIBView;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -111,14 +110,14 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
-	public FlexoFIBController(FIBComponent component) {
-		super(component);
+	public FlexoFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 		// Default parent localizer is the main localizer
 		setParentLocalizer(FlexoLocalization.getMainLocalizer());
 	}
 
-	public FlexoFIBController(FIBComponent component, FlexoController controller) {
-		super(component);
+	public FlexoFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+		super(component, viewFactory);
 		this.controller = controller;
 	}
 
@@ -239,21 +238,10 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public ImageIcon iconForObject(Object object) {
 		if (controller != null) {
 			return controller.iconForObject(object);
-		} else {
+		}
+		else {
 			return FlexoController.statelessIconForObject(object);
 		}
-	}
-
-	@Override
-	protected boolean allowsFIBEdition() {
-		return Flexo.isDev;
-	}
-
-	@Override
-	protected void openFIBEditor(FIBComponent component, MouseEvent event) {
-		ProgressWindow.showProgressWindow(FlexoLocalization.localizedForKey("opening_fib_editor"), 1);
-		super.openFIBEditor(component, event);
-		ProgressWindow.hideProgressWindow();
 	}
 
 	/**
@@ -265,8 +253,8 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	@Override
 	public boolean handleException(Throwable t) {
 		if (t instanceof InvalidNameException) {
-			FlexoController.showError(FlexoLocalization.localizedForKey("invalid_name") + " : "
-					+ ((InvalidNameException) t).getExplanation());
+			FlexoController
+					.showError(FlexoLocalization.localizedForKey("invalid_name") + " : " + ((InvalidNameException) t).getExplanation());
 			return true;
 		}
 		return super.handleException(t);

@@ -43,13 +43,13 @@ import java.awt.Window;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.MissingFlexoResource;
 import org.openflexo.localization.FlexoLocalization;
 
 
-public class ResourceMissingEditorDialog extends FIBDialog<ResourceMissingEditor>{
+public class ResourceMissingEditorDialog extends JFIBDialog<ResourceMissingEditor>{
 
 	static final Logger logger = Logger.getLogger(ResourceMissingEditorDialog.class.getPackage().getName());
 

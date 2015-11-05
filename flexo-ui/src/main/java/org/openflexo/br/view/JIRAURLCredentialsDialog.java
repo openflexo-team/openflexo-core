@@ -41,7 +41,7 @@ package org.openflexo.br.view;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -89,7 +89,7 @@ public class JIRAURLCredentialsDialog {
 
 	public static boolean askLoginPassword(ApplicationContext applicationContext) {
 		JIRAURLCredentialsDialog credentialsDialog = new JIRAURLCredentialsDialog(applicationContext);
-		FIBDialog<JIRAURLCredentialsDialog> dialog = FIBDialog.instanciateAndShowDialog(URL_FIB_FILE, credentialsDialog,
+		JFIBDialog<JIRAURLCredentialsDialog> dialog = JFIBDialog.instanciateAndShowDialog(URL_FIB_FILE, credentialsDialog,
 				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
 			applicationContext.getAdvancedPrefs().setBugReportUser(credentialsDialog.login);

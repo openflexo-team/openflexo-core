@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
@@ -108,7 +108,7 @@ public class SaveProjectsDialog {
 
 	public SaveProjectsDialog(FlexoController controller, List<FlexoProject> modifiedProjects) {
 		data = new ProjectList(modifiedProjects);
-		FIBDialog<ProjectList> dialog = FIBDialog.instanciateDialog(FIB_FILE_NAME, data, FlexoFrame.getActiveFrame(), true,
+		JFIBDialog<ProjectList> dialog = JFIBDialog.instanciateDialog(FIB_FILE_NAME, data, FlexoFrame.getActiveFrame(), true,
 				FlexoLocalization.getMainLocalizer());
 		if (dialog.getController() instanceof FlexoFIBController) {
 			((FlexoFIBController) dialog.getController()).setFlexoController(controller);

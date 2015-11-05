@@ -54,9 +54,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.swing.view.FIBView;
-import org.openflexo.fib.swing.view.container.FIBTabPanelView;
+import org.openflexo.fib.swing.view.SwingViewFactory;
+import org.openflexo.fib.swing.view.container.JFIBTabPanelView;
 import org.openflexo.fib.utils.FIBInspector;
+import org.openflexo.fib.view.FIBView;
 import org.openflexo.inspector.ModuleInspectorController.EmptySelectionActivated;
 import org.openflexo.inspector.ModuleInspectorController.InspectedObjectChanged;
 import org.openflexo.inspector.ModuleInspectorController.InspectorSwitching;
@@ -83,7 +84,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 	private final ModuleInspectorController inspectorController;
 
 	private int lastInspectedTabIndex = -1;
-	private FIBTabPanelView tabPanelView;
+	private JFIBTabPanelView tabPanelView;
 
 	private FIBInspector currentlyDisplayedInspector;
 
@@ -130,7 +131,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 	private FIBView<?, ?> buildViewFor(FIBInspector inspector) {
 
-		FIBView<?, ?> inspectorView = FIBController.makeView(inspector, FlexoLocalization.getMainLocalizer());
+		FIBView<?, ?> inspectorView = FIBController.makeView(inspector, SwingViewFactory.INSTANCE, FlexoLocalization.getMainLocalizer());
 		FIBController controller = inspectorView.getController();
 		if (controller instanceof FlexoFIBController) {
 			((FlexoFIBController) controller).setFlexoController(inspectorController.getFlexoController());
@@ -170,11 +171,11 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		if (object == currentInspectedObject) {
 			return false;
 		}
-
+	
 		currentInspectedObject = object;
-
+	
 		JFIBInspector newInspector = inspectorController.inspectorForObject(object);
-
+	
 		if (newInspector == null) {
 			logger.warning("No inspector for " + object);
 			switchToEmptyContent();
@@ -187,7 +188,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 			}
 			currentInspectorView.getController().setDataObject(object);
 		}
-
+	
 		return true;
 	}*/
 
@@ -250,13 +251,14 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 			repaint();
 			// logger.info("reset title to "+newInspector.getParameter("title"));dsqqsd
 			// inspectorDialog.setTitle(newInspector.getParameter("title"));
-			tabPanelView = (FIBTabPanelView) currentInspectorView.getController().viewForComponent(newInspector.getTabPanel());
+			tabPanelView = (JFIBTabPanelView) currentInspectorView.getController().viewForComponent(newInspector.getTabPanel());
 			if (lastInspectedTabIndex >= 0 && lastInspectedTabIndex < tabPanelView.getJComponent().getTabCount()) {
 				tabPanelView.getJComponent().setSelectedIndex(lastInspectedTabIndex);
 			}
 			tabPanelView.getJComponent().addChangeListener(this);
 			// System.out.println("addChangeListener for "+tabPanelView.getJComponent());
-		} else {
+		}
+		else {
 			logger.warning("No inspector view for " + newInspector);
 			switchToEmptyContent();
 		}
@@ -285,11 +287,15 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		}
 		if (notification instanceof EmptySelectionActivated) {
 			switchToEmptyContent();
-		} else if (notification instanceof MultipleSelectionActivated) {
+		}
+		else if (notification instanceof MultipleSelectionActivated) {
 			switchToMultipleSelection();
-		} else if (notification instanceof InspectorSwitching) {
-			switchToInspector(((InspectorSwitching) notification).getNewInspector()/*, ((InspectorSwitching) notification).updateEPTabs()*/);
-		} else if (notification instanceof InspectedObjectChanged) {
+		}
+		else if (notification instanceof InspectorSwitching) {
+			switchToInspector(
+					((InspectorSwitching) notification).getNewInspector()/*, ((InspectorSwitching) notification).updateEPTabs()*/);
+		}
+		else if (notification instanceof InspectedObjectChanged) {
 			switchToObject(((InspectedObjectChanged) notification).getInspectedObject());
 		}
 	}

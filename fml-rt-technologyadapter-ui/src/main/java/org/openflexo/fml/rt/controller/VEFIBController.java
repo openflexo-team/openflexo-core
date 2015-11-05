@@ -41,6 +41,7 @@ package org.openflexo.fml.rt.controller;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.view.GinaViewFactory;
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -61,12 +62,12 @@ public class VEFIBController extends FlexoFIBController {
 
 	protected static final Logger logger = FlexoLogger.getLogger(VEFIBController.class.getPackage().getName());
 
-	public VEFIBController(FIBComponent component) {
-		super(component);
+	public VEFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
-	public VEFIBController(FIBComponent component, FlexoController controller) {
-		super(component, controller);
+	public VEFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+		super(component, viewFactory, controller);
 	}
 
 	public VirtualModelInstance synchronizeVirtualModelInstance(VirtualModelInstance virtualModelInstance) {

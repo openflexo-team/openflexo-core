@@ -41,7 +41,7 @@ package org.openflexo.components;
 import java.util.logging.Logger;
 
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
@@ -59,7 +59,7 @@ import org.openflexo.view.controller.ResourceSavingInfo;
  * 
  */
 @SuppressWarnings("serial")
-public class ReviewUnsavedDialog extends FIBDialog<ResourceSavingInfo> {
+public class ReviewUnsavedDialog extends JFIBDialog<ResourceSavingInfo> {
 
 	static final Logger logger = Logger.getLogger(ReviewUnsavedDialog.class.getPackage().getName());
 	

@@ -47,9 +47,9 @@ import java.util.List;
 
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.remoteresources.DefaultFlexoBundle;
 import org.openflexo.foundation.remoteresources.FlexoBundle;
 import org.openflexo.foundation.remoteresources.FlexoBundle.FlexoBundleType;
@@ -178,7 +178,7 @@ public class FlexoMarketEditor implements HasPropertyChangeSupport{
 		try {
 			
 			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(FLEXO_CREATE_URL_FIB);
-			FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, this, FlexoFrame.getActiveFrame(), true,
+			JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, this, FlexoFrame.getActiveFrame(), true,
 					new FlexoFIBController(fibComponent, null));
 			if(dialog.getStatus().equals(Status.VALIDATED)){
 				bundle.addToURLs(new URL(newURL));
