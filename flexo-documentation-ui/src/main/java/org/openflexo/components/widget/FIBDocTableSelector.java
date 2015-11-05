@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.fib.model.FIBCustom;
-import org.openflexo.fib.swing.utils.swing.view.widget.FIBCustomWidget;
 import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.fib.view.widget.FIBCustomWidget;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
