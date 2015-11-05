@@ -44,9 +44,11 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBModelFactory;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.utils.FIBInspector;
+import org.openflexo.gina.utils.GenericFIBTestCase;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationReport;

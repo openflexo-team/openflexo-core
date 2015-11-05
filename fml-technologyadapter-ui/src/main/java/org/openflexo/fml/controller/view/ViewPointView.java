@@ -38,13 +38,13 @@
 
 package org.openflexo.fml.controller.view;
 
-import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.swing.view.widget.JFIBTableWidget;
-import org.openflexo.fib.view.FIBView;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.swing.view.widget.JFIBTableWidget;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;

@@ -2,9 +2,9 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.CustomTypeFactory;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;

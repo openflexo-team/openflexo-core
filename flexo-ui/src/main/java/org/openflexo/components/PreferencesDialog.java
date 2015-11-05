@@ -43,11 +43,11 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.utils.JFIBDialog;
-import org.openflexo.fib.swing.view.SwingViewFactory;
-import org.openflexo.fib.view.GinaViewFactory;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.JFIBDialog;
+import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.rm.Resource;

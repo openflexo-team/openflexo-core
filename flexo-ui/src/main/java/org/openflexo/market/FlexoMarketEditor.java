@@ -46,13 +46,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.components.ProgressWindow;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.remoteresources.DefaultFlexoBundle;
 import org.openflexo.foundation.remoteresources.FlexoBundle;
 import org.openflexo.foundation.remoteresources.FlexoBundle.FlexoBundleType;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.foundation.remoteresources.FlexoMarketRemoteRepository;
 import org.openflexo.foundation.remoteresources.FlexoRemoteRepository;
 import org.openflexo.foundation.remoteresources.FlexoRemoteRepositoryImpl;

@@ -40,7 +40,7 @@ package org.openflexo.components.wizard;
 
 import java.awt.Image;
 
-import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 

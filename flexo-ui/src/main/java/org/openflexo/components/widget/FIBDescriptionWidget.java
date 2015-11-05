@@ -42,11 +42,11 @@ package org.openflexo.components.widget;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.utils.FIBJPanel;
-import org.openflexo.fib.swing.view.SwingViewFactory;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;

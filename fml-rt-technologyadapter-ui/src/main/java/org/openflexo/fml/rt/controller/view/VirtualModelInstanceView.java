@@ -38,10 +38,10 @@
 
 package org.openflexo.fml.rt.controller.view;
 
-import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.view.FIBView;
 import org.openflexo.fml.rt.controller.CommonFIB;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;

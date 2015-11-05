@@ -39,10 +39,10 @@
 package org.openflexo.view;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.model.FIBBrowserAction;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;

@@ -38,10 +38,10 @@
 
 package org.openflexo.fml.controller.view;
 
-import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 

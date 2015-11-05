@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.action.transformation.AbstractDeclareInFlexoConcept;
 import org.openflexo.foundation.action.transformation.AbstractDeclareInFlexoConcept.DeclareInFlexoConceptChoices;
 import org.openflexo.foundation.action.transformation.FlexoConceptCreationStrategy;
@@ -51,6 +50,7 @@ import org.openflexo.foundation.action.transformation.FlexoRoleCreationStrategy;
 import org.openflexo.foundation.action.transformation.FlexoRoleSettingStrategy;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 

@@ -4,7 +4,7 @@
 	controllerClassName="org.openflexo.components.widget.TypeSelector$TypeSelectorDetailsPanel$CustomFIBController"
 	width="300" height="300">
 	<Panel id="2" darkLevel="0" useScrollBar="true" protectContent="false"
-		layout="border" controllerClassName="org.openflexo.fib.controller.FIBController"
+		layout="border" controllerClassName="org.openflexo.gina.controller.FIBController"
 		border="empty" trackViewPortWidth="true" constraints="border(location=west)"
 		borderTitle="Panel" trackViewPortHeight="true"
 		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_NEVER">
@@ -16,7 +16,7 @@
 			autoSelectFirstRow="false" hGap="0" list="data.choices" readOnly="false" />
 	</Panel>
 	<Panel darkLevel="0" useScrollBar="true" protectContent="false"
-		layout="twocols" controllerClassName="org.openflexo.fib.controller.FIBController"
+		layout="twocols" controllerClassName="org.openflexo.gina.controller.FIBController"
 		border="empty" trackViewPortWidth="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 		borderTitle="Panel" trackViewPortHeight="true"
@@ -26,7 +26,7 @@
 			constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 			borderBottom="2" borderTop="2" trackViewPortHeight="true"
 			visible="data.hasBaseJavaClass">
-			<Custom componentClassName="org.openflexo.fib.swing.utils.ClassEditor"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.ClassEditor"
 				localize="true" manageDynamicModel="true" data="data.loadedClassesInfo"
 				constraints="border(location=center)" />
 		</Panel>

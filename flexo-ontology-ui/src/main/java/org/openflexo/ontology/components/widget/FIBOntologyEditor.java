@@ -48,16 +48,16 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fib.model.FIBBrowser;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBContainer;
-import org.openflexo.fib.model.FIBCustom.FIBCustomComponent.CustomComponentParameter;
-import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.model.widget.FIBBrowser;
+import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent.CustomComponentParameter;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.ontology.controller.FlexoOntologyTechnologyAdapterController;
 import org.openflexo.rm.Resource;

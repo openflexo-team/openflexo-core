@@ -40,8 +40,8 @@
 package org.openflexo.br.view;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

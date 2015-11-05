@@ -42,8 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.RequestLoginDialog.LoginData;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.swing.utils.JFIBDialog;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.ResourceLocator;

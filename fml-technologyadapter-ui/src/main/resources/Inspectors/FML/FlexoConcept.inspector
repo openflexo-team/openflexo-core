@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -69,7 +69,7 @@
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="30" resizable="false" displayTitle="false"
 					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.constraint" title="constraint" columnWidth="80"
 					resizable="true" displayTitle="true" name="value">

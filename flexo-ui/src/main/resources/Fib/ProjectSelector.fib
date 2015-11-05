@@ -8,7 +8,7 @@
 	<LocalizedDictionary id="1" />
 	<Panel id="2" darkLevel="0" useScrollBar="false" protectContent="false"
 		opaque="false" name="Matches" layout="gridbag"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		border="empty" trackViewPortWidth="true" index="1"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		borderTitle="Panel" trackViewPortHeight="true">
@@ -16,7 +16,7 @@
 			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
 			manageDynamicModel="false" useScrollBar="false"
 			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
-			name="MatchesLabel" controllerClassName="org.openflexo.fib.controller.FIBController"
+			name="MatchesLabel" controllerClassName="org.openflexo.gina.controller.FIBController"
 			index="0" localize="true" align="right"
 			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 			readOnly="false" />
@@ -24,7 +24,7 @@
 	<Browser id="4" showFooter="false" showRootsHandle="true"
 		manageDynamicModel="true" root="data.projectLoader" doubleClickAction="data.apply()"
 		selectionMode="DiscontiguousTreeSelection" boundToSelectionManager="false"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="2" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visibleRowCount="10" deepExploration="false" rowHeight="20"
@@ -54,23 +54,23 @@
 	</Browser>
 	<Panel id="11" darkLevel="0" vGap="0" useScrollBar="false"
 		protectContent="false" hGap="5" opaque="false" layout="flow"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		border="empty" flowAlignment="CENTER" trackViewPortWidth="true" index="3"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		borderTitle="Panel" trackViewPortHeight="true">
 		<Button id="12" manageDynamicModel="false" useScrollBar="false"
 			enable="(data.selectedValue != null)" buttonType="Trigger" action="controller.apply()"
-			controllerClassName="org.openflexo.fib.controller.FIBController"
+			controllerClassName="org.openflexo.gina.controller.FIBController"
 			index="0" localize="true" constraints="flow(index=0)" label="apply"
 			readOnly="false" />
 		<Button id="13" manageDynamicModel="false" useScrollBar="false"
 			buttonType="Trigger" action="controller.cancel()"
-			controllerClassName="org.openflexo.fib.controller.FIBController"
+			controllerClassName="org.openflexo.gina.controller.FIBController"
 			index="1" localize="true" constraints="flow(index=1)" label="cancel"
 			readOnly="false" />
 		<Button id="14" visible="data.showReset" manageDynamicModel="false"
 			useScrollBar="false" buttonType="Trigger" action="controller.reset()"
-			controllerClassName="org.openflexo.fib.controller.FIBController"
+			controllerClassName="org.openflexo.gina.controller.FIBController"
 			index="2" localize="true" constraints="flow(index=2)" label="reset"
 			readOnly="false" />
 	</Panel>
@@ -78,7 +78,7 @@
 		visible="(data.matchingValues.size &gt; 1)" manageDynamicModel="true"
 		layoutOrientation="vertical" doubleClickAction="controller.apply()"
 		selectionMode="MultipleIntervalSelection" boundToSelectionManager="true"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="3" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visibleRowCount="4" createNewRowOnClick="false" format="object.name"

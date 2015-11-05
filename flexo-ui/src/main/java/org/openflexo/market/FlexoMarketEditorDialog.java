@@ -41,9 +41,9 @@ package org.openflexo.market;
 import java.awt.Window;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.swing.utils.JFIBDialog;
 import org.openflexo.foundation.remoteresources.FlexoUpdateService;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

@@ -42,12 +42,12 @@ package org.openflexo.components.wizard;
 import java.awt.Dimension;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.utils.JFIBDialog;
-import org.openflexo.fib.swing.view.SwingViewFactory;
-import org.openflexo.fib.view.GinaViewFactory;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.JFIBDialog;
+import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;

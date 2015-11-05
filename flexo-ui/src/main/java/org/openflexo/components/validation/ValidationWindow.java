@@ -42,10 +42,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.openflexo.editor.SelectAndFocusObjectTask;
-import org.openflexo.fib.editor.ComponentValidationWindow;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.utils.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.editor.ComponentValidationWindow;
+import org.openflexo.gina.swing.utils.validation.ValidationPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.validation.Validable;

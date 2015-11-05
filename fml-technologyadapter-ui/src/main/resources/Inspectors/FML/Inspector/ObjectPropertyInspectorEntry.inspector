@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.ontology.fml.inspector.ObjectPropertyInspectorEntry"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -33,7 +33,7 @@
 					<CheckBox selected="true" index="0" data="data.isDynamicRangeValue"
 						constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 						name="InspectorPropertyDynRangeCB" />
-					<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+					<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 						localize="true" index="3" data="data.rangeValue"
 						constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 						visible="data.isDynamicRangeValue" opaque="false">

@@ -53,11 +53,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.swing.view.SwingViewFactory;
-import org.openflexo.fib.swing.view.container.JFIBTabPanelView;
-import org.openflexo.fib.utils.FIBInspector;
-import org.openflexo.fib.view.FIBView;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.gina.swing.view.container.JFIBTabPanelView;
+import org.openflexo.gina.utils.FIBInspector;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.inspector.ModuleInspectorController.EmptySelectionActivated;
 import org.openflexo.inspector.ModuleInspectorController.InspectedObjectChanged;
 import org.openflexo.inspector.ModuleInspectorController.InspectorSwitching;

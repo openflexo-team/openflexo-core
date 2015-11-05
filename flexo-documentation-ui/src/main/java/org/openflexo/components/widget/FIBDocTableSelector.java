@@ -42,13 +42,13 @@ package org.openflexo.components.widget;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBCustom;
-import org.openflexo.fib.swing.view.widget.JFIBBrowserWidget;
-import org.openflexo.fib.view.widget.FIBCustomWidget;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.widget.FIBCustom;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
+import org.openflexo.gina.view.widget.FIBCustomWidget;
 import org.openflexo.rm.Resource;
 
 /**

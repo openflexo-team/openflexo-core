@@ -40,8 +40,8 @@
 
 package org.openflexo.foundation.ontology;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.annotation.FIBPanel;
 
 /**
  * Concept of Object Property.

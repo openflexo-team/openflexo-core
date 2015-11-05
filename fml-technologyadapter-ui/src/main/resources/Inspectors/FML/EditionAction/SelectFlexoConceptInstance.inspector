@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -16,7 +16,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" opaque="false" clickAction=""
 				doubleClickAction="" rightClickAction="" enterPressedAction=""
