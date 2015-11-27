@@ -85,21 +85,21 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.model.FIBComponent;
-import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.FIBComponent.HorizontalScrollBarPolicy;
 import org.openflexo.gina.model.FIBComponent.VerticalScrollBarPolicy;
+import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.container.FIBPanel;
 import org.openflexo.gina.model.container.FIBTab;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBCheckBox;
 import org.openflexo.gina.model.widget.FIBCheckboxList;
 import org.openflexo.gina.model.widget.FIBCustom;
 import org.openflexo.gina.model.widget.FIBNumber;
+import org.openflexo.gina.model.widget.FIBNumber.NumberType;
 import org.openflexo.gina.model.widget.FIBTextArea;
 import org.openflexo.gina.model.widget.FIBTextField;
-import org.openflexo.gina.model.widget.FIBNumber.NumberType;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -293,21 +293,29 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.SYNC);
-		} else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddToListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.POSITIVE_MARKER);
-		} else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (RemoveFromListAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.LIST_ICON, IconLibrary.NEGATIVE_MARKER);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.DELETE_ICON;
-		} else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ConditionalAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.CONDITIONAL_ACTION_ICON;
-		} else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (IterationAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.ITERATION_ACTION_ICON;
-		} else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (ExpressionAction.class.isAssignableFrom(editionActionClass)) {
 			return FMLIconLibrary.EXPRESSION_ACTION_ICON;
 		}
 		return null;
@@ -480,7 +488,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
 			newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return tf;
-		} else if (entry instanceof TextAreaInspectorEntry) {
+		}
+		else if (entry instanceof TextAreaInspectorEntry) {
 			FIBTextArea ta = fibModelFactory.newFIBTextArea();
 			ta.setValidateOnReturn(true); // Avoid to many ontologies manipulations
 			ta.setUseScrollBar(true);
@@ -488,11 +497,13 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 			newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
 			return ta;
-		} else if (entry instanceof CheckboxInspectorEntry) {
+		}
+		else if (entry instanceof CheckboxInspectorEntry) {
 			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 			newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return cb;
-		} else if (entry instanceof IntegerInspectorEntry) {
+		}
+		else if (entry instanceof IntegerInspectorEntry) {
 			FIBNumber number = fibModelFactory.newFIBNumber();
 			number.setNumberType(NumberType.IntegerType);
 			newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
@@ -511,13 +522,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * @param index
 	 * @return
 	 */
-	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
+	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index, FlexoBehaviourAction<?, ?, ?> action,
+			FIBModelFactory fibModelFactory) {
 		if (parameter instanceof TextFieldParameter) {
 			FIBTextField tf = fibModelFactory.newFIBTextField();
 			tf.setName(parameter.getName() + "TextField");
 			return registerWidget(tf, parameter, panel, index);
-		} else if (parameter instanceof TextAreaParameter) {
+		}
+		else if (parameter instanceof TextAreaParameter) {
 			FIBTextArea ta = fibModelFactory.newFIBTextArea();
 			ta.setName(parameter.getName() + "TextArea");
 			ta.setValidateOnReturn(true); // Avoid too many ontologies manipulations
@@ -525,16 +537,19 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 			return registerWidget(ta, parameter, panel, index, true, true);
-		} else if (parameter instanceof CheckboxParameter) {
+		}
+		else if (parameter instanceof CheckboxParameter) {
 			FIBCheckBox cb = fibModelFactory.newFIBCheckBox();
 			cb.setName(parameter.getName() + "CheckBox");
 			return registerWidget(cb, parameter, panel, index);
-		} else if (parameter instanceof IntegerParameter) {
+		}
+		else if (parameter instanceof IntegerParameter) {
 			FIBNumber number = fibModelFactory.newFIBNumber();
 			number.setName(parameter.getName() + "Number");
 			number.setNumberType(NumberType.IntegerType);
 			return registerWidget(number, parameter, panel, index);
-		} else if (parameter instanceof ListParameter) {
+		}
+		else if (parameter instanceof ListParameter) {
 			ListParameter listParameter = (ListParameter) parameter;
 			FIBCheckboxList cbList = fibModelFactory.newFIBCheckboxList();
 			cbList.setName(parameter.getName() + "CheckboxList");
@@ -565,7 +580,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			cbList.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 			return registerWidget(cbList, parameter, panel, index, true, true);
-		} else if (parameter instanceof FlexoConceptInstanceParameter) {
+		}
+		else if (parameter instanceof FlexoConceptInstanceParameter) {
 			FIBCustom epiSelector = fibModelFactory.newFIBCustom();
 			epiSelector.setBindingFactory(parameter.getBindingFactory());
 			Class fciSelectorClass;
@@ -581,19 +597,23 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.view"),
 					new DataBinding<Object>("data.virtualModelInstance.view"), true));
 
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.virtualModelInstance"), new DataBinding<Object>("data."
-					+ ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()), true));
+			epiSelector
+					.addToAssignments(
+							fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModelInstance"),
+									new DataBinding<Object>(
+											"data." + ((FlexoConceptInstanceParameter) parameter).getVirtualModelInstance().toString()),
+							true));
 
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.flexoConcept"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
-					+ ".flexoConceptType"), true));
+			epiSelector
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.flexoConcept"),
+							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".flexoConceptType"), true));
 			// extra informations.
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.virtualModel"), new DataBinding<Object>("data.parametersDefinitions." + parameter.getName()
-					+ ".modelSlotVirtualModel"), true));
-			epiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>(
-					"component.viewPointLibrary"), new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
+			epiSelector
+					.addToAssignments(fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.virtualModel"),
+							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".modelSlotVirtualModel"), true));
+			epiSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(epiSelector, new DataBinding<Object>("component.viewPointLibrary"),
+							new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
 		}
