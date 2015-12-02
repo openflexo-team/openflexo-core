@@ -100,7 +100,8 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 		@Override
 		public FlexoDocument<D, TA> getDocument() {
-			if (getModelSlot() instanceof FlexoDocumentModelSlot) {
+			if (getModelSlot() instanceof FlexoDocumentModelSlot
+					&& ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource() != null) {
 				return ((FlexoDocumentModelSlot<D>) getModelSlot()).getTemplateResource().getDocument();
 			}
 			return null;
