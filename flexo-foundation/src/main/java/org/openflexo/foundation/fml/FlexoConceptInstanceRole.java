@@ -118,7 +118,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getTypeDescription() + ";", context);
+			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getTypeDescription() + " cardinality="
+					+ getCardinality() + ";", context);
 			return out.toString();
 		}
 
