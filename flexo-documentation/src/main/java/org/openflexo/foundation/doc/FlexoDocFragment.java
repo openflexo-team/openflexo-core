@@ -102,13 +102,15 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 	 */
 	public List<? extends FlexoDocElement<D, TA>> getElements();
 
+	public String getStringRepresentationPreview();
+
 	public String getStringRepresentation();
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId, int startCharId,
 			FlexoDocElement<D, TA> endElement, int endRunId, int endCharId) throws FragmentConsistencyException;
 
-	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId,
-			FlexoDocElement<D, TA> endElement, int endRunId) throws FragmentConsistencyException;
+	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> startElement, int startRunId, FlexoDocElement<D, TA> endElement,
+			int endRunId) throws FragmentConsistencyException;
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> element, int startRunId, int startCharId, int endRunId,
 			int endCharId) throws FragmentConsistencyException;
@@ -128,6 +130,9 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 
 		@Override
 		public List<? extends FlexoDocElement<D, TA>> getElements() {
+			if (getStartElement() == null || getEndElement() == null) {
+				return Collections.emptyList();
+			}
 			int startIndex = getStartElement().getContainer().getElements().indexOf(getStartElement());
 			int endIndex = getStartElement().getContainer().getElements().indexOf(getEndElement());
 			if (startIndex > -1 && endIndex >= startIndex) {
@@ -212,7 +217,7 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 		}
 
 		@Override
-		public String getStringRepresentation() {
+		public String getStringRepresentationPreview() {
 			return (getStartElement() instanceof FlexoDocParagraph ? ((FlexoDocParagraph) getStartElement()).getRawTextPreview()
 					: (getStartElement() != null ? getStartElement().toString() : "?"))
 					+ " : "
@@ -220,6 +225,17 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 							? (getEndElement() instanceof FlexoDocParagraph ? ((FlexoDocParagraph) getEndElement()).getRawTextPreview()
 									: (getEndElement() != null ? getEndElement().toString() : "?"))
 							: "");
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			StringBuffer sb = new StringBuffer();
+			for (FlexoDocElement<D, TA> element : getElements()) {
+				if (element instanceof FlexoDocParagraph) {
+					sb.append(((FlexoDocParagraph<D, TA>) element).getRawText() + "\n");
+				}
+			}
+			return sb.toString();
 		}
 
 		@Override
