@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.rt.rm;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -48,28 +47,17 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.InconsistentDataException;
-import org.openflexo.foundation.InvalidModelDefinitionException;
-import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
-import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -79,8 +67,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author Sylvain
  * 
  */
-public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImpl<VirtualModelInstance, VirtualModelInstanceModelFactory>
-		implements VirtualModelInstanceResource, AccessibleProxyObject {
+public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualModelInstanceResourceImpl<VirtualModelInstance, VirtualModel>
+		implements VirtualModelInstanceResource {
 
 	static final Logger logger = Logger.getLogger(VirtualModelInstanceResourceImpl.class.getPackage().getName());
 
@@ -96,8 +84,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 
 	public static VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel, View view) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = name;
@@ -123,11 +111,10 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		return null;
 	}
 
-	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile,
-			ViewResource viewResource) {
+	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile, ViewResource viewResource) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = virtualModelInstanceFile.getName().substring(0,
@@ -140,9 +127,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(xmlFile);
 			returned.setProject(viewResource.getProject());
-			returned.setFactory(
-					new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager().getEditingContext(),
-							viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager()
+					.getEditingContext(), viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.initName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
 			VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(xmlFile, "VirtualModelInstance");
@@ -154,8 +140,8 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 				if (viewResource != null && viewResource.getViewPoint() != null
 						&& viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI) != null) {
-					returned.setVirtualModelResource(
-							(VirtualModelResource) viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI).getResource());
+					returned.setVirtualModelResource((VirtualModelResource) viewResource.getViewPoint()
+							.getVirtualModelNamed(vmiInfo.virtualModelURI).getResource());
 				}
 			}
 			viewResource.addToContents(returned);
@@ -164,20 +150,6 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 			returned.setServiceManager(viewResource.getProject().getServiceManager());
 			return returned;
 		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
-	public VirtualModelInstance getVirtualModelInstance() {
-		try {
-			return getResourceData(null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (ResourceLoadingCancelledException e) {
-			e.printStackTrace();
-		} catch (FlexoException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -217,8 +189,7 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 					}
 					return returned;
 				}
-			}
-			else {
+			} else {
 				logger.warning("Cannot find file: " + virtualModelInstanceFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {
@@ -230,58 +201,4 @@ public abstract class VirtualModelInstanceResourceImpl extends PamelaResourceImp
 		return null;
 	}
 
-	@Override
-	public VirtualModelInstance loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException,
-			InvalidXMLException, InconsistentDataException, InvalidModelDefinitionException {
-		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
-		// UndoManager
-		boolean containerWasDeserializing = getContainer().isDeserializing();
-		if (!containerWasDeserializing) {
-			getContainer().startDeserializing();
-		}
-		startDeserializing();
-		VirtualModelInstance returned = super.loadResourceData(progress);
-		getContainer().getView().addToVirtualModelInstances(returned);
-		returned.clearIsModified();
-		/*if (returned.isSynchronizable()) {
-			returned.synchronize(null);
-		}*/
-		// And, we notify a deserialization stop
-		stopDeserializing();
-		if (!containerWasDeserializing) {
-			getContainer().stopDeserializing();
-		}
-
-		/*if (!getContainer().isDeserializing()) {
-			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
-				getLoadedResourceData().synchronize(null);
-			}
-		}*/
-
-		return returned;
-	}
-
-	@Override
-	public void setLoading(boolean isLoading) {
-		super.setLoading(isLoading);
-		// Just after the loading occurs, apply synchronization.
-		if (!isLoading()) {
-			if (getLoadedResourceData() != null && getLoadedResourceData().isSynchronizable()) {
-				getLoadedResourceData().synchronize(null);
-			}
-		}
-	}
-
-	@Override
-	public FMLRTTechnologyAdapter getTechnologyAdapter() {
-		if (getServiceManager() != null) {
-			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-		}
-		return null;
-	}
-
-	@Override
-	public ViewResource getContainer() {
-		return (ViewResource) performSuperGetter(CONTAINER);
-	}
 }

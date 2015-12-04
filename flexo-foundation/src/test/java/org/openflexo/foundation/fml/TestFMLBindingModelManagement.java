@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -1057,7 +1058,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		SelectFlexoConceptInstance selectFlexoConceptInstance = (SelectFlexoConceptInstance) createSelectFlexoConceptInstanceAction
 				.getNewEditionAction();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
 		condition1.setCondition(new DataBinding<Boolean>("selected.aBooleanInA = parameters.aBoolean"));
@@ -1152,7 +1153,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		/*CreateEditionAction createFetchRequest = CreateEditionAction.actionType.makeNewAction(fetchRequestIteration.getControlGraph(),
@@ -1305,7 +1306,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		SelectFlexoConceptInstance selectFlexoConceptInstance = fetchRequestIteration.getFMLModelFactory().newSelectFlexoConceptInstance();
 		selectFlexoConceptInstance.setFlexoConceptType(flexoConceptA);
-		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<VirtualModelInstance>("virtualModelInstance"));
+		selectFlexoConceptInstance.setVirtualModelInstance(new DataBinding<AbstractVirtualModelInstance<?, ?>>("virtualModelInstance"));
 		fetchRequestIteration.setIterationAction(selectFlexoConceptInstance);
 
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();

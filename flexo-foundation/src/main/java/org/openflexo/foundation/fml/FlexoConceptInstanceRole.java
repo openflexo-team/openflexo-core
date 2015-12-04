@@ -43,10 +43,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -92,8 +92,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public FMLRTModelSlot getVirtualModelModelSlot();
 
-	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
-			implements FlexoConceptInstanceRole {
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
+			FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -251,7 +251,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public ModelObjectActorReference<FlexoConceptInstance> makeActorReference(FlexoConceptInstance object, FlexoConceptInstance epi) {
-			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
 			ModelObjectActorReference<FlexoConceptInstance> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);

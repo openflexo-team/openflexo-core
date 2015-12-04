@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,24 +38,18 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.nature.FlexoNature;
 
 /**
- * {@link ModelFactory} used to handle View models<br>
- * Only one instance of this class should be used in a session
+ * Interface defining the nature of a {@link VirtualModelInstance}<br>
+ * 
+ * A {@link AbstractVirtualModelInstanceNature} might be seen as an interpretation of a given {@link VirtualModelInstance}
  * 
  * @author sylvain
  * 
  */
-public class ViewModelFactory extends AbstractVirtualModelInstanceModelFactory<ViewResource> {
-
-	public ViewModelFactory(ViewResource viewResource, EditingContext editingContext, TechnologyAdapterService taService)
-			throws ModelDefinitionException {
-		super(viewResource, editingContext, taService);
-	}
+public interface AbstractVirtualModelInstanceNature<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends FlexoNature<VMI> {
 
 }

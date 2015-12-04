@@ -42,8 +42,8 @@ import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.SubClassOfClass;
 import org.openflexo.foundation.ontology.fml.rt.ConceptActorReference;
@@ -149,11 +149,11 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 
 		@Override
-		public ConceptActorReference<IFlexoOntologyClass> makeActorReference(IFlexoOntologyClass object, FlexoConceptInstance epi) {
-			VirtualModelInstanceModelFactory factory = epi.getFactory();
+		public ConceptActorReference<IFlexoOntologyClass> makeActorReference(IFlexoOntologyClass object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ConceptActorReference<IFlexoOntologyClass> returned = factory.newInstance(ConceptActorReference.class);
 			returned.setFlexoRole(this);
-			returned.setFlexoConceptInstance(epi);
+			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);
 			return returned;
 		}

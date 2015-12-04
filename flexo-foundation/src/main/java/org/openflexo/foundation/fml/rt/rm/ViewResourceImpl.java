@@ -68,7 +68,6 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceDefinition;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.RequiredResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -92,13 +91,13 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @FlexoResourceDefinition( /* This is the resource specification*/
-		resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
-		contains = { /* Defines the resources which may be embeddded in this resource */
-				/*@SomeResources(resourceType = ProjectDataResource.class, pattern = "*.diagram"),*/
-				@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") }, /* */
-		require = { /* Defines the resources which are required for this resource */
-				@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
-public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewModelFactory>implements ViewResource {
+resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
+contains = { /* Defines the resources which may be embeddded in this resource */
+/*@SomeResources(resourceType = ProjectDataResource.class, pattern = "*.diagram"),*/
+@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") }, /* */
+require = { /* Defines the resources which are required for this resource */
+@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
+public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
 
 	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
 
@@ -106,8 +105,8 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			ViewLibrary viewLibrary) {
 		try {
 			// File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
+					ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			// String baseName = name;
 			// File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -122,7 +121,8 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
+					.getServiceManager().getTechnologyAdapterService()));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setResourceCenter(viewLibrary.getProject());
@@ -137,8 +137,8 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 
 	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource> folder, ViewLibrary viewLibrary) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
+					ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -158,7 +158,8 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
+					.getServiceManager().getTechnologyAdapterService()));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setResourceCenter(viewLibrary.getProject());
@@ -292,16 +293,14 @@ public abstract class ViewResourceImpl extends PamelaResourceImpl<View, ViewMode
 						if (at.getName().equals("viewPointURI")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointURI = at.getValue();
-						}
-						else if (at.getName().equals("viewPointVersion")) {
+						} else if (at.getName().equals("viewPointVersion")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointVersion = at.getValue();
 						}
 					}
 					return returned;
 				}
-			}
-			else {
+			} else {
 				logger.warning("Cannot find file: " + xmlFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

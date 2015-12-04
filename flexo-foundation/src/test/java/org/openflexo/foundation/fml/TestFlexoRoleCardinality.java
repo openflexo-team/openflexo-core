@@ -167,8 +167,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
 		viewPoint.removeFromVirtualModels(virtualModel);
@@ -190,8 +190,8 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertEquals(ViewType.getViewType(viewPoint),
 				virtualModel.getBindingModel().bindingVariableNamed(ViewPointBindingModel.VIEW_PROPERTY).getType());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY));
-		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
+		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel), virtualModel.getBindingModel()
+				.bindingVariableNamed(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY).getType());
 
 	}
 
@@ -583,7 +583,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		System.out.println("All resources=" + project.getAllResources());
 		assertNotNull(project.getResource(newView.getURI()));
 
-		VirtualModelInstance reloadedVMI = newView.getVirtualModelInstance("MyVirtualModelInstance");
+		VirtualModelInstance reloadedVMI = (VirtualModelInstance) newView.getVirtualModelInstance("MyVirtualModelInstance");
 		assertNotNull(reloadedVMI);
 
 		System.out.println(((PamelaResource<?, ?>) reloadedVMI.getResource()).getFactory().stringRepresentation(reloadedVMI));

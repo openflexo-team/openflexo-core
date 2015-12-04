@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -66,8 +66,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain, vincent
  * 
  */
-public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
-		extends ModelSlotInstanceConfiguration<MS, RD> {
+public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
+		ModelSlotInstanceConfiguration<MS, RD> {
 
 	private static final Logger logger = Logger.getLogger(FreeModelSlotInstanceConfiguration.class.getPackage().getName());
 
@@ -113,7 +113,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 
 	@Override
 	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
-		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
+		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
@@ -126,23 +126,19 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
 				if (resource != null) {
 					msInstance.setAccessedResourceData(getResource().getResourceData(null));
-				}
-				else {
+				} else {
 					logger.warning("No resource for model slot " + getModelSlot());
 				}
-			}
-			else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+			} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 				resource = createProjectSpecificEmptyResource(msInstance, getModelSlot());
 				if (getResource() != null) {
 					RD resourceData = getResource().getResourceData(null);
 					if (resourceData != null) {
 						msInstance.setAccessedResourceData(resourceData);
-					}
-					else {
+					} else {
 						msInstance.setResource(getResource());
 					}
-				}
-				else {
+				} else {
 					logger.warning("Could not create ProjectSpecificEmtpyResource for model slot " + getModelSlot());
 				}
 			} /* else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
@@ -179,8 +175,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		View view = null;
 		if (msInstance.getView() != null) {
 			view = msInstance.getView();
-		}
-		else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
+		} else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
 			view = msInstance.getVirtualModelInstance().getView();
 		}
 		return view;
@@ -227,7 +222,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setFilename(String filename) {
-		//System.out.println("******** setFileName with " + filename);
+		// System.out.println("******** setFileName with " + filename);
 		if (!filename.equals(this.filename)) {
 			String oldValue = this.filename;
 			this.filename = filename;
@@ -241,14 +236,14 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	public void setResource(TechnologyAdapterResource<RD, ?> resource) {
-		//System.out.println("Hop, on set la resource a " + resource);
-		//System.out.println("filename=" + getFilename());
+		// System.out.println("Hop, on set la resource a " + resource);
+		// System.out.println("filename=" + getFilename());
 		if (resource != this.resource) {
 			TechnologyAdapterResource<RD, ?> oldValue = this.resource;
 			this.resource = resource;
 			getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
 		}
-		//System.out.println("filename=" + getFilename());
+		// System.out.println("filename=" + getFilename());
 	}
 
 	@Override
@@ -262,8 +257,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return true;
-		}
-		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 			if (StringUtils.isEmpty(getResourceUri())) {
 				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
 				return false;
@@ -279,8 +273,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return checkValidFileName();
-		}
-		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
 			if (getResourceCenter() == null) {
 				setErrorMessage(FlexoLocalization.localizedForKey("please_select_a_resource_center"));
 				return false;
@@ -300,8 +293,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return checkValidFileName();
-		}
-		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
 				setErrorMessage(FlexoLocalization.localizedForKey("resource_is_required"));
 				return false;

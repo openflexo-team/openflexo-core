@@ -38,24 +38,44 @@
 
 package org.openflexo.foundation.fml.rt.rm;
 
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.resource.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Setter;
 
 /**
- * This is the {@link FlexoResource} encoding a {@link VirtualModelInstance}
+ * Base API for a {@link FlexoResource} encoding a {@link AbstractVirtualModelInstance}
  * 
  * @author sylvain
  * 
  */
-@ModelEntity
-@ImplementationClass(VirtualModelInstanceResourceImpl.class)
-@XMLElement
-public interface VirtualModelInstanceResource extends AbstractVirtualModelInstanceResource<VirtualModelInstance, VirtualModel> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
+public interface AbstractVirtualModelInstanceResource<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, FlexoProjectResource<VMI>,
+		TechnologyAdapterResource<VMI, FMLRTTechnologyAdapter> {
 
-	public static final String VIRTUAL_MODEL_SUFFIX = ".vmxml";
+	public static final String VIRTUAL_MODEL_RESOURCE = "virtualModelResource";
+
+	@Getter(value = VIRTUAL_MODEL_RESOURCE, ignoreType = true)
+	public AbstractVirtualModelResource<VM> getVirtualModelResource();
+
+	@Setter(VIRTUAL_MODEL_RESOURCE)
+	public void setVirtualModelResource(AbstractVirtualModelResource<VM> virtualModelResource);
+
+	public VMI getVirtualModelInstance();
+
+	@Getter(value = CONTAINER, inverse = CONTENTS)
+	@Override
+	public ViewResource getContainer();
 
 }

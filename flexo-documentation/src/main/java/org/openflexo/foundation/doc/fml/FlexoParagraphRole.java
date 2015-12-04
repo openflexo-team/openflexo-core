@@ -23,8 +23,8 @@ package org.openflexo.foundation.doc.fml;
 import org.openflexo.foundation.doc.FlexoDocParagraph;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -79,7 +79,7 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 	public void setParagraphId(String paragraphId);
 
 	public static abstract class FlexoParagraphRoleImpl<P extends FlexoDocParagraph<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoRoleImpl<P>implements FlexoParagraphRole<P, D, TA> {
+			extends FlexoRoleImpl<P> implements FlexoParagraphRole<P, D, TA> {
 
 		private P paragraph;
 		private String paragraphId;
@@ -131,7 +131,7 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 
 		@Override
 		public ParagraphActorReference<P> makeActorReference(P paragraph, FlexoConceptInstance fci) {
-			VirtualModelInstanceModelFactory factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			ParagraphActorReference<P> returned = factory.newInstance(ParagraphActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

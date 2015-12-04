@@ -83,8 +83,7 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 
 	@Override
 	public ModelSlotInstance<FMLRTModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
-		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
-		System.out.println("factory=" + factory);
+		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);

@@ -32,8 +32,8 @@ import org.openflexo.foundation.doc.FlexoDocFragment;
 import org.openflexo.foundation.doc.FlexoDocTable;
 import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -49,8 +49,8 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoTableRole.FlexoTableRoleImpl.class)
-public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-		extends FlexoRole<T> {
+public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends
+		FlexoRole<T> {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String TABLE_KEY = "table";
@@ -159,7 +159,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 	public BindingModel getTableBindingModel();
 
 	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoRoleImpl<T>implements FlexoTableRole<T, D, TA> {
+			extends FlexoRoleImpl<T> implements FlexoTableRole<T, D, TA> {
 
 		private BindingModel tableBindingModel;
 		public static final String ITERATOR_NAME = "iterator";
@@ -290,7 +290,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 		@Override
 		public TableActorReference<T> makeActorReference(T table, FlexoConceptInstance fci) {
 
-			VirtualModelInstanceModelFactory factory = fci.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			TableActorReference<T> returned = factory.newInstance(TableActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(fci);

@@ -43,13 +43,13 @@ import java.util.Vector;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.localization.LocalizedDelegate;
 
 public class SynchronizationSchemeActionType extends
-		FlexoActionType<SynchronizationSchemeAction, VirtualModelInstance, VirtualModelInstanceObject> {
+		FlexoActionType<SynchronizationSchemeAction, AbstractVirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
 
 	private final SynchronizationScheme synchronizationScheme;
 	private final FlexoConceptInstance flexoConceptInstance;
@@ -66,22 +66,22 @@ public class SynchronizationSchemeActionType extends
 	}
 
 	@Override
-	public boolean isEnabled(VirtualModelInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isEnabled(AbstractVirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return isEnabledForSelection(object, globalSelection);
 	}
 
 	@Override
-	public boolean isEnabledForSelection(VirtualModelInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return synchronizationScheme.evaluateCondition(flexoConceptInstance);
 	}
 
 	@Override
-	public boolean isVisibleForSelection(VirtualModelInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
+	public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 		return true;
 	}
 
 	@Override
-	public SynchronizationSchemeAction makeNewAction(VirtualModelInstance focusedObject,
+	public SynchronizationSchemeAction makeNewAction(AbstractVirtualModelInstance<?, ?> focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		return new SynchronizationSchemeAction(this, focusedObject, globalSelection, editor);
 	}

@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.URIParameter;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -112,10 +113,10 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
+	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance);
 
 	@Getter(value = DELETION_SCHEME_URI_KEY)
 	@XMLAttribute
@@ -164,7 +165,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 			return super.getAssignedFlexoProperty();
 		}
 
-		public VirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
 				return getVirtualModelInstance().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
@@ -177,23 +178,23 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 			return null;
 		}
 
-		private DataBinding<VirtualModelInstance> virtualModelInstance;
+		private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
 
 		@Override
-		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
 			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
+				virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
 						DataBinding.BindingDefinitionType.GET);
 			}
 			return virtualModelInstance;
 		}
 
 		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
+		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
 			if (aVirtualModelInstance != null) {
 				aVirtualModelInstance.setOwner(this);
 				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
+				aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
 				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			if (this.virtualModelInstance != aVirtualModelInstance) {
@@ -312,7 +313,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 		@Override
 		public FlexoConceptInstance execute(RunTimeEvaluationContext evaluationContext) {
 			logger.info("Perform performDeleteFlexoConceptInstance " + evaluationContext);
-			VirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
+			AbstractVirtualModelInstance<?, ?> vmInstance = getVirtualModelInstance(evaluationContext);
 
 			// DeletionSchemeAction deletionSchemeAction = DeletionSchemeAction.actionType.makeNewEmbeddedAction(null, null, action);
 
@@ -500,7 +501,7 @@ public interface DeleteFlexoConceptInstance extends DeleteAction<FlexoConceptIns
 		}
 
 		@Override
-		public DataBinding<VirtualModelInstance> getBinding(DeleteFlexoConceptInstance object) {
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getBinding(DeleteFlexoConceptInstance object) {
 			return object.getVirtualModelInstance();
 		}
 

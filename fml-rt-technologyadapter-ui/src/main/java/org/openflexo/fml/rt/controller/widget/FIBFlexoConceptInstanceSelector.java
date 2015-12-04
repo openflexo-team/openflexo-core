@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -149,7 +150,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	@CustomComponentParameter(name = "flexoConcept", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setFlexoConcept(FlexoConcept flexoConcept) {
-		//System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
+		// System.out.println(">>>>>>>>> Sets FlexoConcept with " + flexoConcept);
 		this.flexoConcept = flexoConcept;
 	}
 
@@ -170,14 +171,14 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 			return getVirtualModelInstance().getFlexoConceptInstances(ep);
 		} else if (getView() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : getView().getVirtualModelInstances()) {
 				returned.addAll(vmi.getFlexoConceptInstances(ep));
 			}
 			return returned;
 		} else if (getProject() != null) {
 			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
 			for (ViewResource vr : getProject().getViewLibrary().getAllResources()) {
-				for (VirtualModelInstance vmi : vr.getView().getVirtualModelInstances()) {
+				for (AbstractVirtualModelInstance<?, ?> vmi : vr.getView().getVirtualModelInstances()) {
 					returned.addAll(vmi.getFlexoConceptInstances(ep));
 				}
 			}
@@ -192,7 +193,7 @@ public class FIBFlexoConceptInstanceSelector extends FIBProjectObjectSelector<Fl
 
 	public void setView(View view) {
 		this.view = view;
-		//System.out.println(">>>>>>>>> Sets view with " + view);
+		// System.out.println(">>>>>>>>> Sets view with " + view);
 	}
 
 	public VirtualModelInstance getVirtualModelInstance() {
