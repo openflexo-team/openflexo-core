@@ -100,7 +100,6 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
 					+ Integer.toHexString(hashCode()) + "]";
 		}
-
 	}
 
 }

@@ -194,6 +194,19 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
+		public FlexoProject getProject() {
+			if (getResource() != null) {
+				return getResource().getProject();
+			}
+			return null;
+		}
+
+		@Override
+		public ViewPoint getFlexoConcept() {
+			return getViewPoint();
+		}
+
+		@Override
 		public ViewPoint getViewPoint() {
 			if (getResource() instanceof ViewResource) {
 				return ((ViewResource) getResource()).getViewPoint();
