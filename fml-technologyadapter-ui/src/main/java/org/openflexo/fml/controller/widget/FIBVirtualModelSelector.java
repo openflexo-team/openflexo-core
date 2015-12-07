@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.rm.Resource;
@@ -55,7 +56,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModelResource> {
+public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<AbstractVirtualModelResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelSelector.class.getPackage().getName());
 
@@ -77,12 +78,12 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 	}
 
 	@Override
-	public Class<VirtualModelResource> getRepresentedType() {
-		return VirtualModelResource.class;
+	public Class<AbstractVirtualModelResource> getRepresentedType() {
+		return AbstractVirtualModelResource.class;
 	}
 
 	@Override
-	public String renderedString(VirtualModelResource editedObject) {
+	public String renderedString(AbstractVirtualModelResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
