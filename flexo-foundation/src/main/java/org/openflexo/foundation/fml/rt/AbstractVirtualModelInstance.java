@@ -77,6 +77,8 @@ import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PastingPoint;
 import org.openflexo.model.annotations.PropertyIdentifier;
@@ -102,6 +104,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModelInstance.AbstractVirtualModelInstanceImpl.class)
+@Imports({ @Import(VirtualModelInstance.class), @Import(View.class) })
 public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 		extends FlexoConceptInstance, ResourceData<VMI>, FlexoModel<VMI, VM>, TechnologyObject<FMLRTTechnologyAdapter> {
 
@@ -172,7 +175,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 * @param oldFlexoConcept
 	 * @param newFlexoConcept
 	 */
-	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
+			FlexoConcept newFlexoConcept);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -417,7 +421,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
-			} else {
+			}
+			else {
 				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -745,7 +750,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			} else {
+			}
+			else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
@@ -817,11 +823,14 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 				logger.warning("Unexpected model slot " + variable);
 				return null;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -847,23 +856,28 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				if (ms != null) {
 					if (value instanceof ResourceData) {
 						((ModelSlotInstance) getModelSlotInstance(ms)).setAccessedResourceData((ResourceData) value);
-					} else {
+					}
+					else {
 						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
 					}
-				} else {
+				}
+				else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			}
+			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
 				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
+			}
+			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this + " of "
+						+ getClass());
 				return;
 			}
 
