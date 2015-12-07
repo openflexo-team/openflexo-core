@@ -133,8 +133,8 @@
     <Assignment id="123" mandatory="true" variable="component.project" />
     <Assignment id="124" mandatory="true" variable="component.serviceManager" />
     <Assignment id="125" mandatory="true" variable="component.selectableCondition" />
-    <Assignment id="126" mandatory="true" value="data.action.view" variable="component.view" />
-    <Assignment id="127" mandatory="true" value="data.action.view.viewLibrary" variable="component.viewLibrary" />
+    <Assignment id="126" mandatory="true" value="data.action.containerView" variable="component.view" />
+    <Assignment id="127" mandatory="true" value="data.action.containerView.viewLibrary" variable="component.viewLibrary" />
     <Assignment id="128" mandatory="true" value="data.configuration.modelSlot.addressedVirtualModel" variable="component.virtualModel" />
   </Custom>
   <Label id="129" visible="(OptionRadioButtonList.selected.name = &quot;CreateNewVirtualModel&quot;)" manageDynamicModel="false" useScrollBar="false" controllerClassName="org.openflexo.fib.controller.FIBController" localize="true" align="center" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="not_implemented_yet" readOnly="false" />
