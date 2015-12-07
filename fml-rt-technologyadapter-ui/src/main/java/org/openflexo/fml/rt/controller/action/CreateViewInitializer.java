@@ -52,7 +52,8 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -60,23 +61,24 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateViewInitializer extends ActionInitializer<CreateView, RepositoryFolder, FlexoObject> {
+public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder, RepositoryFolder<ViewResource>, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public CreateViewInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateView.actionType, actionInitializer);
+		super(CreateViewInFolder.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateView> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateView>() {
+	protected FlexoActionInitializer<CreateViewInFolder> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateViewInFolder>() {
 			@Override
-			public boolean run(EventObject e, CreateView action) {
+			public boolean run(EventObject e, CreateViewInFolder action) {
 				// ((FlexoProject)action.getFocusedObject().getResourceRepository()).getViewPointRepository().getViewPointLibrary().getViewPoints();
 				if (action.skipChoosePopup) {
 					return true;
-				} else {
+				}
+				else {
 					Wizard wizard = new CreateViewWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();
@@ -93,10 +95,10 @@ public class CreateViewInitializer extends ActionInitializer<CreateView, Reposit
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateView> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateView>() {
+	protected FlexoActionFinalizer<CreateViewInFolder> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateViewInFolder>() {
 			@Override
-			public boolean run(EventObject e, CreateView action) {
+			public boolean run(EventObject e, CreateViewInFolder action) {
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewView());
 				getController().selectAndFocusObject(action.getNewView());
 				/*CreateConcreteVirtualModelInstance actionVMi = CreateConcreteVirtualModelInstance.actionType.makeNewAction(
@@ -108,10 +110,10 @@ public class CreateViewInitializer extends ActionInitializer<CreateView, Reposit
 	}
 
 	@Override
-	protected FlexoExceptionHandler<CreateView> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<CreateView>() {
+	protected FlexoExceptionHandler<CreateViewInFolder> getDefaultExceptionHandler() {
+		return new FlexoExceptionHandler<CreateViewInFolder>() {
 			@Override
-			public boolean handleException(FlexoException exception, CreateView action) {
+			public boolean handleException(FlexoException exception, CreateViewInFolder action) {
 				if (exception instanceof NotImplementedException) {
 					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
 					return true;

@@ -49,11 +49,12 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -63,11 +64,11 @@ public class CreateViewWizard extends FlexoWizard {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateViewWizard.class.getPackage().getName());
 
-	private final CreateView action;
+	private final CreateViewInFolder action;
 
 	private final ChooseViewPoint chooseViewPoint;
 
-	public CreateViewWizard(CreateView action, FlexoController controller) {
+	public CreateViewWizard(CreateViewInFolder action, FlexoController controller) {
 		super(controller);
 		this.action = action;
 		addStep(chooseViewPoint = new ChooseViewPoint());
@@ -111,7 +112,8 @@ public class CreateViewWizard extends FlexoWizard {
 			if (getFolder() == null) {
 				setIssueMessage(FlexoLocalization.localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
 				return false;
-			} else if (getViewpointResource() == null) {
+			}
+			else if (getViewpointResource() == null) {
 				setIssueMessage(FlexoLocalization.localizedForKey("no_view_point_selected"), IssueMessageType.ERROR);
 				return false;
 			}

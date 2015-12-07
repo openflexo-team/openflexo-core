@@ -42,9 +42,9 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -60,10 +60,10 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sylvain
  * 
  */
-public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-		DefaultFlexoObject {
+public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends DefaultFlexoObject {
 
-	private final CreateVirtualModelInstance<?> action;
+	private final AbstractCreateVirtualModelInstance<?, ?, ?, ?> action;
 	private final MS modelSlot;
 	private ModelSlotInstanceConfigurationOption option;
 
@@ -78,46 +78,36 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		/**
 		 * Retrieve an existing resource from a ResourceCenter
 		 */
-		SelectExistingResource,
-		/**
-		 * Retrieve an existing model from a ResourceCenter
-		 */
-		SelectExistingModel,
-		/**
-		 * Retrieve an existing metamodel from a ResourceCenter
-		 */
-		SelectExistingMetaModel,
-		/**
-		 * Create a dedicated model in the scope of current {@link FlexoProject}
-		 */
-		CreatePrivateNewModel,
-		/**
-		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
-		 */
-		CreatePrivateNewResource,
-		/**
-		 * Create a model in a ResourceCenter (the model might be shared and concurrently accessed)
-		 */
-		CreateSharedNewModel,
-		/**
-		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
-		 */
-		CreateSharedNewResource,
-		/**
-		 * Retrieve an existing virtual model instance
-		 */
-		SelectExistingVirtualModel,
-		/**
-		 * Creates a new virtual model
-		 */
-		CreateNewVirtualModel,
-		/**
-		 * Leave empty and decide later
-		 */
-		LeaveEmpty,
-		/**
-		 * Let Openflexo manage this
-		 */
+		SelectExistingResource, /**
+								 * Retrieve an existing model from a ResourceCenter
+								 */
+		SelectExistingModel, /**
+								 * Retrieve an existing metamodel from a ResourceCenter
+								 */
+		SelectExistingMetaModel, /**
+									 * Create a dedicated model in the scope of current {@link FlexoProject}
+									 */
+		CreatePrivateNewModel, /**
+								 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
+								 */
+		CreatePrivateNewResource, /**
+									 * Create a model in a ResourceCenter (the model might be shared and concurrently accessed)
+									 */
+		CreateSharedNewModel, /**
+								 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
+								 */
+		CreateSharedNewResource, /**
+									 * Retrieve an existing virtual model instance
+									 */
+		SelectExistingVirtualModel, /**
+									 * Creates a new virtual model
+									 */
+		CreateNewVirtualModel, /**
+								 * Leave empty and decide later
+								 */
+		LeaveEmpty, /**
+					 * Let Openflexo manage this
+					 */
 		Autoconfigure;
 
 		@Override
@@ -126,12 +116,12 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		}
 	}
 
-	protected ModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
+	protected ModelSlotInstanceConfiguration(MS ms, AbstractCreateVirtualModelInstance<?, ?, ?, ?> action) {
 		this.action = action;
 		modelSlot = ms;
 	}
 
-	public CreateVirtualModelInstance<?> getAction() {
+	public AbstractCreateVirtualModelInstance<?, ?, ?, ?> getAction() {
 		return action;
 	}
 
@@ -185,7 +175,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	 *            the view in which the VirtualModelInstance will be added
 	 * @return
 	 */
-	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(VirtualModelInstance vmInstance, View view);
+	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view);
 
 	private String errorMessage;
 

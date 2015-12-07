@@ -46,11 +46,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -66,8 +66,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain, vincent
  * 
  */
-public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
-		ModelSlotInstanceConfiguration<MS, RD> {
+public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
+		extends ModelSlotInstanceConfiguration<MS, RD> {
 
 	private static final Logger logger = Logger.getLogger(FreeModelSlotInstanceConfiguration.class.getPackage().getName());
 
@@ -79,10 +79,9 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	private String relativePath;
 	private String filename;
 
-	protected FreeModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
+	protected FreeModelSlotInstanceConfiguration(MS ms, AbstractCreateVirtualModelInstance<?, ?, ?, ?> action) {
 		super(ms, action);
-		FlexoResourceCenterService rcService = action.getFocusedObject().getViewPoint().getViewPointLibrary().getServiceManager()
-				.getResourceCenterService();
+		FlexoResourceCenterService rcService = action.getServiceManager().getResourceCenterService();
 		if (rcService.getResourceCenters().size() > 0) {
 			resourceCenter = rcService.getResourceCenters().get(0);
 		}
@@ -112,7 +111,7 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 	}
 
 	@Override
-	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
+	public FreeModelSlotInstance<RD, MS> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		FreeModelSlotInstance<RD, MS> returned = factory.newInstance(FreeModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
@@ -126,19 +125,23 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 			if (getOption() == DefaultModelSlotInstanceConfigurationOption.SelectExistingResource) {
 				if (resource != null) {
 					msInstance.setAccessedResourceData(getResource().getResourceData(null));
-				} else {
+				}
+				else {
 					logger.warning("No resource for model slot " + getModelSlot());
 				}
-			} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+			}
+			else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 				resource = createProjectSpecificEmptyResource(msInstance, getModelSlot());
 				if (getResource() != null) {
 					RD resourceData = getResource().getResourceData(null);
 					if (resourceData != null) {
 						msInstance.setAccessedResourceData(resourceData);
-					} else {
+					}
+					else {
 						msInstance.setResource(getResource());
 					}
-				} else {
+				}
+				else {
 					logger.warning("Could not create ProjectSpecificEmtpyResource for model slot " + getModelSlot());
 				}
 			} /* else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
@@ -175,7 +178,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 		View view = null;
 		if (msInstance.getView() != null) {
 			view = msInstance.getView();
-		} else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
+		}
+		else if (msInstance.getVirtualModelInstance() != null && msInstance.getVirtualModelInstance().getView() != null) {
 			view = msInstance.getVirtualModelInstance().getView();
 		}
 		return view;
@@ -257,7 +261,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return true;
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreatePrivateNewResource) {
 			if (StringUtils.isEmpty(getResourceUri())) {
 				setErrorMessage(FlexoLocalization.localizedForKey("please_supply_valid_uri"));
 				return false;
@@ -273,7 +278,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return checkValidFileName();
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateSharedNewResource) {
 			if (getResourceCenter() == null) {
 				setErrorMessage(FlexoLocalization.localizedForKey("please_select_a_resource_center"));
 				return false;
@@ -293,7 +299,8 @@ public class FreeModelSlotInstanceConfiguration<RD extends ResourceData<RD> & Te
 				return false;
 			}
 			return checkValidFileName();
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
 				setErrorMessage(FlexoLocalization.localizedForKey("resource_is_required"));
 				return false;

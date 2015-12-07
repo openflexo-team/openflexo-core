@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.localization.FlexoLocalization;
@@ -61,7 +61,7 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 	private final List<ModelSlotInstanceConfigurationOption> options;
 	private VirtualModelInstanceResource addressedVirtualModelInstanceResource;
 
-	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot ms, CreateVirtualModelInstance action) {
+	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot ms, AbstractCreateVirtualModelInstance action) {
 		super(ms, action);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
@@ -82,14 +82,16 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
+	public ModelSlotInstance<FMLRTModelSlot, VirtualModelInstance> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance,
+			View view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
-		} else {
+		}
+		else {
 			logger.warning("Addressed virtual model instance is null");
 		}
 		return returned;
@@ -119,12 +121,14 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 				return false;
 			}
 			return true;
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet
 			setErrorMessage(FlexoLocalization.localizedForKey("not_implemented_yet"));
 			return false;
 
-		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		}
+		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
 				setErrorMessage(FlexoLocalization.localizedForKey("virtual_model_instance_is_required"));
 				return false;

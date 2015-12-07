@@ -50,7 +50,6 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -91,13 +90,13 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @FlexoResourceDefinition( /* This is the resource specification*/
-resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
-contains = { /* Defines the resources which may be embeddded in this resource */
-/*@SomeResources(resourceType = ProjectDataResource.class, pattern = "*.diagram"),*/
-@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") }, /* */
-require = { /* Defines the resources which are required for this resource */
-@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
-public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
+		resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
+		contains = { /* Defines the resources which may be embeddded in this resource */
+				/*@SomeResources(resourceType = ProjectDataResource.class, pattern = "*.diagram"),*/
+				@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") }, /* */
+		require = { /* Defines the resources which are required for this resource */
+				@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
+public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint>implements ViewResource {
 
 	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
 
@@ -105,8 +104,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			ViewLibrary viewLibrary) {
 		try {
 			// File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					ViewResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			// String baseName = name;
 			// File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -121,8 +120,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
-					.getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
+					viewLibrary.getServiceManager().getTechnologyAdapterService()));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setResourceCenter(viewLibrary.getProject());
@@ -137,8 +136,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource> folder, ViewLibrary viewLibrary) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					ViewResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -158,8 +157,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
-					.getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
+					viewLibrary.getServiceManager().getTechnologyAdapterService()));
 			viewLibrary.registerResource(returned, folder);
 
 			returned.setResourceCenter(viewLibrary.getProject());
@@ -191,16 +190,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	@Override
 	public View getView() {
-		try {
-			return getResourceData(null);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (ResourceLoadingCancelledException e) {
-			e.printStackTrace();
-		} catch (FlexoException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return getVirtualModelInstance();
 	}
 
 	@Override
@@ -293,14 +283,16 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 						if (at.getName().equals("viewPointURI")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointURI = at.getValue();
-						} else if (at.getName().equals("viewPointVersion")) {
+						}
+						else if (at.getName().equals("viewPointVersion")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointVersion = at.getValue();
 						}
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + xmlFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

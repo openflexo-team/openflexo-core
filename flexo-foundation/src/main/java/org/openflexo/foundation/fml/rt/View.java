@@ -103,7 +103,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 	@Override
 	public String getName();
 
-	public boolean isValidVirtualModelName(String virtualModelName);
+	public boolean isValidVirtualModelInstanceName(String virtualModelName);
 
 	/**
 	 * Return all {@link VirtualModelInstance} defined in this {@link View}
@@ -141,7 +141,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 	public boolean hasNature(ViewNature nature);
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -150,7 +150,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		// private final List<ModelSlotInstance<?, ?>> modelSlotInstances;
 
 		// TODO: move this to ViewResource
-		public static View newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
+		public static ViewResource newView(String viewName, String viewTitle, ViewPoint viewPoint, RepositoryFolder<ViewResource> folder,
 				FlexoProject project) throws SaveResourceException {
 
 			ViewResource newViewResource = ViewResourceImpl.makeViewResource(viewName, folder, viewPoint, project.getViewLibrary());
@@ -175,7 +175,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			// newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
 			// newView.save();
 			vmTA.referenceResource(newViewResource, project);
-			return newView;
+			return newViewResource;
 		}
 
 		@Override
@@ -233,7 +233,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final AbstractVirtualModel<?> virtualModel) {
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(
+				final AbstractVirtualModel<?> virtualModel) {
 			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
 			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				if (vmi.getVirtualModel() == virtualModel) {
@@ -263,7 +264,8 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				} else {
+				}
+				else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}
@@ -271,7 +273,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public boolean isValidVirtualModelName(String virtualModelName) {
+		public boolean isValidVirtualModelInstanceName(String virtualModelName) {
 			return getVirtualModelInstance(virtualModelName) == null;
 		}
 
