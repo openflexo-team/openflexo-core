@@ -201,8 +201,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		Class<?> cl = getClass();
 		if (cl.isAnnotationPresent(DeclareModelSlots.class)) {
 			DeclareModelSlots allModelSlots = cl.getAnnotation(DeclareModelSlots.class);
-			for (Class<? extends ModelSlot<?>> msClass : allModelSlots.value()) {
-				availableModelSlotTypes.add(msClass);
+			for (Class<? extends ModelSlot> msClass : allModelSlots.value()) {
+				availableModelSlotTypes.add((Class<? extends ModelSlot<?>>) msClass);
 			}
 		}
 		return availableModelSlotTypes;

@@ -41,18 +41,18 @@ package org.openflexo.foundation.fml.rt;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -70,7 +70,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot for a FML VirtualModel
+ * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
  * @author sylvain, christophe
  * 
@@ -82,7 +82,8 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
 @XMLElement
 @FML("FMLRTModelSlot")
-public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
+public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -94,19 +95,18 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setVirtualModelURI(String virtualModelURI);
 
-	public VirtualModelResource getVirtualModelResource();
+	public AbstractVirtualModelResource<VM> getVirtualModelResource();
 
-	public void setVirtualModelResource(VirtualModelResource virtualModelResource);
+	public void setVirtualModelResource(AbstractVirtualModelResource<VM> virtualModelResource);
 
-	public VirtualModel getAddressedVirtualModel();
+	public VM getAddressedVirtualModel();
 
-	public void setAddressedVirtualModel(VirtualModel aVirtualModel);
-
-	// public boolean isReflexiveModelSlot();
+	public void setAddressedVirtualModel(VM aVirtualModel);
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
-	public static abstract class FMLRTModelSlotImpl extends ModelSlotImpl<VirtualModelInstance>implements FMLRTModelSlot {
+	public static abstract class FMLRTModelSlotImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+			extends ModelSlotImpl<VMI>implements FMLRTModelSlot<VMI, VM> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
 
@@ -141,19 +141,20 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot, VirtualModelInstance> createConfiguration(
-				AbstractCreateVirtualModelInstance action) {
+		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, VM>, VMI> createConfiguration(
+				AbstractCreateVirtualModelInstance<?, ?, ?, ?> action) {
 			return new FMLRTModelSlotInstanceConfiguration(this, action);
 		}
 
-		private VirtualModelResource virtualModelResource;
+		private AbstractVirtualModelResource<VM> virtualModelResource;
 		private String virtualModelURI;
 
 		@Override
-		public VirtualModelResource getVirtualModelResource() {
+		public AbstractVirtualModelResource<VM> getVirtualModelResource() {
 			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getViewPoint() != null) {
 				if (getViewPoint().getVirtualModelNamed(virtualModelURI) != null) {
-					virtualModelResource = (VirtualModelResource) getViewPoint().getVirtualModelNamed(virtualModelURI).getResource();
+					virtualModelResource = (AbstractVirtualModelResource<VM>) getViewPoint().getVirtualModelNamed(virtualModelURI)
+							.getResource();
 					logger.info("Looked-up " + virtualModelResource);
 				}
 			}
@@ -161,7 +162,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+		public void setVirtualModelResource(AbstractVirtualModelResource<VM> virtualModelResource) {
 			this.virtualModelResource = virtualModelResource;
 		}
 
@@ -194,15 +195,15 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * @return
 		 */
 		@Override
-		public VirtualModel getAddressedVirtualModel() {
+		public VM getAddressedVirtualModel() {
 			if (getViewPoint() != null && StringUtils.isNotEmpty(getVirtualModelURI())) {
-				return getViewPoint().getVirtualModelNamed(getVirtualModelURI());
+				return (VM) getViewPoint().getVirtualModelNamed(getVirtualModelURI());
 			}
 			return null;
 		}
 
 		@Override
-		public void setAddressedVirtualModel(VirtualModel aVirtualModel) {
+		public void setAddressedVirtualModel(VM aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
 			notifyResultingTypeChanged();
 		}

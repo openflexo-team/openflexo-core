@@ -52,6 +52,7 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -343,7 +344,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib")
-	public class ConfigureVirtualModelModelSlot extends ConfigureModelSlot<FMLRTModelSlot, VirtualModelInstance> {
+	public class ConfigureVirtualModelModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+			extends ConfigureModelSlot<FMLRTModelSlot<VMI, VM>, VMI> {
 
 		public ConfigureVirtualModelModelSlot(FMLRTModelSlot modelSlot) {
 			super(modelSlot);

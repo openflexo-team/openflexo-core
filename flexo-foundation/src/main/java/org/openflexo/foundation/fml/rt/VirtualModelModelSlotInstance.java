@@ -40,8 +40,9 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -62,7 +63,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTModelSlot, VirtualModelInstance> {
+public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_URI_KEY = "virtualModelInstanceURI";
@@ -74,8 +76,8 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTMo
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl extends ModelSlotInstanceImpl<FMLRTModelSlot, VirtualModelInstance>
-			implements VirtualModelModelSlotInstance {
+	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, VM>, VMI>implements VirtualModelModelSlotInstance<VMI, VM> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());
 
@@ -98,15 +100,16 @@ public interface VirtualModelModelSlotInstance extends ModelSlotInstance<FMLRTMo
 		}
 
 		@Override
-		public VirtualModelInstance getAccessedResourceData() {
+		public VMI getAccessedResourceData() {
 			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
-				VirtualModelInstanceResource vmiResource;
+				AbstractVirtualModelInstanceResource<VMI, VM> vmiResource;
 				if (getProject() != null) {
-					vmiResource = getProject().getViewLibrary().getVirtualModelInstance(getVirtualModelInstanceURI());
+					vmiResource = (AbstractVirtualModelInstanceResource<VMI, VM>) getProject().getViewLibrary()
+							.getVirtualModelInstance(getVirtualModelInstanceURI());
 				}
 				else {
-					vmiResource = getVirtualModelInstance().getView().getProject().getViewLibrary()
-							.getVirtualModelInstance(getVirtualModelInstanceURI());
+					vmiResource = (AbstractVirtualModelInstanceResource<VMI, VM>) getVirtualModelInstance().getView().getProject()
+							.getViewLibrary().getVirtualModelInstance(getVirtualModelInstanceURI());
 				}
 				if (vmiResource != null) {
 					accessedResourceData = vmiResource.getVirtualModelInstance();

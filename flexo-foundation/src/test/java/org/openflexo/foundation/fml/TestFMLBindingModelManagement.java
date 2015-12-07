@@ -109,6 +109,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -604,7 +605,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// Now we create the vm1 model slot
 		CreateModelSlot createMS1 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
-		createMS1.setModelSlotClass(FMLRTModelSlot.class);
+		createMS1.setModelSlotClass((Class<? extends ModelSlot<?>>) FMLRTModelSlot.class);
 		createMS1.setModelSlotName("vm1");
 		createMS1.setVmRes((VirtualModelResource) virtualModel1.getResource());
 		createMS1.doAction();
@@ -617,7 +618,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// Now we create the vm2 model slot
 		CreateModelSlot createMS2 = CreateModelSlot.actionType.makeNewAction(virtualModel3, null, editor);
 		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
-		createMS2.setModelSlotClass(FMLRTModelSlot.class);
+		createMS2.setModelSlotClass((Class<? extends ModelSlot<?>>) FMLRTModelSlot.class);
 		createMS2.setModelSlotName("vm2");
 		createMS2.setVmRes((VirtualModelResource) virtualModel2.getResource());
 		createMS2.doAction();

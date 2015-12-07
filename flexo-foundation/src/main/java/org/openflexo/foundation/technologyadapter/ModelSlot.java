@@ -234,7 +234,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
 
-	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(AbstractCreateVirtualModelInstance action);
+	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+			AbstractCreateVirtualModelInstance<?, ?, ?, ?> action);
 
 	public String getModelSlotDescription();
 
@@ -626,7 +627,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(AbstractCreateVirtualModelInstance action);
+		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+				AbstractCreateVirtualModelInstance<?, ?, ?, ?> action);
 
 		/**
 		 * A Model Slot is responsible for URI mapping

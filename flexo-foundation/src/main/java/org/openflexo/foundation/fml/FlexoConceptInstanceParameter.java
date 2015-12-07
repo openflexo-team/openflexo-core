@@ -56,7 +56,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceParameter.FlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<FMLRTModelSlot> {
+public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<FMLRTModelSlot<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
@@ -75,7 +75,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public VirtualModel getModelSlotVirtualModel();
+	public AbstractVirtualModel<?> getModelSlotVirtualModel();
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
@@ -84,8 +84,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
 	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> vminstance);
 
-	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot> implements
-			FlexoConceptInstanceParameter {
+	public static abstract class FlexoConceptInstanceParameterImpl extends InnerModelSlotParameterImpl<FMLRTModelSlot<?, ?>>
+			implements FlexoConceptInstanceParameter {
 
 		private FlexoConcept flexoConceptType;
 		private String flexoConceptTypeURI;
@@ -167,7 +167,7 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		}
 
 		@Override
-		public VirtualModel getModelSlotVirtualModel() {
+		public AbstractVirtualModel<?> getModelSlotVirtualModel() {
 			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
 				return getModelSlot().getVirtualModelResource().getVirtualModel();
 			}
@@ -175,16 +175,16 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 		}
 
 		@Override
-		public void setModelSlot(FMLRTModelSlot modelSlot) {
+		public void setModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 			super.setModelSlot(modelSlot);
 			setChanged();
 			notifyObservers(new DataModification("modelSlotVirtualModel", null, modelSlot));
 		}
 
 		@Override
-		public FMLRTModelSlot getModelSlot() {
+		public FMLRTModelSlot<?, ?> getModelSlot() {
 			if (super.getModelSlot() instanceof FMLRTModelSlot) {
-				FMLRTModelSlot returned = super.getModelSlot();
+				FMLRTModelSlot<?, ?> returned = super.getModelSlot();
 				if (returned == null) {
 					if (getOwningVirtualModel() != null && getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).size() > 0) {
 						return getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);

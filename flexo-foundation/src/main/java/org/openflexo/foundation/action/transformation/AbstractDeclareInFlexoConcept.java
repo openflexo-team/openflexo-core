@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -265,14 +266,14 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	@Override
 	public TransformationStrategy<A> getTransformationStrategy() {
 		switch (getPrimaryChoice()) {
-		case CREATES_FLEXO_CONCEPT:
-			return getFlexoConceptCreationStrategy();
-		case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-			return getFlexoRoleCreationStrategy();
-		case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
-			return getFlexoRoleSettingStrategy();
-		default:
-			return null;
+			case CREATES_FLEXO_CONCEPT:
+				return getFlexoConceptCreationStrategy();
+			case CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+				return getFlexoRoleCreationStrategy();
+			case REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT:
+				return getFlexoRoleSettingStrategy();
+			default:
+				return null;
 		}
 	}
 
@@ -337,9 +338,9 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * 
 	 * @return
 	 */
-	public VirtualModel getAdressedVirtualModel() {
+	public AbstractVirtualModel<?> getAdressedVirtualModel() {
 		if (isVirtualModelModelSlot()) {
-			FMLRTModelSlot virtualModelModelSlot = (FMLRTModelSlot) getInformationSourceModelSlot();
+			FMLRTModelSlot<?, ?> virtualModelModelSlot = (FMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
 			return virtualModelModelSlot.getAddressedVirtualModel();
 		}
 		return null;
@@ -360,12 +361,12 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		return null;
 	}
 
-	private List<FMLRTModelSlot> virtualModelModelSlots;
+	private List<FMLRTModelSlot<?, ?>> virtualModelModelSlots;
 	private List<TypeAwareModelSlot<?, ?>> typeAwareModelSlots;
 
-	public List<FMLRTModelSlot> getVirtualModelModelSlots() {
+	public List<FMLRTModelSlot<?, ?>> getVirtualModelModelSlots() {
 		if (virtualModelModelSlots == null) {
-			virtualModelModelSlots = new ArrayList<FMLRTModelSlot>();
+			virtualModelModelSlots = new ArrayList<FMLRTModelSlot<?, ?>>();
 		}
 		if (!virtualModelModelSlots.isEmpty()) {
 			virtualModelModelSlots.clear();
@@ -373,7 +374,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		if (getVirtualModel() != null) {
 			for (ModelSlot<?> modelSlot : getVirtualModel().getModelSlots()) {
 				if (modelSlot instanceof FMLRTModelSlot) {
-					virtualModelModelSlots.add((FMLRTModelSlot) modelSlot);
+					virtualModelModelSlots.add((FMLRTModelSlot<?, ?>) modelSlot);
 				}
 			}
 		}
@@ -429,7 +430,8 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	public FMLModelFactory getFactory() {
 		if (getFlexoConcept() != null) {
 			return getFlexoConcept().getFMLModelFactory();
-		} else if (getVirtualModelResource() != null) {
+		}
+		else if (getVirtualModelResource() != null) {
 			return getVirtualModelResource().getFactory();
 		}
 		return null;
