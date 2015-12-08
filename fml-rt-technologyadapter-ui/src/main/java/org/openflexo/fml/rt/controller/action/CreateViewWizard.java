@@ -139,9 +139,10 @@ public class CreateViewWizard extends FlexoWizard {
 		public void setNewViewName(String newViewName) {
 			if (!newViewName.equals(getNewViewName())) {
 				String oldValue = getNewViewName();
+				String oldTitleValue = getNewViewTitle();
 				action.setNewViewName(newViewName);
 				getPropertyChangeSupport().firePropertyChange("newViewName", oldValue, newViewName);
-				getPropertyChangeSupport().firePropertyChange("newViewTitle", oldValue, newViewName);
+				getPropertyChangeSupport().firePropertyChange("newViewTitle", oldTitleValue, getNewViewTitle());
 				checkValidity();
 			}
 		}
@@ -153,8 +154,10 @@ public class CreateViewWizard extends FlexoWizard {
 		public void setNewViewTitle(String newViewTitle) {
 			if (!newViewTitle.equals(getNewViewTitle())) {
 				String oldValue = getNewViewTitle();
+				String oldNameValue = getNewViewName();
 				action.setNewViewTitle(newViewTitle);
 				getPropertyChangeSupport().firePropertyChange("newViewTitle", oldValue, newViewTitle);
+				getPropertyChangeSupport().firePropertyChange("newViewName", oldNameValue, getNewViewName());
 				checkValidity();
 			}
 		}

@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -111,23 +112,18 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		logger.info("Add virtual model instance in view " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
 		System.out.println("getNewVirtualModelInstanceName()=" + getNewVirtualModelInstanceName());
+		System.out.println("getNewVirtualModelInstanceTitle()=" + getNewVirtualModelInstanceTitle());
 
-		newVirtualModelInstanceName = /*JavaUtils.getClassName(*/getNewVirtualModelInstanceName()/*)*/;
-
-		if (StringUtils.isNotEmpty(newVirtualModelInstanceName) && StringUtils.isEmpty(newVirtualModelInstanceTitle)) {
-			newVirtualModelInstanceTitle = newVirtualModelInstanceName;
-		}
-
-		if (StringUtils.isEmpty(newVirtualModelInstanceName)) {
+		if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
 			throw new InvalidParameterException("virtual model instance name is undefined");
 		}
 
-		int index = 1;
-		String baseName = newVirtualModelInstanceName;
-		while (!isValidVirtualModelInstanceName(newVirtualModelInstanceName)) {
+		/*int index = 1;
+		String baseName = getNewVirtualModelInstanceName();
+		while (!isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
 			newVirtualModelInstanceName = baseName + index;
 			index++;
-		}
+		}*/
 
 		AbstractVirtualModelInstanceResource<VMI, VM> newVirtualModelInstanceResource = makeVirtualModelInstanceResource();
 
@@ -304,11 +300,20 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	public String getNewVirtualModelInstanceName() {
+		if (StringUtils.isEmpty(newVirtualModelInstanceName) && StringUtils.isNotEmpty(newVirtualModelInstanceTitle)) {
+			return JavaUtils.getClassName(newVirtualModelInstanceTitle);
+		}
 		return newVirtualModelInstanceName;
 	}
 
 	public void setNewVirtualModelInstanceName(String newVirtualModelInstanceName) {
+		String oldVirtualModelInstanceTitle = getNewVirtualModelInstanceTitle();
+		String oldVirtualModelInstanceName = getNewVirtualModelInstanceName();
 		this.newVirtualModelInstanceName = newVirtualModelInstanceName;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldVirtualModelInstanceName,
+				getNewVirtualModelInstanceName());
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldVirtualModelInstanceTitle,
+				getNewVirtualModelInstanceTitle());
 	}
 
 	public String getNewVirtualModelInstanceTitle() {
@@ -319,7 +324,13 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	public void setNewVirtualModelInstanceTitle(String newVirtualModelInstanceTitle) {
+		String oldVirtualModelInstanceTitle = getNewVirtualModelInstanceTitle();
+		String oldVirtualModelInstanceName = getNewVirtualModelInstanceName();
 		this.newVirtualModelInstanceTitle = newVirtualModelInstanceTitle;
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldVirtualModelInstanceTitle,
+				getNewVirtualModelInstanceTitle());
+		getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldVirtualModelInstanceName,
+				getNewVirtualModelInstanceName());
 	}
 
 	public CreationScheme getCreationScheme() {

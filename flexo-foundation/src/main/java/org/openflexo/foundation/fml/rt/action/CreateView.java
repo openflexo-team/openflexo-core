@@ -171,8 +171,15 @@ public abstract class CreateView<A extends CreateView<A, T>, T extends FlexoObje
 		getPropertyChangeSupport().firePropertyChange("newViewTitle", null, newViewTitle);
 	}
 
+	public ViewPoint getViewPoint() {
+		return getVirtualModel();
+	}
+
 	public ViewPointResource getViewpointResource() {
-		return (ViewPointResource) getVirtualModel().getResource();
+		if (getVirtualModel() != null) {
+			return (ViewPointResource) getVirtualModel().getResource();
+		}
+		return null;
 	}
 
 	public void setViewpointResource(ViewPointResource viewpointResource) {

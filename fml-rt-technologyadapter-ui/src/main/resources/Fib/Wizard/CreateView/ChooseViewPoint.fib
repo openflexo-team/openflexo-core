@@ -7,6 +7,12 @@
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		localize="true" />
 	<TextField index="2" data="data.newViewTitle"
+		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		name="ViewNameTextField" localize="true" columns="6" text="TextField" />
+	<Label label="new_view_name" index="3"
+		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		localize="true" />
+	<TextField index="4" data="data.newViewName"
 		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=10;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		name="ViewNameTextField" localize="true" columns="6" text="TextField" />
 	<SplitPanel index="3"
@@ -86,8 +92,10 @@
 		<Localized id="8" value="Please choose a view title" lang="English" key="no_view_title_defined" />
 		<Localized id="9" value="Veuillez choisir un titre pour la vue" lang="French" key="no_view_title_defined" />
 		<Localized id="10" value="no_view_title_defined" lang="Dutch" key="no_view_title_defined" />
-		<Localized id="11" value="New view title" lang="English" key="new_view_title" />
-		<Localized id="12" value="Titre de la nouvelle vue" lang="French" key="new_view_title" />
-		<Localized id="13" value="new_view_title" lang="Dutch" key="new_view_title" />
+		<Localized id="11" value="New view name" lang="English" key="new_view_name" />
+		<Localized id="12" value="Nom de la nouvelle vue" lang="French" key="new_view_name" />
+		<Localized id="13" value="New view title" lang="English" key="new_view_title" />
+		<Localized id="14" value="Titre de la nouvelle vue" lang="French" key="new_view_title" />
+		<Localized id="15" value="new_view_title" lang="Dutch" key="new_view_title" />
 	</LocalizedDictionary>
 </Panel>

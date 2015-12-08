@@ -78,9 +78,9 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstanceWizard.class.getPackage().getName());
 
-	private final A action;
+	protected final A action;
 
-	private final ChooseVirtualModel chooseVirtualModel;
+	private final AbstractChooseVirtualModel<?> chooseVirtualModel;
 	private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
 	private ChooseAndConfigureCreationScheme chooseAndConfigureCreationScheme = null;
 
@@ -88,8 +88,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		super(controller);
 		this.action = action;
 		modelSlotConfigurationSteps = new ArrayList<ConfigureModelSlot<?, ?>>();
-		addStep(chooseVirtualModel = new ChooseVirtualModel());
+		addStep(chooseVirtualModel = makeChooseVirtualModel());
 	}
+
+	protected abstract AbstractChooseVirtualModel<?> makeChooseVirtualModel();
 
 	private ConfigureModelSlot<?, ?> makeConfigureModelSlotStep(ModelSlot<?> ms) {
 		if (ms instanceof TypeAwareModelSlot) {
@@ -113,8 +115,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib")
-	public class ChooseVirtualModel extends WizardStep {
+	public abstract class AbstractChooseVirtualModel<VM extends AbstractVirtualModel<VM>> extends WizardStep {
 
 		public A getAction() {
 			return action;
@@ -182,11 +183,11 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			}
 		}
 
-		public AbstractVirtualModel<?> getVirtualModel() {
-			return action.getVirtualModel();
+		public VM getVirtualModel() {
+			return (VM) action.getVirtualModel();
 		}
 
-		public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
+		public void setVirtualModel(VM virtualModel) {
 			if (virtualModel != getVirtualModel()) {
 				AbstractVirtualModel<?> oldValue = getVirtualModel();
 				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);

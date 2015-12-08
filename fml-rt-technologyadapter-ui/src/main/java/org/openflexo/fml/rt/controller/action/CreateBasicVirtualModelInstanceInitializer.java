@@ -76,7 +76,8 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
 				if (action.skipChoosePopup) {
 					return true;
-				} else {
+				}
+				else {
 					Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();

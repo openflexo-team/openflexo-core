@@ -41,6 +41,9 @@ package org.openflexo.fml.rt.controller.action;
 import java.awt.Image;
 import java.util.logging.Logger;
 
+import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
@@ -66,6 +69,27 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	@Override
 	public Image getDefaultPageImage() {
 		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+	}
+
+	@Override
+	protected AbstractCreateVirtualModelInstanceWizard<CreateBasicVirtualModelInstance>.AbstractChooseVirtualModel<?> makeChooseVirtualModel() {
+		return new ChooseVirtualModel();
+	}
+
+	/**
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseVirtualModel.fib")
+	public class ChooseVirtualModel extends AbstractChooseVirtualModel<VirtualModel> {
+
+		@Override
+		public String getTitle() {
+			return FlexoLocalization.localizedForKey("choose_virtual_model");
+		}
+
 	}
 
 }
