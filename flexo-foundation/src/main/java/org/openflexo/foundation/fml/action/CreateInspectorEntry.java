@@ -141,7 +141,8 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getEntryName())) {
 			return false;
-		} else if (getFocusedObject().getEntry(getEntryName()) != null) {
+		}
+		else if (getFocusedObject().getEntry(getEntryName()) != null) {
 			return false;
 		}
 		return true;
@@ -187,10 +188,12 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 		availableInspectorEntryTypes.add(CheckboxInspectorEntry.class);
 		availableInspectorEntryTypes.add(FloatInspectorEntry.class);
 		availableInspectorEntryTypes.add(IntegerInspectorEntry.class);
-		for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
-			for (Class<? extends InspectorEntry> entryType : ms.getAvailableInspectorEntryTypes()) {
-				if (!availableInspectorEntryTypes.contains(entryType)) {
-					availableInspectorEntryTypes.add(entryType);
+		if (getFocusedObject().getOwningVirtualModel() != null) {
+			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
+				for (Class<? extends InspectorEntry> entryType : ms.getAvailableInspectorEntryTypes()) {
+					if (!availableInspectorEntryTypes.contains(entryType)) {
+						availableInspectorEntryTypes.add(entryType);
+					}
 				}
 			}
 		}

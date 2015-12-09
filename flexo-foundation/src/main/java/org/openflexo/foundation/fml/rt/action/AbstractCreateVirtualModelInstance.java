@@ -88,6 +88,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	private String newVirtualModelInstanceTitle;
 	private VM virtualModel;
 	private CreationScheme creationScheme;
+	private CreationSchemeAction creationSchemeAction;
 
 	public boolean skipChoosePopup = false;
 
@@ -135,28 +136,38 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
 				+ newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
-		for (ModelSlot ms : virtualModel.getModelSlots()) {
-			// System.out.println("*** ModelSlot: " + ms);
-			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
-			if (configuration.isValidConfiguration()) {
-				ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
-				msi.setVirtualModelInstance(newVirtualModelInstance);
-				newVirtualModelInstance.addToModelSlotInstances(msi);
-			}
-			else {
-				logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
-						+ configuration.getErrorMessage());
-				throw new InvalidArgumentException(
-						"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
-			}
-		}
+		System.out.println("creationSchemeAction=" + creationSchemeAction);
 
+		// We init the new VMI using a creation scheme
 		if (creationSchemeAction != null) {
+
+			System.out.println("We now execute " + creationSchemeAction);
+			System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+
 			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
 			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
 			creationSchemeAction.doAction();
 			if (creationSchemeAction.getThrownException() != null) {
 				throw creationSchemeAction.getThrownException();
+			}
+
+		}
+
+		else {
+			for (ModelSlot ms : virtualModel.getModelSlots()) {
+				// System.out.println("*** ModelSlot: " + ms);
+				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
+				if (configuration.isValidConfiguration()) {
+					ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
+					msi.setVirtualModelInstance(newVirtualModelInstance);
+					newVirtualModelInstance.addToModelSlotInstances(msi);
+				}
+				else {
+					logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
+							+ configuration.getErrorMessage());
+					throw new InvalidArgumentException(
+							"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
+				}
 			}
 
 		}
@@ -362,8 +373,6 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			notifyObservers(new DataModification("isActionValidable", false, true));
 		}
 	}
-
-	private CreationSchemeAction creationSchemeAction;
 
 	public CreationSchemeAction getCreationSchemeAction() {
 		return creationSchemeAction;

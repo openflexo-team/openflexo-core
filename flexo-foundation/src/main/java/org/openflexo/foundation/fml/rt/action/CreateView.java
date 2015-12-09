@@ -183,7 +183,13 @@ public abstract class CreateView<A extends CreateView<A, T>, T extends FlexoObje
 	}
 
 	public void setViewpointResource(ViewPointResource viewpointResource) {
-		setVirtualModel(viewpointResource.getViewPoint());
-		getPropertyChangeSupport().firePropertyChange("viewpointResource", null, viewpointResource);
+		ViewPointResource oldViewpointResource = getViewpointResource();
+		if (viewpointResource != null) {
+			setVirtualModel(viewpointResource.getViewPoint());
+		}
+		else {
+			setVirtualModel(null);
+		}
+		getPropertyChangeSupport().firePropertyChange("viewpointResource", oldViewpointResource, viewpointResource);
 	}
 }

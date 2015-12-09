@@ -41,11 +41,11 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 
 /**
@@ -112,6 +112,11 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 
+	}
+
+	@Override
+	protected ViewType getVirtualModelInstanceType() {
+		return ViewType.getViewType(getViewPoint());
 	}
 
 	/**

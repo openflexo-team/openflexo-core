@@ -88,9 +88,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	};
 
 	static {
-		// FlexoObject.addActionForClass(actionType, DiagramElement.class);
-		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
-		// FlexoObject.addActionForClass(actionType, View.class);
+		FlexoObjectImpl.addActionForClass(actionType, AbstractVirtualModelInstance.class);
 	}
 
 	private AbstractVirtualModelInstance<?, ?> vmInstance;
