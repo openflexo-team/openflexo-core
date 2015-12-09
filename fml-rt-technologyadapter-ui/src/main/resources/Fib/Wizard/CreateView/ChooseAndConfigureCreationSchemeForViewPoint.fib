@@ -54,7 +54,11 @@
 				manageDynamicModel="true" useScrollBar="false"
 				data="data.action.creationSchemeAction" componentClassName="org.openflexo.view.controller.FIBParametersRetrieverWidget"
 				name="ParametersRetriverWidget" controllerClassName="org.openflexo.fib.controller.FIBController"
-				localize="true" constraints="border(location=center)" readOnly="false" />
+				localize="true" constraints="border(location=center)" readOnly="false">
+				<Assignment andatory="true"
+					value="controller.flexoController"
+					variable="component.flexoController" />
+			</Custom>
 		</Panel>
 		<Panel id="23" darkLevel="0" useScrollBar="false"
 			protectContent="false" layout="border"
@@ -84,10 +88,9 @@
 			useScrollBar="false" selected="data.creationScheme" name="CreationSchemeBrowser"
 			rootVisible="true" readOnly="false">
 			<BrowserElement id="27"
-				icon="controller.iconForObject(viewpoint)" filtered="false"
-				label="viewpoint.name" defaultVisible="true"
-				dataClassName="org.openflexo.foundation.fml.ViewPoint" name="viewpoint"
-				isEditable="false">
+				icon="controller.iconForObject(viewpoint)" filtered="false" label="viewpoint.name"
+				defaultVisible="true" dataClassName="org.openflexo.foundation.fml.ViewPoint"
+				name="viewpoint" isEditable="false">
 				<Children id="28" name="children" data="viewpoint.creationSchemes" />
 			</BrowserElement>
 			<BrowserElement id="29"

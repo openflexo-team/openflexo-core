@@ -180,7 +180,8 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			} else {
+			}
+			else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -272,7 +273,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	/*public class URIPanel extends FIBPanel {
 	public FIBTextField tf;
 	public FIBLabel uriLabel;
-
+	
 	public URIPanel(final URIParameter parameter) {
 		super();
 		setName(parameter.getName() + "URIPanel");

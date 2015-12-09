@@ -54,10 +54,20 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 
-	private final FlexoController flexoController;
+	private FlexoController flexoController;
 
-	public FIBParametersRetrieverWidget(FlexoBehaviourAction action, FlexoController flexoController) {
-		super((new ParametersRetriever(action, flexoController)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
+		super((new ParametersRetriever(action, /*flexoController*/null)).makeFIB(false, false), action,
+				FlexoLocalization.getMainLocalizer());
+		// this.flexoController = flexoController;
+	}
+
+	public FlexoController getFlexoController() {
+		return flexoController;
+	}
+
+	public void setFlexoController(FlexoController flexoController) {
+		System.out.println("***** setFlexoController with " + flexoController);
 		this.flexoController = flexoController;
 	}
 
