@@ -55,6 +55,7 @@ import org.openflexo.connie.expr.Constant.StringConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -198,9 +199,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept != null) {
-					if (concept instanceof VirtualModel) {
-						VirtualModel vm = (VirtualModel) concept;
-						for (ModelSlot ms : vm.getModelSlots()) {
+					if (concept instanceof AbstractVirtualModel) {
+						AbstractVirtualModel<?> vm = (AbstractVirtualModel<?>) concept;
+						for (ModelSlot<?> ms : vm.getModelSlots()) {
 							returned.add(getSimplePathElement(ms, parent));
 						}
 					}
@@ -210,6 +211,15 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 					// TODO: performance issue
 					if (concept.getInspector().getRenderer().isSet() && concept.getInspector().getRenderer().isValid()) {
 						returned.add(new EPIRendererPathElement(parent));
+					}
+					if (concept instanceof ViewPoint) {
+						returned.add(new ViewPointTypePathElement(parent));
+					}
+					else if (concept instanceof VirtualModel) {
+						returned.add(new VirtualModelTypePathElement(parent));
+					}
+					else {
+						returned.add(new FlexoConceptTypePathElement(parent));
 					}
 				}
 				return returned;
@@ -235,8 +245,8 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				if (!(flexoBehaviour instanceof CreationScheme)) {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
-				returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE, flexoBehaviour.getFlexoConcept()
-						.getOwningVirtualModel()));
+				returned.add(new VirtualModelInstancePathElement(parent, VIRTUAL_MODEL_INSTANCE,
+						flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
 				return returned;
 			}
 
@@ -278,6 +288,9 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 
 	@Override
 	public SimplePathElement makeSimplePathElement(BindingPathElement parent, String propertyName) {
+
+		System.out.println("Je cherche " + propertyName + " pour " + parent);
+
 		// We want to avoid code duplication, so iterate on all accessible simple path element and choose the right one
 		SimplePathElement returned = null;
 		List<? extends SimplePathElement> accessibleSimplePathElements = getAccessibleSimplePathElements(parent);
@@ -288,10 +301,13 @@ public final class FlexoConceptBindingFactory extends JavaBindingFactory {
 				}
 			}
 		}
+
+		System.out.println("hop1: " + returned);
 		// We cannot find a simple path element at this level, retrieve from java
 		if (returned == null) {
 			returned = super.makeSimplePathElement(parent, propertyName);
 		}
+		System.out.println("hop2: " + returned);
 		// Hook to specialize type returned by FlexoBehaviourAction.getEditionScheme()
 		// This method is used while executing DiagramElement inspectors
 		// TODO: (sylvain) still required ???
