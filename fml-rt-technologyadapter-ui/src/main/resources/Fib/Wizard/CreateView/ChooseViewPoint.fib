@@ -6,13 +6,13 @@
 	<Label label="new_view_title" index="1"
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		localize="true" />
-	<TextField index="2" data="data.newViewTitle"
+	<TextField index="2" data="data.newVirtualModelInstanceTitle"
 		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		name="ViewNameTextField" localize="true" columns="6" text="TextField" />
 	<Label label="new_view_name" index="3"
 		constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=10;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		localize="true" />
-	<TextField index="4" data="data.newViewName"
+	<TextField index="4" data="data.newVirtualModelInstanceName"
 		constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=10;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
 		name="ViewNameTextField" localize="true" columns="6" text="TextField" />
 	<SplitPanel index="3"

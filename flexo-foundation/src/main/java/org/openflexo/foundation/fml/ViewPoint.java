@@ -205,12 +205,18 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	public ViewPointBindingModel getBindingModel();
 
 	/**
+	 * Load eventually unloaded VirtualModels<br>
+	 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
+	 */
+	public void loadVirtualModelsWhenUnloaded();
+
+	/**
 	 * Default implementation for {@link ViewPoint}
 	 * 
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -324,9 +330,10 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		/**
 		 * Load eventually unloaded VirtualModels<br>
-		 * After this call return, we can assert that all {@link VirtualModel} are loaded.
+		 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
 		 */
-		private void loadVirtualModelsWhenUnloaded() {
+		@Override
+		public void loadVirtualModelsWhenUnloaded() {
 			if (isLoading) {
 				return;
 			}
@@ -357,8 +364,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				}
-				else {
+				} else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -649,8 +655,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			}
-			else {
+			} else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

@@ -41,14 +41,11 @@ package org.openflexo.fml.rt.controller.action;
 import java.awt.Image;
 import java.util.logging.Logger;
 
-import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
-import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.CreateView;
 import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -56,22 +53,33 @@ import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.action.AbstractCreateVirtualModelInstanceWizard;
 
-public class CreateViewWizard extends FlexoWizard {
+public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<CreateViewInFolder> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateViewWizard.class.getPackage().getName());
 
-	private final CreateViewInFolder action;
-
-	private final ChooseViewPoint chooseViewPoint;
+	// private final ChooseViewPoint chooseViewPoint;
+	// private final ChooseAndConfigureCreationScheme chooseAndConfigureCreationScheme = null;
 
 	public CreateViewWizard(CreateViewInFolder action, FlexoController controller) {
-		super(controller);
-		this.action = action;
-		addStep(chooseViewPoint = new ChooseViewPoint());
+		super(action, controller);
+		// this.action = action;
+		// addStep(chooseViewPoint = new ChooseViewPoint());
+	}
+
+	@Override
+	protected ChooseViewPoint makeChooseVirtualModel() {
+		return new ChooseViewPoint();
+	}
+
+	@Override
+	protected ChooseAndConfigureCreationSchemeForViewPoint makeChooseAndConfigureCreationScheme() {
+		return new ChooseAndConfigureCreationSchemeForViewPoint();
 	}
 
 	@Override
@@ -88,22 +96,14 @@ public class CreateViewWizard extends FlexoWizard {
 	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
 	 * 
 	 * @author sylvain
-	 *
+	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateView/ChooseViewPoint.fib")
-	public class ChooseViewPoint extends WizardStep {
-
-		public ApplicationContext getServiceManager() {
-			return getController().getApplicationContext();
-		}
-
-		public CreateView getAction() {
-			return action;
-		}
+	public class ChooseViewPoint extends AbstractChooseVirtualModel<ViewPoint> {
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_view_point");
+			return FlexoLocalization.localizedForKey("choose_viewpoint");
 		}
 
 		@Override
@@ -113,53 +113,35 @@ public class CreateViewWizard extends FlexoWizard {
 				setIssueMessage(FlexoLocalization.localizedForKey("no_folder_defined"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getViewpointResource() == null) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_view_point_selected"), IssueMessageType.ERROR);
+			if (getViewPoint() == null) {
+				setIssueMessage(FlexoLocalization.localizedForKey("no_viewpoint_selected"), IssueMessageType.ERROR);
 				return false;
 			}
-			if (StringUtils.isEmpty(getNewViewTitle())) {
+			if (StringUtils.isEmpty(getNewVirtualModelInstanceName())) {
+				setIssueMessage(FlexoLocalization.localizedForKey("no_view_name_defined"), IssueMessageType.ERROR);
+				return false;
+			}
+
+			if (StringUtils.isEmpty(getNewVirtualModelInstanceTitle())) {
 				setIssueMessage(FlexoLocalization.localizedForKey("no_view_title_defined"), IssueMessageType.ERROR);
 				return false;
 			}
-			if (getFolder().getResourceWithName(getNewViewName()) != null) {
+			if (!action.isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
 				setIssueMessage(FlexoLocalization.localizedForKey("a_view_with_that_name_already_exists"), IssueMessageType.ERROR);
 				return false;
 			}
+
+			if (!getNewVirtualModelInstanceName().equals(JavaUtils.getClassName(getNewVirtualModelInstanceName()))
+					&& !getNewVirtualModelInstanceName().equals(JavaUtils.getVariableName(getNewVirtualModelInstanceName()))) {
+				setIssueMessage(FlexoLocalization.localizedForKey("discouraged_name_for_new_view"), IssueMessageType.WARNING);
+			}
+
 			return true;
+
 		}
 
 		public RepositoryFolder<ViewResource> getFolder() {
 			return action.getFolder();
-		}
-
-		public String getNewViewName() {
-			return action.getNewViewName();
-		}
-
-		public void setNewViewName(String newViewName) {
-			if (!newViewName.equals(getNewViewName())) {
-				String oldValue = getNewViewName();
-				String oldTitleValue = getNewViewTitle();
-				action.setNewViewName(newViewName);
-				getPropertyChangeSupport().firePropertyChange("newViewName", oldValue, newViewName);
-				getPropertyChangeSupport().firePropertyChange("newViewTitle", oldTitleValue, getNewViewTitle());
-				checkValidity();
-			}
-		}
-
-		public String getNewViewTitle() {
-			return action.getNewViewTitle();
-		}
-
-		public void setNewViewTitle(String newViewTitle) {
-			if (!newViewTitle.equals(getNewViewTitle())) {
-				String oldValue = getNewViewTitle();
-				String oldNameValue = getNewViewName();
-				action.setNewViewTitle(newViewTitle);
-				getPropertyChangeSupport().firePropertyChange("newViewTitle", oldValue, newViewTitle);
-				getPropertyChangeSupport().firePropertyChange("newViewName", oldNameValue, getNewViewName());
-				checkValidity();
-			}
 		}
 
 		public ViewPointResource getViewpointResource() {
@@ -174,6 +156,18 @@ public class CreateViewWizard extends FlexoWizard {
 				checkValidity();
 			}
 		}
+
+		public ViewPoint getViewPoint() {
+			if (getViewpointResource() != null) {
+				return getViewpointResource().getViewPoint();
+			}
+			return null;
+		}
+
+	}
+
+	@FIBPanel("Fib/Wizard/CreateView/ChooseAndConfigureCreationSchemeForViewPoint.fib")
+	public class ChooseAndConfigureCreationSchemeForViewPoint extends AbstractChooseAndConfigureCreationScheme<ViewPoint> {
 	}
 
 }

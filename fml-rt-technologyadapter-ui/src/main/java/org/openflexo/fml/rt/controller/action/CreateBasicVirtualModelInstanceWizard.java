@@ -72,8 +72,13 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	}
 
 	@Override
-	protected AbstractCreateVirtualModelInstanceWizard<CreateBasicVirtualModelInstance>.AbstractChooseVirtualModel<?> makeChooseVirtualModel() {
+	protected ChooseVirtualModel makeChooseVirtualModel() {
 		return new ChooseVirtualModel();
+	}
+
+	@Override
+	protected ChooseAndConfigureCreationSchemeForVirtualModel makeChooseAndConfigureCreationScheme() {
+		return new ChooseAndConfigureCreationSchemeForVirtualModel();
 	}
 
 	/**
@@ -89,7 +94,9 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 		public String getTitle() {
 			return FlexoLocalization.localizedForKey("choose_virtual_model");
 		}
-
 	}
 
+	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib")
+	public class ChooseAndConfigureCreationSchemeForVirtualModel extends AbstractChooseAndConfigureCreationScheme<VirtualModel> {
+	}
 }

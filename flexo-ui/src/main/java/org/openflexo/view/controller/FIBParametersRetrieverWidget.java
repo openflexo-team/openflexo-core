@@ -49,10 +49,7 @@ import org.openflexo.localization.FlexoLocalization;
  * Widget allowing to edit parameters of an FlexoBehaviour
  * 
  * @author sguerin
- * 
  */
-// Not sure it is still used
-@Deprecated
 public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());

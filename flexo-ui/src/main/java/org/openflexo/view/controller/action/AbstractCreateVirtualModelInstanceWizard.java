@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.fib.annotation.FIBPanel;
@@ -72,8 +73,8 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>>
-		extends FlexoWizard {
+public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>> extends
+		FlexoWizard {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstanceWizard.class.getPackage().getName());
@@ -82,7 +83,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 	private final AbstractChooseVirtualModel<?> chooseVirtualModel;
 	private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
-	private ChooseAndConfigureCreationScheme chooseAndConfigureCreationScheme = null;
+	private AbstractChooseAndConfigureCreationScheme<?> chooseAndConfigureCreationScheme = null;
 
 	public AbstractCreateVirtualModelInstanceWizard(A action, FlexoController controller) {
 		super(controller);
@@ -93,17 +94,16 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 	protected abstract AbstractChooseVirtualModel<?> makeChooseVirtualModel();
 
+	protected abstract AbstractChooseAndConfigureCreationScheme<?> makeChooseAndConfigureCreationScheme();
+
 	private ConfigureModelSlot<?, ?> makeConfigureModelSlotStep(ModelSlot<?> ms) {
 		if (ms instanceof TypeAwareModelSlot) {
 			return new ConfigureTypeAwareModelSlot((TypeAwareModelSlot) ms);
-		}
-		else if (ms instanceof FreeModelSlot) {
+		} else if (ms instanceof FreeModelSlot) {
 			return new ConfigureFreeModelSlot((FreeModelSlot) ms);
-		}
-		else if (ms instanceof FMLRTModelSlot) {
+		} else if (ms instanceof FMLRTModelSlot) {
 			return new ConfigureVirtualModelModelSlot((FMLRTModelSlot) ms);
-		}
-		else {
+		} else {
 			logger.warning("Could not instantiate ConfigureModelSlot for " + ms);
 			return null;
 		}
@@ -119,6 +119,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		public A getAction() {
 			return action;
+		}
+
+		public ApplicationContext getServiceManager() {
+			return getController().getApplicationContext();
 		}
 
 		@Override
@@ -163,9 +167,11 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		public void setNewVirtualModelInstanceName(String newVirtualModelInstanceName) {
 			if (!newVirtualModelInstanceName.equals(getNewVirtualModelInstanceName())) {
 				String oldValue = getNewVirtualModelInstanceName();
+				String oldTitleValue = getNewVirtualModelInstanceTitle();
 				action.setNewVirtualModelInstanceName(newVirtualModelInstanceName);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldValue, newVirtualModelInstanceName);
-				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldValue, newVirtualModelInstanceName);
+				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldTitleValue,
+						getNewVirtualModelInstanceTitle());
 				checkValidity();
 			}
 		}
@@ -177,8 +183,11 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		public void setNewVirtualModelInstanceTitle(String newVirtualModelInstanceTitle) {
 			if (!newVirtualModelInstanceTitle.equals(getNewVirtualModelInstanceTitle())) {
 				String oldValue = getNewVirtualModelInstanceTitle();
+				String oldNameValue = getNewVirtualModelInstanceName();
 				action.setNewVirtualModelInstanceTitle(newVirtualModelInstanceTitle);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldValue, newVirtualModelInstanceTitle);
+				getPropertyChangeSupport()
+						.firePropertyChange("newVirtualModelInstanceName", oldNameValue, getNewVirtualModelInstanceName());
 				checkValidity();
 			}
 		}
@@ -198,7 +207,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 
 		@Override
 		public boolean isTransitionalStep() {
-			if (getVirtualModel() != null && getVirtualModel().getModelSlots().size() == 0) {
+			if (getVirtualModel() != null && getVirtualModel().getModelSlots().size() == 0 && !getVirtualModel().hasCreationScheme()) {
 				return false;
 			}
 			return true;
@@ -207,16 +216,20 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		@Override
 		public void performTransition() {
 			// We have now to update all steps according to chosen VirtualModel
-			for (ModelSlot<?> ms : chooseVirtualModel.getVirtualModel().getModelSlots()) {
-				ConfigureModelSlot<?, ?> step = makeConfigureModelSlotStep(ms);
-				if (step != null) {
-					modelSlotConfigurationSteps.add(step);
-					addStep(step);
-				}
-			}
+			// Two possibilities:
+			// - either chosen VirtualModel defines some CreationScheme, and we use it
+			// - otherwise, we configurate all model slots
 			if (chooseVirtualModel.getVirtualModel().hasCreationScheme()) {
-				chooseAndConfigureCreationScheme = new ChooseAndConfigureCreationScheme();
+				chooseAndConfigureCreationScheme = makeChooseAndConfigureCreationScheme();
 				addStep(chooseAndConfigureCreationScheme);
+			} else {
+				for (ModelSlot<?> ms : chooseVirtualModel.getVirtualModel().getModelSlots()) {
+					ConfigureModelSlot<?, ?> step = makeConfigureModelSlotStep(ms);
+					if (step != null) {
+						modelSlotConfigurationSteps.add(step);
+						addStep(step);
+					}
+				}
 			}
 		}
 
@@ -239,8 +252,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * @author sylvain
 	 * 
 	 */
-	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends WizardStep
-			implements PropertyChangeListener {
+	public abstract class ConfigureModelSlot<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
+			WizardStep implements PropertyChangeListener {
 
 		private final MS modelSlot;
 		private final ModelSlotInstanceConfiguration<MS, RD> configuration;
@@ -274,8 +287,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			boolean isValid = getConfiguration().isValidConfiguration();
 			if (!isValid) {
 				setIssueMessage(getConfiguration().getErrorMessage(), IssueMessageType.ERROR);
-			}
-			else {
+			} else {
 				setIssueMessage(FlexoLocalization.localizedForKey("valid_configuration"), IssueMessageType.INFO);
 			}
 			return isValid;
@@ -319,8 +331,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib")
-	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
-			extends ConfigureModelSlot<FreeModelSlot<RD>, RD> {
+	public class ConfigureFreeModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends
+			ConfigureModelSlot<FreeModelSlot<RD>, RD> {
 
 		public ConfigureFreeModelSlot(FreeModelSlot<RD> modelSlot) {
 			super(modelSlot);
@@ -371,7 +383,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	 * 
 	 */
 	@FIBPanel("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib")
-	public class ChooseAndConfigureCreationScheme extends WizardStep {
+	public abstract class AbstractChooseAndConfigureCreationScheme<VM extends AbstractVirtualModel<VM>> extends WizardStep {
 
 		public A getAction() {
 			return action;
