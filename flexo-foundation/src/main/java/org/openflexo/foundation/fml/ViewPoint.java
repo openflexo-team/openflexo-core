@@ -216,7 +216,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -228,7 +228,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private ViewPointBindingModel bindingModel;
 		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
-		private ViewType viewType = null;
+		private final ViewType viewType = new ViewType(this);;
 
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
@@ -284,6 +284,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		@Override
 		public String getStringRepresentation() {
 			return getURI();
+		}
+
+		@Override
+		public VirtualModelInstanceType getInstanceType() {
+			return getViewType();
 		}
 
 		/**
@@ -364,7 +369,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				} else {
+				}
+				else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -609,9 +615,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		 */
 		@Override
 		public ViewType getViewType() {
-			if (viewType == null) {
-				viewType = new ViewType(this);
-			}
 			return viewType;
 		}
 
@@ -655,7 +658,8 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			} else {
+			}
+			else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {
