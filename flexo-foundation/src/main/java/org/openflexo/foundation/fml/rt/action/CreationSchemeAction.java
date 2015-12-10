@@ -54,7 +54,6 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.ListParameter;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAction, CreationScheme, AbstractVirtualModelInstance<?, ?>> {
@@ -74,14 +73,12 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstanceObject> globalSelection) {
+		public boolean isVisibleForSelection(AbstractVirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstanceObject> globalSelection) {
+		public boolean isEnabledForSelection(AbstractVirtualModelInstance<?, ?> object, Vector<VirtualModelInstanceObject> globalSelection) {
 			return true;
 		}
 
@@ -116,8 +113,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		if (flexoConceptInstance == null) {
 			if (getVirtualModelInstance() != null) {
 				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-			}
-			else {
+			} else {
 				logger.warning("Could not create new FlexoConceptInstance because container VirtualModelInstance is null");
 				throw new InvalidParametersException("VirtualModelInstance");
 			}
@@ -170,7 +166,7 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 		return vmInstance;
 	}
 
-	public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
+	public void setVirtualModelInstance(AbstractVirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
 	}
 
