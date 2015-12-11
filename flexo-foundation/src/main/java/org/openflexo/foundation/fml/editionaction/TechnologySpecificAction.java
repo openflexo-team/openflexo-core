@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -145,7 +146,7 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			if (getAllAvailableModelSlots() != null) {
 				return (List<MS2>) findAvailableModelSlots();
 			}
-			return null;
+			return Collections.emptyList();
 		}
 
 		@Override
