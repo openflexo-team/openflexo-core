@@ -66,6 +66,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAbstractAddFlexoConceptInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AbstractAddFlexoConceptInstance.inspector");
+	}
+
+	@Test
 	public void testAddClassInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddClass.inspector");
 	}
@@ -81,8 +86,18 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testAddSubViewInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddSubView.inspector");
+	}
+
+	@Test
 	public void testAddToListActionInspector() {
 		validateFIB("Inspectors/FML/EditionAction/AddToListAction.inspector");
+	}
+
+	@Test
+	public void testAddVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AddVirtualModelInstance.inspector");
 	}
 
 	@Test
@@ -436,6 +451,11 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
+	public void testFMLRTModelSlotInspector() {
+		validateFIB("Inspectors/FML/ModelSlot/FMLRTModelSlot.inspector");
+	}
+
+	@Test
 	public void testModelSlotInspector() {
 		validateFIB("Inspectors/FML/ModelSlot/ModelSlot.inspector");
 	}
@@ -443,11 +463,6 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	@Test
 	public void testTypeAwareModelSlotInspector() {
 		validateFIB("Inspectors/FML/ModelSlot/TypeAwareModelSlot.inspector");
-	}
-
-	@Test
-	public void testVirtualModelModelSlotInspector() {
-		validateFIB("Inspectors/FML/ModelSlot/FMLRTModelSlot.inspector");
 	}
 
 	@Test

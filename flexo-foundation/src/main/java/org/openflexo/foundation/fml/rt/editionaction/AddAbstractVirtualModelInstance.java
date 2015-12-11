@@ -38,11 +38,16 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 
@@ -58,11 +63,15 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
 @ImplementationClass(AddAbstractVirtualModelInstance.AddAbstractVirtualModelInstanceImpl.class)
-public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
-		AbstractAddFlexoConceptInstance<FCI, View> {
+public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>>
+		extends AbstractAddFlexoConceptInstance<FCI, View> {
 
-	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
-			AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddAbstractVirtualModelInstance<FCI> {
+	public AbstractVirtualModelResource<?> getVirtualModelType();
+
+	public void setVirtualModelType(AbstractVirtualModelResource<?> resource);
+
+	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FCI, View>implements AddAbstractVirtualModelInstance<FCI> {
 
 		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
 
@@ -77,5 +86,28 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 			return super.execute(evaluationContext);
 		}
 
+		@Override
+		public AbstractVirtualModelResource<?> getVirtualModelType() {
+			if (getFlexoConceptType() instanceof AbstractVirtualModel) {
+				return (AbstractVirtualModelResource<?>) ((AbstractVirtualModel<?>) getFlexoConceptType()).getResource();
+			}
+			return null;
+		}
+
+		@Override
+		public void setVirtualModelType(AbstractVirtualModelResource<?> resource) {
+			try {
+				setFlexoConceptType(resource.getResourceData(null));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }
