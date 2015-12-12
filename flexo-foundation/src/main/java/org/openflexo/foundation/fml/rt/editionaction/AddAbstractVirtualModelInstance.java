@@ -39,11 +39,15 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
@@ -63,15 +67,22 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
 @ImplementationClass(AddAbstractVirtualModelInstance.AddAbstractVirtualModelInstanceImpl.class)
-public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
-		AbstractAddFlexoConceptInstance<FCI, View> {
+public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>>
+		extends AbstractAddFlexoConceptInstance<FCI, View> {
 
 	public AbstractVirtualModelResource<?> getVirtualModelType();
 
 	public void setVirtualModelType(AbstractVirtualModelResource<?> resource);
 
-	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
-			AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddAbstractVirtualModelInstance<FCI> {
+	/**
+	 * Return type of View, when {@link #getVirtualModelInstance()} is set and valid
+	 * 
+	 * @return
+	 */
+	public ViewPointResource getOwnerViewPointTypeResource();
+
+	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FCI, View>implements AddAbstractVirtualModelInstance<FCI> {
 
 		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
 
@@ -111,5 +122,25 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 			}
 			getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVMType, getVirtualModelType());
 		}
+
+		@Override
+		public ViewPointResource getOwnerViewPointTypeResource() {
+			if (getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
+				Type type = getVirtualModelInstance().getAnalyzedType();
+				if (type instanceof ViewType) {
+					return ((ViewType) type).getViewPoint().getViewPointResource();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getVirtualModelInstance()) {
+				getPropertyChangeSupport().firePropertyChange("ownerViewPointTypeResource", null, getOwnerViewPointTypeResource());
+			}
+		}
+
 	}
 }

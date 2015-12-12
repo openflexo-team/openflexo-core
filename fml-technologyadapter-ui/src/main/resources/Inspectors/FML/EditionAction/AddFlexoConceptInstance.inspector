@@ -28,7 +28,7 @@
 				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.viewPointLibrary" value="data.viewPointLibrary" />
-				<Assignment variable="component.viewPoint" value="data.viewPoint" />
+				<Assignment variable="component.virtualModel" value="data.ownerVirtualModelType" />
 				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />
 			</Custom>
 		</Tab>

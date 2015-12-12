@@ -109,8 +109,11 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<AbstractVirt
 
 	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setViewPoint(ViewPointResource viewPoint) {
-		// System.out.println("Setting viewpoint with " + viewPoint);
-		this.viewPoint = viewPoint;
+		if (this.viewPoint != viewPoint) {
+			FlexoObject oldRoot = getRootObject();
+			this.viewPoint = viewPoint;
+			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
+		}
 	}
 
 	public FlexoObject getRootObject() {
