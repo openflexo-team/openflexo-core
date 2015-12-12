@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -68,10 +69,11 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("AddFlexoConceptInstance")
-public interface AddFlexoConceptInstance extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VirtualModelInstance> {
+public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
+		AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
-	public static abstract class AddFlexoConceptInstanceImpl extends
-			AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VirtualModelInstance> implements AddFlexoConceptInstance {
+	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
+			AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
@@ -81,8 +83,8 @@ public interface AddFlexoConceptInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public Class<VirtualModelInstance> getVirtualModelInstanceClass() {
-			return VirtualModelInstance.class;
+		public Class<VMI> getVirtualModelInstanceClass() {
+			return (Class<VMI>) AbstractVirtualModelInstance.class;
 		}
 	}
 

@@ -63,15 +63,15 @@ import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity
 @ImplementationClass(AddAbstractVirtualModelInstance.AddAbstractVirtualModelInstanceImpl.class)
-public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>>
-		extends AbstractAddFlexoConceptInstance<FCI, View> {
+public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
+		AbstractAddFlexoConceptInstance<FCI, View> {
 
 	public AbstractVirtualModelResource<?> getVirtualModelType();
 
 	public void setVirtualModelType(AbstractVirtualModelResource<?> resource);
 
-	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>>
-			extends AbstractAddFlexoConceptInstanceImpl<FCI, View>implements AddAbstractVirtualModelInstance<FCI> {
+	public static abstract class AddAbstractVirtualModelInstanceImpl<FCI extends AbstractVirtualModelInstance<FCI, ?>> extends
+			AbstractAddFlexoConceptInstanceImpl<FCI, View> implements AddAbstractVirtualModelInstance<FCI> {
 
 		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
 
@@ -96,6 +96,7 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 
 		@Override
 		public void setVirtualModelType(AbstractVirtualModelResource<?> resource) {
+			AbstractVirtualModelResource<?> oldVMType = getVirtualModelType();
 			try {
 				setFlexoConceptType(resource.getResourceData(null));
 			} catch (FileNotFoundException e) {
@@ -108,6 +109,7 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			getPropertyChangeSupport().firePropertyChange("virtualModelType", oldVMType, getVirtualModelType());
 		}
 	}
 }

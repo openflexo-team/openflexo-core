@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
@@ -67,7 +68,7 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 	public void setViewPointType(ViewPointResource resource);
 
-	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<View>implements AddSubView {
+	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<View> implements AddSubView {
 
 		static final Logger logger = Logger.getLogger(AddSubView.class.getPackage().getName());
 
@@ -83,7 +84,9 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 		@Override
 		public void setViewPointType(ViewPointResource resource) {
+			AbstractVirtualModelResource<?> oldVPType = getViewPointType();
 			setVirtualModelType(resource);
+			getPropertyChangeSupport().firePropertyChange("viewPointType", oldVPType, getViewPointType());
 		}
 	}
 }

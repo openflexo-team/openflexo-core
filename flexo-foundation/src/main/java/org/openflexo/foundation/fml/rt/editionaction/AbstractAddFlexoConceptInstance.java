@@ -140,6 +140,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
+	public List<CreationScheme> getAvailableCreationSchemes();
+
 	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends AbstractVirtualModelInstance<VMI, ?>>
 			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
 
@@ -181,6 +183,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 				setCreationScheme(null);
 			}
+			getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
 		}
 
 		@Override
@@ -216,6 +219,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (creationScheme != null) {
 				_creationSchemeURI = creationScheme.getURI();
 			}
+		}
+
+		@Override
+		public List<CreationScheme> getAvailableCreationSchemes() {
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getCreationSchemes();
+			}
+			return null;
 		}
 
 		// private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();

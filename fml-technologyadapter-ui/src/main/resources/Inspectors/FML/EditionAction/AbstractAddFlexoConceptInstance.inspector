@@ -21,7 +21,7 @@
 				icon="controller.iconForObject(object)" tooltip="" localize="true"
 				enable="" clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" staticList="" list="data.flexoConceptType.creationSchemes"
+				valueValidator="" staticList="" list="data.availableCreationSchemes"
 				array="" showIcon="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
 				autoSelectFirstRow="true">
 				<Dependancy componentName="AddFlexoConceptActionPanel" />
