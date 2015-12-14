@@ -100,6 +100,7 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -278,7 +279,17 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	public abstract ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass);
 
 	/**
-	 * Return icon representing supplied pattern property
+	 * Return icon representing supplied model slot class
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public ImageIcon getIconForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass) {
+		return getTechnologyIcon();
+	}
+
+	/**
+	 * Return icon representing supplied flexo role class
 	 * 
 	 * @param object
 	 * @return

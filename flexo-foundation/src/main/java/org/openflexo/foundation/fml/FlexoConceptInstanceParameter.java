@@ -168,8 +168,8 @@ public interface FlexoConceptInstanceParameter extends InnerModelSlotParameter<F
 
 		@Override
 		public AbstractVirtualModel<?> getModelSlotVirtualModel() {
-			if (getModelSlot() != null && getModelSlot().getVirtualModelResource() != null) {
-				return getModelSlot().getVirtualModelResource().getVirtualModel();
+			if (getModelSlot() != null && getModelSlot().getAccessedVirtualModelResource() != null) {
+				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
 			}
 			return null;
 		}

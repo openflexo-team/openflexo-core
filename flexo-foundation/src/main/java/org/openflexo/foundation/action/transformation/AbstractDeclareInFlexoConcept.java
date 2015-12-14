@@ -341,7 +341,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	public AbstractVirtualModel<?> getAdressedVirtualModel() {
 		if (isVirtualModelModelSlot()) {
 			FMLRTModelSlot<?, ?> virtualModelModelSlot = (FMLRTModelSlot<?, ?>) getInformationSourceModelSlot();
-			return virtualModelModelSlot.getAddressedVirtualModel();
+			return virtualModelModelSlot.getAccessedVirtualModel();
 		}
 		return null;
 	}

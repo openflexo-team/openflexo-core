@@ -151,8 +151,8 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		if (getModelSlot() == null || !useModelSlot) {
 			return getFlexoConcept().getVirtualModel();
 		} else {
-			if (getModelSlot().getVirtualModelResource() != null) {
-				return getModelSlot().getVirtualModelResource().getVirtualModel();
+			if (getModelSlot().getAccessedVirtualModelResource() != null) {
+				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
 			}
 		}
 		return null;
@@ -194,7 +194,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 			}
 			// Trying to find the most adapted model slot
 			for (FMLRTModelSlot ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
-				if (ms.getAddressedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
+				if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 					return ms;
 				}
 			}

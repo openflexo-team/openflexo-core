@@ -442,24 +442,17 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		@Override
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 
-			for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
-				if (vmRes.getName().equals(virtualModelNameOrURI)) {
-					return vmRes.getVirtualModel();
-				}
-				if (vmRes.getURI().equals(virtualModelNameOrURI)) {
-					return vmRes.getVirtualModel();
+			if (getResource() != null) {
+				for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
+					if (vmRes.getName().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
+					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
 				}
 			}
 
-			/*loadVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getVirtualModels()) {
-				if (vm.getName().equals(virtualModelNameOrURI)) {
-					return vm;
-				}
-				if (vm.getURI().equals(virtualModelNameOrURI)) {
-					return vm;
-				}
-			}*/
 			return null;
 		}
 

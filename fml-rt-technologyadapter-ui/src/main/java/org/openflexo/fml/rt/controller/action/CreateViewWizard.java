@@ -89,7 +89,7 @@ public class CreateViewWizard extends AbstractCreateVirtualModelInstanceWizard<C
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_MEDIUM_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLRTIconLibrary.VIEW_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	/**

@@ -254,7 +254,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 				return (AbstractVirtualModel<?>) getFlexoConcept();
 			}
 			if (getModelSlot() instanceof FMLRTModelSlot) {
-				return getModelSlot().getAddressedVirtualModel();
+				return getModelSlot().getAccessedVirtualModel();
 			}
 			return getOwningVirtualModel();
 		}
@@ -384,7 +384,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 
 						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
@@ -393,7 +393,7 @@ public interface SelectFlexoConceptInstance extends FetchRequest<FMLRTModelSlot,
 							for (FMLRTModelSlot ms : ((AbstractVirtualModel<?>) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAddressedVirtualModel())) {
+								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}
