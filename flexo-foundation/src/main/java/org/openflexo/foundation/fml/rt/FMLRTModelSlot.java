@@ -69,6 +69,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -83,6 +84,9 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
 @Imports({ @Import(VirtualModelInstanceModelSlot.class), @Import(ViewModelSlot.class) })
+// Following annotation is used to disambiguate deserialization when old ViewPoint are loaded (when FMLRTModelSlot was not abstract)
+// TODO: This might be removed when all viewpoints will be converted into 1.8.0 infrastructure
+@XMLElement(xmlTag = "AbstractFMLRTModelSlot")
 public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
 		extends ModelSlot<VMI> {
 
