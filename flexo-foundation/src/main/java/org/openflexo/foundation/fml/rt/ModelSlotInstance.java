@@ -73,8 +73,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
 @Imports({ @Import(FreeModelSlotInstance.class), @Import(TypeAwareModelSlotInstance.class), @Import(VirtualModelModelSlotInstance.class) })
-public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-		VirtualModelInstanceObject {
+public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
@@ -141,8 +141,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 */
 	public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified);
 
-	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
+	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
@@ -150,7 +150,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		private AbstractVirtualModelInstance<?, ?> vmInstance;
 		private MS modelSlot;
 		protected RD accessedResourceData;
-		private TechnologyAdapterResource<RD, ?> resource;
+		protected TechnologyAdapterResource<RD, ?> resource;
 		// Serialization/deserialization only, do not use
 		private String modelSlotName;
 
@@ -329,9 +329,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		@Override
 		public String toString() {
-			return "ModelSlotInstance:"
-					+ (getModelSlot() != null ? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_"
-							+ getFlexoID() : "null");
+			return "ModelSlotInstance:" + (getModelSlot() != null
+					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID() : "null");
 		}
 
 		/**

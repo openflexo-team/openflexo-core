@@ -100,36 +100,34 @@ public interface VirtualModelModelSlotInstance<VMI extends AbstractVirtualModelI
 		}
 
 		@Override
-		public VMI getAccessedResourceData() {
-			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
-				AbstractVirtualModelInstanceResource<VMI, VM> vmiResource;
+		public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
+			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
 				if (getProject() != null) {
-					vmiResource = (AbstractVirtualModelInstanceResource<VMI, VM>) getProject().getViewLibrary()
-							.getVirtualModelInstance(getVirtualModelInstanceURI());
+					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getProject().getViewLibrary()
+							.getVirtualModelInstance(virtualModelInstanceURI);
 				}
 				else {
-					vmiResource = (AbstractVirtualModelInstanceResource<VMI, VM>) getVirtualModelInstance().getView().getProject()
-							.getViewLibrary().getVirtualModelInstance(getVirtualModelInstanceURI());
-				}
-				if (vmiResource != null) {
-					accessedResourceData = vmiResource.getVirtualModelInstance();
-					setResource(vmiResource, false);
-					// resource = vmiResource;
+					resource = (AbstractVirtualModelInstanceResource<VMI, VM>) getVirtualModelInstance().getView().getProject()
+							.getViewLibrary().getVirtualModelInstance(virtualModelInstanceURI);
 				}
 			}
-			// Special case to handle reflexive model slots
-			/*if (accessedResourceData == null && getVirtualModelInstance() != null
-					&& getModelSlot().equals(getVirtualModelInstance().getVirtualModel().getReflexiveModelSlot())) {
-				accessedResourceData = getVirtualModelInstance();
-				if (accessedResourceData != null) {
-					resource = (TechnologyAdapterResource<VirtualModelInstance, ?>) accessedResourceData.getResource();
-				}
-			}*/
+
+			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
+				logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
+			}
+			return (AbstractVirtualModelInstanceResource<VMI, VM>) resource;
+		}
+
+		/*@Override
+		public VMI getAccessedResourceData() {
+			if (getResource() != null) {
+				return getResource().getVirtualModelInstance();
+			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(getVirtualModelInstanceURI())) {
 				logger.warning("Cannot find virtual model instance " + getVirtualModelInstanceURI());
 			}
 			return accessedResourceData;
-		}
+		}*/
 
 		// Serialization/deserialization only, do not use
 		@Override

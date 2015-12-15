@@ -90,19 +90,20 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 @FlexoResourceDefinition( /* This is the resource specification*/
-resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
-contains = { /* Defines the resources which may be embeddded in this resource */
-@SomeResources(resourceType = ViewResource.class, pattern = "*.view"),
-		@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") }, require = { /* Defines the resources which are required for this resource */
-@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
-public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint> implements ViewResource {
+		resourceDataClass = View.class, /* ResourceData class which is handled by this resource */
+		contains = { /* Defines the resources which may be embeddded in this resource */
+				@SomeResources(resourceType = ViewResource.class, pattern = "*.view"),
+				@SomeResources(resourceType = VirtualModelInstanceResource.class, pattern = "*.vmxml") },
+		require = { /* Defines the resources which are required for this resource */
+				@RequiredResource(resourceType = ViewPointResource.class, value = ViewResource.VIEWPOINT_RESOURCE) })
+public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResourceImpl<View, ViewPoint>implements ViewResource {
 
 	static final Logger logger = Logger.getLogger(ViewResourceImpl.class.getPackage().getName());
 
 	public static ViewResource makeViewResource(String name, RepositoryFolder<ViewResource> folder, ViewPoint viewPoint,
 			ViewLibrary viewLibrary) {
 		ViewResource returned = makeViewResourceInDirectory(name, folder.getFile(), viewPoint, viewLibrary);
-		returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());
+		// returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());
 		viewLibrary.registerResource(returned, folder);
 		return returned;
 	}
@@ -113,17 +114,18 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 		System.out.println("container.getFlexoIODelegate()=" + container.getFlexoIODelegate());
 
 		if (container.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			ViewResource returned = makeViewResourceInDirectory(name, ((FileFlexoIODelegate) container.getFlexoIODelegate()).getFile()
-					.getParentFile(), viewPoint, viewLibrary);
-			returned.setURI(container.getURI() + "/" + returned.getName());
+			ViewResource returned = makeViewResourceInDirectory(name,
+					((FileFlexoIODelegate) container.getFlexoIODelegate()).getFile().getParentFile(), viewPoint, viewLibrary);
+					// returned.setURI(container.getURI() + "/" + returned.getName());
 
-			System.out.println("***************** COUCOU on ajoute la nouvelle SubView dans la View");
-			System.out.println("loaded=" + container.isLoaded());
-			System.out.println("***************** HOP1");
+			// System.out.println("***************** COUCOU on ajoute la nouvelle SubView dans la View");
+			// System.out.println("loaded=" + container.isLoaded());
+			// System.out.println("***************** HOP1");
 			viewLibrary.registerResource(returned, container);
-			System.out.println("***************** HOP2");
+			// System.out.println("***************** HOP2");
 			return returned;
-		} else {
+		}
+		else {
 			// TODO !!!
 		}
 		return null;
@@ -132,17 +134,17 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	private static ViewResource makeViewResourceInDirectory(String name, File directory, ViewPoint viewPoint, ViewLibrary viewLibrary) {
 		try {
 			// File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					ViewResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			// String baseName = name;
 			// File xmlFile = new File(viewDirectory, baseName + ".xml");
 			returned.initName(name);
 
-			System.out.println("Je suis dans la vue " + directory);
+			// System.out.println("Je suis dans la vue " + directory);
 			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(directory, VIEW_SUFFIX,
 					CORE_FILE_SUFFIX, returned, factory));
-			System.out.println("Je sauve la nouvelle sous-vue en " + ((FileFlexoIODelegate) returned.getFlexoIODelegate()).getFile());
+			// System.out.println("Je sauve la nouvelle sous-vue en " + ((FileFlexoIODelegate) returned.getFlexoIODelegate()).getFile());
 
 			returned.setProject(viewLibrary.getProject());
 			returned.setVersion(new FlexoVersion("1.0"));
@@ -150,8 +152,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
 			returned.setViewLibrary(viewLibrary);
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
-					.getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
+					viewLibrary.getServiceManager().getTechnologyAdapterService()));
 
 			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
@@ -166,7 +168,7 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	public static ViewResource retrieveViewResource(File viewDirectory, RepositoryFolder<ViewResource> folder, ViewLibrary viewLibrary) {
 
 		ViewResource returned = retrieveViewResourceFromDirectory(viewDirectory, viewLibrary);
-		returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());
+		// returned.setURI(viewLibrary.getProject().getURI() + "/" + returned.getName());
 		viewLibrary.registerResource(returned, folder);
 		return returned;
 	}
@@ -174,15 +176,15 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	public static ViewResource retrieveSubViewResource(File viewDirectory, ViewResource container, ViewLibrary viewLibrary) {
 
 		ViewResource returned = retrieveViewResourceFromDirectory(viewDirectory, viewLibrary);
-		returned.setURI(container.getURI() + "/" + returned.getName());
+		// returned.setURI(container.getURI() + "/" + returned.getName());
 		viewLibrary.registerResource(returned, container);
 		return returned;
 	}
 
 	private static ViewResource retrieveViewResourceFromDirectory(File viewDirectory, ViewLibrary viewLibrary) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					ViewResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class, ViewResource.class));
 			ViewResourceImpl returned = (ViewResourceImpl) factory.newInstance(ViewResource.class);
 			String baseName = viewDirectory.getName().substring(0, viewDirectory.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			File xmlFile = new File(viewDirectory, baseName + ".xml");
@@ -201,8 +203,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 				returned.setViewPointResource(viewLibrary.getServiceManager().getViewPointLibrary().getViewPointResource(vpi.viewPointURI));
 			}
 			returned.setViewLibrary(viewLibrary);
-			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(), viewLibrary
-					.getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
+					viewLibrary.getServiceManager().getTechnologyAdapterService()));
 
 			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
@@ -216,7 +218,8 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 						VirtualModelInstanceResource virtualModelInstanceResource = VirtualModelInstanceResourceImpl
 								.retrieveVirtualModelInstanceResource(virtualModelFile, returned);
 						returned.addToContents(virtualModelInstanceResource);
-					} else if (virtualModelFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+					}
+					else if (virtualModelFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
 						ViewResource subViewResource = ViewResourceImpl.retrieveSubViewResource(virtualModelFile, returned, viewLibrary);
 						returned.addToContents(subViewResource);
 						System.out.println(">>>>>>>>> Hop j'ai trouve une subview " + virtualModelFile + " dans " + returned);
@@ -326,14 +329,16 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 						if (at.getName().equals("viewPointURI")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointURI = at.getValue();
-						} else if (at.getName().equals("viewPointVersion")) {
+						}
+						else if (at.getName().equals("viewPointVersion")) {
 							logger.fine("Returned " + at.getValue());
 							returned.viewPointVersion = at.getValue();
 						}
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + xmlFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {
@@ -382,4 +387,16 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	public View getModel() {
 		return getView();
 	}
+
+	@Override
+	public String computeDefaultURI() {
+		if (getContainer() != null) {
+			return getContainer().getURI() + "/" + getName();
+		}
+		if (getProject() != null) {
+			return getProject().getURI() + "/" + getName();
+		}
+		return null;
+	}
+
 }
