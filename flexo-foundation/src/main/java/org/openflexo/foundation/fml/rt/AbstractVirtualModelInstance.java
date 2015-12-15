@@ -59,6 +59,8 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -175,8 +177,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	 * @param oldFlexoConcept
 	 * @param newFlexoConcept
 	 */
-	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
-			FlexoConcept newFlexoConcept);
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
 
 	public void synchronize(FlexoEditor editor);
 
@@ -421,8 +422,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			if (fci.getFlexoConceptURI() == null) {
 				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
 				// logger.warning("EPI: " + fci.debug());
-			}
-			else {
+			} else {
 				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
 				if (hash == null) {
 					hash = new Hashtable<Long, FlexoConceptInstance>();
@@ -644,12 +644,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 				return modelSlotInstances;
 			}
-		
+
 			@Override
 			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
 				this.modelSlotInstances = instances;
 			}
-		
+
 			@Override
 			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
 				if (!modelSlotInstances.contains(instance)) {
@@ -659,7 +659,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
 				}
 			}
-		
+
 			@Override
 			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
 				if (modelSlotInstances.contains(instance)) {
@@ -750,8 +750,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			}
-			else {
+			} else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
@@ -823,14 +822,11 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				}
 				logger.warning("Unexpected model slot " + variable);
 				return null;
-			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				return getVirtualModel();
-			}
-			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				return getView();
-			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
 				return this;
 			}
 
@@ -855,29 +851,34 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
 					if (value instanceof ResourceData) {
-						((ModelSlotInstance) getModelSlotInstance(ms)).setAccessedResourceData((ResourceData) value);
-					}
-					else {
+						ModelSlotInstance msi = (getModelSlotInstance(ms));
+						if (msi == null) {
+							ModelSlotInstanceConfiguration<?, ?> msiConfiguration = ms.createConfiguration(
+									(AbstractVirtualModelInstance) getFlexoConceptInstance(), getProject());
+							msiConfiguration.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
+							msi = msiConfiguration.createModelSlotInstance((AbstractVirtualModelInstance) getFlexoConceptInstance(),
+									getView());
+							msi.setVirtualModelInstance((AbstractVirtualModelInstance) getFlexoConceptInstance());
+							((AbstractVirtualModelInstance) getFlexoConceptInstance()).addToModelSlotInstances(msi);
+						}
+						msi.setAccessedResourceData((ResourceData) value);
+					} else {
 						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
 					}
-				}
-				else {
+				} else {
 					logger.warning("Unexpected property " + variable);
 				}
 				return;
-			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
 				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
 						+ getClass());
 				return;
-			}
-			else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
+			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
 				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
 				return;
-			}
-			else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this + " of "
-						+ getClass());
+			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
+				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
+						+ " of " + getClass());
 				return;
 			}
 

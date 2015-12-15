@@ -161,8 +161,6 @@ public abstract class FMLRTNaturePerspective extends TechnologyPerspective<FMLRT
 			// this);
 		}
 		if (object instanceof VirtualModelInstance) {
-			System.out.println("Je cherche a representer un VirtualModelInstance");
-			System.out.println("Ma perpective: " + this);
 			return createModuleViewForVirtualModelInstance((VirtualModelInstance) object);
 
 			/*VirtualModelInstance vmInstance = (VirtualModelInstance) object;

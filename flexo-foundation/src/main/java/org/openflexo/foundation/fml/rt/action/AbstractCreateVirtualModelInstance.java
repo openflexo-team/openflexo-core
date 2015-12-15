@@ -78,7 +78,7 @@ import org.openflexo.toolbox.StringUtils;
  *            type of container of newly created AbstractVirtualModelInstance
  */
 public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, VM>, T extends FlexoObject, VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends FlexoAction<A, T, FlexoObject>implements FlexoObserver {
+		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
 
@@ -134,8 +134,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		logger.info("Added virtual model instance " + newVirtualModelInstance + " in container " + getFocusedObject());
 
 		// System.out.println("OK, we have created the file " + newVirtualModelInstanceResource.getFile().getAbsolutePath());
-		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI() + " delegate="
-				+ newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
+		System.out.println("OK, we have created the VirtualModelInstanceResource " + newVirtualModelInstanceResource.getURI()
+				+ " delegate=" + newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
 
@@ -163,12 +163,11 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 					ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
 					msi.setVirtualModelInstance(newVirtualModelInstance);
 					newVirtualModelInstance.addToModelSlotInstances(msi);
-				}
-				else {
+				} else {
 					logger.warning("Wrong configuration for model slot: " + configuration.getModelSlot() + " error: "
 							+ configuration.getErrorMessage());
-					throw new InvalidArgumentException(
-							"Wrong configuration for model slot " + configuration.getModelSlot() + " configuration=" + configuration);
+					throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot()
+							+ " configuration=" + configuration);
 				}
 			}
 
@@ -202,11 +201,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	public int getStepsNumber() {
 		if (virtualModel == null) {
 			return 1;
-		}
-		else if (!getVirtualModel().hasCreationScheme()) {
+		} else if (!getVirtualModel().hasCreationScheme()) {
 			return virtualModel.getModelSlots().size() + 1;
-		}
-		else {
+		} else {
 			return virtualModel.getModelSlots().size() + 2;
 		}
 	}
@@ -247,7 +244,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			modelSlotConfigurations.clear();
 			if (this.virtualModel != null) {
 				for (ModelSlot<?> ms : this.virtualModel.getModelSlots()) {
-					modelSlotConfigurations.put(ms, ms.createConfiguration(this));
+					modelSlotConfigurations.put(ms, ms.createConfiguration(null, getProject()));
 				}
 			}
 			setChanged();
@@ -358,8 +355,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 			creationSchemeAction.setCreationScheme(creationScheme);
 			creationSchemeAction.addObserver(this);
 			getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationSchemeAction);
-		}
-		else {
+		} else {
 			creationSchemeAction = null;
 		}
 		getPropertyChangeSupport().firePropertyChange("creationScheme", null, creationScheme);

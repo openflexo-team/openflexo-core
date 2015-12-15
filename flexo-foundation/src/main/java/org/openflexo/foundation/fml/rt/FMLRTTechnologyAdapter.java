@@ -167,6 +167,10 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	private boolean isValidViewDirectory(final File candidateFile) {
 		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
 				&& candidateFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+			if (candidateFile.getParentFile().getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+				// We dont try to interpret here a sub-view in a view
+				return false;
+			}
 			final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
@@ -192,8 +196,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			}
-			else {
+			} else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}

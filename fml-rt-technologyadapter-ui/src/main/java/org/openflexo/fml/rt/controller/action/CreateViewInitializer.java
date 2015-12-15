@@ -77,8 +77,7 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 				// ((FlexoProject)action.getFocusedObject().getResourceRepository()).getViewPointRepository().getViewPointLibrary().getViewPoints();
 				if (action.skipChoosePopup()) {
 					return true;
-				}
-				else {
+				} else {
 					Wizard wizard = new CreateViewWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();
@@ -99,6 +98,12 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 		return new FlexoActionFinalizer<CreateViewInFolder>() {
 			@Override
 			public boolean run(EventObject e, CreateViewInFolder action) {
+				System.out.println("Hop, on notifie pour la nouvelle resource");
+				action.getNewView().getResource().getPropertyChangeSupport()
+						.firePropertyChange("contents", null, action.getNewView().getResource().getContents());
+				action.getFocusedObject().getPropertyChangeSupport()
+						.firePropertyChange("resources", null, action.getFocusedObject().getResources());
+
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewView());
 				getController().selectAndFocusObject(action.getNewView());
 				/*CreateConcreteVirtualModelInstance actionVMi = CreateConcreteVirtualModelInstance.actionType.makeNewAction(

@@ -42,8 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
-import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.localization.FlexoLocalization;
@@ -63,8 +63,9 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	private final List<ModelSlotInstanceConfigurationOption> options;
 	private AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
 
-	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, AbstractCreateVirtualModelInstance<?, ?, VMI, VM> action) {
-		super(ms, action);
+	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, AbstractVirtualModelInstance<VMI, VM> virtualModelInstance,
+			FlexoProject project) {
+		super(ms, virtualModelInstance, project);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.Autoconfigure);
@@ -84,16 +85,14 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance,
-			View view) {
+	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
 		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
 		if (getAddressedVirtualModelInstanceResource() != null) {
 			returned.setVirtualModelInstanceURI(getAddressedVirtualModelInstanceResource().getURI());
-		}
-		else {
+		} else {
 			logger.warning("Addressed virtual model instance is null");
 		}
 		return returned;
@@ -103,8 +102,7 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 		return addressedVirtualModelInstanceResource;
 	}
 
-	public void setAddressedVirtualModelInstanceResource(
-			AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
+	public void setAddressedVirtualModelInstanceResource(AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
 		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
 			AbstractVirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
 			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
@@ -124,14 +122,12 @@ public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualMode
 				return false;
 			}
 			return true;
-		}
-		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.CreateNewVirtualModel) {
 			// Not implemented yet
 			setErrorMessage(FlexoLocalization.localizedForKey("not_implemented_yet"));
 			return false;
 
-		}
-		else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
+		} else if (getOption() == DefaultModelSlotInstanceConfigurationOption.LeaveEmpty) {
 			if (getModelSlot().getIsRequired()) {
 				setErrorMessage(FlexoLocalization.localizedForKey("virtual_model_instance_is_required"));
 				return false;

@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -54,7 +55,6 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
-import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -90,8 +90,8 @@ import org.openflexo.toolbox.StringUtils;
 // Following annotation is used to disambiguate deserialization when old ViewPoint are loaded (when FMLRTModelSlot was not abstract)
 // TODO: This might be removed when all viewpoints will be converted into 1.8.0 infrastructure
 @XMLElement(xmlTag = "AbstractFMLRTModelSlot")
-public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-		extends ModelSlot<VMI> {
+public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>> extends
+		ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -114,7 +114,7 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
 	public static abstract class FMLRTModelSlotImpl<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
-			extends ModelSlotImpl<VMI>implements FMLRTModelSlot<VMI, VM> {
+			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, VM> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
 
@@ -140,8 +140,7 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
 			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
 				return "flexoConceptInstance";
-			}
-			else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
 				return "primitive";
 			}
 			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
@@ -150,8 +149,8 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 
 		@Override
 		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot<VMI, VM>, VMI> createConfiguration(
-				AbstractCreateVirtualModelInstance<?, ?, ?, ?> action) {
-			return new FMLRTModelSlotInstanceConfiguration(this, action);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
+			return new FMLRTModelSlotInstanceConfiguration(this, virtualModelInstance, project);
 		}
 
 		protected AbstractVirtualModelResource<VM> virtualModelResource;

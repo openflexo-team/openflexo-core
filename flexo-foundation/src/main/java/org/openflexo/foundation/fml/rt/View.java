@@ -141,7 +141,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 
 	public boolean hasNature(ViewNature nature);
 
-	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint>implements View {
+	public static abstract class ViewImpl extends AbstractVirtualModelInstanceImpl<View, ViewPoint> implements View {
 
 		private static final Logger logger = Logger.getLogger(View.class.getPackage().getName());
 
@@ -167,7 +167,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			newView.setTitle(viewTitle);
 
 			FlexoIODelegate<?> delegate = newViewResource.getFlexoIODelegate();
-			System.out.println("Saving " + delegate.stringRepresentation());
+			// System.out.println("Saving " + delegate.stringRepresentation());
 
 			// Save it
 			newViewResource.save(null);
@@ -262,8 +262,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 		}
 
 		@Override
-		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(
-				final AbstractVirtualModel<?> virtualModel) {
+		public List<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final AbstractVirtualModel<?> virtualModel) {
 			List<AbstractVirtualModelInstance<?, ?>> returned = new ArrayList<AbstractVirtualModelInstance<?, ?>>();
 			for (AbstractVirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
 				if (vmi.getVirtualModel() == virtualModel) {
@@ -293,8 +292,7 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 					if (vmi.getName().equals(name)) {
 						return vmi;
 					}
-				}
-				else {
+				} else {
 					logger.warning("Name of VirtualModel is null: " + this.toString());
 				}
 			}

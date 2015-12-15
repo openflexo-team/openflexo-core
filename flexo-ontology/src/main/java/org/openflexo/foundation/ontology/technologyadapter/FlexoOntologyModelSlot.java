@@ -41,10 +41,11 @@ package org.openflexo.foundation.ontology.technologyadapter;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -88,7 +89,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
 
 	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter>
-			extends TypeAwareModelSlotImpl<M, MM>implements FlexoOntologyModelSlot<M, MM, TA> {
+			extends TypeAwareModelSlotImpl<M, MM> implements FlexoOntologyModelSlot<M, MM, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlot.class.getPackage().getName());
 
@@ -105,7 +106,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends FlexoOntologyModelSlot<M, MM, TA>, M> createConfiguration(
-				AbstractCreateVirtualModelInstance action);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 		/**
 		 * Instantiate a new IndividualRole
@@ -123,8 +124,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		@Override
 		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
 				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(
-					AddIndividual.class);
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?>>) getEditionActionClass(AddIndividual.class);
 			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, ?> returned = makeEditionAction(addIndividualClass);
 
 			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));

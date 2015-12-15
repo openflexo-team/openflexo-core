@@ -46,6 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.LongRunningAction;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.View.ViewImpl;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
@@ -59,7 +60,7 @@ import org.openflexo.foundation.resource.SaveResourceException;
  * @author sylvain
  * 
  */
-public class CreateViewInFolder extends CreateView<CreateViewInFolder, RepositoryFolder<ViewResource>> {
+public class CreateViewInFolder extends CreateView<CreateViewInFolder, RepositoryFolder<ViewResource>> implements LongRunningAction {
 
 	private static final Logger logger = Logger.getLogger(CreateViewInFolder.class.getPackage().getName());
 
@@ -92,8 +93,8 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 	}
 
 	public CreateViewInFolder(
-			/*FlexoActionType<CreateView<RepositoryFolder<ViewResource>>, RepositoryFolder<ViewResource>, FlexoObject> actionType,*/
-			RepositoryFolder<ViewResource> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	/*FlexoActionType<CreateView<RepositoryFolder<ViewResource>>, RepositoryFolder<ViewResource>, FlexoObject> actionType,*/
+	RepositoryFolder<ViewResource> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -138,6 +139,11 @@ public class CreateViewInFolder extends CreateView<CreateViewInFolder, Repositor
 
 		getViewLibrary().registerResource((ViewResource) getNewView().getResource(), getFocusedObject());
 
+	}
+
+	@Override
+	public int getExpectedProgressSteps() {
+		return 5;
 	}
 
 }
