@@ -99,7 +99,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 			return VIEW_ICON;
 		}
 		else if (object instanceof ModelSlotInstance) {
-			return MODEL_SLOT_INSTANCE_ICON;
+			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
 		}
 		else if (object instanceof VirtualModelInstance) {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
