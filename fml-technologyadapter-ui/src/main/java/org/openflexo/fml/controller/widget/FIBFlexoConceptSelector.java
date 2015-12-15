@@ -124,6 +124,9 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
+
+		System.out.println("On set le VM a " + virtualModel);
+
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();
 			this.virtualModel = virtualModel;
@@ -134,9 +137,11 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	public FlexoObject getRootObject() {
 		if (getVirtualModel() != null) {
 			return getVirtualModel();
-		} else if (getViewPoint() != null) {
+		}
+		else if (getViewPoint() != null) {
 			return getViewPoint();
-		} else {
+		}
+		else {
 			return getViewPointLibrary();
 		}
 	}
@@ -154,12 +159,12 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

@@ -30,6 +30,24 @@
 				<Assignment variable="component.viewPointLibrary" value="data.viewPointLibrary" />
 				<!--  <Assignment variable="component.viewPoint" value="data.ownerViewPointTypeResource" /> -->
 			</Custom>
+			<Label label="viewpoint_name" align="right" index="12"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				localize="true" manageDynamicModel="true" opaque="false" index="13"
+				data="data.virtualModelInstanceName"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="viewpoint_title" align="right" index="14"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				localize="true" manageDynamicModel="true" opaque="false" index="15"
+				data="data.virtualModelInstanceTitle"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

@@ -131,12 +131,19 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	 * @return
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI) {
+		VirtualModel returned = _getVirtualModel(virtualModelURI);
+		if (returned == null) {
+			logger.warning("Cannot find virtual model:" + virtualModelURI);
+		}
+		return null;
+	}
+
+	private VirtualModel _getVirtualModel(String virtualModelURI) {
 		String viewPointURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
 		ViewPoint vp = getViewPoint(viewPointURI);
 		if (vp != null) {
 			return vp.getVirtualModelNamed(virtualModelURI.substring(virtualModelURI.lastIndexOf("/") + 1));
 		}
-		logger.warning("Cannot find virtual model:" + virtualModelURI + " (searched in viewpoint " + vp + ")");
 		return null;
 	}
 
@@ -210,10 +217,19 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 	}
 
 	public FlexoConcept getFlexoConcept(String flexoConceptURI) {
+		FlexoConcept returned = null;
+		returned = getViewPoint(flexoConceptURI);
+		if (returned != null) {
+			return returned;
+		}
+		returned = _getVirtualModel(flexoConceptURI);
+		if (returned != null) {
+			return returned;
+		}
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
 			String flexoConceptName = flexoConceptURI.substring(flexoConceptURI.indexOf("#") + 1);
-			VirtualModel vm = getVirtualModel(virtualModelURI);
+			VirtualModel vm = _getVirtualModel(virtualModelURI);
 			if (vm != null) {
 				return vm.getFlexoConcept(flexoConceptName);
 			}
@@ -261,7 +277,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 			/*if (notification instanceof ResourceCenterRemoved) {
 				FileSystemBasedResourceCenter newRC = (FileSystemBasedResourceCenter) ((ResourceCenterRemoved) notification)
 						.getRemovedResourceCenter();
-
+			
 				// A resource center must be been dereferenced
 				ViewPointRepository vpr = newRC.getViewPointRepository();
 				for (ViewPointResource vpR : vpr.getAllResources()) {
@@ -272,7 +288,7 @@ public class ViewPointLibrary extends DefaultFlexoObject implements FlexoService
 					}
 				}
 				vpr.delete();
-
+			
 			}*/
 		}
 	}

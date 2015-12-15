@@ -148,7 +148,8 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
 			return false;
-		} else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
+		}
+		else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
 			return false;
 		}
 		return true;
@@ -198,10 +199,13 @@ public class CreateFlexoBehaviourParameter extends FlexoAction<CreateFlexoBehavi
 		availableParameterTypes.add(ListParameter.class);
 		availableParameterTypes.add(URIParameter.class);
 		availableParameterTypes.add(FlexoConceptInstanceParameter.class);
-		for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
-			for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
-				if (!availableParameterTypes.contains(paramType)) {
-					availableParameterTypes.add(paramType);
+		if (getFocusedObject() != null && getFocusedObject().getOwningVirtualModel() != null
+				&& getFocusedObject().getOwningVirtualModel().getModelSlots() != null) {
+			for (ModelSlot<?> ms : getFocusedObject().getOwningVirtualModel().getModelSlots()) {
+				for (Class<? extends FlexoBehaviourParameter> paramType : ms.getAvailableFlexoBehaviourParameterTypes()) {
+					if (!availableParameterTypes.contains(paramType)) {
+						availableParameterTypes.add(paramType);
+					}
 				}
 			}
 		}

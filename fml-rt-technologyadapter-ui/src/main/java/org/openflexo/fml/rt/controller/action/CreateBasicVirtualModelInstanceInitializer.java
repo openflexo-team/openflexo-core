@@ -74,9 +74,10 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 		return new FlexoActionInitializer<CreateBasicVirtualModelInstance>() {
 			@Override
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
-				if (action.skipChoosePopup) {
+				if (action.skipChoosePopup()) {
 					return true;
-				} else {
+				}
+				else {
 					if (action.getFocusedObject() != null && action.getFocusedObject().getViewPoint() != null) {
 						// @Brutal
 						// TODO: Instead of doing this, it would be better to handle resources in wizard FIB

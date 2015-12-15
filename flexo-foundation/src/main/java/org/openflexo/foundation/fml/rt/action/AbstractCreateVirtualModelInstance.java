@@ -90,7 +90,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	private CreationScheme creationScheme;
 	private CreationSchemeAction creationSchemeAction;
 
-	public boolean skipChoosePopup = false;
+	private boolean skipChoosePopup = false;
+	private boolean escapeModelSlotConfiguration = false;
 
 	protected AbstractCreateVirtualModelInstance(FlexoActionType<A, T, FlexoObject> actionType, T focusedObject,
 			Vector<FlexoObject> globalSelection, FlexoEditor editor) {
@@ -153,7 +154,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		}
 
-		else {
+		// If we do not escape model slot configuration, this is the right time to do it
+		else if (!escapeModelSlotConfiguration()) {
 			for (ModelSlot ms : virtualModel.getModelSlots()) {
 				// System.out.println("*** ModelSlot: " + ms);
 				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
@@ -409,4 +411,20 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	 * @return
 	 */
 	public abstract FlexoProject getProject();
+
+	public boolean skipChoosePopup() {
+		return skipChoosePopup;
+	}
+
+	public void setSkipChoosePopup(boolean skipChoosePopup) {
+		this.skipChoosePopup = skipChoosePopup;
+	}
+
+	public boolean escapeModelSlotConfiguration() {
+		return escapeModelSlotConfiguration;
+	}
+
+	public void setEscapeModelSlotConfiguration(boolean escapeModelSlotConfiguration) {
+		this.escapeModelSlotConfiguration = escapeModelSlotConfiguration;
+	}
 }

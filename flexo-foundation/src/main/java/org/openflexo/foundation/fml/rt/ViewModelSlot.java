@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
@@ -57,11 +58,12 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
- * @author sylvain, christophe
+ * @author sylvain
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
@@ -80,6 +82,22 @@ public interface ViewModelSlot extends FMLRTModelSlot<View, ViewPoint> {
 	public static abstract class ViewModelSlotImpl extends FMLRTModelSlotImpl<View, ViewPoint>implements ViewModelSlot {
 
 		private static final Logger logger = Logger.getLogger(ViewModelSlot.class.getPackage().getName());
+
+		@Override
+		public AbstractVirtualModelResource<ViewPoint> getAccessedVirtualModelResource() {
+			if (virtualModelResource == null && StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getViewPoint() != null
+					&& getViewPoint().getViewPointLibrary() != null) {
+				ViewPoint lookedUpVP = getViewPoint().getViewPointLibrary().getViewPoint(getAccessedVirtualModelURI());
+				if (lookedUpVP != null) {
+					virtualModelResource = (ViewPointResource) lookedUpVP.getResource();
+					logger.info("Looked-up " + virtualModelResource);
+				}
+				else {
+					logger.warning("Cannot look-up " + getAccessedVirtualModelURI());
+				}
+			}
+			return virtualModelResource;
+		}
 
 		@Override
 		public ViewPointResource getAccessedViewPointResource() {

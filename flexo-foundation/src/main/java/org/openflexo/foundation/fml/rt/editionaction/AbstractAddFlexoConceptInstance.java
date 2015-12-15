@@ -265,17 +265,23 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public void addToParameters(AddFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(this);
+			if (parameters == null) {
+				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+			}
 			parameters.add(parameter);
 		}
 
 		@Override
 		public void removeFromParameters(AddFlexoConceptInstanceParameter parameter) {
 			parameter.setAction(null);
+			if (parameters == null) {
+				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+			}
 			parameters.remove(parameter);
 		}
 
 		public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p) {
-			for (AddFlexoConceptInstanceParameter addEPParam : parameters) {
+			for (AddFlexoConceptInstanceParameter addEPParam : getParameters()) {
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
 				}
@@ -284,6 +290,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		}
 
 		private void updateParameters() {
+			if (parameters == null) {
+				parameters = new ArrayList<AddFlexoConceptInstanceParameter>();
+			}
 			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
 			if (getCreationScheme() != null) {
@@ -318,6 +327,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				CreationSchemeAction creationSchemeAction = CreationSchemeAction.actionType.makeNewEmbeddedAction(vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				creationSchemeAction.setVirtualModelInstance(vmInstance);
+				creationSchemeAction.initWithFlexoConceptInstance(makeNewFlexoConceptInstance(evaluationContext));
 				creationSchemeAction.setCreationScheme(getCreationScheme());
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
 					FlexoBehaviourParameter param = p.getParam();
@@ -339,6 +349,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 			return null;
 		}
+
+		protected abstract FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext);
 
 		/*@Override
 		public Type getAssignableType() {

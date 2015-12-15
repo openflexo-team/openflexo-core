@@ -102,6 +102,29 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 
 	public static ViewResource makeViewResource(String name, RepositoryFolder<ViewResource> folder, ViewPoint viewPoint,
 			ViewLibrary viewLibrary) {
+		ViewResource returned = makeViewResourceInDirectory(name, folder.getFile(), viewPoint, viewLibrary);
+		viewLibrary.registerResource(returned, folder);
+		return returned;
+	}
+
+	public static ViewResource makeSubViewResource(String name, ViewResource container, ViewPoint viewPoint, ViewLibrary viewLibrary) {
+
+		System.out.println("Et hop, on cree une nouvelle subview " + name + " pour " + container);
+		System.out.println("container.getFlexoIODelegate()=" + container.getFlexoIODelegate());
+
+		if (container.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			ViewResource returned = makeViewResourceInDirectory(name,
+					((FileFlexoIODelegate) container.getFlexoIODelegate()).getFile().getParentFile(), viewPoint, viewLibrary);
+			viewLibrary.registerResource(returned, container);
+			return returned;
+		}
+		else {
+			// TODO !!!
+		}
+		return null;
+	}
+
+	private static ViewResource makeViewResourceInDirectory(String name, File directory, ViewPoint viewPoint, ViewLibrary viewLibrary) {
 		try {
 			// File viewDirectory = new File(folder.getFile(), name + ViewResource.VIEW_SUFFIX);
 			ModelFactory factory = new ModelFactory(
@@ -111,8 +134,10 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			// File xmlFile = new File(viewDirectory, baseName + ".xml");
 			returned.initName(name);
 
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(folder.getFile(), VIEW_SUFFIX,
+			System.out.println("Je suis dans la vue " + directory);
+			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(directory, VIEW_SUFFIX,
 					CORE_FILE_SUFFIX, returned, factory));
+			System.out.println("Je sauve la nouvelle sous-vue en " + ((FileFlexoIODelegate) returned.getFlexoIODelegate()).getFile());
 
 			returned.setProject(viewLibrary.getProject());
 			returned.setVersion(new FlexoVersion("1.0"));
@@ -122,7 +147,6 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 			returned.setViewPointResource((ViewPointResource) viewPoint.getResource());
 			returned.setFactory(new ViewModelFactory(returned, viewLibrary.getServiceManager().getEditingContext(),
 					viewLibrary.getServiceManager().getTechnologyAdapterService()));
-			viewLibrary.registerResource(returned, folder);
 
 			returned.setResourceCenter(viewLibrary.getProject());
 			returned.setServiceManager(viewLibrary.getServiceManager());
@@ -214,7 +238,6 @@ public abstract class ViewResourceImpl extends AbstractVirtualModelInstanceResou
 	@Override
 	public View loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
-
 		View returned = super.loadResourceData(progress);
 
 		return returned;

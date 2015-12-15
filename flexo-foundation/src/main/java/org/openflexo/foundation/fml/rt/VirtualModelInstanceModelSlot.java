@@ -57,7 +57,7 @@ import org.openflexo.model.annotations.XMLElement;
 /**
  * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
- * @author sylvain, christophe
+ * @author sylvain
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })

@@ -83,9 +83,12 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 	}*/
 
 	public static VirtualModelInstanceResource makeVirtualModelInstanceResource(String name, VirtualModel virtualModel, View view) {
+
+		System.out.println("Et hop, on cree une nouvelle vmi " + name + " pour " + view);
+
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-					VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = name;
@@ -111,10 +114,11 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 		return null;
 	}
 
-	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile, ViewResource viewResource) {
+	public static VirtualModelInstanceResource retrieveVirtualModelInstanceResource(File virtualModelInstanceFile,
+			ViewResource viewResource) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
-					VirtualModelInstanceResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, VirtualModelInstanceResource.class));
 			VirtualModelInstanceResourceImpl returned = (VirtualModelInstanceResourceImpl) factory
 					.newInstance(VirtualModelInstanceResource.class);
 			String baseName = virtualModelInstanceFile.getName().substring(0,
@@ -127,8 +131,9 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(xmlFile);
 			returned.setProject(viewResource.getProject());
-			returned.setFactory(new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager()
-					.getEditingContext(), viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
+			returned.setFactory(
+					new VirtualModelInstanceModelFactory(returned, viewResource.getProject().getServiceManager().getEditingContext(),
+							viewResource.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.initName(baseName);
 			returned.setURI(viewResource.getURI() + "/" + baseName);
 			VirtualModelInstanceInfo vmiInfo = findVirtualModelInstanceInfo(xmlFile, "VirtualModelInstance");
@@ -140,8 +145,8 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
 				if (viewResource != null && viewResource.getViewPoint() != null
 						&& viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI) != null) {
-					returned.setVirtualModelResource((VirtualModelResource) viewResource.getViewPoint()
-							.getVirtualModelNamed(vmiInfo.virtualModelURI).getResource());
+					returned.setVirtualModelResource(
+							(VirtualModelResource) viewResource.getViewPoint().getVirtualModelNamed(vmiInfo.virtualModelURI).getResource());
 				}
 			}
 			viewResource.addToContents(returned);
@@ -189,7 +194,8 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 					}
 					return returned;
 				}
-			} else {
+			}
+			else {
 				logger.warning("Cannot find file: " + virtualModelInstanceFile.getAbsolutePath());
 			}
 		} catch (JDOMException e) {

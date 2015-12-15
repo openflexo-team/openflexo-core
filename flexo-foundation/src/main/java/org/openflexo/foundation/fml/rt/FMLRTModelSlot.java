@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -60,6 +62,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -75,7 +78,7 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * Implementation of the ModelSlot for a FML {@link AbstractVirtualModelInstance} (a {@link VirtualModelInstance} or a {@link View})
  * 
- * @author sylvain, christophe
+ * @author sylvain
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
@@ -151,7 +154,7 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 			return new FMLRTModelSlotInstanceConfiguration(this, action);
 		}
 
-		private AbstractVirtualModelResource<VM> virtualModelResource;
+		protected AbstractVirtualModelResource<VM> virtualModelResource;
 		private String virtualModelURI;
 
 		@Override
@@ -200,9 +203,20 @@ public interface FMLRTModelSlot<VMI extends AbstractVirtualModelInstance<VMI, VM
 		 * @return
 		 */
 		@Override
-		public VM getAccessedVirtualModel() {
-			if (getViewPoint() != null && StringUtils.isNotEmpty(getAccessedVirtualModelURI())) {
-				return (VM) getViewPoint().getVirtualModelNamed(getAccessedVirtualModelURI());
+		public final VM getAccessedVirtualModel() {
+			if (getAccessedVirtualModelResource() != null) {
+				try {
+					return getAccessedVirtualModelResource().getResourceData(null);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}

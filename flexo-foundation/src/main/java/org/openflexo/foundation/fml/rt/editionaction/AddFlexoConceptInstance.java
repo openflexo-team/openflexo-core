@@ -69,11 +69,11 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(AddFlexoConceptInstance.AddFlexoConceptInstanceImpl.class)
 @XMLElement
 @FML("AddFlexoConceptInstance")
-public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
-		AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
+public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+		extends AbstractAddFlexoConceptInstance<FlexoConceptInstance, VMI> {
 
-	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>> extends
-			AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI> implements AddFlexoConceptInstance<VMI> {
+	public static abstract class AddFlexoConceptInstanceImpl<VMI extends AbstractVirtualModelInstance<VMI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FlexoConceptInstance, VMI>implements AddFlexoConceptInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstance.class.getPackage().getName());
 
@@ -86,11 +86,17 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 		public Class<VMI> getVirtualModelInstanceClass() {
 			return (Class<VMI>) AbstractVirtualModelInstance.class;
 		}
+
+		@Override
+		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+			VMI vmi = getVirtualModelInstance(evaluationContext);
+			return vmi.makeNewFlexoConceptInstance(getFlexoConcept());
+		}
 	}
 
 	@DefineValidationRule
-	public static class AddFlexoConceptInstanceMustAddressACreationScheme extends
-			ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
+	public static class AddFlexoConceptInstanceMustAddressACreationScheme
+			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
 		public AddFlexoConceptInstanceMustAddressACreationScheme() {
 			super(AddFlexoConceptInstance.class, "add_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
@@ -102,7 +108,8 @@ public interface AddFlexoConceptInstance<VMI extends AbstractVirtualModelInstanc
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
 							"add_flexo_concept_action_doesn't_define_any_flexo_concept");
-				} else {
+				}
+				else {
 					return new ValidationError<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance>(this, action,
 							"add_flexo_concept_action_doesn't_define_any_creation_scheme");
 				}

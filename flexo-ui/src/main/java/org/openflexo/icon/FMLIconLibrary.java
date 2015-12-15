@@ -369,20 +369,9 @@ public class FMLIconLibrary extends IconLibrary {
 			}
 		}
 		else if (object instanceof FlexoConceptInstanceRole) {
-			return FLEXO_CONCEPT_ICON;
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
-		else if (object instanceof PrimitiveRole) {
-			return UNKNOWN_ICON;
-		}
-		/*else if (object instanceof OntologicObjectRole && ((OntologicObjectRole<?>) object).getModelSlot() != null) {
-		TechnologyAdapterController<?> tac = getTechnologyAdapterController(((OntologicObjectRole<?>) object).getModelSlot()
-				.getModelSlotTechnologyAdapter());
-		if (tac != null) {
-			Type accessedType = ((OntologicObjectRole<?>) object).getType();
-			Class accessedTypeBaseClass = TypeUtils.getBaseClass(accessedType);
-			return tac.getIconForTechnologyObject(accessedTypeBaseClass);
-		}
-		}*/else if (object instanceof AbstractProperty) {
+		else if (object instanceof AbstractProperty) {
 			return ABSTRACT_PROPERTY_ICON;
 		}
 		else if (object instanceof ExpressionProperty) {

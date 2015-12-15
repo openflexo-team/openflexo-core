@@ -178,6 +178,35 @@ public interface View extends AbstractVirtualModelInstance<View, ViewPoint> {
 			return newViewResource;
 		}
 
+		// TODO: move this to ViewResource
+		public static ViewResource newSubView(String viewName, String viewTitle, ViewPoint viewPoint, ViewResource container,
+				FlexoProject project) throws SaveResourceException {
+
+			ViewResource newViewResource = ViewResourceImpl.makeSubViewResource(viewName, container, viewPoint, project.getViewLibrary());
+			FMLTechnologyAdapter vmTA = project.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLTechnologyAdapter.class);
+
+			View newView = newViewResource.getFactory().newInstance(View.class);
+
+			newView.setProject(project);
+
+			newViewResource.setResourceData(newView);
+			newView.setResource(newViewResource);
+
+			newView.setTitle(viewTitle);
+
+			FlexoIODelegate<?> delegate = newViewResource.getFlexoIODelegate();
+			System.out.println("Saving " + delegate.stringRepresentation());
+
+			// Save it
+			newViewResource.save(null);
+			// File viewDirectory = new File(folder.getFile(), viewName + ViewResource.VIEW_SUFFIX);
+			// newViewResource.setDirectory(ResourceLocator.locateResource(viewDirectory.getAbsolutePath()));
+			// newView.save();
+			vmTA.referenceResource(newViewResource, project);
+			return newViewResource;
+		}
+
 		@Override
 		public final boolean hasNature(ViewNature nature) {
 			return nature.hasNature(this);

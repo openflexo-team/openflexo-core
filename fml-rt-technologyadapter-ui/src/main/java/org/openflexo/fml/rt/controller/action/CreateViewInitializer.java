@@ -75,7 +75,7 @@ public class CreateViewInitializer extends ActionInitializer<CreateViewInFolder,
 			@Override
 			public boolean run(EventObject e, CreateViewInFolder action) {
 				// ((FlexoProject)action.getFocusedObject().getResourceRepository()).getViewPointRepository().getViewPointLibrary().getViewPoints();
-				if (action.skipChoosePopup) {
+				if (action.skipChoosePopup()) {
 					return true;
 				}
 				else {

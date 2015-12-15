@@ -38,12 +38,19 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -62,8 +69,8 @@ import org.openflexo.model.annotations.XMLElement;
 @FML("AddVirtualModelInstance")
 public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance<VirtualModelInstance> {
 
-	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<VirtualModelInstance> implements
-			AddVirtualModelInstance {
+	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<VirtualModelInstance>
+			implements AddVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
@@ -71,5 +78,47 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 		public VirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) {
 			return super.execute(evaluationContext);
 		}
+
+		@Override
+		protected VirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+
+			View view = getVirtualModelInstance(evaluationContext);
+			logger.info("view: " + view);
+			if (view == null) {
+				logger.warning("null View");
+				return null;
+			}
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				String name = null;
+				String title = null;
+				try {
+					name = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+					title = getVirtualModelInstanceTitle().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(view,
+						null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				createVMIAction.setSkipChoosePopup(true);
+				createVMIAction.setEscapeModelSlotConfiguration(true);
+				createVMIAction.setNewVirtualModelInstanceName(name);
+				createVMIAction.setNewVirtualModelInstanceTitle(title);
+				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
+				createVMIAction.doAction();
+				return createVMIAction.getNewVirtualModelInstance();
+			}
+
+			logger.warning("Unexpected RunTimeEvaluationContext");
+			return null;
+
+		}
+
 	}
 }

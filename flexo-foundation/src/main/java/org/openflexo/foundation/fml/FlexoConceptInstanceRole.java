@@ -90,10 +90,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public FMLRTModelSlot getVirtualModelModelSlot();
+	public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
 
-	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
-			FlexoConceptInstanceRole {
+	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);
+
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
+			implements FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -266,11 +268,12 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}*/
 
 		@Override
-		public FMLRTModelSlot getVirtualModelModelSlot() {
-			return (FMLRTModelSlot) getModelSlot();
+		public FMLRTModelSlot<?, ?> getVirtualModelModelSlot() {
+			return (FMLRTModelSlot<?, ?>) getModelSlot();
 		}
 
-		public void setVirtualModelModelSlot(FMLRTModelSlot modelSlot) {
+		@Override
+		public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 			setModelSlot(modelSlot);
 		}
 

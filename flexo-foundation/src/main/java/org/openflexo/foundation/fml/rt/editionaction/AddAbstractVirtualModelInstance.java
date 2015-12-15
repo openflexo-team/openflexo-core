@@ -52,8 +52,12 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 
 /**
  * This action is used to explicitely instanciate a new {@link AbstractVirtualModelInstance} in an other
@@ -69,6 +73,25 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(AddAbstractVirtualModelInstance.AddAbstractVirtualModelInstanceImpl.class)
 public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualModelInstance<FCI, ?>>
 		extends AbstractAddFlexoConceptInstance<FCI, View> {
+
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
+
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY)
+	@XMLAttribute
+	public DataBinding<String> getVirtualModelInstanceName();
+
+	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
+	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
+
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
+	@XMLAttribute
+	public DataBinding<String> getVirtualModelInstanceTitle();
+
+	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
+	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
 	public AbstractVirtualModelResource<?> getVirtualModelType();
 
@@ -86,9 +109,52 @@ public interface AddAbstractVirtualModelInstance<FCI extends AbstractVirtualMode
 
 		static final Logger logger = Logger.getLogger(AddAbstractVirtualModelInstance.class.getPackage().getName());
 
+		private DataBinding<String> virtualModelInstanceName;
+		private DataBinding<String> virtualModelInstanceTitle;
+
 		@Override
 		public Class<View> getVirtualModelInstanceClass() {
 			return View.class;
+		}
+
+		@Override
+		public DataBinding<String> getVirtualModelInstanceName() {
+			if (virtualModelInstanceName == null) {
+				virtualModelInstanceName = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceName.setBindingName("virtualModelInstanceName");
+			}
+			return virtualModelInstanceName;
+		}
+
+		@Override
+		public void setVirtualModelInstanceName(DataBinding<String> aVirtualModelInstanceName) {
+			if (aVirtualModelInstanceName != null) {
+				aVirtualModelInstanceName.setOwner(this);
+				aVirtualModelInstanceName.setBindingName("virtualModelInstanceName");
+				aVirtualModelInstanceName.setDeclaredType(String.class);
+				aVirtualModelInstanceName.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.virtualModelInstanceName = aVirtualModelInstanceName;
+		}
+
+		@Override
+		public DataBinding<String> getVirtualModelInstanceTitle() {
+			if (virtualModelInstanceTitle == null) {
+				virtualModelInstanceTitle = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceTitle.setBindingName("virtualModelInstanceTitle");
+			}
+			return virtualModelInstanceTitle;
+		}
+
+		@Override
+		public void setVirtualModelInstanceTitle(DataBinding<String> aVirtualModelInstanceTitle) {
+			if (aVirtualModelInstanceTitle != null) {
+				aVirtualModelInstanceTitle.setOwner(this);
+				aVirtualModelInstanceTitle.setBindingName("virtualModelInstanceTitle");
+				aVirtualModelInstanceTitle.setDeclaredType(String.class);
+				aVirtualModelInstanceTitle.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.virtualModelInstanceTitle = aVirtualModelInstanceTitle;
 		}
 
 		@Override

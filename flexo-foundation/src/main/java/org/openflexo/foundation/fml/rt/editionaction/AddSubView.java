@@ -38,14 +38,21 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.action.CreateSubViewInView;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -59,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
 
 @FIBPanel("Fib/FML/AddSubViewPanel.fib")
 @ModelEntity
-@ImplementationClass(AddSubView.AddVirtualModelInstanceImpl.class)
+@ImplementationClass(AddSubView.AddSubViewImpl.class)
 @XMLElement
 @FML("AddSubView")
 public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
@@ -68,7 +75,7 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 
 	public void setViewPointType(ViewPointResource resource);
 
-	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<View> implements AddSubView {
+	public static abstract class AddSubViewImpl extends AddAbstractVirtualModelInstanceImpl<View>implements AddSubView {
 
 		static final Logger logger = Logger.getLogger(AddSubView.class.getPackage().getName());
 
@@ -88,5 +95,47 @@ public interface AddSubView extends AddAbstractVirtualModelInstance<View> {
 			setVirtualModelType(resource);
 			getPropertyChangeSupport().firePropertyChange("viewPointType", oldVPType, getViewPointType());
 		}
+
+		@Override
+		protected View makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+
+			View view = getVirtualModelInstance(evaluationContext);
+			logger.info("view: " + view);
+			if (view == null) {
+				logger.warning("null View");
+				return null;
+			}
+			if (evaluationContext instanceof FlexoBehaviourAction) {
+				String name = null;
+				String title = null;
+				try {
+					name = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+					title = getVirtualModelInstanceTitle().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				CreateSubViewInView createSubViewAction = CreateSubViewInView.actionType
+						.makeNewEmbeddedAction((ViewResource) view.getResource(), null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				createSubViewAction.setSkipChoosePopup(true);
+				createSubViewAction.setEscapeModelSlotConfiguration(true);
+				createSubViewAction.setNewVirtualModelInstanceName(name);
+				createSubViewAction.setNewVirtualModelInstanceTitle(title);
+				createSubViewAction.setVirtualModel((ViewPoint) getFlexoConceptType());
+				createSubViewAction.doAction();
+				return createSubViewAction.getNewVirtualModelInstance();
+			}
+
+			logger.warning("Unexpected RunTimeEvaluationContext");
+			return null;
+
+		}
+
 	}
 }

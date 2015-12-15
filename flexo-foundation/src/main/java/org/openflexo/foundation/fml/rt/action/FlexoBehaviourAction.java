@@ -103,6 +103,17 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		parameterListValues = new Hashtable<ListParameter, List>();
 	}
 
+	@Override
+	public boolean isValid() {
+		if (!super.isValid()) {
+			return false;
+		}
+		if (getFlexoBehaviour() == null) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Compute and store default parameters, and return a flag indicating if all parameters declared as "mandatory" could be successfully
 	 * filled
