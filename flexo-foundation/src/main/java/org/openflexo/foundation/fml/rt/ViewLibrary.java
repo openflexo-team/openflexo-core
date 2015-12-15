@@ -76,6 +76,7 @@ public class ViewLibrary extends ViewRepository {
 
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (getProject() != null) {
 			return getProject().getServiceManager();
@@ -163,7 +164,8 @@ public class ViewLibrary extends ViewRepository {
 					return vmir;
 				}
 			}
-		} else {
+		}
+		else {
 			logger.warning("Cannot find View " + viewURI);
 		}
 		logger.warning("Cannot find VirtualModelInstance " + virtualModelInstanceURI);
