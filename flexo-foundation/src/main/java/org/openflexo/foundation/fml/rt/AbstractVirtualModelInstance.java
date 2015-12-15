@@ -154,7 +154,10 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 	@Remover(MODEL_SLOT_INSTANCES_KEY)
 	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
 
-	@Getter(value = FLEXO_CONCEPT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
+	@Getter(
+			value = FLEXO_CONCEPT_INSTANCES_KEY,
+			cardinality = Cardinality.LIST,
+			inverse = FlexoConceptInstance.OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
@@ -367,8 +370,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		 */
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
+
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
-			returned.setVirtualModelInstance(this);
 			returned.setFlexoConcept(concept);
 			addToFlexoConceptInstances(returned);
 			return returned;
