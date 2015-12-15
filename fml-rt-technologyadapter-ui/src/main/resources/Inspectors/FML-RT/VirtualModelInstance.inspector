@@ -65,7 +65,7 @@
 				<TextFieldColumn data="iterator.modelSlot.name"
 					title="slot_name" columnWidth="40" resizable="true" displayTitle="true" />
 				<LabelColumn data="iterator.resource.URI" title="resource"
-					columnWidth="60" resizable="true" displayTitle="true" />
+					columnWidth="200" resizable="true" displayTitle="true" />
 			</Table>
 		</Tab>
 	</TabPanel>
