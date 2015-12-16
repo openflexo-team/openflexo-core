@@ -102,8 +102,10 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager());
 		managePreferences(GeneralPreferences.class, getFlexoPreferences());
 		managePreferences(AdvancedPrefs.class, getFlexoPreferences());
-		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
-			managePreferences(m.getPreferencesClass(), getFlexoPreferences());
+		if (getServiceManager().getModuleLoader() != null) {
+			for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
+				managePreferences(m.getPreferencesClass(), getFlexoPreferences());
+			}
 		}
 	}
 

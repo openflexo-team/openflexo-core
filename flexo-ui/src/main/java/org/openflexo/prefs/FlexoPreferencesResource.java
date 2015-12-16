@@ -144,8 +144,10 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 			classes.add(GeneralPreferences.class);
 			classes.add(AdvancedPrefs.class);
 			classes.add(ResourceCenterPreferences.class);
-			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
-				classes.add(m.getPreferencesClass());
+			if (applicationContext.getModuleLoader() != null) {
+				for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
+					classes.add(m.getPreferencesClass());
+				}
 			}
 			return new FlexoPreferencesFactory(resource,
 					ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
