@@ -130,7 +130,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	private void registerModuleLoaderService() {
 		if (getModuleLoader() == null) {
-			ModuleLoader moduleLoader = new ModuleLoader(this);
+			ModuleLoader moduleLoader = createModuleLoader();
 			registerService(moduleLoader);
 		}
 	}
@@ -186,7 +186,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		}
 		return serverRestService;
 	}
-	*/
+	 */
 
 	public boolean isAutoSaveServiceEnabled() {
 		return false;
@@ -209,11 +209,15 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	protected abstract ResourceConsistencyService createResourceConsistencyService();
 
+	protected ModuleLoader createModuleLoader() {
+		return new ModuleLoader(this);
+	}
+
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
 		registerPreferencesService();
-		return DefaultResourceCenterService.getNewInstance(getPreferencesService().getResourceCenterPreferences()
-				.getResourceCenterEntries());
+		return DefaultResourceCenterService
+				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries());
 	}
 
 	@Override
@@ -226,12 +230,14 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
 					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				} else if (rc instanceof JarResourceCenter) {
+				}
+				else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		}
+		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}
