@@ -627,7 +627,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 
 	protected FIBComponent registerWidget(FIBComponent widget, FlexoBehaviourParameter parameter, FIBPanel panel, int index,
 			boolean expandHorizontally, boolean expandVertically) {
-		widget.setData(new DataBinding<Object>("data.parameters." + parameter.getName()));
+		((FIBWidget) widget).setData(new DataBinding<Object>("data.parameters." + parameter.getName()));
 		if (widget instanceof FIBWidget) {
 			((FIBWidget) widget).setValueChangedAction(new DataBinding<Object>("controller.parameterValueChanged(data)"));
 		}

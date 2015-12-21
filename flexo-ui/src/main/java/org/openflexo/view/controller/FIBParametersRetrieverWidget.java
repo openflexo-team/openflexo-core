@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
@@ -75,7 +76,7 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 		if (action != null) {
 			fibComponent = (new ParametersRetriever(action, flexoController)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
-			fibView = controller.buildView(fibComponent);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
 			removeAll();
 			add(fibView.getResultingJComponent(), BorderLayout.CENTER);
 			revalidate();

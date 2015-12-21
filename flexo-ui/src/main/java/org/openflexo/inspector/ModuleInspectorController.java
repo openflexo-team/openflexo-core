@@ -64,10 +64,10 @@ import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
-import org.openflexo.gina.model.container.FIBTab;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints;
 import org.openflexo.gina.model.container.FIBPanel.Layout;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
@@ -229,10 +229,12 @@ public class ModuleInspectorController extends Observable implements Observer {
 			DataBinding<Boolean> enable = widget.getEnable();
 			if (enable != null && enable.isValid()) {
 				widget.setEnable(new DataBinding<Boolean>(enable.toString() + " & " + CONTROLLER_EDITABLE_BINDING));
-			} else {
+			}
+			else {
 				widget.setEnable(new DataBinding<Boolean>(CONTROLLER_EDITABLE_BINDING));
 			}
-		} else if (component instanceof FIBContainer) {
+		}
+		else if (component instanceof FIBContainer) {
 			for (FIBComponent child : ((FIBContainer) component).getSubComponents()) {
 				appendEditableCondition(child);
 			}
@@ -346,7 +348,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		FIBInspector returned = flexoConceptInspectors.get(concept);
 		if (returned != null) {
 			return returned;
-		} else {
+		}
+		else {
 			returned = inspectorForClass(conceptInstance.getImplementedInterface());
 			returned = (FIBInspector) returned.cloneObject();
 			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
@@ -454,7 +457,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (newInspector == null) {
 			logger.warning("No inspector for " + object);
 			switchToEmptyContent();
-		} else {
+		}
+		else {
 			/*boolean updateEPTabs = false;
 			if (object instanceof FlexoConceptInstance) {
 				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
@@ -480,9 +484,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			InspectorSelection inspectorSelection = (InspectorSelection) notification;
 			if (inspectorSelection instanceof EmptySelection) {
 				switchToEmptyContent();
-			} else if (inspectorSelection instanceof MultipleSelection) {
+			}
+			else if (inspectorSelection instanceof MultipleSelection) {
 				switchToMultipleSelection();
-			} else if (inspectorSelection instanceof UniqueSelection) {
+			}
+			else if (inspectorSelection instanceof UniqueSelection) {
 				inspectObject(((UniqueSelection) inspectorSelection).getInspectedObject());
 			}
 		}

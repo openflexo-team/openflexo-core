@@ -56,6 +56,7 @@ import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.FIBView;
 import org.openflexo.localization.FlexoLocalization;
@@ -79,7 +80,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	private Object dataObject;
 
 	final FlexoController controller;
-	private final FIBView fibView;
+	private final JFIBView<?, ?> fibView;
 	private FlexoFIBController fibController;
 	private final FIBComponent fibComponent;
 
@@ -128,7 +129,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		Progress.progress("builing_view");
 
-		fibView = fibController.buildView(fibComponent);
+		fibView = (JFIBView<?, ?>) fibController.buildView(fibComponent);
 
 		Progress.progress("init_view");
 
