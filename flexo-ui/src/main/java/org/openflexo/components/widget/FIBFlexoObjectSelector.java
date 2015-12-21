@@ -73,8 +73,9 @@ import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.model.widget.FIBCustom;
-import org.openflexo.gina.model.widget.FIBList;
 import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent;
+import org.openflexo.gina.model.widget.FIBList;
+import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.gina.view.FIBView;
@@ -477,7 +478,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 	public class SelectorDetailsPanel extends ResizablePanel {
 		private final FIBContainer fibComponent;
-		private final FIBView fibView;
+		private final JFIBView<?, ?> fibView;
 		private final SelectorFIBController controller;
 
 		private JFIBBrowserWidget<?> browserWidget = null;
@@ -488,7 +489,7 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 
 			fibComponent = (FIBContainer) FIBLibrary.instance().retrieveFIBComponent(getFIBResource());
 			controller = makeCustomFIBController(fibComponent);
-			fibView = controller.buildView(fibComponent);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
 
 			controller.setDataObject(FIBFlexoObjectSelector.this, true);
 

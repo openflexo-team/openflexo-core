@@ -53,14 +53,14 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
-import org.openflexo.gina.model.container.BorderLayoutConstraints;
 import org.openflexo.gina.model.container.FIBPanel;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints;
-import org.openflexo.gina.model.container.BorderLayoutConstraints.BorderLayoutLocation;
 import org.openflexo.gina.model.container.FIBPanel.Border;
 import org.openflexo.gina.model.container.FIBPanel.FlowLayoutAlignment;
 import org.openflexo.gina.model.container.FIBPanel.Layout;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.gina.model.container.layout.BorderLayoutConstraints;
+import org.openflexo.gina.model.container.layout.BorderLayoutConstraints.BorderLayoutLocation;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBButton;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBLabel.Align;
@@ -141,7 +141,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		final FlexoBehaviour flexoBehaviour = action.getFlexoBehaviour();
 
 		FIBPanel returned = fibModelFactory.newFIBPanel();
-		returned.setDataType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
+		returned.getVariable("data").setType(FlexoBehaviourActionType.getFlexoBehaviourActionType(action.getFlexoBehaviour()));
 		returned.setBindingFactory(action.getFlexoBehaviour().getBindingFactory());
 
 		returned.setLayout(Layout.twocols);

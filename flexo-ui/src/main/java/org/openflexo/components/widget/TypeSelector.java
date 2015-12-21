@@ -69,6 +69,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
+import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
@@ -77,9 +78,8 @@ import org.openflexo.gina.model.widget.FIBCustom.FIBCustomComponent;
 import org.openflexo.gina.swing.utils.LoadedClassesInfo;
 import org.openflexo.gina.swing.utils.LoadedClassesInfo.ClassInfo;
 import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
+import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
-import org.openflexo.gina.view.FIBView;
-import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.rm.Resource;
@@ -753,7 +753,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 	public class TypeSelectorDetailsPanel extends ResizablePanel {
 		private final FIBComponent fibComponent;
-		private FIBView<?, ?> fibView;
+		private JFIBView<?, ?> fibView;
 		private CustomFIBController controller;
 
 		protected TypeSelectorDetailsPanel(Type aClass) {
@@ -761,7 +761,7 @@ public class TypeSelector extends TextFieldCustomPopup<Type>
 
 			fibComponent = FIBLibrary.instance().retrieveFIBComponent(FIB_FILE_NAME, true);
 			controller = new CustomFIBController(fibComponent);
-			fibView = controller.buildView(fibComponent);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent);
 
 			controller.setDataObject(TypeSelector.this);
 
