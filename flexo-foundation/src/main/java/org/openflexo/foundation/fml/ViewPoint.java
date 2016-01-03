@@ -48,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -58,7 +61,9 @@ import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
@@ -242,7 +247,25 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			}
 			return viewpoint;
 		}
-
+		
+		/*
+		 * TODO Implements a method to handle gitResourceCenter
+		 */
+		
+		public static ViewPoint newGitViewPoint(String baseName,String viewpointURI,File workTree, Repository gitRepository, ViewPointLibrary library, FlexoResourceCenter<?> resourceCenter) throws IOException{
+			ViewPointResource vpRes = ViewPointResourceImpl.makeGitViewPointResource(baseName, viewpointURI, workTree, resourceCenter,
+					library.getServiceManager());
+			ViewPointImpl viewpoint = (ViewPointImpl) vpRes.getFactory().newInstance(ViewPoint.class);
+			vpRes.setResourceData(viewpoint);
+			viewpoint.setResource(vpRes);
+			// And register it to the library
+			library.registerViewPoint(vpRes);
+			viewpoint.init(baseName, library);
+			
+			
+			return viewpoint;
+		}
+		
 		@Override
 		public FlexoVersion getModelVersion() {
 			if (getResource() != null) {
