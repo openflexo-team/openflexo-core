@@ -102,7 +102,9 @@ public class ResourceSavingEntryInfo {
 	}
 
 	public void saveModified(IProgress progress) throws SaveResourceException {
-		progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + resource.getName());
+		if (progress != null) {
+			progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + resource.getName());
+		}
 		if (saveThisResource) {
 			resource.save(progress);
 		}
