@@ -96,7 +96,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		taskManager.getPropertyChangeSupport().addPropertyChangeListener(this);
 
 		// false until we have fixed issue with remaining and empty task bar
-		setAlwaysOnTop(false);
+		setAlwaysOnTop(true);
 		setUndecorated(true);
 
 		contentPane = new JPanel();
