@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -542,22 +543,43 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// Voir du cote de GeneratorFormatter pour formatter tout ca
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-			/*for (FlexoMetaModelResource<?, ?> mm : getAllMetaModels()) {
-				out.append("import " + mm.getURI() + ";", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}*/
-
-			out.append("ViewDefinition " + getName() + " uri=\"" + getURI() + "\"", context);
+			out.append("ViewPoint " + getName() + " uri=\"" + getURI() + "\"", context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			/*for (ModelSlot modelSlot : getModelSlots()) {
-				// if (modelSlot.getMetaModelResource() != null) {
-				out.append(modelSlot.getFMLRepresentation(context), context);
-				// }
-			}*/
+			if (getModelSlots().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (ModelSlot modelSlot : getModelSlots()) {
+					// if (modelSlot.getMetaModelResource() != null) {
+					out.append(modelSlot.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context, 1);
+					// }
+				}
+			}
+
+			if (getDeclaredProperties().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoProperty<?> pr : getDeclaredProperties()) {
+					out.append(pr.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
+
+			if (getFlexoBehaviours().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoBehaviour es : getFlexoBehaviours()) {
+					out.append(es.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
+
+			if (getFlexoConcepts().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoConcept ep : getFlexoConcepts()) {
+					out.append(ep.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getVirtualModels() != null) {
@@ -566,6 +588,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 				}
 			}
+
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
 		}
