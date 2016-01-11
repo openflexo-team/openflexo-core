@@ -45,8 +45,10 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -61,6 +63,7 @@ import org.openflexo.rm.InJarResourceImpl;
  * @author sylvain
  * 
  */
+@DeclareResourceTypes({ ViewPointResource.class, VirtualModelResource.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());

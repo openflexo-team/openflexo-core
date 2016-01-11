@@ -50,10 +50,12 @@ import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -72,6 +74,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 @DeclareModelSlots({ VirtualModelInstanceModelSlot.class, ViewModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class, ViewType.class })
+@DeclareResourceTypes({ ViewResource.class, VirtualModelInstanceResource.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
@@ -196,7 +199,8 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}

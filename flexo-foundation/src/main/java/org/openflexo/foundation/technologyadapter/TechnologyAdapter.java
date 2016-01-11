@@ -52,6 +52,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
@@ -80,6 +81,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	private TechnologyAdapterService technologyAdapterService;
 	private List<Class<? extends ModelSlot<?>>> availableModelSlotTypes;
 	private List<Class<? extends VirtualModelInstanceNature>> availableVirtualModelInstanceNatures;
+	private List<Class<? extends TechnologyAdapterResource<?, ?>>> availableResourceTypes;
 
 	// private List<Class<? extends TechnologySpecificType<?>>> availableTechnologySpecificTypes;
 
@@ -225,6 +227,25 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			}
 		}
 		return availableVirtualModelInstanceNatures;
+	}
+
+	public List<Class<? extends TechnologyAdapterResource<?, ?>>> getAvailableResourceTypes() {
+		if (availableResourceTypes == null) {
+			availableResourceTypes = computeAvailableResourceTypes();
+		}
+		return availableResourceTypes;
+	}
+
+	private List<Class<? extends TechnologyAdapterResource<?, ?>>> computeAvailableResourceTypes() {
+		availableResourceTypes = new ArrayList<Class<? extends TechnologyAdapterResource<?, ?>>>();
+		Class<?> cl = getClass();
+		if (cl.isAnnotationPresent(DeclareResourceTypes.class)) {
+			DeclareResourceTypes allResourceTypes = cl.getAnnotation(DeclareResourceTypes.class);
+			for (Class<? extends TechnologyAdapterResource> resourceClass : allResourceTypes.value()) {
+				availableResourceTypes.add((Class<? extends TechnologyAdapterResource<?, ?>>) resourceClass);
+			}
+		}
+		return availableResourceTypes;
 	}
 
 	/*public List<Class<? extends TechnologySpecificType<?>>> getAvailableTechnologySpecificTypes() {
