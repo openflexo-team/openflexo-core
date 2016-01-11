@@ -178,6 +178,7 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 		public AbstractVirtualModel<?> getOwner() {
 			return getViewPoint();
 		}
+
 	}
 
 }
