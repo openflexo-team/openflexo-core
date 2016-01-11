@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -117,42 +118,29 @@ public class CreationSchemeAction extends FlexoBehaviourAction<CreationSchemeAct
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
 		// logger.info("Create FlexoConceptInstance using CreationScheme");
 
+		// If referenced FlexoConcept is a plain FlexoConcept, we create it here and then we apply
+		// control graph associated to CreationScheme
+		// But if referenced FlexoConcept is a VirtualModel or a ViewPoint, it must has been
+		// initialized using #initWithFlexoConceptInstance(FlexoConceptInstance) method
+
 		retrieveMissingDefaultParameters();
 
-		// getFlexoConcept().getViewPoint().getViewpointOntology().loadWhenUnloaded();
-
-		// In case of this action is embedded in a CreateVirtualModelInstance action, the flexoConceptInstance (which will be here a
-		// VirtualModelInstance) will be already initialized and should subsequently not been recreated)
-		/*if (flexoConceptInstance == null) {
-			if (getVirtualModelInstance() != null) {
-				if (getCreationScheme().getFlexoConcept() instanceof ViewPoint) {
-					System.out.println("OK faut creer une vue la");
-				}
-				else if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
-					CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
-							.makeNewEmbeddedAction((View) getFocusedObject(), null, this);
-					createVMIAction.setSkipChoosePopup(true);
-					createVMIAction.setEscapeModelSlotConfiguration(true);
-					// createVMIAction.setCreationScheme(getCreationScheme());
-					createVMIAction.setNewVirtualModelInstanceName("Prout");
-					createVMIAction.setNewVirtualModelInstanceTitle("Un titre qui fait prout");
-					createVMIAction.doAction();
-					flexoConceptInstance = createVMIAction.getNewVirtualModelInstance();
-					System.out.println("OK j'ai cree le nouveau vmi: " + flexoConceptInstance);
-				}
-				else if (getCreationScheme().getFlexoConcept() != null) {
-					flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-				}
-				else {
-					logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
-					throw new InvalidParametersException("CreationScheme");
-				}
+		if (flexoConceptInstance == null) {
+			// We have to create the FCI by ourselve
+			if (getCreationScheme().getFlexoConcept() instanceof AbstractVirtualModel) {
+				// AbstractCreateVirtualModelAction should be used instead
+				throw new InvalidParametersException(
+						"Cannot create an AbstractVirtualModelInstance this way (AbstractCreateVirtualModelAction should be used instead)");
+			}
+			else if (getCreationScheme().getFlexoConcept() != null) {
+				flexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 			}
 			else {
-				logger.warning("Could not create new FlexoConceptInstance because container VirtualModelInstance is null");
-				throw new InvalidParametersException("VirtualModelInstance");
+				logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
+				throw new InvalidParametersException(
+						"Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");
 			}
-		}*/
+		}
 
 		executeControlGraph();
 
