@@ -108,8 +108,8 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, ModelSlotObject<RD>,
-		VirtualModelObject {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends FlexoRole<RD>, ModelSlotObject<RD>, VirtualModelObject {
 
 	@PropertyIdentifier(type = AbstractVirtualModel.class)
 	public static final String OWNER_KEY = "owner";
@@ -242,8 +242,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD> implements
-			ModelSlot<RD> {
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
+			implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -260,6 +260,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
+			return getOwner();
+		}
+
+		@Override
+		public final FlexoConcept getFlexoConcept() {
 			return getOwner();
 		}
 
