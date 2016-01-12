@@ -918,7 +918,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected " + variable);
 				// return null;
 			}
-			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
+					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {

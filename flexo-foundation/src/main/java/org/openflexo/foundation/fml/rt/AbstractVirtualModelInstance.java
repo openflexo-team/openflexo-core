@@ -820,7 +820,8 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
+			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null
+					&& ((ModelSlotBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getVirtualModel()) {
 				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
 				if (ms != null) {
 					return getModelSlotInstance(ms).getAccessedResourceData();
