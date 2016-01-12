@@ -217,7 +217,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -370,8 +370,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				}
-				else {
+				} else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -470,6 +469,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				return null;
 			}
 
+			VirtualModel virtualModel = getVirtualModelNamed(flexoConceptId);
+			if (virtualModel != null) {
+				return virtualModel;
+			}
+
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
 			if (flexoConceptId.indexOf("#") > -1) {
@@ -480,7 +484,9 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				}
 			}
 
-			return null;
+			// Is that a concept outside of scope of current ViewPoint ?
+			return getViewPointLibrary().getFlexoConcept(flexoConceptId);
+
 		}
 
 		@Override
@@ -646,7 +652,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			return getVirtualModels();
 		}
-
 	}
 
 	@DefineValidationRule
@@ -674,8 +679,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			}
-			else {
+			} else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

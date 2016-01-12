@@ -55,6 +55,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
@@ -362,6 +363,12 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		getPropertyChangeSupport().firePropertyChange("creationSchemeAction", null, creationScheme);
 		getPropertyChangeSupport().firePropertyChange("isActionValidable", wasValidable, isActionValidable());
 
+	}
+
+	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
+		if (creationSchemeAction != null) {
+			creationSchemeAction.setParameterValue(parameter, value);
+		}
 	}
 
 	@Override
