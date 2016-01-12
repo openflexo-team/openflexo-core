@@ -41,8 +41,10 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -69,6 +71,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -90,12 +94,32 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
-	public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
+	/**
+	 * This binding define the {@link AbstractVirtualModelInstance} where addressed {@link FlexoConceptInstance} "lives"
+	 * 
+	 * @return
+	 */
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLAttribute
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance();
 
-	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);
+	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance);
 
-	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
-			implements FlexoConceptInstanceRole {
+	/**
+	 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
+	 * This data is infered from eventual analyzed type of VirtualModelInstance binding
+	 * 
+	 * @return
+	 */
+	public AbstractVirtualModel<?> getVirtualModelType();
+
+	/*public FMLRTModelSlot<?, ?> getVirtualModelModelSlot();
+
+	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);*/
+
+	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance> implements
+			FlexoConceptInstanceRole {
 
 		private static final Logger logger = Logger.getLogger(FlexoConceptInstanceRole.class.getPackage().getName());
 
@@ -267,7 +291,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return returned;
 		}*/
 
-		@Override
+		/*@Override
 		public FMLRTModelSlot<?, ?> getVirtualModelModelSlot() {
 			return (FMLRTModelSlot<?, ?>) getModelSlot();
 		}
@@ -275,6 +299,58 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 			setModelSlot(modelSlot);
+		}*/
+
+		private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+
+		@Override
+		public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+			if (virtualModelInstance == null) {
+				virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+						DataBinding.BindingDefinitionType.GET);
+			}
+			return virtualModelInstance;
+		}
+
+		@Override
+		public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+			if (aVirtualModelInstance != null) {
+				aVirtualModelInstance.setOwner(this);
+				aVirtualModelInstance.setBindingName("virtualModelInstance");
+				aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
+				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			if (this.virtualModelInstance != aVirtualModelInstance) {
+				this.getPropertyChangeSupport()
+						.firePropertyChange("virtualModelInstance", this.virtualModelInstance, aVirtualModelInstance);
+				this.virtualModelInstance = aVirtualModelInstance;
+			}
+		}
+
+		/**
+		 * Return type of VirtualModel where this role may access to a FlexoConceptInstance<br>
+		 * This data is infered from eventual analyzed type of VirtualModelInstance binding
+		 * 
+		 * @return
+		 */
+		@Override
+		public AbstractVirtualModel<?> getVirtualModelType() {
+			if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
+				Type type = getVirtualModelInstance().getAnalyzedType();
+				if (type instanceof VirtualModelInstanceType) {
+					return ((VirtualModelInstanceType) type).getVirtualModel();
+				}
+			}
+
+			if (getModelSlot() instanceof FMLRTModelSlot) {
+				return ((FMLRTModelSlot) getModelSlot()).getAccessedVirtualModel();
+			}
+
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwningVirtualModel();
+			}
+
+			return getViewPoint();
 		}
 
 	}
