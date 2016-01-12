@@ -107,16 +107,19 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		}
 
 		private boolean renameFileTo(String name) throws InvalidFileNameException, IOException {
-			File newFile = new File(getFile().getParentFile(), name);
-			if (getFile().exists()) {
-				FileUtils.rename(getFile(), newFile);
+			if (name != null &&getFile() != null){
+				File newFile = new File(getFile().getParentFile(), name);
 				if (getFile().exists()) {
-					getFile().delete();
+					FileUtils.rename(getFile(), newFile);
+					if (getFile().exists()) {
+						getFile().delete();
+					}
+					setFile(newFile);
+					resetDiskLastModifiedDate();
 				}
-				setFile(newFile);
-				resetDiskLastModifiedDate();
+				return true;
 			}
-			return true;
+			else return false;
 		}
 
 		/**

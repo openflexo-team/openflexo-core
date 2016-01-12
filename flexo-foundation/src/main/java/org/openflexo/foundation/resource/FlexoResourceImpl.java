@@ -174,14 +174,19 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void setName(String aName) throws CannotRenameException {
-		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
-			performSuperSetter(NAME, aName);
-			if (getFlexoIODelegate() != null) {
-				getFlexoIODelegate().rename();
+		if (aName != null){
+			if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
+				performSuperSetter(NAME, aName);
+				if (getFlexoIODelegate() != null) {
+					getFlexoIODelegate().rename();
+				}
+			}
+			else if (!isDeleting()) {
+				throw new CannotRenameException(this);
 			}
 		}
-		else if (!isDeleting()) {
-			throw new CannotRenameException(this);
+		else {
+			logger.warning("Trying to rename a FlexoResource to null!");
 		}
 	}
 
@@ -216,7 +221,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
-	
+
 	/**
 	 * Called to notify that a resource has successfully been unloaded
 	 */
