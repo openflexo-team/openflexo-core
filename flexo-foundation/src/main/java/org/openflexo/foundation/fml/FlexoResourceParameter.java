@@ -76,10 +76,21 @@ public interface FlexoResourceParameter extends FlexoBehaviourParameter {
 	@Setter(RESOURCE_TYPE_KEY)
 	public void setTechnologyAdapterResourceType(Class<? extends TechnologyAdapterResource<?, ?>> type);
 
+	public Type getResourceDataType();
+
 	public static abstract class FlexoResourceParameterImpl extends FlexoBehaviourParameterImpl implements FlexoResourceParameter {
 
 		@Override
 		public Type getType() {
+			if (getTechnologyAdapterResourceType() != null) {
+				// return TypeUtils.getTypeArgument(getTechnologyAdapterResourceType(), TechnologyAdapterResource.class, 0);
+				return getTechnologyAdapterResourceType();
+			}
+			return TechnologyAdapterResource.class;
+		}
+
+		@Override
+		public Type getResourceDataType() {
 			if (getTechnologyAdapterResourceType() != null) {
 				return TypeUtils.getTypeArgument(getTechnologyAdapterResourceType(), TechnologyAdapterResource.class, 0);
 			}
