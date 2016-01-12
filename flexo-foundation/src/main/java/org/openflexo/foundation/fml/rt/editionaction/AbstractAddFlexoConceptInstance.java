@@ -295,8 +295,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<AddFlexoConceptInstanceParameter>(parameters);
-			if (getCreationScheme() != null) {
-				for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
+			if (creationScheme != null) {
+				for (FlexoBehaviourParameter p : creationScheme.getParameters()) {
 					AddFlexoConceptInstanceParameter existingParam = getParameter(p);
 					if (existingParam != null) {
 						parametersToRemove.remove(existingParam);
@@ -318,7 +318,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public FCI execute(RunTimeEvaluationContext evaluationContext) {
 			logger.info("Perform performAddFlexoConceptInstance " + evaluationContext);
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
-			logger.info("VirtualModelInstance: " + vmInstance);
 			if (vmInstance == null) {
 				logger.warning("null VirtualModelInstance");
 				return null;
