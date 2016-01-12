@@ -44,7 +44,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -270,7 +269,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		private AbstractVirtualModelInstanceResource<VMI, VM> resource;
 		private String title;
 
-		private final Hashtable<String, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
+		private final Hashtable<String, List<FlexoConceptInstance>> flexoConceptInstances;
 
 		// private final List<FlexoConceptInstance> orderedFlexoConceptInstances;
 
@@ -280,7 +279,7 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		public AbstractVirtualModelInstanceImpl() {
 			super();
 			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<String, Map<Long, FlexoConceptInstance>>();
+			flexoConceptInstances = new Hashtable<String, List<FlexoConceptInstance>>();
 			// orderedFlexoConceptInstances = new ArrayList<FlexoConceptInstance>();
 		}
 
@@ -387,21 +386,21 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 		@Override
 		public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
 				FlexoConcept newFlexoConcept) {
-			Map<Long, FlexoConceptInstance> hash = null;
+			List<FlexoConceptInstance> list = null;
 
 			if (oldFlexoConcept != null) {
-				hash = flexoConceptInstances.get(oldFlexoConcept.getURI());
-				if (hash != null) {
-					hash.remove(fci.getFlexoID());
+				list = flexoConceptInstances.get(oldFlexoConcept.getURI());
+				if (list != null) {
+					list.remove(fci.getFlexoID());
 				}
 			}
 			if (newFlexoConcept != null) {
-				hash = flexoConceptInstances.get(newFlexoConcept.getURI());
-				if (hash == null) {
-					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+				list = flexoConceptInstances.get(newFlexoConcept.getURI());
+				if (list == null) {
+					list = new ArrayList<FlexoConceptInstance>();
+					flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
 				}
-				hash.put(fci.getFlexoID(), fci);
+				list.add(fci);
 			}
 		}
 
@@ -428,16 +427,16 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				// logger.warning("EPI: " + fci.debug());
 			}
 			else {
-				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
-				if (hash == null) {
-					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+				List<FlexoConceptInstance> list = flexoConceptInstances.get(fci.getFlexoConceptURI());
+				if (list == null) {
+					list = new ArrayList<FlexoConceptInstance>();
+					flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
 				}
 				// We store here the FCI twice:
-				// - first in double-entries hash map
+				// - first in list hash map
 				// - then in an ordered list (internally performed by PAMELA)
 				// We rely on PAMELA schemes to handle notifications
-				hash.put(fci.getFlexoID(), fci);
+				list.add(fci);
 
 				performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
 				// orderedFlexoConceptInstances.add(fci);
@@ -458,12 +457,12 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 			// System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
 			// Thread.dumpStack();
 
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
-			if (hash == null) {
-				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(fci.getFlexoConceptURI());
+			if (list == null) {
+				list = new ArrayList<FlexoConceptInstance>();
+				flexoConceptInstances.put(fci.getFlexoConceptURI(), list);
 			}
-			hash.remove(fci.getFlexoID());
+			list.remove(fci.getFlexoID());
 			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
 			// orderedFlexoConceptInstances.remove(fci);
 			// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_INSTANCES_KEY, fci, null);
@@ -490,13 +489,13 @@ public interface AbstractVirtualModelInstance<VMI extends AbstractVirtualModelIn
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(flexoConcept.getURI());
-			if (hash == null) {
-				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(flexoConcept.getURI(), hash);
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(flexoConcept.getURI());
+			if (list == null) {
+				list = new ArrayList<FlexoConceptInstance>();
+				flexoConceptInstances.put(flexoConcept.getURI(), list);
 			}
 			// TODO: performance issue here
-			List<FlexoConceptInstance> returned = new ArrayList(hash.values());
+			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>(list);
 			for (FlexoConcept childEP : flexoConcept.getChildFlexoConcepts()) {
 				returned.addAll(getFlexoConceptInstances(childEP));
 			}
