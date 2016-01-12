@@ -75,6 +75,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.FlexoResourceParameter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.IntegerParameter;
 import org.openflexo.foundation.fml.ListParameter;
@@ -635,6 +636,29 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 							new DataBinding<Object>("data.serviceManager.viewPointLibrary"), true));
 
 			return registerWidget(epiSelector, parameter, panel, index);
+		}
+		else if (parameter instanceof FlexoResourceParameter) {
+			FIBCustom resourceSelector = fibModelFactory.newFIBCustom();
+			resourceSelector.setBindingFactory(parameter.getBindingFactory());
+			Class resourceSelectorClass;
+			try {
+				resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
+				resourceSelector.setComponentClass(resourceSelectorClass);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+					new DataBinding<Object>("component.technologyAdapter"),
+					new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceTechnologyAdapter"), true));
+			resourceSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceDataClass"),
+							new DataBinding<Object>("data.parametersDefinitions." + parameter.getName() + ".resourceDataType"), true));
+			resourceSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<Object>("component.resourceManager"),
+							new DataBinding<Object>("data.serviceManager.resourceManager"), true));
+
+			return registerWidget(resourceSelector, parameter, panel, index);
 		}
 
 		return null;
