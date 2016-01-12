@@ -157,10 +157,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
-				System.out.println("getVirtualModelInstance() with " + getVirtualModelInstance());
-				System.out.println("Valid=" + getVirtualModelInstance().isValid() + " " + getVirtualModelInstance().invalidBindingReason());
-				System.out.println("returned: " + getVirtualModelInstance().getBindingValue(evaluationContext));
-				System.out.println("evaluationContext=" + evaluationContext);
+				// System.out.println("getVirtualModelInstance() with " + getVirtualModelInstance());
+				// System.out.println("Valid=" + getVirtualModelInstance().isValid() + " " +
+				// getVirtualModelInstance().invalidBindingReason());
+				// System.out.println("returned: " + getVirtualModelInstance().getBindingValue(evaluationContext));
+				// System.out.println("evaluationContext=" + evaluationContext);
 				return getVirtualModelInstance().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
