@@ -397,6 +397,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void notifyResourceLoaded();
 
 	/**
+	 * Called to notify that a resource has successfully been loaded
+	 */
+	public void notifyResourceUnloaded();
+
+	/**
 	 * Called to notify that a resource has successfully been saved
 	 */
 	public void notifyResourceSaved();

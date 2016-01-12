@@ -216,6 +216,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
 	}
+	
+	/**
+	 * Called to notify that a resource has successfully been unloaded
+	 */
+	@Override
+	public void notifyResourceUnloaded() {
+		logger.fine("notifyResourceUnloaded(), resource=" + this);
+
+		ResourceUnloaded notification = new ResourceUnloaded(this, resourceData);
+		setChanged();
+		notifyObservers(notification);
+		// Also notify that the contents of the resource may also have changed
+		setChanged();
+		notifyObservers(new DataModification("contents", null, null));
+		if (getServiceManager() != null) {
+			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+		}
+		else {
+			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+		}
+	}
 
 	/**
 	 * Called to notify that a resource has successfully been saved
@@ -403,6 +424,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 				resourceData.delete();
 			}
 			resourceData = null;
+			// That's fine, resource is loaded, now let's notify the loading of the resources
+			notifyResourceUnloaded();
 		}
 	}
 
