@@ -106,11 +106,16 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 				}
 				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(view,
 						null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				createVMIAction.setSkipChoosePopup(true);
-				createVMIAction.setEscapeModelSlotConfiguration(true);
 				createVMIAction.setNewVirtualModelInstanceName(name);
 				createVMIAction.setNewVirtualModelInstanceTitle(title);
 				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
+				if (getCreationScheme() != null) {
+						createVMIAction.setCreationScheme(getCreationScheme());
+				}
+				else {
+					createVMIAction.setSkipChoosePopup(true);
+					createVMIAction.setEscapeModelSlotConfiguration(true);
+				}
 				createVMIAction.doAction();
 				return createVMIAction.getNewVirtualModelInstance();
 			}
