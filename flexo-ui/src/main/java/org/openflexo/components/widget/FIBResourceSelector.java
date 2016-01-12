@@ -125,7 +125,8 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	public Object getRootObject() {
 		if (getTechnologyAdapter() != null) {
 			return getTechnologyAdapter();
-		} else {
+		}
+		else {
 			return getResourceManager();
 		}
 	}

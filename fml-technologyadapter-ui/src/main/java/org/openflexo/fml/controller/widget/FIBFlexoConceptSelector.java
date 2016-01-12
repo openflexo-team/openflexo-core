@@ -125,8 +125,6 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setVirtualModel(AbstractVirtualModel<?> virtualModel) {
 
-		System.out.println("On set le VM a " + virtualModel);
-
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();
 			this.virtualModel = virtualModel;
