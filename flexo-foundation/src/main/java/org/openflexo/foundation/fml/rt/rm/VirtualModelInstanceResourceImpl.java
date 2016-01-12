@@ -106,20 +106,13 @@ public abstract class VirtualModelInstanceResourceImpl extends AbstractVirtualMo
 					view.getProject().getServiceManager().getTechnologyAdapterService()));
 			returned.initName(name);
 			// returned.setURI(view.getResource().getURI() + "/" + baseName);
+			//System.out.println(">>>>>>>>>>> virtualModel=" + virtualModel);
 			returned.setVirtualModelResource((VirtualModelResource) virtualModel.getResource());
 			returned.setResourceCenter(view.getProject());
 			returned.setServiceManager(view.getProject().getServiceManager());
 
-			/*System.out.println("***************** COUCOU on ajoute la nouvelle VMI dans la vue " + view.getResource());
-			System.out.println("HASH de la ViewResource: " + view.getResource().hash());
-			System.out.println("loaded=" + view.getResource().isLoaded());
-			System.out.println("contents before: " + view.getResource().getContents());*/
 			view.getResource().addToContents(returned);
-			// System.out.println("***************** HOP1");
-			// System.out.println("contents after 1: " + view.getResource().getContents());
 			view.getResource().notifyContentsAdded(returned);
-			// System.out.println("***************** HOP2");
-			// System.out.println("contents after 2: " + view.getResource().getContents());
 			return returned;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
