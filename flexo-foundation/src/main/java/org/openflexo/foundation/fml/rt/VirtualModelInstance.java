@@ -56,7 +56,8 @@ import org.openflexo.model.annotations.XMLElement;
  * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
  * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
  * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}. <br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.
+ * <br>
  * 
  * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
  * 
@@ -77,17 +78,18 @@ public interface VirtualModelInstance extends AbstractVirtualModelInstance<Virtu
 		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
 				VirtualModel virtualModel, View view) throws SaveResourceException {
 
-			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
-					virtualModelName, virtualModel, view);
+			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl
+					.makeVirtualModelInstanceResource(virtualModelName, virtualModel, view);
 
-			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory().newInstance(
-					VirtualModelInstance.class);
+			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory()
+					.newInstance(VirtualModelInstance.class);
 			newVirtualModelInstance.setVirtualModel(virtualModel);
 
 			newVirtualModelResource.setResourceData(newVirtualModelInstance);
 			newVirtualModelInstance.setResource(newVirtualModelResource);
 			newVirtualModelInstance.setTitle(virtualModelTitle);
 
+			view.getResource().addToContents(newVirtualModelResource);
 			view.getResource().notifyContentsAdded(newVirtualModelResource);
 
 			newVirtualModelResource.save(null);
