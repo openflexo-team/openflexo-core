@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,6 +51,8 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -116,8 +119,10 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 
 	public void setVirtualModelType(VirtualModelResource virtualModelType);
 
-	public static abstract class SelectVirtualModelInstanceImpl extends
-			FetchRequestImpl<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>> implements SelectVirtualModelInstance {
+	public ViewPoint getAddressedViewPoint();
+
+	public static abstract class SelectVirtualModelInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>>
+			implements SelectVirtualModelInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
 
@@ -177,10 +182,21 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 		}
 
 		@Override
+		public ViewPoint getAddressedViewPoint() {
+			if (getView() != null && getView().isSet() && getView().isValid()) {
+				Type viewType = getView().getAnalyzedType();
+				if (viewType instanceof ViewType) {
+					return ((ViewType) viewType).getViewPoint();
+				}
+			}
+			return null;
+		}
+
+		@Override
 		public VirtualModelInstanceType getFetchedType() {
 			try {
-				return VirtualModelInstanceType.getVirtualModelInstanceType(getVirtualModelType() != null ? getVirtualModelType()
-						.getResourceData(null) : null);
+				return VirtualModelInstanceType
+						.getVirtualModelInstanceType(getVirtualModelType() != null ? getVirtualModelType().getResourceData(null) : null);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -258,7 +274,8 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
 				logger.warning("Additional info: getView()=" + getView());
 				return null;
@@ -267,8 +284,8 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 	}
 
 	@DefineValidationRule
-	public static class SelectVirtualModelInstanceMustAddressAFlexoConceptType extends
-			ValidationRule<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> {
+	public static class SelectVirtualModelInstanceMustAddressAFlexoConceptType
+			extends ValidationRule<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> {
 		public SelectVirtualModelInstanceMustAddressAFlexoConceptType() {
 			super(SelectVirtualModelInstance.class, "select_virtual_model_instance_action_must_address_a_valid_virtual_model_type");
 		}
@@ -277,8 +294,8 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 		public ValidationIssue<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> applyValidation(
 				SelectVirtualModelInstance action) {
 			if (action.getVirtualModelType() == null) {
-				return new ValidationError<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance>(this,
-						action, "select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
+				return new ValidationError<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance>(this, action,
+						"select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
 			}
 			return null;
 		}
@@ -298,16 +315,16 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> applyValidation(
 				SelectVirtualModelInstance object) {
-			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> returned = super
-					.applyValidation(object);
+			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> returned = super.applyValidation(
+					object);
 			if (returned instanceof UndefinedRequiredBindingIssue) {
 				((UndefinedRequiredBindingIssue) returned).addToFixProposals(new UseDefaultView());
 			}
 			return returned;
 		}
 
-		protected static class UseDefaultView extends
-				FixProposal<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> {
+		protected static class UseDefaultView
+				extends FixProposal<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> {
 
 			public UseDefaultView() {
 				super("sets_view_to_'view'");
