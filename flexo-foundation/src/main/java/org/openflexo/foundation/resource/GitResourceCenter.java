@@ -1,33 +1,16 @@
 package org.openflexo.foundation.resource;
 
-import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoProperty;
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.ViewPointRepository;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
-import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.toolbox.FileUtils;
+import org.openflexo.gitUtils.GitIODelegateFactory;
+import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -36,14 +19,14 @@ public class GitResourceCenter extends  FileSystemBasedResourceCenter   {
 	public GitResourceCenter(File resourceCenterDirectory,File gitRepository) throws IllegalStateException, IOException, GitAPIException {
 		super(resourceCenterDirectory);
 		initializeRepositoryGit(gitRepository);
+		gitIODelegateFactory = new GitIODelegateFactory();
 	}
 	
 
 	protected static final Logger logger = Logger.getLogger(GitResourceCenter.class.getPackage().getName());
 	
-	private FileRepositoryBuilder builder = new FileRepositoryBuilder();
+	private IODelegateFactory<File> gitIODelegateFactory;
 	
-
 	/**
 	 * For a first impl, consider that one GitResourceCenter holds one gitRepository
 	 */
@@ -53,6 +36,10 @@ public class GitResourceCenter extends  FileSystemBasedResourceCenter   {
 	
 	public Repository getGitRepository() {
 		return gitRepository;
+	}
+	
+	public IODelegateFactory<File> getGitIODelegateFactory() {
+		return gitIODelegateFactory;
 	}
 	
 	public void initializeRepositoryGit(File gitFile) throws IOException, IllegalStateException, GitAPIException {

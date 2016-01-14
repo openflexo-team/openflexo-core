@@ -121,4 +121,6 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * Called when the {@link FlexoResource} this delegate handle I/O has been renamed.
 	 */
 	public void rename() throws CannotRenameException;
+	
+	public void save(FlexoResource<?> resource) ;
 }

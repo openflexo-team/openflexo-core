@@ -39,38 +39,44 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 		public static FlexoIOGitDelegate makeFlexoIOGitDelegate(String name, ModelFactory factory, File workTree,
 				Repository repository) throws IOException {
 			FlexoIOGitDelegate fileIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
-
+	
 			
-			fileIODelegate.setRepository(repository);
+			
 
+			// Set the gitRepository linked to this file
+			
+			return fileIODelegate;
+		}
+		
+		@Override
+		public void save(FlexoResource<?> resource){
+			GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
+			Repository repository = resourceCenter.getGitRepository();
 			// Create the file on the disk in the workTree of the Git Repository
-			fileIODelegate.setFile(new File(workTree, name));
+			setFile(new File(repository.getWorkTree(), resource.getName()));
 
 			try {
-				fileIODelegate.getFile().createNewFile();
+				getFile().createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			// Commit the ressource in the repo
 			Git git = new Git(repository);
 			try {
-				System.out.println("Add ressource : "+name+" to Git Index of Repository : "+repository.getBranch() );
-				DirCache inIndex = git.add().addFilepattern(name).call();
-				fileIODelegate.setGitObjectId(inIndex.getEntry(name).getObjectId());
+				System.out.println("Add ressource : "+resource.getName()+" to Git Index of Repository : "+repository.getBranch() );
+				DirCache inIndex = git.add().addFilepattern(resource.getName()).call();
+				setGitObjectId(inIndex.getEntry(resource.getName()).getObjectId());
 
-				System.out.println("Commit ressource : "+name+" in Repository : "+repository.getBranch() );
+				System.out.println("Commit ressource : "+resource.getName()+" in Repository : "+repository.getBranch() );
 				RevCommit commit = git.commit().setMessage("Ressource ViewPoint committed").call();
 
-			} catch (GitAPIException e) {
+			} catch (GitAPIException | IOException e) {
 				e.printStackTrace();
 			}
 			git.close();
-
-			// Set the gitRepository linked to this file
-			
-			return fileIODelegate;
 		}
-
+		
+		
 		public File getFile() {
 			return file;
 		}
