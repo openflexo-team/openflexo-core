@@ -119,14 +119,15 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 
 	private FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index) {
 
-		for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = controller.getTechnologyAdapterController(ta);
-			FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
-			if (returned != null) {
-				return returned;
+		if (controller != null) {
+			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+				TechnologyAdapterController<?> tac = controller.getTechnologyAdapterController(ta);
+				FIBComponent returned = tac.makeWidget(parameter, panel, index, action, fibModelFactory);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
-
 		return null;
 
 	}
@@ -180,8 +181,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 				descriptionPanel.addToSubComponents(descriptionLabel, new BorderLayoutConstraints(BorderLayoutLocation.center));
 				returned.addToSubComponents(descriptionPanel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 1);
 				index++;
-			}
-			else {
+			} else {
 				((TwoColsLayoutConstraints) titleLabel.getConstraints()).setInsetsBottom(10);
 			}
 		}
@@ -273,7 +273,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 	/*public class URIPanel extends FIBPanel {
 	public FIBTextField tf;
 	public FIBLabel uriLabel;
-	
+
 	public URIPanel(final URIParameter parameter) {
 		super();
 		setName(parameter.getName() + "URIPanel");
