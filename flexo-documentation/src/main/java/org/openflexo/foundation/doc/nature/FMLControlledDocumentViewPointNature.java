@@ -68,7 +68,6 @@ public abstract class FMLControlledDocumentViewPointNature<MS extends FlexoDocum
 				return true;
 			}
 		}
-		System.exit(-1);
 		return false;
 	}
 

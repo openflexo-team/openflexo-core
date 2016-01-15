@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,12 +51,15 @@ import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -89,7 +93,7 @@ import org.openflexo.model.validation.ValidationRule;
 @ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
-public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot, VirtualModelInstance> {
+public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
@@ -115,7 +119,9 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 
 	public void setVirtualModelType(VirtualModelResource virtualModelType);
 
-	public static abstract class SelectVirtualModelInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, VirtualModelInstance>
+	public ViewPoint getAddressedViewPoint();
+
+	public static abstract class SelectVirtualModelInstanceImpl extends FetchRequestImpl<FMLRTModelSlot, AbstractVirtualModelInstance<?, ?>>
 			implements SelectVirtualModelInstance {
 
 		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
@@ -173,6 +179,17 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 					+ (getVirtualModelType() != null ? getVirtualModelType().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
+		}
+
+		@Override
+		public ViewPoint getAddressedViewPoint() {
+			if (getView() != null && getView().isSet() && getView().isValid()) {
+				Type viewType = getView().getAnalyzedType();
+				if (viewType instanceof ViewType) {
+					return ((ViewType) viewType).getViewPoint();
+				}
+			}
+			return null;
 		}
 
 		@Override
@@ -240,7 +257,7 @@ public interface SelectVirtualModelInstance extends FetchRequest<FMLRTModelSlot,
 		}
 
 		@Override
-		public List<VirtualModelInstance> execute(RunTimeEvaluationContext evaluationContext) {
+		public List<AbstractVirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
 			View view = getView(evaluationContext);
 			if (view != null) {
 				try {

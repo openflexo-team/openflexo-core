@@ -148,13 +148,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 				executeAction(action, e);
 				return action;
-			}
-			else {
+			} else {
 				logger.warning("Action Type was NULL!");
 				return null;
 			}
-		}
-		else {
+		} else {
 			logger.warning("Action was NULL!");
 			return null;
 		}
@@ -188,8 +186,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 					}
 				};
 				applicationContext.getTaskManager().scheduleExecution(task);
-			}
-			else {
+			} else {
 				// Do it now, in this thread
 				doExecuteAction(action, event);
 			}
@@ -266,13 +263,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			if (exceptionHandler.handleException(exception, action)) {
 				// The exception has been handled, we may still have to execute finalizer, if any
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -361,12 +356,10 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isEnabled(actionType, focusedObject, globalSelection, this);
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
-		}
-		else {
+		} else {
 			return false;
 		}
 		return true;
@@ -382,12 +375,10 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 				if (condition != null) {
 					return condition.isVisible(actionType, focusedObject, globalSelection, this);
 				}
-			}
-			else {
+			} else {
 				return false;
 			}
-		}
-		else {
+		} else {
 			return false;
 		}
 		return true;
@@ -402,8 +393,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 		if (actionType instanceof DeletionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
-		}
-		else if (actionType instanceof ActionSchemeActionType) {
+		} else if (actionType instanceof ActionSchemeActionType) {
 			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
 		}
 

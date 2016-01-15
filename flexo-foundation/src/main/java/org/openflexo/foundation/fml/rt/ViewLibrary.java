@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 
 /**
  * The {@link ViewLibrary} contains all {@link ViewResource} referenced in a {@link FlexoProject}<br>
@@ -76,6 +76,7 @@ public class ViewLibrary extends ViewRepository {
 
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		if (getProject() != null) {
 			return getProject().getServiceManager();
@@ -148,22 +149,26 @@ public class ViewLibrary extends ViewRepository {
 		return getResource(viewURI);
 	}
 
-	public VirtualModelInstanceResource getVirtualModelInstance(String virtualModelInstanceURI) {
+	public AbstractVirtualModelInstanceResource<?, ?> getVirtualModelInstance(String virtualModelInstanceURI) {
 		if (virtualModelInstanceURI == null) {
 			return null;
+		}
+		if (getView(virtualModelInstanceURI) != null) {
+			return getView(virtualModelInstanceURI);
 		}
 		// System.out.println("lookup mvi " + virtualModelInstanceURI);
 		String viewURI = virtualModelInstanceURI.substring(0, virtualModelInstanceURI.lastIndexOf("/"));
 		// System.out.println("lookup view " + viewURI);
 		ViewResource vr = getView(viewURI);
 		if (vr != null) {
-			for (VirtualModelInstanceResource vmir : vr.getContents(VirtualModelInstanceResource.class)) {
+			for (AbstractVirtualModelInstanceResource<?, ?> vmir : vr.getContents(AbstractVirtualModelInstanceResource.class)) {
 				if (vmir.getURI().equals(virtualModelInstanceURI)) {
 					// System.out.println("Found " + vmir);
 					return vmir;
 				}
 			}
-		} else {
+		}
+		else {
 			logger.warning("Cannot find View " + viewURI);
 		}
 		logger.warning("Cannot find VirtualModelInstance " + virtualModelInstanceURI);

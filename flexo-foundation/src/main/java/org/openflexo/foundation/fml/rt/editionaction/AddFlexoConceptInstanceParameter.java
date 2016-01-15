@@ -66,7 +66,7 @@ import org.openflexo.model.validation.ValidationIssue;
 @XMLElement
 public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, Bindable {
 
-	@PropertyIdentifier(type = AddFlexoConceptInstance.class)
+	@PropertyIdentifier(type = AbstractAddFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = String.class)
@@ -89,10 +89,10 @@ public interface AddFlexoConceptInstanceParameter extends FlexoBehaviourObject, 
 	public void setValue(DataBinding<Object> value);
 
 	@Getter(value = ACTION_KEY /*, inverse = AddFlexoConceptInstance.PARAMETERS_KEY*/)
-	public AddFlexoConceptInstance getAction();
+	public AbstractAddFlexoConceptInstance<?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(AddFlexoConceptInstance action);
+	public void setAction(AbstractAddFlexoConceptInstance<?, ?> action);
 
 	// TODO: PAMELA
 	public FlexoBehaviourParameter getParam();

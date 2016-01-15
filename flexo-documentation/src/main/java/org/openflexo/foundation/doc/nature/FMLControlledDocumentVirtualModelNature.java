@@ -73,10 +73,10 @@ public abstract class FMLControlledDocumentVirtualModelNature<MS extends FlexoDo
 
 		MS documentMS = virtualModel.getModelSlots(getModelSlotClass()).get(0);
 
-		// The unique DocXModelSlot should define a template (a DocXDocument)
-		if (documentMS.getTemplateResource() == null) {
+		// This is not more mandatory to define a template
+		/*if (documentMS.getTemplateResource() == null) {
 			return false;
-		}
+		}*/
 
 		return true;
 	}

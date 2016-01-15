@@ -46,8 +46,8 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.NavigationScheme;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
@@ -88,16 +88,27 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 		return getNavigationScheme();
 	}
 
+	private FlexoObject targetObject = null;
+
 	@Override
 	protected void doAction(Object context) throws FlexoException {
 		logger.info("Perform navigation " + actionType);
 
 		if (evaluateCondition()) {
-			// If target diagram is not existant, we must create it
-			if (getTargetObject() == null) {
+			if (getFlexoBehaviour().getTargetObject() != null && getFlexoBehaviour().getTargetObject().isSet()
+					&& getFlexoBehaviour().getTargetObject().isValid()) {
+				targetObject = evaluateTargetObject();
+			} else {
 				executeControlGraph();
+				if (getReturnedValue() instanceof FlexoObject) {
+					targetObject = (FlexoObject) getReturnedValue();
+				}
 			}
 		}
+	}
+
+	public FlexoObject getTargetObject() {
+		return targetObject;
 	}
 
 	public boolean evaluateCondition() {
@@ -108,7 +119,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 		return getNavigationScheme().evaluateCondition(actionType.getFlexoConceptInstance());
 	}
 
-	public FlexoObject getTargetObject() {
+	public FlexoObject evaluateTargetObject() {
 		if (getNavigationScheme() == null) {
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;
@@ -117,7 +128,7 @@ public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchem
 	}
 
 	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
+	public AbstractVirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		/*if (getFocusedObject() instanceof DiagramElement<?>) {
 			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
 		}*/

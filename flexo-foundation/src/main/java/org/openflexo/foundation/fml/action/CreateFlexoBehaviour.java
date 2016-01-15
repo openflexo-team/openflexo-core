@@ -125,9 +125,11 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		if (focusedObject instanceof AbstractVirtualModel<?>) {
 			addVirtualModelFlexoBehaviours((AbstractVirtualModel<?>) focusedObject);
-		} else if (focusedObject instanceof FlexoConcept) {
+		}
+		else if (focusedObject instanceof FlexoConcept) {
 			addFlexoConceptFlexoBehaviours((FlexoConcept) focusedObject);
-		} else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
+		}
+		else if (focusedObject instanceof FlexoConceptBehaviouralFacet) {
 			addFlexoConceptFlexoBehaviours(((FlexoConceptBehaviouralFacet) focusedObject).getFlexoConcept());
 		}
 
@@ -216,13 +218,17 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		if (flexoBehaviourClass != null) {
 			if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "create";
-			} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			}
+			else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "delete";
-			} else if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			}
+			else if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "action";
-			} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			}
+			else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "clone";
-			} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			}
+			else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "navigate";
 			}
 			String baseName = flexoBehaviourClass.getSimpleName();
@@ -267,11 +273,13 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newFlexoBehaviour = factory.newInstance(flexoBehaviourClass);
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
+			newFlexoBehaviour.setDescription(getDescription());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
 			performCreateParameters();
 			newFlexoBehaviour.setControlGraph(factory.newEmptyControlGraph());
 			getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
-		} else {
+		}
+		else {
 			throw new InvalidParameterException("flexoBehaviourClass is null");
 		}
 
@@ -285,11 +293,14 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	public boolean isValid() {
 		if (getFlexoBehaviourName() == null) {
 			return false;
-		} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
+		}
+		else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
 			return false;
-		} else if (flexoBehaviourClass == null) {
+		}
+		else if (flexoBehaviourClass == null) {
 			return false;
-		} else {
+		}
+		else {
 			return true;
 		}
 	}

@@ -85,10 +85,13 @@ import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -219,6 +222,23 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(IconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
+	}
+
+	/**
+	 * Return icon representing supplied model slot class
+	 * 
+	 * @param object
+	 * @return
+	 */
+	@Override
+	public ImageIcon getIconForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass) {
+		if (ViewModelSlot.class.isAssignableFrom(modelSlotClass)) {
+			return FMLRTIconLibrary.VIEW_ICON;
+		}
+		if (VirtualModelInstanceModelSlot.class.isAssignableFrom(modelSlotClass)) {
+			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+		}
+		return super.getIconForModelSlot(modelSlotClass);
 	}
 
 	/**

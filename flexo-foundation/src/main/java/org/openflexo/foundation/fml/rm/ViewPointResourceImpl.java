@@ -343,6 +343,7 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 						}
 					}
 				} catch (IOException e) {
+					logger.warning("Unexpected IOException while reading " + child);
 					e.printStackTrace();
 				}
 

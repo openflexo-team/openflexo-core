@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBProjectObjectSelector;
@@ -47,9 +46,10 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a VirtualModelInstance
@@ -58,7 +58,7 @@ import org.openflexo.rm.Resource;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<VirtualModelInstanceResource> {
+public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<AbstractVirtualModelInstanceResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
@@ -80,19 +80,18 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 		virtualModel = null;
 	}
 
-
 	@Override
 	public Resource getFIBResource() {
 		return FIB_FILE;
 	}
-	
+
 	@Override
-	public Class<VirtualModelInstanceResource> getRepresentedType() {
-		return VirtualModelInstanceResource.class;
+	public Class<AbstractVirtualModelInstanceResource> getRepresentedType() {
+		return AbstractVirtualModelInstanceResource.class;
 	}
 
 	@Override
-	public String renderedString(VirtualModelInstanceResource editedObject) {
+	public String renderedString(AbstractVirtualModelInstanceResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getName();
 		}
@@ -139,9 +138,11 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 	public FlexoObject getRootObject() {
 		if (getView() != null) {
 			return getView().getResource();
-		} else if (getViewLibrary() != null) {
+		}
+		else if (getViewLibrary() != null) {
 			return getViewLibrary();
-		} else {
+		}
+		else {
 			return getProject();
 		}
 	}
@@ -158,13 +159,13 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 		return super.isAcceptableValue(o);
 	}
 
-	public boolean isConformedToVirtualModel(VirtualModelInstanceResource vmiResource){
-		if (((VirtualModelInstanceResource) vmiResource).getVirtualModelResource() != null && getVirtualModel()!=null) {
-			return ((VirtualModelInstanceResource) vmiResource).getVirtualModelResource().getVirtualModel() == getVirtualModel();
+	public boolean isConformedToVirtualModel(VirtualModelInstanceResource vmiResource) {
+		if (vmiResource.getVirtualModelResource() != null && getVirtualModel() != null) {
+			return vmiResource.getVirtualModelResource().getVirtualModel() == getVirtualModel();
 		}
 		return false;
 	}
-	
+
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
@@ -178,12 +179,12 @@ public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<Vi
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

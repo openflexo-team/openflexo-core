@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -70,11 +71,11 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -234,7 +235,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
 
-	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance action);
+	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+			AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 	public String getModelSlotDescription();
 
@@ -258,6 +260,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 
 		@Override
 		public AbstractVirtualModel<?> getVirtualModel() {
+			return getOwner();
+		}
+
+		@Override
+		public final FlexoConcept getFlexoConcept() {
 			return getOwner();
 		}
 
@@ -459,9 +466,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		private void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?>>> aList, Class<?> cl) {
 			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-				for (Class<? extends TechnologySpecificAction<?, ?>> editionActionClass : allEditionActions.value()) {
+				for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {
 					if (!availableEditionActionTypes.contains(editionActionClass)) {
-						availableEditionActionTypes.add(editionActionClass);
+						availableEditionActionTypes.add((Class<? extends TechnologySpecificAction<?, ?>>) editionActionClass);
 					}
 				}
 			}
@@ -626,7 +633,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>>
 		}
 
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance action);
+		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 		/**
 		 * A Model Slot is responsible for URI mapping

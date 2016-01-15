@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
@@ -89,4 +88,5 @@ public class CreateBasicVirtualModelInstance extends CreateVirtualModelInstance<
 	protected CreateBasicVirtualModelInstance(View focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
+
 }

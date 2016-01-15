@@ -51,13 +51,18 @@ public class TestFMLRTWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testChooseAndConfigureCreationSchemeForViewPoint() {
+		validateFIB("Fib/Wizard/CreateView/ChooseAndConfigureCreationSchemeForViewPoint.fib");
+	}
+
+	@Test
 	public void testChooseViewPoint() {
 		validateFIB("Fib/Wizard/CreateView/ChooseViewPoint.fib");
 	}
 
 	@Test
-	public void testChooseAndConfigureCreationScheme() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib");
+	public void testChooseAndConfigureCreationSchemeForVirtualModel() {
+		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib");
 	}
 
 	@Test

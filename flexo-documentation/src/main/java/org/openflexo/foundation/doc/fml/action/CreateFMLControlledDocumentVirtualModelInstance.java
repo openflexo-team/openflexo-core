@@ -50,8 +50,8 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 
-public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends CreateFMLControlledDocumentVirtualModelInstance<A>> extends
-		CreateVirtualModelInstance<A> {
+public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends CreateFMLControlledDocumentVirtualModelInstance<A>>
+		extends CreateVirtualModelInstance<A> {
 
 	private static final Logger logger = Logger.getLogger(CreateFMLControlledDocumentVirtualModelInstance.class.getPackage().getName());
 
@@ -88,7 +88,8 @@ public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends 
 	public boolean isVisible(VirtualModel virtualModel) {
 		if (virtualModel.hasNature(getVirtualModelNature())) {
 			return true;
-		} else {
+		}
+		else {
 			return false;
 		}
 	}

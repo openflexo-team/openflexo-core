@@ -42,9 +42,9 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -63,7 +63,8 @@ import org.openflexo.localization.FlexoLocalization;
 public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
 		DefaultFlexoObject {
 
-	private final CreateVirtualModelInstance<?> action;
+	private final AbstractVirtualModelInstance<?, ?> virtualModelInstance;
+	private final FlexoProject project;
 	private final MS modelSlot;
 	private ModelSlotInstanceConfigurationOption option;
 
@@ -78,44 +79,34 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		/**
 		 * Retrieve an existing resource from a ResourceCenter
 		 */
-		SelectExistingResource,
-		/**
+		SelectExistingResource, /**
 		 * Retrieve an existing model from a ResourceCenter
 		 */
-		SelectExistingModel,
-		/**
+		SelectExistingModel, /**
 		 * Retrieve an existing metamodel from a ResourceCenter
 		 */
-		SelectExistingMetaModel,
-		/**
+		SelectExistingMetaModel, /**
 		 * Create a dedicated model in the scope of current {@link FlexoProject}
 		 */
-		CreatePrivateNewModel,
-		/**
+		CreatePrivateNewModel, /**
 		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
 		 */
-		CreatePrivateNewResource,
-		/**
+		CreatePrivateNewResource, /**
 		 * Create a model in a ResourceCenter (the model might be shared and concurrently accessed)
 		 */
-		CreateSharedNewModel,
-		/**
+		CreateSharedNewModel, /**
 		 * Create a resource in a ResourceCenter (the resource might be shared and concurrently accessed)
 		 */
-		CreateSharedNewResource,
-		/**
+		CreateSharedNewResource, /**
 		 * Retrieve an existing virtual model instance
 		 */
-		SelectExistingVirtualModel,
-		/**
+		SelectExistingVirtualModel, /**
 		 * Creates a new virtual model
 		 */
-		CreateNewVirtualModel,
-		/**
+		CreateNewVirtualModel, /**
 		 * Leave empty and decide later
 		 */
-		LeaveEmpty,
-		/**
+		LeaveEmpty, /**
 		 * Let Openflexo manage this
 		 */
 		Autoconfigure;
@@ -126,13 +117,18 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 		}
 	}
 
-	protected ModelSlotInstanceConfiguration(MS ms, CreateVirtualModelInstance<?> action) {
-		this.action = action;
+	protected ModelSlotInstanceConfiguration(MS ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project) {
+		this.virtualModelInstance = virtualModelInstance;
+		this.project = project;
 		modelSlot = ms;
 	}
 
-	public CreateVirtualModelInstance<?> getAction() {
-		return action;
+	public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+		return virtualModelInstance;
+	}
+
+	public FlexoProject getProject() {
+		return project;
 	}
 
 	public MS getModelSlot() {
@@ -185,7 +181,7 @@ public abstract class ModelSlotInstanceConfiguration<MS extends ModelSlot<RD>, R
 	 *            the view in which the VirtualModelInstance will be added
 	 * @return
 	 */
-	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(VirtualModelInstance vmInstance, View view);
+	public abstract ModelSlotInstance<MS, RD> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view);
 
 	private String errorMessage;
 

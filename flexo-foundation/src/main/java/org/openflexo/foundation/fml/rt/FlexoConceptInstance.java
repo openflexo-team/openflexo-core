@@ -112,6 +112,21 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	@PropertyIdentifier(type = ActorReference.class, cardinality = Cardinality.LIST)
 	public static final String ACTORS_KEY = "actors";
 
+	@PropertyIdentifier(type = AbstractVirtualModelInstance.class)
+	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
+
+	/**
+	 * Return the {@link VirtualModelInstance} where this FlexoConceptInstance is instanciated (result might be different from
+	 * {@link #getVirtualModelInstance()}, which is The {@link VirtualModelInstanceObject} API)
+	 * 
+	 * @return
+	 */
+	@Getter(value = OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
+	public abstract AbstractVirtualModelInstance<?, ?> getOwningVirtualModelInstance();
+
+	@Setter(OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setOwningVirtualModelInstance(AbstractVirtualModelInstance<?, ?> virtualModelInstance);
+
 	public FlexoConcept getFlexoConcept();
 
 	public void setFlexoConcept(FlexoConcept flexoConcept);
@@ -276,7 +291,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		private final HashMap<String, List<ActorReference<?>>> actors;
 
 		// Stores internal variables used during execution
-		protected HashMap<String, Object> variables;
+		private final HashMap<String, Object> variables;
 
 		/**
 		 * Default constructor
@@ -289,7 +304,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public FlexoProject getProject() {
-			if (getView() != null) {
+			if (getView() != null && getView() != this) {
 				return getView().getProject();
 			}
 			return super.getProject();
@@ -313,8 +328,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 
 			@Override
-			public VirtualModelInstance getVirtualModelInstance() {
-				return getFlexoConceptInstance().getVirtualModelInstance();
+			public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+				return getFlexoConceptInstance().getOwningVirtualModelInstance();
 			}
 
 			/**
@@ -462,7 +477,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (flexoRole.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
 				// logger.warning("Should not we delegate this to owning VM ???");
-				return getVirtualModelInstance().getFlexoActor(flexoRole);
+				return getOwningVirtualModelInstance().getFlexoActor(flexoRole);
 			}
 			List<ActorReference<T>> actorReferences = (List) actors.get(flexoRole.getRoleName());
 
@@ -735,12 +750,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
+		public AbstractVirtualModelInstance<?, ?> getVirtualModelInstance() {
+			return getOwningVirtualModelInstance();
+		}
+
+		@Override
 		public FlexoConcept getFlexoConcept() {
-			if (getVirtualModelInstance() != null && getVirtualModelInstance().getVirtualModel() != null && flexoConcept == null
+			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance().getVirtualModel() != null && flexoConcept == null
 					&& StringUtils.isNotEmpty(flexoConceptURI)) {
-				flexoConcept = getVirtualModelInstance().getVirtualModel().getFlexoConcept(flexoConceptURI);
+				flexoConcept = getOwningVirtualModelInstance().getVirtualModel().getFlexoConcept(flexoConceptURI);
 				if (flexoConcept == null) {
-					System.out.println("Could not find FlexoConcept with uri=" + flexoConceptURI);
+					logger.warning("Could not find FlexoConcept with uri=" + flexoConceptURI + " (searched in "
+							+ getOwningVirtualModelInstance().getVirtualModel() + ")");
 				}
 			}
 			return flexoConcept;
@@ -751,8 +772,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (this.flexoConcept != flexoConcept) {
 				FlexoConcept oldFlexoConcept = this.flexoConcept;
 				this.flexoConcept = flexoConcept;
-				if (getVirtualModelInstance() != null) {
-					getVirtualModelInstance().flexoConceptInstanceChangedFlexoConcept(this, oldFlexoConcept, flexoConcept);
+				if (getOwningVirtualModelInstance() != null) {
+					getOwningVirtualModelInstance().flexoConceptInstanceChangedFlexoConcept(this, oldFlexoConcept, flexoConcept);
 				}
 				getPropertyChangeSupport().firePropertyChange("FlexoConcept", oldFlexoConcept, flexoConcept);
 			}
@@ -889,7 +910,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				// Handle here case of FlexoRole relates to VirtualModelInstance container
 				if (role.getFlexoConcept() == getFlexoConcept().getOwningVirtualModel()) {
-					return getVirtualModelInstance().getValue(variable);
+					return getOwningVirtualModelInstance().getValue(variable);
 				}
 				if (role != null) {
 					return getFlexoActor(role);
@@ -897,7 +918,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected " + variable);
 				// return null;
 			}
-			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null) {
+			else if (variable instanceof FlexoPropertyBindingVariable && getFlexoConcept() != null
+					&& ((FlexoPropertyBindingVariable) variable).getFlexoProperty().getFlexoConcept() == getFlexoConcept()) {
 				return ((FlexoPropertyBindingVariable) variable).getValue(this);
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
@@ -907,8 +929,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return this;
 			}
 
-			if (getVirtualModelInstance() != null && getVirtualModelInstance() != this) {
-				return getVirtualModelInstance().getValue(variable);
+			if (getOwningVirtualModelInstance() != null) {
+				return getOwningVirtualModelInstance().getValue(variable);
 			}
 
 			return null;
@@ -942,8 +964,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return;
 			}
 
-			if (getVirtualModelInstance() != null) {
-				getVirtualModelInstance().setValue(value, variable);
+			if (getOwningVirtualModelInstance() != null) {
+				getOwningVirtualModelInstance().setValue(value, variable);
 				return;
 			}
 
@@ -958,12 +980,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public boolean delete(Object... context) {
 			// Also implement properly #getDeletedProperty()
-			if (getFlexoConcept().getDefaultDeletionScheme() != null) {
-				return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
+			if (getFlexoConcept() != null) {
+				if (getFlexoConcept().getDefaultDeletionScheme() != null) {
+					return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
+				}
+				else {
+					// Generate on-the-fly default deletion scheme
+					return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
+				}
 			}
 			else {
-				// Generate on-the-fly default deletion scheme
-				return deleteWithScheme(getFlexoConcept().generateDefaultDeletionScheme());
+				return super.delete(context);
 			}
 		}
 
@@ -974,7 +1001,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (isDeleted()) {
 				return false;
 			}
-			VirtualModelInstance container = getVirtualModelInstance();
+			AbstractVirtualModelInstance<?, ?> container = getOwningVirtualModelInstance();
 			if (container != null) {
 				container.removeFromFlexoConceptInstances(this);
 			}
@@ -1069,8 +1096,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public VirtualModelInstance getResourceData() {
-			return getVirtualModelInstance();
+		public AbstractVirtualModelInstance<?, ?> getResourceData() {
+			return getOwningVirtualModelInstance();
 		}
 
 		@Override
@@ -1147,7 +1174,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		public String extendedStringRepresentation() {
 			StringBuffer sb = new StringBuffer();
-			sb.append(getFlexoConcept().getName() + ": ");
+			sb.append((getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + ": ");
 			boolean isFirst = true;
 			for (List<ActorReference<?>> refList : actors.values()) {
 				for (ActorReference<?> ref : refList) {

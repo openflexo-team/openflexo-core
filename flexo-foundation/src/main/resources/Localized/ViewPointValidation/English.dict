@@ -7,6 +7,7 @@
 ($reason)=($reason)
 EditionAction_should_not_have_reflexive_model_slot_no_more=EditionAction should not have reflexive model slot no more
 EditionAction_should_not_have_reflexive_model_slot_no_more_description=EditionAction should not have reflexive model slot no more description
+FlexoConceptInstanceRole_should_have_a_type=FlexoConceptInstanceRole should have a type
 FlexoRole_should_not_have_reflexive_model_slot_no_more=FlexoRole should not have reflexive model slot no more
 FlexoRole_should_not_have_reflexive_model_slot_no_more_description=FlexoRole should not have reflexive model slot no more description
 action_does_not_define_any_model_slot=Action does not define any model slot

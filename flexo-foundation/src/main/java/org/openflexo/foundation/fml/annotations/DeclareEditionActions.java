@@ -59,5 +59,5 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 @Target(value = ElementType.TYPE)
 public @interface DeclareEditionActions {
 
-	public Class<? extends TechnologySpecificAction<?, ?>>[] value();
+	public Class<? extends TechnologySpecificAction>[] value();
 }

@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.utils.XMLUtils;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -210,12 +211,18 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 	public ViewPointBindingModel getBindingModel();
 
 	/**
+	 * Load eventually unloaded VirtualModels<br>
+	 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
+	 */
+	public void loadVirtualModelsWhenUnloaded();
+
+	/**
 	 * Default implementation for {@link ViewPoint}
 	 * 
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint>implements ViewPoint {
+	public static abstract class ViewPointImpl extends AbstractVirtualModelImpl<ViewPoint> implements ViewPoint {
 
 		private static final Logger logger = Logger.getLogger(ViewPoint.class.getPackage().getName());
 
@@ -227,7 +234,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		private ViewPointBindingModel bindingModel;
 		private final FlexoConceptBindingFactory bindingFactory = new FlexoConceptBindingFactory(this);
 
-		private ViewType viewType = null;
+		private final ViewType viewType = new ViewType(this);;
 
 		// TODO: move this code to the ViewPointResource
 		public static ViewPoint newViewPoint(String baseName, String viewpointURI, File containerDir, ViewPointLibrary library,
@@ -303,6 +310,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 			return getURI();
 		}
 
+		@Override
+		public VirtualModelInstanceType getInstanceType() {
+			return getViewType();
+		}
+
 		/**
 		 * Return the URI of the {@link ViewPoint}<br>
 		 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<edition_scheme_name> <br>
@@ -347,9 +359,10 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		/**
 		 * Load eventually unloaded VirtualModels<br>
-		 * After this call return, we can assert that all {@link VirtualModel} are loaded.
+		 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
 		 */
-		private void loadVirtualModelsWhenUnloaded() {
+		@Override
+		public void loadVirtualModelsWhenUnloaded() {
 			if (isLoading) {
 				return;
 			}
@@ -380,8 +393,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					if (virtualModelClass.equals(vm.getClass())) {
 						returned.add((VM) vm);
 					}
-				}
-				else {
+				} else {
 					if (virtualModelClass.isAssignableFrom(vm.getClass())) {
 						returned.add((VM) vm);
 					}
@@ -453,24 +465,17 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		@Override
 		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
 
-			for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
-				if (vmRes.getName().equals(virtualModelNameOrURI)) {
-					return vmRes.getVirtualModel();
-				}
-				if (vmRes.getURI().equals(virtualModelNameOrURI)) {
-					return vmRes.getVirtualModel();
+			if (getResource() != null) {
+				for (VirtualModelResource vmRes : getResource().getContents(VirtualModelResource.class)) {
+					if (vmRes.getName().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
+					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
+						return vmRes.getVirtualModel();
+					}
 				}
 			}
 
-			/*loadVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getVirtualModels()) {
-				if (vm.getName().equals(virtualModelNameOrURI)) {
-					return vm;
-				}
-				if (vm.getURI().equals(virtualModelNameOrURI)) {
-					return vm;
-				}
-			}*/
 			return null;
 		}
 
@@ -487,6 +492,11 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				return null;
 			}
 
+			VirtualModel virtualModel = getVirtualModelNamed(flexoConceptId);
+			if (virtualModel != null) {
+				return virtualModel;
+			}
+
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
 			if (flexoConceptId.indexOf("#") > -1) {
@@ -497,7 +507,9 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 				}
 			}
 
-			return null;
+			// Is that a concept outside of scope of current ViewPoint ?
+			return getViewPointLibrary().getFlexoConcept(flexoConceptId);
+
 		}
 
 		@Override
@@ -560,22 +572,43 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// Voir du cote de GeneratorFormatter pour formatter tout ca
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-			/*for (FlexoMetaModelResource<?, ?> mm : getAllMetaModels()) {
-				out.append("import " + mm.getURI() + ";", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}*/
-
-			out.append("ViewDefinition " + getName() + " uri=\"" + getURI() + "\"", context);
+			out.append("ViewPoint " + getName() + " uri=\"" + getURI() + "\"", context);
 			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
 
-			/*for (ModelSlot modelSlot : getModelSlots()) {
-				// if (modelSlot.getMetaModelResource() != null) {
-				out.append(modelSlot.getFMLRepresentation(context), context);
-				// }
-			}*/
+			if (getModelSlots().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (ModelSlot modelSlot : getModelSlots()) {
+					// if (modelSlot.getMetaModelResource() != null) {
+					out.append(modelSlot.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context, 1);
+					// }
+				}
+			}
+
+			if (getDeclaredProperties().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoProperty<?> pr : getDeclaredProperties()) {
+					out.append(pr.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
+
+			if (getFlexoBehaviours().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoBehaviour es : getFlexoBehaviours()) {
+					out.append(es.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
+
+			if (getFlexoConcepts().size() > 0) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				for (FlexoConcept ep : getFlexoConcepts()) {
+					out.append(ep.getFMLRepresentation(context), context, 1);
+					out.append(StringUtils.LINE_SEPARATOR, context);
+				}
+			}
 
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getVirtualModels() != null) {
@@ -584,6 +617,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 					out.append(StringUtils.LINE_SEPARATOR, context, 1);
 				}
 			}
+
 			out.append("}" + StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
 		}
@@ -626,9 +660,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		 */
 		@Override
 		public ViewType getViewType() {
-			if (viewType == null) {
-				viewType = new ViewType(this);
-			}
 			return viewType;
 		}
 
@@ -644,7 +675,6 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			return getVirtualModels();
 		}
-
 	}
 
 	@DefineValidationRule
@@ -672,8 +702,7 @@ public interface ViewPoint extends AbstractVirtualModel<ViewPoint> {
 		public ValidationIssue<ViewPointURIMustBeValid, ViewPoint> applyValidation(ViewPoint vp) {
 			if (StringUtils.isEmpty(vp.getURI())) {
 				return new ValidationError<ViewPointURIMustBeValid, ViewPoint>(this, vp, "viewpoint_has_no_uri");
-			}
-			else {
+			} else {
 				try {
 					new URL(vp.getURI());
 				} catch (MalformedURLException e) {

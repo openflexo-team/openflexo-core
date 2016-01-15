@@ -42,9 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.localization.FlexoLocalization;
 
 /**
@@ -54,15 +55,17 @@ import org.openflexo.localization.FlexoLocalization;
  * @author sylvain
  * 
  */
-public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfiguration<FMLRTModelSlot, VirtualModelInstance> {
+public class FMLRTModelSlotInstanceConfiguration<VMI extends AbstractVirtualModelInstance<VMI, VM>, VM extends AbstractVirtualModel<VM>>
+		extends ModelSlotInstanceConfiguration<FMLRTModelSlot<VMI, VM>, VMI> {
 
 	private static final Logger logger = Logger.getLogger(FMLRTModelSlotInstanceConfiguration.class.getPackage().getName());
 
 	private final List<ModelSlotInstanceConfigurationOption> options;
-	private VirtualModelInstanceResource addressedVirtualModelInstanceResource;
+	private AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource;
 
-	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot ms, CreateVirtualModelInstance action) {
-		super(ms, action);
+	protected FMLRTModelSlotInstanceConfiguration(FMLRTModelSlot<VMI, VM> ms, AbstractVirtualModelInstance<VMI, VM> virtualModelInstance,
+			FlexoProject project) {
+		super(ms, virtualModelInstance, project);
 		options = new ArrayList<ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption>();
 		/*if (ms.isReflexiveModelSlot()) {
 			options.add(DefaultModelSlotInstanceConfigurationOption.Autoconfigure);
@@ -82,9 +85,8 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 	}
 
 	@Override
-	public ModelSlotInstance<FMLRTModelSlot, VirtualModelInstance> createModelSlotInstance(VirtualModelInstance vmInstance, View view) {
-		VirtualModelInstanceModelFactory factory = vmInstance.getFactory();
-		System.out.println("factory=" + factory);
+	public ModelSlotInstance<FMLRTModelSlot<VMI, VM>, VMI> createModelSlotInstance(AbstractVirtualModelInstance<?, ?> vmInstance, View view) {
+		AbstractVirtualModelInstanceModelFactory<?> factory = vmInstance.getFactory();
 		VirtualModelModelSlotInstance returned = factory.newInstance(VirtualModelModelSlotInstance.class);
 		returned.setModelSlot(getModelSlot());
 		returned.setVirtualModelInstance(vmInstance);
@@ -96,13 +98,13 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 		return returned;
 	}
 
-	public VirtualModelInstanceResource getAddressedVirtualModelInstanceResource() {
+	public AbstractVirtualModelInstanceResource<VMI, VM> getAddressedVirtualModelInstanceResource() {
 		return addressedVirtualModelInstanceResource;
 	}
 
-	public void setAddressedVirtualModelInstanceResource(VirtualModelInstanceResource addressedVirtualModelInstanceResource) {
+	public void setAddressedVirtualModelInstanceResource(AbstractVirtualModelInstanceResource<VMI, VM> addressedVirtualModelInstanceResource) {
 		if (this.addressedVirtualModelInstanceResource != addressedVirtualModelInstanceResource) {
-			VirtualModelInstanceResource oldValue = this.addressedVirtualModelInstanceResource;
+			AbstractVirtualModelInstanceResource<VMI, VM> oldValue = this.addressedVirtualModelInstanceResource;
 			this.addressedVirtualModelInstanceResource = addressedVirtualModelInstanceResource;
 			getPropertyChangeSupport().firePropertyChange("addressedVirtualModelInstanceResource", oldValue,
 					addressedVirtualModelInstanceResource);
@@ -137,7 +139,7 @@ public class FMLRTModelSlotInstanceConfiguration extends ModelSlotInstanceConfig
 	}
 
 	@Override
-	public VirtualModelInstanceResource getResource() {
+	public AbstractVirtualModelInstanceResource<VMI, VM> getResource() {
 		return getAddressedVirtualModelInstanceResource();
 	}
 

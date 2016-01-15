@@ -40,10 +40,11 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -64,8 +65,8 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 	public TechnologyAdapterResource<RD, ?> createSharedEmptyResource(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri);
 
-	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD>
-			implements FreeModelSlot<RD> {
+	public static abstract class FreeModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends ModelSlotImpl<RD> implements
+			FreeModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(FreeModelSlot.class.getPackage().getName());
 
@@ -74,7 +75,7 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 */
 		@Override
 		public abstract ModelSlotInstanceConfiguration<? extends FreeModelSlot<RD>, RD> createConfiguration(
-				CreateVirtualModelInstance action);
+				AbstractVirtualModelInstance<?, ?> virtualModelInstance, FlexoProject project);
 
 		/**
 		 * Instantiate a new IndividualRole

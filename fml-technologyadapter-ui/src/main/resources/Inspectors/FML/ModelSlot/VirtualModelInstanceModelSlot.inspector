@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.rt.FMLRTModelSlot"
+	dataClassName="org.openflexo.foundation.fml.rt.VirtualModelInstanceModelSlot"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -14,15 +14,10 @@
 				name="VirtualModelLabel" localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
 				localize="true" manageDynamicModel="true" name="VirtualModelSelector"
-				index="13" data="data.virtualModelResource"
+				index="13" data="data.accessedVirtualModelResource"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;location=right)">
 				<Assignment variable="component.viewPoint" value="data.viewPoint.resource" />
 			</Custom>
-			<!--<Label constraints="twocols()" name="MetaModelLabel" localize="true"> 
-				<Parameter name="hidden" value="true" /> </Label> <Custom localize="true" 
-				manageDynamicModel="true" name="MetaModelSelector" constraints="twocols()"> 
-				<Parameter name="hidden" value="true" /> </Custom> -->
-
 			<Label name="ModelSlotLabel">
 				<Parameter name="hidden" value="true" />
 			</Label>
@@ -37,5 +32,5 @@
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
 	</TabPanel>
 	<LocalizedDictionary />
-	<Parameter name="title" value="Virtual Model Model Slot" />
+	<Parameter name="title" value="Virtual Model Instance Model Slot" />
 </Panel>

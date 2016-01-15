@@ -38,11 +38,16 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -56,6 +61,8 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -73,7 +80,8 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  * <li>may declare a valid description</li>
  * </ul>
  */
-public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot> {
+public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<CreateFlexoConceptInstanceRole, FMLRTModelSlot> implements
+		Bindable {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceRole.class.getPackage().getName());
@@ -129,6 +137,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		newFlexoRole.setRoleName(getRoleName());
 		newFlexoRole.setCardinality(getCardinality());
 		newFlexoRole.setModelSlot(getModelSlot());
+		((FlexoConceptInstanceRole) newFlexoRole).setVirtualModelInstance(getVirtualModelInstance());
 
 		((FlexoConceptInstanceRole) newFlexoRole).setFlexoConceptType(getFlexoConceptInstanceType());
 
@@ -151,8 +160,8 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 		if (getModelSlot() == null || !useModelSlot) {
 			return getFlexoConcept().getVirtualModel();
 		} else {
-			if (getModelSlot().getVirtualModelResource() != null) {
-				return getModelSlot().getVirtualModelResource().getVirtualModel();
+			if (getModelSlot().getAccessedVirtualModelResource() != null) {
+				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
 			}
 		}
 		return null;
@@ -194,7 +203,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 			}
 			// Trying to find the most adapted model slot
 			for (FMLRTModelSlot ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
-				if (ms.getAddressedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
+				if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 					return ms;
 				}
 			}
@@ -243,6 +252,60 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	@Override
 	public final FlexoConceptInstanceRole getNewFlexoRole() {
 		return (FlexoConceptInstanceRole) super.getNewFlexoRole();
+	}
+
+	private DataBinding<AbstractVirtualModelInstance<?, ?>> virtualModelInstance;
+
+	public DataBinding<AbstractVirtualModelInstance<?, ?>> getVirtualModelInstance() {
+		if (virtualModelInstance == null) {
+			virtualModelInstance = new DataBinding<AbstractVirtualModelInstance<?, ?>>(this, AbstractVirtualModelInstance.class,
+					DataBinding.BindingDefinitionType.GET);
+		}
+		return virtualModelInstance;
+	}
+
+	public void setVirtualModelInstance(DataBinding<AbstractVirtualModelInstance<?, ?>> aVirtualModelInstance) {
+		if (aVirtualModelInstance != null) {
+			aVirtualModelInstance.setOwner(this);
+			aVirtualModelInstance.setBindingName("virtualModelInstance");
+			aVirtualModelInstance.setDeclaredType(AbstractVirtualModelInstance.class);
+			aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+		}
+		if (this.virtualModelInstance != aVirtualModelInstance) {
+			this.getPropertyChangeSupport().firePropertyChange("virtualModelInstance", this.virtualModelInstance, aVirtualModelInstance);
+			this.virtualModelInstance = aVirtualModelInstance;
+		}
+		this.getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
+	}
+
+	public AbstractVirtualModel<?> getVirtualModelType() {
+		if (getVirtualModelInstance() != null && getVirtualModelInstance().isSet() && getVirtualModelInstance().isValid()) {
+			Type type = getVirtualModelInstance().getAnalyzedType();
+			if (type instanceof VirtualModelInstanceType) {
+				return ((VirtualModelInstanceType) type).getVirtualModel();
+			}
+		}
+		return getFocusedObject().getViewPoint();
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return getFocusedObject().getBindingFactory();
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		return getFocusedObject().getBindingModel();
+	}
+
+	@Override
+	public void notifiedBindingChanged(org.openflexo.connie.DataBinding<?> dataBinding) {
+		this.getPropertyChangeSupport().firePropertyChange("virtualModelType", null, getVirtualModelType());
+	}
+
+	@Override
+	public void notifiedBindingDecoded(org.openflexo.connie.DataBinding<?> dataBinding) {
+		// TODO
 	}
 
 }

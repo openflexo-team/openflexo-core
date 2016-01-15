@@ -50,13 +50,13 @@ import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
 import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.exceptions.ModelExecutionException;
@@ -71,23 +71,23 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author sylvain
  * 
  */
-public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualModelInstance> {
+public class VirtualModelInstancePasteHandler implements PasteHandler<AbstractVirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
 	@Override
-	public Class<VirtualModelInstance> getPastingPointHolderType() {
-		return VirtualModelInstance.class;
+	public Class<AbstractVirtualModelInstance<?, ?>> getPastingPointHolderType() {
+		return (Class) AbstractVirtualModelInstance.class;
 	}
 
 	@Override
-	public PastingContext<VirtualModelInstance> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+	public PastingContext<AbstractVirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject,
+			List<FlexoObject> globalSelection, FlexoClipboard clipboard, Event event) {
 
-		if (focusedObject instanceof VirtualModelInstance) {
-			return new HeterogeneousPastingContext((VirtualModelInstance) focusedObject, event);
+		if (focusedObject instanceof AbstractVirtualModelInstance) {
+			return new HeterogeneousPastingContext((AbstractVirtualModelInstance<?, ?>) focusedObject, event);
 
 		}
 
@@ -100,7 +100,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("********** prepareClipboardForPasting in " + pastingContext);
 
@@ -110,7 +110,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<AbstractVirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("Trying to notify.........");
 
@@ -149,13 +149,13 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	 * @author sylvain
 	 * 
 	 */
-	public class HeterogeneousPastingContext extends DefaultPastingContext<VirtualModelInstance> {
+	public class HeterogeneousPastingContext extends DefaultPastingContext<AbstractVirtualModelInstance<?, ?>> {
 
 		// private final Map<ModelSlotInstance<?, ?>, Clipboard> modelSlotClipboards;
 
 		private FlexoClipboard clipboard;
 
-		public HeterogeneousPastingContext(VirtualModelInstance holder, Event event) {
+		public HeterogeneousPastingContext(AbstractVirtualModelInstance<?, ?> holder, Event event) {
 			super(holder, event);
 			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}

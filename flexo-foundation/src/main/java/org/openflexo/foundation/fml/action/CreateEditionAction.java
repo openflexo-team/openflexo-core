@@ -80,6 +80,8 @@ import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.editionaction.RoleSpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddSubView;
+import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
@@ -165,6 +167,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		// addToAvailableActions(AddToListAction.class, fmlTA);
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
+		addToAvailableActions(AddSubView.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(SelectFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
@@ -431,6 +435,12 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddFlexoConceptInstance();
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newAddVirtualModelInstance();
+		}
+		else if (AddSubView.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newAddSubView();
 		}
 		else if (MatchFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newMatchFlexoConceptInstance();

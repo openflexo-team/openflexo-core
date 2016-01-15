@@ -70,7 +70,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	public FIBResourceSelector(TechnologyAdapterResource editedObject) {
 		super(editedObject);
-		logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
+		// logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
 	}
 
 	@Override
