@@ -69,8 +69,8 @@ import org.openflexo.model.annotations.XMLElement;
 @FML("AddVirtualModelInstance")
 public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance<VirtualModelInstance> {
 
-	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<VirtualModelInstance>
-			implements AddVirtualModelInstance {
+	public static abstract class AddVirtualModelInstanceImpl extends AddAbstractVirtualModelInstanceImpl<VirtualModelInstance> implements
+			AddVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
@@ -104,18 +104,20 @@ public interface AddVirtualModelInstance extends AddAbstractVirtualModelInstance
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(view,
 						null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+				createVMIAction.setSkipChoosePopup(true);
+				createVMIAction.setEscapeModelSlotConfiguration(true);
 				createVMIAction.setNewVirtualModelInstanceName(name);
 				createVMIAction.setNewVirtualModelInstanceTitle(title);
 				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
-				if (getCreationScheme() != null) {
-						createVMIAction.setCreationScheme(getCreationScheme());
-				}
-				else {
-					createVMIAction.setSkipChoosePopup(true);
-					createVMIAction.setEscapeModelSlotConfiguration(true);
-				}
+				// He we just want to create a PLAIN and EMPTY VirtualModelInstance,
+				// eventual CreationScheme will be executed later
+				// DONT UNCOMMENT THIS !!!!
+				/*if (getCreationScheme() != null) {
+					createVMIAction.setCreationScheme(getCreationScheme());
+				}*/
 				createVMIAction.doAction();
 				return createVMIAction.getNewVirtualModelInstance();
 			}
