@@ -43,6 +43,7 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewType;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -64,12 +65,13 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 
 	// private final ViewPoint viewPoint;
 
-	private final BindingVariable reflexiveAccessBindingVariable;
-
-	public static final String REFLEXIVE_ACCESS_PROPERTY = "viewPointDefinition";
+	public static final String REFLEXIVE_ACCESS_PROPERTY = "viewPoint";
 	public static final String VIEW_PROPERTY = "view";
+	public static final String PROJECT_PROPERTY = "project";
 
+	private final BindingVariable reflexiveAccessBindingVariable;
 	private final BindingVariable viewBindingVariable;
+	private final BindingVariable projectBindingVariable;
 
 	/**
 	 * Build a new {@link BindingModel} dedicated to a ViewPoint
@@ -87,6 +89,9 @@ public class ViewPointBindingModel extends VirtualModelBindingModel implements P
 
 		reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, ViewPoint.class);
 		addToBindingVariables(reflexiveAccessBindingVariable);
+
+		projectBindingVariable = new BindingVariable(PROJECT_PROPERTY, FlexoProject.class);
+		addToBindingVariables(projectBindingVariable);
 	}
 
 	public ViewPoint getViewPoint() {
