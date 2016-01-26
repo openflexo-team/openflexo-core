@@ -41,6 +41,7 @@ package org.openflexo.foundation.resource;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -130,6 +131,10 @@ public interface InJarFlexoIODelegate extends FlexoIOStreamDelegate<InJarResourc
 			throw new CannotRenameException(getFlexoResource());
 		}
 
+		@Override
+		public void save(FlexoResource<?> resource) throws NotImplementedException {
+			throw new NotImplementedException("In-jar resources cannot be saved");
+		}
 	}
 
 }

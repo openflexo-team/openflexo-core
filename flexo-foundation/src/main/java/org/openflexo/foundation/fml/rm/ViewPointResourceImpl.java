@@ -68,6 +68,7 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPoint.ViewPointImpl;
@@ -171,6 +172,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 
 			return returned;
 		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		} catch (NotImplementedException e) {
 			e.printStackTrace();
 		}
 		return null;

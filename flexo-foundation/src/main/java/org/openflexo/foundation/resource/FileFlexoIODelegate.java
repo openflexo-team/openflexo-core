@@ -48,6 +48,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -253,6 +254,11 @@ public interface FileFlexoIODelegate extends FlexoIOStreamDelegate<File> {
 		@Override
 		public String getFileName() {
 			return getFlexoResource().getName();
+		}
+
+		@Override
+		public void save(FlexoResource<?> resource) throws NotImplementedException {
+			// TODO Auto-generated method stub
 		}
 	}
 
