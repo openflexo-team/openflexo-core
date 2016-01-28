@@ -70,17 +70,17 @@ import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.model.FIBWidget;
 import org.openflexo.gina.model.container.FIBPanel;
-import org.openflexo.gina.model.container.FIBTab;
-import org.openflexo.gina.model.container.GridBagLayoutConstraints;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints;
 import org.openflexo.gina.model.container.FIBPanel.Layout;
-import org.openflexo.gina.model.container.GridBagLayoutConstraints.AnchorType;
-import org.openflexo.gina.model.container.GridBagLayoutConstraints.FillType;
-import org.openflexo.gina.model.container.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.model.container.layout.GridBagLayoutConstraints;
+import org.openflexo.gina.model.container.layout.GridBagLayoutConstraints.AnchorType;
+import org.openflexo.gina.model.container.layout.GridBagLayoutConstraints.FillType;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
 import org.openflexo.gina.model.widget.FIBCustom;
+import org.openflexo.gina.model.widget.FIBCustom.FIBCustomAssignment;
 import org.openflexo.gina.model.widget.FIBLabel;
 import org.openflexo.gina.model.widget.FIBTextField;
-import org.openflexo.gina.model.widget.FIBCustom.FIBCustomAssignment;
 import org.openflexo.ontology.components.widget.FIBIndividualSelector;
 import org.openflexo.ontology.components.widget.FIBPropertySelector;
 import org.openflexo.ontology.components.widget.OntologyBrowserModel;
@@ -148,7 +148,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				// conceptClass = classEntry.evaluateConceptValue(action);
 				// TODO: implement proper scheme with new binding support
 				logger.warning("Please implement me !!!!!!!!!");
-			} else {
+			}
+			else {
 				conceptClass = individualEntry.getConcept();
 			}
 			if (conceptClass != null) {
@@ -174,7 +175,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 
 			newTab.addToSubComponents(individualSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return individualSelector;
-		} else if (entry instanceof ClassInspectorEntry) {
+		}
+		else if (entry instanceof ClassInspectorEntry) {
 			ClassInspectorEntry classEntry = (ClassInspectorEntry) entry;
 			FIBCustom classSelector = factory.newFIBCustom();
 			classSelector.setComponentClass(org.openflexo.ontology.components.widget.FIBClassSelector.class);
@@ -201,7 +203,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				// conceptClass = classEntry.evaluateConceptValue(action);
 				// TODO: implement proper scheme with new binding support
 				logger.warning("Please implement me !!!!!!!!!");
-			} else {
+			}
+			else {
 				conceptClass = classEntry.getConcept();
 			}
 			if (conceptClass != null) {
@@ -217,7 +220,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			}
 			newTab.addToSubComponents(classSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
 			return classSelector;
-		} else if (entry instanceof PropertyInspectorEntry) {
+		}
+		else if (entry instanceof PropertyInspectorEntry) {
 			PropertyInspectorEntry propertyEntry = (PropertyInspectorEntry) entry;
 			FIBCustom propertySelector = factory.newFIBCustom();
 			propertySelector.setComponentClass(FIBPropertySelector.class);
@@ -245,7 +249,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				// domainClass = propertyEntry.evaluateDomainValue(action);
 				// TODO: implement proper scheme with new binding support
 				logger.warning("Please implement me !!!!!!!!!");
-			} else {
+			}
+			else {
 				domainClass = propertyEntry.getDomain();
 			}
 			if (domainClass != null) {
@@ -264,7 +269,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 					// domainClass = propertyEntry.evaluateDomainValue(action);
 					// TODO: implement proper scheme with new binding support
 					logger.warning("Please implement me !!!!!!!!!");
-				} else {
+				}
+				else {
 					rangeClass = ((ObjectPropertyInspectorEntry) propertyEntry).getRange();
 				}
 				if (rangeClass != null) {
@@ -287,7 +293,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 				propertySelector.addToAssignments(selectDataPropertiesAssignment);
 				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
 						"component.selectDataProperties"), new DataBinding<Object>("false"), true));*/
-			} else if (propertyEntry instanceof DataPropertyInspectorEntry) {
+			}
+			else if (propertyEntry instanceof DataPropertyInspectorEntry) {
 				FIBCustomAssignment selectObjectPropertiesAssignment = factory.newInstance(FIBCustomAssignment.class);
 				selectObjectPropertiesAssignment.setOwner(propertySelector);
 				selectObjectPropertiesAssignment.setVariable(new DataBinding<Object>("component.selectObjectProperties"));
@@ -324,12 +331,13 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 	 * @return
 	 */
 	@Override
-	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index,
-			FlexoBehaviourAction<?, ?, ?> action, FIBModelFactory fibModelFactory) {
+	public FIBComponent makeWidget(final FlexoBehaviourParameter parameter, FIBPanel panel, int index, FlexoBehaviourAction<?, ?, ?> action,
+			FIBModelFactory fibModelFactory) {
 		if (parameter instanceof URIParameter) {
 			FIBPanel uriPanel = makeURIPanel((URIParameter) parameter, fibModelFactory);
 			return registerWidget(uriPanel, parameter, panel, index);
-		} else if (parameter instanceof IndividualParameter) {
+		}
+		else if (parameter instanceof IndividualParameter) {
 			FIBCustom individualSelector = fibModelFactory.newFIBCustom();
 			individualSelector.setComponentClass(FIBIndividualSelector.class);
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
@@ -345,30 +353,35 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 						}
 					}, true));*/
 
-			individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<Object>(
-					"component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
+			individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector,
+					new DataBinding<Object>("component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
-				ModelSlotInstance msInstance = action.getVirtualModelInstance().getModelSlotInstance(
-						((IndividualParameter) parameter).getModelSlot());
+				ModelSlotInstance msInstance = action.getVirtualModelInstance()
+						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding(
-							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
-							.getModel().getURI() + '"'), true));
-				} else {
+					individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector,
+							new DataBinding("component.contextOntologyURI"),
+							new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
-			individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<Object>(
-					"component.typeURI"), new DataBinding<Object>('"' + ((IndividualParameter) parameter)._getConceptURI() + '"'), true));
+			individualSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<Object>("component.typeURI"),
+							new DataBinding<Object>('"' + ((IndividualParameter) parameter)._getConceptURI() + '"'), true));
 			if (StringUtils.isNotEmpty(((IndividualParameter) parameter).getRenderer())) {
-				individualSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<Object>(
-						"component.renderer"), new DataBinding<Object>('"' + ((IndividualParameter) parameter).getRenderer() + '"'), true));
+				individualSelector.addToAssignments(
+						fibModelFactory.newFIBCustomAssignment(individualSelector, new DataBinding<Object>("component.renderer"),
+								new DataBinding<Object>('"' + ((IndividualParameter) parameter).getRenderer() + '"'), true));
 			}
 			return registerWidget(individualSelector, parameter, panel, index);
-		} else if (parameter instanceof ClassParameter) {
+		}
+		else if (parameter instanceof ClassParameter) {
 			ClassParameter classParameter = (ClassParameter) parameter;
 			FIBCustom classSelector = fibModelFactory.newFIBCustom();
 			classSelector.setComponentClass(org.openflexo.ontology.components.widget.FIBClassSelector.class);
@@ -383,34 +396,39 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 							return parameter.getBindingFactory();
 						}
 					}, true));*/
-			classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding<Object>(
-					"component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
+			classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector,
+					new DataBinding<Object>("component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
-				ModelSlotInstance msInstance = action.getVirtualModelInstance().getModelSlotInstance(
-						((IndividualParameter) parameter).getModelSlot());
+				ModelSlotInstance msInstance = action.getVirtualModelInstance()
+						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding(
-							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
-							.getModel().getURI() + '"'), true));
-				} else {
+					classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector,
+							new DataBinding("component.contextOntologyURI"),
+							new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
 			IFlexoOntologyClass conceptClass = null;
 			if (classParameter.getIsDynamicConceptValue()) {
 				conceptClass = classParameter.evaluateConceptValue(action);
-			} else {
+			}
+			else {
 				conceptClass = classParameter.getConcept();
 			}
 			if (conceptClass != null) {
-				classSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding<Object>(
-						"component.rootClassURI"), new DataBinding<Object>('"' + conceptClass.getURI() + '"'), true));
+				classSelector.addToAssignments(
+						fibModelFactory.newFIBCustomAssignment(classSelector, new DataBinding<Object>("component.rootClassURI"),
+								new DataBinding<Object>('"' + conceptClass.getURI() + '"'), true));
 			}
 			return registerWidget(classSelector, parameter, panel, index);
-		} else if (parameter instanceof PropertyParameter) {
+		}
+		else if (parameter instanceof PropertyParameter) {
 			PropertyParameter propertyParameter = (PropertyParameter) parameter;
 			FIBCustom propertySelector = fibModelFactory.newFIBCustom();
 			propertySelector.setComponentClass(FIBPropertySelector.class);
@@ -425,19 +443,21 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 							return parameter.getBindingFactory();
 						}
 					}, true));*/
-			propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
-					"component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
+			propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+					new DataBinding<Object>("component.informationSpace"), new DataBinding<Object>("data.project.informationSpace"), true));
 			if (action.getVirtualModelInstance() != null) {
-				ModelSlotInstance msInstance = action.getVirtualModelInstance().getModelSlotInstance(
-						((IndividualParameter) parameter).getModelSlot());
+				ModelSlotInstance msInstance = action.getVirtualModelInstance()
+						.getModelSlotInstance(((IndividualParameter) parameter).getModelSlot());
 				if (msInstance instanceof TypeAwareModelSlotInstance && ((TypeAwareModelSlotInstance) msInstance).getModel() != null) {
-					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding(
-							"component.contextOntologyURI"), new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance)
-							.getModel().getURI() + '"'), true));
-				} else {
+					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+							new DataBinding("component.contextOntologyURI"),
+							new DataBinding<Object>('"' + ((TypeAwareModelSlotInstance) msInstance).getModel().getURI() + '"'), true));
+				}
+				else {
 					logger.warning("No model defined for model slot " + ((IndividualParameter) parameter).getModelSlot());
 				}
-			} else {
+			}
+			else {
 				logger.warning("Inconsistent data: no VirtualModelInstance for action " + action);
 			}
 
@@ -445,35 +465,40 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 			IFlexoOntologyClass domainClass = null;
 			if (propertyParameter.getIsDynamicDomainValue()) {
 				domainClass = propertyParameter.evaluateDomainValue(action);
-			} else {
+			}
+			else {
 				domainClass = propertyParameter.getDomain();
 			}
 			// System.out.println("domain class = " + domainClass + " uri=" + domainClass.getURI());
 			if (domainClass != null) {
-				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.domainClassURI"), new DataBinding<Object>('"' + domainClass.getURI() + '"'), true));
+				propertySelector.addToAssignments(
+						fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>("component.domainClassURI"),
+								new DataBinding<Object>('"' + domainClass.getURI() + '"'), true));
 			}
 
 			if (propertyParameter instanceof ObjectPropertyParameter) {
 				IFlexoOntologyClass rangeClass = null;
 				if (propertyParameter.getIsDynamicDomainValue()) {
 					rangeClass = ((ObjectPropertyParameter) propertyParameter).evaluateRangeValue(action);
-				} else {
+				}
+				else {
 					rangeClass = ((ObjectPropertyParameter) propertyParameter).getRange();
 				}
 				// System.out.println("range class = " + rangeClass + " uri=" + rangeClass.getURI());
 				if (rangeClass != null) {
-					propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
-							"component.rangeClassURI"), new DataBinding<Object>('"' + rangeClass.getURI() + '"'), true));
+					propertySelector.addToAssignments(
+							fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>("component.rangeClassURI"),
+									new DataBinding<Object>('"' + rangeClass.getURI() + '"'), true));
 				}
 			}
 
 			if (propertyParameter instanceof ObjectPropertyParameter) {
-				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectDataProperties"), DataBinding.makeFalseBinding(), true));
-			} else if (propertyParameter instanceof DataPropertyParameter) {
-				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectObjectProperties"), DataBinding.makeFalseBinding(), true));
+				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+						new DataBinding<Object>("component.selectDataProperties"), DataBinding.makeFalseBinding(), true));
+			}
+			else if (propertyParameter instanceof DataPropertyParameter) {
+				propertySelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(propertySelector,
+						new DataBinding<Object>("component.selectObjectProperties"), DataBinding.makeFalseBinding(), true));
 			}
 			return registerWidget(propertySelector, parameter, panel, index);
 		}
@@ -492,7 +517,8 @@ public abstract class FlexoOntologyTechnologyAdapterController<TA extends Techno
 		Font f = uriLabel.retrieveValidFont();
 		if (f != null) {
 			uriLabel.setFont(f.deriveFont(10f));
-		} else {
+		}
+		else {
 			uriLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
 		}
 		uriLabel.setData(new DataBinding<Object>("data.retrieveFullURI" + "(data.parametersDefinitions" + "." + parameter.getName() + ")"));
