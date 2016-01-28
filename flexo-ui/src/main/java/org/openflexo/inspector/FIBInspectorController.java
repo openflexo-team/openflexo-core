@@ -39,13 +39,7 @@
 
 package org.openflexo.inspector;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
-
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.DataModification;
@@ -55,7 +49,6 @@ import org.openflexo.foundation.FlexoProperty;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
-import org.openflexo.gina.FIBLibrary;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.utils.FIBInspector;
@@ -111,7 +104,8 @@ public class FIBInspectorController extends FlexoFIBController {
 		return super.getValue(variable);
 	}
 
-	@Override
+	// NOTE: this has moved to SwingViewFactory !!!
+	/*@Override
 	protected void openFIBEditor(FIBComponent component, final MouseEvent event) {
 		if (component instanceof FIBInspector) {
 			JPopupMenu popup = new JPopupMenu();
@@ -130,12 +124,12 @@ public class FIBInspectorController extends FlexoFIBController {
 				popup.add(menuItem);
 			}
 			popup.show(event.getComponent(), event.getX(), event.getY());
-
+	
 		}
 		else {
 			super.openFIBEditor(component, event);
 		}
-	}
+	}*/
 
 	@Override
 	public void update(FlexoObservable o, DataModification dataModification) {

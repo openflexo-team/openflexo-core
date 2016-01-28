@@ -49,11 +49,13 @@ import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.swing.view.container.JFIBTabPanelView;
 import org.openflexo.gina.utils.FIBInspector;
@@ -157,7 +159,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 		tabPanelView = null;
 	}
 
-	private FIBView<?, ?> currentInspectorView = null;
+	private JFIBView<?, ?> currentInspectorView = null;
 
 	/**
 	 * Returns boolean indicating if inspection change
@@ -229,7 +231,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 
 		currentlyDisplayedInspector = newInspector;
 
-		FIBView<?, ?> view = viewForInspector(newInspector);
+		JFIBView<?, ?> view = (JFIBView<?, ?>) viewForInspector(newInspector);
 		FlexoFIBController controller = (FlexoFIBController) view.getController();
 		controller.setFlexoController(inspectorController.getFlexoController());
 
@@ -239,7 +241,7 @@ public class FIBInspectorPanel extends JPanel implements Observer, ChangeListene
 			}*/
 
 		if (tabPanelView != null) {
-			tabPanelView.getJComponent().removeChangeListener(this);
+			((JTabbedPane) tabPanelView.getJComponent()).removeChangeListener(this);
 			// System.out.println("removeChangeListener for "+tabPanelView.getJComponent());
 		}
 
