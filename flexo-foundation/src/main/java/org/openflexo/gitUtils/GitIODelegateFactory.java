@@ -1,14 +1,17 @@
 package org.openflexo.gitUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.LinkedList;
 
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.eclipse.jgit.lib.ObjectId;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoIOGitDelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.FlexoVersion;
 
 public class GitIODelegateFactory implements IODelegateFactory<File> {
 	
@@ -20,6 +23,9 @@ public class GitIODelegateFactory implements IODelegateFactory<File> {
 			factory = new ModelFactory(ModelContextLibrary
 					.getCompoundModelContext(FlexoIOGitDelegate.class));
 			gitIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
+			gitIODelegate.setGitObjectIds(new LinkedList<ObjectId>());
+			gitIODelegate.setGitCommitIds(new HashMap<FlexoVersion,ObjectId>());
+
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}

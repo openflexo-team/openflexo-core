@@ -429,4 +429,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @return
 	 */
 	public abstract String getIdentifier();
+	
+	
+	/**
+	 * Returned the resource matched for the resource center
+	 * @param rc
+	 * @return
+	 */
+	public abstract <T> FlexoResource<?> tryToLookUp(FlexoResourceCenter<?> rc, T toMatch );
 }

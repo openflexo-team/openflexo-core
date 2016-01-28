@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.ViewPointRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -387,6 +388,12 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 
 	@Override
 	public String getDefaultResourceURI(FlexoResource<?> resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IODelegateFactory<InJarResourceImpl> getDelegateFactory() {
 		// TODO Auto-generated method stub
 		return null;
 	}

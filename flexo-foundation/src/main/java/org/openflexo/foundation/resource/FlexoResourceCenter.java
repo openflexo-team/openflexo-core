@@ -54,6 +54,7 @@ import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntr
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
@@ -275,4 +276,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 * @return
 	 */
 	public String getDefaultResourceURI(FlexoResource<?> resource);
+	
+	
+	public IODelegateFactory<I> getDelegateFactory();
 }

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
-import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
@@ -23,10 +22,6 @@ import org.openflexo.toolbox.FileUtils;
  *
  */
 public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase {
-	
-	private static GitResourceCenter gitResourceCenter;
-	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
-
 	
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
@@ -85,7 +80,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 //							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 //					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 					try {
-						rcService.addToResourceCenters(gitResourceCenter = new GitResourceCenter(testResourceCenterDirectory,testResourceCenterDirectory));
+						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory,testResourceCenterDirectory));
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}

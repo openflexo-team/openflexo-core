@@ -61,6 +61,8 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.gitUtils.FileIODelegateFactory;
+import org.openflexo.gitUtils.IODelegateFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -87,15 +89,35 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 	// ModelRepository<?, ?, ?, ?, ?>>();
 	// private final HashMap<TechnologyAdapter, MetaModelRepository<?, ?, ?, ?>> metaModelRepositories = new HashMap<TechnologyAdapter,
 	// MetaModelRepository<?, ?, ?, ?>>();
-
+	
 	private TechnologyAdapterService technologyAdapterService;
 
+	public TechnologyAdapterService getTechnologyAdapterService() {
+		return technologyAdapterService;
+	}
+
+	public void setTechnologyAdapterService(TechnologyAdapterService technologyAdapterService) {
+		this.technologyAdapterService = technologyAdapterService;
+	}
+
+	private IODelegateFactory<File> delegateFactory;
+	
 	public FileSystemBasedResourceCenter(File rootDirectory) {
 		super(null, rootDirectory);
 		this.rootDirectory = rootDirectory;
 		startDirectoryWatching();
+		setDelegateFactory(new FileIODelegateFactory());
 	}
 
+	@Override
+	public IODelegateFactory<File> getDelegateFactory() {
+		return delegateFactory;
+	}
+
+	public void setDelegateFactory(IODelegateFactory<File> delegateFactory) {
+		this.delegateFactory = delegateFactory;
+	}
+	
 	@Override
 	public FlexoResourceCenter<?> getResourceCenter() {
 		return this;
@@ -534,5 +556,7 @@ public abstract class FileSystemBasedResourceCenter extends FileResourceReposito
 		}
 		return null;
 	}
+
+	
 
 }

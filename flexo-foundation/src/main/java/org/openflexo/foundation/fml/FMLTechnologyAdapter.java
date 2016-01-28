@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -280,6 +281,12 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public String getIdentifier() {
 		return "FML";
+	}
+
+	@Override
+	public <T> FlexoResource<?> tryToLookUp(FlexoResourceCenter<?> rc, T toMatch) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

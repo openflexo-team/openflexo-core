@@ -154,11 +154,11 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			//Set the Git IO Flexo Delegate
 //			returned.setFlexoIODelegate(FlexoIOGitDelegateImpl.makeFlexoIOGitDelegate(name,factory,workTree,
 //					gitResourceCenter.getGitRepository()));
-			returned.setFlexoIODelegate(gitResourceCenter.getGitIODelegateFactory().makeNewInstance(returned));
+			returned.setFlexoIODelegate(gitResourceCenter.getDelegateFactory().makeNewInstance(returned));
 			
 			returned.setResourceCenter(resourceCenter);
 
-			returned.getFlexoIODelegate().save(returned);
+			((FlexoIOGitDelegate)returned.getFlexoIODelegate()).createAndSaveIO(returned);
 			// If ViewPointLibrary not initialized yet, we will do it later in
 			// ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
