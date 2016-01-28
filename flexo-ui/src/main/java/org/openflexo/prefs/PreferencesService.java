@@ -39,6 +39,8 @@
 package org.openflexo.prefs;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.AdvancedPrefs;
@@ -54,6 +56,8 @@ import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCe
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.Module;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -83,7 +87,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		return resource.getFlexoPreferences();
 	}
 
-	private <P extends PreferencesContainer> P managePreferences(Class<P> prefClass, PreferencesContainer container) {
+	public <P extends PreferencesContainer> P managePreferences(Class<P> prefClass, PreferencesContainer container) {
 		P returned = getPreferences(prefClass);
 		if (returned == null) {
 			returned = getPreferencesFactory().newInstance(prefClass);
@@ -126,6 +130,27 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 				savePreferences();
 			}
 		}
+	}
+
+	public FlexoPreferencesFactory makePreferencesFactory(FlexoPreferencesResource resource, ApplicationContext applicationContext)
+			throws ModelDefinitionException {
+		List<Class<?>> classes = buildClassesListForPreferenceFactory(applicationContext);
+		return new FlexoPreferencesFactory(resource,
+				ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
+	}
+
+	protected List<Class<?>> buildClassesListForPreferenceFactory(ApplicationContext applicationContext) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(FlexoPreferences.class);
+		classes.add(GeneralPreferences.class);
+		classes.add(AdvancedPrefs.class);
+		classes.add(ResourceCenterPreferences.class);
+		if (applicationContext.getModuleLoader() != null) {
+			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
+				classes.add(m.getPreferencesClass());
+			}
+		}
+		return classes;
 	}
 
 	public void savePreferences() {

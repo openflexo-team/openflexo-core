@@ -39,13 +39,10 @@
 package org.openflexo.prefs;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
 import org.openflexo.GeneralPreferences;
-import org.openflexo.ResourceCenterPreferences;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
@@ -63,7 +60,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.module.Module;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
 
@@ -106,7 +102,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(preferencesFile, resourceFactory));
 				// returned.setFile(preferencesFile);
 
-				returned.setFactory(makePreferencesFactory(returned, applicationContext));
+				returned.setFactory(applicationContext.getPreferencesService().makePreferencesFactory(returned, applicationContext));
 				// TODO: setResourceCenter()
 				returned.setServiceManager(applicationContext);
 
@@ -135,22 +131,6 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				e.printStackTrace();
 			}
 			return null;
-		}
-
-		private static FlexoPreferencesFactory makePreferencesFactory(FlexoPreferencesResource resource,
-				ApplicationContext applicationContext) throws ModelDefinitionException {
-			List<Class<?>> classes = new ArrayList<Class<?>>();
-			classes.add(FlexoPreferences.class);
-			classes.add(GeneralPreferences.class);
-			classes.add(AdvancedPrefs.class);
-			classes.add(ResourceCenterPreferences.class);
-			if (applicationContext.getModuleLoader() != null) {
-				for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
-					classes.add(m.getPreferencesClass());
-				}
-			}
-			return new FlexoPreferencesFactory(resource,
-					ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
 		}
 
 		@Override
