@@ -58,6 +58,12 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>
 
