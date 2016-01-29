@@ -62,16 +62,17 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<DocResourceCenter, DRMModelFactory>
-		implements DocResourceCenterResource {
+public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<DocResourceCenter, DRMModelFactory> implements
+		DocResourceCenterResource {
 
 	static final Logger logger = Logger.getLogger(DocResourceCenterResourceImpl.class.getPackage().getName());
 
 	public static DocResourceCenterResource retrieveDocResourceCenterResource(DocResourceManager docResourceManager,
 			FlexoResourceCenter<?> resourceCenter) {
 		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, DocResourceCenterResource.class));
+			System.out.println("retrieveDocResourceCenterResource for " + docResourceManager.getDRMFile());
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class,
+					DocResourceCenterResource.class));
 			DocResourceCenterResourceImpl returned = (DocResourceCenterResourceImpl) factory.newInstance(DocResourceCenterResource.class);
 			returned.setFactory(docResourceManager.getDRMModelFactory());
 			returned.initName("DocResourceCenter");

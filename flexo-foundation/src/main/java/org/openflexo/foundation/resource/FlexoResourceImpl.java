@@ -108,8 +108,8 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress)
-			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+	public synchronized RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, ResourceLoadingCancelledException,
+			FileNotFoundException, FlexoException {
 
 		if (isLoading()) {
 			// logger.warning("trying to load a resource data from itself, please investigate");
@@ -174,7 +174,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void setName(String aName) throws CannotRenameException {
-		if (aName != null){
+		if (aName != null) {
 			if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
 				performSuperSetter(NAME, aName);
 				if (getFlexoIODelegate() != null) {
@@ -532,7 +532,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		}
 
 		if (returned == null && (getFlexoIODelegate() instanceof FileFlexoIODelegate)) {
-			return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
+			if (((FileFlexoIODelegate) getFlexoIODelegate()).getFile() != null) {
+				return ((FileFlexoIODelegate) getFlexoIODelegate()).getFile().toURI().toString();
+			}
 		}
 		return returned;
 	}
