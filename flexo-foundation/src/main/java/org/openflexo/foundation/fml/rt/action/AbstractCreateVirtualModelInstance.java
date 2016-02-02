@@ -140,23 +140,8 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
 
-		// We init the new VMI using a creation scheme
-		if (creationSchemeAction != null) {
-
-			System.out.println("We now execute " + creationSchemeAction);
-			System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
-
-			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
-			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
-			creationSchemeAction.doAction();
-			if (creationSchemeAction.getThrownException() != null) {
-				throw creationSchemeAction.getThrownException();
-			}
-
-		}
-
 		// If we do not escape model slot configuration, this is the right time to do it
-		else if (!escapeModelSlotConfiguration()) {
+		if (!escapeModelSlotConfiguration()) {
 			for (ModelSlot ms : virtualModel.getModelSlots()) {
 				// System.out.println("*** ModelSlot: " + ms);
 				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
@@ -170,6 +155,20 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 					throw new InvalidArgumentException("Wrong configuration for model slot " + configuration.getModelSlot()
 							+ " configuration=" + configuration);
 				}
+			}
+		}
+
+		// We init the new VMI using a creation scheme
+		if (creationSchemeAction != null) {
+
+			System.out.println("We now execute " + creationSchemeAction);
+			System.out.println("FML=" + creationSchemeAction.getCreationScheme().getFMLRepresentation());
+
+			creationSchemeAction.initWithFlexoConceptInstance(newVirtualModelInstance);
+			creationSchemeAction.setFocusedObject(newVirtualModelInstance);
+			creationSchemeAction.doAction();
+			if (creationSchemeAction.getThrownException() != null) {
+				throw creationSchemeAction.getThrownException();
 			}
 
 		}
