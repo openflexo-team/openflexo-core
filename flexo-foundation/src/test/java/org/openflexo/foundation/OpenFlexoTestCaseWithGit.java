@@ -23,6 +23,8 @@ import org.openflexo.toolbox.FileUtils;
  */
 public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase {
 	
+	private static File testResourceCenterDirectory2;
+	
 	protected static FlexoServiceManager instanciateTestServiceManager(final boolean generateCompoundTestResourceCenter) {
 		File previousResourceCenterDirectoryToRemove = null;
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
@@ -49,6 +51,11 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 					tempFile.delete();
 					testResourceCenterDirectory.mkdirs();
 
+					File tempFile2 = File.createTempFile("Temp", "");
+					testResourceCenterDirectory2 = new File(tempFile2.getParentFile(), tempFile2.getName() + "TestResourceCenter");
+					tempFile2.delete();
+					testResourceCenterDirectory2.mkdirs();
+					
 					System.out.println("Creating TestResourceCenter [compound: " + generateCompoundTestResourceCenter + "] "
 							+ testResourceCenterDirectory);
 					System.out.println("***************** WARNING WARNING WARNING ************************");
@@ -81,6 +88,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 //					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 					try {
 						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory,testResourceCenterDirectory));
+						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory2,testResourceCenterDirectory2));
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}

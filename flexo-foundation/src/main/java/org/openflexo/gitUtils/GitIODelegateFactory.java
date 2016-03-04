@@ -8,6 +8,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoIOGitDelegate;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -16,16 +17,18 @@ import org.openflexo.toolbox.FlexoVersion;
 public class GitIODelegateFactory implements IODelegateFactory<File> {
 	
 	@Override
-	public FlexoIODelegate<File> makeNewInstance(FlexoResource<?> resource) {
+	public FlexoIODelegate<File> makeIODelegateNewInstance(FlexoResource<?> resource,SerializationArtefactKind artefactType) {
 		ModelFactory factory;
 		FlexoIOGitDelegate gitIODelegate = null;
 		try {
 			factory = new ModelFactory(ModelContextLibrary
 					.getCompoundModelContext(FlexoIOGitDelegate.class));
 			gitIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
-			gitIODelegate.setGitObjectIds(new LinkedList<ObjectId>());
 			gitIODelegate.setGitCommitIds(new HashMap<FlexoVersion,ObjectId>());
-
+			if(artefactType.equals(SerializationArtefactKind.DIRECTORY)){
+				GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
+				gitIODelegate.setFile(new File(resourceCenter.getGitRepository().getWorkTree(), resource.getName()+artefactType.getDirectorySuffix()));				
+			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}

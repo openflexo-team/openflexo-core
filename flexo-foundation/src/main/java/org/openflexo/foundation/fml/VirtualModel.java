@@ -126,7 +126,32 @@ public interface VirtualModel extends AbstractVirtualModel<VirtualModel> {
 
 			return virtualModel;
 		}
+		
+		public static VirtualModel newGitVirtualModel(String baseName, ViewPoint viewPoint) throws SaveResourceException {
 
+			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource"));
+			File viewPointDirectory = ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource()).getDirectory());
+			// File virtualModelDirectory = new File(ResourceLocator.retrieveResourceAsFile(((ViewPointResource) viewPoint.getResource())
+			// .getDirectory()), baseName);
+			// if (!virtualModelDirectory.exists()) {
+			// virtualModelDirectory.mkdirs();
+			// }
+			// File diagramSpecificationXMLFile = new File(virtualModelDirectory, baseName + ".xml");
+			ViewPointLibrary viewPointLibrary = viewPoint.getViewPointLibrary();
+			VirtualModelResource vmRes = VirtualModelResourceImpl.makeGitVirtualModelResource(baseName, viewPointDirectory,
+					(ViewPointResource) viewPoint.getResource(), viewPointLibrary.getServiceManager());
+			Progress.progress(FlexoLocalization.localizedForKey("create_virtual_model_resource_data"));
+			VirtualModel virtualModel = vmRes.getFactory().newVirtualModel();
+			virtualModel.setViewPoint(viewPoint);
+			vmRes.setResourceData(virtualModel);
+			virtualModel.setResource(vmRes);
+			viewPoint.addToVirtualModels(virtualModel);
+			Progress.progress(FlexoLocalization.localizedForKey("save_virtual_model_resource"));
+			virtualModel.getResource().save(null);
+
+			return virtualModel;
+		}
+		
 		// Used during deserialization, do not use it
 		public VirtualModelImpl() {
 			super();

@@ -85,6 +85,7 @@ import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
+import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
@@ -140,32 +141,31 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 	public static ViewPointResource makeGitViewPointResource(String name, String uri, File workTree,
 			FlexoResourceCenter<?> resourceCenter, FlexoServiceManager serviceManager) throws IOException {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary
-					.getCompoundModelContext(FlexoIOGitDelegate.class, ViewPointResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FlexoIOGitDelegate.class, ViewPointResource.class));
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
 			returned.initName(name);
 			returned.setURI(uri);
 			returned.setVersion(new FlexoVersion("0.1"));
 			returned.setModelVersion(new FlexoVersion("1.0"));
-
-			GitResourceCenter gitResourceCenter = (GitResourceCenter) resourceCenter;
-			
-			
-			//Set the Git IO Flexo Delegate
-//			returned.setFlexoIODelegate(FlexoIOGitDelegateImpl.makeFlexoIOGitDelegate(name,factory,workTree,
-//					gitResourceCenter.getGitRepository()));
-			returned.setFlexoIODelegate(gitResourceCenter.getDelegateFactory().makeNewInstance(returned));
 			
 			returned.setResourceCenter(resourceCenter);
 
-			((FlexoIOGitDelegate)returned.getFlexoIODelegate()).createAndSaveIO(returned);
+			// Set the Git IO Flexo Delegate
+			// returned.setFlexoIODelegate(FlexoIOGitDelegateImpl.makeFlexoIOGitDelegate(name,factory,workTree,
+			// gitResourceCenter.getGitRepository()));
+			SerializationArtefactKind directory = SerializationArtefactKind.DIRECTORY;
+			directory.setDirectorySuffix(VIEWPOINT_SUFFIX);
+			directory.setCoreFileSuffix(CORE_FILE_SUFFIX);
+			returned.setFlexoIODelegate(resourceCenter.getDelegateFactory().makeIODelegateNewInstance(returned,
+					directory));
+			
 			// If ViewPointLibrary not initialized yet, we will do it later in
 			// ViewPointLibrary.initialize() method
 			if (serviceManager.getViewPointLibrary() != null) {
 				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
 			}
-
 			returned.setServiceManager(serviceManager);
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
@@ -1413,7 +1413,8 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 		}
 		return null;
 	}
-	public void gitSave(){
-		
+
+	public void gitSave() {
+
 	}
 }

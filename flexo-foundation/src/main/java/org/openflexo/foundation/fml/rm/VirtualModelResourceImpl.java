@@ -61,9 +61,11 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoIOGitDelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
@@ -102,7 +104,6 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 			returned.setServiceManager(serviceManager);
 			viewPointResource.addToContents(returned);
 			viewPointResource.notifyContentsAdded(returned);
-
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
@@ -114,6 +115,49 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		return null;
 	}
 
+	
+	public static VirtualModelResource makeGitVirtualModelResource(String name, File containerDir, ViewPointResource viewPointResource,
+			FlexoServiceManager serviceManager) {
+		try {
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FlexoIOGitDelegate.class, VirtualModelResource.class));
+			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
+			returned.initName(name);
+
+			
+			returned.setURI(viewPointResource.getURI() + "/" + name);
+			returned.setResourceCenter(viewPointResource.getResourceCenter());
+			
+			
+			SerializationArtefactKind directory = SerializationArtefactKind.DIRECTORY;
+			directory.setDirectorySuffix("");
+			directory.setCoreFileSuffix(CORE_FILE_SUFFIX);
+			returned.setFlexoIODelegate(viewPointResource.getResourceCenter().getDelegateFactory().makeIODelegateNewInstance(returned,
+					directory));
+			
+			/*DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
+			System.out.println("Nouveau VM");
+			System.out.println("containerDir=" + containerDir);
+			System.out.println("dir=" + delegate.getDirectory());
+			System.out.println("file=" + delegate.getFile());*/
+
+			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
+			
+			returned.setServiceManager(serviceManager);
+			viewPointResource.addToContents(returned);
+			viewPointResource.notifyContentsAdded(returned);
+			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
+			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+			returned.setFactory(new FMLModelFactory(returned, serviceManager));
+
+			return returned;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory/*, File virtualModelXMLFile*/,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {
@@ -165,7 +209,8 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		}
 		return null;
 	}
-
+	
+	
 	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
 			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
 		try {

@@ -2,6 +2,7 @@ package org.openflexo.gitUtils;
 
 import java.io.File;
 
+import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -12,7 +13,7 @@ import org.openflexo.model.factory.ModelFactory;
 public class FileIODelegateFactory implements IODelegateFactory<File> {
 
 	@Override
-	public FlexoIODelegate<File> makeNewInstance(FlexoResource<?> resource) {
+	public FlexoIODelegate<File> makeIODelegateNewInstance(FlexoResource<?> resource,SerializationArtefactKind artefactType) {
 		ModelFactory factory;
 		FileFlexoIODelegate fileIODelegate = null;
 		try {
