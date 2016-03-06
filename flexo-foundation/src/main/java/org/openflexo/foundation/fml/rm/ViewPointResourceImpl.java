@@ -77,14 +77,13 @@ import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.Directory
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoIOGitDelegate;
-import org.openflexo.foundation.resource.FlexoIOGitDelegate.FlexoIOGitDelegateImpl;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoXMLFileResourceImpl;
-import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.utils.XMLUtils;
+import org.openflexo.gitUtils.SerializationArtefactDirectory;
 import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -154,11 +153,14 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			// Set the Git IO Flexo Delegate
 			// returned.setFlexoIODelegate(FlexoIOGitDelegateImpl.makeFlexoIOGitDelegate(name,factory,workTree,
 			// gitResourceCenter.getGitRepository()));
-			SerializationArtefactKind directory = SerializationArtefactKind.DIRECTORY;
+			SerializationArtefactDirectory directory = new SerializationArtefactDirectory();
 			directory.setDirectorySuffix(VIEWPOINT_SUFFIX);
 			directory.setCoreFileSuffix(CORE_FILE_SUFFIX);
+			directory.setAbsolutePath(workTree.getAbsolutePath());
 			returned.setFlexoIODelegate(resourceCenter.getDelegateFactory().makeIODelegateNewInstance(returned,
 					directory));
+			
+			
 			
 			// If ViewPointLibrary not initialized yet, we will do it later in
 			// ViewPointLibrary.initialize() method
@@ -167,6 +169,10 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 				serviceManager.getViewPointLibrary().registerViewPoint(returned);
 			}
 			returned.setServiceManager(serviceManager);
+			
+			//In the FMLModelFactory, we need to have a file in the IO Delegate. To Avoid nullpointer we put something in the file
+			((FileFlexoIODelegate)returned.getFlexoIODelegate()).setFile(new File(workTree, returned.getName()+CORE_FILE_SUFFIX));
+			/////////////////////////////////////////
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;

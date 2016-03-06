@@ -18,7 +18,7 @@ import org.openflexo.toolbox.FileUtils;
 
 /**
  * Provide a git environment for tests cases
- * @author Arkantea
+ * @author kvermeul
  *
  */
 public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase {
@@ -87,8 +87,8 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 //							resourceCenter = new DirectoryResourceCenter(testResourceCenterDirectory, TEST_RESOURCE_CENTER_URI));
 //					System.out.println("Copied TestResourceCenter to " + testResourceCenterDirectory);
 					try {
-						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory,testResourceCenterDirectory));
-						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory2,testResourceCenterDirectory2));
+						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory));
+						rcService.addToResourceCenters(new GitResourceCenter(testResourceCenterDirectory2));
 					} catch (IllegalStateException | GitAPIException e) {
 						e.printStackTrace();
 					}

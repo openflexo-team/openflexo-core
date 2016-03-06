@@ -12,6 +12,8 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.FileTreeIterator;
+import org.openflexo.gitUtils.SerializationArtefactDirectory;
+import org.openflexo.gitUtils.SerializationArtefactFile;
 import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
@@ -39,6 +41,16 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 	
 	public Git getGit();
 
+	public SerializationArtefactKind getSerializationArtefactKind();
+
+	public boolean isSerialized();
+	
+	public void setSerializationArtefactKind(SerializationArtefactKind serializationArtefactKind);
+	
+	public File getResourceVersionFile();
+
+	public void setResourceVersionFile(File resourceVersionFile);
+	
 	/**
 	 * Create a file in the working tree of the repository and commit it
 	 * @param resource
@@ -58,57 +70,53 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 	@Implementation
 	public abstract class FlexoIOGitDelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FlexoIOGitDelegate {
 
+		
+		private boolean isSerialized;
 		private File file;
 		private File resourceVersionFile;
+		
+
 		private Map<FlexoVersion, ObjectId> gitCommitIds;
 		private File directory;
 		
+		private SerializationArtefactKind serializationArtefactKind;
 		
-		@Override
-		public void createAndSaveIO(FlexoResource<?> resource, SerializationArtefactKind artefactType) {
-			GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
-			Repository repository = resourceCenter.getGitRepository();
-			// Create the file on the disk in the workTree of the Git Repository
-			
-			String directoryPath = artefactType.getPath();
-			File pathFile = null;
-			if( directoryPath==null){
-				pathFile = repository.getWorkTree();
-			}
-			else{
-				pathFile = new File(directoryPath);
-			}
-			
-			if(artefactType.equals(SerializationArtefactKind.FILE)){				
-				setFile(new File(pathFile, resource.getName()));
-				try {
-					getFile().createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			else if(artefactType.equals(SerializationArtefactKind.DIRECTORY)){
-				String directorySuffix = artefactType.getDirectorySuffix();
-				String coreFileSuffix = artefactType.getCoreFileSuffix();
-				
-				
-				setDirectory(new File(pathFile, resource.getName()+directorySuffix));
-				getDirectory().mkdir();
-				setFile(new File(getDirectory(), resource.getName()+coreFileSuffix));
-				try {
-					getFile().createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			save(resource);
-		}
 
 		@Override
 		public void save(FlexoResource<?> resource) {
+
 			GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
 			Repository repository = resourceCenter.getGitRepository();
-
+			
+			//Create the file linked with the resource if the file does not exist
+			if(!isSerialized){				
+				
+				if(serializationArtefactKind instanceof SerializationArtefactFile ){				
+					setFile(new File(((SerializationArtefactFile) serializationArtefactKind).getAbsolutePath()));
+					try {
+						getFile().createNewFile();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				else if(serializationArtefactKind instanceof SerializationArtefactDirectory){
+					SerializationArtefactDirectory sad = (SerializationArtefactDirectory) serializationArtefactKind;
+					String directorySuffix = sad.getDirectorySuffix();
+					String coreFileSuffix = sad.getCoreFileSuffix();
+					
+					
+					setDirectory(new File(sad.getAbsolutePath(), resource.getName()+directorySuffix));
+					getDirectory().mkdir();
+					setFile(new File(getDirectory(), resource.getName()+coreFileSuffix));
+					try {
+						getFile().createNewFile();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				isSerialized = true;
+			}
+			
 			// Commit the ressource in the repo
 			Git git = new Git(repository);
 			try {
@@ -125,9 +133,17 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 
 		public void writeVersion(FlexoResource<?> resource, ObjectId id) throws IOException{
 			if(resourceVersionFile==null){
-				resourceVersionFile = new File(((GitResourceCenter)resource.getResourceCenter()).getGitRepository().getWorkTree(),resource.getName()+".version");
-				resourceVersionFile.createNewFile();
-				System.out.println("Absolute Path : "+ resourceVersionFile.getAbsolutePath());
+				if(serializationArtefactKind instanceof SerializationArtefactFile  ){
+					SerializationArtefactFile saf = (SerializationArtefactFile) serializationArtefactKind;
+					resourceVersionFile = new File(saf.getAbsolutePath()+".version");
+					resourceVersionFile.createNewFile();					
+				}
+				else if(serializationArtefactKind instanceof SerializationArtefactDirectory ){
+					SerializationArtefactDirectory sad = (SerializationArtefactDirectory) serializationArtefactKind;
+					resourceVersionFile = new File(sad.getAbsolutePath()+".version");
+					resourceVersionFile.createNewFile();
+				}
+				System.out.println("Absolute Path version File: "+ resourceVersionFile.getAbsolutePath());
 			}
 			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(resourceVersionFile.getAbsolutePath(),true)));
 			writer.println(resource.getVersion()+","+id.getName());
@@ -135,13 +151,6 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 			writer.close();
 		}
 		
-		public void setVersion(FlexoResource<?> resource){
-			Repository gitRepository = ((GitResourceCenter) resource.getResourceCenter()).getGitRepository();
-			FileTreeIterator iter = new FileTreeIterator(gitRepository);
-			while (!iter.eof()){
-				
-			}
-		}
 		
 		public void setDirectory(File directory){
 			this.directory = directory;
@@ -172,6 +181,24 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 			this.gitCommitIds = gitCommitIds;
 		}
 
+		public SerializationArtefactKind getSerializationArtefactKind() {
+			return serializationArtefactKind;
+		}
+
+		public void setSerializationArtefactKind(SerializationArtefactKind serializationArtefactKind) {
+			this.serializationArtefactKind = serializationArtefactKind;
+		}
+
+		public boolean isSerialized() {
+			return isSerialized;
+		}
+		public File getResourceVersionFile() {
+			return resourceVersionFile;
+		}
+
+		public void setResourceVersionFile(File resourceVersionFile) {
+			this.resourceVersionFile = resourceVersionFile;
+		}
 	}
 
 }

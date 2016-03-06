@@ -60,12 +60,13 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
 import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoIOGitDelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate;
 import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.gitUtils.SerializationArtefactKind;
+import org.openflexo.gitUtils.SerializationArtefactDirectory;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.AccessibleProxyObject;
@@ -129,9 +130,10 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 			returned.setResourceCenter(viewPointResource.getResourceCenter());
 			
 			
-			SerializationArtefactKind directory = SerializationArtefactKind.DIRECTORY;
+			SerializationArtefactDirectory directory = new SerializationArtefactDirectory();
 			directory.setDirectorySuffix("");
 			directory.setCoreFileSuffix(CORE_FILE_SUFFIX);
+			directory.setAbsolutePath(containerDir.getAbsolutePath());
 			returned.setFlexoIODelegate(viewPointResource.getResourceCenter().getDelegateFactory().makeIODelegateNewInstance(returned,
 					directory));
 			
@@ -148,6 +150,10 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 			viewPointResource.notifyContentsAdded(returned);
 			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
 			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
+			
+			
+			//Same hack for the vm, please see the viewpoint
+			((FileFlexoIODelegate)returned.getFlexoIODelegate()).setFile(new File(containerDir, returned.getName()+CORE_FILE_SUFFIX));
 			returned.setFactory(new FMLModelFactory(returned, serviceManager));
 
 			return returned;

@@ -99,12 +99,25 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	 */
 	@Override
 	public final void save(IProgress progress) throws SaveResourceException {
+		
+		/*
+		 * hack to bind the Git IO delegate only
+		 */
+		if(getFlexoIODelegate() instanceof FlexoIOGitDelegate){
+			FlexoIOGitDelegate gitDelegate  = (FlexoIOGitDelegate) getFlexoIODelegate();
+			gitDelegate.save(this);
+			return;
+		}
+		
 		if (progress != null) {
 			progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + this.getName());
 		}
 		if (!isLoaded()) {
 			return;
 		}
+		
+		
+		
 		if (!isDeleted()) {
 			saveResourceData(true);
 			resourceData.clearIsModified(false);

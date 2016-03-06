@@ -40,9 +40,12 @@ package org.openflexo.view.controller;
 
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.openflexo.fib.AskResourceCenterDirectory;
+import org.openflexo.fib.AskResourceCenterGit;
 import org.openflexo.fib.FIBLibrary;
 import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
@@ -50,6 +53,7 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.AddResourceCenterTask;
 import org.openflexo.rm.RefreshResourceCenterTask;
@@ -108,7 +112,24 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		}
 	}
 
-	public void removeResourceCenter(FlexoResourceCenter rc) {
+	public void addGitResourceCenter(){
+		FIBComponent askRCGitComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterGit.FIB_FILE);
+		AskResourceCenterGit askGit = new AskResourceCenterGit();
+		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(askRCGitComponent, askGit, FlexoFrame.getActiveFrame(), true,
+				FlexoLocalization.getMainLocalizer());
+		if (dialog.getStatus() == Status.VALIDATED) {
+			GitResourceCenter newRC = null;
+			try {
+				newRC = new GitResourceCenter(askGit.getLocalResourceDirectory());
+			} catch (IllegalStateException | IOException | GitAPIException e) {
+				e.printStackTrace();
+			}
+			AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
+			rcService.getServiceManager().getTaskManager().scheduleExecution(task);
+		}
+	}
+	
+	public void removeResourceCenter(FlexoResourceCenter<?> rc) {
 		logger.info("removeResourceCenter " + rc);
 		// if (rc instanceof DirectoryResourceCenter) {
 		RemoveResourceCenterTask task = new RemoveResourceCenterTask(getRcService(), rc);
@@ -119,7 +140,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		// }
 	}
 
-	public void refreshResourceCenter(FlexoResourceCenter rc) {
+	public void refreshResourceCenter(FlexoResourceCenter<?> rc) {
 		if (rc != null) {
 			logger.info("refreshResourceCenter " + rc);
 			RefreshResourceCenterTask task = new RefreshResourceCenterTask(getRcService(), rc);

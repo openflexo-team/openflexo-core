@@ -1491,4 +1491,10 @@ public class FlexoProject extends FileSystemBasedResourceCenter
 		logger.warning("TODO: implement this");
 	}
 
+	@Override
+	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

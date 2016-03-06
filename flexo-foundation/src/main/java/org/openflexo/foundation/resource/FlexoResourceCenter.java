@@ -277,6 +277,15 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, FlexoObject {
 	 */
 	public String getDefaultResourceURI(FlexoResource<?> resource);
 	
-	
+	/**
+	 * Get the IO delegate Factory used to create some IO Delegate
+	 * @return
+	 */
 	public IODelegateFactory<I> getDelegateFactory();
+	
+	/**
+	 * Find the versions of the resource and put it in the IO Delegate
+	 * @param resource
+	 */
+	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource);
 }

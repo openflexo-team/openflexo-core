@@ -150,4 +150,10 @@ public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 	public boolean isDeleted() {
 		return false;
 	}
+
+	@Override
+	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource) {
+		// TODO Auto-generated method stub
+		
+	}
 }

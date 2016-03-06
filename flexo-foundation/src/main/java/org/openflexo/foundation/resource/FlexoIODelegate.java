@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.resource;
 
-import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -129,9 +128,4 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * @param resource
 	 */
 	public void save(FlexoResource<?> resource) ;
-	/**
-	 * Make the resource persistent. Differs according to the implementation
-	 * @param resource
-	 */
-	public void createAndSaveIO(FlexoResource<?> resource, SerializationArtefactKind artefactType);
 }

@@ -397,4 +397,10 @@ public class JarResourceCenter<R extends FlexoResource<?>> extends ResourceRepos
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -2,6 +2,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -42,15 +44,16 @@ import org.openflexo.gitUtils.GitIODelegateFactory;
 import org.openflexo.gitUtils.GitSaveStrategy;
 import org.openflexo.gitUtils.GitSaveStrategy.GitSaveStrategyBuilder;
 import org.openflexo.gitUtils.GitVersion;
-import org.openflexo.gitUtils.SerializationArtefactKind;
+import org.openflexo.gitUtils.SerializationArtefactFile;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
 import com.google.common.collect.Lists;
 
-
 /**
- * Resource center using and manipulating flexo resources that have a git IO delegate 
+ * Resource center using and manipulating flexo resources that have a git IO
+ * delegate
+ * 
  * @author kvermeul
  *
  */
@@ -64,13 +67,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	private Repository gitRepository;
 
 	private List<GitFile> cache = new ArrayList<>();
-	
-	
 
-
-	public GitResourceCenter(File resourceCenterDirectory, File gitRepository)
-			throws IllegalStateException, IOException, GitAPIException {
-		super(resourceCenterDirectory);
+	public GitResourceCenter(File gitRepository) throws IllegalStateException, IOException, GitAPIException {
+		super(gitRepository);
 		initializeRepositoryGit(gitRepository);
 		setDelegateFactory(new GitIODelegateFactory());
 	}
@@ -103,8 +102,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	public void setGitRepository(Repository gitRepository) {
 		this.gitRepository = gitRepository;
 	}
-	
-	
+
 	public List<GitFile> getCache() {
 		return cache;
 	}
@@ -112,8 +110,10 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	public void setCache(List<GitFile> cache) {
 		this.cache = cache;
 	}
+
 	/**
 	 * Clone a remote git repository in local
+	 * 
 	 * @param whereToclone
 	 * @param uri
 	 * @throws InvalidRemoteException
@@ -126,9 +126,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		Git.cloneRepository().setBranch("master").setURI(uri).setGitDir(whereToclone).call();
 	}
 
-	
 	/**
 	 * Initialize the git repo linked with this resource center
+	 * 
 	 * @param gitFile
 	 * @throws IOException
 	 * @throws IllegalStateException
@@ -157,6 +157,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	/**
 	 * Checkout the old different versions asked of the resources
+	 * 
 	 * @deprecated
 	 * 
 	 * @throws GitAPIException
@@ -195,7 +196,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	/**
-	 * Synchronizes git reposiory with the wanted (resource, version) in the workspace
+	 * Synchronizes git reposiory with the wanted (resource, version) in the
+	 * workspace
+	 * 
 	 * @param mapResourceVersion
 	 * @param newBranchName
 	 * @return
@@ -215,25 +218,38 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 		// First retrieve the files matching the resources in the working tree
 		// repository
-		List<String> resourcesNames = new ArrayList<>();
+		List<String> resourcesPaths = new ArrayList<>();
 		for (FlexoResource<?> resource : mapResourceVersion.keySet()) {
-			resourcesNames.add(resource.getName());
-			resourcesNames.add(resource.getName() + ".version");
+			String absolutePath = ((FlexoIOGitDelegate)resource.getFlexoIODelegate()).getFile().getAbsolutePath();
+			String relativePath = StringUtils.substringAfter(absolutePath, gitRepository.getWorkTree().getAbsolutePath()+"/");
+			resourcesPaths.add(absolutePath);
+			resourcesPaths.add(absolutePath + ".version");
 		}
-		FileTreeIterator iter = new FileTreeIterator(gitRepository);
+		List<File> filesFound = new  ArrayList<>();
+		
+		iterateOverWorkingDirectory(gitRepository.getWorkTree(), filesFound,resourcesPaths);
+//			if (resourcesPaths.contains(iter.getEntryFile().getName())) {
+//				if (iter.getEntryFile().getPath().endsWith(".version")) {
+//					values.add(iter.getEntryFile());
+//				} else {
+//					keys.add(iter.getEntryFile());
+//				}
+//			}
+
 		List<File> keys = new ArrayList<>();
 		List<File> values = new ArrayList<>();
-		while (!iter.eof()) {
-			if (resourcesNames.contains(iter.getEntryFile().getName())) {
-				if (iter.getEntryFile().getPath().endsWith(".version")) {
-					values.add(iter.getEntryFile());
-				} else {
-					keys.add(iter.getEntryFile());
-				}
+		
+ 		for (File file : filesFound) {
+			if(file.getAbsolutePath().endsWith(".version")){
+				values.add(file);
 			}
-			iter.next(1);
-		}
+			else{
+				keys.add(file);
 
+			}
+		}
+		
+		
 		Map<FlexoResource<?>, GitVersion> returned = new HashMap<FlexoResource<?>, GitVersion>();
 		Map<FlexoResource<?>, ObjectId> commitMap = new HashMap<FlexoResource<?>, ObjectId>();
 		// Then put the version we get in this repository thanks to the .version
@@ -260,7 +276,8 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 				if (resource.getName().equals(resourceName)) {
 					for (FlexoVersion version : versionsInRepo.keySet()) {
 						if (version.equals(mapResourceVersion.get(resource))) {
-							GitVersion versionToReturn = new GitVersion(mapResourceVersion.get(resource),gitRepository);
+							GitVersion versionToReturn = new GitVersion(mapResourceVersion.get(resource),
+									gitRepository);
 							returned.put(resource, versionToReturn);
 							commitMap.put(resource, versionsInRepo.get(version));
 							break;
@@ -275,17 +292,72 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		return returned;
 
 	}
-	
+
 	/**
-	 * load resource from a git repository and set the io delegate with the good versions
+	 * Load and fill the IO delegate of a resource with the good versions that
+	 * are available in the git repository
+	 * 
+	 * @param resource
+	 */
+
+	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource) {
+		FileTreeIterator iter = new FileTreeIterator(gitRepository);
+		FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) resource.getFlexoIODelegate();
+		File resourceFile = gitDelegate.getFile();
+		File versionFile = null;
+		while (!iter.eof()) {
+			if (iter.getEntryFile().getName().equals(resourceFile.getName() + ".version")) {
+				versionFile = iter.getEntryFile();
+			}
+			try {
+				iter.next(1);
+			} catch (CorruptObjectException e) {
+				e.printStackTrace();
+			}
+		}
+		BufferedReader stream = null;
+		if(versionFile!=null){
+			try {
+				stream = new BufferedReader(new FileReader(versionFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String content = null;
+			try {
+				while ((content = stream.readLine()) != null) {
+					String[] split = content.split(",");
+					// split 0 is version, split 1 id of commit
+					FlexoVersion versionInFile = new FlexoVersion(split[0]);
+					ObjectId commitId = ObjectId.fromString(split[1]);
+					gitDelegate.getGitCommitIds().put(versionInFile, commitId);
+					resource.setVersion(versionInFile);
+				}
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		else{
+			FlexoVersion firstVersionInThisRepo = new FlexoVersion("0.1");
+			resource.setVersion(firstVersionInThisRepo);
+		}
+
+	}
+
+	/**
+	 * load resource from a git repository and set the io delegate with the good
+	 * versions
+	 * 
 	 * @param gitRepository
 	 * @throws IOException
 	 */
-	public void initializeResources(Repository gitRepository) throws IOException{
+	public void initializeResources(Repository gitRepository) throws IOException {
 		FileTreeIterator iter = new FileTreeIterator(gitRepository);
 		List<FlexoResource<?>> resourcesFoundInRepo = new ArrayList<>();
 		List<File> versionsFiles = new ArrayList<>();
-		while(!iter.eof()){	
+		while (!iter.eof()) {
 			List<TechnologyAdapter> ta = getTechnologyAdapterService().getTechnologyAdapters();
 			for (TechnologyAdapter technologyAdapter : ta) {
 				FlexoResource<?> resource = technologyAdapter.tryToLookUp(this, iter.getEntryFile());
@@ -299,9 +371,10 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		}
 		for (FlexoResource<?> resource : resourcesFoundInRepo) {
 			GitIODelegateFactory factory = new GitIODelegateFactory();
-			FlexoIOGitDelegate  gitDelegate= (FlexoIOGitDelegate) factory.makeIODelegateNewInstance(resource,SerializationArtefactKind.FILE);
+			FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) factory.makeIODelegateNewInstance(resource,
+					new SerializationArtefactFile());
 			for (File file : versionsFiles) {
-				if(file.getName().equals(resource.getName()+".version")){					
+				if (file.getName().equals(resource.getName() + ".version")) {
 					BufferedReader stream = new BufferedReader(new FileReader(file));
 					String content = null;
 					while ((content = stream.readLine()) != null) {
@@ -317,8 +390,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			}
 			resource.setFlexoIODelegate(gitDelegate);
 		}
-		
+
 	}
+
 	public void loadFlexoEnvironment(Repository gitRepository) throws NoHeadException, GitAPIException, IOException {
 
 		FileTreeIterator iter = new FileTreeIterator(gitRepository);
@@ -373,7 +447,6 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		setGitRepository(gitRepository);
 	}
 
-	
 	/**
 	 * Push the local cloned repository to the remote repository
 	 */
@@ -399,15 +472,17 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	}
 
 	/**
-	 * Retrieve a certain version of a resource and put in the cache of the resource center
+	 * Retrieve a certain version of a resource and put in the cache of the
+	 * resource center
+	 * 
 	 * @param resourceName
 	 * @param version
 	 */
-	
-	public void putVersionInCache(String resourceName, FlexoVersion version){
-		Map<FlexoResource<?>,FlexoVersion> resourceFoundInGitResourceCenter = new HashMap<>();
+
+	public void putVersionInCache(String resourceName, FlexoVersion version) {
+		Map<FlexoResource<?>, FlexoVersion> resourceFoundInGitResourceCenter = new HashMap<>();
 		for (FlexoResource<?> resource : this.getAllResources()) {
-			if (resourceName.equals(resource.getName())){
+			if (resourceName.equals(resource.getName())) {
 				resourceFoundInGitResourceCenter.put(resource, version);
 			}
 		}
@@ -417,9 +492,9 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			e.printStackTrace();
 		}
 		FileTreeIterator iter = new FileTreeIterator(gitRepository);
-		while(!iter.eof()){
-			if(iter.getEntryFile().getName().equals(resourceName)){
-				cache.add(new GitFile(version,iter.getEntryFile()));
+		while (!iter.eof()) {
+			if (iter.getEntryFile().getName().equals(resourceName)) {
+				cache.add(new GitFile(version, iter.getEntryFile()));
 			}
 			try {
 				iter.next(1);
@@ -427,8 +502,23 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
+
+	public void iterateOverWorkingDirectory(File aFile,List<File> filesFound,List<String> pathsToFind){
+		if(aFile.isDirectory()&&!(aFile.getAbsolutePath().endsWith(".git"))){
+			List<File> children = Lists.newArrayList(aFile.listFiles());
+			for (File child : children) {
+				iterateOverWorkingDirectory(child, filesFound,pathsToFind);
+			}
+		}
+		else{
+			if(pathsToFind.contains(aFile.getAbsolutePath())){				
+				filesFound.add(aFile);			
+			}
+		}
+	}
+	
 	
 	@Override
 	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress)
@@ -444,8 +534,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	@Override
 	public String getDefaultBaseURI() {
-		// TODO Auto-generated method stub
-		return null;
+		return gitRepository.getWorkTree().getAbsolutePath();
 	}
 
 	@Override

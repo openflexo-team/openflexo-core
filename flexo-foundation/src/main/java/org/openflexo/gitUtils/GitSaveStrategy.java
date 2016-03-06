@@ -79,7 +79,9 @@ public class GitSaveStrategy {
 				try {
 
 					for (FlexoResource<?> flexoResource : resources) {
-						String pathName =((FlexoIOGitDelegate) flexoResource.getFlexoIODelegate()).getFile().getName();
+						String pathName =((FlexoIOGitDelegate) flexoResource.getFlexoIODelegate()).getFile().getAbsolutePath();
+						String realtivePath = StringUtils.substringAfter(pathName, repository.getWorkTree().getAbsolutePath()+"/");
+
 
 						RevCommit commit = git.commit().setMessage("Resource " + pathName + " committed")
 								.call();
@@ -93,7 +95,7 @@ public class GitSaveStrategy {
 						List<DiffEntry> diffs = git.diff().setOldTree(oldTree).setNewTree(newTree).call();
 						boolean changed = false;
 						for (DiffEntry diffEntry : diffs) {
-							if (diffEntry.getNewPath().contains(pathName)) {
+							if (realtivePath.equals(diffEntry.getNewPath())) {
 								changed = true;
 								break;
 							}
@@ -109,7 +111,7 @@ public class GitSaveStrategy {
 							gitDelegate.getGitCommitIds().put(flexoResource.getVersion(), commit.getId());
 							gitDelegate.writeVersion(flexoResource, commit.getId());
 							//Commit the version file
-							git.add().addFilepattern(pathName+".version").call();
+							git.add().addFilepattern(realtivePath+".version").call();
 							git.commit().setMessage("Update of the version file "+pathName);
 						}
 					}

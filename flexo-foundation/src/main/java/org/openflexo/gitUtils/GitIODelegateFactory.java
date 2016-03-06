@@ -25,10 +25,7 @@ public class GitIODelegateFactory implements IODelegateFactory<File> {
 					.getCompoundModelContext(FlexoIOGitDelegate.class));
 			gitIODelegate = factory.newInstance(FlexoIOGitDelegate.class);
 			gitIODelegate.setGitCommitIds(new HashMap<FlexoVersion,ObjectId>());
-			if(artefactType.equals(SerializationArtefactKind.DIRECTORY)){
-				GitResourceCenter resourceCenter = (GitResourceCenter) resource.getResourceCenter();
-				gitIODelegate.setFile(new File(resourceCenter.getGitRepository().getWorkTree(), resource.getName()+artefactType.getDirectorySuffix()));				
-			}
+			gitIODelegate.setSerializationArtefactKind(artefactType);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
