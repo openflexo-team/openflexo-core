@@ -145,7 +145,6 @@ public abstract class ViewPointResourceImpl extends AbstractVirtualModelResource
 			ViewPointResourceImpl returned = (ViewPointResourceImpl) factory.newInstance(ViewPointResource.class);
 			returned.initName(name);
 			returned.setURI(uri);
-			returned.setVersion(new FlexoVersion("0.1"));
 			returned.setModelVersion(new FlexoVersion("1.0"));
 			
 			returned.setResourceCenter(resourceCenter);

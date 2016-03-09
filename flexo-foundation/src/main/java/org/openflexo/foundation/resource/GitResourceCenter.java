@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +27,6 @@ import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
@@ -68,6 +68,8 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	private List<GitFile> cache = new ArrayList<>();
 
+	private File cacheDirectory;
+	
 	public GitResourceCenter(File gitRepository) throws IllegalStateException, IOException, GitAPIException {
 		super(gitRepository);
 		initializeRepositoryGit(gitRepository);
@@ -195,6 +197,21 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		gitCheckoutPick.checkoutPickOperation(gitRepository, commitMap, newBranchName);
 	}
 
+	public  Map<FlexoResource<?>, GitVersion> checkoutVersion(FlexoVersion version, FlexoResource<?> resource){
+		
+		Map<FlexoResource<?>, FlexoVersion> mapToSend = new HashMap<>();
+		
+		mapToSend.put(resource,version);
+		try {
+			return checkoutPick(mapToSend, null);
+		} catch (GitAPIException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	/**
 	 * Synchronizes git reposiory with the wanted (resource, version) in the
 	 * workspace
@@ -280,6 +297,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 									gitRepository);
 							returned.put(resource, versionToReturn);
 							commitMap.put(resource, versionsInRepo.get(version));
+							resource.setVersion(mapResourceVersion.get(resource));
 							break;
 						}
 					}
@@ -288,7 +306,7 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		}
 		// Finally call the checkout to synchronize git repository
 		gitCheckoutPick.checkoutPickOperation(gitRepository, commitMap, newBranchName);
-
+		
 		return returned;
 
 	}
@@ -301,22 +319,11 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	 */
 
 	public void retrieveVersionsAndFillIODelegate(FlexoResource<?> resource) {
-		FileTreeIterator iter = new FileTreeIterator(gitRepository);
 		FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) resource.getFlexoIODelegate();
 		File resourceFile = gitDelegate.getFile();
-		File versionFile = null;
-		while (!iter.eof()) {
-			if (iter.getEntryFile().getName().equals(resourceFile.getName() + ".version")) {
-				versionFile = iter.getEntryFile();
-			}
-			try {
-				iter.next(1);
-			} catch (CorruptObjectException e) {
-				e.printStackTrace();
-			}
-		}
+		File versionFile = new File(resourceFile.getAbsolutePath()+".version");
 		BufferedReader stream = null;
-		if(versionFile!=null){
+		if(versionFile!=null&&versionFile.exists()){
 			try {
 				stream = new BufferedReader(new FileReader(versionFile));
 			} catch (FileNotFoundException e) {
@@ -338,10 +345,6 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 				e.printStackTrace();
 			}
 			
-		}
-		else{
-			FlexoVersion firstVersionInThisRepo = new FlexoVersion("0.1");
-			resource.setVersion(firstVersionInThisRepo);
 		}
 
 	}
@@ -393,6 +396,15 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 
 	}
 
+	
+	/**
+	 * Load resources and retrieve their version by looking at git logs. 
+	 * To use if the .version File of the resource has been lost 
+	 * @param gitRepository
+	 * @throws NoHeadException
+	 * @throws GitAPIException
+	 * @throws IOException
+	 */
 	public void loadFlexoEnvironment(Repository gitRepository) throws NoHeadException, GitAPIException, IOException {
 
 		FileTreeIterator iter = new FileTreeIterator(gitRepository);
@@ -480,9 +492,15 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 	 */
 
 	public void putVersionInCache(String resourceName, FlexoVersion version) {
+		if (cacheDirectory==null){
+			cacheDirectory = new File(gitRepository.getWorkTree(),".cache");
+			cacheDirectory.mkdir();
+		}
 		Map<FlexoResource<?>, FlexoVersion> resourceFoundInGitResourceCenter = new HashMap<>();
+		FlexoResource<?> resourceToCache = null;
 		for (FlexoResource<?> resource : this.getAllResources()) {
 			if (resourceName.equals(resource.getName())) {
+				resourceToCache = resource;
 				resourceFoundInGitResourceCenter.put(resource, version);
 			}
 		}
@@ -491,20 +509,35 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 		} catch (GitAPIException | IOException e) {
 			e.printStackTrace();
 		}
-		FileTreeIterator iter = new FileTreeIterator(gitRepository);
-		while (!iter.eof()) {
-			if (iter.getEntryFile().getName().equals(resourceName)) {
-				cache.add(new GitFile(version, iter.getEntryFile()));
-			}
-			try {
-				iter.next(1);
-			} catch (CorruptObjectException e) {
-				e.printStackTrace();
-			}
+		FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) resourceToCache.getFlexoIODelegate(); 
+		File toAddInCache = new File(gitDelegate.getFile().getAbsolutePath());
+		String relativePath = StringUtils.substringAfter(gitDelegate.getFile().getAbsolutePath(), gitRepository.getWorkTree().getAbsolutePath()+"/");
+		File target = new File(cacheDirectory, relativePath+version.toString()+".docx");
+		try {
+			Files.copy(toAddInCache.toPath(), target.toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
+		cache.add(new GitFile(version, toAddInCache));
+		
 	}
 
+	
+	/**
+	 * Clear the cache
+	 */
+	public void clearCache(){
+		//TODO Delete the .cache repository
+		cache.clear();
+		
+	}
+	
+	/**
+	 * Find the corresponding paths in the git repository
+	 * @param aFile
+	 * @param filesFound
+	 * @param pathsToFind
+	 */
 	public void iterateOverWorkingDirectory(File aFile,List<File> filesFound,List<String> pathsToFind){
 		if(aFile.isDirectory()&&!(aFile.getAbsolutePath().endsWith(".git"))){
 			List<File> children = Lists.newArrayList(aFile.listFiles());
@@ -518,7 +551,6 @@ public class GitResourceCenter extends FileSystemBasedResourceCenter {
 			}
 		}
 	}
-	
 	
 	@Override
 	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress)

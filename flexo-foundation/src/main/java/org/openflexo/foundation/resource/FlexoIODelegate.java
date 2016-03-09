@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.resource;
 
+import java.util.List;
+
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -45,6 +47,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.toolbox.FlexoVersion;
 
 /**
  * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
@@ -128,4 +131,12 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 * @param resource
 	 */
 	public void save(FlexoResource<?> resource) ;
+	
+	/**
+	 * Get the availables versions for a resource
+	 * @return
+	 */
+	public List<FlexoVersion> getAvailableVersions();
+
+
 }

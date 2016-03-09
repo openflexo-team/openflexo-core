@@ -448,4 +448,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	public boolean isDeleting();
 	// public Date getLastUpdate();
+	
+	
+	/**
+	 * Get the list of the available versions for a resource
+	 * @return
+	 */
+	public List<FlexoVersion> getAvailableVersions();
+	
 }

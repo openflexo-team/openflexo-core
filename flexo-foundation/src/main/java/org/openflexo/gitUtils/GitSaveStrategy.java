@@ -101,13 +101,13 @@ public class GitSaveStrategy {
 							}
 						}
 						if (changed) {
-							if (flexoResource.getVersion() == null) {
+							FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) flexoResource.getFlexoIODelegate();
+							if (flexoResource.getVersion() == null ) {
 								flexoResource.setVersion(new FlexoVersion("0.1"));
 							} else {
 								flexoResource.setVersion(
-										FlexoVersion.versionByIncrementing(flexoResource.getVersion(), 0, 1, 0));
+										FlexoVersion.versionByIncrementing(gitDelegate.getHighestVersion(), 0, 1, 0));
 							}
-							FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) flexoResource.getFlexoIODelegate();
 							gitDelegate.getGitCommitIds().put(flexoResource.getVersion(), commit.getId());
 							gitDelegate.writeVersion(flexoResource, commit.getId());
 							//Commit the version file

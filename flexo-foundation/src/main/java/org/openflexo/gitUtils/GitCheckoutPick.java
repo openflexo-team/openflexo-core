@@ -3,6 +3,7 @@ package org.openflexo.gitUtils;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -21,7 +22,10 @@ public class GitCheckoutPick {
 	public void checkoutPickOperation(Repository gitRepository, Map<FlexoResource<?>,ObjectId> commits,String newBranchName) throws RefAlreadyExistsException, RefNotFoundException, InvalidRefNameException, CheckoutConflictException, GitAPIException, MissingObjectException, IncorrectObjectTypeException, IOException{
 		Git git = new Git(gitRepository);
 		for (FlexoResource<?> resource : commits.keySet()) {
-			git.checkout().setStartPoint(commits.get(resource).getName()).addPath(resource.getName()).call();			
+			FlexoIOGitDelegate gitDelegate = (FlexoIOGitDelegate) resource.getFlexoIODelegate();
+			String relativePath = StringUtils.substringAfter(gitDelegate.getFile().getAbsolutePath(), gitRepository.getWorkTree().getAbsolutePath()+"/");
+
+			git.checkout().setStartPoint(commits.get(resource).getName()).addPath(relativePath).call();			
 		}
 		git.close();
 	}

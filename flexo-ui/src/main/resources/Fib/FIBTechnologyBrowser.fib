@@ -32,14 +32,20 @@
 				name="subFolders" />
 			<Children data="folder.resources" visible="" cast=""
 				name="resource" />
+			<BrowserCustomAction method="selected.toString()" name="hello1" />
+			<BrowserAddAction method="selected.toString()" name="new_method" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource"
-			label="resource.name" icon="controller.iconForObject(resource)"
+			label="resource.name+' ['+resource.version.toString()+']'" icon="controller.iconForObject(resource)"
 			tooltip="" enabled="resource.isLoaded" visible="!(resource.isDeleted)"
 			isEditable="false" editableLabel="" filtered="false" defaultVisible="true"
 			dynamicFont="" name="resource">
 			<Children data="resource.contents" visible="resource.isLoaded" cast="" name="subResources" />
+			
 		</BrowserElement>
 	</Browser>
+	<Panel visible="false" dataClassName="org.openflexo.foundation.resource.FlexoResource" data ="($org.openflexo.foundation.resource.FlexoResource) resourceManagerBrowser.selected" name="resourcePanel">
+	</Panel>
+	<TextArea data="resourcePanel.data.version.toString()"/>	
 	<LocalizedDictionary />
 </Panel>

@@ -44,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,14 +101,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 	@Override
 	public final void save(IProgress progress) throws SaveResourceException {
 		
-		/*
-		 * hack to bind the Git IO delegate only
-		 */
-		if(getFlexoIODelegate() instanceof FlexoIOGitDelegate){
-			FlexoIOGitDelegate gitDelegate  = (FlexoIOGitDelegate) getFlexoIODelegate();
-			gitDelegate.save(this);
-			return;
-		}
+		
 		
 		if (progress != null) {
 			progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + this.getName());
@@ -119,7 +113,15 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 		
 		
 		if (!isDeleted()) {
-			saveResourceData(true);
+			saveResourceData(true);				
+			
+			/*
+			 * hack to bind the Git IO delegate only
+			 */
+			if(getFlexoIODelegate() instanceof FlexoIOGitDelegate){
+				FlexoIOGitDelegate gitDelegate  = (FlexoIOGitDelegate) getFlexoIODelegate();
+				gitDelegate.save(this);
+			}
 			resourceData.clearIsModified(false);
 		}
 
@@ -614,6 +616,12 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD>, F extends 
 			}
 			return false;
 		}
+	}
+	
+	@Override
+	public List<FlexoVersion> getAvailableVersions(){
+		System.out.println(getFlexoIODelegate().getAvailableVersions());
+		return getFlexoIODelegate().getAvailableVersions();
 	}
 
 }

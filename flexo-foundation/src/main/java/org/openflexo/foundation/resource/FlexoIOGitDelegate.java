@@ -5,19 +5,21 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.openflexo.gitUtils.SerializationArtefactDirectory;
 import org.openflexo.gitUtils.SerializationArtefactFile;
 import org.openflexo.gitUtils.SerializationArtefactKind;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.toolbox.FlexoVersion;
+
+import com.google.common.collect.Lists;
 /**
  * Linked with a flexo resource, it makes it persistent. Contains all versions this resource has.
  * @author kvermeul
@@ -67,6 +69,13 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 	 */
 	public void writeVersion(FlexoResource<?> resource, ObjectId id) throws IOException;
 
+	/**
+	 * Get the highest version available for increment the versionning
+	 * @return
+	 */
+	public FlexoVersion getHighestVersion();
+
+	
 	@Implementation
 	public abstract class FlexoIOGitDelegateImpl extends FlexoIOStreamDelegateImpl<File> implements FlexoIOGitDelegate {
 
@@ -82,6 +91,8 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 		private SerializationArtefactKind serializationArtefactKind;
 		
 
+		
+		
 		@Override
 		public void save(FlexoResource<?> resource) {
 
@@ -151,6 +162,27 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 			writer.close();
 		}
 		
+		public FlexoVersion getHighestVersion() {
+			FlexoVersion highestVersion=null;
+			for (FlexoVersion versionAvailable : gitCommitIds.keySet()) {
+				if( highestVersion==null){
+					highestVersion=versionAvailable;
+				}
+				else {
+					if(versionAvailable.isGreaterThan(highestVersion)){
+						highestVersion =versionAvailable;
+					}
+					
+				}
+			}
+			return highestVersion;
+		}
+
+		
+		@Override 
+		public List<FlexoVersion> getAvailableVersions(){
+			return Lists.newArrayList(gitCommitIds.keySet());
+		}
 		
 		public void setDirectory(File directory){
 			this.directory = directory;
@@ -200,5 +232,6 @@ public interface FlexoIOGitDelegate extends FileFlexoIODelegate {
 			this.resourceVersionFile = resourceVersionFile;
 		}
 	}
+
 
 }
