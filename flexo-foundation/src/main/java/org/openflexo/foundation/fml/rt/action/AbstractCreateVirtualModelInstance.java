@@ -139,14 +139,15 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 				+ " delegate=" + newVirtualModelInstanceResource.getFlexoIODelegate().stringRepresentation());
 
 		System.out.println("creationSchemeAction=" + creationSchemeAction);
+		System.out.println("escapeModelSlotConfiguration=" + escapeModelSlotConfiguration());
 
 		// If we do not escape model slot configuration, this is the right time to do it
-		if (!escapeModelSlotConfiguration()) {
-			for (ModelSlot ms : virtualModel.getModelSlots()) {
+		if (!escapeModelSlotConfiguration() && allModelSlotConfigurationAreValid()) {
+			for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
 				// System.out.println("*** ModelSlot: " + ms);
 				ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
 				if (configuration.isValidConfiguration()) {
-					ModelSlotInstance msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
+					ModelSlotInstance<?, ?> msi = configuration.createModelSlotInstance(newVirtualModelInstance, getContainerView());
 					msi.setVirtualModelInstance(newVirtualModelInstance);
 					newVirtualModelInstance.addToModelSlotInstances(msi);
 				} else {
@@ -197,6 +198,17 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		// System.out.println("errorMessage=" + errorMessage);
 		return errorMessage;
 	}*/
+
+	private boolean allModelSlotConfigurationAreValid() {
+		for (ModelSlot<?> ms : virtualModel.getModelSlots()) {
+			// System.out.println("*** ModelSlot: " + ms);
+			ModelSlotInstanceConfiguration<?, ?> configuration = getModelSlotInstanceConfiguration(ms);
+			if (!configuration.isValidConfiguration()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public int getStepsNumber() {
 		if (virtualModel == null) {
